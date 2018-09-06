@@ -20,8 +20,19 @@ def check(checkstyle_file_path, file_path):
     if ( process.returncode > 0):
         output = b''.join(output.split(b'</checkstyle>')[0:-1]) + b'</checkstyle>'
     # parsing
-    output = ET.fromstring(output)
+    output = parse_res(output)
     return (output, process.returncode)
+
+def parse_res(output):
+    xml_output = ET.fromstring(output)
+    output_parsed = dict()
+    for elem_file in xml_output.getchildren():
+        output_parsed[elem_file.attrib['name']] = dict()
+        output_parsed[elem_file.attrib['name']]['errors'] = list()
+        for elem_error in elem_file.getchildren():
+            if ( elem_error.tag == 'error' ):
+                output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
+    return output_parsed
 
 if __name__ == "__main__":
     checkstyle_path = "./test_corpora/java-design-patterns/checkstyle.xml"
@@ -32,6 +43,3 @@ if __name__ == "__main__":
 
     (output_raw, errorcode) = check(checkstyle_path, file_path)
     print(output_raw, errorcode)
-
-    for child in output_raw[0]:
-        print(child.tag, child.attrib)
