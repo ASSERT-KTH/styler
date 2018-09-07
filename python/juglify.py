@@ -8,7 +8,6 @@ import os
 def gen_ugly(file_path, output_dir, modification_number = 3):
     insertions_sample_size = random.randint(0, modification_number)
     deletions_sample_size = modification_number - insertions_sample_size
-
     with open(file_path) as f:
         file_lines = f.readlines()
     file_content = "".join(file_lines)
@@ -18,7 +17,7 @@ def gen_ugly(file_path, output_dir, modification_number = 3):
 
 
     # Take a sample of locations suitable for insertions
-    insertions_sample = random.sample( tokens, insertions_sample_size )
+    insertions_sample = random.sample( tokens, min(insertions_sample_size, len(tokens)) )
 
     insertions = dict();
 
@@ -44,7 +43,7 @@ def gen_ugly(file_path, output_dir, modification_number = 3):
     deletions_spots = list(set(deletions_spots))
 
     # Take a sample of locations suitable for deletions
-    deletions_sample = random.sample( deletions_spots, deletions_sample_size )
+    deletions_sample = random.sample( deletions_spots, min(deletions_sample_size, len(deletions_spots)) )
 
     deletions = dict()
 
