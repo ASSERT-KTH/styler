@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-# from matplotlib import pyplot
+import numpy as np
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -15,64 +15,70 @@ def list_corpora(corpora_dir):
     folders = next(os.walk(corpora_dir))[1]
     corpora = list()
     for folder in folders:
-        for i in range(20):
-            corpora.append( CorpusLeaveKOut(os.path.join(corpora_dir, folder) , folder, 1) )
+        corpora.append( Corpus(os.path.join(corpora_dir, folder) , folder) )
     return corpora
 
 if __name__ == "__main__":
-    corpora = list_corpora("./test_corpora")
+    # corpora = list_corpora("./test_corpora")
     # if os.path.exists("./experiments"):
     #     shutil.rmtree("./experiments")
+
+    corpora = []
+    corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced") )
+    corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced2") )
 
     starts = time.time()
 
     experiments = []
+    res = []
+
+    modifications = (5,5)
 
     for corpus in corpora:
         print(corpus)
-
-        experiments.append(Exp_Uglify(corpus, 1, iterations = 25))
+        experiments.append(Exp_Uglify(corpus, modification_number = 1, iterations = modifications))
 
     for exp in experiments:
         exp.save_informations()
         exp.daemon = True
         exp.start()
 
-    res = []
-    res_naturalize = []
-    res_codebuff = []
-
-
     for exp in experiments:
         exp.join()
         exp.save_results()
-        res.append(exp.results["corrupted_file_proportion"])
-        if "corrupted_file_proportion" in exp.results["naturalize"]:
-            res_naturalize.append(exp.results["naturalize"]["corrupted_file_proportion"])
-        if "corrupted_file_proportion" in exp.results["codebuff"]:
-            res_codebuff.append(exp.results["codebuff"]["corrupted_file_proportion"])
-
-    # for exp in experiments:
-    #     exp.clean_up()
-
-    ends = time.time()
-
-    print(ends - starts, "s")
-
-    print(res, res_naturalize, res_codebuff)
-
-    # Create a figure instance
-    fig = plt.figure(1, figsize=(6, 4))
-
-    # Create an axes instance
-    ax = fig.add_subplot(111)
+        exp.present_results()
 
 
-    # Create the boxplot
-    bp = ax.boxplot([res, res_naturalize, res_codebuff])
+    barWidth = 0.25
+    bars1 = []
+    naturalize_res = []
+    codebuff_res = []
+    labels = []
 
-    ax.set_ylim(0,1)
-    xtickNames = plt.setp(ax, xticklabels=["jUglify", "Naturalize", "Codebuff"])
-    plt.setp(xtickNames, rotation=45, fontsize=8)
+    for exp in experiments:
+        results = exp.results
+        labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
+        bars1.append( results["corrupted_files_ratio"] )
+        naturalize_res.append( results["corrupted_files_ratio_naturalize"] )
+        codebuff_res.append( results["corrupted_files_ratio_codebuff"] )
 
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars1))
+    r2 = [x + barWidth for x in r1]
+    r3 = [x + barWidth for x in r2]
+
+
+    # Make the plot
+    plt.bar(r1, bars1, color='#3498db', width=barWidth, edgecolor='white', label='Error injection')
+    plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
+    plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
+
+
+    # Add xticks on the middle of the group bars
+    plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.30)
+    # Create legend & Show graphic
+    plt.legend()
     plt.show()

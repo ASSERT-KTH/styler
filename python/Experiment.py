@@ -6,6 +6,8 @@ import os
 import time
 import shutil
 import subprocess
+import random
+import re
 
 import json
 
@@ -43,9 +45,9 @@ class Experiment(threading.Thread):
         self.parameters = dict()
         self.id = uuid.uuid4().hex
         self.base_dir = "./experiments/" + name + "/" + corpus.name + "_" + self.id + "/"
+        if not os.path.exists(self.base_dir):
+             os.makedirs(self.base_dir)
         self.results = None
-        self.training_files_dir = self.get_dir( "training_files/" )
-        self.training_files = self.corpus.copy_training_files(self.training_files_dir)
         self.date = time.time()
 
     def get_informations(self):
@@ -53,7 +55,6 @@ class Experiment(threading.Thread):
         informations["corpus"] = str(self.corpus)
         informations["name"] = self.name
         informations["parameters"] = self.parameters
-        informations["training_files"] = self.training_files
         return informations
 
     def save_informations(self):
@@ -94,16 +95,13 @@ class Experiment(threading.Thread):
 
 class Exp_Uglify(Experiment):
 
-    def __init__(self, corpus, modification_number, iterations = 1):
+    def __init__(self, corpus, modification_number = 1, iterations = (5,5)):
         Experiment.__init__(self, corpus, "uglify")
         self.add_parameter("iterations", iterations)
         self.add_parameter("modification_number", modification_number)
-        self.left_out_files_dir = self.get_dir( "left_out_files/")
-        self.left_out_files = self.corpus.copy_left_out_files(self.left_out_files_dir)
 
     def get_informations(self):
         informations = Experiment.get_informations(self)
-        informations["left_out_files"] = self.left_out_files
         return informations
 
     def call_naturalize(self, training_dir, files_dir, output_dir):
@@ -113,52 +111,78 @@ class Exp_Uglify(Experiment):
         return call_java("../jars/codebuff-1.5.1.jar", ["-g org.antlr.codebuff.Java8", "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir, files_dir])
 
     def run(self):
-        self.log("starting")
-        test_files = self.left_out_files
-        ugly_files = []
+        self.log("Starting...")
 
-        # (res, errors) = checkstyle.check(self.corpus.checkstyle, " ".join(test_files))
-        # if (errors is not 0):
-        #     raise ValueError('The corpus has checkstyle error(s)')
+        os.makedirs(self.get_dir("ugly/"))
 
-        for i in range(self.get_parameter("iterations")):
-            for f in test_files:
-                ugly_files.append(juglify.gen_ugly(f, self.get_dir( "ugly/" + str(i) + "/"), modification_number=self.get_parameter("modification_number")))
 
-        # Naturalize
-        self.call_naturalize(self.training_files_dir, self.get_dir( "ugly/"), self.get_dir( "naturalize/") )
-        naturalized_files = get_files_path(self.get_dir( "naturalize/"))
 
-        # Codebuff
-        self.call_codebuff(self.training_files_dir, self.get_dir( "ugly/"), self.get_dir( "codebuff/") )
-        codebuffed_files = get_files_path(self.get_dir( "codebuff/"))
+        self.log("Insertions")
+        for index in range(self.get_parameter("iterations")[0]):
+            for id, file in self.corpus.get_files().items():
+                juglify.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions/" + str(index) + "/")), 1)
 
-        (res, errors) = checkstyle.check(self.corpus.checkstyle, " ".join(ugly_files))
-        res = Exp_Uglify.rename_checkstyle_output(res, ugly_files)
+        self.log("Deletions")
+        for index in range(self.get_parameter("iterations")[1]):
+            for id, file in self.corpus.get_files().items():
+                juglify.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/deletions/" + str(index) + "/")), 1)
 
-        self.results = { "errors": errors, "details": {key:len(res[key]["errors"]) for key in ugly_files} }
-        self.results["errors_per_file"] = errors / len(ugly_files)
-        self.results["corrupted_file_proportion"] = sum([ len(res[file]["errors"]) > 0 for file in res]) / len(ugly_files)
 
-        self.results["naturalize"] = dict()
-        try:
-            (res, errors) = checkstyle.check(self.corpus.checkstyle, " ".join(naturalized_files))
-            res = Exp_Uglify.rename_checkstyle_output(res, naturalized_files)
-            self.results["naturalize"]["corrupted_file_proportion"] = sum([ len(res[file]["errors"]) > 0 for file in res]) / len(naturalized_files)
-        except:
-            self.log("Error, cannot parse the naturaliz output")
+        self.log("Checkstyle")
+        (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "ugly/" ) )
 
-        self.results["codebuff"] = dict()
-        try:
-            (res, errors) = checkstyle.check(self.corpus.checkstyle, " ".join(codebuffed_files))
-            res = Exp_Uglify.rename_checkstyle_output(res, codebuffed_files)
+        file_with_cs_errors, checkstyle_errors_count = self.parse_result(checkstyle_res, self.get_dir("ugly/"))
 
-            self.results["codebuff"]["corrupted_file_proportion"] = sum([ len(res[file]["errors"]) > 0 for file in res]) / len(codebuffed_files)
-        except:
-            self.log("Error, cannot parse the codebuff output")
+        self.log("Naturalize")
+        for id, value in file_with_cs_errors.items():
+            self.call_naturalize( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize/" + str(id))) )
+        (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "naturalize/" ) )
 
+        file_with_cs_errors_naturalize, checkstyle_errors_count_naturalize = self.parse_result(checkstyle_res, self.get_dir("naturalize/"))
+
+        self.log("Codebuff")
+        for id, value in file_with_cs_errors.items():
+            self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))) )
+        (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "codebuff/" ) )
+
+        file_with_cs_errors_codebuff, checkstyle_errors_count_codebuff = self.parse_result(checkstyle_res, self.get_dir("codebuff/"))
+
+
+        self.results = dict()
+
+        self.results["checkstyle_errors_count"] = checkstyle_errors_count
+        self.results["corrupted_files_ratio"] = sum( [ len(val) for key, val in file_with_cs_errors.items() ] )  / (len(self.corpus.files) * sum(self.get_parameter("iterations")) )
+        self.results["checkstyle_errors_count_naturalize"] = checkstyle_errors_count_naturalize
+        self.results["corrupted_files_ratio_naturalize"] = sum( [ len(val) for key, val in file_with_cs_errors_naturalize.items() ] )  / (len(self.corpus.files) * sum(self.get_parameter("iterations")) )
+        self.results["checkstyle_errors_count_codebuff"] = checkstyle_errors_count_codebuff
+        self.results["corrupted_files_ratio_codebuff"] = sum( [ len(val) for key, val in file_with_cs_errors_codebuff.items() ] )  / (len(self.corpus.files) * sum(self.get_parameter("iterations")) )
 
         return self.results
+
+    def parse_result(self, checkstyle_res, path):
+        file_with_cs_errors = dict()
+        checkstyle_errors_count = dict()
+        for name, value in checkstyle_res.items():
+            file_path = name[(name.find(path) + len(path)):]
+            # print(file_path)
+            file_path_args = file_path.split("/")
+            file_id = int(file_path_args[0])
+            corpus_file = self.corpus.get_file(file_id)
+            file_path = corpus_file[1] + "/" + corpus_file[0]
+            type = file_path_args[1]
+            modification_id = file_path_args[2]
+            # print(type, modification_id, file_path)
+            if ( len(value["errors"]) > 0 ):
+                if ( file_id not in file_with_cs_errors):
+                    file_with_cs_errors[ file_id ] = []
+
+                file_with_cs_errors[ file_id ].append({"type": type, "modification_id": modification_id, "errors": value["errors"]})
+            # print(type, number, file_path)
+            for error in value["errors"]:
+                if ( error["source"] not in checkstyle_errors_count):
+                    checkstyle_errors_count[error["source"]] = 0
+                checkstyle_errors_count[error["source"]] += 1
+        return file_with_cs_errors, checkstyle_errors_count
 
     def rename_checkstyle_output(res, files):
         res_renamed = dict()
