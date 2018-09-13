@@ -1,4 +1,4 @@
-import juglify
+import java_lang_utils
 import checkstyle
 import threading
 import uuid
@@ -30,7 +30,7 @@ def get_files_path(dir):
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
-    # print(cmd)
+    print(cmd)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     return output
@@ -49,6 +49,12 @@ class Experiment(threading.Thread):
              os.makedirs(self.base_dir)
         self.results = None
         self.date = time.time()
+
+    def load_from_dir(dir):
+        
+        with open(os.path.join(dir, "./results.json") as file:
+            data = file.read()
+            self. = json.loads(data)
 
     def get_informations(self):
         informations = dict()
@@ -84,7 +90,7 @@ class Experiment(threading.Thread):
         shutil.rmtree(self.base_dir);
 
     def log(self, message):
-        print("[" + self.name + "_" + self.id + "]" + message)
+        print("[" + self.name + "_" + self.id + "]" + str(message))
 
     def save_results(self):
         if ( self.results is not None ):
@@ -104,11 +110,16 @@ class Exp_Uglify(Experiment):
         informations = Experiment.get_informations(self)
         return informations
 
-    def call_naturalize(self, training_dir, files_dir, output_dir):
-        return call_java("../jars/naturalize.jar", [training_dir, output_dir, files_dir])
+    def call_naturalize(self, training_dir, files_dir, output_dir, exclude=None):
+        return call_java("../jars/naturalize.jar", [training_dir, output_dir, files_dir, exclude])
 
-    def call_codebuff(self, training_dir, files_dir, output_dir):
-        return call_java("../jars/codebuff-1.5.1.jar", ["-g org.antlr.codebuff.Java8", "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir, files_dir])
+    def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None):
+        args = ["-g org.antlr.codebuff.Java", "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
+        if ( exclude ):
+            args.append("-exclude " + exclude)
+        args.append(files_dir)
+        return call_java("../jars/codebuff-1.5.1.jar", args)
+
 
     def run(self):
         self.log("Starting...")
@@ -120,12 +131,12 @@ class Exp_Uglify(Experiment):
         self.log("Insertions")
         for index in range(self.get_parameter("iterations")[0]):
             for id, file in self.corpus.get_files().items():
-                juglify.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions/" + str(index) + "/")), 1)
+                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions/" + str(index) + "/")), (1,0))
 
         self.log("Deletions")
         for index in range(self.get_parameter("iterations")[1]):
             for id, file in self.corpus.get_files().items():
-                juglify.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/deletions/" + str(index) + "/")), 1)
+                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/deletions/" + str(index) + "/")), (0,1))
 
 
         self.log("Checkstyle")
@@ -135,14 +146,26 @@ class Exp_Uglify(Experiment):
 
         self.log("Naturalize")
         for id, value in file_with_cs_errors.items():
-            self.call_naturalize( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize/" + str(id))) )
+            exluded_file = self.corpus.get_file(id)[2]
+            self.call_naturalize( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize/" + str(id))), exclude=exluded_file )
+        bad_formated_naturalize = java_lang_utils.get_bad_formated(self.get_dir("./naturalize/"))
+        os.makedirs(self.get_dir("./trash/naturalize"))
+        for file in bad_formated_naturalize:
+            shutil.move(file, self.get_dir("./trash/naturalize/" + uuid.uuid4().hex + ".java"))
+
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "naturalize/" ) )
 
         file_with_cs_errors_naturalize, checkstyle_errors_count_naturalize = self.parse_result(checkstyle_res, self.get_dir("naturalize/"))
 
         self.log("Codebuff")
         for id, value in file_with_cs_errors.items():
-            self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))) )
+            exluded_file = self.corpus.get_file(id)[2]
+            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file )
+            self.log(res)
+        bad_formated_codebuff = java_lang_utils.get_bad_formated(self.get_dir("./codebuff/"))
+        os.makedirs(self.get_dir("./trash/codebuff"))
+        for file in bad_formated_codebuff:
+            shutil.move(file, self.get_dir("./trash/codebuff/" + uuid.uuid4().hex + ".java"))
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "codebuff/" ) )
 
         file_with_cs_errors_codebuff, checkstyle_errors_count_codebuff = self.parse_result(checkstyle_res, self.get_dir("codebuff/"))
@@ -192,3 +215,6 @@ class Exp_Uglify(Experiment):
                     res_renamed[file] = res[key]
                     continue
         return res_renamed
+
+
+# java -jar ../jars/codebuff-1.5.1.jar -g org.antlr.codebuff.Java8 -rule compilationUnit -corpus ./test_corpora/java-design-patterns-reduced/data -files java -comment LINE_COMMENT -indent 2 -o ./9_codebuff -exclude ./test_corpora/java-design-patterns-reduced/data/composite/src/main/java/com/iluwatar/composite/Messenger.java ./9
