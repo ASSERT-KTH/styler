@@ -1,19 +1,24 @@
 from javalang import tokenizer
+from javalang import parse
+import javalang
+
 import random
 import intervals as I
 import collections
 import sys
 import os
 
-def gen_ugly(file_path, output_dir, modification_number = 3):
-    insertions_sample_size = random.randint(0, modification_number)
-    deletions_sample_size = modification_number - insertions_sample_size
+def gen_ugly(file_path, output_dir, modification_number = (1,0)):
+    insertions_sample_size = modification_number[0]
+    deletions_sample_size = modification_number[1]
+    # deletions_sample_size = modification_number - insertions_sample_size
     with open(file_path) as f:
         file_lines = f.readlines()
     file_content = "".join(file_lines)
 
     tokens = tokenizer.tokenize(file_content)
     tokens = [ t for t in tokens]
+    # print("\n".join([ str(t) for t in tokens]))
 
 
     # Take a sample of locations suitable for insertions
@@ -89,9 +94,28 @@ def gen_ugly(file_path, output_dir, modification_number = 3):
             line_num = line_num + 1
     return output_path
 
+def check_well_formed(file_path):
+    with open(file_path) as f:
+        file_content = f.read()
+    try:
+        tree = parse.parse(file_content)
+        return True
+    except javalang.parser.JavaSyntaxError:
+        return False
+
+def get_bad_formated(dir):
+    bad_formated_files = []
+    for folder in os.walk(dir):
+        for file_name in folder[2]:
+            file_path = os.path.join(folder[0], file_name)
+            if ( not check_well_formed(file_path) ):
+                bad_formated_files.append(file_path)
+    return bad_formated_files
+
+
 if __name__ == "__main__":
     if ( len(sys.argv) < 3):
-        gen_ugly( "./test_corpora/java-design-patterns/Target.java", "ugly/")
+        print(get_bad_formated(sys.argv[1]))
     else:
         print(sys.argv)
         gen_ugly( sys.argv[1], sys.argv[2] )
