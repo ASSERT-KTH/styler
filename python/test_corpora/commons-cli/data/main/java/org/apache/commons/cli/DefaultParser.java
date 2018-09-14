@@ -31,26 +31,26 @@ public class DefaultParser implements CommandLineParser
 {
     /** The command-line instance. */
     protected CommandLine cmd;
-    
+
     /** The current options. */
     protected Options options;
 
     /**
      * Flag indicating how unrecognized tokens are handled. <tt>true</tt> to stop
      * the parsing and add the remaining tokens to the args list.
-     * <tt>false</tt> to throw an exception. 
+     * <tt>false</tt> to throw an exception.
      */
     protected boolean stopAtNonOption;
 
     /** The token currently processed. */
     protected String currentToken;
- 
+
     /** The last option parsed. */
     protected Option currentOption;
- 
+
     /** Flag indicating if tokens should no longer be analyzed and simply added as arguments of the command line. */
     protected boolean skipParsing;
- 
+
     /** The required options and groups expected to be found when parsing the command line. */
     protected List expectedOpts;
 
@@ -74,7 +74,8 @@ public class DefaultParser implements CommandLineParser
      * <code>-de</code> would enable both <code>debug</code> as well as
      * <code>extract</code> options.
      */
-    public DefaultParser() {
+    public DefaultParser()
+    {
         this.allowPartialMatching = true;
     }
 
@@ -97,7 +98,8 @@ public class DefaultParser implements CommandLineParser
      *
      * @param allowPartialMatching if partial matching of long options shall be enabled
      */
-    public DefaultParser(final boolean allowPartialMatching) {
+    public DefaultParser(final boolean allowPartialMatching)
+    {
         this.allowPartialMatching = allowPartialMatching;
     }
 
@@ -134,7 +136,7 @@ public class DefaultParser implements CommandLineParser
      * @param arguments       the command line arguments
      * @param properties      command line option name-value pairs
      * @param stopAtNonOption if <tt>true</tt> an unrecognized argument stops
-     *     the parsing and the remaining arguments are added to the 
+     *     the parsing and the remaining arguments are added to the
      *     {@link CommandLine}s args list. If <tt>false</tt> an unrecognized
      *     argument triggers a ParseException.
      *
@@ -339,7 +341,7 @@ public class DefaultParser implements CommandLineParser
 
     /**
      * Tells if the token looks like a short option.
-     * 
+     *
      * @param token
      */
     private boolean isShortOption(final String token)
@@ -391,10 +393,10 @@ public class DefaultParser implements CommandLineParser
     }
 
     /**
-     * Handles an unknown token. If the token starts with a dash an 
-     * UnrecognizedOptionException is thrown. Otherwise the token is added 
-     * to the arguments of the command line. If the stopAtNonOption flag 
-     * is set, this stops the parsing and the remaining tokens are added 
+     * Handles an unknown token. If the token starts with a dash an
+     * UnrecognizedOptionException is thrown. Otherwise the token is added
+     * to the arguments of the command line. If the stopAtNonOption flag
+     * is set, this stops the parsing and the remaining tokens are added
      * as-is in the arguments of the command line.
      *
      * @param token the command line token to handle
@@ -442,7 +444,7 @@ public class DefaultParser implements CommandLineParser
      * -L
      * --l
      * -l
-     * 
+     *
      * @param token the command line token to handle
      */
     private void handleLongOptionWithoutEqual(final String token) throws ParseException
@@ -639,7 +641,7 @@ public class DefaultParser implements CommandLineParser
                 break;
             }
         }
-        
+
         return opt;
     }
 

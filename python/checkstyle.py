@@ -35,7 +35,7 @@ def parse_res(output):
     return output_parsed
 
 if __name__ == "__main__":
-    checkstyle_path = "./test_corpora/java-design-patterns/checkstyle.xml"
+    checkstyle_path = "./test_corpora/commons-lang/checkstyle.xml"
     file_path = "./ugly/java-design-patterns/Target.java ./ugly/java-design-patterns/Client.java"
     if ( len(sys.argv) >= 3):
         checkstyle_path = sys.argv[1]

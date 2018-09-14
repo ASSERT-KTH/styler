@@ -50,11 +50,11 @@ class Experiment(threading.Thread):
         self.results = None
         self.date = time.time()
 
-    def load_from_dir(dir):
-        
-        with open(os.path.join(dir, "./results.json") as file:
-            data = file.read()
-            self. = json.loads(data)
+    # def load_from_dir(dir):
+    #
+    #     with open(os.path.join(dir, "./results.json") as file:
+    #         data = file.read()
+    #         self. = json.loads(data)
 
     def get_informations(self):
         informations = dict()
@@ -120,6 +120,12 @@ class Exp_Uglify(Experiment):
         args.append(files_dir)
         return call_java("../jars/codebuff-1.5.1.jar", args)
 
+    def move_parse_exception_files(self, from_dir, to_dir):
+        files = java_lang_utils.get_bad_formated(self.get_dir(from_dir))
+        os.makedirs(self.get_dir(to_dir))
+        for file in files:
+            shutil.move(file, self.get_dir(to_dir + uuid.uuid4().hex + ".java"))
+        return files
 
     def run(self):
         self.log("Starting...")
@@ -148,10 +154,8 @@ class Exp_Uglify(Experiment):
         for id, value in file_with_cs_errors.items():
             exluded_file = self.corpus.get_file(id)[2]
             self.call_naturalize( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize/" + str(id))), exclude=exluded_file )
-        bad_formated_naturalize = java_lang_utils.get_bad_formated(self.get_dir("./naturalize/"))
-        os.makedirs(self.get_dir("./trash/naturalize"))
-        for file in bad_formated_naturalize:
-            shutil.move(file, self.get_dir("./trash/naturalize/" + uuid.uuid4().hex + ".java"))
+
+        bad_formated_naturalize = self.move_parse_exception_files("./naturalize/", "./trash/naturalize")
 
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "naturalize/" ) )
 
@@ -162,10 +166,9 @@ class Exp_Uglify(Experiment):
             exluded_file = self.corpus.get_file(id)[2]
             res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file )
             self.log(res)
-        bad_formated_codebuff = java_lang_utils.get_bad_formated(self.get_dir("./codebuff/"))
-        os.makedirs(self.get_dir("./trash/codebuff"))
-        for file in bad_formated_codebuff:
-            shutil.move(file, self.get_dir("./trash/codebuff/" + uuid.uuid4().hex + ".java"))
+
+        bad_formated_codebuff = self.move_parse_exception_files("./codebuff/", "./trash/codebuff")
+
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "codebuff/" ) )
 
         file_with_cs_errors_codebuff, checkstyle_errors_count_codebuff = self.parse_result(checkstyle_res, self.get_dir("codebuff/"))
@@ -202,9 +205,10 @@ class Exp_Uglify(Experiment):
                 file_with_cs_errors[ file_id ].append({"type": type, "modification_id": modification_id, "errors": value["errors"]})
             # print(type, number, file_path)
             for error in value["errors"]:
-                if ( error["source"] not in checkstyle_errors_count):
-                    checkstyle_errors_count[error["source"]] = 0
-                checkstyle_errors_count[error["source"]] += 1
+                if ( error["severity"] == "error"):
+                    if ( error["source"] not in checkstyle_errors_count):
+                        checkstyle_errors_count[error["source"]] = 0
+                    checkstyle_errors_count[error["source"]] += 1
         return file_with_cs_errors, checkstyle_errors_count
 
     def rename_checkstyle_output(res, files):
