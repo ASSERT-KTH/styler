@@ -72,7 +72,7 @@ def plot_errors_distribution(results):
     n_errors_labels = len(errors_labels)
     colors = []
     for i in range( 0, n_errors_labels ):
-        colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , 0.5, 0.5))))
+        colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
     random.shuffle(colors)
     print(colors)
     lables_colors = dict()

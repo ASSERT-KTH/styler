@@ -150,6 +150,21 @@ class Exp_Uglify(Experiment):
 
         file_with_cs_errors, checkstyle_errors_count = self.parse_result(checkstyle_res, self.get_dir("ugly/"))
 
+        dirs = []
+        for id, files in file_with_cs_errors.items():
+            for file in files:
+                dirs.append(str(id) + '/' + file["type"] + '/' + str(file["modification_id"]))
+
+        dirs_to_delete = []
+        for folder in os.walk(self.get_dir( "ugly/" )):
+            sub_dir = folder[0][len(self.get_dir( "ugly/" )):]
+            if ( sub_dir.count("/") >= 2):
+                if ( sub_dir not in dirs ):
+                    dirs_to_delete.append(folder[0])
+
+        for folder in dirs_to_delete:
+            shutil.rmtree(folder)
+
         self.log("Naturalize")
         for id, value in file_with_cs_errors.items():
             exluded_file = self.corpus.get_file(id)[2]
@@ -176,6 +191,7 @@ class Exp_Uglify(Experiment):
 
         self.results = dict()
 
+        self.results["name"] = self.corpus.name
         self.results["checkstyle_errors_count"] = checkstyle_errors_count
         self.results["corrupted_files_ratio"] = sum( [ len(val) for key, val in file_with_cs_errors.items() ] )  / (len(self.corpus.files) * sum(self.get_parameter("iterations")) )
         self.results["checkstyle_errors_count_naturalize"] = checkstyle_errors_count_naturalize
