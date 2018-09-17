@@ -113,8 +113,8 @@ class Exp_Uglify(Experiment):
     def call_naturalize(self, training_dir, files_dir, output_dir, exclude=None):
         return call_java("../jars/naturalize.jar", [training_dir, output_dir, files_dir, exclude])
 
-    def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None):
-        args = ["-g org.antlr.codebuff.Java", "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
+    def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
+        args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
         if ( exclude ):
             args.append("-exclude " + exclude)
         args.append(files_dir)
@@ -164,7 +164,7 @@ class Exp_Uglify(Experiment):
         self.log("Codebuff")
         for id, value in file_with_cs_errors.items():
             exluded_file = self.corpus.get_file(id)[2]
-            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file )
+            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file, grammar=self.corpus.info["grammar"] )
             self.log(res)
 
         bad_formated_codebuff = self.move_parse_exception_files("./codebuff/", "./trash/codebuff")

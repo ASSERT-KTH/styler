@@ -7,6 +7,9 @@ import numpy as np
 
 import random
 import colorsys
+import sys
+import os
+import json
 
 
 def plot_percentage_of_errors(results):
@@ -20,7 +23,7 @@ def plot_percentage_of_errors(results):
 
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
-        labels.append("sdf")
+        labels.append(result["name"])
         bars1.append( result["corrupted_files_ratio"] )
         naturalize_res.append( result["corrupted_files_ratio_naturalize"] )
         codebuff_res.append( result["corrupted_files_ratio_codebuff"] )
@@ -59,7 +62,7 @@ def plot_errors_distribution(results):
 
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
-        labels.append("sdf")
+        labels.append(result["name"])
         bars1.append( result["corrupted_files_ratio"] )
         errors_labels = errors_labels | result["checkstyle_errors_count"].keys() | result["checkstyle_errors_count_naturalize"].keys()
 
@@ -127,9 +130,19 @@ def plot_errors_distribution(results):
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
-if __name__ == "__main__":
-    result1 = {"checkstyle_errors_count": {"com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck": 14, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck": 102, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck": 30, "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck": 17, "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck": 8, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 14, "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 12, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck": 7, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck": 1, "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck": 1}, "corrupted_files_ratio": 0.6391304347826087, "checkstyle_errors_count_naturalize": {"com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck": 5, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 12, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck": 1, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 1, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck": 2}, "corrupted_files_ratio_naturalize": 0.12608695652173912, "checkstyle_errors_count_codebuff": {"com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 40, "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck": 1, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck": 2, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 10, "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck": 10}, "corrupted_files_ratio_codebuff": 0.3130434782608696}
-    result2 = {"checkstyle_errors_count": {"com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 14, "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck": 17, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck": 28, "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck": 9, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck": 104, "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck": 19, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck": 8, "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck": 1, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 10}, "corrupted_files_ratio": 0.6521739130434783, "checkstyle_errors_count_naturalize": {"com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck": 1, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 1, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck": 1, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck": 1, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 10}, "corrupted_files_ratio_naturalize": 0.10434782608695652, "checkstyle_errors_count_codebuff": {"com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck": 40, "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck": 10, "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocTypeCheck": 1, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocVariableCheck": 1, "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck": 10, "com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck": 10, "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck": 10}, "corrupted_files_ratio_codebuff": 0.3130434782608696}
+def load_results(dir):
+    data = {}
+    with open(os.path.join(dir, "results.json")) as f:
+        data = json.load(f)
+    return data
 
-    results = [result1, result2]
-    plot_errors_distribution(results)
+if __name__ == "__main__":
+    print(sys.argv)
+    if ( len(sys.argv) > 2):
+        type = sys.argv[1]
+        folders = sys.argv[2:]
+        results = [ load_results(dir) for dir in folders ]
+        if (type == "errors_distribution"):
+            plot_errors_distribution(results)
+        elif (type == "percentage_of_errors"):
+            plot_percentage_of_errors(results)

@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     corpora = []
     corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
+    corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced") )
     # corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced2") )
 
     starts = time.time()
