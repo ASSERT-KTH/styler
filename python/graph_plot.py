@@ -52,7 +52,8 @@ def plot_percentage_of_errors(results):
 def plot_protocol1(results): # protocol1
     modifications = (5,5)
 
-    barWidth = 0.25
+    counts = ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_codebuff")
+
     bars1 = []
     naturalize_res = []
     codebuff_res = []
@@ -64,10 +65,16 @@ def plot_protocol1(results): # protocol1
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
         labels.append("{} ({})".format(result["name"], result["number_of_injections"]))
         bars1.append( result["corrupted_files_ratio"] )
-        errors_labels = errors_labels | result["checkstyle_errors_count"].keys() | result["checkstyle_errors_count_naturalize"].keys()
+        for count in counts:
+            errors_labels = errors_labels | result[count].keys()
 
         # naturalize_res.append( result["corrupted_files_ratio_naturalize"] )
         # codebuff_res.append( result["corrupted_files_ratio_codebuff"] )
+    # total_error_count = dict()
+    # for error in errors_labels:
+    #     total_error_count[error] = 0
+    #     for result in results:
+    #         result["checkstyle_errors_count"][error] = 0
 
     n_errors_labels = len(errors_labels)
     colors = []
@@ -97,17 +104,17 @@ def plot_protocol1(results): # protocol1
                     layers[error_label].append(0)
         return layers
 
-
-    layers = compute_errors_layer("checkstyle_errors_count")
-    layers_naturalize = compute_errors_layer("checkstyle_errors_count_naturalize")
-    layers_codebuff = compute_errors_layer("checkstyle_errors_count_codebuff")
-
+    layers = dict()
+    for count in counts:
+        layers[count] = compute_errors_layer(count)
 
 
+    barWidth = 1. / (len(counts) + 1)
     # Set position of bar on X axis
-    r1 = np.arange(len(labels))
-    r2 = [x + barWidth for x in r1]
-    r3 = [x + barWidth for x in r2]
+    r = []
+    r.append(np.arange(len(labels)))
+    for i in range(1,len(counts)):
+        r.append([x + barWidth for x in r[i-1]])
 
 
     def add_layers_to_the_graph(layers, position):
@@ -117,9 +124,9 @@ def plot_protocol1(results): # protocol1
             sum = list(map( lambda x, y: x + y, sum, values))
     # plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
     # plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
-    add_layers_to_the_graph(layers, r1)
-    add_layers_to_the_graph(layers_naturalize, r2)
-    add_layers_to_the_graph(layers_codebuff, r3)
+    i = 0
+    for count, i in map(lambda x,y: (x,y),counts, range(len(counts))):
+        add_layers_to_the_graph(layers[count], r[i])
 
 
     # Add xticks on the middle of the group bars
