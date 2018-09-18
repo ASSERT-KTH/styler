@@ -49,10 +49,8 @@ def plot_percentage_of_errors(results):
     plt.legend()
     plt.show()
 
-def plot_protocol1(results): # protocol1
+def plot_errors_types(results, counts): # protocol1
     modifications = (5,5)
-
-    counts = ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_codebuff")
 
     bars1 = []
     naturalize_res = []
@@ -68,13 +66,14 @@ def plot_protocol1(results): # protocol1
         for count in counts:
             errors_labels = errors_labels | result[count].keys()
 
-        # naturalize_res.append( result["corrupted_files_ratio_naturalize"] )
-        # codebuff_res.append( result["corrupted_files_ratio_codebuff"] )
-    # total_error_count = dict()
-    # for error in errors_labels:
-    #     total_error_count[error] = 0
-    #     for result in results:
-    #         result["checkstyle_errors_count"][error] = 0
+    total_error_count = dict()
+    for error in errors_labels:
+        total_error_count[error] = 0
+    for result in results:
+        for count in counts:
+            for error, n in result[count].items():
+                total_error_count[error] += n
+    sum_total_error_count = sum(total_error_count.values())
 
     n_errors_labels = len(errors_labels)
     colors = []
@@ -136,7 +135,7 @@ def plot_protocol1(results): # protocol1
 
     plt.subplots_adjust(bottom=0.30)
     # Create legend & Show graphic
-    patches = [ mpatches.Patch(color=c, label=l.split(".")[-1]) for l, c in lables_colors.items()]
+    patches = [ mpatches.Patch(color=c, label="{} ({:.2f}%)".format(l.split(".")[-1], total_error_count[l] / sum_total_error_count * 100)) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
@@ -153,6 +152,6 @@ if __name__ == "__main__":
         folders = sys.argv[2:]
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
-            plot_protocol1(results)
+            plot_errors_types(results, ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_codebuff"))
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
