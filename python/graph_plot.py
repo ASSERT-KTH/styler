@@ -49,7 +49,7 @@ def plot_percentage_of_errors(results):
     plt.legend()
     plt.show()
 
-def plot_errors_distribution(results):
+def plot_protocol1(results): # protocol1
     modifications = (5,5)
 
     barWidth = 0.25
@@ -62,7 +62,7 @@ def plot_errors_distribution(results):
 
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
-        labels.append(result["name"])
+        labels.append("{} ({})".format(result["name"], result["number_of_injections"]))
         bars1.append( result["corrupted_files_ratio"] )
         errors_labels = errors_labels | result["checkstyle_errors_count"].keys() | result["checkstyle_errors_count_naturalize"].keys()
 
@@ -71,10 +71,13 @@ def plot_errors_distribution(results):
 
     n_errors_labels = len(errors_labels)
     colors = []
-    for i in range( 0, n_errors_labels ):
-        colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
-    random.shuffle(colors)
-    print(colors)
+    if ( n_errors_labels > 1):
+        for i in range( 0, n_errors_labels ):
+            colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
+        random.shuffle(colors)
+    else :
+        colors.append('#ff00ff')
+
     lables_colors = dict()
     i = 0
     for error_label in errors_labels:
@@ -120,7 +123,7 @@ def plot_errors_distribution(results):
 
 
     # Add xticks on the middle of the group bars
-    plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xlabel('Number of errors (m=' + str(modifications) + ')', fontweight='bold')
     plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(top=0.80)
 
@@ -142,7 +145,7 @@ if __name__ == "__main__":
         type = sys.argv[1]
         folders = sys.argv[2:]
         results = [ load_results(dir) for dir in folders ]
-        if (type == "errors_distribution"):
-            plot_errors_distribution(results)
+        if (type == "protocol1" or type == "1"):
+            plot_protocol1(results)
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)

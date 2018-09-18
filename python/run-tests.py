@@ -24,9 +24,14 @@ if __name__ == "__main__":
     #     shutil.rmtree("./experiments")
 
     corpora = []
-    corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
+    # corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
     # corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced") )
-    # corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced2") )
+    # corpora.append( Corpus("./test_corpora/javapoet", "javapoet") )
+    # corpora.append( Corpus("./test_corpora/commons-io", "commons-io") )
+    # corpora.append( Corpus("./test_corpora/commons-lang", "commons-lang") )
+    corpora.append( Corpus("./test_corpora/commons-collections", "commons-collections") )
+
+
 
     starts = time.time()
 
