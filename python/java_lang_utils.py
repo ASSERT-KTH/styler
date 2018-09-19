@@ -97,12 +97,8 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     if ('\n' in deletions_spots_chars):
         deletions.extend(random.sample(deletions_spots_chars['\n'], deletions_sample_size_newline))
 
-
-    print(insertions)
-    print(deletions)
-
-
-
+    # print(insertions)
+    # print(deletions)
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

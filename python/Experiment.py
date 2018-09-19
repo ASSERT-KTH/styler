@@ -135,7 +135,6 @@ class Exp_Uglify(Experiment):
         self.log("Insertions")
         for index in range(self.get_parameter("iterations")[0]):
             for id, file in self.corpus.get_files().items():
-                print(file)
                 java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions-space/" + str(index) + "/")), (1,0,0,0,0))
         for index in range(self.get_parameter("iterations")[1]):
             for id, file in self.corpus.get_files().items():
@@ -218,6 +217,7 @@ class Exp_Uglify(Experiment):
         number_of_injections = (len(self.corpus.files) * sum(self.get_parameter("iterations")));
         self.results["number_of_injections"] = number_of_injections
         self.results["name"] = self.corpus.name
+        self.results["iterations"] = self.get_parameter("iterations")
         self.results["file_with_cs_errors"] = file_with_cs_errors
         self.results["file_with_cs_errors_naturalize"] = file_with_cs_errors_naturalize
         self.results["file_with_cs_errors_codebuff"] = file_with_cs_errors_codebuff
