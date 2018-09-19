@@ -130,7 +130,7 @@ def plot_errors_types(results, counts): # protocol1
 
     # Add xticks on the middle of the group bars
     plt.xlabel('Number of errors (m=' + str(modifications) + ')', fontweight='bold')
-    plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
+    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(bars1))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(top=0.80)
 
     plt.subplots_adjust(bottom=0.30)
@@ -153,5 +153,7 @@ if __name__ == "__main__":
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
             plot_errors_types(results, ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_codebuff"))
+        elif (type == "protocol2" or type == "2"):
+            plot_errors_types(results, ("checkstyle_errors_count",))
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
