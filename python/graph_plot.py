@@ -121,11 +121,13 @@ def plot_errors_types(results, counts): # protocol1
         for key, values in layers.items():
             plt.bar(position, values, width=barWidth, color=lables_colors[key], bottom=sum, edgecolor='white')
             sum = list(map( lambda x, y: x + y, sum, values))
+        return sum
     # plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
     # plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
     i = 0
-    for count, i in map(lambda x,y: (x,y),counts, range(len(counts))):
-        add_layers_to_the_graph(layers[count], r[i])
+    sums = []
+    for count, i in zip(counts, range(len(counts))):
+        sums.append(add_layers_to_the_graph(layers[count], r[i]))
 
 
     # Add xticks on the middle of the group bars

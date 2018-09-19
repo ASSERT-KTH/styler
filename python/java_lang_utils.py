@@ -8,9 +8,14 @@ import collections
 import sys
 import os
 
-def gen_ugly(file_path, output_dir, modification_number = (1,0)):
-    insertions_sample_size = modification_number[0]
-    deletions_sample_size = modification_number[1]
+def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
+    insertions_sample_size_space = modification_number[0]
+    insertions_sample_size_tab = modification_number[1]
+    insertions_sample_size_newline = modification_number[2]
+    insertions_sample_size = insertions_sample_size_space + insertions_sample_size_tab + insertions_sample_size_newline
+    deletions_sample_size_space = modification_number[3]
+    deletions_sample_size_newline = modification_number[4]
+    deletions_sample_size = deletions_sample_size_space + deletions_sample_size_newline
     # deletions_sample_size = modification_number - insertions_sample_size
     with open(file_path) as f:
         file_lines = f.readlines()
@@ -26,8 +31,13 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0)):
 
     insertions = dict();
 
-    for element in insertions_sample:
-        insertions[element.position] = " "
+    insertions_chars = ([' '] * insertions_sample_size_space);
+    insertions_chars.extend(['\t'] * insertions_sample_size_tab)
+    insertions_chars.extend(['\n'] * insertions_sample_size_newline)
+    random.shuffle(insertions_chars)
+
+    for element, char in zip(insertions_sample, insertions_chars):
+        insertions[element.position] = char
 
     # Select every locations suitable for deletions (i.e. before or after a separator/operator)
     deletions_spots = list()
@@ -51,8 +61,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0)):
     deletions_sample = random.sample( deletions_spots, min(deletions_sample_size, len(deletions_spots)) )
 
     deletions = dict()
-
-    for deletion_intervals in deletions_sample:
+    for deletion_intervals in deletions_spots:
         #print(deletion_intervals)
         from_char = deletion_intervals[0]
         to_char = deletion_intervals[1]
@@ -66,8 +75,34 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0)):
             deletions[from_char[0]].append(interval)
             from_char=(from_char[0]+1, 0)
 
-    #print(insertions)
-    #print(deletions)
+
+    deletions_spots_chars = dict()
+    line_num = 1
+    for line in file_lines:
+        char_num = 1
+        for char in line:
+            if ( line_num in deletions ):
+                for intervals in deletions[line_num]:
+                    if char_num in intervals:
+                        if (char not in deletions_spots_chars):
+                            deletions_spots_chars[char] = []
+                        deletions_spots_chars[char].append((line_num, char_num))
+            char_num = char_num + 1
+        line_num = line_num + 1
+
+
+    deletions = []
+    if (' ' in deletions_spots_chars):
+        deletions.extend(random.sample(deletions_spots_chars[' '], deletions_sample_size_space))
+    if ('\n' in deletions_spots_chars):
+        deletions.extend(random.sample(deletions_spots_chars['\n'], deletions_sample_size_newline))
+
+
+    print(insertions)
+    print(deletions)
+
+
+
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -81,14 +116,11 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0)):
             char_num = 1
             for char in line:
                 skip = False
-                if ( line_num in deletions ):
-                    for intervals in deletions[line_num]:
-                        if char_num in intervals:
-                            skip = True
-                            continue
+                if ((line_num, char_num) in deletions):
+                    skip = True
+                if ((line_num, char_num) in insertions):
+                    output_file_object.write(insertions[(line_num, char_num)])
                 if ( not skip ):
-                    if ((line_num, char_num) in insertions):
-                        output_file_object.write(insertions[(line_num, char_num)])
                     output_file_object.write(char)
                 char_num = char_num + 1
             line_num = line_num + 1
@@ -118,4 +150,4 @@ if __name__ == "__main__":
         print(get_bad_formated(sys.argv[1]))
     else:
         print(sys.argv)
-        gen_ugly( sys.argv[1], sys.argv[2] )
+        print(gen_ugly( sys.argv[1], sys.argv[2] ))
