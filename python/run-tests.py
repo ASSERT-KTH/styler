@@ -3,10 +3,6 @@ import os
 from Corpus import *
 from Experiment import *
 
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-
 import numpy as np
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -25,11 +21,10 @@ if __name__ == "__main__":
 
     corpora = []
     # corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
-    # corpora.append( Corpus("./test_corpora/java-design-patterns-reduced", "java-design-patterns-reduced") )
-    corpora.append( Corpus("./test_corpora/javapoet", "javapoet") )
-    # corpora.append( Corpus("./test_corpora/commons-io", "commons-io") )
+    corpora.append( Corpus("./test_corpora/commons-io", "commons-io") )
     # corpora.append( Corpus("./test_corpora/commons-lang", "commons-lang") )
     # corpora.append( Corpus("./test_corpora/commons-collections", "commons-collections") )
+    # corpora.append( Corpus("./test_corpora/neo4j", "neo4j") )
 
 
 
