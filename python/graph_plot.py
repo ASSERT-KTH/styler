@@ -282,7 +282,7 @@ if __name__ == "__main__":
         folders = sys.argv[2:]
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
-            plot_errors_types(results, ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_codebuff"))
+            plot_errors_types(results, ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff"))
         elif (type == "protocol2" or type == "2"):
             plot_errors_types(results, ("checkstyle_errors_count",))
         elif (type == "protocol3" or type == "3"):

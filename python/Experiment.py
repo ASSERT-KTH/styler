@@ -116,6 +116,17 @@ class Exp_Uglify(Experiment):
             args.append("-exclude " + exclude)
         return call_java("../jars/naturalize.jar", args)
 
+    def call_naturalize_snipper(self, training_dir, files_dir, output_dir, file_with_cs_errors, id, exclude=None):
+        args = ["-mode snipper", "-t " + training_dir, "-o " + output_dir, "-f " + files_dir]
+        if exclude:
+            args.append("-exclude " + exclude)
+        for file in file_with_cs_errors[id]:
+            path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+            erorrs_lines = [ int(e["line"]) for e in file["errors"]]
+            (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+            args.append(path + ":" + str(from_char) + ',' + str(to_char))
+        return call_java("../jars/naturalize.jar", args)
+
     def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
         args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
         if ( exclude ):
@@ -189,11 +200,22 @@ class Exp_Uglify(Experiment):
             self.log("File " + str(id) + ' done in ' + str(time.time() - step) + 's, (' + str( (time.time() - starts) / i * (len_files - i) ) + 's remaining)')
             step = time.time()
 
-        bad_formated_naturalize = self.move_parse_exception_files("./naturalize/", "./trash/naturalize")
+        bad_formated_naturalize = self.move_parse_exception_files("./naturalize/", "./trash/naturalize/")
 
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "naturalize/" ) )
 
         file_with_cs_errors_naturalize, checkstyle_errors_count_naturalize = self.parse_result(checkstyle_res, self.get_dir("naturalize/"))
+
+        self.log("Naturalize-Snipper")
+        for id, value in file_with_cs_errors.items():
+            exluded_file = self.corpus.get_file(id)[2]
+            self.call_naturalize_snipper( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize_snipper/" + str(id))), file_with_cs_errors, id, exclude=exluded_file )
+
+        bad_formated_naturalize_snipper = self.move_parse_exception_files("./naturalize_snipper/", "./trash/naturalize_snipper/")
+
+        (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "naturalize_snipper/" ) )
+
+        file_with_cs_errors_naturalize_snipper, checkstyle_errors_count_naturalize_snipper = self.parse_result(checkstyle_res, self.get_dir("naturalize_snipper/"))
 
         self.log("Codebuff")
         len_files = len(file_with_cs_errors.keys())
@@ -223,11 +245,14 @@ class Exp_Uglify(Experiment):
         self.results["iterations"] = self.get_parameter("iterations")
         self.results["file_with_cs_errors"] = file_with_cs_errors
         self.results["file_with_cs_errors_naturalize"] = file_with_cs_errors_naturalize
+        self.results["file_with_cs_errors_naturalize_snipper"] = file_with_cs_errors_naturalize_snipper
         self.results["file_with_cs_errors_codebuff"] = file_with_cs_errors_codebuff
         self.results["checkstyle_errors_count"] = checkstyle_errors_count
         self.results["corrupted_files_ratio"] = sum( [ len(val) for key, val in file_with_cs_errors.items() ] )  / number_of_injections
         self.results["checkstyle_errors_count_naturalize"] = checkstyle_errors_count_naturalize
         self.results["corrupted_files_ratio_naturalize"] = sum( [ len(val) for key, val in file_with_cs_errors_naturalize.items() ] )  / number_of_injections
+        self.results["checkstyle_errors_count_naturalize_snipper"] = checkstyle_errors_count_naturalize_snipper
+        self.results["corrupted_files_ratio_naturalize_snipper"] = sum( [ len(val) for key, val in file_with_cs_errors_naturalize_snipper.items() ] )  / number_of_injections
         self.results["checkstyle_errors_count_codebuff"] = checkstyle_errors_count_codebuff
         self.results["corrupted_files_ratio_codebuff"] = sum( [ len(val) for key, val in file_with_cs_errors_codebuff.items() ] )  / number_of_injections
 
