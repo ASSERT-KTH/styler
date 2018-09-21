@@ -20,11 +20,13 @@ if __name__ == "__main__":
     #     shutil.rmtree("./experiments")
 
     corpora = []
-    corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
+    # corpora.append( Corpus("./test_corpora/commons-cli", "commons-cli") )
     # corpora.append( Corpus("./test_corpora/commons-io", "commons-io") )
     # corpora.append( Corpus("./test_corpora/commons-lang", "commons-lang") )
     # corpora.append( Corpus("./test_corpora/commons-collections", "commons-collections") )
     # corpora.append( Corpus("./test_corpora/neo4j", "neo4j") )
+    corpora.append( Corpus("./test_corpora/java-design-patterns", "java-design-patterns") )
+
 
 
 

@@ -14,17 +14,20 @@ import json
 def plot_repaired_files(results):
     modifications = (2,2,2,2,2)
 
-    counts = ('naturalize', 'codebuff')
+    counts = ('naturalize', 'naturalize_snipper', 'codebuff')
 
     barWidth = 1. / (len(counts) + 1)
-    bars = [[]] * len(counts)
+    bars = [[] for i in range(len(counts)) ]
+
+    labels = []
 
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
-        labels.append(result["name"])
-        for count, i in zip(counts, range(len(count))):
-            bars[i].append( result["corrupted_files_ratio"] )
-
+        with_errors = result["number_of_injections"] * result["corrupted_files_ratio_ugly"]
+        labels.append("{}, /{}injections".format(result["name"], int(with_errors)))
+        for count, i in zip(counts, range(len(counts))):
+            prop = result["corrupted_files_ratio_" + count]
+            bars[i].append( with_errors - result["number_of_injections"] * result["corrupted_files_ratio_" + count] )
 
     # Set position of bar on X axis
     r = []
@@ -34,17 +37,17 @@ def plot_repaired_files(results):
 
 
     # Make the plot
-    plt.bar(r1, bars1, color='#3498db', width=barWidth, edgecolor='white', label='Error injection')
-    plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
-    plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
+    for count, i in zip(counts, range(len(counts))):
+        plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count)
 
 
     # Add xticks on the middle of the group bars
     plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
-    plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
+    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(results))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(bottom=0.30)
     # Create legend & Show graphic
     plt.legend()
+    plt.savefig('test_figure.pdf', format='pdf')
     plt.show()
 
 def plot_percentage_of_errors(results):
@@ -59,7 +62,7 @@ def plot_percentage_of_errors(results):
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
         labels.append(result["name"])
-        bars1.append( result["corrupted_files_ratio"] )
+        bars1.append( result["corrupted_files_ratio_ugly"] )
         naturalize_res.append( result["corrupted_files_ratio_naturalize"] )
         codebuff_res.append( result["corrupted_files_ratio_codebuff"] )
 
@@ -77,7 +80,7 @@ def plot_percentage_of_errors(results):
 
 
     # Add xticks on the middle of the group bars
-    plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xlabel('Number of fully patched files (m=' + str(modifications) + ')', fontweight='bold')
     plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(bottom=0.30)
     # Create legend & Show graphic
@@ -162,7 +165,7 @@ def plot_errors_types(results, counts): # protocol1
 
 
     # Add xticks on the middle of the group bars
-    plt.xlabel('Number of errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xlabel('Number of errors (m={}) \n {}'.format(modifications, counts), fontweight='bold')
     plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(results))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(top=0.80)
 
@@ -183,7 +186,7 @@ def plot_errors_types_per_injection_type(results):
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
         labels.append("{} ({})".format(result["name"], result["number_of_injections"]))
-        errors_labels = errors_labels | result["checkstyle_errors_count"].keys()
+        errors_labels = errors_labels | result["checkstyle_errors_count_ugly"].keys()
 
     n_errors_labels = len(errors_labels)
     colors = []
@@ -202,7 +205,7 @@ def plot_errors_types_per_injection_type(results):
 
     def compute_error_origines(result):
         result["errors_origine"] = dict()
-        for file_with_cs_errors in result["file_with_cs_errors"].values():
+        for file_with_cs_errors in result["file_with_cs_errors_ugly"].values():
             for file_modification in file_with_cs_errors:
                 type = file_modification["type"]
                 if (type not in result["errors_origine"]):
@@ -282,10 +285,12 @@ if __name__ == "__main__":
         folders = sys.argv[2:]
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
-            plot_errors_types(results, ("checkstyle_errors_count", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff"))
+            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff"))
         elif (type == "protocol2" or type == "2"):
-            plot_errors_types(results, ("checkstyle_errors_count",))
+            plot_errors_types(results, ("checkstyle_errors_count_ugly",))
         elif (type == "protocol3" or type == "3"):
             plot_errors_types_per_injection_type(results)
+        elif (type == "protocol4" or type == "4"):
+            plot_repaired_files(results)
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
