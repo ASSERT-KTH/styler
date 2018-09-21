@@ -111,7 +111,10 @@ class Exp_Uglify(Experiment):
         return informations
 
     def call_naturalize(self, training_dir, files_dir, output_dir, exclude=None):
-        return call_java("../jars/naturalize.jar", [training_dir, output_dir, files_dir, exclude])
+        args = ["-t " + training_dir, "-o " + output_dir, "-f " + files_dir]
+        if exclude:
+            args.append("-exclude " + exclude)
+        return call_java("../jars/naturalize.jar", args)
 
     def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
         args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]

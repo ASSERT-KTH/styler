@@ -122,6 +122,19 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
             line_num = line_num + 1
     return output_path
 
+def get_char_pos_from_lines(file_path, from_line, to_line=-1):
+    if to_line == -1:
+        to_line = from_line
+    file_lines = None
+    with open(file_path) as f:
+        file_lines = f.readlines()
+    if file_lines:
+        from_char = len(''.join(file_lines[:(from_line-1)]))
+        to_char = from_char + len(''.join(file_lines[(from_line-1):to_line]))
+        return (from_char, to_char)
+    else:
+        return (-1, -1)
+
 def check_well_formed(file_path):
     with open(file_path) as f:
         file_content = f.read()
@@ -142,8 +155,7 @@ def get_bad_formated(dir):
 
 
 if __name__ == "__main__":
-    if ( len(sys.argv) < 3):
-        print(get_bad_formated(sys.argv[1]))
-    else:
-        print(sys.argv)
-        print(gen_ugly( sys.argv[1], sys.argv[2] ))
+    if (sys.argv[1] == "char_pos"):
+        print(get_char_pos_from_lines(sys.argv[2], int(sys.argv[3])))
+    elif (sys.argv[1] == "ugly"):
+        print(gen_ugly( sys.argv[2], sys.argv[3] ))

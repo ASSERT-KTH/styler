@@ -11,6 +11,41 @@ import sys
 import os
 import json
 
+def plot_repaired_files(results):
+    modifications = (2,2,2,2,2)
+
+    counts = ('naturalize', 'codebuff')
+
+    barWidth = 1. / (len(counts) + 1)
+    bars = [[]] * len(counts)
+
+    for result in results:
+        # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
+        labels.append(result["name"])
+        for count, i in zip(counts, range(len(count))):
+            bars[i].append( result["corrupted_files_ratio"] )
+
+
+    # Set position of bar on X axis
+    r = []
+    r.append(np.arange(len(labels)))
+    for i in range(1,len(counts)):
+        r.append([x + barWidth for x in r[i-1]])
+
+
+    # Make the plot
+    plt.bar(r1, bars1, color='#3498db', width=barWidth, edgecolor='white', label='Error injection')
+    plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
+    plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
+
+
+    # Add xticks on the middle of the group bars
+    plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xticks([r + barWidth for r in range(len(bars1))], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.30)
+    # Create legend & Show graphic
+    plt.legend()
+    plt.show()
 
 def plot_percentage_of_errors(results):
     modifications = (5,5)
@@ -183,7 +218,10 @@ def plot_errors_types_per_injection_type(results):
     def compute_errors_layer(injection_type):
         layers = dict()
         for result in results:
-            errors = result["errors_origine"][injection_type]
+            if injection_type in result["errors_origine"]:
+                errors = result["errors_origine"][injection_type]
+            else:
+                errors = []
             for error_label in errors_labels:
                 if ( error_label not in layers):
                     layers[error_label] = []
