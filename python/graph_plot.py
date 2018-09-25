@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -10,6 +12,8 @@ import colorsys
 import sys
 import os
 import json
+import datetime
+
 
 def plot_repaired_files(results):
     modifications = (2,2,2,2,2)
@@ -28,6 +32,7 @@ def plot_repaired_files(results):
         for count, i in zip(counts, range(len(counts))):
             prop = result["corrupted_files_ratio_" + count]
             bars[i].append( with_errors - result["number_of_injections"] * result["corrupted_files_ratio_" + count] )
+            # bars[i].append( result["corrupted_files_ratio_" + count] )
 
     # Set position of bar on X axis
     r = []
@@ -47,8 +52,6 @@ def plot_repaired_files(results):
     plt.subplots_adjust(bottom=0.30)
     # Create legend & Show graphic
     plt.legend()
-    plt.savefig('test_figure.pdf', format='pdf')
-    plt.show()
 
 def plot_percentage_of_errors(results):
     modifications = (5,5)
@@ -85,7 +88,6 @@ def plot_percentage_of_errors(results):
     plt.subplots_adjust(bottom=0.30)
     # Create legend & Show graphic
     plt.legend()
-    plt.show()
 
 def plot_errors_types(results, counts): # protocol1
     modifications = (2,2,2,2,2)
@@ -173,7 +175,6 @@ def plot_errors_types(results, counts): # protocol1
     # Create legend & Show graphic
     patches = [ mpatches.Patch(color=c, label="{} ({:.2f}%)".format(l.split(".")[-1], total_error_count[l] / sum_total_error_count * 100)) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
-    plt.show()
 
 def plot_errors_types_per_injection_type(results):
     modifications = (2,2,2,2,2)
@@ -270,7 +271,6 @@ def plot_errors_types_per_injection_type(results):
     # Create legend & Show graphic
     patches = [ mpatches.Patch(color=c, label="{}".format(l.split(".")[-1])) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
-    plt.show()
 
 def load_results(dir):
     data = {}
@@ -279,18 +279,38 @@ def load_results(dir):
     return data
 
 if __name__ == "__main__":
-    print(sys.argv)
+    fig_name = "figure"
+    now = datetime.datetime.now()
     if ( len(sys.argv) > 2):
         type = sys.argv[1]
-        folders = sys.argv[2:]
+        save = False
+        show = True
+        i = 2
+        while sys.argv[i].startswith("--"):
+            if ( sys.argv[i] == "--save" ):
+                save = True
+            if ( sys.argv[i] == "--dontShow" ):
+                show = False
+            i+=1
+        folders = sys.argv[i:]
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
+            fig_name = "Experiment_injection_protocol1_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff"))
         elif (type == "protocol2" or type == "2"):
+            fig_name = "Experiment_injection_protocol2_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types(results, ("checkstyle_errors_count_ugly",))
         elif (type == "protocol3" or type == "3"):
+            fig_name = "Experiment_injection_protocol3_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types_per_injection_type(results)
         elif (type == "protocol4" or type == "4"):
             plot_repaired_files(results)
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
+        if show:
+            try:
+                plt.show()
+            except UnicodeDecodeError:
+                print("Bye mac os lover")
+        if save:
+            plt.savefig("../results/{}.pdf".format(fig_name), format='pdf')
