@@ -122,6 +122,69 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
             line_num = line_num + 1
     return output_path
 
+# The tokens should be the same
+# Patch parts of B into A,
+def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
+    if to_line == -1:
+        to_line = from_line
+    with open(file_A_path) as f:
+        file_A_lines = f.readlines()
+    with open(file_B_path) as f:
+        file_B_lines = f.readlines()
+    file_A_content = "".join(file_A_lines)
+    file_B_content = "".join(file_B_lines)
+
+    tokens_A = tokenizer.tokenize(file_A_content)
+    tokens_B = tokenizer.tokenize(file_B_content)
+
+    tokens = zip(tokens_A, tokens_B)
+    lines = range(from_line, to_line)
+    with open(output_file, "w") as output_file_object:
+        first_part = ''.join(file_A_lines[:(from_line-1)])
+        output_file_object.write(first_part)
+        from_token = None
+        first_token_of_A = None
+        to_token = None
+        last_token_of_A = None
+        for token_A, token_B in tokens:
+            if token_A.position[0] >= from_line and token_A.position[0] <= to_line:
+                if 'form_token' not in locals():
+                    form_token = token_B
+                    first_token_of_A = token_A
+                to_token = token_B
+                last_token_of_A = token_A
+        print(last_token_of_A)
+        output_file_object.write(" "*(first_token_of_A.position[1]-1))
+        output_file_object.write(file_B_content[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)])
+        if last_token_of_A.position[0] != to_line:
+            output_file_object.write(''.join(file_B_lines[(last_token_of_A.position[0] + 1):(to_line+1)]))
+        output_file_object.write('\n')
+        output_file_object.write(''.join(file_A_lines[(to_line):]))
+
+    return output_file
+
+
+def tokenize_with_white_space(file_path):
+    with open(file_path) as f:
+        file_lines = f.readlines()
+    file_content = "".join(file_lines)
+
+    tokens = tokenizer.tokenize(file_content)
+    tokens = [ t for t in tokens]
+    deletions_spots = list()
+    for index in range(0, len(tokens)-1):
+        tokens_position = tokens[index].position;
+        next_token_position = tokens[index+1].position;
+        end_of_token = (tokens_position[0], tokens_position[1] + len(tokens[index].value))
+        if end_of_token == next_token_position:
+            deletions_spots.append((0,0))
+        else :
+            if ( end_of_token[0] == next_token_position[0] ):
+                deletions_spots.append(( 0, next_token_position[1] - end_of_token[1]))
+            else:
+                deletions_spots.append(( next_token_position[0] - end_of_token[0], next_token_position[1]))
+    return "\n".join([str(t) for t in zip(deletions_spots, tokens)])
+
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
     if to_line == -1:
         to_line = from_line
@@ -159,3 +222,7 @@ if __name__ == "__main__":
         print(get_char_pos_from_lines(sys.argv[2], int(sys.argv[3])))
     elif (sys.argv[1] == "ugly"):
         print(gen_ugly( sys.argv[2], sys.argv[3] ))
+    elif (sys.argv[1] == "tokenize_ws"):
+        print(tokenize_with_white_space(sys.argv[2]))
+    elif (sys.argv[1] == "mix"):
+        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 35, to_line=38)
