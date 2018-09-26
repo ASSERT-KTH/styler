@@ -121,6 +121,16 @@ class Exp_Uglify(Experiment):
             args.append(path + ":" + str(from_char) + ',' + str(to_char))
         return call_java("../jars/naturalize.jar", args)
 
+    def call_codebuff_snipper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
+        for file in file_with_cs_errors[id]:
+            file_path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+            codebuff_path = os.path.join(codebuff_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+            output_path = os.path.join(output_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+            erorrs_lines = [ int(e["line"]) for e in file["errors"]]
+            from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+            print(file_path, from_line, to_line)
+            java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
+
     def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
         args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
         if ( exclude ):
@@ -233,6 +243,12 @@ class Exp_Uglify(Experiment):
             step = time.time()
 
         file_with_cs_errors_codebuff, checkstyle_errors_count_codebuff = self.review_checkstyle("codebuff")
+
+        self.log("Codebuff-Snipper")
+        for id, value in file_with_cs_errors.items():
+            self.call_codebuff_snipper(self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), self.get_dir(os.path.join("./codebuff_snipper/" + str(id))), file_with_cs_errors, id)
+
+        file_with_cs_errors_codebuff_snipper, checkstyle_errors_count_codebuff_snipper = self.review_checkstyle("codebuff_snipper")
 
         return self.results
 

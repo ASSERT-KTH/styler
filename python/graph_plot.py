@@ -18,7 +18,7 @@ import datetime
 def plot_repaired_files(results):
     modifications = (2,2,2,2,2)
 
-    counts = ('naturalize', 'naturalize_snipper', 'codebuff')
+    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper')
 
     barWidth = 1. / (len(counts) + 1)
     bars = [[] for i in range(len(counts)) ]
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
             fig_name = "Experiment_injection_protocol1_{}".format(now.strftime("%Y%m%d_%H%M%S"))
-            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff"))
+            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_snipper"))
         elif (type == "protocol2" or type == "2"):
             fig_name = "Experiment_injection_protocol2_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types(results, ("checkstyle_errors_count_ugly",))

@@ -137,6 +137,10 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     tokens_A = tokenizer.tokenize(file_A_content)
     tokens_B = tokenizer.tokenize(file_B_content)
 
+    output_dir = "/".join(output_file.split("/")[:-1])
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     tokens = zip(tokens_A, tokens_B)
     lines = range(from_line, to_line)
     with open(output_file, "w") as output_file_object:
@@ -153,13 +157,18 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
                     first_token_of_A = token_A
                 to_token = token_B
                 last_token_of_A = token_A
-        print(last_token_of_A)
-        output_file_object.write(" "*(first_token_of_A.position[1]-1))
-        output_file_object.write(file_B_content[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)])
-        if last_token_of_A.position[0] != to_line:
-            output_file_object.write(''.join(file_B_lines[(last_token_of_A.position[0] + 1):(to_line+1)]))
-        output_file_object.write('\n')
-        output_file_object.write(''.join(file_A_lines[(to_line):]))
+        print(first_token_of_A,last_token_of_A)
+        if last_token_of_A:
+            if first_token_of_A.position[0] != from_line:
+                output_file_object.write(''.join(file_B_lines[(from_line-1):(first_token_of_A.position[0]-1)]))
+            output_file_object.write(" "*(first_token_of_A.position[1]-1))
+            output_file_object.write(file_B_content[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)])
+            if last_token_of_A.position[0] != to_line:
+                output_file_object.write(''.join(file_B_lines[(last_token_of_A.position[0] + 1):(to_line+1)]))
+            output_file_object.write('\n')
+            output_file_object.write(''.join(file_A_lines[(to_line):]))
+        else:
+            output_file_object.write(''.join(file_A_lines[(from_line):]))
 
     return output_file
 
@@ -225,4 +234,4 @@ if __name__ == "__main__":
     elif (sys.argv[1] == "tokenize_ws"):
         print(tokenize_with_white_space(sys.argv[2]))
     elif (sys.argv[1] == "mix"):
-        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 35, to_line=38)
+        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 20, to_line=22)
