@@ -145,20 +145,31 @@ class Exp_Uglify(Experiment):
             shutil.move(file, self.get_dir(to_dir + uuid.uuid4().hex + ".java"))
         return files
 
-    def add_cs_to_results(self, file_with_cs_errors, checkstyle_errors_count, name = ""):
+    def add_cs_to_results(self, file_with_cs_errors, checkstyle_errors_count, bad_formated, name = ""):
         if (len(name) > 0 and name[0] != "_"):
             name = "_" + name
         self.results["file_with_cs_errors" + name] = file_with_cs_errors
         self.results["checkstyle_errors_count" + name] = checkstyle_errors_count
+        self.results["bad_formated" + name] = bad_formated
         self.results["corrupted_files_ratio" + name] = sum( [ len(val) for key, val in file_with_cs_errors.items() ] )  / self.results["number_of_injections"]
         self.save_results()
 
     def review_checkstyle(self, name):
-        bad_formated = self.move_parse_exception_files("./{}/".format(name), "./trash/{}".format(name))
+        bad_formated = self.move_parse_exception_files("./{}/".format(name), "./trash/{}/".format(name))
         self.log("{}-checkstyle".format(name))
         (checkstyle_res, errors) = checkstyle.check(self.corpus.checkstyle, self.get_dir( "{}/".format(name) ) )
         file_with_cs_errors, checkstyle_errors_count = self.parse_result(checkstyle_res, self.get_dir("{}/".format(name)))
-        self.add_cs_to_results(file_with_cs_errors, checkstyle_errors_count, name=name)
+        for bad_formated_file in bad_formated:
+            splited_path = bad_formated_file.split('/')
+            error = {}
+            error["type"] = splited_path[-3]
+            error["modification_id"] = splited_path[-2]
+            error["errors"] = []
+            if splited_path[-4] not in file_with_cs_errors:
+                file_with_cs_errors[splited_path[-4]] = []
+            file_with_cs_errors[splited_path[-4]].append(error)
+        checkstyle_errors_count["java.core.ParseException"] = len(bad_formated)
+        self.add_cs_to_results(file_with_cs_errors, checkstyle_errors_count, bad_formated, name=name)
         return file_with_cs_errors, checkstyle_errors_count
 
     def run(self):
