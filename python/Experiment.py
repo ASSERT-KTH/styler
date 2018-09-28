@@ -115,21 +115,26 @@ class Exp_Uglify(Experiment):
         if exclude:
             args.append("-exclude " + exclude)
         for file in file_with_cs_errors[id]:
-            path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-            erorrs_lines = [ int(e["line"]) for e in file["errors"]]
-            (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
-            args.append(path + ":" + str(from_char) + ',' + str(to_char))
+            if len(file["errors"]) > 0:
+                path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                erorrs_lines = [ int(e["line"]) for e in file["errors"]]
+                (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+                args.append(path + ":" + str(from_char) + ',' + str(to_char))
         return call_java("../jars/naturalize.jar", args)
 
     def call_codebuff_snipper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
         for file in file_with_cs_errors[id]:
-            file_path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-            codebuff_path = os.path.join(codebuff_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-            output_path = os.path.join(output_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-            erorrs_lines = [ int(e["line"]) for e in file["errors"]]
-            from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
-            print(file_path, from_line, to_line)
-            java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
+            if len(file["errors"]) > 0:
+                file_path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                codebuff_path = os.path.join(codebuff_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                output_path = os.path.join(output_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                erorrs_lines = [ int(e["line"]) for e in file["errors"]]
+                from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+                print(file_path, from_line, to_line)
+                try:
+                    java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
+                except FileNotFoundError:
+                    print("No file (probably codebuff trash)")
 
     def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
         args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
@@ -163,11 +168,11 @@ class Exp_Uglify(Experiment):
             splited_path = bad_formated_file.split('/')
             error = {}
             error["type"] = splited_path[-3]
-            error["modification_id"] = splited_path[-2]
+            error["modification_id"] = int(splited_path[-2])
             error["errors"] = []
-            if splited_path[-4] not in file_with_cs_errors:
-                file_with_cs_errors[splited_path[-4]] = []
-            file_with_cs_errors[splited_path[-4]].append(error)
+            if int(splited_path[-4]) not in file_with_cs_errors:
+                file_with_cs_errors[int(splited_path[-4])] = []
+            file_with_cs_errors[int(splited_path[-4])].append(error)
         checkstyle_errors_count["java.core.ParseException"] = len(bad_formated)
         self.add_cs_to_results(file_with_cs_errors, checkstyle_errors_count, bad_formated, name=name)
         return file_with_cs_errors, checkstyle_errors_count

@@ -31,7 +31,7 @@ def plot_repaired_files(results):
         labels.append("{}, /{}injections".format(result["name"], int(with_errors)))
         for count, i in zip(counts, range(len(counts))):
             prop = result["corrupted_files_ratio_" + count]
-            bars[i].append( with_errors - result["number_of_injections"] * result["corrupted_files_ratio_" + count] )
+            bars[i].append( (with_errors - result["number_of_injections"] * result["corrupted_files_ratio_" + count]) / with_errors )
             # bars[i].append( result["corrupted_files_ratio_" + count] )
 
     # Set position of bar on X axis

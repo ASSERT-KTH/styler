@@ -129,8 +129,14 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
         to_line = from_line
     with open(file_A_path) as f:
         file_A_lines = f.readlines()
-    with open(file_B_path) as f:
-        file_B_lines = f.readlines()
+    try:
+        with open(file_B_path) as f:
+            file_B_lines = f.readlines()
+    except FileNotFoundError:
+        with open(output_file, "w") as output_file_object:
+            output_file_object.write("".join(file_A_lines))
+            return output_file
+
     file_A_content = "".join(file_A_lines)
     file_B_content = "".join(file_B_lines)
 
