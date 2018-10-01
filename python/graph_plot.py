@@ -53,6 +53,43 @@ def plot_repaired_files(results):
     # Create legend & Show graphic
     plt.legend()
 
+def plot_diffs(results):
+    modifications = (2,2,2,2,2)
+
+    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper')
+
+    barWidth = 1. / (len(counts) + 1)
+    bars = [[] for i in range(len(counts)) ]
+
+    labels = []
+
+    for result in results:
+        # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
+        with_errors = result["number_of_injections"] * result["corrupted_files_ratio_ugly"]
+        labels.append("{}, \n /{} injections".format(result["name"], int(with_errors)))
+        for count, i in zip(counts, range(len(counts))):
+            bars[i].append( result["diffs_avg_" + count] )
+            # bars[i].append( result["corrupted_files_ratio_" + count] )
+
+    # Set position of bar on X axis
+    r = []
+    r.append(np.arange(len(labels)))
+    for i in range(1,len(counts)):
+        r.append([x + barWidth for x in r[i-1]])
+
+
+    # Make the plot
+    for count, i in zip(counts, range(len(counts))):
+        plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count)
+
+
+    # Add xticks on the middle of the group bars
+    plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
+    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(results))], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.30)
+    # Create legend & Show graphic
+    plt.legend()
+
 def plot_percentage_of_errors(results):
     modifications = (5,5)
 
@@ -305,6 +342,8 @@ if __name__ == "__main__":
             plot_errors_types_per_injection_type(results)
         elif (type == "protocol4" or type == "4"):
             plot_repaired_files(results)
+        elif (type == "protocol5" or type == "5"):
+            plot_diffs(results)
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
         if show:

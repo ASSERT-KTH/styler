@@ -2,6 +2,7 @@ from javalang import tokenizer
 from javalang import parse
 import javalang
 
+import subprocess
 import random
 import intervals as I
 import collections
@@ -184,7 +185,7 @@ def tokenize_with_white_space(file_path):
         file_lines = f.readlines()
     file_content = "".join(file_lines)
 
-    tokens = tokenizer.tokenize(file_content)
+    tokens = tokenizer.tokenize(file_content, parse_comments=True)
     tokens = [ t for t in tokens]
     deletions_spots = list()
     for index in range(0, len(tokens)-1):
@@ -197,7 +198,11 @@ def tokenize_with_white_space(file_path):
             if ( end_of_token[0] == next_token_position[0] ):
                 deletions_spots.append(( 0, next_token_position[1] - end_of_token[1]))
             else:
-                deletions_spots.append(( next_token_position[0] - end_of_token[0], next_token_position[1]))
+                deletions_spots.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - 1))
+    deletions_spots.append((0,1))
+    # rewritten = "".join([str(t[1].value) + "\n"*t[0][0] + " "*t[0][1] for t in zip(deletions_spots, tokens)]);
+
+    # return rewritten
     return "\n".join([str(t) for t in zip(deletions_spots, tokens)])
 
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
@@ -231,6 +236,11 @@ def get_bad_formated(dir):
                 bad_formated_files.append(file_path)
     return bad_formated_files
 
+def compute_diff_size(file_A, file_B):
+    cmd = 'diff {} {}'.format(file_A, file_B)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output.count(b'\n>')
 
 if __name__ == "__main__":
     if (sys.argv[1] == "char_pos"):
@@ -240,4 +250,6 @@ if __name__ == "__main__":
     elif (sys.argv[1] == "tokenize_ws"):
         print(tokenize_with_white_space(sys.argv[2]))
     elif (sys.argv[1] == "mix"):
-        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], line-1, to_line=(line+1))
+        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
+    elif (sys.argv[1] == "diff"):
+        print(compute_diff_size(sys.argv[2], sys.argv[3]))

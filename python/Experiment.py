@@ -122,6 +122,18 @@ class Exp_Uglify(Experiment):
                 args.append(path + ":" + str(from_char) + ',' + str(to_char))
         return call_java("../jars/naturalize.jar", args)
 
+    def compute_diffs(self, files_dir, repaired_dir, file_with_cs_errors):
+        diffs_count = []
+        for id, file in file_with_cs_errors.items():
+            for modifications in file:
+                if len(modifications["errors"]) > 0:
+                    ugly_path = os.path.join(files_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                    repaired_path = os.path.join(repaired_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                    diffs = java_lang_utils.compute_diff_size(ugly_path, repaired_path)
+                    modifications["diffs"] = diffs
+                    diffs_count.append(diffs)
+        return sum(diffs_count) / len(diffs_count)
+
     def call_codebuff_snipper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
         for file in file_with_cs_errors[id]:
             if len(file["errors"]) > 0:
@@ -150,13 +162,15 @@ class Exp_Uglify(Experiment):
             shutil.move(file, self.get_dir(to_dir + uuid.uuid4().hex + ".java"))
         return files
 
-    def add_cs_to_results(self, file_with_cs_errors, checkstyle_errors_count, bad_formated, name = ""):
+    def add_cs_to_results(self, file_with_cs_errors, checkstyle_errors_count, bad_formated, diffs=0, name = ""):
         if (len(name) > 0 and name[0] != "_"):
             name = "_" + name
         self.results["file_with_cs_errors" + name] = file_with_cs_errors
         self.results["checkstyle_errors_count" + name] = checkstyle_errors_count
         self.results["bad_formated" + name] = bad_formated
         self.results["corrupted_files_ratio" + name] = sum( [ len(val) for key, val in file_with_cs_errors.items() ] )  / self.results["number_of_injections"]
+        if diffs is not 0:
+            self.results["diffs_avg" + name] = diffs
         self.save_results()
 
     def review_checkstyle(self, name):
@@ -174,7 +188,8 @@ class Exp_Uglify(Experiment):
                 file_with_cs_errors[int(splited_path[-4])] = []
             file_with_cs_errors[int(splited_path[-4])].append(error)
         checkstyle_errors_count["java.core.ParseException"] = len(bad_formated)
-        self.add_cs_to_results(file_with_cs_errors, checkstyle_errors_count, bad_formated, name=name)
+        diffs = self.compute_diffs(self.get_dir("ugly/"), self.get_dir("{}/".format(name)), file_with_cs_errors)
+        self.add_cs_to_results(file_with_cs_errors, checkstyle_errors_count, bad_formated, diffs=diffs, name=name)
         return file_with_cs_errors, checkstyle_errors_count
 
     def run(self):
