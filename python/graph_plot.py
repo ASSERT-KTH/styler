@@ -14,6 +14,53 @@ import os
 import json
 import datetime
 
+def protocol6(results, repair_tool):
+    error_type_repair = dict()
+    for result in results:
+        file_with_cs_errors = result["file_with_cs_errors_{}".format(repair_tool)]
+        for file, liste in result["file_with_cs_errors_ugly"].items():
+            for modification in liste:
+                errors = list(set([error["source"].split(".")[-1] for error in modification["errors"]]))
+                errors_after_repair = []
+                if file in file_with_cs_errors:
+                    modification_repaired = list(filter(lambda x: x["type"] == modification["type"] and x["modification_id"] == modification["modification_id"], file_with_cs_errors[file]))
+                    if len(modification_repaired):
+                        errors_after_repair = list(set([error["source"].split(".")[-1] for error in modification_repaired[0]["errors"]]))
+
+                for error in errors:
+                    if error not in error_type_repair:
+                        error_type_repair[error] = {"repaired": 0, "other_errors": 0, "new_errors": 0, "not_repaired": 0}
+                    if error in errors_after_repair:
+                        error_type_repair[error]["not_repaired"] += 1
+                    else:
+                        if len(errors_after_repair):
+                            if len(list(filter(lambda x: x not in errors, errors_after_repair))):
+                                error_type_repair[error]["new_errors"] += 1
+                            else:
+                                error_type_repair[error]["other_errors"] += 1
+                        else:
+                            error_type_repair[error]["repaired"] += 1
+    def f(x):
+        s = sum(x.values())
+        obj = {key: (value / s) for key, value in x.items()}
+        obj["sum"] = s
+        return obj
+    error_type_repair = {key:f(value) for key, value in error_type_repair.items()}
+
+    objects = error_type_repair.keys()
+    y_pos = np.arange(len(objects))
+    performance = [item["repaired"] for item in error_type_repair.values()]
+
+
+    plt.barh(y_pos, performance, align='center', color="#2ecc71", label="Fully repaired")
+    plt.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
+    plt.yticks(y_pos, objects, rotation=0)
+    plt.xlabel('Usage')
+    plt.title('Percentage of repaired checkstyle errors.')
+    plt.legend()
+
+    plt.show()
+    print(error_type_repair)
 
 def plot_repaired_files(results):
     modifications = (2,2,2,2,2)
@@ -344,6 +391,8 @@ if __name__ == "__main__":
             plot_repaired_files(results)
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
+        elif (type == "protocol6" or type == "6"):
+            protocol6(results, "naturalize")
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
         if show:
