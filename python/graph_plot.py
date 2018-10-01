@@ -14,6 +14,8 @@ import os
 import json
 import datetime
 
+from functools import reduce
+
 def protocol6(results, repair_tool):
     error_type_repair = dict()
     for result in results:
@@ -58,9 +60,6 @@ def protocol6(results, repair_tool):
     plt.xlabel('Usage')
     plt.title('Percentage of repaired checkstyle errors.')
     plt.legend()
-
-    plt.show()
-    print(error_type_repair)
 
 def plot_repaired_files(results):
     modifications = (2,2,2,2,2)
@@ -381,6 +380,15 @@ if __name__ == "__main__":
         if (type == "protocol1" or type == "1"):
             fig_name = "Experiment_injection_protocol1_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_snipper"))
+            repair_tools = ("naturalize", "naturalize_snipper", "codebuff", "codebuff_snipper")
+            union = lambda x, y: x|set(y);
+            parse_error_name = lambda x: x.split(".")[-1];
+            parse_error_names = lambda repair_tool, result: map(parse_error_name, result["checkstyle_errors_count_{}".format(repair_tool)].keys());
+            get_error_names = lambda repair_tool, results: map(lambda result: parse_error_names(repair_tool, result), results)
+            errors_types = {repair_tool: reduce(union, get_error_names(repair_tool, results), set()) for repair_tool in repair_tools}
+            ugly_error_types = reduce(union, get_error_names("ugly", results), set())
+            unique_error_types = {repair_tool: list(filter(lambda x: x not in ugly_error_types, errors)) for repair_tool, errors in errors_types.items()}
+            print(unique_error_types)
         elif (type == "protocol2" or type == "2"):
             fig_name = "Experiment_injection_protocol2_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types(results, ("checkstyle_errors_count_ugly",))
@@ -392,7 +400,7 @@ if __name__ == "__main__":
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            protocol6(results, "naturalize")
+            protocol6(results, "naturalize_snipper")
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
         if show:
