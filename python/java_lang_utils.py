@@ -203,7 +203,7 @@ def tokenize_with_white_space(file_path):
     # rewritten = "".join([str(t[1].value) + "\n"*t[0][0] + " "*t[0][1] for t in zip(deletions_spots, tokens)]);
 
     # return rewritten
-    return "\n".join([str(t) for t in zip(deletions_spots, tokens)])
+    return deletions_spots, tokens
 
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
     if to_line == -1:
