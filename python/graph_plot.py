@@ -30,7 +30,6 @@ def protocol6(results, repair_tool):
                         if len( modification_repaired[0]["errors"]):
                             errors_after_repair = list(set([error["source"].split(".")[-1] for error in modification_repaired[0]["errors"]]))
                         else:
-                            print("dgdfg")
                             errors_after_repair = errors
 
 

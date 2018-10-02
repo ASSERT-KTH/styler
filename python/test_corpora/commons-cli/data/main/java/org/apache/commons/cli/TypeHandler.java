@@ -55,6 +55,7 @@ public class TypeHandler
      *
      * @param str the command line value
      * @param clazz the type of argument
+     * @param <T> the type of argument
      * @return The instance of <code>clazz</code> initialised with
      * the value of <code>str</code>.
      * @throws ParseException if the value creation for the given class failed
@@ -123,7 +124,7 @@ public class TypeHandler
         {
             throw new ParseException("Unable to find the class: " + classname);
         }
-        
+
         try
         {
             return cl.newInstance();

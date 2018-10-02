@@ -27,7 +27,7 @@ import java.util.Date;
  * The pattern contains various single character flags and via
  * an optional punctuation character, their expected type.
  * </p>
- * 
+ *
  * <table border="1">
  *   <caption>Overview of PatternOptionBuilder patterns</caption>
  *   <tr><td>a</td><td>-a flag</td></tr>
@@ -38,7 +38,7 @@ import java.util.Date;
  *   <tr><td>f/</td><td>-f [url]</td></tr>
  *   <tr><td>g:</td><td>-g [string]</td></tr>
  * </table>
- * 
+ *
  * <p>
  * For example, the following allows command line flags of '-v -p string-value -f /dir/file'.
  * The exclamation mark precede a mandatory option.
@@ -49,7 +49,6 @@ import java.util.Date;
  * </pre>
  *
  * <p>
- * TODO: These need to break out to OptionType and also to be pluggable.
  * </p>
  */
 public class PatternOptionBuilder
@@ -168,7 +167,7 @@ public class PatternOptionBuilder
                         .required(required)
                         .type(type)
                         .build();
-                    
+
                     // we have a previous one to deal with
                     options.addOption(option);
                     required = false;
@@ -195,7 +194,7 @@ public class PatternOptionBuilder
                 .required(required)
                 .type(type)
                 .build();
-            
+
             // we have a final one to deal with
             options.addOption(option);
         }
