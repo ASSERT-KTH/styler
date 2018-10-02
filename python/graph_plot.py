@@ -51,11 +51,15 @@ def protocol6(results, repair_tool):
 
     objects = error_type_repair.keys()
     y_pos = np.arange(len(objects))
-    performance = [item["repaired"] for item in error_type_repair.values()]
+    types = ("repaired", "other_errors", "new_errors", "not_repaired")
+    colors = {"repaired": "#2ecc71", "new_errors": "#f39c12", "other_errors": "#3498db", "not_repaired": "#e74c3c"}
+    sum_left = [0] * len(error_type_repair)
+    for type in types:
+        performance = [item[type] for item in error_type_repair.values()]
+        plt.barh(y_pos, performance, align='center', color=colors[type], left=sum_left, label=type)
+        sum_left = list(map(lambda x, y: x+y, sum_left, performance))
 
-
-    plt.barh(y_pos, performance, align='center', color="#2ecc71", label="Fully repaired")
-    plt.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
+    # plt.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
     plt.yticks(y_pos, objects, rotation=0)
     plt.xlabel('Usage')
     plt.title('Percentage of repaired checkstyle errors.')
