@@ -408,7 +408,7 @@ if __name__ == "__main__":
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            protocol6(results, "naturalize_snipper")
+            protocol6(results, "codebuff_snipper")
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
         if show:
