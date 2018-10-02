@@ -27,7 +27,12 @@ def protocol6(results, repair_tool):
                 if file in file_with_cs_errors:
                     modification_repaired = list(filter(lambda x: x["type"] == modification["type"] and x["modification_id"] == modification["modification_id"], file_with_cs_errors[file]))
                     if len(modification_repaired):
-                        errors_after_repair = list(set([error["source"].split(".")[-1] for error in modification_repaired[0]["errors"]]))
+                        if len( modification_repaired[0]["errors"]):
+                            errors_after_repair = list(set([error["source"].split(".")[-1] for error in modification_repaired[0]["errors"]]))
+                        else:
+                            print("dgdfg")
+                            errors_after_repair = errors
+
 
                 for error in errors:
                     if error not in error_type_repair:
