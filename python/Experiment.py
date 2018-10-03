@@ -269,7 +269,7 @@ class Exp_Uglify(Experiment):
             exluded_file = self.corpus.get_file(id)[2]
             i += 1
             self.log("File " + str(id) + '(' + str(i) + '/' + str(len_files) + ')')
-            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file, grammar=self.corpus.info["grammar"], ident=self.corpus.info["ident"] )
+            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file, grammar=self.corpus.info["grammar"], indent=self.corpus.info["indent"] )
             self.log("File " + str(id) + ' done in ' + str(time.time() - step) + 's, (' + str( (time.time() - starts) / i * (len_files - i) ) + 's remaining)')
             step = time.time()
 

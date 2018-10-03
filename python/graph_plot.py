@@ -70,9 +70,8 @@ def protocol6(results, repair_tool):
     plt.legend()
 
 def plot_repaired_files(results):
-    modifications = (2,2,2,2,2)
 
-    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper')
+    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper', 'both_snipper')
 
     barWidth = 1. / (len(counts) + 1)
     bars = [[] for i in range(len(counts)) ]
@@ -84,8 +83,20 @@ def plot_repaired_files(results):
         with_errors = result["number_of_injections"] * result["corrupted_files_ratio_ugly"]
         labels.append("{}, \n /{} injections".format(result["name"], int(with_errors)))
         for count, i in zip(counts, range(len(counts))):
-            prop = result["corrupted_files_ratio_" + count]
-            bars[i].append( 1 - ( result["number_of_injections"] * result["corrupted_files_ratio_" + count]) / with_errors )
+            if count == "both_snipper":
+                file_with_cs_errors_codebuff_snipper = result["file_with_cs_errors_codebuff_snipper"]
+                file_with_cs_errors_naturalize_snipper = result["file_with_cs_errors_naturalize_snipper"]
+                c = 0
+                for file, modifications in file_with_cs_errors_codebuff_snipper.items():
+                    if file in file_with_cs_errors_naturalize_snipper:
+                        errors = [m["type"]+str(m["modification_id"]) for m in file_with_cs_errors_naturalize_snipper[file]]
+                        for modification in modifications:
+                            if modification["type"]+str(modification["modification_id"]) in errors:
+                                c += 1
+                bars[i].append( 1 - c / with_errors )
+            else:
+                prop = result["corrupted_files_ratio_" + count]
+                bars[i].append( 1 - ( result["number_of_injections"] * result["corrupted_files_ratio_" + count]) / with_errors )
             # bars[i].append( result["corrupted_files_ratio_" + count] )
 
     # Set position of bar on X axis
@@ -95,15 +106,21 @@ def plot_repaired_files(results):
         r.append([x + barWidth for x in r[i-1]])
 
 
+
+    def with_percentage(bars):
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., 1*height, '%d' % int(height*100) + "%", ha='center', va='bottom')
     # Make the plot
     for count, i in zip(counts, range(len(counts))):
-        plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count)
+        with_percentage(plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count))
 
+    modifications = (2,2,2,2,2)
 
     # Add xticks on the middle of the group bars
     plt.xlabel('Proportion of files with errors (m=' + str(modifications) + ')', fontweight='bold')
     plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(results))], labels, rotation=45, fontsize=8)
-    plt.subplots_adjust(bottom=0.30)
+    plt.subplots_adjust(bottom=0.20)
     # Create legend & Show graphic
     plt.legend()
 
@@ -417,6 +434,7 @@ if __name__ == "__main__":
             fig_name = "Experiment_injection_protocol3_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_errors_types_per_injection_type(results)
         elif (type == "protocol4" or type == "4"):
+            fig_name = "Experiment_injection_protocol4_{}".format(now.strftime("%Y%m%d_%H%M%S"))
             plot_repaired_files(results)
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
