@@ -122,18 +122,6 @@ class Exp_Uglify(Experiment):
                 args.append(path + ":" + str(from_char) + ',' + str(to_char))
         return call_java("../jars/naturalize.jar", args)
 
-    def compute_diffs(self, files_dir, repaired_dir, file_with_cs_errors):
-        diffs_count = []
-        for id, file in file_with_cs_errors.items():
-            for modifications in file:
-                if len(modifications["errors"]) > 0:
-                    ugly_path = os.path.join(files_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-                    repaired_path = os.path.join(repaired_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-                    diffs = java_lang_utils.compute_diff_size(ugly_path, repaired_path)
-                    modifications["diffs"] = diffs
-                    diffs_count.append(diffs)
-        return sum(diffs_count) / len(diffs_count)
-
     def call_codebuff_snipper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
         for file in file_with_cs_errors[id]:
             if len(file["errors"]) > 0:
@@ -148,12 +136,24 @@ class Exp_Uglify(Experiment):
                 except FileNotFoundError:
                     print("No file (probably codebuff trash)")
 
-    def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java"):
-        args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent 2", "-o " + output_dir]
+    def call_codebuff(self, training_dir, files_dir, output_dir, exclude=None, grammar = "Java", indent=4):
+        args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + training_dir, "-files java", "-comment LINE_COMMENT", "-indent " + str(indent), "-o " + output_dir]
         if ( exclude ):
             args.append("-exclude " + exclude)
         args.append(files_dir)
         return call_java("../jars/codebuff-1.5.1.jar", args)
+
+    def compute_diffs(self, files_dir, repaired_dir, file_with_cs_errors):
+        diffs_count = []
+        for id, file in file_with_cs_errors.items():
+            for modifications in file:
+                if len(modifications["errors"]) > 0:
+                    ugly_path = os.path.join(files_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                    repaired_path = os.path.join(repaired_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+                    diffs = java_lang_utils.compute_diff_size(ugly_path, repaired_path)
+                    modifications["diffs"] = diffs
+                    diffs_count.append(diffs)
+        return sum(diffs_count) / len(diffs_count)
 
     def move_parse_exception_files(self, from_dir, to_dir):
         files = java_lang_utils.get_bad_formated(self.get_dir(from_dir))
@@ -269,7 +269,7 @@ class Exp_Uglify(Experiment):
             exluded_file = self.corpus.get_file(id)[2]
             i += 1
             self.log("File " + str(id) + '(' + str(i) + '/' + str(len_files) + ')')
-            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file, grammar=self.corpus.info["grammar"] )
+            res = self.call_codebuff( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), exclude=exluded_file, grammar=self.corpus.info["grammar"], ident=self.corpus.info["ident"] )
             self.log("File " + str(id) + ' done in ' + str(time.time() - step) + 's, (' + str( (time.time() - starts) / i * (len_files - i) ) + 's remaining)')
             step = time.time()
 
