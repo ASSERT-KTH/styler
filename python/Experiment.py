@@ -203,24 +203,24 @@ class Exp_Uglify(Experiment):
         os.makedirs(self.get_dir("ugly/"))
 
         self.log("Insertions")
-        for index in range(self.get_parameter("iterations")[0]):
+        def gen_ugly_loop(folder, n, action, modifications):
             for id, file in self.corpus.get_files().items():
-                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions-space/" + str(index) + "/")), (1,0,0,0,0))
-        for index in range(self.get_parameter("iterations")[1]):
-            for id, file in self.corpus.get_files().items():
-                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions-tab/" + str(index) + "/")), (0,1,0,0,0))
-        for index in range(self.get_parameter("iterations")[2]):
-            for id, file in self.corpus.get_files().items():
-                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/insertions-newline/" + str(index) + "/")), (0,0,1,0,0))
+                if id not in modifications:
+                    modifications[id] = {}
+                modifications[id][folder] = {}
+                for index in range(n):
+                    modifications[id][folder][index] = java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/{}/".format(folder) + str(index) + "/")), action)
+
+        modifications = {}
+        gen_ugly_loop("insertions-space", self.get_parameter("iterations")[0], (1,0,0,0,0), modifications)
+        gen_ugly_loop("insertions-tab", self.get_parameter("iterations")[1], (0,1,0,0,0), modifications)
+        gen_ugly_loop("insertions-newline", self.get_parameter("iterations")[2], (0,0,1,0,0), modifications)
 
         self.log("Deletions")
-        for index in range(self.get_parameter("iterations")[3]):
-            for id, file in self.corpus.get_files().items():
-                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/deletions-space/" + str(index) + "/")), (0,0,0,1,0))
-        for index in range(self.get_parameter("iterations")[4]):
-            for id, file in self.corpus.get_files().items():
-                java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/deletions-newline/" + str(index) + "/")), (0,0,0,0,1))
+        gen_ugly_loop("deletions-space", self.get_parameter("iterations")[3], (0,0,0,1,0), modifications)
+        gen_ugly_loop("deletions-newline", self.get_parameter("iterations")[4], (0,0,0,0,1), modifications)
 
+        self.results["modifications"] = modifications
         file_with_cs_errors, checkstyle_errors_count = self.review_checkstyle("ugly")
 
         dirs = []

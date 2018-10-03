@@ -121,7 +121,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
                     output_file_object.write(char)
                 char_num = char_num + 1
             line_num = line_num + 1
-    return output_path
+    return tuple(set(deletions) | set(insertions.keys()))
 
 # The tokens should be the same
 # Patch parts of B into A,
@@ -203,7 +203,7 @@ def tokenize_with_white_space(file_path):
     # rewritten = "".join([str(t[1].value) + "\n"*t[0][0] + " "*t[0][1] for t in zip(deletions_spots, tokens)]);
 
     # return rewritten
-    return "\n".join([str(t) for t in zip(deletions_spots, tokens)])
+    return deletions_spots, tokens
 
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
     if to_line == -1:

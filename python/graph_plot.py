@@ -363,6 +363,19 @@ def plot_errors_types_per_injection_type(results):
     patches = [ mpatches.Patch(color=c, label="{}".format(l.split(".")[-1])) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
 
+def dist_from_modification(results):
+    distances = []
+    for result in results:
+        for id, modifications in result["file_with_cs_errors_ugly"].items():
+            for modification in modifications:
+                errors_pos = list(set([(int(error["line"]), int(error.get("column", 0))) for error in modification["errors"]]))
+                modifications_pos = result["modifications"][id][modification["type"]][modification["modification_id"]]
+                if (errors_pos[0][0] != modifications_pos[0][0] or errors_pos[0][1] != modifications_pos[0][1] ):
+                    print(errors_pos, modifications_pos)
+                    distances.append(1)
+                else:
+                    distances.append(0)
+    print(sum(distances)/len(distances))
 def load_results(dir):
     data = {}
     with open(os.path.join(dir, "results.json")) as f:
@@ -409,6 +422,8 @@ if __name__ == "__main__":
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
             protocol6(results, "codebuff_snipper")
+        elif (type == "protocol7" or type == "7"):
+            dist_from_modification(results)
         elif (type == "percentage_of_errors"):
             plot_percentage_of_errors(results)
         if show:
