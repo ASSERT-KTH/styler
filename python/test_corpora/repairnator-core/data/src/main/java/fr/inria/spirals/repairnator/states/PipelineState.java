@@ -1,0 +1,23 @@
+package fr.inria.spirals.repairnator.states;
+
+/**
+ * Created by urli on 03/01/2017.
+ */
+public enum PipelineState {
+    TESTABLE,
+    PATCHED,
+    BUILDNOTCHECKEDOUT,
+    TESTERRORS,
+    SOURCEDIRNOTCOMPUTED,
+    NOTBUILDABLE,
+    TESTFAILURES,
+    NOTCLONABLE,
+    NOTFAILING,
+    NOTTESTABLE,
+    CLASSPATHERROR,
+    TESTDIRNOTCOMPUTED,
+    MODULESNOTCOMPUTED,
+    PROPERTY_FILE_NOT_WRITTEN,
+    BUG_FAILING_PASSING,
+    BUG_PASSING_PASSING
+}
