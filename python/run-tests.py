@@ -27,7 +27,8 @@ if __name__ == "__main__":
     # corpora.append( Corpus("./test_corpora/neo4j", "neo4j") )
     # corpora.append( Corpus("./test_corpora/java-design-patterns", "java-design-patterns") )
     # corpora.append( Corpus("./test_corpora/javapoet", "javapoet") )
-    corpora.append( Corpus("./test_corpora/repairnator-core", "repairnator-core") )
+    # corpora.append( Corpus("./test_corpora/repairnator-core", "repairnator-core") )
+    corpora.append( Corpus("./test_corpora/spoon", "spoon") )
 
 
 
