@@ -10,6 +10,9 @@ import subprocess
 import sys
 from functools import reduce
 
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 _CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
 
 
@@ -67,12 +70,14 @@ def analyse_results(results):
         errors_count[error] = errors_count.get(error, 0) + 1
     total_number_of_errors = sum(errors_count.values())
     number_of_files_error_free = number_of_files - len(files_with_errors)
-    possibly_fixable_count = reduce(lambda x, y: x + errors_count.get(y, 0),FIXABLE, 0)
+    possibly_fixable_errors_count = {key:value for key, value in errors_count.items() if key in FIXABLE}
+    possibly_fixable_count = sum(possibly_fixable_errors_count.values())
     return {
         "number_of_files": number_of_files,
         "number_of_files_error_free": number_of_files_error_free,
         "errors_count": errors_count,
         "total_number_of_errors": total_number_of_errors,
+        "possibly_fixable_errors_count": possibly_fixable_errors_count,
         "possibly_fixable_count": possibly_fixable_count,
     }
 
@@ -87,4 +92,4 @@ if __name__ == "__main__":
         (output_raw, errorcode) = check(checkstyle_path, file_path)
         print(output_raw, errorcode)
     elif sys.argv[1] == "read":
-        print(analyse_results(parse_file(sys.argv[2])))
+        pp.pprint(analyse_results(parse_file(sys.argv[2])))
