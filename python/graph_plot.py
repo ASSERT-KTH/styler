@@ -17,6 +17,9 @@ import datetime
 from functools import reduce
 
 def protocol6(results, repair_tool):
+    fig = plt.figure(figsize=(15,12))
+    ax = fig.add_subplot(111)
+
     error_type_repair = dict()
     for result in results:
         file_with_cs_errors = result["file_with_cs_errors_{}".format(repair_tool)]
@@ -51,7 +54,7 @@ def protocol6(results, repair_tool):
         obj = {key: (value / s) for key, value in x.items()}
         obj["sum"] = s
         return obj
-    error_type_repair = {key:f(value) for key, value in error_type_repair.items()}
+    error_type_repair = {key[:-5]:f(value) for key, value in error_type_repair.items()}
 
     objects = error_type_repair.keys()
     y_pos = np.arange(len(objects))
@@ -60,14 +63,16 @@ def protocol6(results, repair_tool):
     sum_left = [0] * len(error_type_repair)
     for type in types:
         performance = [item[type] for item in error_type_repair.values()]
-        plt.barh(y_pos, performance, align='center', color=colors[type], left=sum_left, label=type)
+        ax.barh(y_pos, performance, align='center', color=colors[type], left=sum_left, label=type)
         sum_left = list(map(lambda x, y: x+y, sum_left, performance))
 
-    # plt.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
+    # ax.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
     plt.yticks(y_pos, objects, rotation=0)
-    plt.xlabel('Usage')
-    plt.title('Percentage of repaired checkstyle errors.')
+    plt.xlabel('')
+    plt.title('Percentage of repaired checkstyle errors by {}.'.format(repair_tool))
     plt.legend()
+
+    return fig
 
 def plot_repaired_files(results):
 
@@ -439,7 +444,9 @@ if __name__ == "__main__":
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            protocol6(results, "codebuff_snipper")
+            tool = "codebuff"
+            fig_name = "Experiment_injection_protocol6_{}_{}".format(tool, now.strftime("%Y%m%d"))
+            fig = protocol6(results, tool)
         elif (type == "protocol7" or type == "7"):
             dist_from_modification(results)
         elif (type == "percentage_of_errors"):
@@ -450,4 +457,4 @@ if __name__ == "__main__":
             except UnicodeDecodeError:
                 print("Bye mac os lover")
         if save:
-            plt.savefig("../results/{}.pdf".format(fig_name), format='pdf')
+            plt.savefig("../results/{}.pdf".format(fig_name),format='pdf')
