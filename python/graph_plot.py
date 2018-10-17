@@ -78,7 +78,7 @@ def protocol6(results, repair_tool):
 
 def plot_repaired_files(results):
 
-    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper', 'both_snipper')
+    counts = ('naturalize', 'naturalize_sniper', 'codebuff', 'codebuff_sniper', 'both_sniper')
 
     barWidth = 1. / (len(counts) + 1)
     bars = [[] for i in range(len(counts)) ]
@@ -90,13 +90,13 @@ def plot_repaired_files(results):
         with_errors = result["number_of_injections"] * result["corrupted_files_ratio_ugly"]
         labels.append("{}, \n /{} injections".format(result["name"], int(with_errors)))
         for count, i in zip(counts, range(len(counts))):
-            if count == "both_snipper":
-                file_with_cs_errors_codebuff_snipper = result["file_with_cs_errors_codebuff_snipper"]
-                file_with_cs_errors_naturalize_snipper = result["file_with_cs_errors_naturalize_snipper"]
+            if count == "both_sniper":
+                file_with_cs_errors_codebuff_sniper = result["file_with_cs_errors_codebuff_sniper"]
+                file_with_cs_errors_naturalize_sniper = result["file_with_cs_errors_naturalize_sniper"]
                 c = 0
-                for file, modifications in file_with_cs_errors_codebuff_snipper.items():
-                    if file in file_with_cs_errors_naturalize_snipper:
-                        errors = [m["type"]+str(m["modification_id"]) for m in file_with_cs_errors_naturalize_snipper[file]]
+                for file, modifications in file_with_cs_errors_codebuff_sniper.items():
+                    if file in file_with_cs_errors_naturalize_sniper:
+                        errors = [m["type"]+str(m["modification_id"]) for m in file_with_cs_errors_naturalize_sniper[file]]
                         for modification in modifications:
                             if modification["type"]+str(modification["modification_id"]) in errors:
                                 c += 1
@@ -134,7 +134,7 @@ def plot_repaired_files(results):
 def plot_diffs(results):
     modifications = (2,2,2,2,2)
 
-    counts = ('naturalize', 'naturalize_snipper', 'codebuff', 'codebuff_snipper')
+    counts = ('naturalize', 'naturalize_sniper', 'codebuff', 'codebuff_sniper')
 
     barWidth = 1. / (len(counts) + 1)
     bars = [[] for i in range(len(counts)) ]
@@ -424,8 +424,8 @@ if __name__ == "__main__":
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
             fig_name = "Experiment_injection_protocol1"
-            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_snipper"))
-            repair_tools = ("naturalize", "naturalize_snipper", "codebuff", "codebuff_snipper")
+            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_sniper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_sniper"))
+            repair_tools = ("naturalize", "naturalize_sniper", "codebuff", "codebuff_sniper")
             union = lambda x, y: x|set(y);
             parse_error_name = lambda x: x.split(".")[-1];
             parse_error_names = lambda repair_tool, result: map(parse_error_name, result["checkstyle_errors_count_{}".format(repair_tool)].keys());
@@ -435,18 +435,18 @@ if __name__ == "__main__":
             unique_error_types = {repair_tool: list(filter(lambda x: x not in ugly_error_types, errors)) for repair_tool, errors in errors_types.items()}
             print(unique_error_types)
         elif (type == "protocol2" or type == "2"):
-            fig_name = "Experiment_injection_protocol2")
+            fig_name = "Experiment_injection_protocol2"
             plot_errors_types(results, ("checkstyle_errors_count_ugly",))
         elif (type == "protocol3" or type == "3"):
-            fig_name = "Experiment_injection_protocol3")
+            fig_name = "Experiment_injection_protocol3"
             plot_errors_types_per_injection_type(results)
         elif (type == "protocol4" or type == "4"):
-            fig_name = "Experiment_injection_protocol4")
+            fig_name = "Experiment_injection_protocol4"
             plot_repaired_files(results)
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            tool = "codebuff_snipper"
+            tool = "codebuff_sniper"
             fig_name = "Experiment_injection_protocol6_{}".format(tool)
             fig = protocol6(results, tool)
         elif (type == "protocol7" or type == "7"):

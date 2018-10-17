@@ -110,7 +110,8 @@ class Exp_Uglify(Experiment):
             args.append("-exclude " + exclude)
         return call_java("../jars/naturalize.jar", args)
 
-    def call_naturalize_snipper(self, training_dir, files_dir, output_dir, file_with_cs_errors, id, exclude=None):
+    def call_naturalize_sniper(self, training_dir, files_dir, output_dir, file_with_cs_errors, id, exclude=None):
+        # TODO rebuild with sniper ...
         args = ["-mode snipper", "-t " + training_dir, "-o " + output_dir, "-f " + files_dir]
         if exclude:
             args.append("-exclude " + exclude)
@@ -122,7 +123,7 @@ class Exp_Uglify(Experiment):
                 args.append(path + ":" + str(from_char) + ',' + str(to_char))
         return call_java("../jars/naturalize.jar", args)
 
-    def call_codebuff_snipper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
+    def call_codebuff_sniper(self, files_dir, codebuff_dir, output_dir, file_with_cs_errors, id):
         for file in file_with_cs_errors[id]:
             if len(file["errors"]) > 0:
                 file_path = os.path.join(files_dir, './' + file["type"] + "/" + str(file["modification_id"]) + "/" + self.corpus.get_files()[id][0])
@@ -253,12 +254,12 @@ class Exp_Uglify(Experiment):
 
         file_with_cs_errors_naturalize, checkstyle_errors_count_naturalize = self.review_checkstyle("naturalize")
 
-        self.log("Naturalize-Snipper")
+        self.log("Naturalize-sniper")
         for id, value in file_with_cs_errors.items():
             exluded_file = self.corpus.get_file(id)[2]
-            self.call_naturalize_snipper( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize_snipper/" + str(id))), file_with_cs_errors, id, exclude=exluded_file )
+            self.call_naturalize_sniper( self.corpus.training_data_folder_path, self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./naturalize_sniper/" + str(id))), file_with_cs_errors, id, exclude=exluded_file )
 
-        file_with_cs_errors_naturalize_snipper, checkstyle_errors_count_naturalize_snipper = self.review_checkstyle("naturalize_snipper")
+        file_with_cs_errors_naturalize_sniper, checkstyle_errors_count_naturalize_sniper = self.review_checkstyle("naturalize_sniper")
 
         self.log("Codebuff")
         len_files = len(file_with_cs_errors.keys())
@@ -275,11 +276,11 @@ class Exp_Uglify(Experiment):
 
         file_with_cs_errors_codebuff, checkstyle_errors_count_codebuff = self.review_checkstyle("codebuff")
 
-        self.log("Codebuff-Snipper")
+        self.log("Codebuff-sniper")
         for id, value in file_with_cs_errors.items():
-            self.call_codebuff_snipper(self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), self.get_dir(os.path.join("./codebuff_snipper/" + str(id))), file_with_cs_errors, id)
+            self.call_codebuff_sniper(self.get_dir(os.path.join("./ugly/" + str(id))), self.get_dir(os.path.join("./codebuff/" + str(id))), self.get_dir(os.path.join("./codebuff_sniper/" + str(id))), file_with_cs_errors, id)
 
-        file_with_cs_errors_codebuff_snipper, checkstyle_errors_count_codebuff_snipper = self.review_checkstyle("codebuff_snipper")
+        file_with_cs_errors_codebuff_sniper, checkstyle_errors_count_codebuff_sniper = self.review_checkstyle("codebuff_sniper")
 
         return self.results
 
