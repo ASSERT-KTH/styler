@@ -38,15 +38,17 @@ def protocol6(results, repair_tool):
 
                 for error in errors:
                     if error not in error_type_repair:
-                        error_type_repair[error] = {"repaired": 0, "other_errors": 0, "new_errors": 0, "not_repaired": 0}
+                        error_type_repair[error] = {"repaired": 0, "errors_remaining": 0, "not_repaired": 0}
+                        # error_type_repair[error] = {"repaired": 0, "other_errors": 0, "new_errors": 0, "not_repaired": 0}
                     if error in errors_after_repair:
                         error_type_repair[error]["not_repaired"] += 1
                     else:
                         if len(errors_after_repair):
-                            if len(list(filter(lambda x: x not in errors, errors_after_repair))):
-                                error_type_repair[error]["new_errors"] += 1
-                            else:
-                                error_type_repair[error]["other_errors"] += 1
+                            # if len(list(filter(lambda x: x not in errors, errors_after_repair))):
+                                # error_type_repair[error]["new_errors"] += 1
+                            # else:
+                                # error_type_repair[error]["other_errors"] += 1
+                            error_type_repair[error]["errors_remaining"] += 1
                         else:
                             error_type_repair[error]["repaired"] += 1
     def f(x):
@@ -58,8 +60,8 @@ def protocol6(results, repair_tool):
 
     objects = error_type_repair.keys()
     y_pos = np.arange(len(objects))
-    types = ("repaired", "other_errors", "new_errors", "not_repaired")
-    colors = {"repaired": "#2ecc71", "new_errors": "#f39c12", "other_errors": "#3498db", "not_repaired": "#e74c3c"}
+    types = ("repaired", "errors_remaining", "not_repaired")
+    colors = {"repaired": "#2ecc71", "errors_remaining": "#f39c12", "not_repaired": "#e74c3c"}
     sum_left = [0] * len(error_type_repair)
     for type in types:
         performance = [item[type] for item in error_type_repair.values()]
@@ -444,8 +446,8 @@ if __name__ == "__main__":
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            tool = "codebuff"
-            fig_name = "Experiment_injection_protocol6_{}_{}".format(tool, now.strftime("%Y%m%d"))
+            tool = "codebuff_snipper"
+            fig_name = "Experiment_injection_protocol6_{}".format(tool)
             fig = protocol6(results, tool)
         elif (type == "protocol7" or type == "7"):
             dist_from_modification(results)
