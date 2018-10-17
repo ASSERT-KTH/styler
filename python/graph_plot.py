@@ -423,7 +423,7 @@ if __name__ == "__main__":
         folders = sys.argv[i:]
         results = [ load_results(dir) for dir in folders ]
         if (type == "protocol1" or type == "1"):
-            fig_name = "Experiment_injection_protocol1_{}".format(now.strftime("%Y%m%d_%H%M%S"))
+            fig_name = "Experiment_injection_protocol1"
             plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_snipper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_snipper"))
             repair_tools = ("naturalize", "naturalize_snipper", "codebuff", "codebuff_snipper")
             union = lambda x, y: x|set(y);
@@ -435,13 +435,13 @@ if __name__ == "__main__":
             unique_error_types = {repair_tool: list(filter(lambda x: x not in ugly_error_types, errors)) for repair_tool, errors in errors_types.items()}
             print(unique_error_types)
         elif (type == "protocol2" or type == "2"):
-            fig_name = "Experiment_injection_protocol2_{}".format(now.strftime("%Y%m%d_%H%M%S"))
+            fig_name = "Experiment_injection_protocol2")
             plot_errors_types(results, ("checkstyle_errors_count_ugly",))
         elif (type == "protocol3" or type == "3"):
-            fig_name = "Experiment_injection_protocol3_{}".format(now.strftime("%Y%m%d_%H%M%S"))
+            fig_name = "Experiment_injection_protocol3")
             plot_errors_types_per_injection_type(results)
         elif (type == "protocol4" or type == "4"):
-            fig_name = "Experiment_injection_protocol4_{}".format(now.strftime("%Y%m%d_%H%M%S"))
+            fig_name = "Experiment_injection_protocol4")
             plot_repaired_files(results)
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
