@@ -68,6 +68,11 @@ def protocol6(results, repair_tool):
         ax.barh(y_pos, performance, align='center', color=colors[type], left=sum_left, label=type)
         sum_left = list(map(lambda x, y: x+y, sum_left, performance))
 
+    def with_percentage(error_type_repair, y_pos):
+        for error, pos in zip(error_type_repair.values(), y_pos):
+            value = error["sum"]
+            plt.text(1.015, pos - 0.2, '%d' % int(value) , ha='center', va='bottom')
+    with_percentage(error_type_repair, y_pos)
     # ax.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
     plt.yticks(y_pos, objects, rotation=0)
     plt.xlabel('')
@@ -446,7 +451,7 @@ if __name__ == "__main__":
         elif (type == "protocol5" or type == "5"):
             plot_diffs(results)
         elif (type == "protocol6" or type == "6"):
-            tool = "codebuff_sniper"
+            tool = "naturalize_sniper"
             fig_name = "Experiment_injection_protocol6_{}".format(tool)
             fig = protocol6(results, tool)
         elif (type == "protocol7" or type == "7"):
