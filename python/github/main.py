@@ -8,7 +8,7 @@ import os
 import requests
 import json
 import xml.etree.ElementTree as ET
-
+from datetime import datetime, timedelta
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -72,10 +72,26 @@ def get_information(repo_name):
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     repo_info = dict()
+
+    # datetime info
+    now = datetime.now()
+    one_week_before_now = now - timedelta(days=7)
+
+    # commits
+    if repo.updated_at >= one_week_before_now:
+        commits = repo.get_commits(since=one_week_before_now, until=now)
+        repo_info['past_week_commits'] = commits.totalCount
+    else:
+        repo_info['past_week_commits'] = 0
+
     # Gather some information
-    repo_info['stars'] = repo.stargazers_count
-    repo_info['last_update'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['name'] = repo_name
+    repo_info['stargazers_count'] = repo.stargazers_count
+    repo_info['subscribers_count'] = repo.subscribers_count
+    repo_info['forks_count'] = repo.forks_count
+    repo_info['last_update'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+    repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
+
     # Get interesting files
     files_checkstyle = [ file.path for file in g.search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
     files_travis = [ file.path for file in g.search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
@@ -88,6 +104,7 @@ def get_information(repo_name):
             checkstyle_file = file
         if file == '.travis.yml':
             travis_file = file
+
     # Download cs and travis
     if checkstyle_file:
         dowload_and_save(repo, checkstyle_file, base_dir)
@@ -136,6 +153,6 @@ if __name__ == "__main__":
     #     except:
     #         print(f'Error getting {repo}')
     #     time.sleep(5)
-    get_information('1and1/ejb-cdi-unit')
+    get_information('Spirals-Team/repairnator')
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt')
