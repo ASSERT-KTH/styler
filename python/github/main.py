@@ -53,7 +53,15 @@ def save_repos(file, repos):
         for repo in repos:
             f.write(repo + '\n')
 
-def get_travis(repo_name):
+def dowload_and_save(repo, file, dir):
+    file_name = file.split('/')[-1]
+    contents = repo.get_contents(file)
+    request = requests.get(contents.download_url)
+    print(f'Get file ({file}) of {repo.name}')
+    with open(os.path.join(dir, file_name), 'wb') as f:
+        f.write(request.content)
+
+def get_information(repo_name):
     print(f'Open repo {repo_name}')
     try:
         repo = g.get_repo(repo_name)
@@ -64,53 +72,27 @@ def get_travis(repo_name):
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     repo_info = dict()
+    # Gather some information
     repo_info['stars'] = repo.stargazers_count
     repo_info['last_update'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['name'] = repo_name
-    files = [ file.path for file in g.search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
-    repo_info['files'] = files
-    travis_file = ''
-    for file in files:
-        if file == '.travis.yml':
-            travis_file = file
-    if travis_file:
-        contents = repo.get_contents(travis_file)
-        request = requests.get(contents.download_url)
-        print(f'Get travis_file ({travis_file}) of {repo_name}')
-        with open(os.path.join(base_dir, './.travis.yml'), 'wb') as f:
-            f.write(request.content)
-
-    with open(os.path.join(base_dir, './info.json'), 'w') as fp:
-        json.dump(repo_info, fp)
-
-    return repo_info;
-
-def get_checkstyle(repo_name):
-    print(f'Open repo {repo_name}')
-    try:
-        repo = g.get_repo(repo_name)
-    except UnknownObjectException:
-        print(f'Repo {repo_name} not found')
-        return 'Not found'
-    base_dir = f'./repos/{repo_name}'
-    if not os.path.exists(base_dir):
-        os.makedirs(base_dir)
-    repo_info = dict()
-    repo_info['stars'] = repo.stargazers_count
-    repo_info['last_update'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
-    repo_info['name'] = repo_name
-    files = [ file.path for file in g.search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
+    # Get interesting files
+    files_checkstyle = [ file.path for file in g.search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
+    files_travis = [ file.path for file in g.search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
+    files = files_checkstyle + files_travis
     repo_info['files'] = files
     checkstyle_file = ''
+    travis_file = ''
     for file in files:
         if file.split('/')[-1] == 'checkstyle.xml':
             checkstyle_file = file
+        if file == '.travis.yml':
+            travis_file = file
+    # Download cs and travis
     if checkstyle_file:
-        contents = repo.get_contents(checkstyle_file)
-        request = requests.get(contents.download_url)
-        print(f'Get checkstyle ({checkstyle_file}) of {repo_name}')
-        with open(os.path.join(base_dir, './checkstyle.xml'), 'wb') as f:
-            f.write(request.content)
+        dowload_and_save(repo, checkstyle_file, base_dir)
+    if travis_file:
+        dowload_and_save(repo, travis_file, base_dir)
 
     with open(os.path.join(base_dir, './info.json'), 'w') as fp:
         json.dump(repo_info, fp)
@@ -154,6 +136,6 @@ if __name__ == "__main__":
     #     except:
     #         print(f'Error getting {repo}')
     #     time.sleep(5)
-    # get_travis('Spirals-Team/repairnator')
-    stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
+    get_information('1and1/ejb-cdi-unit')
+    # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt')
