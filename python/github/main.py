@@ -11,15 +11,22 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from functools import reduce
 import csv
+import random
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+githubs = []
 
-g = Github(config['DEFAULT']['githubKey'])
+for key in config['DEFAULT']['githubKeys'].split(','):
+    githubs.append(Github(key));
+
+def g():
+    return random.choice(githubs)
+
 
 def find_repos(file, from_size, to_size):
-    codes = g.search_code(query=f'maven-checkstyle-plugin language:Maven POM size:{from_size}..{to_size}') # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
+    codes = g().search_code(query=f'maven-checkstyle-plugin language:Maven POM size:{from_size}..{to_size}') # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
     repos = set()
     repos = set(load_repo_list(file))
     count = 0
@@ -35,13 +42,13 @@ def find_repos(file, from_size, to_size):
             repos.add(repo_name)
             if count >= 30:
                 print("save")
-                rate = g.get_rate_limit().search
+                rate = g().get_rate_limit().search
                 print(f'Used {rate.remaining} search queries of {rate.limit} ({rate.reset})')
                 save_repos(file, repos)
                 count = 0
                 time.sleep(15)
         except GithubException as e:
-            reset = g.get_rate_limit().search.reset
+            reset = g().get_rate_limit().search.reset
             print(reset)
             delta = reset - datetime.now()
             sleep_time = delta.seconds % 3600 + 5
@@ -65,7 +72,7 @@ def dowload_and_save(repo, file, dir):
 def get_information(repo_name):
     print(f'Open repo {repo_name}')
     try:
-        repo = g.get_repo(repo_name)
+        repo = g().get_repo(repo_name)
     except UnknownObjectException:
         print(f'Repo {repo_name} not found')
         return 'Not found'
@@ -94,8 +101,8 @@ def get_information(repo_name):
     repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # Get interesting files
-    files_checkstyle = [ file.path for file in g.search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
-    files_travis = [ file.path for file in g.search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
+    files_checkstyle = [ file.path for file in g().search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
+    files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
     files = files_checkstyle + files_travis
     repo_info['files'] = files
     checkstyle_file = ''
@@ -154,13 +161,13 @@ def density(from_size, to_size):
     done = False
     while not done:
         try:
-            codes = g.search_code(query=query) # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
+            codes = g().search_code(query=query) # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
             # In order to get the real totalCount we have to get a page
             if len(codes.get_page(0)):
                 count = codes.totalCount
             done = True
         except GithubException as e:
-            reset = g.get_rate_limit().search.reset
+            reset = g().get_rate_limit().search.reset
             print(reset)
             delta = reset - datetime.now()
             sleep_time = delta.seconds % 3600 + 5
@@ -222,6 +229,7 @@ def load_intervals():
     return intervals
 
 if __name__ == "__main__":
+    pass
     # repo_list = load_repo_list('repos.txt')
     # for repo in repo_list:
     #     try:
@@ -233,5 +241,5 @@ if __name__ == "__main__":
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt', from=1500, to=1520)
     # compute_density(1000, 2000)
-    for interval in load_intervals():
-        find_repos('repos.txt', interval[0], interval[1])
+    # for interval in load_intervals():
+    #     find_repos('repos.txt', interval[0], interval[1])
