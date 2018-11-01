@@ -18,7 +18,10 @@ config.read('config.ini')
 
 githubs = []
 
-for key in config['DEFAULT']['githubKeys'].split(','):
+print("Got the keys of : ")
+for owner_key in config['DEFAULT']['githubKeys'].split(','):
+    owner, key = owner_key.split(':')
+    print(owner)
     githubs.append(Github(key));
 
 def g():
@@ -240,6 +243,6 @@ if __name__ == "__main__":
     # get_information('Spirals-Team/repairnator')
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt', from=1500, to=1520)
-    # compute_density(1000, 2000)
+    compute_density(1000, 2000)
     # for interval in load_intervals():
     #     find_repos('repos.txt', interval[0], interval[1])
