@@ -55,6 +55,9 @@ def find_repos(file, from_size, to_size):
             sleep_time = delta.seconds % 3600 + 5
             print(f'Sleep for {sleep_time} sec')
             time.sleep(sleep_time)
+        except StopIteration:
+            print("Done")
+            run = False
 
 
 def save_repos(file, repos):
