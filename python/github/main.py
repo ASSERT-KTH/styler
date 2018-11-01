@@ -45,11 +45,9 @@ def find_repos(file, from_size, to_size):
             repos.add(repo_name)
             if count >= 30:
                 print("save")
-                rate = g().get_rate_limit().search
-                print(f'Used {rate.remaining} search queries of {rate.limit} ({rate.reset})')
                 save_repos(file, repos)
                 count = 0
-                time.sleep(15)
+                time.sleep(10)
         except GithubException as e:
             reset = g().get_rate_limit().search.reset
             print(reset)
@@ -60,8 +58,9 @@ def find_repos(file, from_size, to_size):
 
 
 def save_repos(file, repos):
+    sorted_repos = sorted(repos, key=str.lower)
     with open(file ,'w') as f:
-        for repo in repos:
+        for repo in sorted_repos:
             f.write(repo + '\n')
 
 def dowload_and_save(repo, file, dir):
@@ -243,6 +242,6 @@ if __name__ == "__main__":
     # get_information('Spirals-Team/repairnator')
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt', from=1500, to=1520)
-    compute_density(1000, 2000)
-    # for interval in load_intervals():
-    #     find_repos('repos.txt', interval[0], interval[1])
+    # compute_density(1000, 2000)
+    for interval in load_intervals():
+        find_repos('repos.txt', interval[0], interval[1])
