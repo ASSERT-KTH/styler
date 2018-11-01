@@ -29,7 +29,8 @@ def g():
 
 
 def find_repos(file, from_size, to_size):
-    codes = g().search_code(query=f'maven-checkstyle-plugin language:Maven POM size:{from_size}..{to_size}') # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
+    query = f'maven-checkstyle-plugin file:pom.xml size:{from_size}..{to_size}'
+    codes = g().search_code(query=query) # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
     repos = set()
     repos = set(load_repo_list(file))
     count = 0
@@ -47,14 +48,9 @@ def find_repos(file, from_size, to_size):
                 print("save")
                 save_repos(file, repos)
                 count = 0
-                time.sleep(10)
+                time.sleep(15)
         except GithubException as e:
-            reset = g().get_rate_limit().search.reset
-            print(reset)
-            delta = reset - datetime.now()
-            sleep_time = delta.seconds % 3600 + 5
-            print(f'Sleep for {sleep_time} sec')
-            time.sleep(sleep_time)
+            print("GithubException")
         except StopIteration:
             print("Done")
             run = False
@@ -111,16 +107,22 @@ def get_information(repo_name):
     files = files_checkstyle + files_travis
     repo_info['files'] = files
     checkstyle_file = ''
+    checkstyle_suppressions_file = ''
     travis_file = ''
     for file in files:
         if file.split('/')[-1] == 'checkstyle.xml':
             checkstyle_file = file
+        if file.split('/')[-1] == 'checkstyle-suppressions.xml':
+            checkstyle_suppressions_file = file
+
         if file == '.travis.yml':
             travis_file = file
 
     # Download cs and travis
     if checkstyle_file:
         dowload_and_save(repo, checkstyle_file, base_dir)
+    if checkstyle_suppressions_file:
+        dowload_and_save(repo, checkstyle_suppressions_file, base_dir)
     if travis_file:
         dowload_and_save(repo, travis_file, base_dir)
 
@@ -145,11 +147,37 @@ def open_checkstyle(path):
 def get_cs_properties(cs):
     return { n.attrib['name']:n.attrib['value'] for n in cs if n.tag == 'property'}
 
+def get_cs_modules(cs):
+    keep_n_join = lambda a, l: [a] + [ a + '/' + e for e in l ]
+    return flatten([ keep_n_join(n.attrib['name'], get_cs_modules(n)) for n in cs if n.tag == 'module' ])
+
+def load_info(folder):
+    with open(os.path.join(folder, 'info.json')) as f:
+        data = json.load(f)
+    return data
+
 def stats(folders):
+    count_modules = dict()
+    count_properties = dict()
     for folder in folders:
+        info = load_info(folder)
+        # if info['past_week_commits'] == 0:
+        #     continue
         cs_rules = open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
         cs_properties = get_cs_properties(cs_rules)
+        cs_modules = get_cs_modules(cs_rules)
+        for module in cs_modules:
+            count_modules[module] = count_modules.get(module, 0) + 1
+        for key, value in cs_properties.items():
+            if key not in count_properties:
+                count_properties[key] = {}
+            count_properties[key][value] = count_properties[key].get(value, 0) + 1
         print(cs_properties)
+    # Compute totals of count_properties
+    for key, value in count_properties.items():
+        count_properties[key]['total'] = sum(value.values())
+    print(count_modules)
+    print(count_properties)
 
 def load_folders(file):
     dirs = []
@@ -159,8 +187,8 @@ def load_folders(file):
     return dirs;
 
 def density(from_size, to_size):
-    time.sleep(2)
-    query = f'maven-checkstyle-plugin language:Maven POM size:{from_size}..{to_size}'
+    time.sleep(1)
+    query = f'maven-checkstyle-plugin file:pom.xml size:{from_size}..{to_size}'
     print(query)
     count = 0
     done = False
@@ -186,6 +214,8 @@ def density(from_size, to_size):
         return [ density(from_size, middle), density(middle + 1, to_size) ]
 
 def flatten(l):
+    if len(l) == 0:
+        return []
     return flatten(l[0]) + (flatten(l[1:]) if len(l) > 1 else []) if type(l) is list else [l]
 
 def join_intervals(data):
@@ -234,17 +264,17 @@ def load_intervals():
     return intervals
 
 if __name__ == "__main__":
-    pass
     # repo_list = load_repo_list('repos.txt')
     # for repo in repo_list:
     #     try:
-    #         get_travis(repo)
-    #     except:
+    #         get_information(repo)
+    #     except Exception as e:
     #         print(f'Error getting {repo}')
-    #     time.sleep(5)
+    #         print(e)
+    #     time.sleep(3)
     # get_information('Spirals-Team/repairnator')
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt', from=1500, to=1520)
-    # compute_density(1000, 2000)
-    for interval in load_intervals():
-        find_repos('repos.txt', interval[0], interval[1])
+    compute_density(0, 100000)
+    # for interval in load_intervals():
+    #     find_repos('repos.txt', interval[0], interval[1])
