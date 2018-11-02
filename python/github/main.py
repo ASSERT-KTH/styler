@@ -41,11 +41,9 @@ def find_repos(file, from_size, to_size):
         try:
             page = codes_iter.__next__();
             repo_name = page.repository.full_name
-            print(repo_name)
             count += 1
             repos.add(repo_name)
             if count >= 30:
-                print("save")
                 save_repos(file, repos)
                 count = 0
                 time.sleep(15)
@@ -275,6 +273,7 @@ if __name__ == "__main__":
     # get_information('Spirals-Team/repairnator')
     # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
     # find_repos('repos.txt', from=1500, to=1520)
-    compute_density(0, 100000)
-    # for interval in load_intervals():
-    #     find_repos('repos.txt', interval[0], interval[1])
+    # compute_density(0, 100000)
+    for interval in load_intervals():
+        print(f'get {interval}')
+        find_repos('repos.txt', interval[0], interval[1])
