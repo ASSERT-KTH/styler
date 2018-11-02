@@ -12,6 +12,11 @@ from datetime import datetime, timedelta
 from functools import reduce
 import csv
 import random
+import sys
+import itertools
+
+from matplotlib import pyplot as plt
+from matplotlib_venn import venn3
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -135,12 +140,25 @@ def load_repo_list(path):
         repo_list = file.read().split('\n')
     return repo_list;
 
+def load_downloaded_repo_list(path):
+    repo_list = []
+    with open(path, 'r') as file:
+        repo_list = file.read().split('\n')
+    repo_list = map( lambda line: "/".join(line.split('/')[1:3]), repo_list)
+    return repo_list;
+
 def open_checkstyle(path):
     content = ''
     with open(path, 'r') as f:
         content = f.read()
     parsed_xml =  ET.fromstring(content)
     return parsed_xml
+
+def open_travis(path):
+    content = ''
+    with open(path, 'r') as f:
+        content = f.read()
+    return content
 
 def get_cs_properties(cs):
     return { n.attrib['name']:n.attrib['value'] for n in cs if n.tag == 'property'}
@@ -154,14 +172,36 @@ def load_info(folder):
         data = json.load(f)
     return data
 
+def has_activity(folder):
+    info = load_info(folder)
+    return info['past_week_commits'] > 0
+
+def has_checkstyle(folder):
+    try:
+        open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
+    except:
+        return False
+    return True
+
+def has_travis(folder):
+    try:
+        open_travis(os.path.join(folder, '.travis.yml'))
+    except:
+        return False
+    return True
+
 def stats(folders):
     count_modules = dict()
     count_properties = dict()
+    count = 0
     for folder in folders:
         info = load_info(folder)
-        # if info['past_week_commits'] == 0:
-        #     continue
-        cs_rules = open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
+        if info['past_week_commits'] == 0:
+            continue
+        try:
+            cs_rules = open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
+        except:
+            continue
         cs_properties = get_cs_properties(cs_rules)
         cs_modules = get_cs_modules(cs_rules)
         for module in cs_modules:
@@ -171,11 +211,13 @@ def stats(folders):
                 count_properties[key] = {}
             count_properties[key][value] = count_properties[key].get(value, 0) + 1
         print(cs_properties)
+        count+=1
     # Compute totals of count_properties
     for key, value in count_properties.items():
         count_properties[key]['total'] = sum(value.values())
     print(count_modules)
     print(count_properties)
+    print(count)
 
 def load_folders(file):
     dirs = []
@@ -261,19 +303,57 @@ def load_intervals():
                 intervals.append((int(row[0]), int(row[1])))
     return intervals
 
+def findsubsets(S):
+    return flatten([ list(itertools.combinations(S,r)) for r in range(0, len(S) + 1) ])
+
+def filters(filters_list, list_to_be_filtered):
+    if len(filters_list) == 0:
+        return list_to_be_filtered
+    else:
+        filter_to_apply = filters_list.pop()
+        return filters(filters_list, filter(filter_to_apply, list_to_be_filtered))
+
+def venn(sets, repos):
+    groups = findsubsets(sets.keys())
+    result = dict()
+    for group in groups:
+        group_filters = [ sets[key] for key in group ]
+        result[group] = len(list(filters(group_filters, repos)))
+    return result
+
 if __name__ == "__main__":
-    # repo_list = load_repo_list('repos.txt')
-    # for repo in repo_list:
-    #     try:
-    #         get_information(repo)
-    #     except Exception as e:
-    #         print(f'Error getting {repo}')
-    #         print(e)
-    #     time.sleep(3)
+    if sys.argv[1] == "dl":
+        repo_list = set(load_repo_list('repos.txt')) - set(load_repo_list('downloaded.txt'))
+        for repo in repo_list:
+            try:
+                get_information(repo)
+            except Exception as e:
+                print(f'Error getting {repo}')
+                print(e)
+    if sys.argv[1] == "stats":
+        repos = load_folders('downloaded.txt')
+        # stats(list(set(load_folders('checkstyle.txt')) & set(load_folders('travis.txt'))))
+        # print(len(repos))
+        # cs = list(filter(has_checkstyle ,repos))
+        # print(len(cs))
+        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
+        result = venn(sets, repos)
+        sets_values = []
+        sets_values.append(result[('checkstyle',)])
+        sets_values.append(result[('activity',)])
+        sets_values.append(result[('checkstyle', 'activity')])
+        sets_values.append(result[('travis',)])
+        sets_values.append(result[('checkstyle', 'travis')])
+        sets_values.append(result[('activity', 'travis')])
+        sets_values.append(result[('checkstyle', 'activity', 'travis')])
+        sets_labels = ('checkstyle', 'activity', 'travis')
+        print(sets_values)
+        venn3(subsets = sets_values, set_labels = sets_labels)
+        plt.show()
     # get_information('Spirals-Team/repairnator')
-    # stats(list(set(load_folders('travis.txt')) & set(load_folders('checkstyle.txt'))))
+    #
     # find_repos('repos.txt', from=1500, to=1520)
     # compute_density(0, 100000)
-    for interval in load_intervals():
-        print(f'get {interval}')
-        find_repos('repos.txt', interval[0], interval[1])
+    # for interval in load_intervals():
+    #     print(f'get {interval}')
+    #     find_repos('repos.txt', interval[0], interval[1])
