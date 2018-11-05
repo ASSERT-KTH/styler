@@ -28,6 +28,7 @@ for owner_key in config['DEFAULT']['githubKeys'].split(','):
     owner, key = owner_key.split(':')
     print(owner)
     githubs.append(Github(key));
+print("------------")
 
 def g():
     return random.choice(githubs)
@@ -144,7 +145,7 @@ def load_downloaded_repo_list(path):
     repo_list = []
     with open(path, 'r') as file:
         repo_list = file.read().split('\n')
-    repo_list = map( lambda line: "/".join(line.split('/')[1:3]), repo_list)
+    repo_list = [ "/".join(line.split('/')[2:4]) for line in repo_list ]
     return repo_list;
 
 def open_checkstyle(path):
@@ -282,6 +283,7 @@ def join_intervals(data):
             count = 0
     return new_data
 
+
 def compute_density(from_size, to_size):
     data = join_intervals(flatten(density(from_size, to_size)))
     data_mapped = map(lambda res: f'{res["from_size"]},{res["to_size"]},{res["count"]}', data)
@@ -322,8 +324,13 @@ def venn(sets, repos):
     return result
 
 if __name__ == "__main__":
+    os.popen("find . -name 'info.json' > downloaded.txt").read()
     if sys.argv[1] == "dl":
-        repo_list = set(load_repo_list('repos.txt')) - set(load_repo_list('downloaded.txt'))
+        if len(sys.argv) >= 3:
+            repo_list = sys.argv[2:]
+        else:
+            repo_list = set(load_repo_list('repos.txt')) - set(load_downloaded_repo_list('downloaded.txt'))
+        print(f'{len(repo_list)} repos to download')
         for repo in repo_list:
             try:
                 get_information(repo)
@@ -350,6 +357,10 @@ if __name__ == "__main__":
         print(sets_values)
         venn3(subsets = sets_values, set_labels = sets_labels)
         plt.show()
+    if sys.argv[1] == "list":
+        repos = load_folders('downloaded.txt')
+        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
+        print("\n".join(sorted(filtered_repos, key=str.lower)))
     # get_information('Spirals-Team/repairnator')
     #
     # find_repos('repos.txt', from=1500, to=1520)
