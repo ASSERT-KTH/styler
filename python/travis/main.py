@@ -11,6 +11,12 @@ __base_dir = "/home/benjaminl/Documents/travis-ci-build-log-dataset"
 def get_dir(dir):
     return os.path.join(__base_dir, dir)
 
+def get_repo_dir(repo):
+    return get_dir(f'./{repo}')
+
+def get_build_dir(repo, build):
+    return os.path.join(get_repo_dir(repo), f'./{build}')
+
 def get_travis(endpoint, payload={}):
     r = requests.get('https://api.travis-ci.org' + endpoint, params=payload)
     print(f'Get {r.url}')
@@ -49,15 +55,13 @@ def save_json(dir, file_name, content):
 
 def download_job_info(dir, job_id):
     folder = os.path.join(dir, str(job_id))
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    create_dir(folder)
     log = get_job_log(job_id)
     save_file(folder, 'log.txt', log)
 
 def download_build_info(dir, build_id):
     folder = os.path.join(dir, str(build_id))
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    create_dir(folder)
     build = get_build(build_id)
     save_json(folder, 'info.json', build)
     jobs = build['matrix']
@@ -68,8 +72,7 @@ def download_build_info(dir, build_id):
 
 def download_repo_info(dir, repo):
     folder = os.path.join(dir, repo)
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    create_dir(folder)
     builds = get_builds(repo, max_builds_collected=100)
     builds_id = [ build['id'] for build in builds ]
     for build_id in builds_id:
@@ -85,15 +88,18 @@ def delete_dir(path):
 def tar_dir(path):
     folder_name = path.split('/')[-1]
     parent_dir = "/".join(path.split('/')[:-1])
-    with tarfile.open(f'{parent_dir}/{folder_name}.tar.gz', "w:bz2") as tar_handle:
+    with tarfile.open(f'{parent_dir}/{folder_name}.tar.bz', "w:bz2") as tar_handle:
         for root, dirs, files in os.walk(path):
             for file in files:
                 file_path = os.path.join(root, file)
                 tar_handle.add(file_path, arcname=file_path[len(path):])
 
+def create_dir(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
 if __name__ == "__main__":
-    if not os.path.exists(__base_dir):
-        os.makedirs(__base_dir)
+    create_dir(__base_dir)
     if sys.argv[1] == "get":
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
