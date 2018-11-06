@@ -4,7 +4,15 @@ import json
 import os
 import os
 import shutil
+import threading
+import time
 import tarfile
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+token = config['DEFAULT']['token']
 
 __base_dir = "/home/benjaminl/Documents/travis-ci-build-log-dataset"
 
@@ -18,7 +26,10 @@ def get_build_dir(repo, build):
     return os.path.join(get_repo_dir(repo), f'./{build}')
 
 def get_travis(endpoint, payload={}):
-    r = requests.get('https://api.travis-ci.org' + endpoint, params=payload)
+    headers = {}
+    if token:
+        headers['Authorization'] = f'token {token}'
+    r = requests.get(f'https://api.travis-ci.org{endpoint}', headers=headers, params=payload)
     print(f'Get {r.url}')
     return r;
 
@@ -105,3 +116,29 @@ if __name__ == "__main__":
             repo_list = sys.argv[2:]
             for repo in repo_list:
                 download_repo_info(__base_dir, repo)
+    if sys.argv[1] == "get-pool":
+        if len(sys.argv) >= 4:
+            number_of_threads = int(sys.argv[2])
+            repo_list = sys.argv[3:]
+
+            print(repo_list)
+
+            def get_repo():
+                if len(repo_list) > 0:
+                    return repo_list.pop()
+                return False
+
+            def process_download(get_next):
+                repo = get_next()
+                while repo:
+                    print(f'Get {repo}')
+                    download_repo_info(__base_dir, repo)
+                    repo = get_next()
+
+            threads = []
+            for i in range(number_of_threads):
+                threads.append(threading.Thread(target=process_download, args=(get_repo,)))
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
