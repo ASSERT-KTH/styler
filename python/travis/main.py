@@ -115,7 +115,10 @@ if __name__ == "__main__":
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
             for repo in repo_list:
-                download_repo_info(__base_dir, repo)
+                try:
+                    download_repo_info(__base_dir, repo)
+                except:
+                    print(repo)
     if sys.argv[1] == "get-pool":
         if len(sys.argv) >= 4:
             number_of_threads = int(sys.argv[2])
