@@ -61,8 +61,14 @@ def save_file(dir, file_name, content):
         f.write(content)
 
 def save_json(dir, file_name, content):
-    with open(os.path.join(dir, './info.json'), 'w') as f:
+    with open(os.path.join(dir, file_name), 'w') as f:
         json.dump(content, f)
+
+def open_json(file):
+    with open(file) as f:
+        data = json.load(f)
+        return data
+    return None
 
 def download_job_info(dir, job_id):
     folder = os.path.join(dir, str(job_id))

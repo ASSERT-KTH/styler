@@ -1,6 +1,7 @@
 import tarfile
 import os
 from main import *
+from functools import reduce
 import atexit
 import glob
 
@@ -41,6 +42,9 @@ def get_logs_id(repo, build):
 
 def get_builds_id(repo):
     return [ tar.split('/')[-1].split('.')[0] for tar in glob.glob(f'{get_repo_dir(repo)}/*.tar.bz') ]
+
+def number_of_builds(repo):
+    return len(glob.glob(f'{get_repo_dir(repo)}/*.tar.bz'))
 
 def parse_cs_error(plain_error):
     (file, error) = (None, None)
@@ -89,7 +93,7 @@ def analyse_repo(repo):
         for log_id in logs_id:
             cs_errors += find_cs_errors(get_logs(repo, build_id, log_id))
         close_build(repo, build_id)
-
+    print(f'Found {len(cs_errors)} cs errors/warnings')
     return cs_errors
 
 def get_repo_names():
@@ -102,23 +106,29 @@ def count_type(array):
     return res
 
 if __name__ == '__main__':
-    repos = get_repo_names()
-    # repos = ['Spirals-Team/repairnator', 'googleapis/google-oauth-java-client']
-    res = {}
-    try:
-        for repo in repos:
-            print(f'Analyse {repo}')
-            res[repo] = analyse_repo(repo)
-    except Exception as e:
-        print('somethig went wrong')
-        print(e)
-    except KeyboardInterrupt:
-        print('ctrl-c')
+    if False:
+        repos = get_repo_names()
+        # repos = ['Spirals-Team/repairnator', 'googleapis/google-oauth-java-client']
+        res = {}
+        try:
+            for repo in repos:
+                print(f'Analyse {repo}')
+                res[repo] = analyse_repo(repo)
+        except Exception as e:
+            print('somethig went wrong')
+            print(e)
+        except KeyboardInterrupt:
+            print('ctrl-c')
+        save_json('./', 'results.json', res)
+    else:
+        res = open_json('./results.json')
     print({ key:count_type(item) for key, item in res.items() if len(item) > 0 })
+    unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
+    print('\n'.join(unique_errors))
 
 @atexit.register
 def clean_up():
-    print(opened_builds)
+    print('Close repos')
     for repo, builds in opened_builds.items():
         for build in builds:
             close_build(repo, build)
