@@ -93,11 +93,12 @@ def analyse_repo(repo):
         for log_id in logs_id:
             cs_errors += find_cs_errors(get_logs(repo, build_id, log_id))
         close_build(repo, build_id)
-    print(f'Found {len(cs_errors)} cs errors/warnings')
+    print(f'Found {len(cs_errors)} cs errors/warnings in {repo}.')
     return cs_errors
 
 def get_repo_names():
-    return [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
+    repos = [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
+    return [ repo for repo in repos if number_of_builds(repo) > 0 ]
 
 def count_type(array):
     res = {'error': 0, 'warning': 0, 'ukn': 0}
@@ -106,25 +107,31 @@ def count_type(array):
     return res
 
 if __name__ == '__main__':
-    if False:
+    if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
+        print(f'Found {len(repos)} repos')
         # repos = ['Spirals-Team/repairnator', 'googleapis/google-oauth-java-client']
         res = {}
         try:
             for repo in repos:
-                print(f'Analyse {repo}')
+                print(f'Analyse {repo}, with {number_of_builds(repo)} builds')
                 res[repo] = analyse_repo(repo)
+            save_json('./', 'results.json', res)
         except Exception as e:
             print('somethig went wrong')
             print(e)
         except KeyboardInterrupt:
             print('ctrl-c')
-        save_json('./', 'results.json', res)
+
     else:
         res = open_json('./results.json')
-    print({ key:count_type(item) for key, item in res.items() if len(item) > 0 })
+    with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
+    print(with_errors)
     unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
     print('\n'.join(unique_errors))
+    print(f'{len(unique_errors)} unique errors')
+    repos_len = len(get_repo_names())
+    print(f'{len(with_errors)}/{repos_len}')
 
 @atexit.register
 def clean_up():
