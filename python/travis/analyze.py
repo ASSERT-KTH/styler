@@ -81,6 +81,7 @@ def analyse_repo(repo):
 
     builds_id = get_builds_id(repo)
     cs_errors = []
+    result = {}
     for build_id in builds_id:
         open_build(repo, build_id)
         logs_id = get_logs_id(repo, build_id)
@@ -123,10 +124,15 @@ if __name__ == '__main__':
             print('ctrl-c')
         print_res(repos,res)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'list':
-        repos = get_repo_names()
-        print('repo,count')
-        for repo in repos:
-            print(f'{repo},{number_of_builds(repo)}')
+        repos = sorted(get_repo_names(min_size=1), key=str.lower)
+        if len(sys.argv) >= 3 and sys.argv[2] == 'csv':
+            out = 'repo,count'
+            repo_with_count = { repo:number_of_builds(repo) for repo in repos }
+            ordered_res = [ (key, str(repo_with_count[key])) for key in sorted(repo_with_count, key=repo_with_count.get) ]
+            out += '\n'.join([ ','.join(line) for line in  ordered_res])
+        else:
+            out = '\n'.join(repos)
+        save_file('./', 'list.txt', out)
     else:
         res = open_json('./results.json')
         print_res(repos,res)
