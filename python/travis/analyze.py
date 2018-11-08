@@ -34,17 +34,10 @@ def close_build(repo, build):
     delete_dir(get_build_dir(repo, build))
     opened_builds[repo].remove(build)
 
-
 def get_logs_id(repo, build):
     if not build_is_open(repo, build):
         open_build(repo, build)
     return [ tar.split('/')[-2] for tar in glob.glob(f'{get_build_dir(repo, build)}/*/log.txt') ]
-
-def get_builds_id(repo):
-    return [ tar.split('/')[-1].split('.')[0] for tar in glob.glob(f'{get_repo_dir(repo)}/*.tar.bz') ]
-
-def number_of_builds(repo):
-    return len(glob.glob(f'{get_repo_dir(repo)}/*.tar.bz'))
 
 def parse_cs_error(plain_error):
     (file, error) = (None, None)
@@ -96,10 +89,6 @@ def analyse_repo(repo):
         close_build(repo, build_id)
     print(f'Found {len(cs_errors)} cs errors/warnings in {repo}.')
     return cs_errors
-
-def get_repo_names():
-    repos = [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
-    return [ repo for repo in repos if number_of_builds(repo) > 0 ]
 
 def count_type(array):
     res = {'error': 0, 'warning': 0, 'ukn': 0}

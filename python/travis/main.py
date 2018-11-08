@@ -118,6 +118,16 @@ def create_dir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
 
+def get_repo_names():
+    repos = [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
+    return [ repo for repo in repos if number_of_builds(repo) > 0 ]
+
+def get_builds_id(repo):
+    return [ tar.split('/')[-1].split('.')[0] for tar in glob.glob(f'{get_repo_dir(repo)}/*.tar.bz') ]
+
+def number_of_builds(repo):
+    return len(glob.glob(f'{get_repo_dir(repo)}/*.tar.bz'))
+
 if __name__ == "__main__":
     create_dir(__base_dir)
     if sys.argv[1] == "get":
