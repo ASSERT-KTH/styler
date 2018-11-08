@@ -85,6 +85,7 @@ def find_cs_errors(logs):
     return [parse_cs_error(line) for line in plain_text_cs_errors]
 
 def analyse_repo(repo):
+
     builds_id = get_builds_id(repo)
     cs_errors = []
     for build_id in builds_id:
@@ -106,6 +107,15 @@ def count_type(array):
         res[e['type']] += 1
     return res
 
+def print_res(repos, res):
+    with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
+    print(with_errors)
+    unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
+    print('\n'.join(unique_errors))
+    print(f'{len(unique_errors)} unique errors')
+    repos_len = len(get_repo_names())
+    print(f'{len(with_errors)}/{repos_len}')
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -122,16 +132,16 @@ if __name__ == '__main__':
             print(e)
         except KeyboardInterrupt:
             print('ctrl-c')
-
+        print_res(repos,res)
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'list':
+        repos = get_repo_names()
+        print('repo,count')
+        for repo in repos:
+            print(f'{repo},{number_of_builds(repo)}')
     else:
         res = open_json('./results.json')
-    with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
-    print(with_errors)
-    unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
-    print('\n'.join(unique_errors))
-    print(f'{len(unique_errors)} unique errors')
-    repos_len = len(get_repo_names())
-    print(f'{len(with_errors)}/{repos_len}')
+        print_res(repos,res)
+
 
 @atexit.register
 def clean_up():

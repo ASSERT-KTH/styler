@@ -25,6 +25,9 @@ def get_repo_dir(repo):
 def get_build_dir(repo, build):
     return os.path.join(get_repo_dir(repo), f'./{build}')
 
+def get_job_dir(repo, build, job):
+    return os.path.join(get_build_dir(repon build), f'./{job}')
+
 def get_travis(endpoint, payload={}):
     headers = {}
     if token:
@@ -70,30 +73,30 @@ def open_json(file):
         return data
     return None
 
-def download_job_info(dir, job_id):
-    folder = os.path.join(dir, str(job_id))
+def download_job_info(repo, builds_id, job_id):
+    folder = get_job_dir(repo, builds_id, job_id)
     create_dir(folder)
     log = get_job_log(job_id)
     save_file(folder, 'log.txt', log)
 
-def download_build_info(dir, build_id):
-    folder = os.path.join(dir, str(build_id))
+def download_build_info(repo, build_id):
+    folder = get_build_dir(repo, build_id)
     create_dir(folder)
     build = get_build(build_id)
     save_json(folder, 'info.json', build)
     jobs = build['matrix']
-    jobs_id = [ job['id'] for job in jobs ]
+    jobs_id = [ str(job['id']) for job in jobs ]
     for job_id in jobs_id:
         download_job_info(folder, job_id)
     tar_and_delete(folder)
 
-def download_repo_info(dir, repo):
-    folder = os.path.join(dir, repo)
+def download_repo_info(repo):
+    folder = get_repo_dir(repo)
     create_dir(folder)
     builds = get_builds(repo, max_builds_collected=100)
-    builds_id = [ build['id'] for build in builds ]
+    builds_id = [ str(build['id']) for build in builds ]
     for build_id in builds_id:
-        download_build_info(folder, build_id)
+        download_build_info(repo, build_id)
 
 def tar_and_delete(path):
     tar_dir(path)
@@ -122,7 +125,7 @@ if __name__ == "__main__":
             repo_list = sys.argv[2:]
             for repo in repo_list:
                 try:
-                    download_repo_info(__base_dir, repo)
+                    download_repo_info(repo)
                 except:
                     print(repo)
     if sys.argv[1] == "get-pool":
@@ -141,7 +144,7 @@ if __name__ == "__main__":
                 repo = get_next()
                 while repo:
                     print(f'Get {repo}')
-                    download_repo_info(__base_dir, repo)
+                    download_repo_info(repo)
                     repo = get_next()
 
             threads = []
