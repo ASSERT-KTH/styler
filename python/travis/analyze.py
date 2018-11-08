@@ -41,22 +41,24 @@ def get_logs_id(repo, build):
 
 def parse_cs_error(plain_error):
     (file, error) = (None, None)
-    if ': warning:' in plain_error:
-        type = 'warning'
-        (file, error) = plain_error.split(f': {type}:')
-    elif ': error:' in plain_error:
-        type = 'error'
-        (file, error) = plain_error.split(f': {type}:')
-    elif '[ERROR]' in plain_error:
-        type = 'error'
-        (file, error) = plain_error.split(': ')[:2]
-    elif '[WARNING]' in plain_error:
-        type = 'error'
-        (file, error) = plain_error.split(': ')[:2]
-    else:
-        type = 'ukn'
-        (file, error) = plain_error.split(': ')[:2]
-
+    try:
+        if ': warning:' in plain_error:
+            type = 'warning'
+            (file, error) = plain_error.split(f': {type}:')
+        elif ': error:' in plain_error:
+            type = 'error'
+            (file, error) = plain_error.split(f': {type}:')
+        elif '[ERROR]' in plain_error:
+            type = 'error'
+            (file, error) = plain_error.split(': ')[:2]
+        elif '[WARNING]' in plain_error:
+            type = 'error'
+            (file, error) = plain_error.split(': ')[:2]
+        else:
+            type = 'ukn'
+            (file, error) = plain_error.split(': ')[:2]
+    except:
+        return None
 
     return {'type': type, 'plain_text': plain_error, 'file': file, 'error': error}
 
@@ -75,21 +77,25 @@ def find_cs_errors(logs):
             if prev_line_maven_cs and 'Starting audit...' in log:
                 in_cs_audit = True
             prev_line_maven_cs = False
-    return [parse_cs_error(line) for line in plain_text_cs_errors]
+    not_none = lambda x: x is not None 
+    return list(filter(not_none, [parse_cs_error(line) for line in plain_text_cs_errors]))
 
 def analyse_repo(repo):
 
     builds_id = get_builds_id(repo)
-    cs_errors = []
     result = {}
+    count = 0
     for build_id in builds_id:
+        result[build_id] = {}
         open_build(repo, build_id)
         logs_id = get_logs_id(repo, build_id)
         for log_id in logs_id:
-            cs_errors += find_cs_errors(get_logs(repo, build_id, log_id))
+            cs_errors = find_cs_errors(get_logs(repo, build_id, log_id))
+            result[build_id][log_id] = cs_errors
+            count += len(cs_errors)
         close_build(repo, build_id)
-    print(f'Found {len(cs_errors)} cs errors/warnings in {repo}.')
-    return cs_errors
+    print(f'Found {count} cs errors/warnings in {repo}.')
+    return result
 
 def count_type(array):
     res = {'error': 0, 'warning': 0, 'ukn': 0}
@@ -98,13 +104,14 @@ def count_type(array):
     return res
 
 def print_res(repos, res):
-    with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
-    print(with_errors)
-    unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
-    print('\n'.join(unique_errors))
-    print(f'{len(unique_errors)} unique errors')
-    repos_len = len(get_repo_names())
-    print(f'{len(with_errors)}/{repos_len}')
+    pass
+    # with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
+    # print(with_errors)
+    # unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
+    # print('\n'.join(unique_errors))
+    # print(f'{len(unique_errors)} unique errors')
+    # repos_len = len(get_repo_names())
+    # print(f'{len(with_errors)}/{repos_len}')
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
