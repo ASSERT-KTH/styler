@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import tarfile
 import os
 from main import *
 from functools import reduce
 import atexit
 import glob
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 opened_builds = {}
 
@@ -77,7 +82,7 @@ def find_cs_errors(logs):
             if prev_line_maven_cs and 'Starting audit...' in log:
                 in_cs_audit = True
             prev_line_maven_cs = False
-    not_none = lambda x: x is not None 
+    not_none = lambda x: x is not None
     return list(filter(not_none, [parse_cs_error(line) for line in plain_text_cs_errors]))
 
 def analyse_repo(repo):
@@ -103,8 +108,61 @@ def count_type(array):
         res[e['type']] += 1
     return res
 
-def print_res(repos, res):
-    pass
+def analyse_builds(builds):
+    cs_errors = []
+    build_with_errors = []
+    error_type_count = {'error': 0, 'warning': 0, 'ukn': 0}
+    for build_key in sorted(builds.keys()):
+        build = builds[build_key]
+        n_errors = False
+        for errors in build.values():
+            if len(errors) > 0:
+                errors_in_the_log = [ error['error'] for error in errors ]
+                for error in errors:
+                    error_type_count[error['type']] += 1
+                cs_errors += errors_in_the_log
+                n_errors += len(errors_in_the_log)
+        build_with_errors.append(n_errors)
+
+    result = {}
+    result['number_of_builds'] = len(builds)
+    result['number_of_build_with_errors'] = sum(build_with_errors)
+    result['number_of_errors'] = len(cs_errors)
+    result['number_of_unique_errors'] = len(set(cs_errors))
+    def density_char(a):
+        if a==0:
+            return '_'
+        elif a < 0.25:
+            return chr(9617) # 9618
+        elif a < 0.5:
+            return chr(9618) # 9618
+        elif a < 0.75:
+            return chr(9619) # 9618
+        else:
+            return chr(9608)  # █ = chr(9608)
+    max_errors = max(build_with_errors)
+    result['build_with_errors'] = ''.join([ density_char(build / max_errors) for build in build_with_errors ])
+    result['max_errors_in_a_single_build'] = max_errors
+    result['error_type_count'] = error_type_count
+    return result
+
+def print_res(res):
+    repos = res.keys()
+
+    def has_errors(repo):
+        builds = res[repo]
+        for build in builds.values():
+            for errors in build.values():
+                if len(errors) > 0:
+                    return True
+        return False
+
+    repo_with_errors = { repo:builds for repo, builds in res.items() if has_errors(repo) }
+    print(f'Found {len(repo_with_errors)} repos with cs errors in the logs.')
+    synthesis = { repo:analyse_builds(builds) for repo, builds in repo_with_errors.items()}
+
+    pp.pprint(synthesis)
+
     # with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
     # print(with_errors)
     # unique_errors = list(set(reduce(lambda acc, cur: acc + [ i['error'] for i in cur ], res.values(), [])))
@@ -129,7 +187,7 @@ if __name__ == '__main__':
             print(e)
         except KeyboardInterrupt:
             print('ctrl-c')
-        print_res(repos,res)
+        print_res(res)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'list':
         repos = sorted(get_repo_names(min_size=1), key=str.lower)
         if len(sys.argv) >= 3 and sys.argv[2] == 'csv':
@@ -142,7 +200,9 @@ if __name__ == '__main__':
         save_file('./', 'list.txt', out)
     else:
         res = open_json('./results.json')
-        print_res(repos,res)
+        repos = res.keys()
+        print(f'Found {len(repos)} repos')
+        print_res(res)
 
 
 @atexit.register
