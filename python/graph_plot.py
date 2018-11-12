@@ -95,7 +95,7 @@ def protocol6_subplot(results, repair_tool, ax, y_axis=True):
 
 def plot_repaired_files(results):
 
-    counts = ('naturalize', 'naturalize_sniper', 'codebuff', 'codebuff_sniper', 'both_sniper')
+    counts = ('naturalize', 'codebuff', 'both_sniper')
 
     barWidth = 1. / (len(counts) + 1)
     bars = [[] for i in range(len(counts)) ]
@@ -426,7 +426,7 @@ def load_results(dir):
 if __name__ == "__main__":
     fig_name = "figure"
     now = datetime.datetime.now()
-    if ( len(sys.argv) > 2):
+    if len(sys.argv) > 2:
         type = sys.argv[1]
         save = False
         show = True
