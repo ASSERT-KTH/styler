@@ -147,6 +147,10 @@ def analyse_builds(builds):
     return result
 
 def print_res(res):
+    synthesis = get_synthesis(res)
+    pp.pprint(synthesis)
+
+def get_synthesis(res):
     repos = res.keys()
 
     def has_errors(repo):
@@ -161,7 +165,7 @@ def print_res(res):
     print(f'Found {len(repo_with_errors)} repos with cs errors in the logs.')
     synthesis = { repo:analyse_builds(builds) for repo, builds in repo_with_errors.items()}
 
-    pp.pprint(synthesis)
+    return synthesis
 
     # with_errors = { key:count_type(item) for key, item in res.items() if len(item) > 0 }
     # print(with_errors)
@@ -198,6 +202,13 @@ if __name__ == '__main__':
         else:
             out = '\n'.join(repos)
         save_file('./', 'list.txt', out)
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'utf-8':
+        res = open_json('./results.json')
+        repos = res.keys()
+        print(f'Found {len(repos)} repos')
+        synthesis = get_synthesis(res)
+        plots = [ f'{repo:40s}{synthesis[repo]["build_with_errors"]}' for repo in synthesis.keys()]
+        print('\n'.join(plots))
     else:
         res = open_json('./results.json')
         repos = res.keys()
