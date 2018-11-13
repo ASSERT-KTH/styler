@@ -44,28 +44,116 @@ def get_logs_id(repo, build):
         open_build(repo, build)
     return [ tar.split('/')[-2] for tar in glob.glob(f'{get_build_dir(repo, build)}/*/log.txt') ]
 
+def error_check_parser(error):
+    check = ''
+
+    error = error.lower()
+
+    if 'unused import' in error or 'import.unused' in error:
+        check = 'UnusedImports'
+    elif 'RedundantImport' in error:
+        check = 'RedundantImport'
+    elif 'is not followed by whitespace' in error or 'is not preceded with whitespace' in error or 'whitespacearound' in error:
+        check = 'WhitespaceAround' # after or before
+    elif 'must use tab characters' in error or 'has leading space characters' in error or 'tabs only.' in error:
+        check = 'RegexpSinglelineJava'
+    elif 'annotation' in error and 'should be' in error:
+        check = 'AnnotationLocation'
+    elif 'a static member import should be avoided' in error:
+        check = 'AvoidStaticImport'
+    elif 'Expected' in error and 'tag' in error or 'expected @param tag' in error:
+        check = 'JavadocMethod'
+    elif 'contains' in error and 'tab' in error:
+        check = 'FileTabCharacter'
+    elif 'has trailing spaces' in error or 'trailing whitespace' in error:
+        check = 'RegexpSingleline'
+    elif 'should end with a period' in error or 'html tag' in error:
+        check = 'JavadocStyle'
+    elif 'incorrect indentation' in error:
+        check = 'Indentation'
+    elif 'form of import' in error and 'avoided' in error and '*' in error:
+        check = 'AvoidStarImport'
+    elif 'is followed by whitespace' in error:
+        check = 'ParenPad'
+    elif 'redundant' in error and 'modifier' in error:
+        check = 'RedundantModifier'
+    elif 'wrong' in error and 'order' in error:
+        check = 'CustomImportOrder'
+    elif 'is longer than' in error:
+        check = 'LineLength'
+    elif 'name' in error and 'must match pattern' in error:
+        check = 'NamePattern'
+    elif 'missing' in error and 'javadoc' in error:
+        check = 'JavadocMethod'
+    elif 'magic number' in error:
+        check = 'MagicNumber'
+    elif 'more than' in error and 'parameters' in error:
+        check = 'ParameterNumber'
+    elif 'should be final' in error or 'localvariablecouldbefinal' in error:
+        check = 'FinalLocalVariable'
+    elif '}' in error and 'should be' in error:
+        check = 'Rcurly'
+    elif '{' in error and 'should' in error:
+        check = 'Lcurly'
+    elif 'the string' in error and 'appears' in error and 'times' in error:
+        check = 'MultipleStringLiterals'
+    elif 'file does not end with a newline' in error:
+        check = 'NewlineAtEndOfFile'
+    elif 'must have at least one statement' in error:
+        check = 'EmptyBlock'
+    elif 'variable' in error and 'must be' in error and 'accessor' in error:
+        check = 'VisibilityModifier'
+    elif 'array brackets at illegal position' in error:
+        check = 'ArrayTypeStyle'
+
+    # print(check)
+    return check
+
+checks_messages = dict()
+
 def parse_cs_error(plain_error):
+    # CustomImportOrder, Indentation, RegexpSingleline, WhitespaceAfter, WhitespaceAfter, UnusedImports
     (file, error) = (None, None)
+    check = ''
     try:
         if ': warning:' in plain_error:
             type = 'warning'
             (file, error) = plain_error.split(f': {type}:')
+            check = error_check_parser(error)
         elif ': error:' in plain_error:
             type = 'error'
             (file, error) = plain_error.split(f': {type}:')
+            # print(error)
+            check = error_check_parser(error)
         elif '[ERROR]' in plain_error:
             type = 'error'
             (file, error) = plain_error.split(': ')[:2]
+            check = error[error.find('[')+1:-1]
+            if not check in checks_messages:
+                checks_messages[check] = []
+            checks_messages[check].append(error)
         elif '[WARNING]' in plain_error:
             type = 'error'
             (file, error) = plain_error.split(': ')[:2]
+            check = error[error.find('[')+1:-1]
+            if not check in checks_messages:
+                checks_messages[check] = []
+            checks_messages[check].append(error)
         else:
             type = 'ukn'
             (file, error) = plain_error.split(': ')[:2]
+            if not error.find('[') is -1:
+                check = error[error.find('[')+1:-1]
+                if not check in checks_messages:
+                    checks_messages[check] = []
+                checks_messages[check].append(error)
+            else:
+                check = error_check_parser(error)
+
     except:
         return None
 
-    return {'type': type, 'plain_text': plain_error, 'file': file, 'error': error}
+    return {'type': type, 'plain_text': plain_error, 'file': file, 'error': error, 'check': check}
 
 def find_cs_errors(logs):
     prev_line_maven_cs = False
@@ -82,8 +170,7 @@ def find_cs_errors(logs):
             if prev_line_maven_cs and 'Starting audit...' in log:
                 in_cs_audit = True
             prev_line_maven_cs = False
-    not_none = lambda x: x is not None
-    return list(filter(not_none, [parse_cs_error(line) for line in plain_text_cs_errors]))
+    return plain_text_cs_errors
 
 def analyse_repo(repo):
 
@@ -91,13 +178,15 @@ def analyse_repo(repo):
     result = {}
     count = 0
     for build_id in builds_id:
-        result[build_id] = {}
         open_build(repo, build_id)
         logs_id = get_logs_id(repo, build_id)
+        cs_errors = []
         for log_id in logs_id:
             cs_errors = find_cs_errors(get_logs(repo, build_id, log_id))
-            result[build_id][log_id] = cs_errors
-            count += len(cs_errors)
+        not_none = lambda x: x is not None
+        cs_errors = list(filter(not_none, [parse_cs_error(line) for line in set(cs_errors)]))
+        result[build_id] = cs_errors
+        count += len(cs_errors)
         close_build(repo, build_id)
     print(f'Found {count} cs errors/warnings in {repo}.')
     return result
@@ -113,15 +202,15 @@ def analyse_builds(builds):
     build_with_errors = []
     error_type_count = {'error': 0, 'warning': 0, 'ukn': 0}
     for build_key in sorted(builds.keys()):
-        build = builds[build_key]
-        n_errors = False
-        for errors in build.values():
-            if len(errors) > 0:
-                errors_in_the_log = [ error['error'] for error in errors ]
-                for error in errors:
-                    error_type_count[error['type']] += 1
-                cs_errors += errors_in_the_log
-                n_errors += len(errors_in_the_log)
+        errors_not_parsed = builds[build_key]
+        n_errors = 0
+        errors = [ parse_cs_error(error['plain_text']) for error in errors_not_parsed]
+        if len(errors) > 0:
+            errors_in_the_log = [ error['error'] for error in errors ]
+            for error in errors:
+                error_type_count[error['type']] += 1
+            cs_errors += errors_in_the_log
+            n_errors += len(errors_in_the_log)
         build_with_errors.append(n_errors)
 
     result = {}
@@ -149,16 +238,18 @@ def analyse_builds(builds):
 def print_res(res):
     synthesis = get_synthesis(res)
     pp.pprint(synthesis)
+    # pp.pprint(set(checks_messages['CustomImportOrder']))
+    # print([ key for key, value in checks_messages.items() if len(value) > 5])
+
 
 def get_synthesis(res):
     repos = res.keys()
 
     def has_errors(repo):
         builds = res[repo]
-        for build in builds.values():
-            for errors in build.values():
-                if len(errors) > 0:
-                    return True
+        for errors in builds.values():
+            if len(errors) > 0:
+                return True
         return False
 
     repo_with_errors = { repo:builds for repo, builds in res.items() if has_errors(repo) }
