@@ -12,6 +12,36 @@ pp = pprint.PrettyPrinter(indent=4)
 
 opened_builds = {}
 
+known_check = (
+'UnusedImports',
+'RedundantImport',
+'WhitespaceAround',
+'RegexpSinglelineJava',
+'AnnotationLocation',
+'AvoidStaticImport',
+'JavadocMethod',
+'FileTabCharacter',
+'RegexpSingleline',
+'JavadocStyle',
+'Indentation',
+'AvoidStarImport',
+'ParenPad',
+'RedundantModifier',
+'CustomImportOrder',
+'LineLength',
+'NamePattern',
+'JavadocMethod',
+'MagicNumber',
+'ParameterNumber',
+'FinalLocalVariable',
+'Rcurly',
+'Lcurly',
+'MultipleStringLiterals',
+'NewlineAtEndOfFile',
+'EmptyBlock',
+'VisibilityModifier',
+'ArrayTypeStyle')
+
 def get_logs(repo, build, job):
     build_folder = get_build_dir(repo, build)
     if not build_is_open(repo, build):
@@ -128,14 +158,14 @@ def parse_cs_error(plain_error):
         elif '[ERROR]' in plain_error:
             type = 'error'
             (file, error) = plain_error.split(': ')[:2]
-            check = error[error.find('[')+1:-1]
+            check = error[error.rfind('[')+1:-1]
             if not check in checks_messages:
                 checks_messages[check] = []
             checks_messages[check].append(error)
         elif '[WARNING]' in plain_error:
             type = 'error'
             (file, error) = plain_error.split(': ')[:2]
-            check = error[error.find('[')+1:-1]
+            check = error[error.rfind('[')+1:-1]
             if not check in checks_messages:
                 checks_messages[check] = []
             checks_messages[check].append(error)
@@ -143,15 +173,17 @@ def parse_cs_error(plain_error):
             type = 'ukn'
             (file, error) = plain_error.split(': ')[:2]
             if not error.find('[') is -1:
-                check = error[error.find('[')+1:-1]
+                check = error[error.rfind('[')+1:-1]
                 if not check in checks_messages:
                     checks_messages[check] = []
                 checks_messages[check].append(error)
             else:
                 check = error_check_parser(error)
-
     except:
         return None
+
+    if check not in known_check:
+        check = error_check_parser(check)
 
     return {'type': type, 'plain_text': plain_error, 'file': file, 'error': error, 'check': check}
 
@@ -201,14 +233,18 @@ def analyse_builds(builds):
     cs_errors = []
     build_with_errors = []
     error_type_count = {'error': 0, 'warning': 0, 'ukn': 0}
+    check_type_count = {}
+
     for build_key in sorted(builds.keys()):
         errors_not_parsed = builds[build_key]
         n_errors = 0
         errors = [ parse_cs_error(error['plain_text']) for error in errors_not_parsed]
         if len(errors) > 0:
-            errors_in_the_log = [ error['error'] for error in errors ]
+            errors_in_the_log = [ error['plain_text'] for error in errors ]
             for error in errors:
                 error_type_count[error['type']] += 1
+                if error['check'] != '':
+                    check_type_count[error['check']] = check_type_count.get(error['check'], 0) + 1
             cs_errors += errors_in_the_log
             n_errors += len(errors_in_the_log)
         build_with_errors.append(n_errors)
@@ -233,6 +269,7 @@ def analyse_builds(builds):
     result['build_with_errors'] = ''.join([ density_char(build / max_errors) for build in build_with_errors ])
     result['max_errors_in_a_single_build'] = max_errors
     result['error_type_count'] = error_type_count
+    result['check_type_count'] = check_type_count
     return result
 
 def print_res(res):
@@ -254,7 +291,9 @@ def get_synthesis(res):
 
     repo_with_errors = { repo:builds for repo, builds in res.items() if has_errors(repo) }
     print(f'Found {len(repo_with_errors)} repos with cs errors in the logs.')
-    synthesis = { repo:analyse_builds(builds) for repo, builds in repo_with_errors.items()}
+    synthesis_repo = { repo:analyse_builds(builds) for repo, builds in repo_with_errors.items()}
+    synthesis = {'repo': synthesis_repo}
+    synthesis['number_of_unique_errors'] = reduce(lambda acc, cur: acc + cur['number_of_unique_errors'], synthesis_repo.values(), 0)
 
     return synthesis
 
