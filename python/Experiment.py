@@ -144,15 +144,32 @@ class Exp_Uglify(Experiment):
         args.append(files_dir)
         return call_java("../jars/codebuff-1.5.1.jar", args)
 
+    def get_files(self, dir):
+        results = dict()
+        ids = os.listdir(dir)
+        for id in ids:
+            results[id] = dict()
+            types = os.listdir(os.path.join(dir, id))
+            for type in types:
+                results[id][type] = dict()
+                modification_ids = os.listdir(os.path.join(dir, id, type))
+                for modification_id in modification_ids:
+                    files = os.listdir(os.path.join(dir, id, type, modification_id))
+                    if len(files) > 0:
+                        results[id][type][modification_id] = files[0]
+        return results
+
     def compute_diffs(self, files_dir, repaired_dir, file_with_cs_errors):
         diffs_count = []
-        for id, file in file_with_cs_errors.items():
-            for modifications in file:
-                if len(modifications["errors"]) > 0:
-                    ugly_path = os.path.join(files_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
-                    repaired_path = os.path.join(repaired_dir, './' + str(id) + '/' + modifications["type"] + "/" + str(modifications["modification_id"]) + "/" + self.corpus.get_files()[id][0])
+        files = self.get_files(repaired_dir)
+        for id in files.keys():
+            for type in files[id].keys():
+                for modification_id in files[id][type].keys():
+                    file_name = files[id][type][modification_id]
+                    ugly_path = os.path.join(files_dir, f'./{id}/{type}/{modification_id}/{file_name}')
+                    repaired_path = os.path.join(repaired_dir, f'./{id}/{type}/{modification_id}/{file_name}')
                     diffs = java_lang_utils.compute_diff_size(ugly_path, repaired_path)
-                    modifications["diffs"] = diffs
+                    # modifications["diffs"] = diffs
                     diffs_count.append(diffs)
         return sum(diffs_count) / len(diffs_count)
 
