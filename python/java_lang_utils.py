@@ -179,31 +179,46 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
 
     return output_file
 
-
-def tokenize_with_white_space(file_path):
+def open_file(file_path):
     with open(file_path) as f:
-        file_lines = f.readlines()
-    file_content = "".join(file_lines)
+        content = f.read()
+    return content
 
+def reformat(whitespace, tokens):
+    result = ''
+    position = 0
+    for ws, t in zip(whitespace, tokens):
+        if ws[0] > 0:
+            position += ws[1]
+            result += str(t.value) + "\n" * ws[0] + " " * position
+        else:
+            result += str(t.value) + " " * ws[1]
+    return result
+
+def tokenize_with_white_space(file_content):
+    position_last_line = 1;
     tokens = tokenizer.tokenize(file_content, parse_comments=True)
     tokens = [ t for t in tokens]
-    deletions_spots = list()
+    whitespace = list()
     for index in range(0, len(tokens)-1):
         tokens_position = tokens[index].position;
         next_token_position = tokens[index+1].position;
         end_of_token = (tokens_position[0], tokens_position[1] + len(tokens[index].value))
         if end_of_token == next_token_position:
-            deletions_spots.append((0,0))
+            whitespace.append((0,0))
         else :
             if ( end_of_token[0] == next_token_position[0] ):
-                deletions_spots.append(( 0, next_token_position[1] - end_of_token[1]))
+                # same line
+                whitespace.append(( 0, next_token_position[1] - end_of_token[1]))
             else:
-                deletions_spots.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - 1))
-    deletions_spots.append((0,1))
-    # rewritten = "".join([str(t[1].value) + "\n"*t[0][0] + " "*t[0][1] for t in zip(deletions_spots, tokens)]);
-
+                # new line
+                whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
+                position_last_line = next_token_position[1]
+    whitespace.append((0,1))
+    # rewritten = reformat(whitespace, tokens)
+    # print(rewritten)
     # return rewritten
-    return deletions_spots, tokens
+    return whitespace, tokens
 
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
     if to_line == -1:
@@ -248,7 +263,8 @@ if __name__ == "__main__":
     elif (sys.argv[1] == "ugly"):
         print(gen_ugly( sys.argv[2], sys.argv[3] ))
     elif (sys.argv[1] == "tokenize_ws"):
-        print(tokenize_with_white_space(sys.argv[2]))
+        whitespace, tokens = tokenize_with_white_space(open_file(sys.argv[2]))
+        # print("\n".join([str(e) for e in zip(whitespace, tokens)]))
     elif (sys.argv[1] == "mix"):
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):
