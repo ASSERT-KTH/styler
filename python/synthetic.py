@@ -2,6 +2,7 @@
 
 import java_lang_utils as jlu
 import checkstyle
+import subprocess
 import os
 from Corpus import *
 import shutil
@@ -64,6 +65,13 @@ injection_operator_types={
 'deletion-newline': (0,0,0,0,1)
 }
 
+def run_diff(fileA, fileB):
+    cmd = f'diff {fileA} {fileB}'
+    # print(cmd)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output.decode("utf-8") 
+
 def gen_errored(corpus, repo_name, id):
     folder = os.path.join(get_repo_dir(repo_name), f'./{id}')
     file =  random.choice(list(corpus.files.values()))
@@ -71,6 +79,7 @@ def gen_errored(corpus, repo_name, id):
     file_name = file[0].split('.')[0]
     done = False
     error = None
+    ugly_file = ""
     while not done:
         if os.path.exists(folder):
             shutil.rmtree(folder)
@@ -87,7 +96,9 @@ def gen_errored(corpus, repo_name, id):
         error = list(cs_result.values())[0]['errors'][0]
         done = True
 
-    shutil.copyfile(file_dir, os.path.join(folder, f'./{file_name}-orig.java'))
+    original_file = os.path.join(folder, f'./{file_name}-orig.java')
+    shutil.copyfile(file_dir, original_file)
+    save_file(folder, 'diff.diff', run_diff(original_file, ugly_file))
 
     report = {}
     report['injection_operator'] = injection_operator
