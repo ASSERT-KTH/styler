@@ -7,6 +7,9 @@ from functools import reduce
 import atexit
 import glob
 import pprint
+from tqdm import tqdm
+
+_OSS_dir = '/home/benjaminl/Documents/dataset-travis-log-oss'
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -305,6 +308,47 @@ def get_synthesis(res):
     # repos_len = len(get_repo_names())
     # print(f'{len(with_errors)}/{repos_len}')
 
+def get_oss_dir(dir):
+    return os.path.join(_OSS_dir, dir)
+
+def get_oss_repo_dir(repo):
+    return get_oss_dir(f'./java_logs/{repo}')
+
+def get_oss_repo_names():
+    return [ repo for repo in os.listdir(get_oss_dir('java_logs')) if os.path.isdir(get_oss_repo_dir(repo)) ]
+
+def get_oss_builds_id(repo):
+    return list(set([ log_file.split('/')[-1].split('_')[0] for log_file in os.listdir(get_oss_repo_dir(repo)) ]))
+
+def get_oss_logs_id(repo, build):
+    return [ log_file.split('/')[-1].split('_')[1].split('.')[0] for log_file in glob.glob(f'{get_oss_repo_dir(repo)}/{build}_*.txt') ]
+
+def get_oss_logfile_path(repo, build, log):
+    return f'{get_oss_repo_dir(repo)}/{build}_{log}.txt'
+
+def get_oss_logs(repo, build, log):
+    log_path = get_oss_logfile_path(repo, build, log)
+    logs = []
+    with open(log_path, 'r') as file:
+        logs = file.read().split('\n')
+    return logs
+
+def analyse_oss_repo(repo):
+    builds_id = get_oss_builds_id(repo)
+    result = {}
+    count = 0
+    for build_id in tqdm(builds_id):
+        logs_id = get_oss_logs_id(repo, build_id)
+        cs_errors = []
+        for log_id in logs_id:
+            cs_errors = find_cs_errors(get_oss_logs(repo, build_id, log_id))
+        not_none = lambda x: x is not None
+        cs_errors = list(filter(not_none, [parse_cs_error(line) for line in set(cs_errors)]))
+        result[build_id] = cs_errors
+        count += len(cs_errors)
+    print(f'Found {count} cs errors/warnings in {repo}.')
+    return result
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -316,6 +360,22 @@ if __name__ == '__main__':
                 print(f'Analyse {repo}, with {number_of_builds(repo)} builds')
                 res[repo] = analyse_repo(repo)
             save_json('./', 'results.json', res)
+        except Exception as e:
+            print('somethig went wrong')
+            print(e)
+        except KeyboardInterrupt:
+            print('ctrl-c')
+        print_res(res)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'run-oss':
+        repos = get_oss_repo_names()
+        print(f'Found {len(repos)} repos')
+        # repos = ['Spirals-Team/repairnator', 'googleapis/google-oauth-java-client']
+        res = {}
+        try:
+            for repo in repos:
+                print(f'Analyse {repo}, with {len(get_oss_builds_id(repo))} builds')
+                res[repo] = analyse_oss_repo(repo)
+            save_json('./', 'results_oss.json', res)
         except Exception as e:
             print('somethig went wrong')
             print(e)
@@ -339,6 +399,11 @@ if __name__ == '__main__':
         synthesis = get_synthesis(res)
         plots = [ f'{repo:40s}{synthesis[repo]["build_with_errors"]}' for repo in synthesis.keys()]
         print('\n'.join(plots))
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'res-oss':
+        res = open_json('./results_oss.json')
+        repos = res.keys()
+        print(f'Found {len(repos)} repos')
+        print_res(res)
     else:
         res = open_json('./results.json')
         repos = res.keys()
