@@ -104,7 +104,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    output_path = output_dir + file_path.split("/")[-1]
+    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
 
     # Write the output file
     with open(output_path, "w") as output_file_object:
