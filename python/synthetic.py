@@ -7,8 +7,49 @@ import os
 from Corpus import *
 import shutil
 import random
+import configparser
+import sys
+import glob
+from tqdm import tqdm
+from functools import reduce
 
-__base_dir = "/home/benjaminl/Documents/synthetic-checkstyle-error-dataset"
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+class Checkstyle_Synthetic_Error:
+
+    def __init__(self, repo, id):
+        self.dir = get_synthetic_error_dir(repo, id)
+        self.metadata = None
+        self.original = None
+        self.errored = None
+        self.file_name = [ java_file for java_file in glob.glob(f'{self.dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
+
+    def get_metadata(self):
+        if not self.metadata:
+            self.load_metadata()
+        return self.metadata
+
+    def get_original(self):
+        if not self.original:
+            self.load_original()
+        return self.original
+
+    def get_errored(self):
+        if not self.errored:
+            self.load_errored()
+        return self.errored
+
+    def load_metadata(self):
+        self.metadata = open_json(f'{self.dir}/metadata.json')
+
+    def load_original(self):
+        self.original = open_file(f'{self.dir}/{self.file_name}-orig.java')
+
+    def load_errored(self):
+        self.errored = open_file(f'{self.dir}/{self.file_name}.java')
+
+__base_dir = config['DEFAULT']['SYNTHETIC_DIR']
 
 # def gen_ugly(corpus):
 #     modifications = {}
@@ -23,7 +64,14 @@ def get_dir(dir):
     return os.path.join(__base_dir, dir)
 
 def get_repo_dir(repo):
-    return get_dir(f'./dataset/{repo}')
+    return get_dir(f'./dataset/protocol1/{repo}')
+
+def get_synthetic_error_dir(repo, id):
+    return get_dir(f'{get_repo_dir(repo)}/{id}')
+
+def list_elements(repo):
+    dir = get_repo_dir(repo)
+    return [ element for element in os.listdir(dir) if os.path.isdir(get_synthetic_error_dir(repo, element)) ]
 
 def save_file(dir, file_name, content):
     with open(os.path.join(dir, file_name), 'w') as f:
@@ -70,10 +118,10 @@ def run_diff(fileA, fileB):
     # print(cmd)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output.decode("utf-8") 
+    return output.decode("utf-8")
 
-def gen_errored(corpus, repo_name, id):
-    folder = os.path.join(get_repo_dir(repo_name), f'./{id}')
+def gen_errored(corpus, repo_name, goal, id):
+    folder = os.path.join(get_repo_dir(repo_name), f'./{goal}/{id}')
     file =  random.choice(list(corpus.files.values()))
     file_dir = file[2]
     file_name = file[0].split('.')[0]
@@ -111,19 +159,45 @@ def gen_errored(corpus, repo_name, id):
     save_json(folder, 'metadata.json', report)
 
 
-def gen_ugly(corpus, number):
+def gen_ugly(corpus, numbers):
     repo_name = corpus.name
     dir = get_repo_dir(repo_name)
-    shutil.rmtree(dir)
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
     create_dir(dir)
     save_json(dir, 'repo.json', corpus.info)
     shutil.copyfile(corpus.checkstyle, os.path.join(dir, f'./checkstyle.xml'))
-    for i in range(number):
-        gen_errored(corpus, repo_name, i)
+    for goal, number in numbers.items():
+        for i in tqdm(range(number), desc=f'{repo_name}/{goal}'):
+            gen_errored(corpus, repo_name, goal, i)
     # copy_originals(corpus, repo_name)
 
+def map_and_count(reducer, data):
+    result = {}
+    for element in map(reducer, data):
+        if element not in result:
+            result[element] = 0
+        result[element] += 1
+    return result
+
+
+def load_repo(repo):
+    return [ Checkstyle_Synthetic_Error('spoon', synthetic_error) for synthetic_error in list_elements(repo) ]
+
+def summary(repo):
+    synthetic_errors = load_repo(repo)
+    results = {}
+    results['type_count'] = map_and_count(lambda x: x.get_metadata()['type'], synthetic_errors)
+    results['operator_count'] = map_and_count(lambda x: x.get_metadata()['injection_operator'], synthetic_errors)
+    results['file_count'] = map_and_count(lambda x: x.file_name, synthetic_errors)
+    print(results)
+    save_json(get_repo_dir(repo), 'stats.json', results)
+
 if __name__ == '__main__':
-    corpora = []
-    corpora.append( Corpus("./test_corpora/spoon", "spoon") )
-    for corpus in corpora:
-        gen_ugly(corpus, 10000)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'run':
+        corpora = []
+        corpora.append( Corpus("./test_corpora/spoon", "spoon") )
+        for corpus in corpora:
+            gen_ugly(corpus, {'learning' : 80, 'validation': 10, 'testing': 10})
+    if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
+        summary('spoon')
