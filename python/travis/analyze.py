@@ -8,6 +8,7 @@ import atexit
 import glob
 import pprint
 from tqdm import tqdm
+from tqdm import trange
 
 _OSS_dir = '/home/benjaminl/Documents/dataset-travis-log-oss'
 
@@ -237,6 +238,7 @@ def analyse_builds(builds):
     build_with_errors = []
     error_type_count = {'error': 0, 'warning': 0, 'ukn': 0}
     check_type_count = {}
+    errored_build_ids = []
 
     for build_key in sorted(builds.keys()):
         errors_not_parsed = builds[build_key]
@@ -251,6 +253,8 @@ def analyse_builds(builds):
             cs_errors += errors_in_the_log
             n_errors += len(errors_in_the_log)
         build_with_errors.append(n_errors)
+        if n_errors:
+            errored_build_ids.append(build_key)
 
     result = {}
     result['number_of_builds'] = len(builds)
@@ -273,6 +277,7 @@ def analyse_builds(builds):
     result['max_errors_in_a_single_build'] = max_errors
     result['error_type_count'] = error_type_count
     result['check_type_count'] = check_type_count
+    result['errored_build_ids'] = errored_build_ids
     return result
 
 def print_res(res):
@@ -349,6 +354,16 @@ def analyse_oss_repo(repo):
     print(f'Found {count} cs errors/warnings in {repo}.')
     return result
 
+def get_build_commits(res):
+    synthesis = get_synthesis(res)
+    result = {}
+    for repo in tqdm(synthesis['repo'].keys(), desc='Repos'):
+        build_ids = synthesis['repo'][repo]['errored_build_ids']
+        result[repo] = {}
+        for build_id in tqdm(build_ids, desc=repo):
+            result[repo][build_id] = get_build(build_id)['commit']
+    return result
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -404,6 +419,12 @@ if __name__ == '__main__':
         repos = res.keys()
         print(f'Found {len(repos)} repos')
         print_res(res)
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'github-commits':
+        # square_picasso : ['17673347', '26883826']
+        res = open_json('./results_oss.json')
+        commits = get_build_commits(res)
+        pp.pprint(commits)
+        save_json('./', 'commits.json', commits)
     else:
         res = open_json('./results.json')
         repos = res.keys()

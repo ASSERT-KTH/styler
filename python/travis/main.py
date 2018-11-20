@@ -34,7 +34,7 @@ def get_travis(endpoint, payload={}):
     if token:
         headers['Authorization'] = f'token {token}'
     r = requests.get(f'https://api.travis-ci.org{endpoint}', headers=headers, params=payload)
-    print(f'Get {r.url}')
+    # print(f'Get {r.url}')
     return r;
 
 def get_builds(repo, max_builds_collected=100):
