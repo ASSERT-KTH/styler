@@ -336,6 +336,8 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f'Error getting {repo}')
                 print(e)
+    if sys.argv[1] == 'stats':
+        pass # TODO see stats(folder)
     if sys.argv[1] == "venn":
         repos = load_folders('downloaded.txt')
         sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}

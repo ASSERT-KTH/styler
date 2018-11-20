@@ -212,7 +212,7 @@ def analyse_repo(repo):
     builds_id = get_builds_id(repo)
     result = {}
     count = 0
-    for build_id in builds_id:
+    for build_id in tqdm(builds_id):
         open_build(repo, build_id)
         logs_id = get_logs_id(repo, build_id)
         cs_errors = []
