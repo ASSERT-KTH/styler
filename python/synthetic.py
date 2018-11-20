@@ -120,9 +120,25 @@ def run_diff(fileA, fileB):
     output = process.communicate()[0]
     return output.decode("utf-8")
 
-def gen_errored(corpus, repo_name, goal, id):
+def gen_get_random_file(corpus, numbers):
+    files = list(corpus.files.values())
+    corpus_size = len(files)
+    shuffle_list = random.sample(list(range(corpus_size)), corpus_size) # random.shuffled() shuffle the list and does not returned the shuffled list
+    print(shuffle_list)
+    total_numbers = sum(numbers.values())
+    values = {}
+    for goal in numbers.keys():
+        to = round(numbers[goal]/total_numbers*corpus_size)
+        values[goal] = shuffle_list[:to]
+        shuffle_list = shuffle_list[to:]
+    print(values)
+    def get_file(goal):
+        return files[random.choice(values[goal])]
+    return get_file
+
+def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
     folder = os.path.join(get_repo_dir(repo_name), f'./{goal}/{id}')
-    file =  random.choice(list(corpus.files.values()))
+    file =  get_random_corpus_file(goal)
     file_dir = file[2]
     file_name = file[0].split('.')[0]
     done = False
@@ -159,17 +175,18 @@ def gen_errored(corpus, repo_name, goal, id):
     save_json(folder, 'metadata.json', report)
 
 
-def gen_ugly(corpus, numbers):
+def gen_dataset(corpus, numbers):
     repo_name = corpus.name
     dir = get_repo_dir(repo_name)
     if os.path.exists(dir):
         shutil.rmtree(dir)
     create_dir(dir)
     save_json(dir, 'repo.json', corpus.info)
+    get_random_corpus_file = gen_get_random_file(corpus, numbers)
     shutil.copyfile(corpus.checkstyle, os.path.join(dir, f'./checkstyle.xml'))
     for goal, number in numbers.items():
         for i in tqdm(range(number), desc=f'{repo_name}/{goal}'):
-            gen_errored(corpus, repo_name, goal, i)
+            gen_errored(corpus, get_random_corpus_file, repo_name, goal, i)
     # copy_originals(corpus, repo_name)
 
 def map_and_count(reducer, data):
@@ -196,8 +213,10 @@ def summary(repo):
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = []
-        corpora.append( Corpus("./test_corpora/spoon", "spoon") )
+        for corpus in sys.argv[2:]:
+            corpora.append( Corpus(config['CORPUS'][corpus], corpus) )
+        share = { key:config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         for corpus in corpora:
-            gen_ugly(corpus, {'learning' : 80, 'validation': 10, 'testing': 10})
+            gen_dataset(corpus, share)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
