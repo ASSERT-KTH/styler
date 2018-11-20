@@ -1,0 +1,34 @@
+sudo: false
+
+language: java
+
+jdk: oraclejdk8
+
+notifications:
+    email: testifyproject-devs@googlegroups.com
+    on-success: change
+    on-failure: always
+
+cache:
+    apt: true
+    pip: true
+    directories: $HOME/.m2
+
+addons:
+    apt:
+        packages:
+            - gnupg
+            - net-tools
+            
+env:
+  global:
+     - MAVEN_OPTS="-client -Xms512m -Xmx2048m"
+
+before_install: ./before_install.sh
+
+script: ./script.sh
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
+    - ./after_success.sh
+    

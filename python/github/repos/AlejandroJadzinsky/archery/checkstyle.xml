@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+  K2 checkstyle configuration.
+-->
+<module name="Checker">
+
+  <module name="SuppressionFilter">
+    <property name="file" value="${checkstyle.suppressions.file}"/>
+  </module>
+
+  <!-- Ignore checkstyle for lines between CHECKSTYLE:OFF and
+       CHECKSTYLE:ON -->
+  <module name="SuppressionCommentFilter">
+    <!-- property name="offCommentFormat" value="CHECKSTYLE:RELAX"/>
+    <property name="onCommentFormat" value="CHECKSTYLE:ON"/ -->
+
+    <property name="offCommentFormat" value="CHECKSTYLE-OFF\: ([\w\|]+)"/>
+    <property name="onCommentFormat" value="CHECKSTYLE-ON\: ([\w\|]+)"/>
+
+    <property name="checkFormat" value="$1"/>
+  </module>
+
+  <!-- Checks that a package.html file exists for each package. Disabled
+  because it is very difficult to write meaningful package.html files. -->
+  <!-- module name="PackageHtml">
+    <property name="severity" value="warning"/>
+  </module -->
+
+  <!-- Checks whether files end with a new line. -->
+  <module name="NewlineAtEndOfFile"/>
+
+  <!-- Checks that property files contain the same keys. -->
+  <module name="Translation"/>
+
+  <module name="FileLength"/>
+
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="true"/>
+  </module>
+
+  <module name="RegexpSingleline">
+    <property name="format" value="\s+$"/>
+    <property name="message" value="Line has trailing spaces."/>
+  </module>
+
+  <module name="TreeWalker">
+
+    <property name="cacheFile" value="${checkstyle.cache.file}"/>
+
+    <!-- this is needed by the SuppressionCommentFilter -->
+    <module name="FileContentsHolder"/>
+
+    <!-- Checks for Javadoc comments. -->
+    <module name="JavadocMethod">
+      <!-- Don't complain if we document RuntimeExceptions. -->
+      <property name="allowUndeclaredRTE" value="true" />
+      <property name="excludeScope" value="private"/>
+    </module>
+    <module name="JavadocType">
+    </module>
+    <module name="JavadocVariable">
+      <property name="excludeScope" value="private"/>
+    </module>
+    <module name="JavadocStyle">
+      <property name="checkEmptyJavadoc" value="true"/>
+      <property name="checkFirstSentence" value="true"/>
+      <property name="excludeScope" value="private"/>
+    </module>
+
+    <!-- Checks for Naming Conventions. -->
+    <module name="ConstantName"/>
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <module name="MemberName"/>
+    <module name="MethodName"/>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName"/>
+    <module name="TypeName"/>
+
+    <!-- Checks for Headers. -->
+    <!-- See http://checkstyle.sf.net/config_header.html   -->
+    <!-- <module name="Header">                            -->
+    <!-- The follow property value demonstrates the ability     -->
+    <!-- to have access to ANT properties. In this case it uses -->
+    <!-- the ${basedir} property to allow Checkstyle to be run  -->
+    <!-- from any directory within a project. See property      -->
+    <!-- expansion,                                             -->
+    <!-- http://checkstyle.sf.net/config.html#properties        -->
+    <!-- <property                                              -->
+    <!--     name="headerFile"                                  -->
+    <!--     value="${basedir}/java.header"/>                   -->
+    <!-- </module> -->
+
+    <!-- Following interprets the header file as regular expressions. -->
+    <!-- <module name="RegexpHeader"/>                                -->
+
+    <!-- Checks for imports. -->
+    <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Checks for Size Violations. -->
+    <module name="LineLength"/>
+    <module name="MethodLength"/>
+
+    <!-- This is not very common, and very difficult to avoid when happens. -->
+    <!-- module name="ParameterNumber"/ -->
+
+    <!-- Checks for whitespace. -->
+    <module name="EmptyForIteratorPad"/>
+    <module name="MethodParamPad"/>
+    <module name="NoWhitespaceAfter"/>
+    <module name="NoWhitespaceBefore"/>
+    <module name="OperatorWrap"/>
+    <module name="ParenPad"/>
+    <module name="TypecastParenPad"/>
+    <module name="WhitespaceAfter"/>
+    <!-- Removed WILDCARD_TYPE so we can write Class<?>. -->
+    <!-- module name="WhitespaceAround">
+      <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR,
+        BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON,
+        DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE,
+        LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO,
+        LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF,
+        LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY,
+        LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD,
+        MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION,
+        RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR,
+        STAR_ASSIGN, TYPE_EXTENSION_AND"/>
+    </module -->
+
+    <!-- Modifier Checks. -->
+    <module name="RedundantModifier"/>
+
+    <!-- Checks for blocks. You know, those {}'s. -->
+    <module name="AvoidNestedBlocks"/>
+    <module name="EmptyBlock"/>
+    <module name="LeftCurly"/>
+    <module name="NeedBraces"/>
+    <module name="RightCurly"/>
+
+    <!-- Checks for common coding problems. -->
+    <module name="EmptyStatement"/>
+    <module name="EqualsHashCode"/>
+    <module name="HiddenField"/>
+    <module name="IllegalInstantiation"/>
+    <module name="InnerAssignment"/>
+    <module name="MagicNumber"/>
+    <module name="MissingSwitchDefault"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+
+    <!-- Checks for class design. -->
+
+    <!-- Althougth really nice to have, it is very hard to enforce. Hibernate
+    and spring cannot work with final classes in some cases. -->
+    <!-- module name="DesignForExtension"/ -->
+
+    <module name="FinalClass"/>
+    <module name="InterfaceIsType"/>
+    <module name="VisibilityModifier"/>
+
+    <!-- Miscellaneous other checks. -->
+    <module name="ArrayTypeStyle"/>
+    <module name="FinalParameters"/>
+    <module name="TodoComment"/>
+    <module name="UpperEll"/>
+    <module name="GenericWhitespace"/>
+
+  </module>
+</module>

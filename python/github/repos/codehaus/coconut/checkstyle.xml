@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE module PUBLIC
+  "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+  "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+  <module name="SuppressionFilter">
+    <property name="file" value="${checkstyle.suppressions.file}" />
+  </module>
+
+  <!-- Checks that a package.html file exists for each package.     -->
+  <!-- See http://checkstyle.sourceforge.net/config_javadoc.html#PackageHtml -->
+  <module name="PackageHtml" />
+  <!-- Checks whether files end with a new line.                        -->
+  <!-- See http://checkstyle.sourceforge.net/config_misc.html#NewlineAtEndOfFile -->
+  <module name="NewlineAtEndOfFile" />
+
+  <!-- http://checkstyle.sourceforge.net/config_misc.html#Translation -->
+  <module name="Translation" />
+
+  <module name="TreeWalker">
+    <!--
+      Note: for some checks we have defined a warning severity instead of the default error
+      severity. This is because we'd like to make the build fail on error for thise checks
+      but there are errors to fix first 
+    -->
+    <!-- Clock is not named AbstractClock -->
+    <!--    <module name="AbstractClassName" /> -->
+    <module name="AnonInnerLength" />
+    <!--module name="ArrayTrailingComma"/-->
+    <module name="ArrayTypeStyle" />
+    <!--module name="AvoidInlineConditionals"/-->
+    <!--    <module name="AvoidNestedBlocks" /> -->
+    <module name="AvoidStarImport" />
+    <module name="BooleanExpressionComplexity" />
+    <module name="BooleanExpressionComplexity" />
+
+    <!--
+      This is a good metric but checkstyle doesn't allow to remove JDK's base classes
+      from the new count thus making this check unusable IMO
+      <module name="ClassDataAbstractionCoupling"/>
+    -->
+
+    <module name="ClassFanOutComplexity">
+      <property name="severity" value="warning" />
+       <property name="max" value="30"/>
+    </module>
+  
+    <module name="ConstantName" />
+    <module name="CovariantEquals" />
+
+    <module name="CyclomaticComplexity">
+      <property name="severity" value="warning" />
+    </module>
+    <module name="DeclarationOrder" />
+    <module name="DefaultComesLast" />
+    <module name="DescendantToken" />
+    <module name="DoubleCheckedLocking" />
+    <module name="EmptyBlock">
+      <property name="tokens" value="LITERAL_CATCH" />
+      <property name="option" value="text" />
+    </module>
+    <module name="EmptyForInitializerPad" />
+    <module name="EmptyForIteratorPad" />
+    <module name="EmptyStatement" />
+    <module name="EqualsHashCode" />
+    <module name="ExecutableStatementCount">
+      <property name="severity" value="warning" />
+    </module>
+    <module name="ExplicitInitialization" />
+    <module name="FallThrough" />
+    <module name="FileLength" />
+    <module name="FinalClass" />
+    <!--module name="FinalLocalVariable"/-->
+    <!--module name="FinalParameters"/-->
+
+    <!--
+      Avoid finalizers (this will not find violations that contain linebreaks) 
+    -->
+    <module name="GenericIllegalRegexp">
+      <property name="format"
+        value="((public)|(protected))\s+void\s+finalize\(\s*\)" />
+      <property name="message" value="Avoid finalizers" />
+    </module>
+    <!-- No direct printing to System.out or System.err -->
+    <!-- 
+      <module name="GenericIllegalRegexp">
+      <property name="format" value="System\.(out|err)\." />
+      <property name="severity" value="warning" />
+      <property name="message"
+      value="Don't write directly to System.out our System.err" />
+      </module>
+    -->
+    <module name="Header">
+      <property name="headerFile" value="${checkstyle.header.file}" />
+    </module>
+
+    <module name="HideUtilityClassConstructor" />
+    <!--module name="IllegalCatch"/-->
+    <module name="IllegalImport" />
+
+    <module name="IllegalInstantiation">
+      <property name="classes"
+        value="java.lang.Boolean, java.lang.String, java.lang.Integer, java.lang.Long" />
+    </module>
+
+    <!--
+      Checkstyle 4 check
+      <module name="IllegalThrows"/>
+      
+    -->
+    <!--module name="IllegalToken"/-->
+    <module name="IllegalTokenText" />
+
+<!-- 
+    <module name="IllegalType">
+      <property name="severity" value="warning" />
+    </module>
+ -->
+    <!--
+      Checkstyle 4 check
+      <module name="ImportControl"/>
+      
+    -->
+    <!--module name="ImportOrder"/-->
+<!--     <module name="Indentation" /> --> 
+    <module name="InnerAssignment" />
+    <!--module name="InterfaceIsType"/-->
+
+    <module name="JavadocMethod">
+      <property name="scope" value="private" />
+      <property name="allowUndeclaredRTE" value="true" />
+    </module>
+
+    <module name="JavadocStyle">
+      <property name="severity" value="warning" />
+    </module>
+
+    <module name="JavadocType">
+      <property name="scope" value="private" />
+      <property name="versionFormat" value="\$Id.*\$" />
+    </module>
+
+    <module name="JavadocVariable">
+      <property name="scope" value="private" />
+    </module>
+
+    <!--
+      Checkstyle 3.5 check. Maven 1.0.2 ships with CS 3.4 dependency.
+      <module name="JavaNCSS"/>
+      
+    -->
+    <module name="JUnitTestCase" />
+
+  </module>
+
+</module>

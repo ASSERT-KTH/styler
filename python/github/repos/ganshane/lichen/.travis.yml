@@ -1,0 +1,13 @@
+language: java
+script: mvn -V -B -P deploy 
+  -Dgpg.defaultKeyring=false -Dgpg.passphrase=$GPG_PASS -Dgpg.keyname=$GPG_KEYID 
+  clean deploy  --settings support/settings.xml
+branches: all
+env:
+  global:
+  - secure: OFRsqKWnOh60FTjEatlk47jIWREYeHwyGnw8wL3QSZngdmxPVPmeQRI4WRF88DUbjkPPWKfCeUOJ8px0axFFZ67P2MQWHfMOQocneVIrJETx+vdyeSlfBcYLzoRHllEYLFMtrcMuKReCc467ZEFEExJzHDIZqDIj8VC1Ao1YZ5s=
+  - secure: VMNfYrRLeuTj2iitL+XPhSDIEvGrfi9L6b6kpb9IQGuNFIDjgG8PIfeRfGTGVTZJujGuSac+s7qlZPIn2IEjtLxDcKfSZYUTa8t4d4UppZ3wCRRGmsJX1f4HEc7Y9Y4I+WxqgMZLMqb5hmMsuYEEWzWFrwHm6oDJJ4RQJ7FaUTo=
+before_install:
+- openssl aes-256-cbc -K $encrypted_25ee08ab284d_key -iv $encrypted_25ee08ab284d_iv
+  -in support/gpg/gpg.sec.enc -out support/gpg/secring.gpg -d
+- ls $(pwd)/support/gpg

@@ -1,0 +1,29 @@
+language: ruby
+rvm:
+- 1.9.3
+addons:
+  apt:
+    packages:
+    - graphviz
+jdk:
+- oraclejdk8
+cache:
+  directories:
+  - "$HOME/.m2"
+script:
+- "./tutorial/build.sh"
+- docker build -t keycloak-server-docker keycloak-server-docker
+- docker run --cidfile=kd -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -d -p 8080:8080 keycloak-server-docker
+- docker ps
+- "./keycloak-server-docker/wait-for-docker.sh localhost 8080"
+- docker logs `cat kd`
+- mvn --batch-mode test checkstyle:check
+after_success:
+- '[[ $TRAVIS_BRANCH == "master" ]] && ./tutorial/update-gh-pages.sh'
+after_failure:
+- docker logs `cat kd`
+services:
+- docker
+env:
+  global:
+  - secure: W6CmWXTKT2N9t73DvBYFqgONUFJ6HwjZcYl4tCHGm4iSJH6kq98ELOBIPTxEfZM1RNyp9EmI5PJ8KPSPbzNqMXCFCXYbfi2wt4Ys+cHm05tqHoF+ZWsq68tt0goWn5Up1+FsdIEK50eqFi4dOR+7rBsPC0/GQzcpdTxGq3XhhbvgmDFl4/jRGwYtqBhKDx+UImdT6QWcA4aqQCaklulz4T/PcQuTwsdVcDx0cmbdCM1EKSfyssTXu1OmjJOW+aAyIKmbH1w353tlnf4+t4l6bHt7FDf53yA4XjGCkEDxntoL3xKLq0UAHAT2bXQY0rzhoQwBx0dBsbhQsv0myDHJqZLNLNHPbgIbWR3KbFc9Egbc18Sp0695Ruv5fh0fPQfG8IDz2XxfLO+zhS9DuusMup9AvDrg5hAkRrQDY+LDNByDgiHlaIl1+xa0IowX+cnY7OPnSmNSHvaQNlz5NxTOUh2jKscMEgm15Qh7mXrFgjliKd+pOOoUqX99Ja6q1X7AFhajlbq3jR1/sSqueCBsuyyEMPHst3b1/e2xYheHalS6Pml7E7BVSqXI4LVdY0wMllv2h2R7LDBcLlUxKxXHjEQa6NFEjrZ9EKEURmwq6nhEx0VVVrNogg5sVlo8cpPrmoXW598z++EfD2fFIQnKgLXHS0xRcvRwZTxhuRV1qIE=

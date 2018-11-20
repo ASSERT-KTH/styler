@@ -1,0 +1,264 @@
+<?xml version="1.0"?><!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!-- Warning: maven checkstyle plugin is always behind official checkstyle releases.
+     Currently it's using checkstyle 6.2, while official release is 6.8
+     Because of that, some of the modules might be unavailable or have different properties. -->
+<module name="Checker">
+
+    <!-- Usage  //CHECKSTYLE:OFF //CHECKSTYLE:ON
+        Try to not abuse it. Do not use for masking real issues -->
+    <module name="SuppressionCommentFilter">
+        <property name="offCommentFormat" value="CHECKSTYLE\:OFF(.*)" />
+        <property name="onCommentFormat" value="CHECKSTYLE\:ON(.*)" />
+    </module>
+
+    <!-- Downgrading from error. Default is 2000. Probably should stay as error though -->
+    <module name="FileLength">
+        <property name="severity" value="warning" />
+    </module>
+    <!-- Makes sure there are no tab characters. We should use 4 spaces per indent setting -->
+    <module name="FileTabCharacter" />
+
+    <!-- Trailing spaces -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$" />
+        <property name="message" value="Line has trailing spaces." />
+    </module>
+
+    <module name="TreeWalker">
+        <property name="cacheFile" value="bin/cachefile" />
+
+        <!-- Block checks -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <!-- Makes sure no empty blocks are declared in source code, including exceptions. -->
+        <module name="EmptyBlock" >
+            <property name="option" value="text" />
+        </module>
+        <!-- Makes sure left curly braces are at end of line by default.
+             For example, placing it on new line will raise this error. -->
+        <module name="LeftCurly" />
+        <!-- Makes sure braces are always used, even in single line statements.
+             Braces should make it easier to distinct logical blocks. -->
+        <module name="NeedBraces" />
+        <!-- Makes sure closing curly brace is on new line. -->
+        <module name="RightCurly" />
+        <!-- It looks for inline code block declaration, not nested if statements, etc. -->
+        <module name="AvoidNestedBlocks" />
+
+        <!-- Class design checks -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <!-- Makes sure that class without constructors is declared as final -->
+        <module name="FinalClass">
+            <property name="severity" value="error" />
+        </module>
+        <!-- Interfaces holding only constants (no methods) should be avoided. -->
+        <module name="InterfaceIsType" />
+        <!-- Utility classes shouldn't have constructors,
+             as it makes no sense to instantiate them -->
+        <module name="HideUtilityClassConstructor" />
+        <!-- Looks for exceptions with non-final fields. -->
+        <module name="MutableException" />
+
+        <!-- Code style checks -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!-- Checks if last array element has comma. This makes adding new elements easier -->
+        <module name="ArrayTrailingComma" />
+        <module name="CovariantEquals" />
+        <!-- Unnecessary semicolon character, for example int k = 0;; -->
+        <module name="EmptyStatement" />
+        <!-- Variable that can be null in given execution path shouldn't call equals -->
+        <module name="EqualsAvoidNull" />
+        <!-- Class that has overriden equals(), should also override hashCode() -->
+        <module name="EqualsHashCode" />
+        <!-- Suggests that variable might be candidate for final -->
+        <module name="FinalLocalVariable">
+            <property name="severity" value="warning" />
+        </module>
+        <!-- Only for optimization purpose. For example, it enforces use of Boolean.TRUE
+             or any of the available factory methods, instead of new Boolean() -->
+        <module name="IllegalInstantiation" />
+        <!-- Checks if assignment is performed in top level code block only,
+             and not in inline statements.
+             Iterator of for loop is excluded from this check. -->
+        <module name="InnerAssignment" />
+        <!-- Avoid literals declaration in blocks.
+             Instead, declare constants (final variables) for increased readability -->
+        <module name="MagicNumber">
+            <property name="severity" value="warning" />
+        </module>
+        <!-- Make sure default statement wasn't skipped in switch block. 
+             If default should never be reached, then throw exception inside it -->
+        <module name="MissingSwitchDefault" />
+        <!-- Makes sure default is always last statement in switch block -->
+        <module name="DefaultComesLast" />
+        <!-- Prevents case declaration without break keyword.
+             Empty case statements are ignored in this check.
+             Add //fallthru comment in last line of case statement to suppress this check. -->
+        <module name="FallThrough" />
+        <!-- Don't modify value of loop iterator inside loop block -->
+        <module name="ModifiedControlVariable" />
+        <module name="SimplifyBooleanExpression" />
+        <module name="SimplifyBooleanReturn" />
+        <!-- Never compare Strings by == operator. Use equals variations instead. -->
+        <module name="StringLiteralEquality" />
+        <!-- Nested for loops make code less readable and prone to errors.
+             Instead, move inner for to separate method. -->
+        <module name="NestedForDepth">
+            <property name="max" value="0" />
+        </module>
+        <!-- Max number of nested ifs. Split code into more methods.
+             Method names should describe what is performed there. -->
+        <module name="NestedIfDepth">
+            <property name="max" value="1" />
+        </module>
+        <!-- Don't override clone or finalize. Their contract is not strictly defined. -->
+        <module name="NoFinalizer" />
+        <module name="NoClone" />
+        <!-- Makes sure directory names and package names are same. -->
+        <module name="PackageDeclaration" />
+        <!-- Ensures that there are no more than 2 returns in method. 
+             Many returns decrease code readability, as it makes the flow hard to follow. -->
+        <module name="ReturnCount">
+            <property name="max" value="2" />
+        </module>
+        <!-- Don't change value of argument passed to method. -->
+        <module name="ParameterAssignment" />
+        <!-- Optimization. Java always assigns default value on variable declaration. 
+             Doing it manually, creates unnecessary, additional write. -->
+        <module name="ExplicitInitialization" />
+        <!-- Checks if there are multiple String literals with same value -->
+        <module name="MultipleStringLiterals" />
+        <!-- Don't initialize more than one variable in single line. 
+             We should make sure that we don't do more than one thing in single line. -->
+        <module name="MultipleVariableDeclarations" />
+        <!-- Checks if there are more parentheses than required.
+             Common mistake after refactor. -->
+        <module name="UnnecessaryParentheses" />
+        <!-- Something we should follow as general guideline for code readability. -->
+        <module name="OneStatementPerLine" />
+
+        <!-- Checks for headers -->
+        <!-- See http://checkstyle.sourceforge.net/config_header.html -->
+
+        <!-- Checks for imports -->
+        <!-- See http://checkstyle.sourceforge.net/config_imports.html -->
+        <!-- Avoid importing classes from whole package. -->
+        <module name="AvoidStarImport" />
+        <!-- Don't import static values.
+             Such practice hides the origin of variables and leads to conflicts. -->
+        <module name="AvoidStaticImport" />
+        <!-- Prevents usage of classes from packages that give inconsistent
+             results across different platforms -->
+        <!-- defaults to sun.* packages -->
+        <module name="IllegalImport" />
+        <!-- Class imported more than once and imported but not used. -->
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+
+        <!-- Checks for Javadoc -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <module name="JavadocStyle" />
+
+        <!-- Metrics - limiting clusters in source code -->
+        <!-- See http://checkstyle.sourceforge.net/config_metrics.html -->
+        <!-- Makes sure number of conditions in single statement is not exceeded.
+             Thanks to that, output of such statements should be easier to predict.
+             You should store results of logical operations 
+             in helper variables with descriptive names.
+             This way, results of such operations and are easier to understand. -->
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="2" />
+        </module>
+        <!-- Checks how many outcomes are possible,
+             based on the results of inner statements. -->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10" />
+        </module>
+        <!-- Checks the complicity / number of possible paths inside a method.
+             Method with too many paths is a candidate for simplifying. -->
+        <module name="NPathComplexity">
+            <property name="max" value="200" />
+            <property name="severity" value="warning" />
+        </module>
+        <!-- Makes sure methods, classes and files are not too long
+             for the sake of reduced complexity.
+             ref: http://www.kclee.de/clemens/java/javancss/#specification -->
+        <module name="JavaNCSS">
+            <property name="methodMaximum" value="40" />
+            <property name="classMaximum" value="1000" />
+            <property name="fileMaximum" value="1100" />
+        </module>
+
+        <!-- Misc checks. -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <!-- This is only considered a problem when using SVN -->
+        <module name="NewlineAtEndOfFile">
+            <property name="severity" value="ignore" />
+        </module>
+        <!-- Makes sure L is used in long value assignment declaration instead of l,
+             as it might be mistaken with number one. -->
+        <module name="UpperEll" />
+        <!-- Braces should be placed near type declaration, for example long[],
+             instead placing it near variable name. -->
+        <module name="ArrayTypeStyle" />
+
+        <!-- Makes sure class name and source file name matches. Common error when using GIT,
+             as it doesn't acknowledge character case changes. -->
+        <module name="OuterTypeFilename" />
+
+        <!-- Modifier Checks -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <!-- Makes sure modifiers are declared in order advised in Java Language specification -->
+        <module name="ModifierOrder" />
+        <!-- Detects declaring modifier that is used by default,
+             for example public modifier in interfaces. -->
+        <module name="RedundantModifier" />
+
+        <!-- Checks for Naming Conventions. -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <!-- Common rules. Won't describe them all, unless unexpected setting is introduced -->
+        <module name="LocalVariableName" />
+        <module name="TypeName" />
+        <module name="MethodName" />
+        <module name="ConstantName" />
+        <module name="LocalFinalVariableName" />
+        <module name="MemberName" />
+        <module name="PackageName" />
+        <module name="ParameterName" />
+        <module name="StaticVariableName" />
+        <module name="FileContentsHolder " />
+
+        <!-- Checks for size violations.  -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="120" />
+            <property name="severity" value="error" />
+        </module>
+        <!-- Max number of method arguments -->
+        <module name="ParameterNumber">
+            <property name="max" value="4" />
+        </module>
+        <!-- Makes sure there is only 1 visible type defined per file. -->
+        <module name="OuterTypeNumber">
+            <property name="max" value="1" />
+        </module>
+
+
+        <!-- Whitespace  checks -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <!-- Whitespace around logical operators, method arguments etc. -->
+        <module name="GenericWhitespace" />
+        <module name="EmptyForIteratorPad" />
+        <module name="MethodParamPad" />
+        <module name="NoWhitespaceAfter" />
+        <module name="NoWhitespaceBefore" />
+        <module name="TypecastParenPad" />
+        <module name="ParenPad" />
+        <module name="TypecastParenPad" />
+        <module name="WhitespaceAfter" />
+        <module name="WhitespaceAround" />
+    </module>
+
+</module>

@@ -1,0 +1,34 @@
+sudo: required
+
+services:
+  - docker
+
+language: java
+jdk: openjdk8
+
+before_install: "cp .maven.settings.xml $HOME/.m2/settings.xml"
+
+script:
+  - mvn fmt:check verify cobertura:cobertura-integration-test
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+    docker push sdcplatform/actionsvc;
+    fi
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  slack:
+    rooms:
+      secure: ToyAMr3A3m53jITHwcGrH4rOxXfK6fIVyefbeeqeAL507zbOE+2HwRAphRv1DaYco9uu6B9w+5ao5AO3BO9BT3lgHxF00itKdnqhabZJVYsdRApeERoq625h2QyKHukDMrRV/Ml7m5lhVMOrvw0zNgjYBVJRL/K/VReCF6tTyHeiPSRepOWE+Ds5Qtu1GuaDxRMCljMy4eFlCJ/N/nIZSCWdOXMCVc2b8HXTqff3NNwXM9JVdUyibCdv1eydT9KIaDLlnBLEqGZwluKzJGg4CYZr6B4Yr/ciiGvofJEvZnrw5U2SJTqCgLPYHU/bHW6dJaB0ICpx94uMGSoyVTCNQDo1brBgP+w+9Z2IY0op9yOWghEpxAkNQL3FDC5BqprKbsDQG+yQpvXQ7XrlxxLp8ycNEuNTGsZRUwHhUzDsEousiAxA0bSJdS6LxSi11C9KDpaZH0cIhDEgktUtSlHNtPdX7GVRWXo4Nz9ZQuSG1Riobi2JX/k90AuQPOk9G5SVwBckp/st+pzYI02q3/FBEM+ZZSwb5WPalSOyGc20FotJL+59ruwhNOyOEX9/YrK9bEOHPTOMvYu43oGNzTc4VAmXva/OBf5Z5yP9VkTPwADtqljj7qbXcAMkPdLYAnyLhR4JC2vPuGcyxiX0uB+h45V1Uf0g/l5nLLWr4YvdPJc=
+    on_failure: always
+    on_success: never
+
+cache:
+  directories:
+  - $HOME/.m2
+
+branches:
+    only:
+        - master

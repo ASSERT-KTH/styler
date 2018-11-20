@@ -1,0 +1,20 @@
+language: java
+jdk:
+  - oraclejdk8
+before_install:
+  - git clone https://github.com/DevelopmentOnTheEdge/xmltest.git
+    && cd xmltest
+    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    && cd ../
+  - git clone https://github.com/DevelopmentOnTheEdge/beanexplorer.git
+    && cd beanexplorer
+    && mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    && cd ../
+install:
+  - mvn test-compile -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script:
+  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
+after_success:
+  - mvn org.eluder.coveralls:coveralls-maven-plugin:report
+notifications:
+  email: false

@@ -1,0 +1,43 @@
+# Travis CI Configuration file
+# @link https://travis-ci.org/
+
+# Using Java for the project
+language: java
+services:
+  - mysql
+  - postgresql
+jdk:
+# JDK 8 is set to deploy the docs and artifacts
+  - oraclejdk8
+env:
+  # Doc deployment
+  - SERVER=jetty DATABASE=h2 ENV=development DEPLOY_DOCS=true
+  # Production build
+  - SERVER=jetty DATABASE=h2 ENV=production
+  # MySQL
+  - SERVER=jetty DATABASE=mysql ENV=development
+  # Postgres
+  - SERVER=jetty DATABASE=postgres ENV=development
+  # Tomcat
+  - SERVER=tomcat7 DATABASE=h2 ENV=development
+dist: precise
+
+before_install:
+  # Gets scripts
+  - git clone -b v1.2.1 --single-branch https://github.com/Bernardo-MG/ci-shell-scripts.git ~/.scripts
+  # Sets scripts as executable
+  - chmod -R +x ~/.scripts/*
+  - chmod +x ./.scripts/create-test-databases.sh
+  # Prepares CI environment
+  - source ~/.scripts/travis/load-travis-environment.sh
+before_script:
+  # Creates Maven settings
+  - ~/.scripts/java/maven/create-maven-settings.sh $VERSION_TYPE
+  # Creates test databases
+  - ./.scripts/create-test-databases.sh
+script:
+  # Unit and integration tests are run
+  - mvn clean verify -P $DATABASE,$SERVER,$ENV,db-properties
+after_success:
+  # Documentation deployment script
+  - ~/.scripts/java/maven/deploy-site.sh $DO_DEPLOY_DOCS $DATABASE,$SERVER,$ENV,db-properties,deployment

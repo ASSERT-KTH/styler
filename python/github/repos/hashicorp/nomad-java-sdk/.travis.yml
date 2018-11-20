@@ -1,0 +1,20 @@
+dist: trusty
+sudo: false
+
+language: java
+
+before_script:
+  - |
+    set -euo pipefail
+
+    GOPATH="$PWD/gopath"
+    PATH="$GOPATH/bin:$PATH"
+
+    scripts/build-nomad.sh
+
+    set +euo pipefail  # restore options to work around https://github.com/travis-ci/travis-ci/issues/5434
+
+cache:
+  directories:
+    - $GOPATH/bin
+    - $HOME/.m2

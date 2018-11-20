@@ -1,0 +1,25 @@
+language: java
+
+os:
+  - linux
+
+jdk:
+  - oraclejdk8
+  - openjdk7
+
+
+before_install:
+  - "[[ -f $HOME/cache/$CONTAINER_ZIP ]] || wget $URL -P $HOME/cache"
+
+script:
+  - ./mvnw checkstyle:check
+  - ./mvnw clean compile test -Dkaraf.url=file://$HOME/cache/$CONTAINER_ZIP
+
+env:
+  - URL="http://central.maven.org/maven2/org/apache/karaf/apache-karaf/$KARAF_VERSION/apache-karaf-$KARAF_VERSION.zip"
+    CONTAINER_ZIP="apache-karaf-$KARAF_VERSION.zip"
+
+cache:
+  directories:
+  - $HOME/cache
+  - $HOME/.m2

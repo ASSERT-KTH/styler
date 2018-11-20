@@ -1,0 +1,20 @@
+language: java
+
+jdk:
+- oraclejdk8
+
+sudo: required
+services:
+- docker
+
+install:
+- mvn clean install -B -V -Pall
+
+script:
+- docker --version
+- docker ps -a
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker push huifumanlove/springboot-simple
+
+after_success:
+- mvn clean cobertura:cobertura coveralls:report -Pall

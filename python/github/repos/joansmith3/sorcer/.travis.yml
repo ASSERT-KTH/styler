@@ -1,0 +1,27 @@
+language: java
+before_install:
+  - export SORCER_HOME=`pwd`
+  - export RIO_HOME=$SORCER_HOME/target/rio
+  - echo "SORCER_HOME is $SORCER_HOME"
+  - echo "RIO_HOME is $RIO_HOME"
+install: mvn -P disttest install
+script:
+  - bin/sorcer-boot -Pmix -wstart -Mforce-fork
+  - mvn test -Prun-its
+  - kill `jps|grep Sorcer|cut -d' ' -f1`
+  - cd distribution/target/sorcer-*/sorcer-*/
+  - export SORCER_HOME=`pwd`
+  - unset RIO_HOME
+  - export -n RIO_HOME
+  - cd -
+  - examples/test-examples.sh
+jdk:
+  - oraclejdk7
+# whitelist
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    - sorcer-devel@lists.sourceforge.net

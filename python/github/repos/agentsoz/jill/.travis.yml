@@ -1,0 +1,29 @@
+language: java
+jdk: oraclejdk8
+
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+cache:
+  directories:
+  - $HOME/.m2
+
+# Undo _JAVA_OPTIONS environment variable as  we explicitly set heap sizes
+before_script:
+  - _JAVA_OPTIONS="-Xmx4g -Xms4g"
+
+env:
+  global:
+    - MAVEN_OPTS="-Xmx2g"
+
+script: mvn clean install
+
+after_success:
+  - mvn -N com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=/home/travis/build/agentsoz/jill/target/coverage-reports/jacoco/jacoco.xml -DprojectToken=884cdc9110044d2e9efd91854ead6c82 -DapiToken=884cdc9110044d2e9efd91854ead6c82
+  - test/tokenpassing.sh
+  - test/greeter.sh
+  - test/hanoi.sh
+  - test/testagent.sh

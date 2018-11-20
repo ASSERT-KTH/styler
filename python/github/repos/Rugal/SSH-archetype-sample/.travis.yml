@@ -1,0 +1,31 @@
+language: java
+
+env:
+  - SPRING_PROFILES_ACTIVE=CI
+
+jdk:
+  - oraclejdk8
+
+sudo: required
+
+services:
+  - postgresql
+  - docker
+
+addons:
+  postgresql: "9.6"
+
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+
+script: mvn -Dflyway.configFile=src/main/resources/db/flyway_${SPRING_PROFILES_ACTIVE}.properties flyway:migrate -Dskip.surefire.tests=false -Dskip.failsafe.tests=false verify
+
+
+after_success:
+    - if [ "$TRAVIS_BRANCH" == "master" ]
+      then
+          docker login -u="$HEROKU_EMAIL" -p="$HEROKU_APIKEY" registry.heroku.com
+          docker push rugal/test
+      fi

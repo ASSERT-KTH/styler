@@ -1,0 +1,32 @@
+language: java
+
+branches:
+  except:
+  - gh-pages
+
+env:
+  global:
+  - secure: nX7so+OWYpFUyLf1bALPLnyLF+8nwSgXfRroh7POmHi8RTFry3IkgottIoW6uuimYab8P0QnTMNnrqVDHw2qH2HTBZK25lEXNCaja+9Q2oYdlMbQEFuB5M8LFu2W26E/c9YLR61fsiGvGHLMhiuHtq51CuzkvFJTZCD3XIlquR+FZCGj2c92grUdza5xRoQOWXL/AN8M5p1iYANl/pHhfUaDKuMZMEFdFOn96G+ifUf0vwQ5RGwSOqkqZg0z3AFtDCOZ0KxMYC9AK4EVJ1INHtn3f2oktXWBqm9j/QnqmXMUehghLVU4y77AFgUNcZGdo1WXhd+eWKIcfRlfsO8TK92lBWyEhREv395G4hRRJsN3Pmsp67xD12QB7jflV0gDj/whHlYYpWjfp4RYRUXcnFTGtEHjO7srgFisgdjauWe2dq+p7ihMeHqyghhOVBT1crTAeBQrXFtwbxfLgeOKd5XV4ZBnnWthMD95c9fMOK9QLqlogFf9yByUhgrQBeY/FJ9qtHGRKbAu204b4G1fkgGk3S0nWPNkpXf92fI1WxwfG4h+nI9QNn/7mjMrLXpYLeuyJfk9tTEf/AxjZQGBx64WQw7SbTD9PjyprHkcMJSQ+ofFpUEXAgZM7rp0HJORMo6UO8Q6CJiYQVtSkwf9dgULT6njscjTX5rDy11Bds4=
+  - secure: m/4G1ClMMecWcVYv5OcUdWdeGPJuulfOApMEOAp3cB/N7MkqiLene/3NsgsZOtG2SKVNcwX8gMmJPnSTFW/M/wefsw6LasGuxvjj6Umc4F3Kvs+sWt6Y3CPV68iMiziN3j86UrbDJJnFZiiiYG7+z9zvmyV9VYGIaFGkr39VH9C0B/+dAz1xbCq9sutOnBypZ8QLcjxjZKSfWkD0fmdIC9yd2PUNijambajdFpt7B0OLcPN5GurIvRg/p/JzlN2ufjQi5iA69iwrAiftzJemTuSkwDK/RUDNKymdNaOsil8qv3zuVFRZmzbyNYNQXjgQahxQL1sOhp0+4n9g6BuvVx7e7/OtH90Q2t9cbdzl/VL5y/gwYYU+UeGWieiGdhOoCfEVFmo5tQpgqQi9WmcdAUAFLF2YyDQP5lu/ZDIEJywjFoQWbm1Ku1Olhhzm9mKQm8ovBygcdOu2nScSLLl+G0YLsni8lvjhnGoYmc2bZqt5GFYTzDWNmtacW7BMmdkECRDkKYRlTS9dWOnL3U4w4h/uIGTtss3DpCYIBh1XrZAkem3o4R/zz6mf621JK5Fk6KiUYysJIn4JUr7V38NqgS3wjltfYdmt93ZaivCRjb9YTX3N/Ty2yBqVy4z/nAIrNZ/ODyBx/0N4eq8msecwkLtu0/UynXxqrg0/ZXQ3nYU=
+  - secure: s2LR2YxnZ40/qKHIoBPNpDIHRR3E2iTTwBSuWWG1Q6NKzW6ndxpboPqMxLFMU5Uk37GygT4qWkxz+KI3Tvgpu5zZpT8OG6BmER0/dEGbQuwST1hhHEIdu7AapOYY/z0NhRpoLgrgCnRhg5q5SWdCuQGerIJpY+vnlT9wUfFRWcAm8kjplYrLY+tatp67LyqUoT1TpPJSHyOtGSnvwx1rqb+JVLhJn94UBmYwOqC83t4aJjMb5GGHHgxC1M1zsbHwHVq9PHyI0lBZWFmpr6h8RcRPXpKNr9Zd22jlhFQ0Y+Nt9yVWgc8v8LacRvIP5buOgekwgqOJmENE4IGqNa37VR2j5GiPhR2Ua2hu+hiNi1YCiiqEggYq8ka9R4J3W6sbP9KDnJokPqwN7Lh5wDWdBA6WCAR++MqmS5EOSyIYR0AwpgS5pnzQ4pJEdmvEwJMusQCOFwgA0+Xwnjnvxrz9rQCD9pQammGYWems59fE9vX7yleGhsvYEs6MouEHB8Ko2gnVhq5zVmtO89zJOMvkPpD3PPzqt/sISgO6Zh6siyJNWapFvEDU3Ny1VuB5TvW+DDI3FHV1LSJi0kCz0cCjx3x2O9aRIfJB8dX+KSAg276U9TrCi58jf6InEz4a4+h/qmaLVAwQDjb3QIANOtfPI+lCVneH4lZ7rjJeb2bx09w=
+
+matrix:
+  include:
+    - os: linux
+      jdk: openjdk8
+    - os: linux
+      jdk: oraclejdk8
+      # SonarQube addon needs to run with at least Java 8
+      script:
+        - mvn install -Dmaven.javadoc.skip=true -B -V
+        # Make sure we are on dev for running SonarQube
+        - if [[ $TRAVIS_BRANCH == dev ]]; then mvn sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=$SONARQUBE_TOKEN; fi
+
+install:
+- true
+
+script:
+- mvn install -Dmaven.javadoc.skip=true -B -V
+
+after_success:
+- mvn com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco/jacoco.xml -DprojectToken=$CODACY_PROJECT_TOKEN -DapiToken=$CODACY_API_TOKEN

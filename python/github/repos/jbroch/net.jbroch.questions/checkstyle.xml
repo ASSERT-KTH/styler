@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <!--
+        See http://checkstyle.sourceforge.net/availablechecks.html for a detailed
+        description of each check.
+    -->
+ 
+    <property name="severity" value="${checkstyle.severity}" default="error"/>
+
+    <!-- Do not allow tab characters in source code -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Require a package-info.java file for each package containing classes -->
+    <module name="JavadocPackage"/>
+
+    <!-- File must end with a newline -->
+    <module name="NewlineAtEndOfFile"/>
+ 
+    <!-- File must start with the copyright header -->
+    <module name="RegexpHeader">
+        <property name="headerFile" value="${config_loc}/../headers/File.checkstyle"/>
+    </module>
+
+    <!-- Ensure @return has a description -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@return[\s]*$"/>
+        <property name="message" value="Missing description for @return"/>
+    </module>
+
+    <!-- Ensure @param and @throws has a description -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@(throws|param)[\s]+[\S]+[\s]*$"/>
+        <property name="message" value="Missing description for @param or @throws"/>
+    </module>
+
+    <!-- Ensure @param and @throws has a parameter or exception -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@(param|throws)[\s]*$"/>
+        <property name="message" value="Missing parameter or exception name"/>
+    </module>
+
+    <!-- Flag IDE generated comments -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\/\/[\s]*TODO[\s]*Auto-generated"/>
+        <property name="message" value="Remove IDE generated comment"/>
+    </module>
+
+    <!-- Flag commonly misspelled Javadoc tags -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@(params|returns|throw)[\s]+"/>
+        <property name="message" value="Misspelled Javadoc tag"/>
+    </module>
+
+    <!-- Disallow @author tag -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@author[\s]+"/>
+        <property name="message" value="Remove author tag"/>
+    </module>
+
+    <!-- Disallow @version tag -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\*[\s]*@version[\s]+"/>
+        <property name="message" value="Remove version tag"/>
+    </module>
+
+    <!-- Flag Jalopy generated placeholder comment -->
+    <module name="RegexpSingleline">
+        <property name="format" value="DOCUMENT_.*"/>
+        <property name="message" value="Replace DOCUMENT_* with a meaningful comment"/>
+    </module>
+
+    <!-- Use org.apache.commons.io.IOUtils -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.commons.compress.utils.IOUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.pdfbox.io.IOUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.poi.util.IOUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.zookeeper.common.IOUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+
+    <!-- Use org.apache.commons.io.FileUtils -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.codehaus.plexus.util.FileUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+
+    <!-- Use org.apache.commons.lang3.StringUtils-->
+    <module name="RegexpSingleline">
+        <property name="format" value="^import antlr.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import liquibase.util.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.commons.codec.binary.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.apache.fop.afp.util.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.jpedal.utils.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import org.springframework.util.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import com.sun.xml.internal.ws.util.StringUtils"/>
+        <property name="message" value="Illegal Import"/>
+    </module>
+
+    <!-- Allow suppression of Checkstyle issues using CHECKSTYLE:OFF and CHECKSTYLE:ON comments -->   
+    <module name="SuppressionCommentFilter"/>
+
+    <!-- Read checker suppressions from a file -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/suppressions.xml"/>
+    </module>
+
+    <!-- Allow suppression of Checkstyle issues using trailing SUPPRESS CHECKSTYLE comment --> 
+    <module name="SuppressWithNearbyCommentFilter"/>
+ 
+    <!-- Check localization properties files for inconsistencies -->
+    <module name="Translation"/>
+
+    <module name="TreeWalker"> 
+        <property name="severity" value="${checkstyle.severity}" default="error"/>
+        
+        <!-- Abstract class must start with "Abstract" or end with "Factory" -->
+        <module name="AbstractClassName">
+            <property name="ignoreModifier" value="true"/>
+        </module>
+
+        <!-- No "{}" for single value annotations, no empty parenthesis, no trailing commas -->
+        <module name="AnnotationUseStyle"/>
+
+        <!-- Require trailing comma on multi-line array initialization -->
+        <module name="ArrayTrailingComma"/>
+
+        <!-- Enforce Java-style array declarations (e.g. String[] args) -->
+        <module name="ArrayTypeStyle"/>
+
+        <!-- Disallow floating blocks except in a "case" statement -->
+        <!-- Enable if this becomes a problem.
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true"/>
+        </module>
+        -->
+
+        <!-- Disallow "*" imports except for certain testing packages -->
+        <module name="AvoidStarImport">
+            <property name="excludes" value="org.junit.Assert,org.testng.Assert,org.hamcrest.MatcherAssert,org.hamcrest.Matchers,org.mockito.Mockito"/>
+        </module>
+
+        <!-- No more than 10 "&&", "||", "&", "|" and "^" operators in an expression -->
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="10"/>
+        </module>
+
+        <!-- All static final members must be all uppercase and underscores -->
+        <module name="ConstantName"/>
+
+        <!-- Classes defining equals(T a) must also override equals(Object obj) -->
+        <module name="CovariantEquals"/>
+
+        <!-- Declarations must be in the order:
+            1. Static member variables in the order: public, protected, package, private
+            2. Instance member variables in the order:  public, protected, package, private
+            3. Constructors
+            4. Methods
+        -->
+        <module name="DeclarationOrder"/>
+
+        <!-- The "default" clause in a switch must come last -->
+        <module name="DefaultComesLast"/>
+
+        <!-- Do not allow empty blocks -->
+        <module name="EmptyBlock"/>
+
+        <!-- Requires a space before ";" in "for" empty initializer (e.g. for ( ; count < 10; count++)) -->
+        <module name="EmptyForInitializerPad">
+            <property name="option" value="space"/>
+        </module>
+
+        <!-- Requires a space before ";" in "for" empty iterator (e.g. for (count = 0; count < 10; )) -->
+        <module name="EmptyForIteratorPad">
+            <property name="option" value="space"/>
+        </module>
+
+        <!-- Disallow standalone ";" -->
+        <module name="EmptyStatement"/>
+
+        <!-- If you override "equals", you need to override "hashCode" and vice versa -->
+        <module name="EqualsHashCode"/>
+        
+        <!-- Do not initialize member variables to their defaults -->
+        <module name="ExplicitInitialization"/>
+
+        <!-- Disallow falling through "case" statements containing code -->
+        <module name="FallThrough"/>
+
+        <!-- Support file wide filters -->        
+        <module name="FileContentsHolder"/> 
+
+        <!-- Class with only private constructors must be declared "final" -->
+        <module name="FinalClass"/>
+        
+        <!-- Unmodified local variables must be declared final -->
+        <module name="FinalLocalVariable"/>
+
+        <!-- Constructor, method and catch parameters must be declared final -->
+        <module name="FinalParameters">
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, LITERAL_CATCH"/>
+        </module>
+
+        <!-- Ensures conventional whitespace around generics (e.g. List<String> x = new ArrayList<String>() --> 
+        <module name="GenericWhitespace"/>
+
+        <!-- Ensures that a local variable does not shadow a member variable -->
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF"/>
+        </module>
+
+        <!-- Class with only static methods must declare its constructor private -->
+        <module name="HideUtilityClassConstructor"/>
+        
+        <!-- No imports from sun.* and the specified packages -->
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="ch.qos.logback"/>
+            <property name="illegalPkgs" value="com.hazelcast.logging"/>
+            <property name="illegalPkgs" value="edu.emory"/>
+            <property name="illegalPkgs" value="java.util.logging"/>
+            <property name="illegalPkgs" value="liquibase.logging"/>
+            <property name="illegalPkgs" value="org.apache.commons.lang"/>
+            <property name="illegalPkgs" value="org.apache.commons.logging"/>
+            <property name="illegalPkgs" value="org.apache.juli.logging"/>
+            <property name="illegalPkgs" value="org.eclipse.jetty.util.log"/>
+            <property name="illegalPkgs" value="org.postgresql.core"/>
+            <property name="illegalPkgs" value="org.testng.log4testng"/>
+        </module>
+
+        <!-- Disallow throwing Throwable, Error, or RuntimeException -->
+        <module name="IllegalThrows"/>
+        
+        <!-- Disallow working with Abstract class types. -->
+        <module name="IllegalType">
+            <property name="illegalClassNames" value="java.util.GregorianCalendar"/>
+            <property name="illegalClassNames" value="java.util.Random"/>
+
+            <property name="ignoredMethodNames" value="compareTo"/>
+        </module>
+
+        <!-- Imports must be in the order:
+            java
+            javax
+            org
+            net
+            ch
+            com
+            junit
+            junitx
+            
+            followed by all static imports in the same order
+        -->
+        <module name="ImportOrder">
+            <property name="option" value="bottom"/>
+            <property name="groups" value="java,javax,org,net,ch,com,junit,junitx"/>
+        </module>
+        
+        <!-- Disallow assignment in subexpressions (e.g. String s = Integer.toString(i = 2) -->
+        <module name="InnerAssignment"/>
+
+        <!-- Disallow constants in interfaces -->
+        <module name="InterfaceIsType"/>
+
+        <!-- At a minimum methods of package scope and higher must have a Javadoc comment.
+            Setters and getters are excluded (but should have them to document edge cases).
+        -->
+        <module name="JavadocMethod">
+            <property name="scope" value="package"/>
+            <property name="tokens" value="METHOD_DEF"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+
+        <!-- Check for empty Javadoc, missing "." at end of first sentence, bad HTML, etc. -->
+        <module name="JavadocStyle">
+            <property name="checkEmptyJavadoc" value="true"/>
+        </module>
+
+        <!-- Javadoc comments required for all class and interface definitions -->
+        <module name="JavadocType"/>
+
+        <!-- Validates JUnit method types -->
+        <module name="JUnitTestCase"/>
+        
+        <!-- The "{" goes on the end of the line (e.g. "if (exists) {") -->
+        <module name="LeftCurly">
+            <property name="option" value="eol"/>
+        </module>
+
+        <!-- Lines cannot be longer than 200 characters -->
+        <module name="LineLength">
+            <property name="max" value="200"/>
+        </module>
+
+        <!-- Local final variables must be camel case starting with a lowercase letter -->
+        <module name="LocalFinalVariableName"/>
+
+        <!-- Local variables must be camel case starting with a lowercase letter -->
+        <module name="LocalVariableName"/>
+        
+        <!-- Numbers other than -1, 0, 1, and 2 must be defined as a constant except in hashCode methods and annotations -->
+        <module name="MagicNumber">
+            <property name="ignoreHashCodeMethod" value="true"/>
+            <property name="ignoreAnnotation" value="true"/>
+            <message key="magic.number" value="Replace magic number ''{0}'' with a semantically meaningful constant"/>
+        </module>
+
+        <!-- Non-static fields are camel case starting with a lowercase letter -->
+        <module name="MemberName"/>
+
+        <!-- Maximum number of method lines is 175, not counting empty lines and single line comments -->
+        <module name="MethodLength">
+            <property name="max" value="175"/>
+            <property name="countEmpty" value="false"/>
+        </module>
+
+        <!-- Method names are camel case starting with a lower case letter -->
+        <module name="MethodName"/>
+
+        <!-- No space between method/ctor name/call and the left parenthesis (e.g. Foo()) -->
+        <module name="MethodParamPad"/>
+
+        <!-- A class must always explicitly define a constructor -->
+        <module name="MissingCtor"/>
+        
+        <!-- When the Deprecated annotation is used, the @deprecated Javadoc tag must be used and vice versa -->
+        <module name="MissingDeprecated"/>
+        
+        <!-- The @Override annotation must be present when the {@inheritDoc} Javadoc tag is present -->
+        <module name="MissingOverride"/>
+
+        <!-- Switch statements must have a "default" clause -->
+        <module name="MissingSwitchDefault"/>
+        
+        <!-- Disallow modification of a "for" loop control variable -->
+        <module name="ModifiedControlVariable"/>
+
+        <!-- Modifiers must be specified in the order:
+            public, protected, private 
+            abstract 
+            static 
+            final 
+            transient 
+            volatile 
+            synchronized 
+            native 
+            strictfp
+        -->
+        <module name="ModifierOrder"/>
+
+        <!-- One variable declaration per line -->
+        <module name="MultipleVariableDeclarations"/>
+
+        <!-- Exception classes must be immutable (i.e. only final fields) -->
+        <module name="MutableException">
+            <property name="format" value="^.*Exception$"/>
+        </module> 
+
+        <!-- Curly braces are required around all code blocks (e.g. in an "if" block) -->
+        <module name="NeedBraces"/>
+
+        <!-- No finalize() methods -->
+        <module name="NoFinalizer"/>
+        
+        <!-- No whitespace after "~", pre dec, ".", pre inc, "!", unary "-", unary "+", (type) -->
+        <module name="NoWhitespaceAfter">
+            <property name="allowLineBreaks" value="false"/>
+            <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS,TYPECAST"/>
+        </module>
+
+        <!-- No whitespace before ";", post dec, post inc -->
+        <module name="NoWhitespaceBefore"/>
+
+        <!-- Operator comes at the start of wrapped expressions -->
+        <module name="OperatorWrap"/>
+
+        <!-- The file name must match the outermost class name -->
+        <module name="OuterTypeFilename"/>
+
+        <!-- Package level annotations must be in the package-info.java file -->
+        <module name="PackageAnnotation"/>
+
+        <!-- Every class needs a package declaration and it must match the directory hierarchy -->
+        <module name="PackageDeclaration"/>
+
+        <!-- Package names are camel case starting with a lowercase letter with "." separators -->
+        <module name="PackageName"/>
+
+        <!-- Cannot assign a value to a constructor or method parameter -->
+        <module name="ParameterAssignment"/>
+
+        <!-- Parameter names are camel case starting with a lower case letter -->
+        <module name="ParameterName"/>
+
+        <!-- No more than 40 parameters in a method or constructor -->
+        <module name="ParameterNumber">
+            <property name="max" value="40"/>
+        </module>
+
+        <!-- No whitespace after a "(" or before a ")" in a constructor, method or super call -->
+        <module name="ParenPad"/>
+
+        <!-- Flags redundant imports (i.e. duplicates, java.lang, same package) -->
+        <module name="RedundantImport"/>
+
+        <!-- Flags redundant modifiers (e.g. public on interface methods -->
+        <module name="RedundantModifier"/>
+
+        <!-- Flags redundant exceptions in throws clause (e.g. duplicates, or subclasses of another declared exception) -->
+        <module name="RedundantThrows">
+            <property name="allowUnchecked" value="true"/>
+            <property name="suppressLoadErrors" value="true"/>
+        </module>
+    
+        <!-- Disallow use of hasProperty matcher in unit tests -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="[\s]+assertThat\(.+,[\s]*(Matchers\.)?hasProperty\("/>
+            <property name="message" value="Do not use the hasProperty matcher, call getter instead"/>
+        </module>
+    
+        <!-- Disallow placeholder parameter names -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="[\s]+arg[\d]+[,\)]"/>
+            <property name="message" value="Replace argN with a meaningful parameter name"/>
+        </module>
+
+        <!-- The "else", "catch", "finally" must be on the same line as "}" -->
+        <module name="RightCurly">
+            <property name="option" value="same"/>
+        </module>
+
+        <!-- Flag unnecessarily complicated boolean expressions (e.g. if (b == true)) -->
+        <module name="SimplifyBooleanExpression"/>
+
+        <!-- Do not test a boolean to return "true" or "false" -->
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- Static variables are camel case starting with a lowercase letter -->
+        <module name="StaticVariableName"/>
+
+        <!-- Ensures that "==" and "!=" are not used with string literals -->
+        <module name="StringLiteralEquality"/>
+
+        <!-- Detects "TODO:" as an information message -->
+        <module name="TodoComment">
+            <property name="severity" value="info"/>
+        </module>
+
+        <!-- No space after the "(" and before the ")" in a type cast -->
+        <module name="TypecastParenPad"/>
+
+        <!-- Type names are camel case starting with an uppercase letter -->
+        <module name="TypeName"/>
+
+        <!-- Flag imports that are not required -->
+        <module name="UnusedImports"/>
+
+        <!-- Ensures that long constants are defined with an uppercase "L" -->
+        <module name="UpperEll"/>
+
+        <!-- Whitespace must be specified after a comma or semicolon -->
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA,SEMI"/>
+        </module>
+
+        <!-- Whitespace must be specified operators, assignments, etc. -->
+        <module name="WhitespaceAround"/>
+    </module>
+</module>

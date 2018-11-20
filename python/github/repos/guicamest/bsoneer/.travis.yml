@@ -1,0 +1,24 @@
+language: java
+
+jdk:
+  - oraclejdk7
+  - openjdk7
+#  - oraclejdk8 not right now
+
+install: mvn install clean -DskipTests=true -Dinvoker.skip=true
+
+script: mvn verify
+
+after_success:
+  - chmod +x .buildscript/deploy_snapshot.sh
+  - .buildscript/deploy_snapshot.sh
+
+branches:
+  except:
+    - gh-pages
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2

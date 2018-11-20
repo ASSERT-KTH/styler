@@ -1,0 +1,33 @@
+sudo: required
+dist: trusty
+language: java
+
+#skips default install - see script bellow
+install: true
+
+cache:
+  directories:
+    - $HOME/.m2
+
+before_install:
+  #- wget http://ftp.wayne.edu/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+  - wget https://archive.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.zip
+  - unzip -qq apache-maven-3.5.0-bin.zip
+  - export M2_HOME=$PWD/apache-maven-3.5.0
+  - export PATH=$M2_HOME/bin:$PATH
+  - export MAVEN_OPTS='-Xmx4g'
+
+# custom script is used so build and tests are done in one mvn command, separating it (as Travis does by default) leads to problem with ConnId (notably DummyResource)
+script: mvn clean install
+
+addons:
+  hostname: localhost # workaround for short hostname
+  #apt:
+    #packages:
+      #- oracle-java8-installer # install newest JDK8
+
+jdk:
+  #- openjdk7
+  #- oraclejdk7
+  - oraclejdk8
+  - openjdk8

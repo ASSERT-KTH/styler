@@ -1,0 +1,24 @@
+# Use docker-based build environment (instead of openvz)
+sudo: false
+
+language: java
+jdk:
+  - oraclejdk8
+env:
+  global:
+    - MAVEN_OPTS="-Xmx1024m"
+
+cache:
+  directories:
+      - '$HOME/.m2/repository'
+
+install: /bin/true
+
+# This seems to be required to get travis to set Xmx4g, per https://github.com/travis-ci/travis-ci/issues/3893
+before_script:
+  - export MAVEN_SKIP_RC=true
+
+script:
+#  - mvn -e -B clean install && cd hapi-fhir-ra && mvn -e -B -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean test jacoco:report coveralls:report
+#  - mvn -Dci=true -e -B -P ALLMODULES,NOPARALLEL,ERRORPRONE clean install && cd hapi-fhir-jacoco && mvn -e -B -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID jacoco:report coveralls:report 
+  - mvn -Dci=true -e -B -P ALLMODULES,NOPARALLEL clean install && cd hapi-fhir-jacoco && mvn -e -B -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID jacoco:report coveralls:report 

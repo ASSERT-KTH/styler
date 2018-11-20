@@ -1,0 +1,13 @@
+language: java
+jdk:
+  - openjdk6
+
+env:
+  global:
+    - SONATYPE_USERNAME=culturegraph
+    - secure: "ilwp+b4IJW54T57uri5hFS8s1UntH869cJJK6nkYUolgbjSMZ7FPWzGJUxVTaV4qGzPZMbSddCuHfnN2RoOcgy0X2sjq32CVeldcQMCy2ob9C1hsKrVzwJG/JAJCiQXWMhAg/uV96TCcC9rlZEn1RY5U1l74RJHuCsuxf91I8fc="
+
+
+
+after_success:
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && { python travis-ci/configure-mvn.py ; mvn clean deploy --settings ~/.m2/mySettings.xml -Dgpg.skip=true -Psonatype-oss-release ; }"

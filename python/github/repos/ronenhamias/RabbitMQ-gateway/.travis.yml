@@ -1,0 +1,44 @@
+language: java
+jdk:
+- oraclejdk8
+notifications:
+  email: false
+  slack:
+    secure: FwMHwOFfe7lNgwo+ID+mIX4w9A1T0BJEthGM2aSDH9iqnlFdYKiequgzIFAfQHuzHIzjZsEF6y12uYPANrZvTa+3uqMStMqrWtkeNpGTXew5fnZLztgcJwXsPwbkDpNJcctXV++0TwWheVXBF9+mYbiXdQsimfbhqTu5yxnUG62UEhN/W+HlyAvf1TrMogCWABns00Iy9rAZjd9Ry5fGF1Fu1r3hOryipvoiVfnQJIn0+X+a6wAIyFddzA1p/GxS6/BOeT3dtXCBc+/pGjsHW9TWJoEkpxJ2AiZohAR+fTVW8e38/O6zIpSMOYSSCz8AGjWNfHCR0RjsDA0A6Ahsooon7KNx9qaK1X/tUtfQvE3c1HhwAEqz7vFE4OTSeY93f0Xiy/uLu7j21SGTl+CuYK8osbqFGW+pIwm8bu7oRRlHHDGZniWqGZkmvEPOLOKyk8/J7iYzJExgAZfyHawUUK0fYh8t/yxCXVyOz9G+s5gq6AX3rEvDp12kJzfUzxZX1XB4J6G2k9vlez5C9zghCkiSWSB5QuptafpauoKMdWmuGaftDdDHO+L0ZR14L08ctioPkQnVIWm7BNHUgGWiX2HFo9nsuhZ3+jzNUnt6hl7f3r4j2FAsYeQCy0Vfb51LhdVojIwPtpAbi68Uj3t2dIcA1nc357zfRvDCe+zORW4=
+services:
+- rabbitmq
+before_install:
+- openssl aes-256-cbc -K $encrypted_2230a114d608_key -iv $encrypted_2230a114d608_iv
+  -in secrets.tar.enc -out /tmp/secrets.tar -d
+- git remote set-url origin git@github.com:scalecube/RabbitMQ-gateway.git
+- pushd /tmp
+- tar -xvf secrets.tar
+- eval "$(ssh-agent -s)"
+- chmod 600 tmp/io-scalecube-ci_rsa
+- ssh-add tmp/io-scalecube-ci_rsa
+- ssh -T git@github.com | true
+- gpg2 --fast-import tmp/all.gpg
+- echo -e "trust\n5\ny\n" | gpg2 --command-fd 0 --edit-key $GPG_KEY
+- gpg2 --list-secret-keys --with-colon | grep sec
+- git config --global user.email "io.scalecube.ci@gmail.com"
+- git config --global user.name "io-scalecube-ci"
+- git config --global commit.gpgSign false
+- git config --global gpg.program $(which gpg2)
+- git config --global user.signingKey $GPG_KEY
+- popd
+install: true
+script:
+- mvn -version
+before_deploy:
+- git checkout $TRAVIS_BRANCH
+deploy:
+- provider: script
+  script: mvn deploy -DskipTests=true -Dmaven.javadoc.skip=true -B -V -s travis-settings.xml
+  on:
+    branch: develop
+- provider: script
+  script: mvn release:prepare release:perform -DautoVersionSubmodules=true -DscmCommentPrefix='[skip
+    ci] [maven-release-plugin]' -Darguments="-DskipTests=true -Dmaven.javadoc.skip=true"
+    -B -V -s travis-settings.xml
+  on:
+    branch: master

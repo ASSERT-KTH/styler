@@ -14,6 +14,8 @@ import csv
 import random
 import sys
 import itertools
+import glob
+from tqdm import tqdm
 
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
@@ -291,11 +293,6 @@ def compute_density(from_size, to_size):
     with open('./density.csv', 'w') as f:
         f.write(csv)
 
-def density_data():
-    array = [{'from_size': 1500, 'to_size': 1750, 'count': 910}, [[[[[[{'from_size': 1751, 'to_size': 1754, 'count': 81}, [[{'from_size': 1755, 'to_size': 1755, 'count': 2}, {'from_size': 1756, 'to_size': 1756, 'count': 1000}], {'from_size': 1757, 'to_size': 1758, 'count': 0}]], [[{'from_size': 1759, 'to_size': 1760, 'count': 107}, [{'from_size': 1761, 'to_size': 1761, 'count': 1000}, {'from_size': 1762, 'to_size': 1762, 'count': 80}]], {'from_size': 1763, 'to_size': 1766, 'count': 13}]], {'from_size': 1767, 'to_size': 1782, 'count': 129}], [{'from_size': 1783, 'to_size': 1798, 'count': 63}, [{'from_size': 1799, 'to_size': 1806, 'count': 47}, {'from_size': 1807, 'to_size': 1813, 'count': 0}]]], {'from_size': 1814, 'to_size': 1875, 'count': 314}], [{'from_size': 1876, 'to_size': 1938, 'count': 313}, [[{'from_size': 1939, 'to_size': 1954, 'count': 407}, [{'from_size': 1955, 'to_size': 1962, 'count': 27}, [{'from_size': 1963, 'to_size': 1966, 'count': 22}, [[{'from_size': 1967, 'to_size': 1967, 'count': 3}, {'from_size': 1968, 'to_size': 1968, 'count': 0}], {'from_size': 1969, 'to_size': 1969, 'count': 5}]]]], [[[[{'from_size': 1970, 'to_size': 1971, 'count': 11}, [{'from_size': 1972, 'to_size': 1972, 'count': 3}, {'from_size': 1973, 'to_size': 1973, 'count': 1000}]], {'from_size': 1974, 'to_size': 1977, 'count': 23}], {'from_size': 1978, 'to_size': 1985, 'count': 0}], {'from_size': 1986, 'to_size': 2000, 'count': 167}]]]]]
-
-    return flatten(array)
-
 def load_intervals():
     intervals = []
     with open('density.csv', 'r') as csvfile:
@@ -318,31 +315,29 @@ def filters(filters_list, list_to_be_filtered):
 def venn(sets, repos):
     groups = findsubsets(sets.keys())
     result = dict()
-    for group in groups:
+    for group in tqdm(groups, desc='Compute the venn'):
         group_filters = [ sets[key] for key in group ]
         result[group] = len(list(filters(group_filters, repos)))
     return result
 
 if __name__ == "__main__":
+    # I know it's bad...
     os.popen("find . -name 'info.json' > downloaded.txt").read()
     if sys.argv[1] == "dl":
+        # Download the repos of the file repos.txt
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
         else:
             repo_list = set(load_repo_list('repos.txt')) - set(load_downloaded_repo_list('downloaded.txt'))
         print(f'{len(repo_list)} repos to download')
-        for repo in repo_list:
+        for repo in tqdm(repo_list, desc='Download the repos'):
             try:
                 get_information(repo)
             except Exception as e:
                 print(f'Error getting {repo}')
                 print(e)
-    if sys.argv[1] == "stats":
+    if sys.argv[1] == "venn":
         repos = load_folders('downloaded.txt')
-        # stats(list(set(load_folders('checkstyle.txt')) & set(load_folders('travis.txt'))))
-        # print(len(repos))
-        # cs = list(filter(has_checkstyle ,repos))
-        # print(len(cs))
         sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
         result = venn(sets, repos)
         sets_values = []
@@ -361,10 +356,8 @@ if __name__ == "__main__":
         repos = load_folders('downloaded.txt')
         filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
-    # get_information('Spirals-Team/repairnator')
-    #
-    # find_repos('repos.txt', from=1500, to=1520)
-    # compute_density(0, 100000)
-    # for interval in load_intervals():
-    #     print(f'get {interval}')
-    #     find_repos('repos.txt', interval[0], interval[1])
+    if sys.argv[1] == "update-list":
+        # compute_density(0, 100000)
+        for interval in load_intervals():
+            print(f'get {interval}')
+            find_repos('repos.txt', interval[0], interval[1])

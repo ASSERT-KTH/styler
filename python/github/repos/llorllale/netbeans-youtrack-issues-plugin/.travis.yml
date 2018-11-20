@@ -1,0 +1,41 @@
+sudo: false
+language: java
+cache:
+  directories:
+  - "$HOME/.m2"
+dist: trusty
+jdk:
+- openjdk8
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+jobs:
+  include:
+  - if: type = pull_request
+    script:
+    - mvn -P analyze -DskipTests=true clean compile
+    - mvn cobertura:cobertura
+    - bash <(curl -s https://codecov.io/bash)
+  - if: type = push AND tag IS present
+    script:
+    - mvn -P site clean compile site
+    deploy:
+      - provider: pages
+        skip_cleanup: true
+        local_dir: target/site/
+        github_token: "$site_token"
+        on:
+          tags: true
+          branch: master
+      - provider: releases
+        skip_cleanup: true
+        api_key: "$site_token"
+        file: RELEASE.md
+        on:
+          tags: true
+          branch: master
+
+env:
+  global:
+    secure: equ1pMFdH8UvezLBV18qrxv1csC+jCCa7gyUKIYh4unWos/MzVaINCoUsg/UHGo+ag7s77EyyYN0XYAqMx5fuauxVALGfrm1m0hMbRpoMVoDaDxaR1sFY3mqV2s1BkFWxPwB51/9vvSzhtq3eHnheFQEwM6mJsZQq6/L7wX9fnnJpwGbqG4vBu6SsqSdkJzsN/2WnG+EXTdOnyzDoWFWBHu/QIcmW4MC8+41TdT1YGWRnMn0nFZMWpVwSn4douNr+T2RI1u/ER/ZHgAiPn+skOmP9NObQDWkXo0kxNNtK82gbPGFrXqv7UuaWh7Zb+OGfK0E9HdTV+keBOdyNHZcTfRihBkfy/ubnEUDy6xxKZ0W/biXPmP3gkdDVhbW3O2QsD/Whfps8FM2F+nZrOadDofZztP9rHxRTcxNwQAOBlbGk9TrU4OtBdTFnyXByVL9J7yJu1N1OujHYb/wDTKy8UrEC+KrM5asrBukMKE+B0y/oIAq3JgLyNhMMXfa9EayiSMbLdymKlXSqviNYkLXrLNCGI779ySSKJHNxTnXRF0ltOuwc3Bw4Fi0Oy89smOsx76+mZLcWQ/6sSX4CK6XnWO5KcgKWj/VSfo1M6Jq+jDpDFwe5hJorMZ0kCH820Ooytc05rVYGHW6/epx8P+N6dARpZ6g7I5drbzCKjvBol4=

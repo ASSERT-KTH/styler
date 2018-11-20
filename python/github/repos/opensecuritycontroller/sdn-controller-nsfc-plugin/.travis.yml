@@ -1,0 +1,46 @@
+# Copyright (c) Intel Corporation
+# Copyright (c) 2017
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+cache:
+  directories:
+  - $HOME/.m2
+sudo: false
+language:
+    - java
+jdk:
+    - oraclejdk8
+git:
+  depth: 99999
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+install:
+    true
+addons:
+  sonarcloud:
+    organization: "opensecuritycontroller-org"
+    token:
+      secure: "CcfLEHjSHELz+7yvjFfYFna5k4+/qhQzWmnOUYVoy0IRqUW47tqi9eYgWdp3kk8MXjweq2KBs7iyEZEC8L7TAAcKHV6UgCPrcpMAXerokjaEIulUzlotFNNvRgfjgn/tKvlp82UOb3jV/ApV33A/vCg6kLTuCZ13VVZEOXj5q56Laa9Jo1CzMdf1QBMJoh1mAfdJGb+IV3yAUrN1KRZuMgezfGvveqj0mwl4dIqGFMNqlHIAyugjFSQmH8/xZZn73G7+Yg9LSDHaJ2zpf6pyqgKsQ6SIh+QjEoxfOQPbmfpMLabMYALI/b/IY+robDJP9p9Ud2XkK10FnaNc6Z7qsAgF2rf3w3Bz8W6Cud/rUJTcwwJRmCOvhhIngrav3ipc4T917Mz0x/kOPm40y5Y9C+sB38hA/jFM/y7ilcy/GUgx7LvPeCx0NpU41NMKaBZbzQPnbHlBNcau1LVz1SVMnsE+87tukksf8gQ2JlDHVjbCC6MiAdfggRZOmaCS31NlWGzWqMRjMWfiJkKPRtJvDJZwKTW53SBGgSscubOSL1F7K1OA2gFdYXRxAJQ3k8EznxT9Q/Z5bn/jLVpHZ4zrtH9J1WECo0ZK5B2pFOiuRUUzaadOdjzT5cxPHj275c4tTCRy+DZ7tJLxhyaMcPJ9SwpcPgAJCceGN2F72SxOzFM="
+script:
+# the following command line builds the project, executes the SonarCloud analysis
+    - if [[ -n "${TRAVIS_PULL_REQUEST_SLUG}" || "$(cut -d'/' -f1 <<<${TRAVIS_REPO_SLUG})" != opensecuritycontroller ]]; then
+        echo "Skipping sonar analysis as this is a pull request or a build of a fork";
+        mvn org.jacoco:jacoco-maven-plugin:prepare-agent install org.jacoco:jacoco-maven-plugin:report;
+      else
+        mvn org.jacoco:jacoco-maven-plugin:prepare-agent install org.jacoco:jacoco-maven-plugin:report sonar:sonar;
+      fi
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

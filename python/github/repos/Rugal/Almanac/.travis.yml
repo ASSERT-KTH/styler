@@ -1,0 +1,25 @@
+language: java
+env:
+- SPRING_PROFILES_ACTIVE=CI
+jdk:
+- oraclejdk8
+sudo: required
+services:
+- postgresql
+addons:
+  postgresql: '9.6'
+cache:
+  directories:
+  - ".autoconf"
+  - "$HOME/.m2"
+script: mvn -Dflyway.configFile=src/main/resources/db/flyway_${SPRING_PROFILES_ACTIVE}.properties -Dcommitlinter.skip=false flyway:migrate -Dskip.surefire.tests=false -Dskip.failsafe.tests=false verify
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+before_deploy:
+- mvn -Dflyway.configFile=src/main/resources/db/flyway_Development.properties flyway:clean flyway:migrate
+deploy:
+  provider: heroku
+  app: almanac-development
+  on: master
+  api_key:
+    secure: AUzIhTKclFALs4x98QvzIxftmwDCifW2x6s+MvRIRqODpJFHspduBgeFJYNZc9eHpbV0a8DCeU9GzyzXv/V/uBhAfl//ud8RlN+jXOMy4SazupeMmo3+My5RcS4son+ofvsZZTm9B3TXu0Ivxh1oE2gLhIY1xgems2AzmqJXM9BHiWLX+QerpM6C0KhCsi5eUQUffnh37NweOyPnDJmed0IQasNi5Tt3dcepJo4Kn66PW49RWiy8G3sOoEc7DmVQrj+vUFJ0C74GakiFPTyU0k7Vt3NZUNs7TM7WjFC3kA87Kg43OxhBF3rJ9m7xGWmwAe/peNWzeUF4AVill0MDrBoCgBDWCBvn2V9j6uGORj1vjtLoA/zgbcir3Sz9EYJxnFigQsbdHleSvqIeZWGIjLeceVh+WgcFlpO8MiOF1Dx2tYZmrOJw5Q76zHpb6fG7QxpRKd8ZXMuEKyMuwqedL42Dqm3Txz6od+dJOj8yRcRENVenBng6X+7RkihpaoCba0nME4FCMrvlRy1xYoeGrEfU7DtjUAeBHzlPUeKKoG7cqmCoye4AWVtAmPyyExT3vGv0Dzt9a0nfCq7By9c9Ra6QDknuZMIHjINSiSK2SHD2Vb9GgYNYs5omwpt17RtLP5WaIo4m+WRRW2zvUUbCUw9Ro+5vorAgSNq0tGxW98Y=

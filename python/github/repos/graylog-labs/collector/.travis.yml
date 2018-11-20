@@ -1,0 +1,21 @@
+sudo: false
+language: java
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+after_success:
+  - mvn -DskipTests -B assembly:single
+deploy:
+  provider: s3
+  access_key_id: AKIAJBL3SCAJTENB5ZQA
+  secret_access_key:
+    secure: EY9WZbf/e1I7Ft3qfhBXMYpzn1CGOzCp1hjMQK8NsO8nJEYtT5V/RRsqsgBNr0bQF3FHxcidqRi4CoY0cS5c71pLff9lYa9Dkyi5oJ0W8/rzGMu69WNhNmUWrpwxs0IL91/st6L1/okoSSb0WXCPLRFG5t8/xKE1YY6XKC4DM9I=
+  bucket: graylog2-builds
+  region: eu-west-1
+  skip_cleanup: true
+  local-dir: target/assembly
+  on:
+    repo: Graylog2/collector
+    jdk: oraclejdk7
+    branch:
+      - master

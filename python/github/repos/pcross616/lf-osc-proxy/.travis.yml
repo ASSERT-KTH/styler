@@ -1,0 +1,25 @@
+language: java
+
+before_install:
+- sudo apt-get -qq update
+- if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm
+  ia32-libs ia32-libs-multiarch graphviz > /dev/null; fi
+
+script: mvn test -Djava.net.preferIPv4Stack=true
+
+after_success:
+- sudo curl -T target/lf-osc-proxy-$PROJECT_VERSION.exe -upcross616:$BINTRAY_API_KEY
+  https://api.bintray.com/content/pcross616/generic/lf-osc-proxy/$VERSION_NUMBER/lf-osc-proxy-$PROJECT_VERSION.exe;publish=1
+- sudo curl -T target/lf-osc-proxy-$PROJECT_VERSION-shaded.jar -upcross616:$BINTRAY_API_KEY
+  https://api.bintray.com/content/pcross616/generic/lf-osc-proxy/$VERSION_NUMBER/lf-osc-proxy-$PROJECT_VERSION-shaded.jar;publish=1
+- mvn clean cobertura:cobertura coveralls:cobertura
+
+after_script:
+- mvn site -Dgithub.global.oauth2Token=$GITHUB_TOKEN
+
+env:
+  global:
+  - VERSION_NUMBER=0.2
+  - PROJECT_VERSION=$VERSION_NUMBER-SNAPSHOT
+  - secure: aTPuhArLn0yNtr3D/lk7qLBXK8zr4/NzwqZIZywyJd7riydrkOIyry69auSV2LWeGY6ihVAswGWKfw6ClxPLAltu74ktHCgwbpIj3UJCI08OPokO44fNtwsDBONbMVtY1MQiYotoq6kWS/LUGsp7rOLX/4BBlnfDUYSWm0k50ow=
+  - secure: hrCgWUh0ZwEo4n9Mby4NSvniDTYyVFrjddmD4VN8gj582FZ49FnS8MViK5DAsP1lgn9qCy7kNhRktQ8uiuwDVFTqSzaIblB8obzdaD1gJRmuEetzDaDfdd2qtzYJ8jft6juQtCJru7cxT11qOCVl9gxNggN9jDgthviKrqEUX7E=

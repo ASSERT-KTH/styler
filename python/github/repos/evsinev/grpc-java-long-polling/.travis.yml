@@ -1,0 +1,21 @@
+language: java
+sudo: true # faster builds
+
+jdk:
+- oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+script: "mvn -P integration-test test && mvn jacoco:report"
+
+before_install:
+  - test -f $HOME/.m2/codacy-coverage-reporter-2.0.2.jar || wget -O $HOME/.m2/codacy-coverage-reporter-2.0.2.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/2.0.2/codacy-coverage-reporter-2.0.2-assembly.jar
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - java -cp $HOME/.m2/codacy-coverage-reporter-2.0.2.jar com.codacy.CodacyCoverageReporter -l Java -r grpc-long-polling-common/target/site/jacoco/jacoco.xml
+  - java -cp $HOME/.m2/codacy-coverage-reporter-2.0.2.jar com.codacy.CodacyCoverageReporter -l Java -r grpc-long-polling-client/target/site/jacoco/jacoco.xml
+  - java -cp $HOME/.m2/codacy-coverage-reporter-2.0.2.jar com.codacy.CodacyCoverageReporter -l Java -r grpc-long-polling-server/target/site/jacoco/jacoco.xml
+  - mvn sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=evsinev-github -Dsonar.login=$SONAR_TOKEN

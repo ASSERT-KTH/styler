@@ -1,0 +1,35 @@
+language: java
+dist: trusty
+
+sudo: required
+
+install:
+- wget -N http://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip -P ~/
+- unzip ~/chromedriver_linux64.zip -d ~/
+- rm ~/chromedriver_linux64.zip
+- sudo mv -f ~/chromedriver /usr/local/share/
+- sudo chmod +x /usr/local/share/chromedriver
+- sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+
+script:
+- whereis google-chrome-stable
+- whereis chromedriver
+- google-chrome-stable -version
+- chromedriver -version
+# Second jacoco execution is needed for taking into account the coverage of non-itests classes
+# from integration tests, collected on first execution
+- mvn clean install -Pextras,coverage,checkstyle --errors ; mvn jacoco:prepare-agent jacoco:report -Pcoverage
+
+jdk:
+- openjdk8
+- oraclejdk9
+
+service:
+- docker
+
+addons:
+- chrome: stable
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+

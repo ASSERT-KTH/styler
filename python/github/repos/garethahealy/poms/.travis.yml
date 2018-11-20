@@ -1,0 +1,28 @@
+dist: trusty
+env:
+  global:
+  - secure: VIdubMZP1rTG5VaVqP4dgY+tRNafDwVm+Zb32TDt14FlsNpJqArSvhHfXVn/pDW9nLmUqSdWWlcJ6Xk26cjzgN6a7XSP2Cmk943v8hK8Qdx+3tvoBzcoGnBWw5XEjFwLqsZe4n+0jG7PSPBVvQ0mJvlCiC8LggdPrpamlWTZ0Ys=
+  - secure: cCXq/+mTQRm87dIyPudAvsdTPitdJ9wjOaV1tHKiBOS77hVCWVVGasy/lFTamj+1A9v4mlR2O9f0QFYEDKDmd9OwN285a03zaBX3UNkAG0a9AbZXzD5Ep8+/Ujo9fLZyv9G+kdH5NTAfMF41VOuwIewJBAY3CDZIpiTeMYUJU9g=
+  - secure: HP9uSKSa1Hjn6WuNdRQ3dppUTgHKi7nR5ZwddVcm3DVoQvMOyOYEPrPFuRxWELlXXr8nW6dlXPZfF4m9zJ1n60cdzCcAv6SQy2L+4zhyPaI1yL08F3BaFXH2Ahfss3o1DLDnPIntUVj6r/3wT2/YWRcGGWcrULRxGw80v1omSb8=
+  - secure: KTk9JUIs5y9CDjMwaw5vtI78khRWv/FJ5sS04kJ70F1v6fPrFh6KdS7Yn/X9QzQyQjx/XZRnr69cndVwyLXUWqivj+s0MFzdgQpl9IKm9Zw4k3IR/LtNCdhB9Nv/4Fg+JIyqoYVrIMaSiAodr9ika3lBIqL3BBo5oFWiSnPB0IM=
+language: java
+jdk:
+- openjdk8
+before_install:
+- bash .travis/deploy-codesigning.sh
+install:
+- mvn -N io.takari:maven:wrapper -Dmaven=3.5.0
+- java -version && javac -version && ./mvnw -version -B
+before_script:
+- ./mvnw dependency:go-offline -B -Prelease-ossrh
+script:
+- ./mvnw clean install -B
+deploy:
+  provider: script
+  script: ./mvnw deploy -B -Prelease-ossrh --settings .travis/deploy-settings.xml
+  skip_cleanup: true
+  on:
+    branch: master
+cache:
+  directories:
+  - $HOME/.m2

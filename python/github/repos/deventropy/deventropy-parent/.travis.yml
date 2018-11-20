@@ -1,0 +1,39 @@
+# Run container based
+sudo: false
+
+language: java
+
+jdk:
+    - oraclejdk8
+#    - oraclejdk7
+
+env:
+    global:
+        - DENT_TRAVIS_MVN_SETTINGS_REPO=https://github.com/deventropy/deventropy-parent.git
+        # VERSIONEYE_REPO_KEY=<secret...>
+        - secure: "iIe2cpGaGidbzmee4s2WmTaBxM8JT5b8Z4VB8EKqhd6xiWwlMHpudva9Zff1L+LklCp0I0MAdtDbyBkYYeKJeMY9B1bZqRv+HUAE4A5fMm3poQW21ipCucOVQoijG7HzXcH7xhHvRALqDcZ0bF17jQMpo4C8m5QfwYL93soyntc3Pvg61yXgg7mLCy1NzQRhAPyMGi/iC/I9sElnbmbjc2YqT8YGP5hC12wuFDllAY8EBc0XpS8xw7II274VPYaEMwROJAG9CoE26XkFDaq9x+haib306OFC94aDsUY1U4lVfycQtfl9jV3AJEM6vrEjkS8/Iy6FP7ldgTYveLBetyz9vE/JNrtKl4Yn41tEaFjzJC/ZeIUDJE5N0AMjTonLtfYuhTIsAoS/RbVkgmj7v/sdQ2sBC2Pwu+vAtGDE4SYj6BKXjN1G/FTTarV4rEZvGqSiDTIANS1hWuRYO1h90QUhTXeDrI+81jpEGY0ODjg+TVJGBzqj9WoNJ+D7+PCQxf7Yhau7dS0aX2X5uIxqMMTbhf2Nd083Hk87vdvmkqbDBPdSgE5NFusvfHeIrZcm+0RkVe9omawWES251yWLdqXbTCz+GEtR5scdrATX/d6A0bX0PF2RUAiQwCtNoHIApMMIKv56RY/g0hfUnx2tB+/zVb2ql9zaMpwuoCG7Qb0="
+
+# We use JFrog OSS Repository not available in the stock Travis CI environment; so custom settings.xml
+# See https://coderwall.com/p/9b_lfq/deploying-maven-artifacts-from-travis
+
+branches:
+    except:
+        - travis
+
+before_install: "git clone -b travis ${DENT_TRAVIS_MVN_SETTINGS_REPO} target/travis"
+
+install: "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --settings target/travis/travis-mvn-settings.xml"
+
+script: "mvn test -B --settings target/travis/travis-mvn-settings.xml"
+
+after_success:
+    # Update dependencies in VersionEye
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && mvn com.versioneye:versioneye-maven-plugin:update'
+
+# Speed up builds
+cache:
+    directories:
+        - $HOME/.m2/repository
+
+before_cache:
+    - rm -rf $HOME/.m2/repository/org/deventropy

@@ -1,0 +1,30 @@
+language: java
+jdk:
+- oraclejdk8
+
+services:
+  - postgresql
+before_install:
+  - psql -c "create user caesartest with SUPERUSER password 'caesartest';" -U postgres
+  - psql -c "create database caesartest;" -U postgres
+  - psql -c "grant all on database caesartest to caesartest;" -U postgres
+
+branches:
+  only:
+  - dev
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: 38935a2f-856e-4412-8883-86aaab035f8a
+  app: tp-2017-2-caesar-backend
+  on:
+    repo: java-park-mail-ru/CaesarTeam-09-2017
+    branch: dev
+    skip_cleanup: true
+
+install:
+  - mvn clean install
+
+script:
+  mvn verify

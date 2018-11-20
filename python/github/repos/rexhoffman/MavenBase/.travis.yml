@@ -1,0 +1,30 @@
+jdk:
+- oraclejdk8
+language: java
+install: true
+cache:
+  directories:
+  - "$HOME/.m2/repository/"
+before_script:
+- export MVN_VER=3.3.9
+- wget http://apache.claz.org/maven/maven-3/${MVN_VER}/binaries/apache-maven-${MVN_VER}-bin.tar.gz
+- tar -zxvf apache-maven-${MVN_VER}-bin.tar.gz
+- chmod +x apache-maven-${MVN_VER}/bin/mvn
+- export PATH=$PWD/apache-maven-${MVN_VER}/bin:${PATH}
+- mkdir -p ${HOME}/.m2/
+- cp ./.travis/settings.xml ${HOME}/.m2/settings.xml
+- pushd CloudySkySkin
+- mvn -q install
+- popd
+- mvn -q install -DskipTests=true
+script:
+- if [ ${TRAVIS_BRANCH} = 'master' ]; then openssl aes-256-cbc -K $encrypted_05e49db982f1_key -iv $encrypted_05e49db982f1_iv -in .gpg.zip.enc -out .gpg.zip -d; fi;
+- if [ ${TRAVIS_BRANCH} = 'master' ]; then unzip .gpg.zip -d ${HOME}/deploy/; fi
+- if [ ${TRAVIS_BRANCH} = 'master' ]; then mvn deploy -Dgpg.passphrase=${GPG_PASSPHRASE} -Dgpg.homedir=${HOME}/deploy/.gnupg/; else mvn test; fi;
+- if [ ${TRAVIS_BRANCH} = 'master' ]; then mvn -e site -Psite-deploy; else mvn site; fi;
+env:
+  global:
+  - secure: ivW8luLtYdGYyCrMlU31Py8nHqJQqmamKFJqF4DTIl9ZQckJb7TXgovMoQWLCwBumoNI+hdrm6eVCPqnyM9YGi5/Qck7kZziwong4p+6OiUlNGBfMmW3iUsOvXe0R7Z8cfJFOlcm3K7ITgxpE7tCDpXa5R1gqOE9/IIrVm4OZ9Y=
+  - secure: b0m0FrWMcsyShk0zpQpUnWRra30pwODsdd977onnj8oOm575czW+ZPQHuvCp7NRrzy+W10rTQypAnFyex2CIlkMeiGTY2Unv+P3vnnxUduucNw0IhLALQh5YmhKNFWshdbsi4M7lAUXoV6mg+z7LhZAGJrYQk3J3d1FVgJij05Q=
+  - secure: anCl5pYZWSCnpT8sAtFVb9bTXGt3o+bWDCH85CRHca0IVJGCzT+gQCad2EWCotXPgBpy/qKFn8figSFytEURN0yXUcEJgEFfqdYax4Gg5/zFVahN8gwgfOg1n11pffiC/3V7IWkzy4ZhsfuJn5OZWgAIkoz6hOCkTcgnYyrrnAw=
+  - secure: kijZUCO5K1VlpiPRbBtrGRj/GJr/yfRbGTG/mDekeR9BSI6k1JlpbBXqU5NSpZ109R6DM+vXcCqqeMchbUxSfSmtfpaj5a9ExIHTKZjruiC2y3QGnI1RCqNXG5jAaz7eIci0sL2rDn+R1t9A92hunkXnCyEEtH1d4UkEdRpTeQs=

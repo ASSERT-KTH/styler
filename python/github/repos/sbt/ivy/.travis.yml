@@ -1,0 +1,30 @@
+# Use Docker-based container (instead of OpenVZ)
+sudo: false
+
+# https://blog.travis-ci.com/2017-07-11-trusty-as-default-linux-is-coming
+# Travis now defaults to Trusty, which is missing openjdk6.
+dist: precise
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+
+# WORKAROUND https://github.com/travis-ci/travis-ci/issues/5227
+addons:
+  hosts: workaround-travis-ci-issue-5227
+  hostname: workaround-travis-ci-issue-5227
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - ant
+      - ant-optional
+
+language: java
+jdk:
+  - openjdk6
+
+before_cache:
+  - find $HOME/.ivy2 -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt  -name "*.lock"               -print -delete

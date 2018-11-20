@@ -1,0 +1,128 @@
+language: java
+
+sudo: false
+
+dist: trusty
+
+cache:
+ directories:
+   - $HOME/.m2
+
+before_install:
+  - unset _JAVA_OPTIONS
+  - rm ~/.m2/settings.xml
+  - export MAVEN_SKIP_RC=true
+  - export MAVEN_OPTS="-Xmn64M -Xmx512M -XX:CompressedClassSpaceSize=96M"
+  - export JAVA_OPTS="$JAVA_OPTS -XX:CompressedClassSpaceSize=96M"
+
+before_script:
+  - unset GEM_PATH GEM_HOME IRBRC JRUBY_OPTS
+  - unset _JAVA_OPTIONS # travis/travis#8408
+  - export PATH="`pwd`/bin:$PATH"
+  - echo $HOME
+  - echo $JAVA_OPTS
+  - echo $MAVEN_OPTS
+
+jdk:
+  - oraclejdk8
+
+os:
+  - linux
+
+env:
+  global:
+    - JAVA_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xms48M -Xmx640M -XX:InitialCodeCacheSize=40M -XX:ReservedCodeCacheSize=120M -Djava.security.egd=file:/dev/./urandom"
+    - MALLOC_ARENA_MAX=2
+  matrix:
+    - PHASE='-Ptest'
+    - PHASE='-Prake -Dtask=test:jruby'
+    #- PHASE='-Prake -Dtask=test:jruby:fullint' # included with OpenJDK bellow
+    - PHASE='-Prake -Dtask=test:jruby:jit'
+    - PHASE='-Prake -Dtask=test:jruby:aot'
+    - PHASE='-Prake -Dtask=test:mri'
+    - PHASE='-Prake -Dtask=test:mri:fullint'
+    - PHASE='-Prake -Dtask=test:mri:jit'
+    - PHASE='-Prake -Dtask=test:slow_suites'
+    - PHASE='-Prake -Dtask=test:tracing'
+    - PHASE='-Prake -Dtask=spec:ji'
+    - PHASE='-Prake -Dtask=spec:compiler'
+    - PHASE='-Prake -Dtask=spec:compiler' JRUBY_OPTS=-Xcompile.invokedynamic
+    - PHASE='-Prake -Dtask=spec:ffi'
+    - PHASE='-Prake -Dtask=spec:regression'
+    - PHASE='-Prake -Dtask=spec:ruby:fast'
+    - PHASE='-Prake -Dtask=spec:jruby'
+    - PHASE='-Prake -Dtask=spec:jrubyc'
+    - PHASE='-Prake -Dtask=spec:profiler'
+
+matrix:
+  include:
+    - env: PHASE='-Ptest'
+      jdk: openjdk8
+    - env: PHASE='-Prake -Dtask=test:jruby:fullint'
+      jdk: openjdk8
+    # these profile do no need to run for all JDKs
+    - env: PHASE='-Pdist'
+      jdk: openjdk8
+    - env: PHASE='-Pjruby-jars'
+      jdk: openjdk8
+    - env: PHASE='-Pmain'
+      jdk: oraclejdk8
+    - env: PHASE='-Pcomplete'
+      jdk: oraclejdk8
+    - env: PHASE='-Posgi'
+      jdk: oraclejdk8
+    - env: PHASE='-Pj2ee'
+      jdk: oraclejdk8
+    - env: PHASE='-Pjruby-jars,test -Dinvoker.test=extended'
+      jdk: oraclejdk8
+    - env: PHASE='-Pmain,test -Dinvoker.test=extended'
+      jdk: oraclejdk8
+    - env: PHASE='-Pjruby_complete_jar_extended -Dinvoker.skip=true'
+      jdk: oraclejdk8
+    - env: COMMAND=test/check_versions.sh
+      jdk: oraclejdk8
+    - env: PHASE='-Prake -Dtask=test:jruby:jit'
+      jdk: oraclejdk9
+    - env: PHASE='-Prake -Dtask=test:mri:jit'
+      jdk: oraclejdk9
+    - env: PHASE='-Prake -Dtask=spec:ruby:fast'
+      jdk: oraclejdk9
+    - env: PHASE='-Pmain'
+      jdk: oraclejdk9
+    - env: PHASE='-Pcomplete'
+      jdk: oraclejdk9
+  allow_failures:
+    - env: PHASE='-Prake -Dtask=test:jruby:jit'
+      jdk: oraclejdk9
+    - env: PHASE='-Prake -Dtask=test:mri:jit'
+      jdk: oraclejdk9
+    - env: PHASE='-Prake -Dtask=spec:ruby:fast'
+      jdk: oraclejdk9
+
+install:
+  - ./mvnw $MAVEN_CLI_OPTS package -B -Dinvoker.skip -Dmaven.test.skip
+script: tool/travis-script.sh
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#jruby"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
+    skip_join: true
+
+# we are on a branch
+    on_success: always
+    on_failure: never
+
+services:
+  - redis-server
+  - haveged
+
+addons:
+  apt:
+    packages:
+      - oracle-java9-installer
+      - haveged

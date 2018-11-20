@@ -1,0 +1,35 @@
+language: java
+
+# JDK 7 is end-of-life'd in April 2015
+jdk:
+  - oraclejdk8
+
+# Test everything but the docs branch
+branches:
+  except:
+    - docs
+
+install:
+  - wget -O exist.tar.gz "https://github.com/eXist-db/exist/archive/eXist-2.2.tar.gz"
+  - tar xfv exist.tar.gz
+  - cd exist-eXist-2.2
+  - ./build.sh
+  - cd ..
+
+script:
+  - mvn -Dexist.home=`pwd`/exist-eXist-2.2 install
+
+notifications:
+  email:
+    recipients:
+      - ksclarke@gmail.com
+    on_failure: change
+    on_success: change
+  irc:
+    channels:
+      - irc.freenode.org#freelibrary
+    on_failure: always
+    on_success: always
+
+# We don't use sudo so can take advantage of the new Docker container builds
+sudo: false

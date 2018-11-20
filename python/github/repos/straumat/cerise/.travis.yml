@@ -1,0 +1,82 @@
+language: java
+install: true
+addons:
+  apt:
+    packages:
+      - lftp
+      - libssl-dev
+cache:
+  directories:
+    - $HOME/.m2
+before_install:
+  # Install coverage tool.
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+  # Install swagger.
+  - wget -O ~/swagger-codegen-cli.jar http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar
+script:
+  - mvn package
+after_success:
+  # Upload test coverage.
+  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
+  # Upload jar and running server.
+  - mvn spring-boot:run >> logs &
+  - sleep 1m
+  # Get the release.
+  - RELEASE=`cat pom.xml | grep "^    <version>.*</version>$" | awk -F'[><]' '{print $3}'`
+  # Generate clients.
+  - cd ~
+  - mkdir clients
+  - mkdir dist
+  - mkdir dist/$RELEASE
+  - wget http://localhost:8080/v2/api-docs
+  # Code generation.
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l android -o clients/android >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l csharp -o clients/csharp >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l cpprest -o clients/cpp >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l groovy -o clients/groovy >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l java -o clients/java >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l javascript-closure-angular -o clients/javascript >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l objc -o clients/objc >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l go -o clients/go >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l perl -o clients/perl >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l php -o clients/php >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l python -o clients/python >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l ruby -o clients/ruby >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l rust -o clients/rust >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l scala -o clients/scala >> logs
+  - java -jar swagger-codegen-cli.jar generate -i api-docs -l swift -o clients/swift >> logs
+  # Zipping files.
+  - cd ~/clients/android;zip -r cerise-client-android.zip * >> logs
+  - cd ~/clients/csharp;zip -r cerise-client-csharp.zip * >> logs
+  - cd ~/clients/cpp;zip -r cerise-client-cpp.zip * >> logs
+  - cd ~/clients/groovy;zip -r cerise-client-groovy.zip * >> logs
+  - cd ~/clients/java;zip -r cerise-client-java.zip * >> logs
+  - cd ~/clients/cpp;zip -r cerise-client-cpp.zip * >> logs
+  - cd ~/clients/javascript;zip -r cerise-client-javascript.zip * >> logs
+  - cd ~/clients/objc;zip -r cerise-client-objc.zip * >> logs
+  - cd ~/clients/go;zip -r cerise-client-go.zip * >> logs
+  - cd ~/clients/perl;zip -r cerise-client-perl.zip * >> logs
+  - cd ~/clients/php;zip -r cerise-client-php.zip * >> logs
+  - cd ~/clients/python;zip -r cerise-client-python.zip * >> logs
+  - cd ~/clients/ruby;zip -r cerise-client-ruby.zip * >> logs
+  - cd ~/clients/rust;zip -r cerise-client-rust.zip * >> logs
+  - cd ~/clients/scala;zip -r cerise-client-scala.zip * >> logs
+  - cd ~/clients/swift;zip -r cerise-client-swift.zip * >> logs
+  # Upload website.
+  - cd $TRAVIS_BUILD_DIR/website/public/
+  - lftp -e "mirror -R ./ /home/cerisetefc/www/ ; quit" -u $FTP_USERNAME,$FTP_PASSWORD sftp://$FTP_HOST
+  # Upload documentation.
+  - cd $TRAVIS_BUILD_DIR/target/specifications/
+  - lftp -e "mirror -R ./ /home/cerisetefc/www/specifications ; quit" -u $FTP_USERNAME,$FTP_PASSWORD sftp://$FTP_HOST
+  # Upload clients.
+  - cd ~
+  - find ./clients/ -type f -name "*.zip" -exec cp {} dist/$RELEASE/ \;
+  - cd ~/dist/
+  - lftp -e "mirror -R ./ /home/cerisetefc/www/clients ; quit" -u $FTP_USERNAME,$FTP_PASSWORD sftp://$FTP_HOST
+  - cd $TRAVIS_BUILD_DIR
+deploy:
+  provider: script
+  script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+  skip_cleanup: true
+  on:
+    tags: true

@@ -1,0 +1,19 @@
+language: java
+sudo: false
+
+# Test several JDK
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - oraclejdk8
+
+# The plug-in depends on libraries that come from the platform.
+# So, we must be able to find snapshots of the platform.
+before_script:
+  - wget http://roboconf.net/resources/build/settings.xml
+
+# Build with Maven.
+# Use -q option to only display Maven errors and warnings.
+# Use --settings to force the usage of our "settings.xml" file.
+script:
+  - mvn clean install -q --settings settings.xml

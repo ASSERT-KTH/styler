@@ -1,0 +1,50 @@
+language: java
+jdk: oraclejdk8
+env:
+  global:
+    - MAVEN_OPTS="-XX:MaxPermSize=512m"
+   
+
+sudo: false
+#before_script:
+#- gem install jekyll --version '= 1.5.1'
+#- gem install RedCloth
+
+script:
+# Build documentation web site
+#- cd documentation
+#- ls
+#- jekyll build
+#- ls
+#- cd ../
+# Integrate the documentation to Eclipse
+#- rm -rf plugins/org.obeonetwork.dsl.organizationchart.design.doc/html
+#- cp -r documentation/_site plugins/org.obeonetwork.dsl.organizationchart.design.doc/html
+#- ls plugins/org.obeonetwork.dsl.organizationchart.design.doc/html
+# Build organizationchart
+#- mvn clean verify
+# Build organizationchart products
+- mvn clean package -f releng/org.obeonetwork.dsl.organizationchart.product.parent/pom.xml
+# Prepare local dirs to deploy: copy repository, bundles and tp
+- chmod a+x prepare-deploy-local-dir.sh
+- echo "$TRAVIS_TAG"
+# Prepare tag dir if it is a tagged build
+- if [[ "$TRAVIS_TAG" != "" ]]; then ./prepare-deploy-local-dir.sh $TRAVIS_BUILD_DIR/$TRAVIS_TAG; fi
+# Rename the zipped update site to nightly
+- mv packaging/org.obeonetwork.dsl.organizationchart.update/target/org.obeonetwork.dsl.organizationchart.update-*-SNAPSHOT.zip packaging/org.obeonetwork.dsl.organizationchart.update/target/org.obeonetwork.dsl.organizationchart.update-nightly.zip
+# Prepare the nightly dir
+- ./prepare-deploy-local-dir.sh $TRAVIS_BUILD_DIR/nightly
+
+after_script:
+# Promote web site on gh-pages only for master branch
+#- chmod a+x travis-promote.sh
+#- if [[ "$TRAVIS_BRANCH" == "master" ]]; then ./travis-promote.sh; fi
+
+#deploy:
+  #provider: releases
+  #api_key: "GITHUB OAUTH TOKEN"
+  #file:  packaging/org.obeonetwork.dsl.organizationchart.product/target/products/*.zip
+  #skip_cleanup: true
+  #on:
+  #  tags: true
+

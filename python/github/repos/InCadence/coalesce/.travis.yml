@@ -1,0 +1,67 @@
+sudo: true
+language: java
+jdk:
+- oraclejdk8
+cache:
+  directories:
+  - "$HOME/.m2"
+  - "$HOME/.npm"
+  - node_modules
+stages:
+  - name: install
+    if: branch != release
+  - name: test
+    if: branch != release AND !(tag IS present)
+  - name: deploy
+    if: (branch = master AND "${TRAVIS_PULL_REQUEST}" = "false") OR tag IS present
+  - name: deploy-karaf
+    if: tag IS present
+jobs:
+  include:
+    - stage: install
+      name: "Coalesce"
+      install: cp .travis.settings.xml $HOME/.m2/settings.xml
+      script: mvn install -DskipTests -P bundles -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: install
+      name: "Coalesce UI"
+      install: npm config set cache $HOME/.npm
+      env: CI=false
+      script: mvn install -f src/Coalesce.React -DskipTests -P react -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: test
+      name: "Coalesce"
+      install: skip
+      script: mvn verify -fae -o -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: deploy
+      name: "Coalesce"
+      install: skip
+      script: mvn deploy -P bundles -DskipTests -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: deploy
+      name: "Coalesce UI"
+      env: CI=false
+      install: npm config set cache $HOME/.npm
+      script: mvn deploy -f src/Coalesce.React -DskipTests -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: deploy
+      name: "Coalesce Documentation"
+      install:
+        # Compute Code Coverage / Find Bugs
+        - mvn install -Dfindbugs.skip=false -Djacoco.skip=false -o -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      before_script:
+        # Copy Classes
+        - mkdir -p target/classes/com
+        - find -type d -path '**/classes/com/incadencecorp' -exec cp -at target/classes/com/. {} +
+      script:
+        # Create Site and Deploy
+        - mvn site -DskipDocker -Dfindbugs.skip=false -Djacoco.skip=false -Dcheckstyle.skip=false  -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+        - mvn deploy -f src/Coalesce.Dist/coalesce-javadocs  -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+
+    - stage: deploy-karaf
+      name: "Coalesce Karaf"
+      install:
+        - mvn deploy -f src/Coalesce.Feature -DskipTests -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+      script:
+        - mvn deploy -f src/Coalesce.Dist/coalesce-karaf-dist -DskipTests -DskipDocker -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn

@@ -1,0 +1,37 @@
+language: java
+dist: precise
+jdk: openjdk7
+cache:
+  directories:
+  - "$HOME/.m2"
+sudo: false
+install:
+- mvn --version
+before_script:
+- export DISPLAY=:99
+- sh -e /etc/init.d/xvfb start
+- sleep 3
+script:
+- cd info.limpet.targetplatforms
+- mvn clean install
+- cd ..
+- mvn clean verify site -U -B -fae
+- "./deploy_ghpages.sh"
+env:
+  global:
+  - GH_REF: github.com/debrief/limpet-update.git
+  - secure: tJ7md9DbbwGXpi9UjFtnzriR0gf25oR6l1GG5gddVI5iPEU68a9MyodtIKQJWrup+MYx5BS6uG1yvuMkOKQ1tAuypMzLmwNSqpLQF8Ukt2S5K1eZ0BMwuzM9D9IjlDbXHlOw+QlGFlLs60rUp5q/36UA/kSreYjKfaWL+TXXHf+Ra0gjiVH/C1+w33lLR/2S6HHtG1JbRhJYwGsL1pm6BQsduaHkuMugrGrleXeOLYWZX3gwlvkPs4r64GcicPMrTdJUVqb9HCtuV293bAVL/dLJe8PphycySjChBo458oRdpvitTgAeXsIHoq+V6rjJ7PQ2xv0eceCP5KBxUrc/jlGnbMzKAhIDaLOvqs5lnRNXNkTPGHk79EdiwBmtF21EifGNWfzhg0Wvw24bwRCjYmT/uuqxaBmqfmVt8mhS4Iq+JFaYHkOY5OBc07OK2ZxmU0VNwdFrCosU2Vc9Cz/njhPXgS38LiV7/vo/XdDfWwjxl+ZIfD1mMkzMQkM2gCYoP2Z6jXtQ/tf7Tpflib/6OE0QdKuktQjklw1PcTiPpyJetHy0tLIvPVBaiQWPhnDx3xIQOjJOqDjczqGjhch6CALMSY6tagP3zkz8/i/5WI8aDXXfDt2d7Skcfqagb/3OJQAyoRVuUIvdx5d6u5bZ2bEZPNFL/rKGFcK2vf0ISok=
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: 
+  file:
+  - "/home/travis/build/debrief/limpet/info.limpet.product/target/products/Limpet-linux.gtk.x86_64.tar.gz"
+  - "/home/travis/build/debrief/limpet/info.limpet.product/target/products/Limpet-macosx.cocoa.x86_64.tar.gz"
+  - "/home/travis/build/debrief/limpet/info.limpet.product/target/products/Limpet-win32.win32.x86_64.zip"
+  - "/home/travis/build/debrief/limpet/info.limpet.product/target/products/Limpet-win32.win32.x86.zip"
+  on:
+    tags: true
+    all_branches: true
+  api-key:
+    secure: j4eAl8uKs5PrlRcBuT3twffS/adjo1SMYmMaeCjQcKz1aPg7S79ja+9O0fO/k9O3yop7B6V/H6Dfv7SNJBxRRykxdJmvHJ5HZes9o5O9bJIPT+iU0L0FQomlo5ThpVyEfj8m5HBk/TavGf31ZSp+mGj4KXRrL8SI05ERkrkkqRJBpquWsqGmY78PXEgpVFRLQ7pAVN3uKNgoXDy4EsP5vM/bon3WHPWx6FJ+i6FxO69aTXy6kQtbc+KsQVHuu6nivxUB0G0SYG53myblH+cFrACj2k6ANPUSBKZcivqQ00PuMULASsH8fCOCGeBXW1Ws+e40x2+EXP/eaeyFbibEHNl0Lv6Ns/TJJ42FIalt60REFms6xaMYn0fBI75zQCXmfSncEpIPk1Xh1Ilax9L0c0ZnUSFm/zc40Xtbp3EKFghLQSShNsnSpT6HxMxeIaFOyEfWCHxpj0SU5Bpo0STGk+xJQIXdbBNaF/A2mfBcVLYoU95i2TgdB+8nXdK471wiQ8+Pp6nqtGvJj2vNY7gotshVzw3qlZlYokkAV74pVlZicFoMFkz3nZwJX2fMImnpk2TrOBnX50bu8mTWMo/ZtS7TpCiJRBOVuU8fWdVQNWOgSL3C3NDRtR8X6kBwwrM1np82QUVCZ2dA7tlabSzIG/Emda0DJOmGMXTMkdBS2RY=

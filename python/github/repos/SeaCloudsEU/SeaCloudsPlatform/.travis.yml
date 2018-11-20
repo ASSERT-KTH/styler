@@ -1,0 +1,45 @@
+sudo: required
+language: java
+jdk:
+- oraclejdk7
+
+install: true
+before_script:
+- chmod 600 qa/src/main/resources/brooklyn.properties
+- ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "" -q
+- cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+- echo "Host localhost" >> /home/travis/.ssh/config
+- echo "    StrictHostKeyChecking no" >> /home/travis/.ssh/config
+- ssh-keyscan -t rsa localhost >> ~/.ssh/known_hosts
+- chmod g-rw,o-rw /home/travis/.ssh/*
+- pip install --user codecov
+script:
+- export MAVEN_OPTS="-Xmx2048m -XX:MaxPermSize=512m"
+- mvn -q clean install -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+#- mkdir -p qa/target/brooklyn-maven-plugin/
+#- touch qa/target/brooklyn-maven-plugin/brooklyn.debug.log
+#- mvn verify -pl qa -Ptravis -DskipTests
+#- cat qa/target/brooklyn-maven-plugin/brooklyn.debug.log
+after_success:
+  - ".buildscript/deploy_snapshot.sh"
+  - codecov
+
+branches:
+  except:
+  - travis
+cache:
+  directories:
+    - $HOME/.m2
+    - dashboard/node_modules
+    - dashboard/bower_components
+env:
+  global:
+  - secure: "q6oLIb4TpyVxy6jcauijVcGkkTr3xe5dfcII5yJs48r2FzcZeAYqPvifb9G9tlOiK5igXJrEa2GmNytlI9NijOIAt8BBV34xIovwkupwJ9qGAxG2E5hHbAjGiRaICTglkH+psgaPuPe4W8UgmWCSNt9bM12F1bVHsXXftWx/880="
+  - secure: "VYSXB7Myuqbkyt9vjiro09R6e44G2xAie8Q8lYfJreghp7kTIUeH3cCY9gMRb8pMiYadVtF01hzJWaf6PaApScNivmMUkvzGGvfnRX1FbBoxL9CIhkZkmofoyvqiobE4moZpDl6wje7APAch2b/D9Q4CmNQf7eBFic9XissQqA4="
+notifications:
+  webhooks:
+    urls:
+    - https://webhooks.gitter.im/e/616eadc01d54389d624f
+    on_success: change
+    on_failure: always
+    on_start: false

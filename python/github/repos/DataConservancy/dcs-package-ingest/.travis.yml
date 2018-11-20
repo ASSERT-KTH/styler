@@ -1,0 +1,20 @@
+language: java
+sudo: true
+script:
+  - sudo service mysql stop
+  - sudo service postgresql stop
+  - sudo service acpid stop
+  - sudo service atd stop
+  - sudo service cron stop
+  - sudo service memcached stop
+  - sudo service ntp stop
+  - sudo service rabbitmq-server stop
+  - sudo service resolvconf stop
+  - sudo service sshguard stop
+  - sudo service ssh stop
+  - mvn clean install
+jdk:
+- oraclejdk8
+after_failure:
+- cat package-ingest-integration/target/test-classes/cfg/*
+- cat package-ingest-integration/target/failsafe-reports/*.txt

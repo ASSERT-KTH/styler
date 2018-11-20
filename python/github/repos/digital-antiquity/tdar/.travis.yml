@@ -1,0 +1,32 @@
+sudo: true
+dist: precise
+jdk:
+    - oraclejdk8
+language: java
+
+before_install:
+    - psql -U postgres -c "create extension postgis"
+    - psql -c 'create user tdar CREATEDB;' -U postgres
+    - psql -c 'create database test_tdardata' -U tdar -d template1
+    - psql -c 'create database test_tdarmetadata' -U tdar -d template1
+    - export DISPLAY=:99.0
+    - export MAVEN_SKIP_RC=true
+    - export MAVEN_OPTS="-Xms256m -Xmx2048m  -XX:MaxPermSize=512m -DenableContextSwitchingConfig=true"
+    # - echo "MAVEN_OPTS='-Xms256m -Xmx2048m  -XX:MaxPermSize=512m -DenableContextSwitchingConfig=true'" > ~/.mavenrc
+    - sh -e /etc/init.d/xvfb start
+    - jdk_switcher use oraclejdk8
+    - env
+addons:
+  firefox: "latest"
+
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+  - $TRAVIS_BUILD_DIR/web/node_modules
+install:
+    - travis_wait 120 mvn -q install -N -DskipTests
+script: 
+    - travis_wait 200 mvn -q compile verify -Pjetty,test,start-x-server,minify-web-resources
+
+env: DB=postgres

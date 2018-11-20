@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+    
+    <property name="charset" value="UTF-8" />   
+    <property name="severity" value="warning" />
+    <property name="fileExtensions" value="java" />
+
+    <module name="TreeWalker">
+        <!-- 每行120字符 -->
+        <module name="LineLength">
+            <property name="max" value="160" />
+            <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://" />
+            <property name="severity" value="info" />
+        </module> 
+
+        <!-- 每一行一条语句 -->
+        <module name="OneStatementPerLine">
+            <property name="severity" value="error" />
+        </module>
+        <!-- 每一行只能定义一个变量 -->
+        <module name="MultipleVariableDeclarations">
+            <property name="severity" value="error" />
+        </module>
+        <!-- 代码缩进  -->
+        <module name="Indentation">
+            <property name="severity" value="info" />
+	    </module>
+        <!-- 不能省略大括号 -->  
+        <module name="NeedBraces">
+            <property name="severity" value="error" />
+        </module>
+        <!--定义左大括号'{'显示位置 -->  
+        <module name="LeftCurly"> 
+            <property name="option" value="eol" />
+            <property name="severity" value="info" />
+        </module>
+        <!--定义右大括号'}'显示位置 -->  
+        <module name="RightCurly">    
+            <property name="option" value="same" />
+            <property name="severity" value="info" />
+        </module>
+
+        <!-- 对命名规范的检查-->
+        <module name="LocalVariableName">
+            <property name="format" value="(^[a-z][a-zA-Z0-9]*$)"/>
+            <property name="allowOneCharVarInForLoop" value="true" />
+        </module>
+        <!-- packages -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        </module> 
+        <!-- classes and interfaces -->
+        <module name="TypeName">  
+            <property name="format" value="(^[A-Z][a-zA-Z0-9]*$)"/>    
+        </module>
+        <module name="MethodName">          
+            <property name="format" value="(^[a-z][a-zA-Z0-9]*$)"/>         
+        </module>
+        <module name="MemberName">  
+            <property name="format" value="(^[a-z][a-zA-Z0-9]*$)"/>       
+        </module>
+        <module name="ParameterName">
+            <property name="format" value="(^[a-z][a-zA-Z0-9]*$)"/>        
+        </module>
+        <module name="ConstantName"> 
+            <property name="format" value="^log(ger)?|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />    
+        </module>
+
+        
+        <!-- 必须导入类的完整路径，即不能使用*导入所需的类 -->  
+        <module name="AvoidStarImport">
+            <property name="severity" value="error" />
+        </module>
+        <!-- 检查是否导入的包没有使用-->  
+        <module name="UnusedImports">
+            <property name="severity" value="error" />
+        </module>
+
+        <!-- 检查在重写了equals方法后是否重写了hashCode方法 --> 
+        <module name="EqualsHashCode">
+            <property name="severity" value="error" />
+        </module>
+         
+        <!--- 字符串比较必须使用 equals() ,不能使用!=和==-->   
+        <module name="StringLiteralEquality">
+            <property name="severity" value="error" />
+        </module>
+        <!-- equals之前先检查变量是否为null -->
+        <module name="EqualsAvoidNull">
+            <property name="severity" value="error" />
+        </module>
+
+        <!-- 检查boolean值是否冗余的地方  -->  
+        <module name="SimplifyBooleanExpression">
+            <property name="severity" value="error" />
+        </module>
+        <!-- 检查是否存在过度复杂的boolean返回值 -->  
+        <module name="SimplifyBooleanReturn">
+            <property name="severity" value="error" />
+        </module>
+
+        <!-- 检查再定义数组时，采用java风格还是c风格，例如：int[] num是java风格，int num[]是c风格。默认是java风格-->  
+        <module name="ArrayTypeStyle">
+            <property name="severity" value="error" />
+        </module>
+
+        <!-- switch要有default --> 
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="error" />
+        </module>
+        <!--检查switch中case后是否加入了跳出语句，例如：return、break、throw、continue -->
+        <module name="FallThrough"/>
+
+
+        <!--注释的检查-->
+        <!-- 检查类和接口的javadoc -->
+        <module name="JavadocType">
+            <property name="scope" value="public"/>
+            <property name="allowUnknownTags" value="true"/>
+            <property name="allowMissingParamTags" value="true"/>  
+            <property name="tokens" value="CLASS_DEF,INTERFACE_DEF"/>
+        </module>
+        <!-- 检查方法的javadoc的注释  -->
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="true"/>  
+            <property name="allowMissingThrowsTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="tokens" value="METHOD_DEF"/>  
+            <property name="allowUndeclaredRTE" value="true"/>  
+            <property name="allowThrowsTagsForSubclasses" value="true"/>  
+            <!--允许get set 方法没有注释-->
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+            <property name="ignoreMethodNamesRegex" value="^([gs]et|is)[A-Z].*$|^main$"/>
+        </module>
+		
+        <!-- 检查是否存在TODO -->  
+        <module name="TodoComment">
+            <property name="severity" value="info" />
+        </module>
+    </module>
+
+    <!-- 检查sysout -->
+    <module name="RegexpSingleline">   
+        <property name="format" value="^.*System\.(out|err)\.*$" />
+    </module>
+
+</module>

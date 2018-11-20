@@ -1,0 +1,26 @@
+language: java
+env:
+  - MAVEN_VERSION=3.2.3
+  - MAVEN_VERSION=3.3.3
+  - MAVEN_VERSION=3.5.3
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - oraclejdk10
+dist: trusty
+install:
+  - "mvn -N io.takari:maven:0.6.1:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "./mvnw -U --show-version --errors --batch-mode test-compile dependency:go-offline"
+script: "./mvnw -U --show-version --errors --batch-mode clean verify -Dinvoker.streamLogs=true"
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - olamy@apache.org
+
+after_failure:
+  - "cat /home/travis/build/mojohaus/animal-sniffer/animal-sniffer-maven-plugin/target/it/using-multi-release-jar/build.log"

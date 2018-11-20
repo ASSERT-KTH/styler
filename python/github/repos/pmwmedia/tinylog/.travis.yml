@@ -1,0 +1,20 @@
+language: java
+sudo: required
+dist: trusty
+group: edge
+jdk: oraclejdk9
+install: true
+
+script:
+  - set -o pipefail
+  - "mvn clean install -P release | egrep -v 'Download(ing|ed): '"
+  - cd benchmark
+  - "mvn clean package | egrep -v 'Download(ing|ed): '"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+addons:
+  apt:
+    packages:
+      - oracle-java9-installer

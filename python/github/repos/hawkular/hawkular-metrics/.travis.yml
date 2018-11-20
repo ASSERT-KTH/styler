@@ -1,0 +1,74 @@
+# Enable container-based infrastructure
+sudo: required
+dist: trusty
+
+language: java
+jdk:
+  - openjdk8
+
+notifications:
+  irc:
+    channels:
+    - chat.freenode.net#hawkular
+    on_success: change
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+     #   via the "travis encrypt" command using the project repo's public key
+  - secure: "L6KFpEFFEPW/bhH3CCYupYFldtJRKJIRy9E14sV5rFDvyrrNw5DgR4cac6hS4XbwOcv+SQv3lhLa0tBkLnJVR5X584py+tQh2zqdj6l5wfGzDSNLz6GXOzqFBx+UjFK7dnMVN7MQ0YIK+RxENQYpLvN9ofGFgqEKjFS8HK4wo9E="
+  - secure: Xl2RWUee61vD7Ka/L9M4c9q03w0pn0H5LECsEH6FOTNwLZZdWnHepvF0n8O4YQiG7RdvnK3UHCOGh7G4J5t4XDOwt45IJ3QtjB7FtVdOhMreXHwbMmE0xn2nGGUmhBuYUNN3oIaVzQxWuozcC3g8gQXln4iJVv/f9ecg5R3eRHI=
+  - secure: VIYnvHLr/H+2UpeHPe0UKoTK+l+pv6RcKV9tXfLpGEan6th/nmWjo9jR4ZtQNa90FcjOYexRPSLdaU4/SBlpVUHoR59koQQFfdsK+u8hVGpulOpBR6IUDYNQEris93g9NLJA+5PajhGxGnlUqJRP8QAE3RnGK+rq6nGVmlQd4S4=
+  # for pushing the swagger adoc documentation to the website repository
+  - secure: 6JUY0hUjTXaRcVHFqt1q06enCXdqZ9qYkgLA/uUoKq4tYBVDaaqF4yB88CRzr3rXpytz2aywH2dR1idZH4zoWzv1jQ/tCiYE7GjLRO2qn9wgCMzBRq8G7Ov5iFnsT+aBsf6Syx2rNXwH206cHXP4JY/CRs0ez9tcO4LlYls7XN8=
+addons:
+  apt:
+    packages:
+    - collectd
+    - collectd-utils
+  coverity_scan:
+    project:
+      name: hawkular/hawkular-metrics
+      description: Build submitted via Travis CI
+    notification_email: hwr@pilhuhn.de
+    build_command_prepend: ./mvnw clean
+    build_command: ./mvnw -DskipTests=true compile
+    branch_pattern: coverity_scan
+cache:
+  directories: # keep in sync with CACHED_DIRECTORIES below
+  - $HOME/.m2/repository
+  - $HOME/.m2/wrapper
+  - $HOME/cassandra-downloads
+before_install:
+# Increase max number of processes in order to avoid "OutOfMemoryError: unable to create new native thread"
+- ulimit -u 4096
+- ulimit -a
+- bash .travis.install.cassandra.sh
+- cp .travis.maven.settings.xml $HOME/.m2/settings.xml
+install:
+- ./mvnw -version -B
+# unshallow is needed by license-maven-plugin
+- git fetch origin --unshallow
+script:
+- ./mvnw verify -Dtest.logging.console.level=INFO -Dwildfly.logging.console.level=INFO -Djboss-as.logging.console.level=INFO -Dterminal-event.timeout=25 -Dtravis -B
+before_cache:
+# Clean the cached directories once their size exceeds the space left on the partition.
+# This is important because Travis zips the cached directories to a temporary file on the same partition.
+# Note that while we consider the summed size of all cached dirs, we remove only those ones that tend to grow over time
+- CACHED_DIRECTORIES=("$HOME/.m2/repository" "$HOME/.m2/wrapper" $HOME/cassandra-downloads)
+- availBytes=$(df -P . | tail -1 | awk '{print $4}')
+- cachedBytes=$(du -cs "${CACHED_DIRECTORIES[@]}" | tail -1 | awk '{print $1}')
+- echo "Checking if the size of directories to cache ${cachedBytes} Bytes exceeds the free space ${availBytes} Bytes left on the current partition"
+- if [ "${cachedBytes}" -gt "${availBytes}" ] ; then
+    echo "Cleaning the cached dirs (${cachedBytes} Bytes) because their size exceeds the free space (${availBytes} Bytes) left on the current partition"
+    rm -Rf "$HOME/.m2"
+  fi
+after_failure: bash .travis.diagnose.sh
+after_success:
+- PROJECT_VERSION=`./mvnw --batch-mode org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version | grep -v '\['`
+- if [[ "$PROJECT_VERSION" =~ .*SNAPSHOT ]] && [[ "${TRAVIS_BRANCH}" = "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" = "false" ]];
+  then
+    ./mvnw -s .travis.maven.settings.xml deploy -DskipTests ;
+    ./.travis.swagger.sh ;
+    curl --data "build=true" -X POST https://registry.hub.docker.com/u/hawkular/hawkular-metrics/trigger/5e78d947-bbc3-403d-804d-1b9f92d78ed8/ ;
+    curl --data "build=true" -X POST https://registry.hub.docker.com/u/hawkular/hawkular-cassandra/trigger/4c78fb4a-acad-4801-83a7-0794347bbe90/ ;
+  fi

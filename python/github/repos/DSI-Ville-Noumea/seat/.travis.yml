@@ -1,0 +1,38 @@
+language: java
+jdk:
+- oraclejdk8
+cache:
+  directories:
+  - ".autoconf"
+  - "$HOME/.m2"
+env:
+  global:
+  - secure: O6pinE3ChXW8TUgkN9FTBZdYg5GfFUPiaCcm94xyiqknQRnPjsaAkI4ze45Lkoyawbwm3HikBJh/Nnkx+CyA9oQfpyRPX3/0er3/fWs1Zdsv+v4RrQJgU8+2PfUokrNJglRF9zJOvrFrOYgK2/TQjxAcF3QZd0rPlL+6j9lUtN13lp+YqFduwjc4wylZBv8+sNSZ3KsAN53nC8GGks4L5Y90rh/1J0ka31IsVqLDeSF5rrLCkSKJECL73D6v2Z+2nls1bpkWt5tFBEvro47jZgQ+rpQplU0CT/wV5/l9d6eqZ7PlLg4KnfpS+pOt4DQNOm8705uOAiIxlouRI2TMmkvT0oX4NIXJJMCsTdAEXD7HPHfT1yq58stzVjkbzpUGFoWZs92F3A8mvcwOpFbWHSBjMIk7yXDY1jBBCHFyO580P+O1jNK5/jxyBhbtT70c99XLMoISMZTDbh27cS4ksWU41SkV9oxTgZOgWAfUiz3qp6P7Q1ALOV/hcUtIuvNmLBkJsbb65pW7y/qg1bbwHKzuqYU7ZkGYiiEyM/GZgOgUDhOfBINuY4OD7+ablksVJureYCggfa4Zh8gVS3r7TnPeUPvShP115UlU9fJ1PhVenskGAaMwSMf41D6UEco76tW6cFZm/fkQHH33OH8r2KXoDvoTvXUaxdBOQtlicJM=
+  - secure: r8bzC/c/cdbM1/Knzd8fleAAGP06+PtCWOLX3EUkhBn/aBASqUW3DVAKDLfj96jDZ4KXE1vHLDe9xVJKX3ZovCpYIvmJJO4fp3MC+o7ARFcTr8mn6Rrpko8mO8at2142Birklv+Egvdl6PoaKcB6ZL+GMAObeKl7O5r3R0EmdCOfEypXCiT3E9sUVgzRf1FUoCN4E1gNPO2IyoZF6zex6RfQMaCicxRyItaUXfmeDyGAWJA/s/W2MP84oI+2qBXMB7xIqMw5N+6PH5XdlA6VCNVCFANUfLulNKuCVmQkqBkyj6T/fOSZYokenimm8PFpmUtx4zCLlmOf4YTe+tJzk8MsOMt8HRx8Ja51IO2mdgA5Iri9+RZJBXmC3DL0RP3HabuXDhJlgGCKydyP1MA96czoyu/2Pv0mEScIybHA3wdP+4Izq+zIchiu231Yh6q2BBRTWHuWgwqDRL7ZClqZ2woIGo4bcKGEDGbDBCUg4RqPFmUEj+Bcyv8PK1WC22NcEaqWN7m5RwbEZdb9JtXs9su3wwmNFOJLPdgDIDjL5dzVXnv1q05ln0mATIPutTazfohdcRlkHW1T7eS3srgoTTcc5XkPK/ABFS4EOL9S5CUqBLrZeFz61nDq0Lh9kloTBb25mQFEzwAIIYp1RpUTvtVhoHR0V5gFbteVI3QLUqM=
+before_install: 
+- export LANG=fr_FR.UTF-8
+- export TZ=Pacific/Noumea
+install: mvn install -DskipTests=true -DcreateChecksum=true
+script: mvn versioneye:update
+before_deploy:
+- export RELEASE_PKG_FILE=$(ls target/*.war)
+- export RELEASE_PKG_MD5_FILE=$(ls target/*.war.md5)
+- export RELEASE_PKG_SHA_FILE=$(ls target/*.war.sha1)
+- echo "deploying $RELEASE_PKG_FILE , $RELEASE_PKG_MD5_FILE , $RELEASE_PKG_SHA_FILE
+  to GitHub releases"
+deploy:
+  provider: releases
+  api_key:
+    secure: WidWnvOUXKY6/+JTufJ2nIAnvveFurMEQ9WVnAQ7lrGVLoqtAwLGfeO7wsIMnCF2LBhuULxCsJdgCHiwRq6QYuN3s+VK83qTKaldZJKCMWee6wV4VSB/gNux/xQoKKVx5HVk3fqb9lbT7AFtiMg7+qJI3Tvqf/LRwP0ymOLGGUJii+4zuM/Uti3b0H/G0v2GhgqtiPOAVzL9XGGtPGjgQCvx5UZ+PFV357v+/iv9ClO2RfuBt/revJx8lH5K7viVE8dPlpmddY5w37rcFxPxA6Ao9MLYhc5xLauEGvI00mqMmT1sXtfT2QdYQRWehDy65b4K0n+Izoku0kv3tR+24iB1dtD8FKk5Idu6xS5BORH1EmT474Rdmfz0+2zTcFZPSJbS0DjQoH0a4hA3yTF3B57ajn6oLcXYstpSdPlrJ4Y7V/dM/OcTfnxV88W5mHLvnf39lbVBpWATjqT1VF71I5PW+yrEcHr9dNNeRhwyiXiaBos9lrM7uMLIGqY1OH52RpsYycGHd8Zx8YH+5h50yX1mSrkL9WVfDpXzNoQ2JzDK1nqR+phqSTiyZpXTs+zQNGd0Oism2KoIs7bklIuC3rkKJxmtUSO9q7Ouxh1Rx973k+Q/3cewbY5QC4xnKbj6ru1wjHAVOOGhoEvk2jnu5f2DCsXDXfrR4lO7sRJiwK8=
+  file:
+  - "${RELEASE_PKG_FILE}"
+  - "${RELEASE_PKG_MD5_FILE}"
+  - "${RELEASE_PKG_SHA_FILE}"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: DSI-Ville-Noumea/seat
+notifications:
+  slack:
+    rooms:
+      secure: mY6kUfb4mEyw2voR55HK7iz7RV84kJAUOHVQfizJMqCyYrryuMmDEiCPQ5ZParxLhLCfiY1AeVg2kzQBW3DMbrfR0FdP4eTOeMsiwcnDVSu2f8fHLJpThgEKVe3D+OM/tTf2gv2w+8BhPp68SRyc5ZdphOHcfmGF9wuUxwykj9poPI+j0CR47RH+8ZEO/krP+f8nF9VBc9lpoDALeTgT1DhqpNaN8JYUMjqzH/szfnLbz4RRrccnRbvCJUoivOP2ccTHuzGMHiWjMIiMUEHrpYnGdvnXjrbusVHmikxHrwDkPiy2YPn4ILc6k/WIGHCpK53W8LcYPi9vChFy2+fnDiD2PNiHrGJDwtbnv15SVsd4QNfJrmREfRnuTjqIIxxvYs7MQZOEcba6CGM+GliOTcn8rdv15NdKLkOY88XF11JtMjxgNFRllVKKmduVPaSiHP3VwVNlLRGYwKoPP+1JGc9T+E/zILj961J/YWgUyxCrYonnYBfbCkOq3qZgKGX3HtdBz1Bq1QRW8JSq1oQ5U0mIADLb2sDJ1Xjf30ginSnhejqUzY7fdUmCujFFcDo7CJp1KUp5aSDTyePlh32X4dajOxTFTQi/zK2ctTNLrS3wZswh0WLgwqslYDb4PDJO4rWSPFB2MiQuxLp2gKCYZp9+GKWuH5tmt7XhzdARsFY=

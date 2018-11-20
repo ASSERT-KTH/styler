@@ -1,0 +1,46 @@
+language: java
+install: true
+matrix:
+  include:
+  - jdk: oraclejdk8
+before_install:
+- openssl aes-256-cbc -K $encrypted_af9d8ed4b1b5_key -iv $encrypted_af9d8ed4b1b5_iv -in .coveralls.yml.enc -out .coveralls.yml -d
+script: mvn clean verify install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
+env:
+  global:
+    secure: XpArBRq0bKup5UYe7cOLqBSK4iXkG6p5YMNNBVIWjxHXiRuBxdFu4eXCu03scIzoe/GyXD65grSsZevAekK0lJZAd0/T62n0hfuWxw/NWHD+lbJRuGxNbwcqTvihLs8Np4Cicj7S+aWMZLdUc7eTrvx/nrs13PGUvHwn0eBo/GPrGYD3Jh/zaDG9c4w920tkq8u9telyl5sTF4ElrY2aneQbqRxs7zLLnDtLc+wdvNtfeAdGVD74mRzUSsWP+FFGea4nqA1A7qaXKSvIpdo3ympxZNCTBu3jMAGPSDk7CRnJOZYlLcNqqpeWdsCvPRst4Y57dPhstzv5KicDMuicZHUJddeXCFqtxYxvhj1rvsAud8L79KYDEC+Dux4qvW2uu5B79JwROTJlHdcC7FckikOHcp8KgHXJuwQbtboPemZ22dZvgK+TJKcp/tvvgGScZkJ9jPBwhRjFllblz6X2nRx8UNcHtrIwIP5PnYI1t95yGYlImVuzdv6uWW8uQxCvePCTBPHsBLnRvsT03MBAnbk1I9GiqHZntVWnxQcbcSXzl8gTpgEhSs/PiOimRyaP/WG7+rEOPXZ/n/VdfwvoN4a4p/KVb2mo3WbiLNxtrHYjJoN3+4V/3/nRRI4c6CvS9yHnMqQQ99ZAlKSnMVUpW30y3y6WL7I8tTw3aNr5+38=
+after_success:
+- mvn org.eluder.coveralls:coveralls-maven-plugin:report
+- git config --global user.email "mitoskalandiel@gmail.com"
+- git config --global user.name "mitos[dash]kalandiel - Travis CI"
+- export GIT_TAG=$TRAVIS_BRANCH-v1.1.$TRAVIS_BUILD_NUMBER
+- git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
+- git push https://${GH_TOKEN}:x-oauth-basic@github.com/JokerSolutions/JokerLibs.git --tags
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api-key:
+    secure: gQW32J0yJzSgX4Yz1hqQOhesoRCN/KLtMO3vGHBe3yFrO3YhtlpGLze6JP+uYrTvAltzLe/9E1y0tYwnYjXa1LyiWjLxGJMrKpaCbrLYTRQVJ0VhOaBtEfGWZIior5o3dVj8IrDm0oniqBG/jcjgCHQ0W3A/EDtIs3JLj3Zv9dbMJHnBGkunHUCQnRilR1DczWFjKmI4GXJtSepU9v1uVmlbiZuS2D27DNiyO8VIvLeDaAGchI2ozeMbRo0qnblFcR+0HwDgQEL4GHS7/4C1OdO6rEVMmvzOHb3KTJPlsc9BERbhDMsAwqtzLwwsHJ3TuiUVaJbxQ5Kc9ytAo1kWUlTxdQ+k/3nOmfAJcHIgm0lUUx4NaOP3C+8AlYZmkpXGHnjVuIbEUO+R7MruAlB5z6LC122wACESNcOn+/74HOIhnYtwP/sU8zOYuLOplTBqqHeyinaJXZMDgUI7/NXeANgS6x5/qlv/5DV8epMEorN7d/oEVLFiMzk0xk0tuw595TKXio3OFCjcjNqRLhwGbcnNHYbYVHLS2Bba5zblzEIHJMIjY00uqI2HXs/mPa6y5+3wJl4+swyeAqfZN8z8rDj7MA5GxppwKRT6xD7uXue67gEk9gHGnDqpy9pCgufOTw3P1WppvSLZCncrbPZ+g3BUUhK8AmPVDwBt/cclwco=
+  file:
+  - target/JokerLibs-1.1-SNAPSHOT.jar
+  on:
+    tags: false
+    all_branches: true
+branches:
+  except:
+  - "/^*-v[0-9]/"
+addons:
+  srcclr: true
+addons:
+    code_climate:
+        repo_token: 3dbb50588aa9e89b5cad32225753ac6fd1d513684ca2bfbd57a32c0abd2976f0
+#cache:
+#  directories:
+#  - "$HOME/.m2"
+notifications:
+  webhooks:
+    urls: https://webhooks.gitter.im/e/ffc39376dc55eb15eb39
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
+

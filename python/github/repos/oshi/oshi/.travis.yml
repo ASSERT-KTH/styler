@@ -1,0 +1,51 @@
+language: java
+
+# Get most recent JDK versions on-the-fly
+before_install:
+  - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - if [ "$AFTER_SUCCESS" == "jacoco" ]; then
+      ./mvnw clean test jacoco:report coveralls:report;
+      ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=df16219a00545aae71f880423a6f23191330744f;
+    fi
+
+env:
+  global:
+   # COVERITY_SCAN_TOKEN
+   - secure: "JuTWT2u7BWQEJGMGkVvQMIQxwxajntxqbCGYt+bJD3JQhioPVFUJoEFrLCx+jJ0qLy5usrneCDFrvRhvTh6C+95kvHypvGQ3UoeWyXS8zD+GRPUyskbuQ7P60kqqIqc+naGd3uyGddniixoAA6C/Ptmknhls4FlhDCMjW3HDS0c="
+
+addons:
+  coverity_scan:
+    project:
+      name: "dblock/oshi"
+      description: "Build submitted via Travis CI"
+    notification_email: widdis@gmail.com
+    build_command_prepend: "./mvnw clean"
+    build_command:   "./mvnw -DskipTests=true compile"
+    branch_pattern: coverity_scan
+  hosts:
+    - oshi
+  hostname: oshi
+
+matrix:
+  include:  
+    - os: linux
+      jdk: oraclejdk8
+      env:
+      - JDK = "Oracle JDK 8 - Linux" 
+      - AFTER_SUCCESS="jacoco"
+    - os: linux
+      install: . ./install-jdk.sh -F 11 -L BCL
+      env: JDK = "Oracle JDK 11 - Linux" 
+    - os: osx
+      env: JDK = "Oracle JDK 8 - Mac" 
+      osx_image: xcode9.3
+    - os: osx
+      env: JDK = "OpenJDK 11 - Mac" 
+      osx_image: xcode10.1
+
+script: 
+  - java -version
+  - mvn test

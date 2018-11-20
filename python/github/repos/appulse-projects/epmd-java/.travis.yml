@@ -1,0 +1,47 @@
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+# Install Erlang for integration tests
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install erlang -y
+
+install:
+  mvn --settings .settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+
+script:
+  mvn --settings .settings.xml clean verify -DskipTests=false -Dmaven.javadoc.skip=true -Dgpg.skip -B -U
+
+before_deploy:
+  - mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
+  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - sed -i -- "s/\${env.SONATYPE_PASSWORD}/$SONATYPE_PASSWORD/g" .settings.xml
+  - mvn --settings .settings.xml clean deploy -DskipTests=true -Dmaven.javadoc.skip=false -B -U
+
+deploy:
+  provider: releases
+  api_key:
+    secure: IzSZiGH6iDV42XDTNfwyKV9bX9ldu7hvKEukvfXAMIYL1MLsOBP+7+m/kKUu33pa4OeGxyb1aRfworS3i8gifBgQittdXEAbJcGhMa/u5ex0HJbm8uw6trU3kXGpKiRYNO0W6uyPtUON6TFyR1RwbZFPAeHh/6VHFVvfss+gvAeLExgxAvtBMPfwpjqfRdod7rGEN/fxbyqPAOMXhOhsPA4ODxCEOgRl1/i7lK8XnUR9r0bTCpV/+GW5UPJ0zQ/05n21A0eWE8mULMHIwPGJnUz74LNcZ3Eqz4IHY1WXO42gPRBb7Rdl08dC/t+mqeEz425v0WDPCPQMZrqnu+rN/XKgrjG3lm7c5doBSP+wsCOttq/gLgepoIUyJqQQuwqGEdHJxev0Rd9geOnpUsjicK35mrzbamEgzJYKLWEcgfI+RlXgWfOeGZLN2J8zC95At+Tqq0YuqrklafOyjwrrrFa6us7xYIiKEXe9z2wtmIOR6e9Z3Gnq9SkxWd2uBVLVBt0L0pIMR7e5rvmrirSPRluXtN+5oEWrLbsvTPlyvpwlbHOdat13Xv6V86ymhg8nWV64MSbsZK+N+HPJGZlANfItCAZDwuB/QFS8j2G9fKpMXjwh3z98x6PqD4kPAv+hQi3AWMhDTqqv0kZ6/W2BUKscqXYKT55xmQ9kqHsghoM=
+  file:
+    - "core/target/core-$project_version.jar"
+    - "core/target/core-$project_version-javadoc.jar"
+    - "core/target/core-$project_version-sources.jar"
+    - "client/target/client-$project_version.jar"
+    - "client/target/client-$project_version-javadoc.jar"
+    - "client/target/client-$project_version-sources.jar"
+    - "server/target/epmd-$project_version.jar"
+    - "server/target/epmd-$project_version-javadoc.jar"
+    - "server/target/epmd-$project_version-sources.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: appulse-projects/epmd-java
+  name: $project_version

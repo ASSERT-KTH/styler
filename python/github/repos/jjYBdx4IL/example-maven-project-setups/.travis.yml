@@ -1,0 +1,14 @@
+language: java
+before_install:
+  - sudo apt-get -y install libc6-i386
+  - git clone https://github.com/jjYBdx4IL/misc
+  - mvn install -f misc/release-parent >& log || tail -n1000 log
+  - mvn install -f misc -DskipTests -DskipITs >& log || tail -n1000 log
+install: true
+script:
+  - mvn -V -B install -pl '!gwt-example/dist,!gwt-example/devel-it,!hdfs-example'
+  - mvn -V -B install -DskipITs -pl gwt-example/dist -am
+dist: trusty
+notifications:
+  email: false
+

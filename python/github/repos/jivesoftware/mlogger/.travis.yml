@@ -1,0 +1,28 @@
+language: java
+sudo: false
+jdk:
+- oraclejdk8
+env:
+  global:
+  secure: "Wt7X7mKTxNSVrv8dHv+5NJnzOKCrxhQi+vt0g+E4IPrAouOCT5ZH2qmxnyD/gbxEeXUyuAM6CCAhPQnIkQ6iN3H6cj5lu3NqRBtiimvT2cD/efbPabjltPV/JGasCtSYMMwHUY97ijf2Dt8KHu8LJlDCKXKBLSVgmAxwjAKCV4Y="
+install: true
+branches:
+  only:
+  - master
+script: mvn install javadoc:aggregate jacoco:report coveralls:report
+after_success: 
+  - chmod a+x .utility/push-javadoc-to-gh-pages.sh
+  - .utility/push-javadoc-to-gh-pages.sh
+
+before_deploy:
+  - "mvn -DskipTests package"
+  - export FOO=$(find /home/travis/.m2/repository/com/jivesoftware/os/mlogger/*  -type f)
+  
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: "iP7Jle8DWOyp+fTf7N+OfFmcMzASE6clKSTxnGND169OLuYMVjPI4xmNlYHvef4LOCMSTfcwrlozH40S0BuEFAk2ZrouCs4oUvjWc3W59hxlDxn0ufZb6mRA+uF49gRrcTi+uV55kwqT5kn/OfjEchZJVwuwdgbjY/3rHAftf+4="
+  file: "${FOO}"
+  on:
+    repo: jivesoftware/mlogger

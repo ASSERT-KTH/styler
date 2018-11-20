@@ -1,0 +1,20 @@
+language: java
+jdk: oraclejdk8
+sudo: required
+dist: trusty
+
+script:
+  #Runs unit and integration tests along with generation of coverage reports
+  - bash scripts/travis_script.sh
+  #Runs deployment tests along with upload of coverage reports
+  - bash scripts/travis.sh
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash scripts/deploy_docs.sh
+  on:
+    branch: dev

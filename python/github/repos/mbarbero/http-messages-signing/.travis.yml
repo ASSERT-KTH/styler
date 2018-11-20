@@ -1,0 +1,21 @@
+sudo: required 
+services:
+  - docker
+
+# Skipping the Installation Step
+install: true
+
+cache:
+  directories:
+  - $HOME/.m2
+
+script:
+  - ./releng/docker-build.sh
+  - ./releng/docker-run.sh "releng/build.sh"
+
+deploy:
+  - provider: script
+    script: ./releng/docker-deploy.sh && ./releng/docker-run.sh "releng/deploy.sh" && ./releng/deploy-gh-pages.sh
+    skip_cleanup: true
+    on:
+      branch: master

@@ -1,0 +1,28 @@
+language: java
+install: true
+sudo: true
+cache:
+  directories:
+    - $HOME/.m2
+before_script:
+  - echo "MAVEN_OPTS='-Xmx1024m'" > ~/.mavenrc
+  - true ; if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then openssl aes-256-cbc -K $encrypted_51906dfef45a_key -iv $encrypted_51906dfef45a_iv -in settings.tar.enc -out settings.tar -d && tar -xf settings.tar && cat known_hosts >> ~/.ssh/known_hosts ; else true ; fi
+  - sudo service mysql stop
+  - sudo service postgresql stop
+  - sudo service acpid stop
+  - sudo service atd stop
+  - sudo service cron stop
+  - sudo service memcached stop
+  - sudo service ntp stop
+  - sudo service rabbitmq-server stop
+  - sudo service resolvconf stop
+  - sudo service sshguard stop
+  - sudo service ssh stop
+script:
+  - true ; if [ "$TRAVIS_PULL_REQUEST" != "false" ] ; then mvn verify ; else true ; fi
+  - true ; if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then mvn -s ./settings.xml deploy ; else true ; fi
+jdk:
+  - oraclejdk8
+notifications:
+  slack:
+    secure: EE92LRrjadAHtMUn9SynaUPo7w0UjIXiVMS7OA4UbI6VrQ28wJtwXdh9+lRgHSQxj80arkluWuE00BT2XR9r+d+Yp+S7AHBLetu3WDMpDsBl3PQW8f0FmZmoXraNW5YVvrXlj7sDx9SNkWnul/oaPDhAi16Yp4TnCbtkNErpf6QC0UvEvHTBrDXvFE0ZyIiC+rQAiPV/tMgsdmpL6b4sRmozGU3OuGcOnDeesLMIzVh6fKH0H+eD0MRMRtNRRnbo60/NOzaymlBM7kKQvvaiBoSmzO/HwUxKNK8OLilOTyFiYqQ2qHP4xagG7PtxAyQoiyavDPxnVNSSh/UT4yUca8JwA9nejBSoJvO+kGWJ3/bqjybpKI9UbythnMq0XOFgJvUEB6UNhWhwjldxSE6aOtqqM+b8TLwcn1sg1fKhRGWE/rTHrIqFW36jYcfj5ckT0K+Fp9fGz8sN+kvZiA+PPnt+Wj173F5wyAOYufc7UB5mAm5EML00utRKms+SI03Lo2I9mU+8GsUSmxd+HDHZzgz2a56rLDVwy3olLTjKR6Q0gRp5etq9PYtg8Q2mUIu4+ZpzNQv9RMk1P2W4xwkubysx4Ny8VCM7/XYIc5JhlEq2XrqEAe9m6/7+CzdRk2N5/Hw/Z42i2TxNM3M93CWLC74EH5PzCXeHBe9wyup4wds=

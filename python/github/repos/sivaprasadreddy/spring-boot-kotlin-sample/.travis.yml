@@ -1,0 +1,19 @@
+sudo: required
+language: java
+jdk: oraclejdk8
+
+env:
+  global:
+  - secure: "R9W2ZrMnhXIv5s74t4PRS3WzVhue3JV7gLjWLNAVyuNpZO/OGgdCj8ZbdXEuTD60qwULkhiUnu4SkpdLCQonghQDz8OJK02RU8D7TjOaNiMIfYMEPznM2xsDt5qrJ8J0xNuVFeG3V+oUbVcAvnBamA7N2KEaDqPCCHFHo59QDB3cLmiLRUKi7L4j3mooZv0h4oQ+KdCuD5oACi6wyWScBHYeuXD2v/AOjRFENc2vw2cD7GMXAXGshuC0c9whJWrrlQVGl+RAa11iCSnUAXxfn9QTvRP2Q99DSo3sgz4wkQzbwsysLqTCTb+reBrT8udeFOY7XPtXfQGdNZdm+GgOg7phZ/ys3DAbFLfpsyF921lPo7vqAeMoCZGO1o9v1J/lj49LGvAJ8hlHxJlsFcQz+cXih+Dvx5AT4irXs9CI8GGIdD6TXBMdtatSU/bUsd2GwJPRJYRv/66943HDLnbc9w44YTmC+5UPA6CCASiN5sPHGsMdN4ytDs8WO6WoIWq0LrtciHLkPuz9HHDVNB1xdETXOtHGLA+2xCKoj5kfd5vgWQLyFZydCsKskKWi09L+AnAES4ltKaY6UIoqPzNoNf3VuVMafyrZBg39sy/Yx3JwvqPb9oiixVq82AJ4DGDaJfei7EV/8PJG+drv2/ELYMLsouQMV0xHlfN+nywDEjM="
+
+addons:
+  sonarcloud:
+    organization: "sivaprasadreddy-github"
+    token:
+      secure: $SONAR_TOKEN
+
+script:
+  - ./mvnw clean verify
+  - ./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.sources=./src
+
+

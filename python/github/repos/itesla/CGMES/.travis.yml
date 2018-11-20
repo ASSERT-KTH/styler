@@ -1,0 +1,18 @@
+language: java
+
+sudo: false
+
+jdk: 
+- oraclejdk8
+
+install:
+# Build powsybl core
+- git clone https://github.com/powsybl/powsybl-core powsybl/powsybl-core --single-branch -b cgmes_inside_core
+- cd powsybl/powsybl-core && mvn clean install --projects triple-store/triple-store-api,triple-store/triple-store-impl-rdf4j,triple-store/triple-store-impl-jena,triple-store/triple-store-impl-blazegraph,cgmes/cgmes-model,cgmes/cgmes-conversion --also-make -DskipTests=true
+# Default configuration for powsybl
+- mkdir ~/.itools
+- echo "LoadFlowFactory=com.powsybl.loadflow.mock.LoadFlowFactoryMock" > ~/.itools/componentDefaultConfig.properties
+- cd ${TRAVIS_BUILD_DIR}
+
+after_success:
+- mvn jacoco:report coveralls:report

@@ -1,0 +1,26 @@
+language: java
+
+
+# activate profile no-integration-tests so test sources and their dependencies can be excluded from build
+# (there is no jboss server installed on travis anyway)
+# deactivate profile integration-tests (it is active by default)
+script: mvn clean install -B -P no-integration-tests,-integration-tests
+
+branches:
+  only:
+    - master
+    - integration
+
+jdk:
+# Sun/Oracle JDK 6 is EOL since November 2012, and is no longer supported. Please consider upgrading...
+#  - oraclejdk6
+  - oraclejdk8
+  - oraclejdk7
+# Build timeout with openjdk7 was a Travis issue, is resolved
+  - openjdk7
+
+before_script:
+  - mysql -e 'create database idpdbtest;'
+  - mysql -uroot -e 'GRANT ALL PRIVILEGES ON idpdbtest.* TO idptest@localhost IDENTIFIED BY "idptest";'
+  - mysql -e 'create database platodbtest;'
+  - mysql -uroot -e 'GRANT ALL PRIVILEGES ON platodbtest.* TO platotest@localhost IDENTIFIED BY "platotest";'

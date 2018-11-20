@@ -1,0 +1,29 @@
+sudo: false
+dist: trusty
+language: java
+cache:
+  directories:
+  - "$HOME/.m2"
+jdk:
+- openjdk8
+jobs:
+  include:
+  - if: type = pull_request
+    script: mvn -P release-profile -DskipTests=true clean install && 
+            mvn clean cobertura:cobertura && 
+            mvn -DskipTests=true cobertura:check && 
+            bash <(curl -s https://codecov.io/bash)
+  - if: type = push AND branch = master
+    script: mvn -P release-profile -DskipTests=true clean install && 
+            mvn clean cobertura:cobertura && 
+            mvn -DskipTests=true cobertura:check && 
+            bash <(curl -s https://codecov.io/bash) && 
+            cd release && ./deploy.sh && cd .. &&
+            mvn -P site clean compile site
+    deploy:
+      provider: pages
+      skip_cleanup: true
+      local_dir: target/site/
+      github_token: "$site_token"
+      on:
+        branch: master

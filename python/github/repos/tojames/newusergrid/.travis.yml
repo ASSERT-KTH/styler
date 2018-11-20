@@ -1,0 +1,56 @@
+sudo: required
+services:
+  - docker
+language: java
+env:
+  global:
+    - DOCKER_VERSION=1.12.3-0~trusty
+    - DOCKER_COMPOSE_VERSION=1.6.2
+    - EMAILS="suxy@easemob.com,zhangqq@easemob.com,chenchaobing@easemob.com,zhouhu@easemob.com,yeyc@easemob.com"
+    - DOCKER_EMAIL="zhouhu@easemob.com"
+    - DOCKER_USERNAME="easemobci"
+    - DOCKER_PASSWORD="hLc7tS6n2YZKs42wxTWR"
+    - GIT_USERNAME="zhouhu"
+    - GIT_PASSWORD="xCTS62zoa8oL3zMiaDnS"
+    - MAVEN_OPTS="-Xmx4096M -Xss128M -XX:-UseGCOverheadLimit -XX:+CMSClassUnloadingEnabled"
+before_install:
+  # list docker-engine versions
+  - apt-cache madison docker-engine
+  # upgrade docker-engine to specific version
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION} --force-yes
+  # reinstall docker-compose at specific version
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  # install jq
+  - sudo apt-get install jq
+  # +x for script
+  - sudo chmod 755 ./travis/travis-install.sh
+  - sudo chmod 755 ./travis/travis-build.sh
+  - sudo chmod 755 ./travis/travis-push-test.sh
+  - sudo chmod 755 ./travis/travis-thrift-test.sh
+  - sudo chmod 755 ./travis/travis-rest-test.sh
+  - sudo chmod 755 ./travis/rebuild-image.sh
+install:
+  - bash -x ./travis/travis-install.sh 
+jdk: oraclejdk8
+script:
+  - travis_wait 180 bash -x ./travis/travis-build.sh
+  - bash -x ./travis/travis-push-test.sh
+  - bash -x ./travis/travis-thrift-test.sh
+  - bash -x ./travis/travis-rest-test.sh
+cache:
+  directories:
+    - .autoconf
+    - $HOME/.m2
+notifications:
+  email:
+    recipients:
+      - zhouhu@easemob.com
+      - suxy@easemob.com
+      - zhangqq@easemob.com
+      - chenchaobing@easemob.com
+      - yeyc@easemob.com
+    on_success: always
+    on_failure: always

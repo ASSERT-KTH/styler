@@ -1,0 +1,42 @@
+# 
+# Copyright 2017 Tirasa
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
+language: java
+jdk:
+  - openjdk7
+ 
+env:
+  global:
+    - SONATYPE_USERNAME=chicchiricco
+    - secure: "LLJI6t/qcdV5x1W6tbxmZTX9FNgkK9b0tG4v3J9bMINOXNsYTRs7YrvKlvdm1Htx5b6rIgj7Tn/x5ghFMweyoLRe0IfYo/OANO7ECIPnIhDtF4juMaIifWBJUQxeO7+4ykbA3MHuDfPlXvdYiwYNXwaaFi15xIBK+/7dPQzTG0BgQIm6M4o6JnN1hWRDVBISfBf30oIIEo9vY4hsWYkZzUJqQgG0OVLKBte5/Tirx9fmelLBPUqvhFfmH7rj2HLNMexzvGFYw0Zr9f39oUrR4hj2c2Iq/6PlRxAlN9DGsGj5L6AFAFHtF9JBGR0LTi/LEINGXn7bKVNJIiXOU+Hjj9hyYUeTsAuuMH91c0exUc3XegR79nLkWulcT+pmYEFPZqOJT89QlE4XWgiJ0YS/OpNy7fkDKfqSTls3F9fwuUA6TUdvL8Jlw6EVETpQbzaB/e59fmtg/CGhMdx934O0Ps5x3+D/dMZQViXHkjgWwmXqoYQ/QnvEe5J47f3w7oI7dB3C5UxOKJR1RVtPrcklBJjUI9kgTZ1djqmTFoEwtvCvg6bDz69DSKZG18FJV3y6FJeBToIcjsKO6hihtOQjkuSlfqgn6925weL2/3jBT9vWig1TBvBzDuzxEPI910igwqhlRkoJoKk88Mn2i57M9I8FoLlAjWXSLV3UGBJuN8I="
+
+install: mvn --show-version --quiet clean install
+
+script:
+  #invoker.streamLogs: we cannot access to log files through Travis web ui, so display everything in the console
+  - mvn --show-version --quiet clean install -Dinvoker.streamLogs=true
+
+after_success:
+  - python .travis.addServer.py
+  - mvn clean deploy --settings ~/.m2/mySettings.xml
+
+notifications:
+  email:
+    - travis@tirasa.net

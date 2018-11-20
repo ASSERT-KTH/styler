@@ -1,0 +1,19 @@
+language: java
+
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
+
+before_script:
+  - .utility/before_script.sh
+
+script:
+  - mvn test assembly:single
+  - cd src/test/python
+  - make
+  - cd -
+
+after_failure:
+  - cat target/surefire-reports/*output.txt
+

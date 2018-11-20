@@ -1,0 +1,13 @@
+sudo: required
+
+services:
+  - docker
+
+language: java
+install:
+  - jdk_switcher use oraclejdk8
+  - mvn clean install
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report
+  - bash ./travis/push_image.sh

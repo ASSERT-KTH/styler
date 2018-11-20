@@ -1,0 +1,22 @@
+language: java
+# use Java 8
+jdk:
+  - oraclejdk8
+sudo: false
+services:
+  - docker
+before_script:
+  - docker-compose -f docker/dev/docker-compose.yml stop
+  - docker-compose -f docker/dev/docker-compose.yml rm -v
+  - docker-compose -f docker/dev/docker-compose.yml up -d
+script: 
+  - mvn --file ./src/pom.xml clean package -P test-consumer,test-business
+  - docker-compose -f docker/dev/docker-compose.yml stop
+  - docker-compose -f docker/dev/docker-compose.yml rm -f
+  - docker-compose -f docker/dev/docker-compose.yml up -d
+  - docker-compose -f docker/dev/docker-compose.yml ps
+after_success:
+  - mvn --file ./src/pom.xml cobertura:cobertura -P test-consumer,test-business
+  - bash <(curl -s https://codecov.io/bash)
+notifications:
+  email: false

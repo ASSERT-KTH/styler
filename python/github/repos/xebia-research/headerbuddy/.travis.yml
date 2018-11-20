@@ -1,0 +1,46 @@
+language: java
+sudo: false
+before_script:
+- sudo /etc/init.d/mysql stop
+cache:
+  directories:
+  - "$HOME/.m2"
+jdk:
+- oraclejdk8
+services:
+- docker
+notifications:
+  email: false
+install:
+- mvn install
+script:
+# Create docker database container
+  - docker-compose up -d db
+
+  # Give the mySQL database time to totally finish starting up
+  - sleep 15
+
+  # Create the application container
+  - docker-compose up -d headerbuddy
+
+  # Give the application time to finish starting up
+  - sleep 15
+
+  #pull the owasp zap container
+  - docker pull owasp/zap2docker-stable
+
+  #run the container and test the app
+  - docker run -t owasp/zap2docker-stable zap-baseline.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8080
+
+  # show what containers are running
+  - docker ps
+
+deploy:
+  provider: gcs
+  access_key_id: "GOOGTUXUIOSLVVQIVFES"
+  secret_access_key:
+    secure: 2AH/TquW3oSMxZGYn02w6J2nNsZ/4VeVA9qegVNPCRxxi2jvCGg79A/fGU3SYTSTow4W15mQ3TeOIAbmbJ2pQhskifB/QFu8sI68HsDlGs+aXgpf9F2+oBInUPlK/WfBoaq0t8KLUcKUXanKjBeDz2Pb17hO7WBnkfra47KI+wGmDvqDiV7JIrrDzcxaIURBiKWh+sEu5cmndSzG+wGWP25hEvGhJlhs9hPv3G+Jzw0LF7dYLXKvCiVBBYlOULaDRS0qo+mQc3bDmPjuBNKV1PqB5kAvAquFiW8lmyBscW6q9nZ+7zGN5I6Ab2meNakN1fGz111eBrcbJmTOc9Z35I+xSo5+9gGkmmsoqp08SG1BuKFH13QcNK7ptW9y+q5dHBJbP/+B73ZGqpG9eGmp5sUiYbUN0v9mt8G5cdGnXalLJgjEa6ioilWbncZKwQhhN1TRq/a+4c9q4uFwfMWUT9BtC4ft7Nd6j7kPB6TYMSbPkO3T6ANSMCIkAymdFm5EpDtyEkEoCITlnYruR7NaVo9Jb7i+hlfOnRULmt+roOg07W6IfswUKMBSbTHjY4KBAq2Rb7jkWT4n9vdYdDKqQKBhPMrh66Pz/9I9M6Rtsr2tAAy3gQXv3pIXZ4xJLCiPfQ9DIhOml4lPw4LGG1hO1RFTSydU/5lGZVcoA+jFNxI=
+  bucket: $bucket_name
+  skip_cleanup: true
+  on:
+      branch: master

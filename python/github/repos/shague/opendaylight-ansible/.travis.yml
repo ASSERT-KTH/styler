@@ -1,0 +1,18 @@
+language: java
+
+sudo: false
+
+cache:
+ directories:
+   - $HOME/.m2
+
+jdk:
+  - openjdk8
+
+install: true
+
+script:
+  - mvn -s .travis-maven-settings.xml clean install -B -V
+
+after_success:
+  - mvn -s .travis-maven-settings.xml org.eluder.coveralls:coveralls-maven-plugin:report

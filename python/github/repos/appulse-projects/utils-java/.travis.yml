@@ -1,0 +1,33 @@
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+install:
+  mvn --settings .settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+
+script:
+  mvn --settings .settings.xml clean verify -DskipTests=false -Dmaven.javadoc.skip=true -Dgpg.skip -B -U
+
+before_deploy:
+  - mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
+  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - sed -i -- "s/\${env.SONATYPE_PASSWORD}/$SONATYPE_PASSWORD/g" .settings.xml
+  - mvn --settings .settings.xml clean deploy -DskipTests=true -Dmaven.javadoc.skip=false -B -U
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Ra+h298EHoXP9sLlM3PMwKN6HguHnO1Wil1xlFm572/K0AYJ5Glq/5PDeFfzylYqfxjg5nsIaLI8J/JWaMTfhIFH6v4tKrwL27iJZFI+DZ8hD4NSTE4kkxz0gMzMrvSBXnQX+Shsdy8xl9oD1CNbk/5aRpsWjqnrNTv3iexwbJY0KaoWttokbcgbQ2YT5Tazt/XzhI2GvTTJWTJmUJDplvv3WlrWFVyano1qmWPBOfv5RhJaSeD7nwTtx6XPUaCBM8b8Q8n/jYunsiU5L7V1TLbryb6GkS76PHsQ+7PmtsHqN5AI5CDAt+lEI4ipNiwKJ9OaHPdekOcpYMgv+4SGM3BKn3EwP39GaXFibJb3Gz39FL5oH50UOWyBo+ggyOGEJPa0gFcOwyQiFmFxAhE8LQCPOCYr86gMGyMRbAPxYaMrq681RRl0Tdqy4FQKwSe7D5tLV1fzC4zKygPPYD+nIFgGRf4Aj/P4XOIkUHZBBvY1rn4wWyvu8wFuN05Tly6qEBuAEv+EOTein5hiVaqInK6wVHqPwYP1PyMUWxt6T4tuiXyT2bnH4eBEmNeWai3RcBeJ0jo2KlX+5gfAy1g9M9HSvEKDi8YxMUhAjZv8/XhO7RjxwOmbClClpuoR28FYJBid9HnmYIuWxA0Om7h7IrINN41/vndp93siudmSLdQ=
+  file:
+    - "target/utils-java-$project_version.jar"
+    - "target/utils-java-$project_version-javadoc.jar"
+    - "target/utils-java-$project_version-sources.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: appulse-projects/utils-java
+  name: $project_version

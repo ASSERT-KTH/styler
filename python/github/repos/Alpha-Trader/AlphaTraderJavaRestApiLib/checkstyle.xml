@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<!-- Checkstyle properties for Cargo projects -->
+<module name="Checker">
+
+    <!--
+        ======================================================================================
+        Miscellaneous Checks (that do not require a TreeWalker)
+        ======================================================================================
+    -->
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf"/>
+    </module>
+    <module name="Translation"/>
+
+    <!-- Size violations -->
+    <module name="FileLength">
+        <property name="max" value="900"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Klassen sollten dokumentiert sein, aber man kann nicht zwischen inneren und äußeren Klassen unterscheiden -->
+        <!-- Methoden brauchen keine Javadocs -->
+        <!-- Varablen brauchen keine Javadocs -->
+
+        <!--
+            ====================================================================================== Naming
+            Conventions
+            ======================================================================================
+        -->
+        <module name="AbstractClassName">
+            <property name="format" value="^Abstract.*$"/>
+        </module>
+
+        <!-- J+ -->
+        <!--
+            <module name="ConstantName" />
+        -->
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+        <!-- Headers -->
+
+        <!--
+            ====================================================================================== Imports
+
+            Checks that have been tried but that we do not want to activate at this point: <module
+            name="ImportOrder">
+            ======================================================================================
+        -->
+        <!-- Deaktiviert da das Maven Plugin veraltet ist (http://jira.codehaus.org/browse/MCHECKSTYLE-132) -->
+        <!--
+              <module name="AvoidStarImport">
+                    <property name="allowStaticMemberImports" value="true" />
+              </module>
+              -->
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+
+        <module name="UnusedImports" />
+
+        <module name="JavadocTagContinuationIndentation"/>
+        <module name="JavadocParagraph"/>
+        <module name="AtclauseOrder">
+            <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+            <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="true"/>
+            <property name="allowMissingThrowsTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
+        </module>
+
+        <module name="LineLength">
+            <!-- Generics-Typen lassen sich mit Jalopy nicht formatieren -->
+            <property name="ignorePattern" value="(@version|@see|^import|&lt;.*&gt;)"/>
+            <property name="max" value="105"/>
+        </module>
+
+        <module name="MethodLength"/>
+
+        <!-- Wrapping -->
+        <module name="OperatorWrap"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+        </module>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <!-- Alle Tokens bis auf GENERIC_START, GENERIC_END und WILDCARD_TYPE -->
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN,
+					BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY,
+					LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY,
+					LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY,
+					LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL,
+					PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR,
+					STAR_ASSIGN, TYPE_EXTENSION_AND"/>
+        </module>
+
+        <!-- Whitespace -->
+        <module name="NeedBraces"/>
+
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="BNOT, DEC, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+        </module>
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="DOT"/>
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+
+        <module name="NoWhitespaceBefore"/>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens" value="DOT"/>
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+
+        <!-- Modifiers -->
+        <module name="ModifierOrder"/>
+        <module name="ParameterNumber"/>
+        <module name="ParenPad"/>
+        <module name="RedundantModifier"/>
+
+        <!-- Blocks -->
+        <module name="EmptyBlock">
+            <property name="tokens" value="LITERAL_CATCH"/>
+            <property name="option" value="text"/>
+        </module>
+
+        <!--
+            ====================================================================================== Coding
+            Problems Checks that have been tried but that we do not want to activate at this point: <module
+            name="ArrayTrailingComma"/> <module name="AvoidInlineConditionals"/> <module
+            name="FinalLocalVariable"/> <module name="HiddenField"/> <module name="IllegalCatch"/> <module
+            name="IllegalToken"/> <module name="IllegalTokenText"/> <module name="IllegalType"/> <module
+            name="MagicNumber"/> <module name="MissingCtor"/> <module name="RedundantThrows"/> <module
+            name="RequireThis"/> <module name="UnnecessaryParentheses"/>
+            ======================================================================================
+        -->
+        <module name="CovariantEquals"/>
+        <module name="DeclarationOrder"/>
+        <module name="DefaultComesLast"></module>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="ExplicitInitialization"/>
+        <module name="FallThrough"/>
+        <module name="IllegalInstantiation">
+            <property name="classes" value="java.lang.Boolean"/>
+        </module>
+        <module name="InnerAssignment"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NestedIfDepth">
+            <property name="max" value="2"/>
+        </module>
+        <module name="NestedTryDepth"/>
+        <module name="PackageDeclaration"/>
+        <module name="ParameterAssignment"/>
+
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="SuperClone"/>
+        <module name="SuperFinalize"/>
+
+        <!--
+            ====================================================================================== Class
+            Design Checks that have been tried but that we do not want to activate at this point: <module
+            name="DesignForExtension"/> <module name="InterfaceIsType"/> <module name="ThrowsCount"/>
+
+            ======================================================================================
+        -->
+        <!-- J+ -->
+        <module name="FinalClass"/>
+        <!-- J+ -->
+        <!--
+            Verfälscht das Test-Coverage Ergebnis; bringt nicht viel <module
+            name="HideUtilityClassConstructor" />
+        -->
+        <module name="MutableException"/>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+            <property name="publicMemberPattern" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+
+        <!--
+            ====================================================================================== Metric
+            Checks Checks that have been tried but that we do not want to activate at this point:
+            ======================================================================================
+        -->
+        <module name="BooleanExpressionComplexity"/>
+
+        <!--
+            ======================================================================================
+            Miscellaneous Checks Checks that have been tried but that we do not want to activate at this
+            point: <module name="DescendantToken"/> <module name="RequiredRegexp"/> <module
+            name="FinalParameters"/>
+            ======================================================================================
+        -->
+        <module name="ArrayTypeStyle"/>
+        <!--
+            Deaktiviert, solange Jalopy unfähig ist, anonyme Klassen richtig zu formatieren <module
+            name="Indentation" />
+        -->
+        <module name="TodoComment">
+            <property name="format" value="TODO|FIXME"/>
+            <property name="severity" value="warning"/>
+        </module>
+
+        <module name="TrailingComment"/>
+        <module name="UncommentedMain">
+            <property name="excludedClasses"
+                      value="StandaloneOnlineManager$|UiBootstrap$|Launcher$|CLI$|TestNgSwingRunner$"/>
+        </module>
+        <module name="UpperEll"/>
+
+        <!-- Avoid finalizers (this will not find violations that contain linebreaks) -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="((public)|(protected))\s+void\s+finalize\(\s*\)"/>
+            <property name="message" value="Avoid finalizers"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+
+        <!-- No direct printing to System.out or System.err -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="System\.(out|err)\."/>
+            <property name="message" value="Don't write directly to System.out or System.err"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+
+    </module>
+
+</module>

@@ -1,0 +1,16 @@
+language: java
+env:
+  global:
+  - SONATYPE_USERNAME=pietvandongen
+  - secure: rq2/mceFomuCXZBgbY/57yBcy9cvpbiYAPJv15nQFDO/XjAmd+9f4B3NuD2b7g+C/W0IlGIzzAbqGXAp5KyoJODkmTh5zynAkpRKGt+fp0/guu++DTO+JLdFJ8zUDRrjuPIYEsJy6WdA6FllVv40U3cXTi8dZ8AL8Q+dLm/GZLo=
+  - secure: a4PIhjK3xTR/Onx6109q8gHgG2SnZQRxAn7NFJw3OAEo9/xMS0cm4T5Z5yGlx/6+6+Dtq7+88SSZruhuGt5H6KVQa8BkcePtXrDWLeILcTGPzBQqm4zqNGDvg/1MD8xG+5kEE5my1k2+/x6WBcHtkDganrfkpyQQT91/Ci9KYvE=
+jdk:
+- oraclejdk7
+before_install:
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in .secring.gpg.enc -out secring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in .pubring.gpg.enc -out pubring.gpg -d
+after_success:
+- mvn clean deploy -DdeployArtifacts=true --settings settings.xml
+notifications:
+  slack:
+    secure: w2vWg2gefEKuhZX/QqfcczGgswNPF4EK5BwGZ9IT7v5n55etee/heo6eMFKAIWwrr8MrXWgzTyv1rpy2fxRkz0FEb1yVP07vktt+7l9IkhEl+B88wIYJalGsHYkT1zi4X0m55BF259+8TQHeD6eb0MplZYf7v2XAeHdz0n0Ns0A=

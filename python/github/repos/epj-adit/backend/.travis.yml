@@ -1,0 +1,27 @@
+sudo: required
+language: generic
+services:
+  - docker
+git:
+  depth: 999999
+cache:
+  directories:
+    - .m2
+
+script:
+  - make postgres-start
+  - make build
+
+deploy:
+  # Production
+  - provider: script
+    script: make deploy-live upload-coverage
+    skip_cleanup: true
+    on:
+      branch: master
+  # Development
+  - provider: script
+    script: make deploy-develop upload-coverage
+    skip_cleanup: true
+    on:
+      branch: develop

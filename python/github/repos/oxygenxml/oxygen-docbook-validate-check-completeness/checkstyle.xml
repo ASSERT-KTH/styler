@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!-- 
+Dan: 
+	Resurse:
+		fisierul pt Google style: https://github.com/checkstyle/checkstyle/blob/97669248fb2402e21cd372380a35d0e312c2a0e8/src/main/resources/google_checks.xml
+		fisierul pt Sun style: https://github.com/checkstyle/checkstyle/blob/97669248fb2402e21cd372380a35d0e312c2a0e8/src/main/resources/sun_checks.xml
+
+	Check-urile disponibile:
+		http://checkstyle.sourceforge.net/checks.html
+ -->
+<module name="Checker">
+	<property name="severity" value="warning" />
+
+	<module name="TreeWalker">
+	
+		<!-- 
+			Dan: Poate fi folosit pentru a exclude cateva linii de la analiza checkstyle. 
+		
+			// CHECKSTYLE:OFF 
+			// CHECKSTYLE:ON	
+		 -->
+		<module name="SuppressionCommentFilter"/>
+  
+	  	<!-- Dan: Asta nu ar trebui sa fie necesar daca Eclipse-ul este configurat cum trebuie, si e oricum foarte greu de rezolvat. -->
+	  	<!-- 
+		<module name="FileTabCharacter" />
+	    -->
+  
+		<!-- Dan: Nu mi se pare necesar, e vorba de static vs abstract din definirea unei clase. -->
+		<module name="ModifierOrder" />
+		
+		<!-- Dan: Nu mi se pare necesar, e vorba de static inaintea unei field dintr-o interfata sau enumerare. -->
+		<module name="RedundantModifier" />		
+  
+		<module name="JavadocMethod" >
+			<!-- Dan: Este bine sa scoatem setterii si geterii, de obicei documentatia nu aduce nimic nou. -->
+			<property name="allowMissingPropertyJavadoc" value="true"/> 		
+		</module>
+		
+		<!-- Dan: Mi se pare overkill sa tot documentez si in parametrii constructorului si in field-uri acelasi lucru. -->
+		<module name="JavadocVariable">
+			<property name="scope" value="public" />
+		</module>
+		
+		<!-- Dan: Am adaugat _ pt ca il folosesc in numele stagiilor. E ceva specific Chemistry. -->
+		<module name="TypeName" >
+		 	<property name="format" value="^[A-Z]([a-zA-Z0-9]|_)*$"/>
+		</module>
+				
+		<module name="JavadocType" />
+		
+		<!-- Dan: Este nice to have, dar poate da prea multe erori, nu stiu cat poate dura. -->
+		<!--
+		<module name="JavadocStyle">
+		 	<property name="checkFirstSentence" value="false"/>
+		</module>
+		-->
+		
+		<module name="ConstantName">
+			<!-- Dan: Este adaugat si logger-ul. -->		
+			<property name="format" value="^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|logger)$" />
+		</module>
+		
+		<!-- Dan: Astea sunt ok. -->		
+		<module name="LocalFinalVariableName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="MethodName" />
+		<module name="PackageName" />
+		<module name="ParameterName" />
+		<module name="StaticVariableName" />
+
+
+		<!-- Dan: Nu te lasa sa importi clase de implementare din RT, gen sun.* -->
+		<module name="IllegalImport" />
+		
+		<!-- Dan: Asta l-as scoate, folosim Eclipse, care nu iti adauga de doua ori un import, si nici nu foloseste * -->
+		<!-- 		
+		<module name="RedundantImport" />
+		<module name="AvoidStarImport" />
+		>
+		-->
+		 
+		<module name="UnusedImports" />
+		
+		<!-- Dan: Peste 200 nu mai poti sa citesti nici chiar pe monitoarele noastre -->
+		<module name="LineLength">
+			<property name="max" value="200" />
+			<property name="ignorePattern" value="^ *\* *@see.*$" />
+		</module>
+
+		<!-- Dan: Iarasi metode f. lungi nu sunt ok, nu mai poti sa le urmaresti. -->
+		<module name="MethodLength">
+			<property name="tokens" value="METHOD_DEF" />
+			<property name="max" value="300" />
+			<property name="countEmpty" value="false" />
+		</module>
+
+		<!-- Dan: Padding-uri diverse, se ocupa destul de ok Eclipse-ul. Nu are sens sa ingreunam procesul de verificare. -->
+		<!-- 
+		<module name="EmptyForIteratorPad" />
+		<module name="MethodParamPad" />
+		<module name="TypecastParenPad" />
+
+		<module name="OperatorWrap"/> 
+		<module name="ParenPad"/> 
+		<module name="NoWhitespaceAfter"/> 
+		<module name="NoWhitespaceBefore"/> 
+		<module name="WhitespaceAfter"/> 
+		<module name="WhitespaceAround"/>
+		<module name="GenericWhitespace"/>
+		-->
+
+		<!-- Dan: Poate crea confuzie, dar le folosim foarte rar. -->
+		<module name="AvoidNestedBlocks"/>
+		<!-- Dan: Nu conteaza, 
+		<module name="EmptyBlock">
+			<property name="option" value="text" />
+		</module>
+		 -->
+		 
+		<!-- Dan: Este ok. Cere ca paranteza sa fie la sf. linei dupa numele metodei sau dupa for. -->
+		<module name="LeftCurly" />
+		<!-- Dan: Este ok. Cere ca if si for sa aiba {} . -->
+		<module name="NeedBraces" />
+		<!-- Dan: Este ok. Verifica sa folosesi asa: } else { -->
+		<module name="RightCurly">
+			<property name="option" value="same" />
+		</module>
+
+		<!-- Dan: Cred ca putem renunta la asta.  -->
+		<module name="EmptyStatement" />
+		
+		<!-- Dan: Verifica sa folosesti "str".equals(var).  Dar mi se pare peste mana, e greu de citit codul. -->
+		<!-- 
+		<module name="EqualsAvoidNull" />
+		 -->
+		 
+		 
+		<module name="EqualsHashCode" />
+		<module name="IllegalInstantiation" />
+		<module name="InnerAssignment" />
+		<module name="MagicNumber" />
+		<module name="MissingSwitchDefault" />
+
+		<!-- Dan: Sunt check-uri slabe, gen: a||true, nu prea apar prin cod. -->
+		<module name="SimplifyBooleanExpression" />
+
+		<!-- Dan: Asta se rezolva daca am putea verifica sa nu avem multe puncte de return. -->
+		<!-- cum e mai jos. 
+		<module name="SimplifyBooleanReturn" />
+		 -->
+		
+		<module name="ReturnCount">
+    		<property name="max" value="1"/>
+    		<property name="maxForVoid" value="1"/>
+		</module>
+		
+		<!-- Dan: Nu mi se pare important -->
+		<!-- 
+		<module name="ArrayTypeStyle" />
+		 -->
+		
+		<!-- Dan: Este ok pt ca prinde cod incalcit. -->
+		<module name="CyclomaticComplexity">
+		 	<property name="max" value="15"/>
+			<property name="switchBlockAsSingleDecisionPoint" value="true"/>
+			<!-- Dan: Fara tokens insemana ca include tot ce are conditii (switch, case, for, while etc..) -->
+			<property name="tokens" value="LITERAL_IF"/>
+    	</module>
+		
+		<module name="TodoComment" />
+		<module name="UpperEll" />
+	</module>
+	<!-- <module name="JavadocPackage"> <property name="allowLegacy" value="true"/> 
+		</module> -->
+	<!-- Dan: we have huge files in eXml. -->
+	<!--  	
+	<module name="FileLength" />
+	-->
+	
+</module>

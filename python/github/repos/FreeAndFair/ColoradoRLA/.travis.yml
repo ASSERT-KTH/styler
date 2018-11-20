@@ -1,0 +1,26 @@
+language: java
+
+notifications:
+  email: false
+
+env:
+  - NODE_VERSION=v7.10.0
+
+install:
+  - nvm install "${NODE_VERSION}";
+    nvm use "${NODE_VERSION}";
+    cd "${TRAVIS_BUILD_DIR}/client";
+    npm install;
+
+before_script:
+  - export CLIENT_DIR="${TRAVIS_BUILD_DIR}/client";
+  - export SERVER_DIR="${TRAVIS_BUILD_DIR}/server/eclipse-project";
+
+script:
+  # WARNING: If changes only occur in files outside of the checked
+  # directory, the checks below will not be executed.
+  - ${TRAVIS_BUILD_DIR}/ci/check-client
+
+  # WARNING: If changes only occur in files outside of the checked
+  # directory, the checks below will not be executed.
+  - ${TRAVIS_BUILD_DIR}/ci/check-server

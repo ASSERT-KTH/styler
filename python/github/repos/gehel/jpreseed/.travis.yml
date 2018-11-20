@@ -1,0 +1,31 @@
+language: java
+jdk:
+- openjdk7
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dcobertura.skip=true
+  -B -V
+before_script: git clone -b travis `git config --get remote.origin.url` target/travis
+script:
+- mvn verify --settings target/travis/settings.xml -B -V
+after_success:
+- ! '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn deploy cobertura:cobertura coveralls:cobertura
+  site --settings target/travis/settings.xml -B -V || false'
+branches:
+  except:
+  - travis
+  - gh-pages
+cache:
+  directories:
+  - $HOME/.m2
+env:
+  global:
+  - secure: FE0dNQmTW1IAxLCcJucCUzsz0rxqNJWGRmOKCAX6SiusEVqJ4c4GboKsPyASFKrAO79hfJnAtkCqPqJYekedDQ9hw9eAwK5VdY68A8uD8TTAlXC8D6GOXGwzfUMk9C1md2dfjOoGBGFv+/kHjlL4sfRKIwmb4ZdFY6G4pXZPf7c=
+  - secure: e3bJJw9Jl0del0LqHHGcr1MVb6k6npu5wawKULQdwgfudDU1Wp8xlA4xS4TcDxBJWzehzWoIsh/sGlxjNoKN+wBbEGCQ9Rwc5evpfGM1atPrsufVF0bEbsFF+5nPd9tUBMubNDcauSd6xuSmJxuYw4AVToqwdFFrFbxHpxvCCCo=
+  - secure: eSgX226ZX++2Bbii44TnKkEgh15kNRElHJ/Xtjk0BvWLQ8af/I+buq7QmHmXjSN//kV36Zfsa137jxMJ8xz9jiXd8Ul6nYoKJebixaMuaeKU7z6V/jpql34GZITSCMxMEi4Slknpzj7e2Q6JqQcsH/UKZkIeMxglBcMC7hvCgE8=
+deploy:
+  provider: heroku
+  api_key:
+    secure: Zt+Dn7s0vYBzkaJN2sscj7lucO1ivgYUd3kuV3Pv3GbBA1/7sVVnVYvfN4r3tLE4NPAO4amuDBRVESagu77sxKYmq3J0zTer+WwxinrjdKSyC4DVZ5HynnDVEzhClgcurD5fG9dsHHHdH8ObJC6WBDZ4EpSejfhUwjWHi3AxviU=
+  app: jpreseed
+  strategy: git
+  on:
+    repo: gehel/jpreseed

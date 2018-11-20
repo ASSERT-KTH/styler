@@ -1,0 +1,25 @@
+language: java
+
+jdk: oraclejdk8
+
+before_script:
+ - echo "MAVEN_OPTS='-Xmx3g'" > ~/.mavenrc
+
+script: 
+  - "./build.sh"
+  - cd pnmlFw-Releng ; mvn clean package -Pall ; cd -
+  - cd pnmlFw-Releng ; mvn install -Pall ; cd -
+  - ls -lah PnmlFramework_UpdateSite
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  local_dir: PnmlFramework_UpdateSite/target/repository
+#  upload_dir: night-updates/
+  on:
+    branch: master
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'

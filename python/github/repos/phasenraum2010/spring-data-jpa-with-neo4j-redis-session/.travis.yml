@@ -1,0 +1,25 @@
+language: java
+jdk:
+  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+services:
+  - postgresql
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install language-pack-de
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.6
+before_script:
+  - psql -c "CREATE USER evaluator WITH PASSWORD 'evaluatorpwd' LOGIN SUPERUSER INHERIT CREATEDB CREATEROLE NOREPLICATION;" -U postgres
+  - psql -c 'GRANT pg_signal_backend, postgres TO evaluator WITH ADMIN OPTION;' -U postgres
+  - psql -c "CREATE DATABASE evaluator WITH OWNER = evaluator TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'de_DE.UTF-8' LC_CTYPE = 'de_DE.UTF-8' CONNECTION LIMIT = -1;" -U postgres
+  - psql -c '\l' -U postgres
+  - psql -c '\dg' -U postgres
+  - psql -c '\dn' -U postgres
+  - psql -c 'select * from version();' -U postgres
+  - psql -c 'select * from version();' -U evaluator
+sudo: false
+script:  ./mvnw clean install dependency:tree site site:deploy -Ptravis -Dtest=AlphaTopLevelSuiteIT  -B -V

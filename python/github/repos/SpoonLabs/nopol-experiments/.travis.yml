@@ -1,0 +1,16 @@
+language: java
+sudo: required
+
+jdk:
+- oraclejdk7
+
+script:
+- git clone https://github.com/Z3Prover/z3.git
+- cd z3
+- git checkout z3-4.3.2
+- ./configure
+- cd build; make
+- cd ../..
+- cp z3/build/z3 data/lib/z3
+- python src/reproduce.py -bug all --silence
+

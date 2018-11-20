@@ -1,0 +1,33 @@
+language: java
+
+jdk:
+ - oraclejdk8
+
+before_install:
+ - cd core_dependencies && git pull origin master &&  mvn -B install -f dependency_pom.xml -DskipTests=true && cd ../
+
+env:
+ - TEST_DIR=aleph2_crud_service_mongodb
+ - TEST_DIR=aleph2_crud_service_elasticsearch
+ - TEST_DIR=aleph2_server_only_dependencies
+ - TEST_DIR=aleph2_hadoop_dependencies
+ - TEST_DIR=aleph2_storage_service_hdfs
+ - TEST_DIR=aleph2_management_db_service_mongodb
+ - TEST_DIR=aleph2_search_index_service_elasticsearch
+ - TEST_DIR=aleph2_security_service_ikanow_v1
+ - TEST_DIR=aleph2_storm_dependencies
+ - TEST_DIR=aleph2_analytic_services_storm
+ - TEST_DIR=aleph2_analytic_services_hadoop
+ - TEST_DIR=aleph2_document_service_v1
+ - TEST_DIR=aleph2_graph_service_titan
+
+script: cd $TEST_DIR && mvn -B install -DskipTests=true && mvn clean test jacoco:report coveralls:report
+
+#after_success:
+# - mvn clean test jacoco:report coveralls:report
+
+
+# blacklist
+branches:
+  except:
+    - june_2015_release_inc_patches

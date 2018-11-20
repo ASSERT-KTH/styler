@@ -1,0 +1,23 @@
+sudo: required
+language: java
+install: true
+
+services:
+  - docker
+
+before_install:
+  - curl -s "https://get.sdkman.io" | bash
+  - source "$HOME/.sdkman/bin/sdkman-init.sh"
+  - sdk version
+  - mkdir -p "$HOME/.sdkman/etc"
+  - echo "sdkman_auto_answer=true" > "$HOME/.sdkman/etc/config"
+  - echo "sdkman_auto_selfupdate=true" >> "$HOME/.sdkman/etc/config"
+  - sdk install java 8.0.181-zulu
+
+script:
+  - sdk use java 8.0.181-zulu
+  - ./mvnw -s .travis-settings.xml install deploy
+
+env:
+  global:
+  - CI: true

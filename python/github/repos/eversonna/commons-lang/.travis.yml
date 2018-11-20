@@ -1,0 +1,41 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language: java
+sudo: false
+
+# Get latest install-jdk.sh script
+before_install:
+  - wget -P ./target/ https://github.com/sormuras/bach/raw/master/install-jdk.sh
+
+matrix:
+  include:
+    - env: JDK_RELEASE='OracleJDK 8'
+      jdk: oraclejdk8
+    - env: JDK_RELEASE='OracleJDK 9'
+      jdk: oraclejdk9
+    - env: JDK_RELEASE='OracleJDK 10'
+      jdk: oraclejdk10
+    - env: JDK_RELEASE='OpenJDK 10'
+      jdk: openjdk10
+# Java 11 "Oracle JDK" (not yet provided by Travis CI)
+    - env: JDK='Oracle JDK 11'
+      install: . ./target/install-jdk.sh -F 11 -L BCL
+
+script:
+  - mvn
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report -Ptravis-jacoco

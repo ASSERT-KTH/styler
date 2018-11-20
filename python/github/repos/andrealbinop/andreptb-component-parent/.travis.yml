@@ -1,0 +1,13 @@
+language: java
+
+env:
+  global:
+    secure: ecZn1VtjfhiT+/jcJ13dg9O1Mp9RA8QHd/sV1QcCkNhV5Z/vd3A82mImz352oXTsLvLH1ThnE9ImOK23mL+g/NHF6SXbuJo5PHeNqxBi2S341rS2Bq44B+cTpLwjfrCd87nue7/da5gBH5zfE579AYwdeI5TURViJBBCBGXbmNXZkwbQav94dj8z1YQbJYiCCiKojP/B+X/mMuJj5H1Dir8xjE1R8+UAaDxJYlDD7rfIaNgGTY5MhZR9uQlrwxzT+e7Zhul/sH+1eN+O5/LZSWtTr9B6ITXY25CDc7NeBizHe9WSTgfWGWoLr2fZ3Cd7vla9MLXLol4SkmzNJoOSK723vqQG5+awr1VjuOd6sR9obw0y5H2VgCVzCpIfdJnUvWFzhuS36yiCvnpTuL2RxXysASOTWWPtK3mltF5NZnJjB4PqsK4Zz03UcjXgOSWQn/6pSCIfkapwLgPT3WO4wRem5k7VsqO30NRSsz/ri4VexvIWxTuHOcPAPISzvCoPQ38GBdqPASQO7NlefjaGwMcrkXlSWj5BKw7Y7JPW+0NJu2a45heM/y5b8YdlfF6zbYKUGZfSIuLhMhgn1iWXD9Wsf2KPWjhBJ37d0Ov5ZgpFJd7SydoUKjghuiqYKLq3jarfGDB3UOiem9ZPn+uddqlveyVluD3LSSWNefEypKc=
+
+install:
+- openssl aes-256-cbc -K $encrypted_75fbbe5cc720_key -iv $encrypted_75fbbe5cc720_iv -in src/deploy/private.key.enc -out src/deploy/private.key -d
+- gpg --import src/deploy/private.key && gpg --import src/deploy/public.key
+- cp src/config/ci/maven-settings.xml ~/.m2/settings.xml   
+
+script:
+- mvn deploy

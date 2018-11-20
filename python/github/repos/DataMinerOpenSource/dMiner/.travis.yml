@@ -1,0 +1,60 @@
+language: java
+sudo: false
+
+install:
+  -
+
+matrix:
+  fast_finish: true
+  include:
+    # unit tests (oraclejdk8)
+    - jdk: oraclejdk8
+      env: DESC="tests" CMD="mvn clean test -Dfindbugs.skip=true -Dpmd.skip=true -Dcobertura.skip=true -Dcheckstyle.skip=true" COVERAGE_CMD=""
+
+    # checkstyle (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle"
+        - CMD="mvn clean verify -DskipTests -Dpmd.skip=true -Dfindbugs.skip=true -Dcobertura.skip=true"
+        - COVERAGE_CMD=""
+
+    # cobertura and codecov (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="cobertura and codecov"
+        - CMD="mvn clean compile cobertura:check cobertura:cobertura"
+        - COVERAGE_CMD="bash <(curl -s https://codecov.io/bash)"
+
+    # findbugs and pmd (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="findbugs and pmd"
+        - CMD="mvn clean compile pmd:check findbugs:check"
+        - COVERAGE_CMD=""
+
+    # site (oraclejdk8 as 'site' success is required to be sure that on release time all will be ok, admins will use oracle8 version)
+    - jdk: oraclejdk8
+      env:
+        - DESC="site"
+        - CMD1="mvn clean site -DskipTests"
+        - CMD2=" -Dpmd.skip=true -Dfindbugs.skip=true -Dcobertura.skip=true -Dcheckstyle.skip=true"
+        - CMD=$CMD1$CMD2
+        - COVERAGE_CMD=""
+
+    # verify: Errorprone, Cobertura, FindBugs, Checkstyle, PMD
+    - jdk: oraclejdk8
+      env: DESC="mvn_clean_verify"
+      script: "mvn clean verify"
+
+script: eval $CMD
+
+after_success:
+  - eval $COVERAGE_CMD
+
+cache:
+  directories:
+  - ~/.m2
+
+branches:
+  only:
+    - master

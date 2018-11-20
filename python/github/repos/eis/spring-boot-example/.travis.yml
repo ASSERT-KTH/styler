@@ -1,0 +1,20 @@
+language: java
+sudo: false
+
+jdk:
+  - oraclejdk8
+
+script: travis_wait mvn verify --quiet --batch-mode
+
+notifications:
+  email:
+    recipients:
+     - eis@iki.fi
+    on_success: change
+    on_failure: always
+
+after_failure:
+  - cat target/surefire-reports/*.txt
+
+after_success:
+  - travis_wait mvn cobertura:cobertura-integration-test coveralls:report --quiet --batch-mode -DbuildNumber=${TRAVIS_BUILD_NUMBER}

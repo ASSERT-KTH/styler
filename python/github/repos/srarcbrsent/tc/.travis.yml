@@ -1,0 +1,25 @@
+language:
+  - java
+
+os:
+  - linux
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - git clone -b master https://github.com/dangdangdotcom/dubbox.git
+  - mvn -f dubbox/pom.xml clean install -Dmaven.test.skip
+  - git clone -b master https://github.com/killme2008/Metamorphosis.git
+  - mvn -f Metamorphosis/pom.xml clean install -Dmaven.test.skip
+  - git clone -b master https://github.com/apache/incubator-rocketmq.git
+  - mvn -f incubator-rocketmq/pom.xml clean install -Dmaven.test.skip
+
+install:
+  - mvn clean install
+  - mvn checkstyle:check
+  - mvn findbugs:check
+
+notifications:
+  email:
+    - zhang_yao_wu1993@yeah.net

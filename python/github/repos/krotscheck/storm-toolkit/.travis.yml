@@ -1,0 +1,21 @@
+language: java
+jdk:
+- oraclejdk8
+branches:
+  only:
+  - master
+  - develop
+  - /^feature\/.*$/
+  - /^hotfix\/.*$/
+  - /^release\/.*$/
+cache:
+  directories:
+  - $HOME/.m2
+
+before_script:
+  - mvn clean
+  - mvn checkstyle:check
+  - mvn cobertura:check
+  - mvn pmd:check
+after_success:
+  - mvn clean cobertura:cobertura coveralls:report

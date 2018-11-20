@@ -1,0 +1,310 @@
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+  ~ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+  ~
+  ~ Copyright 2007-2008 maven-glassfish-plugin developers. All rights reserved.
+  ~
+  ~ The contents of this file are subject to the terms of either the GNU
+  ~ General Public License Version 2 only ("GPL") or the Common Development
+  ~ and Distribution License("CDDL") (collectively, the "License").  You
+  ~ may not use this file except in compliance with the License. You can obtain
+  ~ a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+  ~ or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+  ~ language governing permissions and limitations under the License.
+  ~
+  ~ When distributing the software, include this License Header Notice in each
+  ~ file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+  ~ Sun designates this particular file as subject to the "Classpath" exception
+  ~ as provided by the copyright holder in the GPL Version 2 section of the
+  ~ License file that accompanied this code.  If applicable, add the following
+  ~ below the License Header, with the fields enclosed by brackets [] replaced
+  ~ by your own identifying information:
+  ~ "Portions Copyrighted [year] [name of copyright owner]"
+  ~
+  ~ Contributor(s):
+  ~
+  ~ If you wish your version of this file to be governed by only the CDDL or
+  ~ only the GPL Version 2, indicate your decision by adding "[Contributor]
+  ~ elects to include this software in this distribution under the [CDDL or GPL
+  ~ Version 2] license."  If you don't indicate a single choice of license, a
+  ~ recipient has the option to distribute your version of this file under
+  ~ either the CDDL, the GPL Version 2 or to extend the choice of license to
+  ~ its licensees as provided above.  However, if you add GPL Version 2 code
+  ~ and therefore, elected the GPL Version 2 license, then the option applies
+  ~ only if the new code is made subject to such option by the copyright
+  ~ holder.
+  -->
+
+<module name="Checker">
+    <property name="severity" value="error" />
+    <module name="SuppressionFilter">
+        <property name="file" value="${checkstyle.suppressions.file}" />
+    </module>
+    <!--<module name="Translation">-->
+    <!--<property name="severity" value="${translation.severity}"/>-->
+    <!--</module>-->
+    <module name="PackageHtml" />
+    <!-- Duplicate Code -->
+    <module name="StrictDuplicateCode">
+        <property name="min" value="30" />
+    </module>
+    <!--<module name="NewlineAtEndOfFile"/>-->
+
+
+    <module name="TreeWalker">
+        <!--<property name="cacheFile" value="${checkstyle.cache}"/>-->
+
+        <!-- javadoc -->
+        <module name="JavadocType">
+            <property name="excludeScope" value="private" />
+            <property name="excludeScope" value="package" />
+            <property name="scope" value="protected" />
+            <property name="scope" value="public" />
+            <property name="authorFormat" value=".+" />
+            <property name="versionFormat" value="\$Id.*\$" />
+        </module>
+        <module name="JavadocMethod">
+            <property name="excludeScope" value="private" />
+            <property name="excludeScope" value="package" />
+            <property name="scope" value="protected" />
+            <property name="scope" value="public" />
+            <property name="allowMissingParamTags" value="true" />
+            <property name="allowMissingThrowsTags" value="true" />
+            <property name="allowMissingReturnTag" value="true" />
+        </module>
+        <module name="JavadocVariable">
+            <property name="excludeScope" value="private" />
+            <property name="excludeScope" value="package" />
+            <property name="scope" value="protected" />
+            <property name="scope" value="public" />
+        </module>
+        <module name="JavadocStyle">
+            <property name="scope" value="public" />
+            <property name="checkFirstSentence" value="false" />
+        </module>
+
+        <!-- Naming Conventions -->
+        <module name="ConstantName" />
+        <module name="MethodName" />
+        <module name="StaticVariableName" />
+        <module name="LocalFinalVariableName" />
+        <module name="LocalVariableName" />
+        <module name="MemberName">
+            <property name="format" value="^[_a-z][a-zA-Z0-9]*$" />
+        </module>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+        </module>
+        <module name="ParameterName" />
+        <module name="TypeName" />
+
+        <!-- Header -->
+        <module name="Header">
+            <property name="headerFile" value="${checkstyle.header.file}" />
+        </module>
+
+        <!-- Imports -->
+        <module name="AvoidStarImport" />
+        <module name="IllegalImport" />
+        <module name="RedundantImport" />
+        <module name="UnusedImports" />
+
+        <!-- Size Violations -->
+        <module name="FileLength">
+            <property name="max" value="1400" />
+        </module>
+        <module name="LineLength">
+            <property name="max" value="130" />
+            <property name="ignorePattern" value="^ *\* *" />
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="200" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="60" />
+            <property name="tokens" value="CTOR_DEF" />
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="8" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="8" />
+            <property name="tokens" value="CTOR_DEF" />
+        </module>
+        <module name="AnonInnerLength">
+            <property name="max" value="20" />
+        </module>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="30" />
+            <property name="tokens" value="CTOR_DEF, INSTANCE_INIT, STATIC_INIT" />
+        </module>
+
+        <!-- Whitespace -->
+        <module name="EmptyForInitializerPad" />
+        <module name="EmptyForIteratorPad" />
+        <module name="MethodParamPad" />
+        <module name="NoWhitespaceAfter">
+            <property name="allowLineBreaks" value="true" />
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="false" />
+        </module>
+        <module name="ParenPad" />
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA, SEMI" />
+        </module>
+        <!-- GT and LT have been taken out as the WhitespaceAround check does not allow for Java5 Generics syntax -->
+        <!--<module name="WhitespaceAround"/>-->
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN" />
+        </module>
+        <module name="OperatorWrap">
+            <property name="tokens"
+                      value="ASSIGN, DIV_ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, MOD_ASSIGN, SR_ASSIGN, BSR_ASSIGN, SL_ASSIGN, BXOR_ASSIGN, BOR_ASSIGN, BAND_ASSIGN" />
+            <property name="option" value="eol" />
+        </module>
+        <module name="TabCharacter" />
+
+        <!-- Modifiers -->
+        <!--<module name="ModifierOrder"/> Bug reported. Want this to work -->
+        <!--<module name="RedundantModifier"/>-->
+
+        <!-- Blocks -->
+        <module name="EmptyBlock">
+            <property name="option" value="text" />
+            <property name="tokens" value="LITERAL_CATCH" />
+        </module>
+        <module name="EmptyBlock">
+            <property name="tokens"
+                      value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, STATIC_INIT" />
+        </module>
+        <module name="RightCurly">
+            <property name="option" value="same" />
+        </module>
+        <module name="LeftCurly">
+            <!-- Exclude enums from the check; it seems to cause problems. NB: This matches the defaults for Java 1.4 -->
+            <property name="tokens"
+                      value="CLASS_DEF, CTOR_DEF, INTERFACE_DEF, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF" />
+        </module>
+        <module name="NeedBraces" />
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true" />
+        </module>
+
+        <!-- Coding Problems -->
+        <!-- THIS IS A PLAIN STUPID CHECK. Dave -->
+        <!--<module name="ArrayTrailingComma"/>-->
+        <module name="CovariantEquals" />
+        <module name="DeclarationOrder" />
+        <module name="ParameterAssignment" />
+        <module name="ExplicitInitialization" />
+        <module name="DefaultComesLast" />
+        <module name="FallThrough" />
+        <module name="MultipleVariableDeclarations" />
+        <module name="DoubleCheckedLocking" />
+        <module name="EmptyStatement" />
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF" />
+        </module>
+        <module name="IllegalInstantiation">
+            <property name="classes" value="java.lang.Boolean" />
+        </module>
+        <module name="IllegalTokenText">
+            <property name="tokens" value="NUM_INT,NUM_LONG" />
+            <property name="format" value="^0[^lx]" />
+            <property name="ignoreCase" value="true" />
+        </module>
+        <module name="IllegalType">
+            <property name="ignoredMethodNames" value="getInstance" />
+            <property name="tokens" value="PARAMETER_DEF, METHOD_DEF" />
+        </module>
+        <module name="InnerAssignment" />
+        <module name="JUnitTestCase" />
+        <module name="ReturnCount">
+            <property name="max" value="5" />
+        </module>
+        <module name="NestedIfDepth">
+            <property name="max" value="2" />
+        </module>
+        <module name="NestedTryDepth">
+            <property name="max" value="2" />
+        </module>
+        <module name="PackageDeclaration" />
+        <!--<module name="RedundantThrows"> buggy
+            <property name="allowUnchecked" value="true"/>
+        </module> -->
+        <module name="SimplifyBooleanExpression" />
+        <module name="SimplifyBooleanReturn" />
+        <module name="StringLiteralEquality" />
+        <module name="SuperClone" />
+        <module name="SuperFinalize" />
+        <module name="MagicNumber" />
+        <module name="EqualsHashCode" />
+        <module name="IllegalInstantiation" />
+        <module name="InnerAssignment" />
+
+
+        <module name="MissingSwitchDefault" />
+
+
+        <!-- Class Design -->
+        <module name="FinalClass" />
+        <module name="HideUtilityClassConstructor" />
+        <module name="InterfaceIsType" />
+        <module name="MutableException" />
+        <module name="ThrowsCount">
+            <property name="max" value="5" />
+        </module>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true" />
+        </module>
+
+        <!-- Metrics -->
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="4" />
+        </module>
+        <module name="ClassDataAbstractionCoupling">
+            <property name="max" value="10" />
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="max" value="30" />
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="severity" value="error" />
+            <property name="max" value="10" />
+        </module>
+        <module name="NPathComplexity">
+            <property name="max" value="50" />
+        </module>
+
+        <!-- Miscellaneous -->
+        <module name="GenericIllegalRegexp">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="System\.out\.println" />
+        </module>
+        <!-- Make sure we are using safe element.get methods everywhere -->
+        <module name="GenericIllegalRegexp">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="[^entry]\\.getKey\\(\\)" />
+        </module>
+        <module name="GenericIllegalRegexp">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="[^entry]\\.getValue\\(\\)" />
+        </module>
+        <module name="ArrayTypeStyle" />
+        <module name="TodoComment" />
+        <module name="TrailingComment" />
+        <module name="UpperEll" />
+
+
+    </module>
+</module>

@@ -1,0 +1,37 @@
+dist: trusty
+language: java
+jdk:
+  - oraclejdk8
+
+env:
+  - DB=mysql
+  - DB=psql
+
+services:
+  - mysql
+  - postgresql
+
+before_install:
+  - sudo chmod +x ./config_services.sh
+  - ./config_services.sh
+
+install: true
+
+script:
+  - sudo chmod +x ./run_build.sh
+  - ./run_build.sh
+
+before_cache:
+  - rm -r ~/.m2/repository/org/motechproject/*
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.motech/bundles
+
+notifications:
+  email:
+    recipients:
+      - motech-dev@googlegroups.com
+    on_success: never
+    on_failure: always

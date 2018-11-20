@@ -1,0 +1,16 @@
+notifications:
+  slack: oicr:S9k4EowgQv9AnbCfEZHSzCsg
+language: java
+jdk:
+  - oraclejdk8
+before_script: 
+  - psql -c "create user seqware with password 'seqware' createdb;" -U postgres
+  - psql -c "ALTER USER seqware WITH superuser;" -U postgres
+  - psql -c 'create database test_seqware_meta_db with owner = seqware;' -U postgres
+  - mkdir ~/.seqware
+  - cp .travis/settings ~/.seqware
+script: mvn -B clean install -DskipITs=false
+addons:
+  postgresql: "9.4"
+# try container-based integration testing
+sudo: false

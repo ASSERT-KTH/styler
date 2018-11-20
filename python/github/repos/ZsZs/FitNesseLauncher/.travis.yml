@@ -1,0 +1,37 @@
+sudo: required
+
+language: java
+jdk: oraclejdk8
+install: true
+
+env:
+- local.maven.repository=$HOME/.m2
+
+addons:
+  sonarqube:
+    organization: "processpuzzle"
+    token:
+      secure: $SONAR_TOKEN
+    branches :
+    - master
+
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.sonar/cache
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+  
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: mvn deploy -Dmaven.test.skip=true --settings travis-maven-settings.xml -Dsettings.security=travis-maven-settings-security.xml -B
+    on:
+      branch: master
+ 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false

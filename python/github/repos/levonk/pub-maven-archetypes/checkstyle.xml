@@ -1,0 +1,3475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+		"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+	<!-- -->
+	<!-- Section: Duplicate Code -->
+	<!-- -->
+	<module name="StrictDuplicateCode">
+		<!-- file type extension of files to process.
+			default: {}
+		<property name="fileExtensions" value="{}" />
+		-->
+		<!-- how many lines must be equal to be considered a duplicate.
+			default: 12
+		-->
+		<property name="min" value="6" />
+		<property name="severity" value="warning" />
+	</module>
+
+	<!-- -->
+	<!-- Section: Headers -->
+	<!-- -->
+
+	<!--
+		Checks that a source file begins with a specified
+		header. Property headerFile specifies a file that
+		contains the required header. Alternatively,
+		the header specification can be set directly
+		in the header property without the need for an
+		external file.
+
+		Property ignoreLines specifies the line numbers to
+		ignore when matching lines in a header file. This
+		property is very useful for supporting headers
+		that contain copyright dates. For example,
+		consider the following header:
+
+		line 1: ////////////////////////////////////////////////////////////////////
+		line 2: // checkstyle:
+		line 3: // Checks Java source code for adherence to a set of rules.
+		line 4: // Copyright (C) 2002  Oliver Burn
+		line 5: ////////////////////////////////////////////////////////////////////
+				
+		Since the year information will change over
+		time, you can tell Checkstyle to ignore line 4
+		by setting property ignoreLines to 4.
+	-->
+<!--
+	<module name="Header">
+-->
+		<!-- character encoding to use when reading the headerFile
+			default: the charset property of the parent Checker module
+		<property name="charset" value="UTF-8" />
+		-->
+		<!-- the required header specified
+			inline. Individual header lines must be separated
+			by the string "\n" (even on platforms with a
+			different line separator), see examples below.
+		<property name="header" value="" />
+		-->
+		<!-- name of the file containing the required header.
+		<property name="headerFile" value="" />
+		-->
+		<!-- file type extension of files to process
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- line numbers to ignore
+		<property name="ignoreLines" value="" />
+		-->
+<!--
+		<property name="severity" value="ignore" />
+	</module>
+-->
+
+	<!--
+		Checks the header of a source file against a
+		header that contains a regular expression for
+		each line of the source header.
+
+		Rationale: In some projects checking against a
+		fixed header is not sufficient, e.g. the header
+		might require a copyright line where the year
+		information is not static.
+
+		For example, consider the following header:
+
+		line  1: ^/{71}$
+		line  2: ^// checkstyle:$
+		line  3: ^// Checks Java source code for adherence to a set of rules\.$
+		line  4: ^// Copyright \(C\) \d\d\d\d  Oliver Burn$
+		line  5: ^// Last modification by \$Author.*\$$
+		line  6: ^/{71}$
+		line  7:
+		line  8: ^package
+		line  9:
+		line 10: ^import
+		line 11:
+		line 12: ^/\*\*
+		line 13: ^ \*([^/]|$)
+		line 14: ^ \*/
+				
+		Lines 1 and 6 demonstrate a more compact notation
+		for 71 '/' characters. Line 4 enforces that the
+		copyright notice includes a four digit year. Line
+		5 is an example how to enforce revision control
+		keywords in a file header. Lines 12-14 is a
+		template for javadoc (line 13 is so complicated
+		to remove conflict with and of javadoc comment).
+
+		Different programming languages have different
+		comment syntax rules, but all of them start a
+		comment with a non-word character. Hence you
+		can often use the non-word character class to
+		abstract away the concrete comment syntax and
+		allow checking the header for different languages
+		with a single header definition. For example,
+		consider the following header specification (note
+		that this is not the full Apache license header):
+
+		line 1: ^#!
+		line 2: ^<\?xml.*>$
+		line 3: ^\W*$
+		line 4: ^\W*Copyright 2006 The Apache Software Foundation or its licensors, as applicable\.$
+		line 5: ^\W*Licensed under the Apache License, Version 2\.0 \(the "License"\);$
+		line 6: ^\W*$
+				
+		Lines 1 and 2 leave room for technical header
+		lines, e.g. the "#!/bin/sh" line in Unix shell
+		scripts, or the xml file header of XML files. Set
+		the multiline property to "1, 2" so these lines
+		can be ignored for file types where they do no
+		apply. Lines 3 through 6 define the actual header
+		content. Note how lines 2, 4 and 5 use escapes
+		for characters that have special regexp semantics.
+	-->
+<!--
+	<module name="RegexpHeader">
+-->
+		<!-- character encoding to use when reading the headerFile
+			default: the charset property of the parent Checker module
+		<property name="charset" value="UTF-8" />
+		-->
+		<!-- the required header specified
+			inline. Individual header lines must be separated
+			by the string "\n" (even on platforms with a
+			different line separator),  and regular
+			expressions must not span multiple lines.
+			see examples below.
+		<property name="header" value="" />
+		-->
+		<!-- file type extension of files to process
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- name of the file containing the required header.
+		<property name="headerFile" value="" />
+		-->
+		<!-- line numbers to repeat (zero or more times)
+		<property name="multiLines" value="" />
+		-->
+<!--
+		<property name="severity" value="ignore" />
+	</module>
+-->
+
+	<!-- -->
+	<!-- Section: Javadoc Comments -->
+	<!-- http://checkstyle.sourceforge.net/config_javadoc.html -->
+	<!-- -->
+
+	<!--
+		Checks that each Java package has a Javadoc file
+		used for commenting. By default it only allows
+		a package-info.java file, but can be configured
+		to allow a package.html file.
+
+		An error will be reported if both files exist
+		as this is not allowed by the Javadoc tool.
+	-->
+	<module name="JavadocPackage">
+		<!-- If set then allow the use of a package.html file.
+			default: false
+		<property name="allowLegacy" value="false" />
+		-->
+		<property name="severity" value="warning" />
+	</module>
+
+
+	<!-- Section: Miscellaneous -->
+	<!-- http://checkstyle.sourceforge.net/config_misc.html -->
+	<!-- -->
+
+	<!--
+		Checks whether files end with a new line.
+
+		Rationale: Any source files and text files in
+		general should end with a newline character,
+		especially when using SCM systems such as CVS. CVS
+		will even print a warning when it encounters a
+		file that doesn't end with a newline.
+	-->
+	<module name="NewlineAtEndOfFile">
+		<!--
+			file type extension of the files to check.
+			default: all files
+		<property name="fileExtensions" value="" />
+		-->
+		<!--
+			One of "system" (system default), "crlf"
+			(Windows-style), "cr" (Mac-style) and "lf"
+			(Unix-style)
+			default: system
+		-->
+		<property name="lineSeparator" value="lf" />
+		<property name="severity" value="warning" />
+	</module>
+
+	<!--
+		A FileSetCheck that ensures the correct translation of
+		code by checking property files for consistency regarding
+		their keys. Two property files describing one and the
+		same context are consistent if they contain the same keys.
+
+		Consider the following properties file in the same
+		directory:
+
+		#messages.properties
+		hello=Hello
+		cancel=Cancel
+
+		#messages_de.properties
+		hell=Hallo
+		ok=OK
+		        
+		The Translation check will find the typo in the german
+		hello key, the missing ok key in the default resource file
+		and the missing cancel key in the german resource file:
+
+		messages_de.properties: Key 'hello' missing.
+		messages_de.properties: Key 'cancel' missing.
+		messages.properties: Key 'hell' missing.
+		messages.properties: Key 'ok' missing.
+				
+	-->
+	<module name="Translation">
+		<!--
+			file type extension to identify translation
+			files. Setting this property is typically
+			only required if your translation files are
+			preprocessed and the original files do not have
+			the extension .properties
+			default: properties
+		<property name="fileExtensions" value="properties" />
+		-->
+		<property name="severity" value="error" />
+	</module>
+
+	<!-- Section: Regexp -->
+	<!-- http://checkstyle.sourceforge.net/config_regexp.html -->
+	<!-- -->
+
+	<!--
+		A check for detecting single lines that match
+		a supplied regular expression. Works with any
+		file type.
+
+		Rationale: This check can be used to prototype
+		checks and to find common bad practice
+		such as calling ex.printStacktrace(),
+		System.out.println(), System.exit(), etc.
+	-->
+	<module name="RegexpSingleline">
+		<!-- file type extension of files to process
+			default: {}
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- Illegal pattern
+			default: ^$
+		-->
+		<property name="format" value="\s+$" />
+		<!-- Controls whether to ignore case when searching.
+			default: false
+		<property name="ignoreCase" value="false" />
+		-->
+		<!-- message which is used to notify
+			about violations, if empty then
+			default(hard-coded) message is used.
+			default: ""
+		-->
+		<property name="message" value="no trailing whitespace should be in the files" />
+		<!-- The minimum number of matches required in each file.
+			default: 0
+		<property name="minimum" value="0" />
+		-->
+		<!-- The maximum number of matches required in each file.
+			default: 0
+		<property name="maximum" value="0" />
+		-->
+		<property name="severity" value="warning" />
+	</module>
+
+	<!--
+		A check for detecting that matches across multiple
+		lines. Works with any file type.
+
+		Rationale: This check can be used to when the regular
+		expression can be span multiple lines.
+	-->
+<!--
+	<module name="RegexpMultiline">
+-->
+		<!-- file type extension of files to process
+			default: {}
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- Illegal pattern
+			default: ^$
+		<property name="format" value="^$" />
+		-->
+		<!-- Controls whether to ignore case when searching.
+			default: false
+		<property name="ignoreCase" value="false" />
+		-->
+		<!-- message which is used to notify
+			about violations, if empty then
+			default(hard-coded) message is used.
+			default: ""
+		-->
+		<!--
+			message which is used to notify about violations,
+			if empty then default(hard-coded) message is used.
+			default: ""
+		<property name="message" value="" />
+		-->
+		<!-- The minimum number of matches required in each file.
+			default: 0
+		<property name="minimum" value="0" />
+		-->
+		<!-- The maximum number of matches required in each file.
+			default: 0
+		<property name="maximum" value="0" />
+		-->
+<!--
+		<property name="severity" value="ignore" />
+	</module>
+-->
+
+	<!-- Section: Size Violations -->
+	<!-- http://checkstyle.sourceforge.net/config_sizes.html -->
+	<!-- -->
+
+	<!--
+		Checks for long source files.
+
+		Rationale: If a source file becomes very long it
+		is hard to understand. Therefore long classes
+		should usually be refactored into several
+		individual classes that focus on a specific task.
+	-->
+	<module name="FileLength">
+		<!-- file type extension of files to process.
+			default: {}
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- maximum allowable number of lines.
+			default: 2000
+		<property name="max" value="2000" />
+		-->
+		<property name="severity" value="error" />
+	</module>
+
+
+	<!-- -->
+	<!-- Section: Whitespace -->
+	<!-- http://checkstyle.sourceforge.net/config_whitespace.html -->
+	<!-- -->
+
+	<!--
+		Checks that there are no tab characters ('\t') in the
+		source code.
+
+		Rationale: Developers should not need to configure the
+		tab width of their text editors in order to be able to
+		read source code.
+
+		From the Apache jakarta coding standards: In a distributed
+		development environment, when the commit messages get
+		sent to a mailing list, they are almost impossible to
+		read if you use tabs.
+	-->
+	<module name="FileTabCharacter">
+		<!-- whether to report on each line containing a tab,
+			or just the first instance.
+			default: false
+		-->
+		<property name="eachLine" value="false" />
+		<!-- file type extension of files to process
+			default: {}
+		<property name="fileExtensions" value="" />
+		-->
+		<!-- LZK much better to have tabs -->
+		<property name="severity" value="ignore" />
+	</module>
+
+	<!--
+		FileSetCheck TreeWalker checks individual Java source
+		files and defines properties that are applicable to
+		checking such files.
+	-->
+	<module name="TreeWalker">
+		<!-- -->
+		<!-- Section: Annotations -->
+		<!-- -->
+
+		<!--
+			This check controls the style with the usage of annotations.
+		-->
+		<module name="AnnotationUseStyle">
+			<property name="elementStyle" value="compact_no_array" />
+			<!-- <property name="ElementStyle" value="expanded" /> -->
+
+			<property name="trailingArrayComma" value="never" />
+			<!-- <property name="TrailingArrayComma" value="always" /> -->
+
+			<property name="closingParens" value="always" />
+			<!-- <property name="ClosingParens" value="never" /> -->
+		</module>
+
+		<!--
+			Verifies that both the java.lang.Deprecated annotation
+			is present and the @deprecated Javadoc tag is present
+			when either is present.
+		-->
+		<module name="MissingDeprecated" />
+
+		<!--
+			Verifies that the java.lang.Override annotation is
+			present when the {@inheritDoc} javadoc tag is present.
+		-->
+		<module name="MissingOverride">
+			<!-- We'll be using Java 6 or higher -->
+			<property name="javaFiveCompatibility" value="false" />
+			<!-- <property name="javaFiveCompatibility" value="true" /> -->
+		</module>
+
+		<!--
+			This check makes sure that all package annotations are in the
+			package-info.java file.
+
+			According to the Java JLS 3rd ed.
+
+			The JLS does not enforce the placement of package
+			annotations. This placement may vary based on implementation. The
+			JLS does highly recommend that all package annotations are placed
+			in the package-info.java file. See Java Language specification,
+			sections 7.4.1.1.
+		-->
+		<module name="PackageAnnotation"/>
+
+		<!--
+			This check allows you to specify what warnings that
+			SuppressWarnings is not allowed to suppress. You can
+			also specify a list of TokenTypes that the configured
+			warning(s) cannot be suppressed on.
+
+			Limitations: This check does not consider conditionals
+			inside the SuppressWarnings annotation.
+
+			For example: @SupressWarnings((false) ? (true)
+			? "unchecked" : "foo" : "unused") According to the above
+			example, the "unused" warning is being suppressed not the
+			"unchecked" or "foo" warnings. All of these warnings
+			will be considered and matched against regardless of
+			what the conditional evaluates to.
+		-->
+		<module name="SuppressWarnings">
+			<!--
+				The warnings property is a regex pattern. Any
+				warning being suppressed matching this pattern
+				will be flagged.
+				default: "^$|^\s+$"
+
+			<property name="regexp" value="^$|^\s+$" />
+			-->
+			<!--
+				tokens to check
+
+				default: CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+				ANNOTATION_DEF, ANNOTATION_FIELD_DEF
+				ENUM_CONSTANT_DEF PARAMETER_DEF VARIABLE_DEF
+				METHOD_DEF CTOR_DEF
+
+				options: CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+				ANNOTATION_DEF, ANNOTATION_FIELD_DEF
+				ENUM_CONSTANT_DEF PARAMETER_DEF VARIABLE_DEF
+				METHOD_DEF CTOR_DEF
+			<property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF ENUM_CONSTANT_DEF PARAMETER_DEF VARIABLE_DEF METHOD_DEF CTOR_DEF" />
+			-->
+		</module>
+
+		<!-- -->
+		<!-- Block Checks -->
+		<!-- -->
+
+		<!--
+			Finds nested blocks, i.e. blocks that are used freely in the code.
+
+			Rationale: Nested blocks are often leftovers from the
+			debugging process, they confuse the reader.
+		-->
+		<module name="AvoidNestedBlocks">
+			<property name="allowInSwitchCase" value="true" />
+			<!-- LZK: I believe this helps readability, so no warning -->
+			<property name="severity" value="ignore" />
+		</module>
+		
+		<!--
+			Checks for empty blocks.
+		-->
+		<module name="EmptyBlock">
+			<!-- policy on block contents. default is stmt -->
+			<property name="option" value="text" />
+			<!-- property name="option" value="stmt" / -->
+
+			<!-- 
+				blocks to check
+				default all tokens: LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT STATIC_INIT
+			<property name="tokens" value="LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT STATIC_INIT" />
+			-->
+		</module>
+
+		<!--
+			Checks for the placement of left curly braces ('{')
+			for code blocks. The policy to verify is specified using
+			property option. Policies eol and nlow take into account
+			property maxLineLength.
+		-->
+		<module name="LeftCurly">
+			<!-- policy on placement of a left curly brace ('{'). default is eol -->
+			<property name="option" value="nl" />
+			<!--
+			<property name="option" value="eol" />
+			<property name="option" value="nlow" />
+			-->
+
+			<!-- maximum number of characters in a line. default is 80 -->
+			<property name="maxLineLength" value="120" />
+
+			<!-- Blocks to check: default all tokens:LASS_DEF, CTOR_DEF, INTERFACE_DEF, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF
+			<property name="tokens" value="CLASS_DEF, CTOR_DEF, INTERFACE_DEF, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, METHOD_DEF" />
+			-->
+		</module>
+
+		<!--
+			Checks for braces around code blocks.
+		-->
+		<module name="NeedBraces">
+			<!--
+				blocks to check.
+				default all tokens: LITERAL_DO, LITERAL_ELSE, LITERAL_IF, LITERAL_FOR, LITERAL_WHILE
+			-->
+		</module>
+
+		<!--
+			Checks the placement of right curly braces ('}') for else,
+			try, and catch tokens. The policy to verify is specified
+			using property option.
+		-->
+		<module name="RightCurly">
+			<!-- policy on placement of a right curly brace ('}'). default is same -->
+			<property name="option" value="alone" />
+			<!--
+			<property name="option" value="same" />
+			-->
+
+
+			<!-- Blocks to check: default subset tokens:LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE
+			<property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE" />
+			-->
+
+			<!-- should we check if '}' starts line. default is: true -->
+			<property name="shouldStartLine" value="true" />
+			<!-- <property name="shouldStartLine" value="false" /> -->
+		</module>
+
+		<!-- -->
+		<!-- Section: Class Design -->
+		<!-- -->
+
+		<!--
+			Checks that classes are designed for extension. More
+			specifically, it enforces a programming style where
+			superclasses provide empty "hooks" that can be implemented
+			by subclasses.
+
+			The exact rule is that nonprivate, nonstatic methods of
+			classes that can be subclassed must either be
+
+				* abstract or
+				* final or
+				* have an empty implementation
+
+			Rationale: This API design style protects superclasses
+			against beeing broken by subclasses. The downside is
+			that subclasses are limited in their flexibility, in
+			particular they cannot prevent execution of code in the
+			superclass, but that also means that subclasses cannot
+			corrupt the state of the superclass by forgetting to
+			call the super method.
+		-->
+		<module name="DesignForExtension">
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks that a class which has only private constructors
+			is declared as final.
+		-->
+		<module name="FinalClass" />
+
+		<!--
+			Make sure that utility classes (classes that contain
+			only static methods or fields in their API) do not have
+			a public constructor.
+
+			Rationale: Instantiating utility classes does not make
+			sense. Hence the constructors should either be private or
+			(if you want to allow subclassing) protected. A common
+			mistake is forgetting to hide the default constructor.
+
+			If you make the constructor protected you may want
+			to consider the following constructor implementation
+			technique to disallow instantiating subclasses:
+
+			public class StringUtils // not final to allow subclassing
+			{
+				protected StringUtils() {
+					// prevents calls from subclass
+					throw new UnsupportedOperationException();
+				}
+
+				public static int count(char c, String s) {
+					// ...
+				}
+			}
+		-->
+		<module name="HideUtilityClassConstructor" />
+
+
+		<!--
+			Check nested (internal) classes/interfaces are
+			declared at the bottom of the class after all
+			method and field declarations.
+		-->
+		<module name="InnerTypeLast">
+			<!-- LZK: Give developer freedom to improve readability -->
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Implements Bloch, Effective Java, Item 17 - Use Interfaces
+			only to define types.
+
+			According to Bloch, an interface should describe a
+			type. It is therefore inappropriate to define an interface
+			that does not contain any methods but only constants. The
+			Standard class javax.swing.SwingConstants is an example
+			of a class that would be flagged by this check.
+
+			The check can be configured to also disallow marker
+			interfaces like java.io.Serializable, that do not contain
+			methods or constants at all.
+		-->
+		<module name="InterfaceIsType" />
+
+		<!--
+			Ensures that exceptions (defined as any class name
+			conforming to some regular expression) are immutable. That
+			is, have only final fields.
+
+			The current algorithm is very simple it checks that
+			all members of exception are final. User can still
+			mutates an exception's instance (e.g. Throwable has
+			setStackTrace(StackTraceElement[] stackTrace) method
+			which changes stack trace). But, at least, all information
+			provided by this exception type is unchangable.
+
+			Rationale: Exception instances should represent an error
+			condition. Having non final fields not only allows the
+			state to be modified by accident and therefore mask
+			the original condition but also allows developers to
+			accidentally forget to initialise state thereby leading to
+			code catching the exception to draw incorrect conclusions
+			based on the state.
+		-->
+		<module name="MutableException">
+			<!--
+				pattern for name of exception class.
+				default: "^.*Exception$|^.*Error$"
+			<property name="format" value="^.*Exception$|^.*Error$" />
+			-->
+		</module>
+
+		<!--
+			Restricts throws statements to a specified count (default = 1).
+
+			Rationale: Exceptions form part of a methods
+			interface. Declaring a method to throw too many
+			differently rooted exceptions makes exception handling
+			onerous and leads to poor programming practices such as
+			catch (Exception). This check forces developers to put
+			exceptions into a heirachy such that in the simplest
+			case, only one type of exception need be checked for
+			by a caller but allows any sub-classes to be caught
+			specifically if necessary.
+		-->
+		<module name="ThrowsCount">
+			<!-- maximum allowed number of throws statments. default 1 -->
+			<property name="max" value="3" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks visibility of class members. Only static final
+			members may be public; other class members must be private
+			unless property protectedAllowed or packageAllowed is set.
+
+			Public members are not flagged if the name matches
+			the public member regular expression (contains
+			"^serialVersionUID$" by default). Note: Checkstyle 2 used
+			to include "^f[A-Z][a-zA-Z0-9]*$" in the default pattern
+			to allow CMP for EJB 1.1 with the default settings. With
+			EJB 2.0 it is not longer necessary to have public access
+			for persistent fields, hence the default has been changed.
+
+			Rationale: Enforce encapsulation.
+		-->
+		<module name="VisibilityModifier">
+			<!-- whether package visible members are allowed. default: false -->
+			<property name="packageAllowed" value="true" />
+			<!-- whether protected members are allowed. default: false -->
+			<property name="protectedAllowed" value="true" />
+			<!--
+				pattern for public members that should be ignored.
+				default: "^serialVersionUID$"
+			<property name="publicMemberPattern" value="^serialVersionUID$" />
+			-->
+		</module>
+
+		<!-- -->
+		<!-- Section: Coding -->
+		<!-- -->
+
+		<!--
+			Checks that array initialization contains a trailing comma.
+
+			int[] a = new int[]
+			{
+			1,
+			2,
+			3,
+			};
+					
+			The check allows to not add a comma if both left
+			and right curlys are on the same line.
+
+			return new int[] { 0 };
+						
+			Rationale: Putting this comma in makes it easier
+			to change the order of the elements or add new
+			elements on the end.
+		-->
+		<module name="ArrayTrailingComma">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Detects inline conditionals. An example inline conditional is this:
+
+			String a = getParameter("a");
+			String b = (a==null || a.length<1) ? null : a.substring(1);
+			        
+			Rationale: Some developers find inline
+			conditionals hard to read, so their company's
+			coding standards forbids them.
+		-->
+		<module name="AvoidInlineConditionals">
+			<!-- this makes things easier to read -->
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Checks that classes that define a covariant
+			equals() method also override method
+			equals(java.lang.Object). Inspired by findbugs.
+
+			Rationale: Mistakenly defining a covariant
+			equals() method without overriding method
+			equals(java.lang.Object) can produce unexpected
+			runtime behaviour.
+		-->
+		<module name="CovariantEquals">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			The "double-checked locking" idiom (DCL) tries
+			to avoid the runtime cost of synchronization. An
+			example that uses the DCL idiom is this:
+
+			public class MySingleton
+			{
+			    private static theInstance = null;
+
+				private MySingleton() {}
+
+				public MySingleton getInstance() {
+					if ( theInstance == null ) { // synchronize only if necessary
+						synchronized( MySingleton.class ) {
+							if ( theInstance == null ) {
+								theInstance = new MySingleton();
+							}
+						}
+					}
+				}
+			}
+																														        
+			The problem with the DCL idiom in Java is that it
+			just does not work correctly. Using it introduces
+			bugs that are extremely hard to track down and
+			reproduce. The "Double-Checked Locking is Broken"
+			Declaration has an in depth explanation of the
+			exact problem which has to do with the semantics
+			of the Java memory model.
+
+			The DoubleCheckedLocking check will find source
+			code where a test is wrapped in a synchronized
+			block that is wrapped in the same test, like in
+			the example above.
+		-->
+		<module name="DoubleCheckedLocking">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Detects empty statements (standalone ;).
+		-->
+		<module name="EmptyStatement">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that any combination of String literals
+			with optional assignment is on the left side of
+			an equals() comparison. The check also processes
+			String.equalsIgnoreCase() invocations (which
+			can be suppressed).
+
+			Rationale: Calling the equals() method
+			on String literals will avoid a potential
+			NullPointerException. Also, it is pretty common
+			to see null check right before equals comparisons
+			which is not necessary in the below example.
+
+			For example:
+
+			String nullString = null;
+			nullString.equals("My_Sweet_String");
+			        
+			should be refactored to:
+
+			String nullString = null;
+			"My_Sweet_String".equals(nullString);
+					
+			Limitations: If the equals method is overridden
+			or a covariant equals method is defined and the
+			implementation is incorrect (where s.equals(t)
+			does not return the same result as t.equals(s))
+			then rearranging the called on object and
+			parameter may have unexpected results
+
+			Java's Autoboxing feature has an affect on how
+			this check is implemented. Pre Java 5 all IDENT
+			+ IDENT object concatenations would not cause
+			a NullPointerException even if null. Those
+			situations could have been included in this
+			check. They would simply act as if they surrounded
+			by String.valueof() which would concatenate the
+			String null.
+
+			The following example will cause a
+			NullPointerException as a result of what
+			autoboxing does.
+
+			Integer i = null, j = null;
+			String number = "5"
+			number.equals(i + j);
+							        
+			Since, it is difficult to determine what kind
+			of Object is being concatenated all ident
+			concatenation is considered unsafe.
+		-->
+		<module name="EqualsAvoidNull">
+			<!-- whether to ignore String.equalsIgnoreCase() invocations -->
+			<property name="ignoreEqualsIgnoreCase" value="false" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that classes that override equals()
+			also override hashCode().
+
+			Rationale: The contract of equals() and
+			hashCode() requires that equal objects have
+			the same hashCode. Hence, whenever you override
+			equals() you must override hashCode() to ensure
+			that your class can be used in collections that
+			are hash based.
+		-->
+		<module name="EqualsHashCode">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that local variables that never have their
+			values changed are declared final. The check
+			can be configured to also check that unchanged
+			parameters are declared final.
+
+			Notes:
+			When configured to check parameters, the check
+			ignores parameters of interface methods and
+			abstract methods.
+		-->
+		<module name="FinalLocalVariable">
+			<property name="severity" value="error" />
+			<!-- tokens to check. default: VARIABLE_DEF -->
+			<property name="tokens" value="PARAMETER_DEF, VARIABLE_DEF" />
+		</module>
+
+		<!--
+			Checks that a local variable or a parameter
+			does not shadow a field that is defined in the
+			same class.
+		-->
+		<module name="HiddenField">
+			<!-- Controls whether to ignore parameters of abstract methods.
+				default: false 
+			<property name="ignoreAbstractMethods" value="false" />
+			-->
+
+			<!-- Controls whether to ignore constructor parameters.
+				default: false 
+			<property name="ignoreConstructorParameter" value="false" />
+			-->
+
+			<!-- pattern for names to ignore. default: empty 
+			<property name="ignoreFormat" value="" />
+			-->
+
+			<!-- Controls whether to ignore the parameter
+				of a property setter method, where the property
+				setter method for field "xyz" has name "setXyz",
+				one parameter named "xyz", and return type void.
+
+				default: empty 
+			<property name="ignoreSetter" value="false" />
+			-->
+
+			<property name="severity" value="error" />
+
+			<!-- tokens to check. default: PARAMETER_DEF, VARIABLE_DEF -->
+			<property name="tokens" value="PARAMETER_DEF, VARIABLE_DEF" />
+		</module>
+
+		<!--
+			Checks for illegal instantiations where a factory
+			method is preferred.
+
+			Rationale: Depending on the project, for
+			some classes it might be preferable to create
+			instances through factory methods rather than
+			calling the constructor.
+
+			A simple example is the java.lang.Boolean
+			class. In order to save memory and CPU cycles,
+			it is preferable to use the predefined constants
+			TRUE and FALSE. Constructor invocations should
+			be replaced by calls to Boolean.valueOf().
+
+			Some extremely performance sensitive projects
+			may require the use of factory methods for other
+			classes as well, to enforce the usage of number
+			caches or object pools.
+		-->
+		<module name="IllegalInstantiation">
+			<property name="classes" value="java.lang.Boolean" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for illegal tokens.
+
+			Rational: Certain language features often lead
+			to hard to maintain code or are non-obvious
+			to novice developers. Other features may be
+			discouraged in certain frameworks, such as not
+			having native methods in EJB components.
+		-->
+		<module name="IllegalToken">
+			<property name="severity" value="warning" />
+			<!-- tokens to check. default: LITERAL_SWITCH, POST_INC, POST_DEC
+			<property name="tokens" value="LITERAL_NATIVE, LITERAL_SWITCH, POST_INC, POST_DEC" />
+			-->
+			<property name="tokens" value="LITERAL_NATIVE" />
+		</module>
+
+		<!--
+			Checks for illegal token text.
+		-->
+		<module name="IllegalTokenText">
+			<!-- regexp of social security number? -->
+			<property name="format" value="[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]" />
+			<property name="ignoreCase" value="false" />
+			<property name="message" value="No Social Security numbers in code!!" />
+			<property name="severity" value="error" />
+			<property name="tokens" value="STRING_LITERAL" />
+		</module>
+
+		<!--
+			Checks for assignments in subexpressions, such
+			as in String s = Integer.toString(i = 2);.
+
+			Rationale: With the exception of for iterators,
+			all assignments should occur in their own toplevel
+			statement to increase readability. With inner
+			assignments like the above it is difficult to
+			see all places where a variable is set.
+		-->
+		<module name="InnerAssignment">
+			<property name="severity" value="error" />
+			<!-- assignments to check
+				default=ASSIGN, BAND_ASSIGN, BOR_ASSIGN, BSR_ASSIGN, BXOR_ASSIGN, DIV_ASSIGN, MINUS_ASSIGN, MOD_ASSIGN, PLUS_ASSIGN, SL_ASSIGN, SR_ASSIGN, STAR_ASSIGN
+			<property name="tokens" value="error" />
+			-->
+		</module>
+
+		<!--
+			Checks that there are no "magic numbers", where
+			a magic number is a numeric literal that is not
+			defined as a constant. By default, -1, 0, 1,
+			and 2 are not considered to be magic numbers.
+		-->
+		<module name="MagicNumber">
+			<!-- ignore magic numbers in annotation declarations. default: false -->
+			<property name="ignoreAnnotation" value="false" />
+			<!-- ignore magic numbers in hashCode methods default: false -->
+			<property name="ignoreHashCodeMethod" value="false" />
+			<!-- non-magic numbers. default: -1, 0, 1, 2 -->
+			<property name="ignoreNumbers" value="-1, 0, 1" />
+			<property name="severity" value="error" />
+			<!-- tokens to check.
+				default: NUM_DOUBLE, NUM_FLOAT, NUM_INT, NUM_LONG
+			-->
+			<property name="tokens" value="NUM_DOUBLE, NUM_FLOAT, NUM_INT, NUM_LONG" />
+		</module>
+
+		<!--
+			Checks that switch statement has "default" clause.
+
+			Rationale: It's usually a good idea to introduce
+			a default case in every switch statement. Even
+			if the developer is sure that all currently
+			possible cases are covered, this should be
+			expressed in the default branch, e.g. by using
+			an assertion. This way the code is protected
+			aginst later changes, e.g. introduction of new
+			types in an enumeration type.
+		-->
+		<module name="MissingSwitchDefault">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Check for ensuring that for loop control
+			variables are not modified inside the for
+			block. An example is:
+
+			for (int i = 0; i < 1; i++) {
+			    i++;
+			}
+				        
+			Rationale: If the control variable is modified
+			inside the loop body, the program flow becomes
+			more difficult to follow. An option is to replace
+			the for loop with a while loop.
+		-->
+		<module name="ModifiedControlVariable">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for redundant exceptions declared in throws
+			clause such as duplicates, unchecked exceptions
+			or subclasses of another declared exception.
+		-->
+		<module name="RedundantThrows">
+			<!-- whether unchecked exceptions in throws are allowed or not
+				default: false
+				LZK: be explicit to the caller
+			-->
+			<property name="allowUnchecked" value="true" />
+			<!-- whether subclass of another declared
+				exception is allowed in throws clause.
+				default: false
+				LZK: be explicit to the caller
+			-->
+			<property name="allowSubclasses" value="true" />
+			<!-- This check may need to load exception
+				classes mentioned in the @throws tag to check
+				whether they are RuntimeExceptions. If loading
+				the class fails, this property allows to control
+				checkstyle's error handling. If set to false
+				a classpath configuration problem is assumed
+				and the TreeWalker stops operating on the
+				class completely. If set to true (the default),
+				checkstyle assumes a typo or refactoring problem
+				in the javadoc and logs the problem in the
+				normal checkstyle report (potentially masking
+				a configuration error).
+				default: true
+			-->
+			<property name="logLoadErrors" value="true" />
+			<property name="severity" value="error" />
+			<!-- When logLoadErrors is set to true, the
+				TreeWalker completely processes a class and
+				displays any problems with loading exceptions
+				as checkstyle violations. When this property
+				is set to true, the violations generated when
+				logLoadErrors is set true are suppressed from
+				being reported as violations in the checkstyle
+				report.
+				default: false
+			-->
+			<property name="suppressLoadErrors" value="false" />
+		</module>
+
+		<!--
+			Checks for overly complicated boolean
+			expressions. Currently finds code like if (b ==
+			true), b || true, !false, etc.
+
+			Rationale: Complex boolean logic makes code hard
+			to understand and maintain.
+		-->
+		<module name="SimplifyBooleanExpression">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for overly complicated boolean return
+			statements. For example the following code
+
+			if (valid())
+			    return false;
+			else
+				return true;
+					
+			could be written as:
+
+			return !valid();
+					
+			The Idea for this Check has been shamelessly
+			stolen from the equivalent PMD rule.
+		-->
+		<module name="SimplifyBooleanReturn">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that string literals are not used with == or !=.
+
+			Rationale: Novice Java programmers often use code like:
+
+			if (x == "something")
+			        
+			when they mean
+
+			if ("something".equals(x))
+		-->
+		<module name="StringLiteralEquality">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Restricts nested for blocks to a specified depth (default = 1).
+		-->
+		<module name="NestedForDepth">
+			<!-- allowed nesting depth. default: 1 -->
+			<property name="max" value="2" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Restricts nested if-else blocks to a specified depth (default = 1).
+		-->
+		<module name="NestedIfDepth">
+			<!-- allowed nesting depth. default: 1 -->
+			<property name="max" value="3" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Restricts nested try blocks to a specified depth (default = 1).
+		-->
+		<module name="NestedTryDepth">
+			<!-- allowed nesting depth. default: 1 -->
+			<property name="max" value="2" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks that the clone method is not overridden
+			from the Object class.
+
+			Rationale: The clone method relies on
+			strange/hard to follow rules that do not work in
+			all situations. Consequently, it is difficult
+			to override correctly. Below are some of the
+			rules/reasons why the clone method should
+			be avoided.
+
+			*  Classes supporting the clone method should
+			implement the Cloneable interface but the
+			Cloneable interface does not include the clone
+			method. As a result, it doesn't enforce the
+			method override.
+			*  The Cloneable interface forces the Object's clone
+			method to work correctly. Without implementing
+			it, the Object's clone method will throw a
+			CloneNotSupportedException.
+			*  Non-final classes must return the object returned
+			from a call to super.clone().
+			*  Final classes can use a constructor to create
+			a clone which is different from non-final classes.
+			*  If a super class implements the clone method
+			incorrectly all subclasses calling super.clone()
+			are doomed to failure.
+			*  If a class has references to mutable objects
+			then those object references must be replaced
+			with copies in the clone method after calling
+			super.clone().
+			*  The clone method does not work correctly with
+			final mutable object references because final
+			references cannot be reassigned.
+			*  If a super class overrides the clone method
+			then all subclasses must provide a correct
+			clone implementation.
+
+			Two alternatives to the clone method,
+			in some cases, is a copy constructor or a
+			static factory method to return copies of an
+			object. Both of these approaches are simpler
+			and do not conflict with final fields. The
+			do not force the calling client to handle a
+			CloneNotSuportException. They also are typed
+			therefore no casting is necessary. Finally, they
+			are more flexible since they can take interface
+			types rather than concrete classes.
+
+			Sometimes a copy constructor or static factory
+			is not an acceptable alternative to the clone
+			method. The example below highlights the
+			limitation of a copy constructor (or static
+			factory). Assume Square is a subclass for Shape.
+
+			Shape s1 = new Square();
+			System.out.println(s1 instanceof Square); //true
+
+			...assume at this point the code knows nothing
+			of s1 being a Square that's the beauty of
+			polymorphism but the code wants to copy the Square
+			which is declared as a Shape, its super type...
+
+			Shape s2 = new Shape(s1); //using the copy constructor
+			System.out.println(s2 instanceof Square); //false
+
+			The working solution (without knowing about all
+			subclasses and doing many casts) is to do the
+			following (assuming correct clone implementation).
+
+			Shape s2 = s1.clone();
+			System.out.println(s2 instanceof Square); //true
+
+			Just keep in mind if this type of polymorphic
+			cloning is required then a properly implemented
+			clone method may be the best choice.
+
+			Much of this information was taken from Effective
+			Java: Programming Language Guide First Edition
+			by Joshua Bloch pages 45-52. Give Bloch credit
+			for writing an excellent book.
+
+			This check is almost exactly the same as the
+			{@link NoFinalizerCheck}
+		-->
+		<module name="NoClone">
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Verifies there are no finalize() methods defined in a class.
+		-->
+		<module name="NoFinalizer">
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks that an overriding clone() method invokes super.clone().
+
+			Reference: Object.clone().
+			http://java.sun.com/j2se/1.4.2/docs/api/java/lang/Object.html#clone()
+		-->
+		<module name="SuperClone">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that an overriding finalize() method invokes super.finalize().
+
+			Reference: Cleaning Up Unused Objects.
+			http://java.sun.com/docs/books/tutorial/java/data/garbagecollection.html
+		-->
+		<module name="SuperFinalize">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Catching java.lang.Exception, java.lang.Error
+			or java.lang.RuntimeException is almost never
+			acceptable.
+
+			Rationale: Junior developers often simply
+			catch Exception in an attempt to handle
+			multiple exception classes. This unfortunately
+			leads to code that inadvertantly catchs NPE,
+			OutOfMemoryErrors, etc.
+		-->
+		<module name="IllegalCatch">
+			<!-- exception class names to reject.
+				default: "java.lang.Exception, java.lang.Throwable, java.lang.RuntimeException"
+			<property name="illegalClassNames" value="java.lang.Exception, java.lang.Throwable, java.lang.RuntimeException" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			This check can be used to ensure that types are
+			not declared to be thrown. Declaring to throw
+			java.lang.Error or java.lang.RuntimeException
+			is almost never acceptable.
+		-->
+		<module name="IllegalThrows">
+			<!-- names of methods to ignore. default: finalize
+			<property name="ignoredMethodNames" value="finalize" />
+			-->
+			<!-- throw class names to reject.
+				default: java.lang.Throwable, java.lang.Error,
+						java.lang.RuntimeExcpetion
+			-->
+			<property name="illegalClassNames" value="java.lang.Throwable, java.lang.Error, java.lang.RuntimeExcpetion, java.io.IOException" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Ensure a class has a package declaration, and
+			(optionally) whether the package name matches
+			the directory name for the source file.
+
+			Rationale: Classes that live in the null package
+			cannot be imported. Many novice developers are
+			not aware of this.
+		-->
+		<module name="PackageDeclaration">
+			<!-- whether to ignore checking that the
+				package declaration matches the source directory
+				name. default: false
+			-->
+			<property name="ignoreDirectoryName" value="false" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Ensures that the setUp(), tearDown()methods are
+			named correctly, have no arguments, return void
+			and are either public or protected.
+
+			Also ensures that suite() is named correctly,
+			have no arguments, return junit.framewotk.Test,
+			public and static.
+
+			Rationale: often times developers will misname
+			one or more of these methods and not realise
+			that the method is not being called.
+		-->
+		<module name="JUnitTestCase">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Restricts the number of return statements. Default
+			= 2. Ignores specified methods (equals()
+			by default).
+
+			Rationale: Too many return points can be
+			indication that code is attempting to do too
+			much or may be difficult to understand.
+		-->
+		<module name="ReturnCount">
+			<!-- method names to ingore. default "^equals$" -->
+			<property name="format" value="^equals$" />
+			<!-- maximum allowed number of return statements. default: 2 -->
+			<property name="max" value="3" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that particular class are never used as
+			types in variable declarations, return values
+			or parameters. Includes a pattern check that by
+			default disallows abstract classes.
+
+			Rationale: Helps reduce coupling on concrete
+			classes. In addition abstract classes should
+			be thought of a convenience base class
+			implementations of interfaces and as such are
+			not types themselves.
+		-->
+		<module name="IllegalType">
+			<!-- pattern for illegal class name.
+				default: ^(.*[\\.])?Abstract.*$
+			<property name="format" value="^(.*[\\.])?Abstract.*$" />
+			-->
+			<!-- methods that should not be checked.
+				default: getInitialContext, getEnvironment
+			<property name="ignoredMethodNames" value="getInitialContext, getEnvironment" />
+			-->
+			<!-- classes that should not be used as types
+				in variable declarations, return values or
+				parameters.
+				default: "java.util.GregorianCalendar,
+				java.util.Hashtable, java.util.HashSet,
+				java.util.HashMap, java.util.ArrayList,
+				java.util.LinkedList,
+				java.util.LinkedHashMap,
+				java.util.LinkedHashSet,
+				java.util.TreeSet, java.util.TreeMap,
+				java.util.Vector"
+				LZK: adding Thread since we should be using concurrent library now
+				//LZK: adding StringBuffer since
+						StringBuilder is unsynchronized and
+						thats what you want usually
+			-->
+			<property name="illegalClassNames" value="java.lang.Thread, java.util.GregorianCalendar, java.util.Hashtable, java.util.HashSet, java.util.HashMap, java.util.ArrayList, java.util.LinkedList, java.util.LinkedHashMap, java.util.LinkedHashSet, java.util.TreeSet, java.util.TreeMap, java.util.Vector" />
+			<!-- abstract classes that may be used as types.
+				default: ""
+			<property name="legalAbstractClassNames" value="" />
+			-->
+			<property name="severity" value="error" />
+			<!-- tokens to check default: "PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF" -->
+			<property name="tokens" value="PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF" />
+		</module>
+
+		<!--
+			According to Code Conventions for the Java
+			Programming Language , the parts of a class
+			or interface declaration should appear in the
+			following order:
+
+			1. Class (static) variables. First the public
+			class variables, then the protected, then package
+			level (no access modifier), and then the private.
+			2. Instance variables. First the public class
+			variables, then the protected, then package level
+			(no access modifier), and then the private.
+			3. Constructors
+			4. Methods
+		-->
+		<module name="DeclarationOrder">
+			<!-- default: false -->
+			<property name="ignoreConstructors" value="false" />
+			<!-- default: false -->
+			<property name="ignoreMethods" value="false" />
+			<!-- default: false -->
+			<property name="ignoreModifiers" value="false" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Check that the default is after all the cases
+			in a switch statement.
+
+			Rationale: Java allows default anywhere within
+			the switch statement. But it is more readable
+			if it comes after the last case.
+		-->
+		<module name="DefaultComesLast">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks if any class or object member explicitly
+			initialized to default for its type value (null
+			for object references, zero for numeric types
+			and char and false for boolean.
+
+			Rationale: each instance variable gets initialized
+			twice, to the same value. Java initializes each
+			instance variable to its default value (0 or null)
+			before performing any initialization specified
+			in the code. So in this case, x gets initialized
+			to 0 twice, and bar gets initialized to null
+			twice. So there is a minor inefficiency. This
+			style of coding is a hold-over from C/C++ style
+			coding, and it shows that the developer isn't
+			really confident that Java really initializes
+			instance variables to default values.
+		-->
+		<module name="ExplicitInitialization">
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks for fall through in switch statements
+			Finds locations where a case contains Java code
+			- but lacks a break, return, throw or continue
+			statement.
+
+			The check honores special comments to supress
+			the warning. By default the text "fallthru",
+			"fall through", "fallthrough", "falls through"
+			and "fallsthrough" are recognized (case
+			sensitive). The comment containing this words
+			must be a one-liner and must be on the last
+			none-empty line before the case triggering the
+			warning or on the same line before the case
+			(urgly, but possible).
+
+			switch (i){
+				case 0:
+					i++; // fall through
+
+				case 1:
+					i++;
+					// falls through
+				case 2: {
+					i++;
+				}
+				// fallthrough
+				case 3:
+					i++;
+				/* fallthru */
+				case 4:
+					i++
+					break;
+			}
+										
+			Note: the check works in assumption that there
+			is no unreachable code in the case.
+		-->
+		<module name="FallThrough">
+			<!-- Whether we need to check last case group or not. -->
+			<property name="checkLastCaseGroup" value="false" />
+			<!-- Regulare expression to match the relief
+				comment that supresses the warning about a
+				fall through.
+				default: "fallthru|falls? ?through"
+			<property name="reliefPattern" value="fallthru|falls? ?through" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that each variable declaration is in its
+			own statement and on its own line.
+
+			Rationale: the SUN Code conventions chapter
+			6.1 recommends that declarations should be one
+			per line/statement.
+			http://java.sun.com/docs/codeconv/html/CodeConventions.doc5.html#2991
+		-->
+		<module name="MultipleVariableDeclarations">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Disallow assignment of parameters.
+
+			Rationale: Parameter assignment is often
+			considered poor programming practice. Forcing
+			developers to declare parameters as final is often
+			onerous. Having a check ensure that parameters are
+			never assigned would give the best of both worlds.
+		-->
+		<module name="ParameterAssignment">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that classes (except abtract one) define
+			a ctor and don't rely on the default one.
+		-->
+		<module name="MissingCtor">
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks that code doesn't rely on the
+			"this." default, i.e. references to instance
+			variables and methods of the present object
+			are explicitly of the form "this.varName" or
+			"this.methodName(args)".
+		-->
+		<module name="RequireThis">
+			<property name="checkFields" value="true" />
+			<property name="checkMethods" value="true" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for the use of unnecessary parentheses.
+			LZK: I think this increases readability
+		-->
+		<module name="EmptyStatement">
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Checks there is only one statement per line. The
+			following line will be flagged as an error:
+
+			x = 1; y = 2; // Two statments on a single line.
+		-->
+		<module name="OneStatementPerLine">
+			<property name="severity" value="error" />
+		</module>
+
+		<!-- -->
+		<!-- Section: Imports -->
+		<!-- -->
+
+		<!--
+			Checks that there are no import statements that
+			use the * notation.
+
+			Rationale: Importing all classes from a package
+			or static members from a class leads to tight
+			coupling between packages or classes and might
+			lead to problems when a new version of a library
+			introduces name clashes.
+		-->
+		<module name="AvoidStarImport">
+			<!--	whether to allow starred class imports
+				like import java.util.*;.
+				default: false
+			<property name="allowClassImports" value="false" />
+			-->
+			<!-- whether to allow starred static
+				member imports like import static
+				org.junit.Assert.*;
+				default: false
+			<property name="allowStaticMemberImports" value="false" />
+			-->
+			<!-- packages where star imports are allowed. Note
+				that this property is not recursive, subpackages
+				of excluded packages are not automatically
+				excluded.
+				default: ""
+			<property name="excludes" value="" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks that there are no static import statements.
+
+			Rationale: Importing static members can lead to
+			naming conflicts between class' members. It may
+			lead to poor code readability since it may no
+			longer be clear what class a member resides in
+			(without looking at the import statement).
+		-->
+		<module name="AvoidStaticImport">
+			<!-- Allows for certain classes via a
+				star notation to be excluded such
+				as java.lang.Math.* or specific
+				static members to be excluded like
+				java.lang.System.out for a variable or
+				java.lang.Math.random for a method.
+
+				If you exclude a starred import on a
+				class this automatically excludes each
+				member individually.
+
+				For example: Excluding
+				java.lang.Math.*. will allow the import
+				of each static member in the Math class
+				individually like java.lang.Math.PI.
+				default: ""
+			<property name="excludes" value="" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for imports from a set of illegal
+			packages. By default, the check rejects all sun.*
+			packages since programs that contain direct calls
+			to the sun.* packages are not 100% Pure Java. To
+			reject other packages, set property illegalPkgs
+			to a list of the illegal packages.
+			http://java.sun.com/products/jdk/faq/faq-sun-packages.html
+		-->
+		<module name="IllegalImport">
+			<!--
+				packages to reject.
+				default: sun
+			<property name="illegalPkgs" value="sun" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for redundant import statements. An import
+			statement is considered redundant if:
+
+			    * It is a duplicate of another import. This
+			    is, when a class is imported more than once.
+
+				* The class imported is from the java.lang
+				package, e.g. importing java.lang.String.
+
+				* The class imported is from the same
+				package.
+
+		-->
+		<module name="RedundantImport">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for unused import statements. Checkstyle
+			uses a simple but very reliable algorithm to
+			report on unused import statements. An import
+			statement is considered unused if:
+
+			It is not referenced in the file. The algorithm
+			does not support wild-card imports like import
+			java.io.*;. Most IDE's provide very sophisticated
+			checks for imports that handle wild-card imports.
+
+			It is a duplicate of another import. This is
+			when a class is imported more than once.
+
+			The class imported is from the java.lang
+			package. For example importing java.lang.String.
+
+			The class imported is from the same package.
+
+			Optionally: it is referenced in Javadoc
+			comments. This check is off by default, as it is
+			considered bad practice to introduce a compile
+			time dependency for documentation purposes
+			only. As an example, the import java.util.Date
+			would be considered referenced with the Javadoc
+			comment {@link Date}. The alternative to avoid
+			introducing a compile time dependency would
+			be to write the Javadoc comment as {@link
+			java.util.Date}.
+
+			The main limitation of this check is handling
+			the case where an imported type has the same
+			name as a declaration, such as a member variable.
+
+			For example, in the following case the import
+			java.awt.Component will not be flagged as unused:
+
+			import java.awt.Component;
+			class FooBar {
+				private Object Component; // IMHO bad practise
+				...
+			}
+			-->
+		<module name="UnusedImports">
+			<!-- Whether to process Javadoc
+				default: false
+			-->
+			<property name="processJavadoc" value="true" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks the ordering/grouping of imports. Features are:
+
+			* groups imports: ensures that groups of imports
+			come in a specific order (e.g., java. comes first,
+			javax. comes second, then everything else)
+
+			* adds a separation between groups : ensures
+			that a blank line sit between each group
+
+			* sorts imports inside each group: ensures that
+			imports within each group are in lexicographic
+			order
+
+			* sorts according to case: ensures that the
+			comparison between imports is case sensitive
+
+			* groups static imports: ensures the relative
+			order between regular imports and static imports
+			(see import orders)
+		
+			http://checkstyle.sourceforge.net/property_types.html#importOrder
+		-->
+		<module name="ImportOrder">
+			<!-- list of imports groups (every group
+				identified either by a common prefix
+				string, or by a regular expression
+				enclosed in forward slashes
+				(e.g. /regexp/).
+			<property name="groups" value="" />
+			-->
+			<!-- policy on the relative order between
+				regular imports and static imports.
+				default: under
+			<property name="option" value="under" />
+			-->
+			<!-- whether imports within group should
+				be sorted.
+				default: true
+			<property name="ordered" value="true" />
+			-->
+			<!-- whether imports groups should be separated
+				by, at least, one blank line.
+				default: false
+			-->
+			<property name="separated" value="true" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Controls what can be imported in each
+			package. Useful for ensuring that application
+			layering rules are not violated, especially on
+			large projects.
+
+			The DTD for a import control XML document is at
+			http://www.puppycrawl.com/dtds/import_control_1_1.dtd.
+			It contains documentation on each of the elements
+			and attributes.
+
+			The check validates a XML document when it loads
+			the document. To validate against the above DTD,
+			include the following document type declaration
+			in your XML document:
+
+			<!DOCTYPE import-control PUBLIC
+			    "-//Puppy Crawl//DTD Import Control 1.1//EN"
+				"http://www.puppycrawl.com/dtds/import_control_1_1.dtd">
+
+			EXAMPLE:
+			To configure the check using a import control
+			file called "import-control.xml", then have
+			the following:
+
+			<module name="ImportControl">
+			    <property name="file" value="import-control.xml"/>
+			</module>
+				        
+			In the example below, all classes beginning with
+			an I in the package java.awt are allowed. In
+			the package java.io only the classes File and
+			InputStream are allowed.
+
+			<import-control pkg="com.puppycrawl.tools.checkstyle">
+				<allow class="java\.awt\.I.*" regex="true"/>
+				<allow class="java\.io\.(File|InputStream)" local-only="true"
+						regex="true"/>
+			</import-control>
+									
+			For an example import control file, look at the
+			file called import-control.xml which is part of
+			the Checkstyle distribution.
+			http://checkstyle.svn.sourceforge.net/viewvc/checkstyle/trunk/checkstyle/import-control.xml?view=markup
+		-->
+		<module name="ImportControl">
+			<!-- name of the file containing the import
+				control configuration.
+				default: null
+			-->
+			<property name="file" value="" />
+			<property name="severity" value="ignore" />
+			<!-- url of the file containing the import
+				control configuration.
+				default: null
+			<property name="url" value="" />
+			-->
+		</module>
+
+
+
+
+		<!-- -->
+		<!-- Section: Javadoc Comments -->
+		<!-- http://checkstyle.sourceforge.net/config_javadoc.html -->
+		<!-- -->
+
+		<!--
+			Checks Javadoc comments for class and interface
+			definitions. By default, does not check for
+			author or version tags. The scope to verify is
+			specified using the Scope class and defaults
+			to Scope.PRIVATE. To verify another scope, set
+			property scope to one of the Scope constants. To
+			define the format for an author tag or a version
+			tag, set property authorFormat or versionFormat
+			respectively to a regular expression.
+
+			Error messages about type parameters for which
+			no param tags are present can be suppressed by
+			defining property allowMissingParamTags.
+		-->
+		<module name="JavadocType">
+			<!-- whether to ignore errors when a class
+				has type parameters but does not have
+				matching param tags in the javadoc.
+				default: false
+			<property name="allowMissingParamTags" value="false" />
+			-->
+			<!-- whether to ignore errors when a Javadoc
+				tag is not recognised.
+				default: false
+			<property name="allowUnknownTags" value="false" />
+			-->
+			<!--
+				pattern for @author tag
+				default: null (tag not required)
+			-->
+			<property name="authorFormat" value="^\s*\S \S.* &lt;\S.*@\S.*\.\S&gt;$" />
+			<!--
+				visibility scope where Javadoc comments
+				are not checked.
+				default: null
+			<property name="excludeScope" value="null" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are checked.
+				default: private
+			<property name="scope" value="private" />
+			-->
+			<property name="severity" value="warning" />
+			<!--
+				pattern for @version tag
+				default: null (tag not required)
+			-->
+			<property name="versionFormat" value="^[0-9]+\.[0-9]+.*$" />
+			<!-- definations to check
+				default: INTERFACE_DEF, CLASS_DEF
+			<property name="tokens" value="INTERFACE_DEF, CLASS_DEF" />
+			-->
+		</module>
+
+		<!--
+			Checks the Javadoc of a method or constructor. By
+			default, does not check for unused throws. To
+			allow documented java.lang.RuntimeExceptions that
+			are not declared, set property allowUndeclaredRTE
+			to true. The scope to verify is specified using
+			the Scope class and defaults to Scope.PRIVATE. To
+			verify another scope, set property scope to a
+			different scope.
+
+			Error messages about parameters and type
+			parameters for which no param tags are
+			present can be suppressed by defining property
+			allowMissingParamTags. Error messages about
+			exceptions which are declared to be thrown,
+			but for which no throws tag is present
+			can be suppressed by defining property
+			allowMissingThrowsTags. Error messages about
+			methods which return non-void but for which
+			no return tag is present can be suppressed by
+			defining property allowMissingReturnTag.
+
+			Javadoc is not required on a method that is
+			tagged with the @Override annotation. However
+			under Java 5 it is not possible to mark a method
+			required for an interface (this was corrected
+			under Java 6). Hence Checkstyle supports using
+			the convention of using a single {@inheritDoc}
+			tag instead of all the other tags.
+
+			Note that only inheritable items will allow
+			the {@inheritDoc} tag to be used in place of
+			comments. Static methods at all visibilities,
+			private non-static methods and constructors are
+			not inheritable.
+
+			For example, if the following method is
+			implementing a method required by an interface,
+			then the Javadoc could be done as:
+
+			/** {@inheritDoc} */
+			public int checkReturnTag(final int aTagIndex,
+					JavadocTag[] aTags,
+					int aLineNo)
+
+			The classpath may need to be configured to
+			locate the class information. The classpath
+			configuration is dependent on the mechanism used
+			to invoke Checkstyle.
+		-->
+		<module name="JavadocMethod">
+			<!-- whether to ignore errors when a method
+				javadoc is missed.
+				default: false
+			<property name="allowMissingJavadoc" value="false" />
+			-->
+			<!-- whether to ignore errors when a method
+				has parameters but does not have matching
+				param tags in the javadoc.
+				default: false
+			<property name="allowMissingParamTags" value="false" />
+			-->
+			<!-- Whether to allow missing Javadoc
+				on accessor methods for properties
+				(setters and getters). The setter and
+				getter methods must match exactly the
+				structures below.
+
+				public void setNumber(final int number)
+				{
+				    mNumber = number;
+				}
+
+				public int getNumber()
+				{
+					return mNumber;
+				}
+
+				public boolean isSomething()
+				{
+					return false;
+				}
+				default: false
+			-->
+			<property name="allowMissingPropertyJavadoc" value="true" />
+			<!-- whether to ignore errors when a method
+				returns non-void type does have a return
+				tag in the javadoc.
+				default: false
+			<property name="allowMissingReturnTag" value="false" />
+			-->
+			<!-- whether to ignore errors when a method
+				declares that it throws exceptions
+				but does have matching throws tags in
+				the javadoc.
+				default: false
+			<property name="allowMissingThrowsTags" value="false" />
+			-->
+			<!-- whether to allow documented exceptions
+				that are subclass of one of declared
+				exception.
+				default: false
+			<property name="allowThrowsTagsForSubclasses" value="false" />
+			-->
+			<!-- whether to allow documented exceptions
+				that are not declared if they are a
+				subclass of java.lang.RuntimeException.
+				default: false
+			<property name="allowUndeclaredRTE" value="false" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are not checked.
+				defualt: null
+			<property name="excludeScope" value="" />
+			-->
+			<!-- This check may need to load
+				exception classes mentioned in the
+				@throws tag to check whether they are
+				RuntimeExceptions. If loading the class
+				fails, this property allows to control
+				checkstyle's error handling. If set to
+				false a classpath configuration problem
+				is assumed and the TreeWalker stops
+				operating on the class completely. If
+				set to true (the default) , checkstyle
+				assumes a typo or refactoring problem in
+				the javadoc and logs the problem in the
+				normal checkstyle report (potentially
+				masking a configuration error).
+				default: true
+			<property name="logLoadErrors" value="true" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are checked.
+				default: private
+			<property name="scope" value="private" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- When logLoadErrors is set to true,
+				the TreeWalker completely processes
+				a class and displays any problems
+				with loading exceptions as checkstyle
+				violations. When this property is set
+				to true, the violations generated when
+				logLoadErrors is set true are suppressed
+				from being reported as violations in
+				the checkstyle report.
+				default: false
+			<property name="suppressLoadErrors" value="false" />
+			-->
+			<!-- definations to check.
+				default: METHOD_DEF,CTOR_DEF
+			<property name="tokens" value="METHOD_DEF,CTOR_DEF" />
+			-->
+		</module>
+
+		<!--
+			Checks that variables have Javadoc comments.
+		-->
+		<module name="JavadocVariable">
+			<!-- visibility scope where Javadoc comments
+				are NOT checked.
+				default: null
+			<property name="excludeScope" value="private" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are checked.
+				default: private
+			<property name="scope" value="private" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Validates Javadoc comments to help ensure they are
+			well formed. The following checks are performed:
+
+			Ensures the first sentence ends with proper
+			punctuation (That is a period, question mark,
+			or exclamation mark, by default). Javadoc
+			automatically places the first sentence in the
+			method summary table and index. With out proper
+			punctuation the Javadoc may be malformed. All
+			items eligible for the {@inheritDoc} tag are
+			exempt from this requirement.
+
+			Check text for Javadoc statements that do not have
+			any description. This includes both completely
+			empty Javadoc, and Javadoc with only tags such
+			as @param and @return.
+
+			Check text for incomplete HTML tags. Verifies that
+			HTML tags have corresponding end tags and issues
+			an "Unclosed HTML tag found:" error if not. An
+			"Extra HTML tag found:" error is issued if an
+			end tag is found without a previous open tag.
+
+			Check that a package Javadoc comment is
+			well-formed (as described above) and NOT missing
+			from any package-info.java files.
+
+			Check for allowed HTML tags. The list of allowed
+			HTML tags is "a", "abbr", "acronym", "address",
+			"area", "b", "bdo", "big", "blockquote", "br",
+			"caption", "cite", "code", "colgroup", "del",
+			"div", "dfn", "dl", "em", "fieldset", "h1" to
+			"h6", "hr", "i", "img", "ins", "kbd", "li",
+			"ol", "p", "pre", "q", "samp", "small", "span",
+			"strong", "sub", "sup", "table", "tbody", "td",
+			"tfoot", "th", "thread", "tr", "tt", "ul".
+
+			These checks were patterned after the checks
+			made by the DocCheck doclet available from Sun.
+		-->
+		<module name="JavadocStyle">
+			<!-- Whether to check if the Javadoc is
+				missing a describing text.
+				default: false
+			<property name="checkEmptyJavadoc" value="false" />
+			-->
+			<!-- Whether to check the first sentence for
+				proper end of sentence.
+				default: true
+			<property name="checkFirstSentance" value="true" />
+			-->
+			<!-- Whether to check for incomplete html tags.
+				default: true
+			<property name="checkHtml" value="true" />
+			-->
+			<!-- Format for matching the end of a sentence.
+				default: ([.?!][ \t\n\r\f<])|([.?!]$)
+			<property name="endOfSentenceFormat" value="([.?!][ \t\n\r\f<])|([.?!]$)" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are NOT checked.
+				default: null
+			<property name="excludeScope" value="" />
+			-->
+			<!-- visibility scope where Javadoc comments
+				are checked.
+				default: private
+			<property name="scope" value="private" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- definations to check.
+				default: INTERFACE_DEF, CLASS_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF
+			<property name="tokens" value="INTERFACE_DEF, CLASS_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF" />
+			-->
+		</module>
+
+		<!--
+			Outputs a JavaDoc tag as information. Can be used
+			e.g. with the stylesheets that sort the report by
+			author name. To define the format for a tag, set
+			property tagFormat to a regular expression. This
+			check uses two different severity levels. The
+			normal one is used for reporting when the tag is
+			missing. The additional one (tagSeverity) is used
+			for the level of reporting when the tag exists.
+		-->
+		<module name="WriteTag">
+			<property name="severity" value="ignore"/>
+			<!-- Name of tag
+				default: null
+			-->
+			<property name="tag" value="@incomplete"/>
+			<!-- Regular Expression representing format of tag.
+				default: null
+			-->
+			<property name="tagFormat" value="\S"/>
+			<!-- Severity level when tag is found and printed.
+				default: info
+			<property name="tagSeverity" value="info"/>
+			-->
+		</module>
+
+
+		<!-- -->
+		<!-- Section: Metrics -->
+		<!-- http://checkstyle.sourceforge.net/config_metrics.html -->
+		<!-- -->
+
+		<!--
+			Restrict the number of number of &&, ||, &, |
+			and ^ in an expression.
+
+			Rationale: Too many conditions leads to code that
+			is difficult to read and hence debug and maintain.
+
+			Note that the operators & and | are not only
+			integer bitwise operators, they are also the
+			non-shortcut versions of the boolean operators &&
+			and ||.
+		-->
+		<module name="BooleanExpressionComplexity">
+			<!-- the maximum allowed number of boolean
+				operations in one expression.
+				default: 3
+			-->
+			<property name="max" value="2" />
+			<property name="severity" value="error" />
+			<!-- tokens to check.
+				default: LAND, BAND, LOR, BOR, BXOR
+			<property name="tokens" value="LAND, BAND, LOR, BOR, BXOR" />
+			-->
+		</module>
+
+		<!--
+			This metric measures the number of instantiations
+			of other classes within the given class. This
+			type of coupling is not caused by inheritance or
+			the object oriented paradigm. Generally speaking,
+			any abstract data type with other abstract data
+			types as members has data abstraction coupling;
+			therefore, if a class has a local variable that
+			is an instantiation (object) of another class,
+			there is data abstraction coupling. The higher
+			the DAC, the more complex the data structure
+			(classes) of the system.
+		-->
+		<module name="ClassDataAbstractionCoupling">
+			<!-- the maximum threshold allowed.
+				default: 7
+			-->
+			<property name="max" value="22" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			The number of other classes a given class relies
+			on. Also the square of this has been shown to
+			indicate the amount of maintenence required in
+			functional programs (on a file basis) at least.
+		-->
+		<module name="ClassFanOutComplexity">
+			<!-- the maximum threshold allowed.
+				default: 20
+			-->
+			<property name="max" value="22" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks cyclomatic complexity against a specified
+			limit. The complexity is measured by the number
+			of if, while, do, for, ?:, catch, switch, case
+			statements, and operators && and || (plus one)
+			in the body of a constructor, method, static
+			initializer, or instance initializer. It is a
+			measure of the minimum number of possible paths
+			through the source and therefore the number of
+			required tests. Generally 1-4 is considered good,
+			5-7 ok, 8-10 consider re-factoring, and 11+
+			re-factor now!
+		-->
+		<module name="CyclomaticComplexity">
+			<!-- the maximum threshold allowed.
+				default: 7
+			-->
+			<property name="max" value="22" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			The NPATH metric computes the number of possible
+			execution paths through a function. It takes into
+			account the nesting of conditional statements
+			and multi-part boolean expressions (e.g., A &&
+			B, C || D, etc.).
+
+			Rationale: Nejmeh says that his group had
+			an informal NPATH limit of 200 on individual
+			routines; functions that exceeded this value
+			were candidates for further decomposition -
+			or at least a closer look.
+		-->
+		<module name="NPathComplexity">
+			<!-- the maximum threshold allowed.
+				default: 200
+			-->
+			<property name="max" value="250" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Determines complexity of methods, classes and
+			files by counting the Non Commenting Source
+			Statements (NCSS). This check adheres to the
+			specification for the JavaNCSS-Tool written by
+			Chr. Clemens Lee.
+
+			Rougly said the NCSS metric is calculated by
+			counting the source lines which are not comments,
+			(nearly) equivalent to counting the semicolons
+			and opening curly braces.
+
+			The NCSS for a class is summarized from the NCSS
+			of all its methods, the NCSS of its nested classes
+			and the number of member variable declarations.
+
+			The NCSS for a file is summarized from the ncss
+			of all its top level classes, the number of
+			imports and the package declaration.
+
+			Rationale: Too large methods and classes are hard
+			to read and costly to maintain. A large NCSS
+			number often means that a method or class has
+			too many responsabilities and/or functionalities
+			which should be decomposed into smaller units.
+		-->
+		<module name="JavaNCSS">
+			<!-- the maximum allowed number of non
+				commenting lines in a class.
+				default: 1500
+			<property name="classMaximum" value="1500" />
+			-->
+			<!-- the maximum allowed number of non commenting
+				lines in a file including all top level and
+				nested classes.
+				default: 2000
+			<property name="fileMaximum" value="2000" />
+			-->
+			<!-- the maximum allowed number of non
+				commenting lines in a method.
+				default: 50
+			<property name="methodMaximum" value="50" />
+			-->
+			<property name="severity" value="warning" />
+		</module>
+
+		<!-- Section: Miscellaneous -->
+		<!-- http://checkstyle.sourceforge.net/config_misc.html -->
+		<!-- -->
+
+		<!--
+			Checks the style of array type definitions. Some
+			like Java-style: public static void main(String[]
+			args) and some like C-style: public static void
+			main(String args[])
+		-->
+		<module name="ArrayTypeStyle">
+			<!--
+				Controls whether to enforce Java style
+				(true) or C style (false).
+				default: true
+			<property name="javaStyle" value="true" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for restricted tokens beneath other tokens.
+
+			WARNING: This is a very powerful and flexible
+			check, but, at the same time, it is low level and
+			very implementation dependent because its results
+			depend on the grammar we use to build abstract
+			syntax trees. Thus we recomend using other checks
+			when they provide the desired funcionality. All
+			in all, this check just works on the level of an
+			abstract tree and knows nothing about language
+			structures.
+		-->
+		<module name="DescendantToken">
+			<!--
+				tokens	token types to check	subset of tokens declared in TokenTypes	empty set
+				limitedTokens	set of tokens with limited occurances as descendants	subset of tokens declared in TokenTypes	empty set
+				minimumDepth	the mimimum depth for descendant counts	Integer	0
+				maximumDepth	the maximum depth for descendant counts	Integer	java.lang.Integer.MAX_VALUE
+				minimumNumber	a minimum count for descendants	Integer	0
+				maximumNumber	a maximum count for descendants	Integer	java.lang.Integer.MAX_VALUE
+				sumTokenCounts	 whether the number of tokens found should be calculated from the sum of the individual token counts	Boolean	false
+				minimumMessage	error message when minimum count not reached	String	"descendant.token.min"
+				maximumMessage	error message when maximum count exceeded	String	"descendant.token.max"
+			-->
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Check that method/constructor/catch block
+			parameters are final. Interface and abstract
+			methods are not checked - the final keyword does
+			not make sense for interface and abstract method
+			parameters as there is no code that could modify
+			the parameter.
+
+			Rationale: Changing the value of parameters
+			during the execution of the method's algorithm
+			can be confusing and should be avoided. A great
+			way to let the Java compiler prevent this coding
+			style is to declare parameters final.
+		-->
+		<module name="FinalParameters">
+			<property name="severity" value="error" />
+			<!--
+				subset of tokens METHOD_DEF, CTOR_DEF, LITERAL_CATCH
+				default: METHOD_DEF,CTOR_DEF
+			-->
+			<property name="tokens" value="METHOD_DEF,CTOR_DEF,LITERAL_CATCH" />
+		</module>
+
+		<!--
+			Checks correct indentation of Java Code.
+
+			The basic idea behind this is that while pretty
+			printers are sometimes convienent for bulk
+			reformats of legacy code, they often either aren't
+			configurable enough or just can't anticipate
+			how format should be done. Sometimes this is
+			personal preference, other times it is practical
+			experience. In any case, this check should just
+			ensure that a minimal set of indentation rules
+			are followed.
+		-->
+		<module name="Indentation">
+			<!--
+				how many spaces to use for new indentation level.
+				default: 4
+			<property name="basicOffset" value="4" />
+			-->
+			<!--
+				how far brace should be indented when on next line.
+				default: 0
+			<property name="braceAdjustment" value="0" />
+			-->
+			<!--
+				how much to indent a case label.
+				default: 4
+			<property name="caseIndent" value="4" />
+			-->
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Checks that the outer type name and the file
+			name match. For example, the class Foo must be
+			in a file named Foo.java.
+		-->
+		<module name="OuterTypeFilename">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			FIXME LZK
+			A check that makes sure that a specified pattern
+			exists, exists less than a set number of times,
+			or does not exist in the file.
+
+			This check combines all the functionality
+			provided by RegexpHeader, GenericIllegalRegexp
+			and RequiredRegexp, except supplying the regular
+			expression from a file.
+
+			It differs from them in that it works in multiline
+			mode. It's regular expression can span multiple
+			lines and it checks this against the whole file at
+			once. The others work in singleline mode. Their
+			single or multiple regular expressions can only
+			span one line. They check each of these against
+			each line in the file in turn.
+
+			Note: Because of the different mode of operation
+			there may be some changes in the regular
+			expressions used to achieve a particular end.
+
+			In multiline mode...
+
+				*  ^ means beginning of a line, as oposed
+				to beginning of input.
+
+				*  For beginning of input use \A.
+
+				*  $ means end of a line, as oposed to
+				end of input.
+
+				*  For end of input use \Z.
+
+				*  Each line in the file is terminated
+				with a newline character.
+
+			Note: Not all regexp engines are created
+			equal. Some provide extra functions that others do
+			not and some elements of the syntax may vary. This
+			check makes use of the java.util.regex package,
+			please check its documentation for details of
+			how to construct a regular expression to achive
+			a particular goal.
+
+			Note: When entering a regular expression as a
+			parameter in the xml config file you must also
+			take into account the xml rules. e.g. if you want
+			to match a < symbol you need to enter &lt;. The
+			regular expression should be entered on one line.
+		-->
+		<module name="Regexp">
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			The check to ensure that requires that comments
+			be the only thing on a line. For the case of //
+			comments that means that the only thing that
+			should precede it is whitespace. It doesn't check
+			comments if they do not end line, i.e. it accept
+			the following: Thread.sleep( 10 <some comment
+			here> ); Format property is intended to deal
+			with the "} // while" example.
+
+			Rationale: Steve McConnel in "Code Complete"
+			suggests that endline comments are a bad
+			practice. An end line comment would be one that
+			is on the same line as actual code. For example:
+
+			a = b + c;      // Some insightful comment
+			d = e / f;        // Another comment for this line
+			        
+			Quoting "Code Complete" for the justfication:
+
+			*  "The comments have to be aligned so that they do
+			not interfere with the visual structure of the
+			code. If you don't align them neatly, they'll
+			make your listing look like it's been through
+			a washing machine."
+
+			*  "Endline comments tend to be hard to format...It
+			takes time to align them. Such time is not spent
+			learning more about the code; it's dedicated
+			solely to the tedious task of pressing the
+			spacebar or tab key."
+
+			*  "Endline comments are also hard to maintain. If
+			the code on any line containing an endline comment
+			grows, it bumps the comment farther out, and all
+			the other endline comments will have to bumped
+			out to match. Styles that are hard to maintain
+			aren't maintained...."
+
+			*  "Endline comments also tend to be cryptic. The
+			right side of the line doesn't offer much room and
+			the desire to keep the comment on one line means
+			the comment must be short. Work then goes into
+			making the line as short as possible instead of
+			as clear as possible. The comment usually ends
+			up as cryptic as possible...."
+
+			*  "A systemic problem with endline comments is that
+			it's hard to write a meaningful comment for one
+			line of code. Most endline comments just repeat
+			the line of code, which hurts more than it helps."
+
+			His comments on being hard to maintain when the
+			size of the line changes are even more important
+			in the age of automated refactorings.
+		-->
+		<module name="TrailingComment">
+			<!-- pattern for string allowed before comment.
+				default: "^[\\s\\}\\);]*$"
+			<property name="format" value="^[\\s\\}\\);]*$" />
+			-->
+			<!-- pattern for text of trailing comment
+				which is allowed. (this patter will not be
+				applied to multiline comments and text of
+				comment will be trimmed before matching)
+				default: (not set)
+			<property name="legalComment" value="" />
+			-->
+			<property name="severity" value="ignore" />
+		</module>
+
+
+
+
+		<!--
+			A check for TODO: comments. Actually it is
+			a generic regular expression matcher on Java
+			comments. To check for other patterns in Java
+			comments, set property format.
+		-->
+		<module name="TodoComment">
+			<!-- pattern to check
+				default: TODO:
+			-->
+			<property name="format" value="TODO|WARN|FIXME|BUG|ERROR|TOREFACTOR" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks for uncommented main() methods (debugging
+			leftovers).
+
+			Rationale: A main() method is often used for debug
+			puposes. When debugging is finished, developers
+			often forget to remove the method, which changes
+			the API and increases the size of the resulting
+			class/jar file. With the exception of the real
+			program entry points, all main() methods should
+			be removed/commented out of the sources.
+		-->
+		<module name="UncommentedMain">
+			<!-- Regular expression pattern for qualified
+				names of classes which are allowed to
+				have a main method.
+				default: ^$
+			<property name="excludedClasses" value="^$" />
+			-->
+			<!-- I don't think class size with main methods
+			is that big of a deal - LZK
+			-->
+			<property name="severity" value="ignore" />
+		</module>
+
+		<!--
+			Checks that long constants are defined with an
+			upper ell. That is ' L' and not 'l'. This is in
+			accordance to the Java Language Specification,
+			Section 3.10.1.
+			http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#48282
+
+			looks a lot like 1.
+		-->
+		<module name="UpperEll">
+			<property name="severity" value="error" />
+		</module>
+
+
+
+		<!-- Section: Modifiers -->
+		<!-- http://checkstyle.sourceforge.net/config_modifier.html -->
+		<!-- -->
+
+		<!--
+			Checks that the order of modifiers conforms to the
+			suggestions in the Java Language specification,
+			sections 8.1.1, 8.3.1 and 8.4.3. The correct
+			order is:
+
+			1. public
+			2. protected
+			3. private
+			4. abstract
+			5. static
+			6. final
+			7. transient
+			8. volatile
+			9. synchronized
+			10. native
+			11. strictfp
+		-->
+		<module name="ModifierOrder">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks for redundant modifiers in:
+
+				1. interface and annotation definitions,
+
+				2. the final modifier on methods of
+				final classes, and
+
+				3. inner interface declarations that
+				are declared as static
+
+			Rationale: The Java Language Specification
+			strongly discourages the usage of "public" and
+			"abstract" for method declarations in interface
+			definitions as a matter of style.
+
+			Variables in interfaces and annotations are
+			automatically public, static and final, so these
+			modifiers are redundant as well.
+
+			As annotations are a form of interface, their
+			fields are also automatically public, static
+			and final just as their annotation fields are
+			automatically public and abstract.
+
+			Final classes by definition can not be extended
+			so the final modifier on the method of a final
+			class is redundant.
+		-->
+		<module name="RedundantModifier">
+			<property name="severity" value="error" />
+			<!--
+				default: METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF, INTERFACE_DEF
+			<property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF, INTERFACE_DEF" />
+			-->
+		</module>
+
+
+		<!-- Section: Naming Conventions -->
+		<!-- http://checkstyle.sourceforge.net/config_naming.html -->
+		<!-- -->
+
+		<!--
+			abstract classes
+		-->
+		<module name="AbstractClassName">
+			<!-- default: ^Abstract.*$|^.*Factory$
+			-->
+			<property name="format" value="^.*ABC$|^.*Factory$" />
+			<!-- Controls whether to ignore checking for
+				the abstract modifier on classes that
+				match the name.
+				default: false
+			<property name="ignoreModifier" value="false" />
+			-->
+			<!-- Controls whether to ignore checking the
+				name. Realistically only useful if using
+				the check to identify that match name and
+				do not have the abstract modifier. name.
+				default: false
+			<property name="ignoreName" value="false" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			class type parameters
+		-->
+		<module name="ClassTypeParameterName">
+			<!-- default: ^[A-Z]$
+			-->
+			<property name="format" value="^[A-Z].*$" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Constant name static, final fields
+		-->
+		<module name="ConstantName">
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPackage" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				private member.
+				default: true
+			<property name="applyToPrivate" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				protected member.
+				default: true
+			<property name="applyToProtected" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPublic" value="true" />
+			-->
+			<!-- default: ^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$
+			<property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			local, final variables, including catch parameters
+		-->
+		<module name="LocalFinalVariableName">
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			-->
+			<property name="format" value="^[a-z][a-z_A-Z0-9]*$" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			local, non-final variables, including catch parameters
+		-->
+		<module name="LocalVariableName">
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			<property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+			-->
+			<property name="severity" value="error" />
+			<!-- Module LocalVariableName also has
+				property tokens which can be used to
+				control whether the check applies to
+				variable declarations or catch clause
+				parameters through tokens VARIABLE_DEF
+				and PARAMETER_DEF. For example, the
+				following configuration element ensures
+				that catch clause parameters begin with
+				"e", followed by letters and digits:
+					name="format" value="^e[a-zA-Z0-9]*$"
+					name="tokens" value="PARAMETER_DEF"
+				default: PARAMETER_DEF, VARIABLE_DEF
+			<property name="tokens" value="PARAMETER_DEF,VARIABLE_DEF" />
+			-->
+		</module>
+
+		<!--
+			non-static fields
+		-->
+		<module name="MemberName">
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPackage" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				private member.
+				default: true
+			<property name="applyToPrivate" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				protected member.
+				default: true
+			<property name="applyToProtected" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPublic" value="true" />
+			-->
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			-->
+			<property name="format" value="^_[a-z][a-zA-Z0-9]*$" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			methods
+		-->
+		<module name="MethodName">
+			<!-- Controls whether to allow a method name to
+				have the same name as the residing class
+				name. This is not to be confused with a
+				constructor. An easy mistake is to place
+				a return type on a constructor declaration
+				which turns it into a method. For example:
+				class MyClass {
+				    public void MyClass() {} //this is a method
+					public MyClass() {} //this is a constructor
+				}
+				properties: false
+			<property name="allowClassName" value="false" />
+			-->
+			<!--
+				default: ^[a-z][a-zA-Z0-9]*$
+			<property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			method type parameters
+		-->
+		<module name="MethodTypeParameterName">
+			<!-- default: ^[A-Z]$
+			-->
+			<property name="format" value="^[A-Z][a-z_A-Z0-9]*$" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			PackageName
+		-->
+		<module name="PackageName">
+			<!-- The default value of format for
+				module PackageName has been chosen
+				to match the requirements in the Java
+				Language specification and the Sun coding
+				conventions. However both underscores and
+				uppercase letters are rather uncommon,
+				so most configurations should probably
+				assign value ^[a-z]+(\.[a-z][a-z0-9]*)*$
+				to format for module PackageName, as in:
+				^[a-z]+(\.[a-z][a-z0-9]*)*$
+				default: ^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$
+			-->
+			<property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			parameter name
+		-->
+		<module name="ParameterName">
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			<property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			static, non-final fields
+		-->
+		<module name="StaticVariableName">
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPackage" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				private member.
+				default: true
+			<property name="applyToPrivate" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				protected member.
+				default: true
+			<property name="applyToProtected" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPublic" value="true" />
+			-->
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			<property name="format" value="^_[A-Z][a-z][A-Z0-9]*$" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			classes and interfaces
+		-->
+		<module name="TypeName">
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPackage" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				private member.
+				default: true
+			<property name="applyToPrivate" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				protected member.
+				default: true
+			<property name="applyToProtected" value="true" />
+			-->
+			<!-- Controls whether to apply the check to
+				public member.
+				default: true
+			<property name="applyToPublic" value="true" />
+			-->
+			<!-- default: ^[a-z][a-zA-Z0-9]*$
+			<property name="format" value="^[a-z][a-zA-Z0-9]*$" />
+			-->
+			<property name="severity" value="error" />
+			<!-- Module TypeName also has property
+				tokens which can be used to control
+				whether the check applies to classes
+				or interfaces through tokens CLASS_DEF
+				and INTERFACE_DEF. For example, the
+				following configuration element ensures
+				that interface names begin with "I_",
+				followed by letters and digits:
+				default: INTERFACE_DEF
+			<property name="tokens" value="INTERFACE_DEF" />
+			-->
+		</module>
+
+		<!-- Section: Regexp -->
+		<!-- http://checkstyle.sourceforge.net/config_regexp.html -->
+		<!-- -->
+
+		<!--
+		-->
+		<module name="RegexpSinglelineJava">
+			<!-- file type extension of files to process
+				default: {}
+			<property name="fileExtensions" value="" />
+			-->
+			<!-- Illegal pattern
+				default: ^$
+			-->
+			<property name="format" value="^\t* +\t*\S" />
+			<!-- Controls whether to ignore case when searching.
+				default: false
+			<property name="ignoreCase" value="false" />
+			-->
+			<!-- Controls whether to ignore text in comments when searching.
+				default: false
+			<property name="ignoreComments" value="false" />
+			-->
+			<!-- message which is used to notify
+				about violations, if empty then
+				default(hard-coded) message is used.
+				default: ""
+			-->
+			<property name="message" value="Line has leading space characters; indentation should be performed with tabs only." />
+			<!-- The minimum number of matches required in each file.
+				default: 0
+			<property name="minimum" value="0" />
+			-->
+			<!-- The maximum number of matches required in each file.
+				default: 0
+			<property name="maximum" value="0" />
+			-->
+			<property name="severity" value="warning" />
+		</module>
+
+		<!-- Section: Size Violations -->
+		<!-- http://checkstyle.sourceforge.net/config_sizes.html -->
+		<!-- -->
+
+		<!--
+			Checks for long anonymous inner classes.
+
+			Rationale: If an anonymous inner class becomes
+			very long it is hard to understand and to
+			see the flow of the method where the class is
+			defined. Therefore long anonymous inner classes
+			should usually be refactored into a named inner
+			class. See also Bloch, Effective Java, p. 93.
+		-->
+		<module name="AnonInnerLength">
+			<!-- maximum allowable number of lines.
+				default: 20
+			<property name="max" value="20" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+
+		<!--
+			Restricts the number of executable statements
+			to a specified limit.
+		-->
+		<module name="ExecutableStatementCount">
+			<property name="max" value="50" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks for long lines.
+
+			Rationale: Long lines are hard to read in
+			printouts or if developers have limited screen
+			space for the source code, e.g. if the IDE
+			displays additional information like project tree,
+			class hierarchy, etc.
+
+			Notes:
+			*  The calculation of the length of a line takes into
+			account the number of expanded spaces for a tab
+			character ('\t'). The default number of spaces
+			is 8. To specify a different number of spaces,
+			the user can set TreeWalker property tabWidth
+			which applies to all Checks, including LineLength;
+			or can set property tabWidth for LineLength alone.
+
+			*  Support for the special handling of imports
+			in CheckStyle Version 2 has been dropped as it
+			is a special case of regexp: The user can set
+			property ignorePattern to ^import and achieve
+			the same effect.
+		-->
+		<module name="LineLength">
+			<!-- pattern for lines to ignore.
+				default: ^$
+			<property name="ignorePattern" value="^$" />
+			-->
+			<!-- maximum allowable line length.
+				default: 80
+			-->
+			<property name="max" value="110" />
+			<property name="severity" value="warning" />
+		</module>
+
+		<!--
+			Checks the number of methods declared in each
+			type. This includes the number of each scope
+			(private, package, protected and public) as well
+			as an overall total.
+		-->
+		<module name="MethodCount">
+			<!--
+				maximum allowable number of
+				package methods
+				default: 100
+			<property name="maxPackage" value="100" />
+			-->
+			<!--
+				maximum allowable number of
+				private methods
+				default: 100
+			<property name="maxPrivate" value="100" />
+			-->
+			<!--
+				maximum allowable number of
+				protected methods
+				default: 100
+			<property name="maxProtected" value="100" />
+			-->
+			<!--
+				maximum allowable number of
+				public methods
+				default: 100
+			<property name="maxPublic" value="100" />
+			-->
+			<!--
+				maximum allowable number of
+				methods at all scope levels
+				default: 100
+			<property name="maxTotal" value="100" />
+			-->
+			<property name="severity" value="warning" />
+		</module>
+
+
+		<!--
+			Checks for long methods and constructors.
+
+			Rationale: If a method becomes very long it is
+			hard to understand. Therefore long methods should
+			usually be refactored into several individual
+			methods that focus on a specific task.
+		-->
+		<module name="MethodLength">
+			<!-- whether to count empty lines and single
+				line comments of the form //
+				default: true
+			-->
+			<property name="countEmpty" value="false" />
+			<!-- maximum allowable number of lines.
+				default: 150
+			-->
+			<property name="max" value="60" />
+			<property name="severity" value="error" />
+			<!-- blocks to check.
+				default: METHOD_DEF, CTOR_DEF
+			<property name="tokens" value="METHOD_DEF, CTOR_DEF" />
+			-->
+		</module>
+
+		<!--
+			Checks for the number of types declared at the
+			outer (or root) level in a file.
+
+			Rationale: It is considered good practice to
+			only define one outer type per file.
+		-->
+		<module name="OuterTypeNumber">
+			<!-- maximum allowable number of outer types
+				default: 1
+			<property name="max" value="1" />
+			-->
+			<property name="severity" value="error" />
+		</module>
+
+
+		<!--
+			Checks the number of parameters of a method
+			or constructor.
+		-->
+		<module name="ParameterNumber">
+			<!-- maximum allowable number of parameters
+				default: 7
+			-->
+			<property name="max" value="10" />
+			<property name="severity" value="error" />
+			<!-- declarations to check
+				default: METHOD_DEF, CTOR_DEF
+			<property name="tokens" value="METHOD_DEF, CTOR_DEF" />
+			-->
+		</module>
+
+		<!-- Section: Whitespace -->
+		<!-- http://checkstyle.sourceforge.net/config_whitespace.html -->
+
+		<!--
+			Checks the padding of an empty for initializer;
+			that is whether white space is required at an
+			empty for initializer, or such white space is
+			forbidden. No check occurs if there is a line
+			wrap at the initializer, as in
+
+			for (
+			      ; i < j; i++, j = j-1)
+		-->
+		<module name="EmptyForInitializerPad">
+			<!--
+				policy on how to pad an empty for iterator.
+				options: nospace or space
+				default: nospace
+			-->
+			<property name="option" value="nospace" />
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks the padding of an empty for iterator;
+			that is whether white space is required at
+			an empty for iterator, or such white space is
+			forbidden. No check occurs if there is a line
+			wrap at the iterator, as in
+
+			for (Iterator foo = very.long.line.iterator();
+				foo.hasNext();
+			)
+		-->
+		<module name="EmptyForIteratorPad">
+			<!-- policy on how to pad an empty for iterator.
+				options: nospace or space
+				default: nospace
+			-->
+			<property name="option" value="nospace" />
+			<property name="severity" value="error" />
+		</module>
+
+
+		<!--
+			Checks that the whitespace around the Generic
+			tokens < and > is correct to the typical
+			convention. The convention is not configurable.
+
+			For example the following is legal:
+
+			List<Integer> x = new ArrayList<Integer>();
+			List<List<Integer>> y = new ArrayList<List<Integer>>();
+			        
+			But the following example is not:
+
+			List < Integer > x = new ArrayList < Integer > ();
+			List < List < Integer > > y = new ArrayList < List < Integer > > ();
+		-->
+		<module name="GenericWhitespace">
+			<property name="severity" value="error" />
+		</module>
+
+		<!--
+			Checks the padding between the identifier of
+			a method definition, constructor definition,
+			method call, or constructor invocation; and the
+			left parenthesis of the parameter list. That is,
+			if the identifier and left parenthesis are on
+			the same line, checks whether a space is required
+			immediately after the identifier or such a space
+			is forbidden. If they are not on the same line,
+			reports an error, unless configured to allow line
+			breaks. To allow linebreaks after the identifier,
+			set property allowLineBreaks to true.
+		-->
+		<module name="MethodParamPad">
+				<!-- whether a line break between the
+					identifier and left parenthesis
+					is allowed
+				default: false
+			<property name="allowLineBreaks" value="false" />
+			-->
+			<!-- policy on how to pad method parameter
+				options: nospace or space
+				default: nospace
+			-->
+			<property name="option" value="nospace" />
+			<property name="severity" value="warning" />
+			<!-- tokens to check
+				default: CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF, SUPER_CTOR_CALL
+			<property name="tokens" value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF, SUPER_CTOR_CALL" />
+			-->
+		</module>
+
+		<!--
+			Checks that there is no whitespace after a
+			token. More specifically, it checks that it is
+			not followed by whitespace, or (if linebreaks
+			are allowed) all characters on the line after are
+			whitespace. To forbid linebreaks after a token,
+			set property allowLineBreaks to false.
+		-->
+		<module name="NoWhitespaceAfter">
+			<!-- whether whitespace is allowed if the
+				token is at a linebreak.
+				default: true
+			<property name="allowLineBreaks" value="true" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- tokens to check
+				options: ARRAY_INIT, BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS, TYPECAST
+				default: ARRAY_INIT, BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS
+			<property name="tokens" value="ARRAY_INIT, BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
+			-->
+		</module>
+
+		<!--
+			Checks that there is no whitespace before a
+			token. More specifically, it checks that it is not
+			preceded with whitespace, or (if linebreaks are
+			allowed) all characters on the line before are
+			whitespace. To allow linebreaks before a token,
+			set property allowLineBreaks to true.
+		-->
+		<module name="NoWhitespaceBefore">
+			<!-- whether whitespace is allowed if the
+				token is at a linebreak.
+				default: false
+			<property name="allowLineBreaks" value="false" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- tokens to check
+				options: SEMI, DOT, POST_DEC, POST_INC
+				default: SEMI, POST_DEC, POST_INC
+			<property name="tokens" value="SEMI, POST_DEC, POST_INC" />
+			-->
+		</module>
+
+		<!--
+			Checks the policy on how to wrap lines on
+			operators.
+		-->
+		<module name="OperatorWrap">
+			<!-- Policy on how to wrap lines
+				default: nl
+			<property name="option" value="nl" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- tokens to check
+				options: ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN
+				default: BAND, BOR, BSR, BXOR, COLON, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR
+				default is all tokens except assignment operators
+			<property name="tokens" value="BAND, BOR, BSR, BXOR, COLON, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR" />
+			-->
+		</module>
+
+		<!--
+			Checks the policy on the padding of parentheses;
+			i.e. whether a space is required after a left
+			parenthesis and before a right parenthesis,
+			or such spaces are forbidden.
+		-->
+		<module name="ParenPad">
+			<!-- policy on how to pad parens.
+				default: nospace
+			<property name="option" value="nospace" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- tokens to check.
+				default: CTOR_CALL, LPAREN, METHOD_CALL, RPAREN, SUPER_CTOR_CALL
+			<property name="tokens" value="CTOR_CALL, LPAREN, METHOD_CALL, RPAREN, SUPER_CTOR_CALL" />
+			-->
+		</module>
+
+		<!--
+			Checks the policy on the padding of parentheses
+			for typecasts. That is, whether a space is
+			required after a left parenthesis and before a
+			right parenthesis, or such spaces are forbidden.
+		-->
+		<module name="TypecastParenPad">
+			<!-- policy on how to pad parentheses.
+				options: space or nospace
+				default: nospace
+			<property name="option" value="nospace" />
+			-->
+			<property name="severity" value="warning" />
+			<!-- toekns to check.
+				default: TYPECAST, RPAREN
+			-->
+			<property name="tokens" value="TYPECAST, RPAREN" />
+		</module>
+
+		<!--
+			Checks that a token is followed by whitespace.
+		-->
+		<module name="WhitespaceAfter">
+			<property name="severity" value="warning" />
+			<property name="tokens" value="COMMA, SEMI, TYPECAST" />
+		</module>
+
+		<!--
+			Checks that a token is surrounded by
+			whitespace. Empty constructor and method bodies
+			(blocks) of the form
+
+			public MyClass() {}      // empty constructor
+			public void func() {}    // empty method
+
+			may optionally be exempted from the policy using
+			the allowEmptyMethods and allowEmptyConstructors
+			properties.
+		-->
+		<module name="WhitespaceAround">
+			<!-- default: false
+			-->
+			<property name="allowEmptyConstructors" value="true" />
+			<!-- default: false
+			-->
+			<property name="allowEmptyMethods" value="true" />
+			<property name="severity" value="error" />
+			<!--
+				options: ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN TYPE_EXTENSION_AND
+			<property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN TYPE_EXTENSION_AND" />
+			-->
+		</module>
+
+
+
+
+
+
+
+
+
+
+	</module> <!-- name="TreeWalker" -->
+
+	<!-- vim: set noexpandtab tabstop=4 shiftwidth=4: -->
+</module>
+

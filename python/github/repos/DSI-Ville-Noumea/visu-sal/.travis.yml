@@ -1,0 +1,35 @@
+language: java
+jdk:
+- oraclejdk8
+cache:
+  directories:
+  - ".autoconf"
+  - "$HOME/.m2"
+env:
+  global:
+  - secure: EPyeD6QQCZsDP5YwYVc6RSuZLS59i3rwPIpMogRQYOtEaCtyPvVxaZ4qstHLmDIPyWlE3jUCY4/Z6EI/s0NxgB4mxYF+9g5fVXDnGIHTaKaqmjRAbKyW7ULEoMi1hOOdV8o8VLldZlkJ6+ZTHsrKccmOaz6VzHw8vP8Q9ZGgHO0YcbiQ2eythLsfN3y4VuSIc2OBSNW+xVje5HH95kwc0CEYY2pkq76RXgIYPyNTc44ag2HZMxh+V8VTEDK0cfQFY3M5N+iV29Z6hXLzjSpxu8QhowUE34Yl8VBF3FGGou24VIsubNjQwdKmXC6IsLCIAzv4kscRA679fwt6YkbqMUfG4hrgxPDQ459idHzibF/ss9GRybmYm1P4U8/Zy5SQtk21vFrK8KLyJ5LEEvEYSOLOXBf82gPdes5n1BnXp29dtm10EnlxRkiSmaiVaEMgUHyOWc9E4+tmuRVyUOoB6aR4fOXco+OpOL36mk+mnfMLNiG9XisF+TWv475seIKhrV8XEr7lVLUp4YtJJ4QSQoS/dcb2mU0C+lN2EaLyRAQ87qM3mJGhirSJWLj8p2RatG0/njgU725DM7B/I6nD+PuB1yb5UXpB2/BLVeyfM20G259uS1t9Iry4FRrAoyYmiJY8DvgOyXcQ1xEAVwTZ0QxIiLfA7T9AUlMVNx41jdo=
+  - secure: Vpp8s8iX8RUyL6q3BV7p/5IkFD0VxamQK3Arvpyi4+mTrI+vCly3OFxJEbto1eXCXrhRcrfnM9hS/+V3hf8jt9HhTnC7DoPcQ+yrPtVU3mVxK3WKXGKyQGx0kzrZGGCnCkhhhnWx1qUb+a2UNwKHF5ZzR026F11IwYVuFhXeYU9S85sLiQ6jM4GUqp4wzvxY0IhibqCh1Lx/nWY0IDLCxEXf8e8N83edRFCzU9gSEq8q0z5UnT3iF7klpZa6pju6cJ7b1ZzoFKlVW5s4sdILz1lPoXq+HuQnSQprFjTHCf0I2cDKNA9QFil9ObZ0TIWNa9pA4BCfFNhr4UbHElC0pNx+wYLBTB3gEkM9Gnxtrtj5TyvMgbcMjoOS1y0w5FcgtS6icZpPYMMHJVR3MxzC720s55UnTSenG/ANY6yTfHYr4tvIqnyKSe+97CXgR6qhbGO5QUU5vMXs6IWdJZhFFcdJYx9AG7Rw312YM3Kz3mdqC92eChBvt88DF7tiIJ/2EDK96mEZJSKRN6W2YLpQyf2Ai5JGbWjEMS5e73gGOCkNOdSj/UkUjMporqTxv/rzxWs2m/j5M0REkydrXJvDLC67ux5Twx5fUFf+Qb01rJItqtvZKS60/pemb1kx4f/MqMMYmi9atR4lkTxBCYe4ZQy63IpWBwYvce671NlruGI=
+install : mvn install -DcreateChecksum=true -DSkipTests=true -Dmaven.javadoc.skip=true
+script:
+- mvn versioneye:update test
+before_deploy:
+- export RELEASE_PKG_FILE=$(ls target/*.war)
+- export RELEASE_PKG_MD5_FILE=$(ls target/*.war.md5)
+- export RELEASE_PKG_SHA_FILE=$(ls target/*.war.sha1)
+- echo "deploying $RELEASE_PKG_FILE , $RELEASE_PKG_MD5_FILE , $RELEASE_PKG_SHA_FILE
+  to GitHub releases"
+deploy:
+  provider: releases
+  api_key:
+    secure: X+F0GIOHz715IYxOFcN+nI7Fuj2Q5cNEb7fNkQok6J65cs5lmZkmyvaqcp2r606jHbbc2cbK4oPdAmyy+WQE+t2ckrrYzGBfPvwprE4vsew+s8xOufotbJ/Ka8mXryCFYElh+crlOFqb4lZaXhQJ0no2VNhsz+4ymJhBnP3QhZZt3ES83UJMxWHhUVFZR5VwTJXmJ1+9T0LNZIuWADJOUAQJTNyK4cSr3Y6+JAkIBDd4NZTcasT6HLgkiwmxH/TroNFLy32zmxa/8qnIla9NFnGHnYVGX51jDjjd1WyXFFmxOrFDc3uWnnMyXY+st2TZ0WlAL92kTuT0IQxYyG/06NrZtzu0Sg7JrQDDeEK5p9Upj2irxEWMgB0wcUMBmxOBz3h5If/0gppcNYDXzMhBcMuoYIs1XrrdVVp1Zk2rqOkQBqEd5GZjo0EsCJBwdqNxN+dQ8kH0ix4oWmBy1WOQ7AJm9/lQB+2uLZQh8oZyp7XCyw+NUiZNbe551SnwrbgaM+/yx4AT/TCmpVYqRRWBd55nwHi24LqRgRsvhjlZchdYJGEph4jqK02AOzBfhXLeFSMqPN+lzVi8EBwHU9ZlqJ1hDrE//KcV0VArU05QVRyR9XSJkaihTeKIblLdqRj6WooFgbOyt/hzOSnp7MCL3IYDGetCC+oo2sz+vAVt7+c=
+  file:
+  - "${RELEASE_PKG_FILE}"
+  - "${RELEASE_PKG_MD5_FILE}"
+  - "${RELEASE_PKG_SHA_FILE}"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: DSI-Ville-Noumea/visu-sal
+notifications:
+  slack:
+    secure: JHW7oJABEdkaNZe6Vk3ACb5qfTfWSqjipi96BuEMQkfLe/Eu86ySLL/8hebiktsn67X3ShHtZdwOPt8lcEs2buQudfKDt3vLHWVzKThkOp8U6ueyGYPttX/l6A80V3+zdodxDic+jkbnFfnBk0V6OHiyNvfMsrR5l4H0JhDwQEnHQ0vpcjC1RYKJVCSSslRt8nd7ryiPVb9anT1kuqef0C9ObEibFRyry0ZXxo1iGuxAO2jcb9/bVw2EHM+R6sJYuLl2ZboZP/Atzs1Eyb/U9koNx7YDi6+BSjEFuKjTlPMw8JxAW0KL5dWfxi8NHJMl0FaaD91AmYCKN9u9H6xXNElOA+S5qYsjoqRal2ZEaPaUYb++7+1lwgId9xCjCOjvQy2PC/7EmrtcV1ATwavnyJ+tdYT9UrWvX6QwAxJQ7uMJ3CWpXwZh8C8ogOwrQ8OaKIHgHfuS2HheZRKBfZABGhp9DCRt0C5AsM//M99H++om2BqjiJtqi+lfjquIT1df92WGDdlkVp9bknPaeD3VtOkUjpej9qsKlWwW7kC3mb16E8R+deoA49ZHvm/s4Tec98dhwnzkqvl9/E67ZpLzR+GNZOKo6RUUaVHMD7lnLaRCSoo1dYqAE+89XhnMcydk49rmtuPGBG/UhEoG0GirwPWFeSqn9c8izXSIJApWfRM=

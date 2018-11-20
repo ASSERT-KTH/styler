@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+
+    <!-- checks that _language property files contain same keys -->
+    <!-- http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <!-- checks that file size does not exceeds limit -->
+    <!-- http://checkstyle.sf.net/config_sizes.html#FileLength -->
+<!--
+    <module name="FileLength">
+        <property name="max" value="1000"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+-->
+
+    <!-- checks that files are 'tab'-free -->
+    <!-- http://checkstyle.sf.net/config_whitespace.html#FileTabCharacter -->
+    <module name="FileTabCharacter"/>
+
+    <!-- checks that there are no trailing spaces at the end of a line -->
+    <!-- http://checkstyle.sf.net/config_regexp.html -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <!-- check presence of license header -->
+    <!-- checkstyle.header.file passed by maven-checkstyle-plugin -->
+    <module name="Header">
+        <property name="headerFile" value="${checkstyle.header.file}"/>
+        <property name="fileExtensions" value="java"/>
+        <property name="ignoreLines" value="2"/>
+    </module>
+
+    <module name="TreeWalker">
+
+        <!-- javadoc checks -->
+        <!-- http://checkstyle.sourceforge.net/config_javadoc.html -->
+        <module name="JavadocType">
+            <property name="authorFormat"
+                      value='^&lt;a href=\"[^"]+\"&gt;([a-zA-Z]+ ?){2,4}&lt;/a&gt;$'/>
+            <!-- <a href="mailto:email address">full name</a> -->
+            <property name="scope" value="package"/>
+        </module>
+
+        <!-- naming conventions checks -->
+        <!-- http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+        <!-- checks for imports -->
+        <!-- http://checkstyle.sf.net/config_imports.html -->
+        <module name="AvoidStarImport"/>
+        <!-- defaults to sun.* packages -->
+        <!--<module name="IllegalImport"/>-->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+        <!-- checks for size violations -->
+        <!-- http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="120"/>
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="100"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="5"/>
+        </module>
+
+        <!-- checks for whitespaces -->
+        <!-- http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap">
+            <property name="option" value="eol"/>
+        </module>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
+        <!-- checks for redundant modifiers -->
+        <!-- http://checkstyle.sf.net/config_modifier.html#RedundantModifier -->
+        <module name="RedundantModifier"/>
+
+        <!-- checks for blocks -->
+        <!-- http://checkstyle.sf.net/config_blocks.html -->
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+            <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_TRY, LITERAL_WHILE, INSTANCE_INIT, STATIC_INIT, LITERAL_SWITCH, LITERAL_SYNCHRONIZED"/>
+        </module>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+        <module name="AvoidNestedBlocks"/>
+
+        <!-- coding checks -->
+        <!-- http://checkstyle.sf.net/config_coding.html -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsAvoidNull"/>
+        <module name="EqualsHashCode"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="RedundantThrows"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- checks for class design -->
+        <!-- http://checkstyle.sf.net/config_design.html -->
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <module name="FinalClass"/>
+        <!--<module name="InterfaceIsType"/>-->
+        <module name="HideUtilityClassConstructor"/>
+        <module name="ThrowsCount">
+            <property name="max" value="3"/>
+        </module>
+        <module name="InnerTypeLast"/>
+
+        <!-- miscellaneous checks -->
+        <!-- http://checkstyle.sf.net/config_misc.html -->
+        <module name="UpperEll"/>
+        <module name="ArrayTypeStyle"/>
+
+        <!-- com.github.shyiko:checkstyle-nonstandard -->
+        <module name="com.github.shyiko.checkstyle.nonstandard.NumberOfConsecutiveBlankLinesCheck"/>
+
+        <module name="FileContentsHolder"/>
+
+    </module>
+
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value="checkstyle, please ignore (\w+) for the next line"/>
+        <property name="checkFormat" value="$1"/>
+        <property name="influenceFormat" value="1"/>
+    </module>
+
+</module>

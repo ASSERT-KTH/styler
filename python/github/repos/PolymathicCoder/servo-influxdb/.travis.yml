@@ -1,0 +1,25 @@
+jdk:
+- oraclejdk8
+branches:
+  except:
+  - travis
+  - mvn-repo
+  - gh-pages
+env:
+  global:
+  - secure: wzG3x8fDGWU2vre8hSfa9Dij18U8dlz1K4mXczBlJHNQfPYqcENN4skZQU1pxnEaLhL2Ltxfzf7LbeZ07xzLOc9vIpMa4AQiboORXiElMErRxbnQX4/rMMkEhig6kijGh+rTqCLmGJ7NnYoLW98cQ+A3ENx8koduw4Mmy25jCY3BnWbYbct8n6OFhFK7wEptWRbR0/q0n/DeKtDAJvigEWXU0TlVFvxqU9gwV4XHvSnIlNx6c8uJdWLbLjFAF4rceNwbKavHywCA5j89PSylNGpJohff5Qg5soE9YheFBSZC53b4W1iKW9zY86EI3O7eWxNYnqxjb756kN9sQquphrClTdSQRoWBeZljY5rSEUcmnP/o34tRB9hfo6WYUPijW+CAcSPCgxbxqy6r8Yvpccwg72IkwEWbcrFECx1mXWZd8f+UpwzWx5XX9jUjD6aZ95c+yQMwbhXXirNG6V7yR8o6vRPATpkAGpcZikBLlT6DQ6fsZqhobf+nxeaUH5gjcLMPJBgfllJVF8jTmo45sj18e48KhF2ta6KZ2tWVyNfN/+uiLc6n2Hm6rdb1pWbAnTCN/cES+q8623dLcsve4WiTudjSqm4ZQoCnv0YEFnurlskfW5VtPWFchQ1UEtwvg7gmPsASnaQlW/JRwTOSU0VHjHwiTlhyiViic0yUtlo=
+  - secure: VSKpG9169S2XFL5836lcGE5UgZoGQCxTmAwLKt82KvXmq+mEJvzjoJdSONuxpBG7W/pr+bivEZ7dzAtH+/gFuVvVgaV2vsRDr1NugQCfZ21yNKkLdlxsJ8gNGvNeLw8N5oBJ6M8O7gzFCmfiWN+Xz0XkrbjCrk/5DRjjVRsaqytAK6uecXBiQCuntmMtoZNn8G3NqYX9KQe9RjdAQvd5DaYG0/Ijw/HgP1zHGx4QS/sdFm8ubKGS6AUgS1SVwaj8tU/QsBdZtbKjXx5sgYzKjGLbpHfIt8nUXL3H0TCmM7Mx7r5h4/oljBZs51IOytoBnFcflq5/ZPjgt3d5MeZJMh7WXeWn0RBoMOvgWcQnxbs8kz96IoYDqzGJDmmnscML32BXMUWMmzajDp2cn9GqgWi0AeCQhqereiDtkTyO283h3yogBSlhYbEok82y6pXuczya2/RKIc1Fq7ep9hY7VpIPioopUX6YUbd8xyna6q+7btt67KLryt/rx6fNsxlGt39ULXS90XjJVldbrkZucIbQtJmPAQobVYI+6pCRoDTyVEqo8OSt4mumlNMQbVlAhz1wbWmirRaxwUvLPbkAh6dRLt6KthTp1faJ8PIxpV2PSBvubODdUH6K1/INYvGsKJRuEmSzzQR3DVokTgxgFHw1ZgEuXiF3J/7DmLTZLs0=
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -y graphviz
+- sudo apt-get install -y gnupg2
+- openssl aes-256-cbc -K $encrypted_5797349fa709_key -iv $encrypted_5797349fa709_iv -in gpg-secret-key.asc.enc -out gpg-secret-key.asc -d
+- gpg2 --batch --import gpg-secret-key.asc
+before_script:
+- git clone -b travis `git config --get remote.origin.url` target/travis
+- yes | cp -rf target/travis/settings.xml ~/.m2/settings.xml
+- echo "MAVEN_OPTS='-Xmx4g'" > ~/.mavenrc
+script:
+- mvn clean verify
+after_success:
+- mvn deploy

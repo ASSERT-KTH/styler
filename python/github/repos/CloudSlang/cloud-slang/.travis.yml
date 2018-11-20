@@ -1,0 +1,28 @@
+language: java
+
+jdk:
+  - openjdk8
+
+before_deploy:
+  - mvn clean -Passembly,content install -T 2.0C
+
+deploy:
+  provider: releases
+  prerelease: true
+  api_key:
+    secure: "yJHXG2Cn0v4mofCEF58eAnmOM3CzewEa42YPormioOYq0iQHNoF7NdNN7xpItIVoxmp383WsYGDeYeCzFhd4K+4xVQt1n3/jG1E3AJbSGJ7IEWUygUNec7HWS+q+yR911rMIPo8MiIZMjZFxCd4f8zaTqO0WQUui1v+QWHF9rAo="
+  file:
+    - cloudslang-cli/target/cslang-cli.zip
+    - cloudslang-cli/target/cslang-cli.tar.gz
+    - cloudslang-cli/target/cslang-cli-with-content.zip
+    - cloudslang-cli/target/cslang-cli-with-content.tar.gz
+    - cloudslang-content-verifier/target/cslang-builder.zip
+    - cloudslang-content-verifier/target/cslang-builder.tar.gz
+  skip_cleanup: true
+  on:
+    repo: CloudSlang/cloud-slang
+    tags: true
+    jdk: openjdk8
+
+after_success:
+  - mvn cobertura:cobertura coveralls:report

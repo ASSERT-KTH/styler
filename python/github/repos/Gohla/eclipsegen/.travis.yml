@@ -1,0 +1,22 @@
+language: python
+python:
+- '3.4'
+- '3.5'
+- '3.6'
+install:
+- python setup.py -q clean --all
+- python setup.py -q install
+script:
+- python setup.py nosetests --nocapture --exclude=.*longrunning.*
+deploy:
+  skip_cleanup: true
+  provider: pypi
+  user: Gohla
+  password:
+    secure: AvoO2l0S73XCjp02msP3y063WzjQkpEuV37k21AKsLJkt9yLc2LJ1LEW2yCUfg6WBV/PDa/QmJEqvokEJtME5JkRt0v1uPGYJF15+8ySs/PHqXowo/SvKUMP9bduyZJPdktiD9CRCyyWSdy7hm2wCKHx6D70bycXbh77nkIfpmtZPaSTgaJyYNJw+Wz4Y8ge7veRd2uvGLS0xZWVz+J6wWf5626f0M4kmaWzOfi2TwNtlkf4UW0qJS0Nazxx7K5eqH9WMPtw6Z6PBukwSJl/daxoRdv6JF6WIQUniw9mMgcZ/4yAEWciXB8hR6Pc+SSgYw6CV+i77isMtQ3mVCDglcX/W9jcU0muq6g6nZgMCuM3IOvMuogdoRzS2N33RMuCd6/z6P9YDjyQKvWcKZDcmh/sWe38ChnOdAARnRVeRgaDHuQ6OhS6cHV/oL5yVEAww35CWH7u3MjGmFdTrAuzzZr520Ui0HBVaGKgZKx6LqAS2fYUvCFyGX1q2Yor3mdfuIVhwyvPubO6QaxhPnvaDkTvMiDrIZijSnmkoAt98o4v6z4R/RMcL8mblzUFnq1U5KmaQ0D4mknn13HdR2sR4POEfkC0m9L9xY0TtUbicm2pslsXj+w5+5o3pMj5pm+GVPZ6FZqCzOJqR6B/DOs1x74YWFgahLi2VLeXVEJVyBU=
+  on:
+    repo: Gohla/eclipsegen
+    branch: master
+    tags: true
+    condition: $TRAVIS_PYTHON_VERSION = "3.6"
+    distributions: sdist

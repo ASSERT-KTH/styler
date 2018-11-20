@@ -1,0 +1,25 @@
+#
+# Travis CI job configuration.
+#
+# https://travis-ci.org/
+#
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./devtools/bin/build-create-bundle --with-tests
+
+cache:
+  directories:
+    - $HOME/.m2
+
+addons:
+  apt:
+    packages:
+      - xsltproc
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -1,0 +1,37 @@
+language: java
+jdk:
+  - oraclejdk8
+branches:
+  only:
+    - master
+notifications:
+  email: false
+before_install:
+  # - sudo apt-get update
+  # - sudo apt-get install maven
+# env:
+#   - DB=mysql
+services:
+  - mysql
+  - postgresql
+  # - mongodb
+  # - cassandra
+  # - elasticsearch
+before_script:
+  #  - cp config/database.travis.yml config/database.yml
+  - mysql -e 'create database strano_test'
+  - psql -U postgres -c "create database strano_test"
+  # - psql -l -U postgres
+script:
+  # - mysql -e 'show databases'
+  # - psql -c 'show databases' -U postgres
+  - mvn package
+  - mvn dependency:get -Dartifact=mysql:mysql-connector-java:5.1.18
+  - mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -DrepoUrl=https://mvnrepository.com/ -Dartifact=org.postgresql:postgresql:9.4.1208.jre7
+  - cp $HOME/.m2/repository/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar $TRAVIS_BUILD_DIR/target
+  - cp $HOME/.m2/repository/org/postgresql/postgresql/9.4.1208.jre7/postgresql-9.4.1208.jre7.jar $TRAVIS_BUILD_DIR/target
+  - ls $TRAVIS_BUILD_DIR/target
+  - java -Djava.ext.dirs=$TRAVIS_BUILD_DIR/target sqlline.SqlLine -d com.mysql.jdbc.Driver -u jdbc:mysql://localhost:3306/strano_test -n root -f create_mysql.sql
+  - java -Djava.ext.dirs=$TRAVIS_BUILD_DIR/target sqlline.SqlLine -d org.postgresql.Driver -u jdbc:postgresql://localhost:5432/strano_test -n postgres -f create_post.sql
+  - mysql -e 'use strano_test;select count(*) from items'
+  - psql -U postgres -c 'select count(*) from items' strano_test

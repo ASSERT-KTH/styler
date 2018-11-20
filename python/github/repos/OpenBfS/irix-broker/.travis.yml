@@ -1,0 +1,23 @@
+sudo: true
+dist: trusty
+cache:
+  directories:
+    - "$HOME/.m2"
+language: java
+git:
+  submodules: true
+before_install:
+  - rm ~/.m2/settings.xml
+  - pwd
+  - cd .. && git clone --branch master --recursive https://github.com/OpenBfS/dokpool-javaclient.git && cd dokpool-javaclient && mvn clean compile package install && cd ../irix-broker
+script:
+  - mvn clean compile package install
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+jdk:
+- openjdk7
+- oraclejdk8
+- openjdk8
+

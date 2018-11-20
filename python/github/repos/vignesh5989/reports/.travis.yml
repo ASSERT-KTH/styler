@@ -1,0 +1,24 @@
+language: java 
+jdk:  
+  openjdk7
+script: 
+  mvn clean verify
+notifications:
+  email:
+    recipients:
+      - vignesh.murugan@one.verizon.com
+      - vijay.raghunathkm@one.verizon.com
+
+deploy:
+  edge: true
+  provider: cloudfoundry
+  api: https://api.run.pivotal.io
+  username: "vignesh.murugan@one.verizon.com"
+  password: "vicky59"
+  organization: VDSI-MyApp
+  space: development
+  on:
+    repo: vignesh5989/DevOpsChallenge
+    branch: master
+  commands:
+    - cf push DevOpsChallenge -p DevOpsChallenge-web/target/DevOpsChallenge.war

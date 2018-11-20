@@ -1,0 +1,58 @@
+language: java
+
+sudo: false
+
+jdk:
+  - oraclejdk7
+  
+branches:
+  only:
+   - master
+   - dev
+   - coverity_scan
+
+notifications:
+  email: false
+
+language: android
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - platform-tools
+    # - tools
+
+    # The BuildTools version used by your project
+    - build-tools-19.1.0
+
+    # The SDK version used to compile your project
+    - android-19
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-19
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-19
+    - sys-img-x86-android-19
+
+env:
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    global:
+       secure: "OeTwrBHHd-QgIoFYVYJ03Q"
+    #   MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=256m -Dmaven.artifact.threads=8 -D4TC"
+
+
+addons:
+  coverity_scan:
+    project:
+      name: "zafarella/caao"
+      description: "Build submitted via Travis CI"
+    notification_email: zafarella@gmail.com
+    build_command_prepend: "mvn clean -T2C"
+    build_command:   "mvn -DskipTests=true compile -T2C"
+    branch_pattern: coverity_scan

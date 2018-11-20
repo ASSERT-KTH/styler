@@ -1,0 +1,30 @@
+language: java
+jdk:
+  - oraclejdk8
+
+# node_js comes pre-installed in every travis-ci box...
+env:
+  - TRAVIS_NODE_VERSION="6"
+
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - cd apt-graph && mvn --quiet install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
+  - cd ../website && npm install
+  
+before_script:
+  - npm install grunt-cli -g
+
+script:
+  - cd ../apt-graph && mvn clean install -Dmaven.javadoc.skip=true -Dgpg.skip=true
+  - cd ../website && grunt
+
+notifications:
+  slack: cylab-be:M5jzMsOQnkiwUgOgZkmgxjCi
+  email:
+    recipients:
+      - thibault.debatty@gmail.com
+      - gnnikolov87@gmail.com
+      - thomas.gilon@gmail.com
+
+after_success:
+  - cd ../apt-graph && mvn clean cobertura:cobertura coveralls:report

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2013-2014 Recruit Technologies Co., Ltd. and contributors
+ (see CONTRIBUTORS.md)
+
+ Licensed under the Apache License, Version 2.0 (the "License"); you may
+ not use this file except in compliance with the License.  A copy of the
+ License is distributed with this work in the LICENSE.md file.  You may
+ also obtain a copy of the License from
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!DOCTYPE module PUBLIC
+  "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+  "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+  <property name="severity" value="warning"/>
+
+  <!-- Javadoc Comments
+       See http://checkstyle.sf.net/config_javadoc.html -->
+  <module name="JavadocPackage">
+    <property name="severity" value="ignore"/>
+  </module>
+
+  <!-- Headers
+       See http://checkstyle.sourceforge.net/config_header.html -->
+  <module name="Header">
+    <property name="headerFile" value="${basedir}/build-tools/src/main/resources/apache-header.txt"/>
+  </module>
+
+  <!-- Size Violations
+       See http://checkstyle.sf.net/config_sizes.html -->
+  <module name="FileLength"/>
+
+  <!-- Whitespace
+       See http://checkstyle.sf.net/config_whitespace.html -->
+  <module name="FileTabCharacter"/>
+
+  <!-- Regexp
+       See http://checkstyle.sourceforge.net/config_regexp.html -->
+  <module name="RegexpSingleline">
+    <property name="format" value="\s+$"/>
+    <property name="minimum" value="0"/>
+    <property name="maximum" value="0"/>
+    <property name="message" value="Line has trailing spaces."/>
+  </module>
+
+  <!-- Miscellaneous
+       See http://checkstyle.sf.net/config_misc.html -->
+  <module name="NewlineAtEndOfFile"/>
+
+  <!-- Filters
+       See http://checkstyle.sf.net/config.html -->
+  <module name="SuppressionFilter">
+    <property name="file" value="${basedir}/build-tools/src/main/resources/suppressions.xml"/>
+  </module>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="CHECKSTYLE OFF\: ([\w\|]+)"/>
+    <property name="onCommentFormat" value="CHECKSTYLE ON: ([\w\|]+)"/>
+    <property name="checkFormat" value="$1"/>
+  </module>
+  <module name="SuppressWithNearbyCommentFilter">
+    <property name="commentFormat" value="CHECKSTYLE IGNORE ([\w\|]+) FOR NEXT (\d+) LINES"/>
+    <property name="checkFormat" value="$1"/>
+    <property name="influenceFormat" value="$2"/>
+  </module>
+
+  <module name="TreeWalker">
+  <!-- filters
+       See http://checkstyle.sf.net/config.html -->
+    <module name="FileContentsHolder"/>
+
+    <!-- Javadoc Comments
+         See http://checkstyle.sf.net/config_javadoc.html -->
+    <module name="JavadocType">
+      <property name="severity" value="ignore"/>
+      <property name="scope" value="public"/>
+      <property name="allowMissingParamTags" value="true"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="severity" value="ignore"/>
+      <property name="excludeScope" value="private"/>
+    </module>
+    <module name="JavadocVariable">
+      <property name="severity" value="ignore"/>
+      <property name="scope" value="public"/>
+    </module>
+    <module name="JavadocStyle">
+      <property name="severity" value="ignore"/>
+    </module>
+
+    <!-- Naming Conventions
+         See http://checkstyle.sf.net/config_naming.html -->
+    <module name="ConstantName"/>
+    <module name="LocalFinalVariableName"/>
+    <module name="LocalVariableName"/>
+    <module name="MemberName"/>
+    <module name="MethodName"/>
+    <module name="PackageName"/>
+    <module name="ParameterName"/>
+    <module name="StaticVariableName">
+      <property name="format" value="^[A-Z0-9_]*$"/>
+    </module>
+    <module name="TypeName"/>
+
+    <!-- Imports
+         See http://checkstyle.sf.net/config_imports.html -->
+    <module name="AvoidStarImport">
+      <property name="allowStaticMemberImports" value="true"/>
+    </module>
+    <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Size Violations
+         See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="LineLength">
+      <property name="max" value="100"/>
+      <property name="ignorePattern" value="^import "/>
+    </module>
+    <module name="MethodLength"/>
+    <module name="ParameterNumber"/>
+
+    <!-- Whitespace
+         See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="GenericWhitespace"/>
+    <module name="EmptyForIteratorPad"/>
+    <module name="MethodParamPad"/>
+    <module name="NoWhitespaceAfter"/>
+    <module name="NoWhitespaceBefore"/>
+    <module name="OperatorWrap"/>
+    <module name="ParenPad"/>
+    <module name="TypecastParenPad"/>
+    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAround">
+      <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LCURLY,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN, TYPE_EXTENSION_AND"/>
+      <property name="allowEmptyConstructors" value="true"/>
+      <property name="allowEmptyMethods" value="true"/>
+    </module>
+
+    <!-- Modifiers
+         See http://checkstyle.sf.net/config_modifier.html -->
+    <module name="ModifierOrder"/>
+    <module name="RedundantModifier"/>
+
+    <!-- Block Checks
+         See http://checkstyle.sf.net/config_blocks.html -->
+    <module name="EmptyBlock"/>
+    <module name="LeftCurly"/>
+    <module name="NeedBraces"/>
+    <module name="RightCurly"/>
+    <module name="AvoidNestedBlocks"/>
+
+    <!-- Coding
+         See http://checkstyle.sf.net/config_coding.html -->
+    <module name="EmptyStatement"/>
+    <module name="EqualsAvoidNull"/>
+    <module name="EqualsHashCode"/>
+    <module name="HiddenField">
+      <property name="tokens" value="VARIABLE_DEF"/>
+    </module>
+    <module name="IllegalInstantiation"/>
+    <module name="InnerAssignment"/>
+    <module name="MissingSwitchDefault"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+    <module name="StringLiteralEquality"/>
+    <module name="IllegalType"/>
+
+    <!-- Class Design
+         See http://checkstyle.sf.net/config_design.html -->
+    <module name="VisibilityModifier"/>
+    <module name="FinalClass"/>
+    <module name="InterfaceIsType"/>
+    <module name="HideUtilityClassConstructor"/>
+
+    <!-- Miscellaneous
+         See http://checkstyle.sf.net/config_misc.html -->
+    <module name="TodoComment"/>
+    <module name="UpperEll"/>
+    <module name="ArrayTypeStyle"/>
+  </module>
+</module>

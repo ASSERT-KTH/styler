@@ -1,0 +1,37 @@
+language: java
+jdk:
+  - oraclejdk8
+
+env:
+  - DB=mysql REPOSITORY=motech
+  - DB=mysql REPOSITORY=modules
+  - DB=psql
+
+services:
+  - mysql
+  - postgresql
+
+before_install:
+  - nvm install v4.8.7
+  - nvm use 4.8.7
+  - sudo chmod +x ./config_services.sh
+  - ./config_services.sh
+
+install: true
+
+script:
+  - sudo chmod +x ./run_build.sh
+  - ./run_build.sh
+
+cache:
+  directories:
+    - $HOME/.m2
+
+notifications:
+  email:
+    recipients:
+      - motech-dev@googlegroups.com
+    on_success: never
+    on_failure: always
+
+dist: precise

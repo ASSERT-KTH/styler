@@ -1,0 +1,24 @@
+language: java
+jdk:
+- oraclejdk8
+
+before_install:
+ - mvn versions:set -pl parent -DnewVersion=${TRAVIS_TAG:-"0.0.${TRAVIS_BUILD_NUMBER}-SNAPSHOT"} -DgenerateBackupPoms=false
+ - pip install --user codecov
+
+script: mvn verify --batch-mode
+
+after_success:
+  - codecov
+
+deploy:
+  provider: script
+  script: mvn deploy -DskipTests=true -Prelease,quick --settings travis-maven.xml
+  skip_cleanup: true
+  on:
+    tags: true
+    jdk: oraclejdk8
+
+env:
+  global:
+    secure: QSmtR/j58f5VS+vvOAqR01/zou7yJPkSQ8JGS9LAOht7PTwXBGrNS1uI6PfbgBhhY0O9m9OhldEi1yhpr+Ce8ZwEr9+yTVqYGq6jlT54UJXklm4r4/ocehn9Oxy7y+lEOkCErBkM25tkrYsKM/6uaLwaNA+mFYLDaifzsIs2zw9VFvClNI4PGQTJCsl5D0GnlPMjF/9ZfWEqtUxzjNZUSzXTKdEbMGRsOaR0JWrThH89Bf1tlL/ExqKlEp/zVGYRKZ3VFnMq03YidslFcvJzDjylh8JL52i7Q62HrZ823ycporzHXghBkYdQ24Nrwbr5BzW/+l+06dqoGRQUKcaGm321QBipgr5RNDNJYfQtj0Z2o+0E/No//3rxFUXhdSxRjze/p7l3+sARez12PJMY4aGJAy570NhyRfU2dq9RfbQAa5E0jgI6pcdAmX1G+mmKfydKaQ4JdSB+kt4BwAaxbYkvnpjDuxN0Lq0UJZLvRThErO9aj/0sFyDwdJYR5ilTwHPZ/Q41Y0QK12Q0XGAyFnegYvdrxNPQ5+SsGjXsgLioZG+FQI9N98IXd1twlWg9RtkuoNp9AbCmf8gQTw3gqCmS1wzuHa8N862/CbHqf2w4upj2BtTfMXEuH4CVkedHWLrm6EE3/XN/0asC6YewWi6SQ72pNALTQtr8VF+m4xY=

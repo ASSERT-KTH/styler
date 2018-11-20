@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.1//EN" "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<!-- This is a checkstyle configuration file. See http://checkstyle.sourceforge.net/config.html for
+  configuration details -->
+
+<module name="Checker">
+    <property name="localeLanguage" value="en" />
+
+    <module name="Header">
+        <property name="headerFile" value="${checkstyle.header.file}" />
+    </module>
+
+    <!-- http://checkstyle.sourceforge.net/config_whitespace.html#FileTabCharacter -->
+    <module name="FileTabCharacter">
+        <property name="fileExtensions" value="java" />
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Unfortunately there so few javadocs that I have to switch it off :-( -->
+        <!--<module name="JavadocType">-->
+            <!--<property name="authorFormat" value="\S"/>-->
+            <!--<property name="allowMissingParamTags" value="true" />-->
+        <!--</module>-->
+
+        <!--Instead of it we check the presence of "@author" tag with regexp -->
+        <!--http://checkstyle.sourceforge.net/config_misc.html#Regexp-->
+        <module name="Regexp">
+            <property name="format" value="@author"/>
+            <property name="message" value="@author javadoc is required"/>
+        </module>
+
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+
+        <!--Disable lower-case long literals like 666l. Use 666L notation. -->
+        <!--http://checkstyle.sourceforge.net/config_misc.html#UpperEll-->
+        <module name="UpperEll"/>
+    </module>
+
+    <!-- Disable default IntelliJ IDEA headers -->
+    <module name="RegexpSingleline">
+        <property name="format" value="Created by IntelliJ IDEA"/>
+        <property name="message" value="Don't use IntelliJ IDEA default file template" />
+    </module>
+
+    <module name="RegexpMultiline">
+        <property name="format" value="[;}{]\s*((?!/\*[^/]*@deprecated +[A-Za-z@0-9_\-]+[^/]*\*/)/\*[^/]+\*/)?\s*@Deprecated"/>
+        <property name="message" value="Deprecated without comment" />
+    </module>
+
+    <module name="RegexpSingleline">
+        <property name="format" value="[А-Яа-я]"/>
+        <property name="message" value="Russian characters are prohibited" />
+    </module>
+</module>
+

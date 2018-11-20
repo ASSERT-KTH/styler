@@ -1,0 +1,17 @@
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.jdk
+sudo: false
+env:
+  global:
+  - TARGET=install
+  - JDKW=https://raw.githubusercontent.com/vjkoskela/jdk-wrapper/master/jdk-wrapper.sh
+  - secure: nT36UnOEJEvtLktKMUURdU+uli3NBgqS3SrJI072+cG/7cZ4tTKQk3Nofz9i5EB221QivzjBjBOqAmWVpqH6S6k50Y7x+Cssz+ZL5EwaEWEYtgMIiSE0UHH7vfbq7WbQBgKFpvrw6KX1Kw4IVYZtIYbDptIbAV0Rw6mONnx33zSEBoRqa6xlmRbAwxR2m+WrI+KeuOZS1rBeUFvHarxBWJVtO+Pf62LHrEsaqSrxPkVzLTKdhvp9t7wmJFnCxVa8PdxgnEimc3IbEX+F6+bkMMfHo9tvqYa8WHZZeuFUOd4wbAvIBe3nDv8SZyA+TSbgTMauthGE9fFeHBZBVSIvHE20eVf74B/dftSBo4gv9a4V9yApnzm5EfYV/OVNp1bJL4GxwCrH3ytf5ZUu99Uyz+cSrLB2plGh4e0iTKbwJrnigLXcvy6qJZB2wMVgweJoW4kiEE1mOp+ZX3RcwIkoUvwZYytqbQ24En/wCaveL2+qQkxPKXLWiIgcxN6/K5jgbC+GGonyIz0q/Kzg7DF0UOhk23bHTvHnXUJBIgU3nmS4IbvhFR1xGjB+V5ANRsLbGZUWFRCzbqeX03iLCHLDwMKfCfCgNQ6YgTVvAHlvevavRmOVJ5HNkSN+xs0YEzU658RwJQiLJDNP/MSLjDvX9sO++1ocNNjhRKMPZWruHYI=
+  - secure: FBkpidNpMc8IExBULi1yThx25O4IWdGz6GPJFtTKh2u+WtY1dis4fc7gxR3uSXVtqkrtkD3HoeC5d/eViYAsUgJxZv4Gey+PKCxG548LYFgDVQaVEBlCnRNry8J/EpxsR3frBzHL9F/x2n0FHdDmnLXJDT7EIUAeKIDsrgnJEjJs16CY5cZfe1dmzssC06GSedCAD00ETmk3UZV0ChRZjuqoZZAOL/SldZQGymHTzoqyMFKP+Kg+c3Bo0c+ERqa3aiDUnXjPFmlrVUCLYGEiS6IzcnoYsP2WeIUjk8WuiHhY8pW0gLfcujxMAbNtbVb55PlXXAELgI+rHRSQLaaoQXiJBq6wg9PEkwxU07vjkmEvDv9a/9J9jmGRsLUbxkjMpOvRxi9grkGgVE69qT9FJlfU8K9uyLVZJ88xGWZOOHKKNeMEezIr/6ysl2egc52dOoWxTMTYOkqEOLA5Z5Qa+hEyEqPZkaQ4cXydZhhpVzw23SPUAVd4fAMyPEU9hg9YJvaa6MnmfnZNNbpX0xdnoR4NN1/QA6jWMw4byT9+SUzhlJQOsuuiFPgoivDZdra7rV37XcEYotOt6/peKJ8+TuMLEmbtnxrjFgA+rTy+YgSsj4EGejSh1fPlApbfmZLM50cvxlfDLFv8hhgD7EAuMriEBmlFkruGvQ+t8sVGta8=
+  - secure: RiznG2hYhv9EYk3iiDQEFO2vkesm/dWI7MMX5aiOxfd8xnt0YVDYaNkxclwkiHP73hJ3+MSlwj7d7/kHHG1l4+ULEvnmr6oee8dwNJetT7Ye6CWOTegmAG/dGob5pwCZaPxdbvcoODWO9IitKo5c120s/F1XvO53mx+5WwjTMZ2MSsnZw12JAhiQ3LdyFJ4b43ycpcgiHsg5oYWhd5Bxt5pKrhSludIbtaPJfwejaXYT8a0M1Q8lnWhN+t+NcLVroHhku6dPQm5bGzt3HiVK2V2BUxemxQeCFqtczduZqZZBIMCMNbJq0RAdVeZ5s6v7tQx6wmXuvhnIQc/CjJ7u+EjTMYUyUkKB1b/B+8h7v3tMJLWBPkpNcUfnnfF+DOrZsj65qzFCSiTMRvhOxHomKCqvYTiYQXejDKKYIMKUhi0n1CyjRKJBQxu96QgIQwSNDo40ipAawgftPcywnIwTLaksLoaWyV+Ao8APuKEo51YEnfUstxbf8Eaug+c4WIjIBs91h6WMUCyOVGEyHpe8Dur5RytE92Mx6C3tAJwZXjW+8TCQND6wsYGGaVtTk4SonM9yDkx6Y8RmX9nfz/XaK52cw+rPMhIgnUtE7KngDkKzsel9xJPtoIRWzMSNGr4m2UwUNKera2w78EMGZSAsO++l5lsjxKIT8I2bwoh1GHg=
+install: true
+before_script:
+- if [ \( -n "${TRAVIS_TAG}" \) -a  "${TRAVIS_PULL_REQUEST}" = "false" ]; then export TARGET="deploy -P release --settings settings.xml"; fi;
+script:
+- curl -s ${JDKW} | bash /dev/stdin ./mvnw clean ${TARGET} -U

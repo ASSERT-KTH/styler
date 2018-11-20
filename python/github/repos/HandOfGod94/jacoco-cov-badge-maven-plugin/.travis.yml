@@ -1,0 +1,19 @@
+language: java
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+  - $HOME/.m2
+install: true
+script:
+  -  mvn clean install
+
+# since tests are already executed during build
+# so no need to run it again.
+after_success:
+  - mvn jacoco:report coveralls:report
+
+# only build master on direct commit to it
+branches:
+  only:
+  - master

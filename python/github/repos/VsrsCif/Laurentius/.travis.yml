@@ -1,0 +1,38 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.sonar/cache
+
+env:
+  secure: "QSumTvMGgT7gm/ydWBbB4kkivLWTPyWZzsPxfF1fx2Ekn+I9836s4L8sp4lKLVMlCWMTP1BTIYMB8gIY7lkdWusYz8GnHuLwVgwo0MtiKsM4dx/INBYz3X7jFlQ5zzHzYdjsZGhw0J9Ez4ef7K60+ssUUxOZIA+nZM2d+vgSrMvhVLOUmGZ+UOlv1yr9ed6hvbdNT6Nk98zqBiiEb5oly+bt6RqWeYYf7lsFAnQX7haCBZWs+Hts4ewRZziUzP1zUMB2qMNNkpZPOYXwXBfd00vCBMGk3YEaqBD7YXH8gMmgPLxCoeoriQsXx53X6IG/gAZ5ZpFW6A+TpFiYFlQB8A0pf4EWeTgR4IJ+OpWT9GLM0Z4ObYKFGe2/ZJjWH/zknB2NAjuVNmtbRgwQFaTP9JXBIFiK9VF7gW7jehXrVSGvkeVJIuOpyB+Z6y8qmKiDPWBMmBCESNhIp5DuvSmS2etGaf+/Ptb07dxoawb/YoSmOie4wGW0+1czDI5iMQFmy+pAvmcNiCNLRnK5UdwUfqv5aB2DQnEIeAe4EE1Dt1eHs+fSROuiSfQ11CekmMRMMWTO9dZF5lSmFp57HzESDddg67Pj5hKAWHre7MoZGrH+Yo3cQUm/CB+Qjxm4wP4UVUiB8n+APw2vGf9jdob+nJVANPSjI7qINOFkTb2MmdY="
+
+  
+  
+addons:
+  sonarcloud:
+    organization: "vsrs-laurentius"
+    token:   
+      secure: "gijeQND97bL7qx8JQtq7bvAIm58aKDDBvgcnQZmHSOi7HY9hnrnfy4V135lhOaF1oFtdAC7cx6uvUkUoZ2ZTFka1CSgbNlTAOYefA1+ijvYpTpVjvW1zeP8wXnm2tdkvhD1dAIKkyBSZYbv53O8sFQj80l2Oj4Wa5x2rlDjRnd01z0MW7Imzfighi7zlRhtYEzjix6vAi7ndAW5NTzEiV+CRjOkAliwp6GWty8BH3p5K2lgc/QgQC3EgdLbN5BN0eCzqurgP7PIFZYroZrIPnJXlT3qZaJjyRubdA8p4uwueMXGcnx0ylv3ZriNKE4xdrv6f9G1fLUNJaQpFrmzO5hNvFoyEFLmnp3NQWQiJptk+5B5XF6zbypObdMSOXAnBondJcR1E+Hj+6lvYSn/nciUqwKD09ND0DLeP/lbQptQP6HCcUPMYgrrHdoVt/0PSJzs4ZMMZpBFczNv74DVwSJvZC+P0vNeSJ+YS1kjhN9vb0rrcgQUYEl13C8W4Uo1rDQistinTVVFuH/r1MfaCj4TsxQ3E1/r3wUrb5LVFAqRyG7sxhKKG82g6Zqv6UT13MglhT3UgnCqND/+BndWqv0ewViXLDCgL5a0EM7d9Y2Fo2SZIiW8KblGga3o/ULRZfUgj6X6I2z6O1XlTPXDR+S1lEeGpwulY5DdX0+YO1zo="
+ 
+
+#
+jobs:
+  include:
+    - stage: build_and_analyse
+      script: 
+         - mvn clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar 
+# buiding docker image is bronken  - new wildfly  - fix this
+#    - stage: build_docker_image 
+#      script:
+#      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+#      - docker build -t laurentius .
+#      - docker tag laurentius $DOCKER_USERNAME/laurentius
+#      - docker push $DOCKER_USERNAME/laurentius
+
+#    - stage: test
+#      script: docker run --rm $DOCKER_USERNAME/laurentius

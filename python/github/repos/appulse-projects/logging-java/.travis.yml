@@ -1,0 +1,35 @@
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+
+install:
+  mvn --settings .settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+
+script:
+  mvn --settings .settings.xml clean verify -DskipTests=false -Dmaven.javadoc.skip=true -B -U
+
+before_deploy:
+  - mvn help:evaluate -N -Dexpression=project.version | grep -v '\['
+  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version | grep -v '\[')
+  - sed -i -- "s/\${env.SONATYPE_PASSWORD}/$SONATYPE_PASSWORD/g" .settings.xml
+  - mvn --settings .settings.xml clean deploy -DskipTests=true -Dmaven.javadoc.skip=false -B -U
+
+deploy:
+  provider: releases
+  api_key:
+    secure: btkjok0ZblRXBoWBazk+ORyUc/RdNaT3BjKs2ZeBE6/Mbss1Rru78G+s9aHklEjmgk0WmFxamqLu+X+JE+dtcZN416rJv7CsmmLeAu3H0jS7zhAoGP3aTiSeDOJZWpPYCue/jgo5jbFysGhm2un4NHq7KZVCs6qX4HmEo7SaRCT5S/rYRLkHuqBrJ6hvn10YgXIC5k5sErpq942KJgpQnqAewtZ0i7ewH3V5nN2S/EOPQZOnr6eHzL/BYJw/6UxMtnGgXZg9bK57xDIiTIALw3SfARr2mdOdCxT2xmSe2iSTgoIM0X3zrO+koVVS16QQFadU8sJ2P/xy0Duq5TwimPEPgvrf0ZpTeZdkLndOa8JGlxthGivQ+negawvbcphnHKVIIye/JhA6Nzk3niDFBle8gDWL2UdYSsFaYsbgxTT1SwvjJdAt07hg420sDBcltIClr3ej/+HjpGUTIPqXC4bSM3WinUhYuJXYcqvC6ICb44d/B+h7k4gD4wGC1wVFsjq6Rm36y2nVTZN3bXdbtdygOkw3C9BKUxDLFpLsJZnpXR/gE7LVliqBkQZ7hyVBOoEb5HHBwujDeYHOdIdEYlmEAhOkIyPbTQeqO6p3s4gWuGRVJuDEyDj0XNUBTbQabx77K4r7RUcUzNefWS1vNKgewU7bgw7K/0e/jDKexXI=
+  file:
+    - "target/logging-java-$project_version.jar"
+    - "target/logging-java-$project_version-javadoc.jar"
+    - "target/logging-java-$project_version-sources.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: appulse-projects/logging-java
+  name: $project_version

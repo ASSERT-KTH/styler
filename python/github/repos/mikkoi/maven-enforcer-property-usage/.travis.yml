@@ -1,0 +1,41 @@
+language: java
+sudo: false
+install: true
+jdk:
+- oraclejdk8
+addons:
+  sonarqube:
+    token:
+      secure: WsimqMtuIavmh1vOQwyaCgiX4VAPdAbloXac+uNNdW54nzfTJcRSQhhQ81lfp/8/6OKpztfTzttCOyCLiLBwbUSjVRUqM7/tC0rM/TIZWI3BP4so5tvSdkkVH0ZTq0/rUK95rbTMX8F1PV7J9Lnr/fmmf6CLbn5uBY1CqggrMS7lguHZ9+lXvGw+0m3ctCAFj3u3XLgRxIHMR9m9vsCktIcaLl+kVvCbW2tPgUoqrBhq56hzY00/TLLg7gIJqbWy8g858F5NRDYMk2a6daPyJdN5wZTUpzkgfmdncgYEILyEvEhcRToKcaDiIUTh6kYXr08t3KUJur85C86up84TPmTzBJPSdl01FizsRVX827IkBE5Lv2aun1KDG0pdrvJWE9io0PIv0Pbl/WQGNMdcXNAdH5KHkkC8Y34dlqZFKRAPN6EbUv+qUxjblCGwCID9a7R61T3iLdPvX1Ye/Bns+3WPx8PUY4kzqWpMTptiij1u40H9sFNoLDGkG8HhZheL63ypcrlx3pL0LUQIiTegV17M4dmAIiZd7vA0QP8XapoVuYBsN3w3xnEymkL/gBZIfSa1eEiH0Pkejd9NRBi09p1v+HLzjQ6ka7PR9RgaICsFGh+SM3zhGkmJiJbbXoCCuRd0mUIGAxCCOfSMlgxjw62WL/kQkgxyXQGm5PL5mjg=
+    branches:
+    - master
+script:
+- mvn --activate-profiles ci clean install sonar:sonar
+cache:
+  directories:
+  - "$HOME/.m2/repository"
+  - "$HOME/.sonar/cache"
+notifications:
+  email: false
+env:
+  global:
+  - secure: ppJJehhPBhDH89ZjRl2ibqZG5PNJvJbzZggWsJWRQVGvPKRZoJIoCOnd16Y+KNZSBJ3j5ig2IePTEIS1yzr4o8YZIXQo5MePWiG8g1ITcJgSmZI4IzTXv7ceB7wICnBMUB/M23KRzWd4G7CMM414zQg1fbJHyz+4Wmrss+unueN1+appbCGAmNRir4nov5+iIQcQD+2Pgp6hq1wIiciJDWbQZfZPc0lckg/JZqVrJ9+258MCaSBuVhqB6jzkVLtSHn/2HFNMD+LVxN+v/8ZGcnYOpNuEu6iR9G5H2eE9GxTW7rt/QfPaklK4/qb83MfK4MB/cPw/n/2dngCmYNTZ3WQ6H70czbzsUTduUqgucw/BknuuiykiuqRToXc2jU96571+V5aO2HDxIs8F4S0HNvfZ1SBu25DSBthxNyZSSm664k+I7XAMzxFtQU5zqjjDZCXZQrSkMcsr+SKAncpv+w6ND1+PC4maG/ee0je0WXyrsHKLQZCpeoaBXbhnf9QWDCriWaH2A7NY3qj17HGke0/eM1jjQoA4inSseR9ZK64UfAJAiaKETfY81mIP6jo+ZKzjwc3LGdkpX8AY/w7fkfkn53gmbf3VkEjPR1rHodv7KcW8zXcg+YrrRBzn/CR/3uJ/jSloC3XsWishyxGwFkitNdB8cAo6Xar7Rr/r7Lk=
+# after_success:
+# - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master"
+# - MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=info PROJ_VERS="$(mvn help:evaluate -Dexpression=project.version | grep --invert-match "^\[INFO\]")"
+# - if [[ "$PROJ_VERS" =~ "SNAPSHOT" ]]; then echo "SNAPSHOT build"; exit; else echo "proper version. Publish site."; fi
+# - mvn --activate-profiles site-heavy site
+# - git reset --hard HEAD
+# - git clean -d --force
+# - rev="$(git rev-parse --short HEAD)"
+# - git config --local user.name "Travis CI"
+# - git config --local user.email "travis.ci@dummy.travis"
+# - git config --local core.autocrlf false
+# - git config --local core.safecrlf false
+# - git remote add github-pages https://${GITHUB_TOKEN}@github.com/mikkoi/maven-enforcer-property-usage.git
+# - git fetch --quiet github-pages gh-pages
+# - git checkout --quiet -b gh-pages github-pages/gh-pages
+# - cp --recursive target/site/* .
+# - git add --all
+# - git commit -m "Publish site at GitHub Pages (rev ${rev})"
+# - git push --quiet github-pages gh-pages

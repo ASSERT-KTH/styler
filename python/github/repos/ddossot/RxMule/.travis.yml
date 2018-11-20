@@ -1,0 +1,15 @@
+language: java
+
+script: mvn verify
+
+services:
+  - redis-server
+
+after_success:
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
+  - mvn deploy --settings ~/settings.xml
+
+env:
+  global:
+  - secure: pVK2u65hPiRV8q8qCQAQ+SpSm/3jvOJy+qk1ETrKwwNzMToraDZWNtJ6u9Uu1i8rD5rFAAqUJRsOzpMe1d+ZKv95FwIEq2ijDYX+WJzh0gHMn9k22144/4tT0rgXo+btb7Pn59cGeyoPtyWzatsGl6QlHKuX1gXA488PGjmZ5iA=
+  - secure: VuazyComDkm6FxTDS4iu/ldM2mwcBAnngTOlaNbMgt43tHxC0nQ3p53PyXVTyokja2Qfrk+UvHSD+PAlKH2VyMlug9G/FxyNf+4FCodB1rTaCHoiigglBwXkYkFPjRTJrgubey24zELp+Hhzp3K9LTERibIZLrmv6qBCU0l++30=

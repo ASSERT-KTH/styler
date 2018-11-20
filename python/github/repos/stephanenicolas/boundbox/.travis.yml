@@ -1,0 +1,69 @@
+#Thanks to https://raw.github.com/embarkmobile/android-maven-example/master/.travis.yml
+
+branches:
+  only:
+    - master
+
+language: java
+jdk: oraclejdk6
+
+before_install:
+  # check the travis file
+  - gem install travis-lint
+  - travis-lint
+  # Install base Android SDK
+  - sudo apt-get update -qq
+  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq -o Dpkg::Options::="--force-confold" --force-yes --yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null ; fi
+  - wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz
+  - tar xzf android-sdk_r22.0.5-linux.tgz
+  - export ANDROID_HOME=$PWD/android-sdk-linux
+  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+
+  # Install required components.
+  # For a full list, run `android list sdk -a --extended`
+  # Note that sysimg-16 downloads the ARM, x86 and MIPS images (we should optimize this).
+  # Other relevant API's:
+  #  addon-google_apis-google-16
+  - export ANDROID_SDKS=android-18,sysimg-18
+  - export ANDROID_TARGET=android-18  
+  - export ANDROID_ABI=armeabi-v7a
+  
+  # Install Android build tools
+  - export ANDROID_BUILD_TOOLS_VERSION=18.0.1
+  - export ANDROID_OS_VERSION=4.3
+  - wget https://dl-ssl.google.com/android/repository/build-tools_r$ANDROID_BUILD_TOOLS_VERSION-linux.zip
+  - unzip build-tools_r$ANDROID_BUILD_TOOLS_VERSION-linux.zip -d $ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/build-tools/
+  - mv $ANDROID_HOME/android-$ANDROID_OS_VERSION $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION
+  - export PATH=${PATH}:${ANDROID_HOME}/build-tools
+
+  #- android list sdk -a -e
+  - echo "y" | android update sdk --filter platform-tool,tool --no-ui --force > /dev/null
+  - echo "y" | android update sdk --filter $ANDROID_SDKS --no-ui --force > /dev/null
+  
+  # Create and start emulator
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+  
+  # Install latest android sdk as local maven jars using sdk deployer
+  - mkdir target
+  - git clone git://github.com/mosabua/maven-android-sdk-deployer.git target/maven-android-sdk-deployer
+  - cd /home/travis/build/stephanenicolas/boundbox/target/maven-android-sdk-deployer/platforms/android-18
+  - mvn clean install -N 
+  - cd -
+  
+  # newer version of gradle
+  - wget http://services.gradle.org/distributions/gradle-1.8-bin.zip
+  - unzip -qq gradle-1.8-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-1.8
+  - export PATH=$GRADLE_HOME/bin:$PATH
+  # just to test gradle version, against our provided one
+  - gradle -v
+  
+# We will run findbugs and checkstyle in the script phase
+#install: mvn clean install --quiet -DskipTests=true -Dmaven.javadoc.skip=true -Dfindbugs.skip=true -Dcheckstyle.skip=true
+install: echo "Skipping mvn install"
+
+script: mvn clean install -Pcoveralls -Dandroid.device=test -Dmaven.javadoc.skip=true
+
+#after_script: zipinfo /home/travis/.m2/repository/org/boundbox/boundbox-library/1.2.0-SNAPSHOT/boundbox-library-1.2.0-SNAPSHOT.jar

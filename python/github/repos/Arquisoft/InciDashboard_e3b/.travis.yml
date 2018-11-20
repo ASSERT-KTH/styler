@@ -1,0 +1,38 @@
+language: java
+sudo: required
+services:
+  - docker
+jdk:
+  - oraclejdk8
+env:
+  - DOCKER_COMPOSE_VERSION=1.20.1
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+  - sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+  - sudo rm /usr/local/bin/docker-compose
+  - sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
+  - sudo service postgresql stop
+
+install:
+  - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Ddocker.skip=true -B -V
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
+script:
+  - "mvn cobertura:cobertura"
+  - mvn install -B
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+after_scrip:
+  - mvn docker:stop

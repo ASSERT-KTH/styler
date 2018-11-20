@@ -1,0 +1,25 @@
+language: java
+
+sudo: false
+
+jdk: oraclejdk8
+
+# set up build matrix to split unit and integration tests and checkstyle verification
+env:
+  - COMMAND=test # unit tests
+  - COMMAND="-Dcheckstyle.skip -Dmaven.javadoc.skip verify" # integration tests (repeats unit tests)
+  - COMMAND="generate-test-sources checkstyle:check" # check style
+  - COMMAND=javadoc:javadoc # javadoc generation for main classes
+  - COMMAND="generate-test-sources javadoc:test-javadoc" # javadoc generation for test classes
+
+install:
+  - travis_retry mvn clean install -DskipTests -Dmaven.javadoc.skip -Dcheckstyle.skip -B -V
+
+script:
+  - mvn $COMMAND
+
+after_success:
+  # report test coverage
+  # NOTE: will only actually succeed in integration test mode)
+  # NOTE: only for commits, skipped for pull requests
+  - if [ $TRAVIS_PULL_REQUEST == "false" ]; then mvn org.eluder.coveralls:coveralls-maven-plugin:report; fi

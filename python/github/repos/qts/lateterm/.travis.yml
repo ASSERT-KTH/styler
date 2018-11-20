@@ -1,0 +1,19 @@
+language: java
+jdk: openjdk7
+
+after_success:
+- mvn checkstyle:checkstyle
+- sudo apt-get update -qq
+- sudo apt-get install sshpass
+- sshpass -p 'gudrun' scp -oStrictHostKeyChecking=no -r target gudrun@46.149.26.47:~/web/
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: 9960c435-0d8d-40e9-b6d1-bf910c09106c
+  app: mylla-staging
+  on:
+    repo: qts/lateterm
+env:
+  global:
+  - secure: 41SbhGdvTqvUq+vzRvZjFEPggET+5CIQR+dVWzL7l1qrjQRGKKh8wXQNS/lO8PuriwdxWCnSFfUriXn4EDoIKaawpP28oz+ZsZxtlvcFTiFPIjuFCsuY1ZbkR5xzrmB68HWANqAwZWymoTOI4+26FDLL0UjuOZ7qjvZn5Tc4KE0=

@@ -1,0 +1,25 @@
+language: java
+jdk: openjdk11
+
+# https://github.com/travis-ci/travis-ci/issues/8408
+before_install:
+  - unset _JAVA_OPTIONS
+
+matrix:
+  include:
+    - env: FOLDER=labone PRO_SPECIAL_BUILD='early-access'
+    - env: FOLDER=labtwo PRO_SPECIAL_BUILD='early-access'
+    - env: FOLDER=labthree PRO_SPECIAL_BUILD='early-access-amber'
+    - env: FOLDER=labfour PRO_SPECIAL_BUILD='early-access-loop'
+    - env: FOLDER=labsix PRO_SPECIAL_BUILD='early-access'
+    - env: FOLDER=labfive PRO_SPECIAL_BUILD='early-access'
+
+install:
+  - echo $FOLDER
+  - cd $FOLDER
+  - java pro_wrapper.java version
+
+
+script:
+  - ./pro/bin/pro version
+  - ./pro/bin/pro

@@ -1,0 +1,22 @@
+language: java
+jdk:
+  - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+sudo: false
+
+script:
+  - mvn test
+
+after_script:
+  - mvn site
+  - echo "== CHECKSTYLE_RESULT =="; cat "target/checkstyle-result.xml"; echo "== END_CHECKSTYLE_RESULT =="
+  - echo "== PMD_RESULT =="; cat "target/pmd.xml"; echo "== END_PMD_RESULT =="
+  - echo "== FINDBUGS_RESULT =="; cat "target/findbugsXml.xml"; echo "== END_FINDBUGS_RESULT =="
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report

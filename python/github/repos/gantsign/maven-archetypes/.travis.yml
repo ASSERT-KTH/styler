@@ -1,0 +1,42 @@
+language: java
+
+install: .travis/install.sh
+
+jobs:
+  include:
+    - stage: Test
+      sudo: required
+
+      # Require Ubuntu 14.04
+      dist: trusty
+
+      # Require Docker
+      services:
+        - docker
+
+      script: .travis/test.sh
+
+    - stage: Deploy
+      script: .travis/deploy.sh
+      if: type = push AND (tag IS present OR branch = master)
+
+    - stage: Deploy site
+      script: .travis/deploy-site.sh
+      if: type = push AND tag IS present
+
+stages:
+  - test
+  - deploy
+  - deploy-site
+
+before_cache:
+  - rm --force --recursive --verbose $HOME/.m2/repository/com/github/gantsign
+
+cache:
+  directories:
+    - $HOME/.m2
+
+branches:
+  only:
+    - master
+    - /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)([\.\-].*)?$/

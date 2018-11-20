@@ -1,0 +1,21 @@
+sudo: required
+
+language: java
+
+services:
+  - docker
+
+env:
+ DOCKER_COMPOSE_VERSION: 1.15.0
+
+
+before_install:
+- sudo /etc/init.d/mysql stop
+- cd web
+- mvn clean install dockerfile:build
+- docker run --name mariadb -p 3306:3306 -p 9001:9001 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=places -e MYSQL_PASSWORD=places -e MYSQL_DATABASE=places -d mariadb:latest
+- docker run -d --name web --network container:mariadb web:latest
+
+script:
+- mvn test -P frontend
+- mvn -Dtest="yo.antihype.team.docker.**" test

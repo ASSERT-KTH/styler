@@ -1,0 +1,28 @@
+sudo: false
+language: java
+jdk:
+  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+before_install:
+  - echo 'export MAVEN_OPTS="-Xmx1g -XX:NewRatio=1"' > ~/.mavenrc
+  - cp -pf .travis_maven_settings.xml ~/.m2/settings.xml
+  - echo TRAVIS_TAG=$TRAVIS_TAG
+  - echo TRAVIS_BRANCH=$TRAVIS_BRANCH
+  - echo TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST
+script:
+  - mvn -B dependency:resolve-plugins checkstyle:checkstyle pmd:pmd
+  - bash run-additional-tests.sh
+cache:
+  directories:
+    - $HOME/.m2
+after_success:
+  - '[ -z "$TRAVIS_TAG" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [[ "`mvn help:evaluate -Dexpression=project.version | grep -v "^\["`" =~ .*-SNAPSHOT$ ]] && mvn -B -nsu deploy'
+notifications:
+  slack:
+    rooms:
+      - secure: 'ZFiLKBB7o16jQfmCsujEuenlvVHy2F9WkMg+35X16D+rm0SnVWP7Gi1YhFIpoavr7ZrEw0+09Hi3Ozq3/bNJm24qv7WkQUlNXvSbXRVKdeAXU4IS12d+CGbuiNPcwYCNRmHXBTIN/owj5+5e3zLrJqdmVe7EuBuUOIxMqhE1Qv7SW3fhq0rPAGU/ofpiYwFjJSEaki1zoUJnDHuSAVdTlRYSACTXqV6jhL+QEDKcVJxjcII4AjTJSbkiXtGNWMMSGArXX8SP2ezmeubW/Z0Wc80sTOQJkb/8fw/+HmsHFOWEyJjtTNroTR+hOwkeNydBy0WnAxF1eIy+ZWsZZ+z7ozNxIAn6/VnchJqPMNoIViaxsu5g/PxxmMfpOGMIht0upCZd0YDzlNTY/asW+gweY5IMCBGH50u0+1hoAtw4HyA7nL1sFZbNpP3vDpBn37We3w90+0gjf+v7wEflumRtFFxprBPr5FvhXX4c7oHtVDWZDve9kTSWVT5D+Hu0YbyM2O0OGOXoosWN9qyBAIZ1MQjqin6Z8ImtApNEEudwgYo33vFkgtwME3FrHbHUzZaoWpDYRSsCHE88tpgF/IYf8HQOpHxp8O2TYkXpylhh0KijjekLhDWLwFBaRa7JzbvPRLsrmTio1ysEFs4PVlawAe5purUzs/gcr80rangIUGw='
+    on_success: change
+    on_failure: always

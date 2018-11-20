@@ -1,0 +1,69 @@
+language: java
+sudo: false
+
+cache:
+  directories:
+  - ~/.m2
+
+branches:
+  only:
+    - master
+
+install:
+  -
+
+matrix:
+  fast_finish: true
+  include:
+    # eclipse-cs
+    - jdk: oraclejdk8
+      env:
+        - DESC="eclipse-cs"
+        - CMD="./.ci/travis.sh eclipse-cs"
+
+    # maven-plugin
+    - jdk: oraclejdk8
+      env:
+        - DESC="maven-plugin"
+        - CMD="./.ci/travis.sh maven-plugin"
+
+    # idea-extension
+    - jdk: oraclejdk8
+      env:
+        - DESC="idea-extension"
+        - CMD="./.ci/travis.sh idea-extension"
+
+    # sonar-plugin
+    - jdk: oraclejdk8
+      env:
+        - DESC="sonar-plugin"
+        - CMD="./.ci/travis.sh sonar-plugin"
+
+    # checks
+    - jdk: oraclejdk8
+      env:
+        - DESC="checks"
+        - CMD="./.ci/travis.sh sevntu-checks"
+
+    # regression on checkstyle
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle-regression"
+        - CMD="./.ci/travis.sh checkstyle-regression"
+
+    # eclipse static analysis
+    - jdk: oraclejdk8
+      env:
+        - DESC="eclipse-analysis"
+        - CMD="./.ci/travis.sh eclipse-analysis"
+
+    # testing of PR format
+    - env:
+        - DESC="test Issue ref in PR description"
+        - CMD="./.ci/travis.sh pr-description"
+
+
+script:
+  - eval $CMD
+
+after_success:

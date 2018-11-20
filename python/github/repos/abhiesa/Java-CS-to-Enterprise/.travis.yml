@@ -1,0 +1,27 @@
+language:
+  java
+jdk:
+  oraclejdk8
+sudo: false
+cache:
+  directories:
+    - $HOME/.m2
+addons:
+  sonarqube:
+    organization: "abhiesa-github"
+    token: $SONAR_TOKEN
+    branches:
+          - master
+    github_token: $GITHUB_TOKEN
+script:
+  - mvn clean validate compile package verify install sonar:sonar
+after_success:
+  - mvn clean test jacoco:report coveralls:report site
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: target/site
+    on:
+      branch: master
+      local_dir: target/site

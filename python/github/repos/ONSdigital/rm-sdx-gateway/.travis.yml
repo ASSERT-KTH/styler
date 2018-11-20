@@ -1,0 +1,32 @@
+sudo: required
+
+services:
+  - docker
+
+language: java
+jdk: openjdk8
+
+before_install: cp .maven.settings.xml $HOME/.m2/settings.xml
+
+script: "mvn fmt:check verify"
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+    docker push sdcplatform/sdx-gateway;
+    fi
+
+notifications:
+  slack:
+    rooms:
+      secure: pxElPX2DyfwB5yt4qLXaqZPISI0dCy99VrJ4TKYfHWsQEz1CUyLE8zj/z9MgOQOIXdkGJS7oddalhk98R6nJoNZiowquXqFRVIMcDPWw2wKnMsKf0sfIk3JFVbbIakRrXFK01HkeRDOjjEe5XpbjkKtZ5NQ/yngLQQiLupGR/KJZHKn/JulePbcgsp9YE6OECAbYUiMTB8gm/BF3n/u6UIFg6nJrdqxr/61beRG4X349nKWF2tac30X4UooxqsiKxsUI8fn9s6oGQnIfy3zoGXUZzB9KJbYGbY4WL31/8mvQvMv5YeLdxM9tYUu7y3FQy8zG+SkpI72TVU2+grapBnH0XRHqXGh5OYqphbpOlpZmEwYZOevpPQgTCRksxV7QsJAp+oqBKuLzfjLcVhjozY5Ki04d8oiZUaoT2OIMd0wxEbZp1oyz/P5BUKB8e4jqWqqjClj+faLvwZyXBWCWPePDtS2NE6w4OqzBfSkY0xVVuQbrPJnIV09O85bjQ6vHs+QGFkwgJvswk03r5COaVTOyd79KlQab6CerQ7FTQwf+tpzoyMzIj4oD8icQXl+eATXyr5fieWT+Z6P9xR+pSRawGA0YfEInJl6rzQ2ESKAWQaIsmD3p5qaWiaCw5pTvZlPyINqaG3piiJ6XnYyXAEjlqz4jXzCaDtKvLW71Nsg=
+    on_failure: always
+    on_success: never
+
+cache:
+  directories:
+    - "$HOME/.m2"
+
+branches:
+  only:
+    - master

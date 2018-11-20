@@ -1,0 +1,21 @@
+language: java
+
+notifications:
+
+    email: false
+
+    irc:
+        channels:
+            - 'ircnet.eversible.com#rage-research-ci'
+        on_success: change
+        use_notice: true
+        skip_join: true
+        template:
+            - '**'
+            - '%{message}'
+            - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{commit_message}'
+            - 'Build details : %{build_url}'
+            - '**'
+
+after_success:
+    - mvn clean cobertura:cobertura coveralls:cobertura

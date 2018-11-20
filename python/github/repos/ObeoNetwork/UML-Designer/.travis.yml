@@ -1,0 +1,113 @@
+language: java
+jdk: oraclejdk8
+env:
+  global:
+    - MAVEN_OPTS="-XX:MaxPermSize=512m"
+    - JDK_VERSION="8.0.112"
+    - ZULU_VERSION="8.19.0.1"
+    - ZULU_JDK="zulu$ZULU_VERSION-jdk$JDK_VERSION"
+    - ZULU_JDK_URL="http://cdn.azul.com/zulu/bin/$ZULU_JDK"
+    
+
+sudo: required
+before_script:
+- sudo apt-get install ruby-dev
+- gem install jekyll
+- gem install jekyll-paginate
+- gem install jekyll-gist
+- gem install pygments.rb
+- gem install redcarpet
+- gem install RedCloth
+
+script:
+# Build documentation web site
+- cd documentation
+- ls
+- jekyll build
+- ls
+- cd ../
+# Integrate the documentation to Eclipse
+- rm -rf plugins/org.obeonetwork.dsl.uml2.design.doc/html
+- cp -r documentation/_site plugins/org.obeonetwork.dsl.uml2.design.doc/html
+- ls plugins/org.obeonetwork.dsl.uml2.design.doc/html
+# Download the JREs
+- wget $ZULU_JDK_URL-linux_x64.tar.gz
+- wget $ZULU_JDK_URL-win_x64.zip
+- wget $ZULU_JDK_URL-macosx_x64.zip
+- ls
+# Extract the JREs
+- tar -C packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/linux-64/ -xf $ZULU_JDK-linux_x64.tar.gz
+- cd packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/linux-64/
+- ls
+- cd $ZULU_JDK-linux_x64
+- ls 
+- mv jre/* ../jre                                         
+- ls ../jre/
+- cd ../
+- rm -rf $ZULU_JDK-linux_x64
+- ls
+- cd ../../../
+- rm -rf $ZULU_JDK-linux_x64.zip
+- ls
+- unzip $ZULU_JDK-win_x64.zip ''"$ZULU_JDK"'-win_x64/jre/*' -d packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/win32-64/jre/
+- cd packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/win32-64/jre/
+- mv $ZULU_JDK-win_x64/jre/* .
+- rm -rf $ZULU_JDK-win_x64
+- ls
+- cd ../../../../
+- rm -rf $ZULU_JDK-win_x64.zip
+- ls
+- unzip $ZULU_JDK-macosx_x64.zip ''"$ZULU_JDK"'-macosx_x64/jre/*' -d packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/macosx/jre/
+- cd packaging/org.obeonetwork.dsl.uml2.runtime.product.feature/macosx/jre/
+- mv $ZULU_JDK-macosx_x64/jre/* .
+- rm -rf $ZULU_JDK-macosx_x64
+- cd ../../../../
+- rm -rf $ZULU_JDK-macosx_x64.zip
+# Build uml designer
+- mvn clean verify
+# Build uml designer products
+- mvn clean verify -f releng/org.obeonetwork.dsl.uml2.product.parent/pom.xml
+# Prepare local dirs to deploy: copy repository, bundles and tp
+- chmod a+x prepare-deploy-local-dir.sh
+- echo "$TRAVIS_TAG"
+# Prepare tag dir if it is a tagged build
+- if [[ "$TRAVIS_TAG" != "" ]]; then ./prepare-deploy-local-dir.sh $TRAVIS_BUILD_DIR/$TRAVIS_TAG; fi
+# Rename the zipped update site to nightly
+- mv packaging/org.obeonetwork.dsl.uml2.update/target/org.obeonetwork.dsl.uml2.update-*-SNAPSHOT.zip packaging/org.obeonetwork.dsl.uml2.update/target/org.obeonetwork.dsl.uml2.update-nightly.zip
+- mv packaging/org.obeonetwork.dsl.uml2.core.update/target/org.obeonetwork.dsl.uml2.core.update-*-SNAPSHOT.zip packaging/org.obeonetwork.dsl.uml2.core.update/target/org.obeonetwork.dsl.uml2.core.update-nightly.zip
+- mv packaging/org.obeonetwork.dsl.uml2.discovery.update/target/org.obeonetwork.dsl.uml2.discovery.update-*-SNAPSHOT.zip packaging/org.obeonetwork.dsl.uml2.discovery.update/target/org.obeonetwork.dsl.uml2.discovery.update-nightly.zip
+# Prepare the nightly dir
+- ./prepare-deploy-local-dir.sh $TRAVIS_BUILD_DIR/nightly
+
+after_script:		
+# Promote web site on gh-pages only for master branch		
+- chmod a+x travis-promote.sh		
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then ./travis-promote.sh; fi
+
+before_deploy: pip install --user awscli
+
+deploy:
+# Deploy nightly on s3
+  - provider: script
+    script: ~/.local/bin/aws s3 sync ${TRAVIS_BUILD_DIR}/nightly s3://obeo-umldesigner-nightly/${TRAVIS_BRANCH} --region=eu-west-1 --delete
+    skip_cleanup: true
+    acl: public_read
+    on:
+      branch: master
+# Deploy release on s3
+  - provider: s3
+    access_key_id: AKIAJJVZATSVUD3VGHXA
+    secret_access_key:
+     secure: JR+FhCfNYeOp1kg6VsNFxDpXeI0MB27DZyzZ31krTrYhogtn5lPQZoRVc1e7/C/jaZqsbY3RZvjXnZOzTVxOgOV2VqbWGUzTwsnzLATiqtIvlq6MJvwDfaB/zRzYs3aVjss7QiVVsCsYh6rlihD4C3Xn2lRZIRMarTUYbVNYWyk=
+    bucket: obeo-umldesigner-releases
+    local-dir: "${TRAVIS_BUILD_DIR}/${TRAVIS_TAG}"
+    acl: public_read
+    skip_cleanup: true
+    region: eu-west-1
+    upload-dir: "${TRAVIS_TAG}"
+    on:
+      tags: true
+      all_branches: true
+      repo: ObeoNetwork/UML-Designer
+dd:
+  secure: SVW8lL8L5J7f/AgTRm69vYlOVx+U/grtQM52Ue/ZaHtNhZEuXbz2FmPhMzK3k7Adlqw2vbrzmBe78svbHvMLOuqWGPfcmYlBLeSDQPp8VI6KLpGt+y2UltoSdLKjnXyn6KCerXYm4FTdqxtZDuso52THGNC0Enn3kHv6d9tR4qw=

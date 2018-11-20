@@ -1,0 +1,14 @@
+language: java
+sudo: required
+dist: trusty
+jdk:
+  - oraclejdk8
+before_install:
+  - if [ $USE_FRAMEBUFFER = "true" ]; then export DISPLAY=:99.0 && sh -e /etc/init.d/xvfb start; fi
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -V -B
+env:
+  - USE_FRAMEBUFFER=false
+
+script:
+  - mvn test -B

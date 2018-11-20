@@ -1,0 +1,25 @@
+#desc
+language: java
+jdk: oraclejdk9
+install: true
+
+env: DB=pgsql
+addons:
+  postgresql: "9.6"
+
+before_script:
+  - psql -c "CREATE DATABASE test;" -U postgres
+  - psql -c "CREATE USER test WITH PASSWORD '951103' SUPERUSER;" -U postgres
+
+cache:
+  directories: $HOME/.m2
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: ae3741f6-0e0e-466f-a835-b432aab04324
+  skip_cleanup: true
+  on:
+    all_branches: true
+  app: color-it-back
+  run: mvn

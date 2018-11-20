@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2014 Groupon.com
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+    Custom Checkstyle configuration. This is based heavily on the standard
+    Sun coding conventions as provided with Checkstyle in:
+
+    config/sun_checks.xml
+
+    Checkstyle is very configurable. Be sure to read the documentation at
+    http://checkstyle.sf.net (or in your downloaded distribution).
+
+    Most Checks are configurable, be sure to consult the documentation and your
+    team before making changes.
+
+    To completely disable a check in a particular context when it is not
+    possible to meet the convention but the convention is otherwise accepted,
+    simply surround the offending code with these comments:
+
+    // CHECKSTYLE.OFF: CHECKSTYLE_RULE_NAME - COMMENT DESCRIBING WHY
+    Offensive Code Here
+    // CHECKSTYLE.ON: CHECKSTYLE_RULE_NAME
+
+    Finally, it is worth reading the documentation.
+-->
+
+<module name="Checker">
+
+    <!-- Checks that file has the license header. -->
+    <module name="Header">
+        <property name="headerFile" value="${header_file}"/>
+        <property name="ignoreLines" value="1, 2"/>
+        <property name="fileExtensions" value="java, xml"/>
+    </module>
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- Checks that there are no tab characters in the file. -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Checks that FIXME is not used in comments.  TODO is preferred. -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//.*)|(\*.*))FIXME"/>
+        <property name="message" value='TODO is preferred to FIXME.  e.g. "TODO(johndoe): Refactor when v2 is released."'/>
+    </module>
+
+    <!-- Checks that TODOs are named.  (Actually, just that they are followed by an open paren.) -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//.*)|(\*.*))TODO[^(]"/>
+        <property name="message" value='All TODOs should be named.  e.g. "TODO(johndoe): Refactor when v2 is released."'/>
+    </module>
+
+    <!-- Checks that comments do not include date or time lines -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//)|(\*)) (Date|Time): "/>
+        <property name="message" value="Date and time should not be added to comments; that's what source control is for."/>
+    </module>
+
+    <!-- Checks that @author tags contain full name and email address -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//)|(\*)) @author [^ ]*$"/>
+        <property name="message" value='All @author tags should contain first and last name with email. e.g. "@author First Last (flast at example dot com)"'/>
+    </module>
+
+    <!-- Forbid shaded packages -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^import com\.arpnetworking\.metrics\.com\..*"/>
+        <property name="message" value="Do not import shaded dependencies from ArpNetworking."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import com\.arpnetworking\.metrics\.ch\..*"/>
+        <property name="message" value="Do not import shaded dependencies from ArpNetworking."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import com\.arpnetworking\.metrics\.org\..*"/>
+        <property name="message" value="Do not import shaded dependencies from ArpNetworking."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import junit\.framework\..*"/>
+        <property name="message" value="Use JUnit v4 instead."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="^import com\.google\.common\.base\.Optional"/>
+        <property name="message" value="Use java.util.Optional instead."/>
+    </module>
+
+    <!-- Always throw propagate result -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^[ ]*Throwables.propagate\(.*"/>
+        <property name="message" value="Always throw the result of Throwables.propagate."/>
+    </module>
+
+    <!-- Checks that LogValueBuilder without reference is not used -->
+    <module name="RegexpSingleline">
+        <property name="format" value=" LogValueMapFactory\.builder\(\)"/>
+        <property name="message" value="Specify the instance being logged to the builder static factory."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value=" LogValueMapFactory\.of\("/>
+        <property name="message" value="Use builder static factory and specify the instance being logged."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value='\.put\("[_]?id", Integer\.toHexString\(System.identityHashCode\(this\)\)\)'/>
+        <property name="message" value="Do not specify the id field explicitly."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value='\.put\("[_]?class", this\.getClass\(\)'/>
+        <property name="message" value="Do not specify the class field explicitly."/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value='final @Nullable'/>
+        <property name="message" value="Place the @Nullable annotation before the java modifiers (e.g. final, static, private, etc.)."/>
+    </module>
+
+    <!-- Checks that property files contain the same keys.         -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <module name="SuppressionFilter">
+        <property name="file" value="${suppressions_file}"/>
+    </module>
+
+    <module name="SuppressWarningsFilter"/>
+
+    <module name="FileLength">
+        <property name="max" value="1000"/>
+    </module>
+    
+    <!-- Requires a package-info.java file -->
+    <module name="JavadocPackage"/>
+
+    <module name="TreeWalker">
+
+        <module name="SuppressWarningsHolder"/>
+    
+        <!-- Turn checkstyle ON and OFF for a specified code block -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE\.OFF\: ([\w\|]+)"/>
+            <property name="onCommentFormat" value="CHECKSTYLE\.ON\: ([\w\|]+)"/>
+            <property name="checkFormat" value="$1"/>
+        </module>
+
+        <!-- Checks for imports.                     -->
+        <!-- Checks for redundant import statements. -->
+        <module name="RedundantImport">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Checks for out of order import statements. -->
+        <module name="ImportOrder">
+            <property name="severity" value="error"/>
+            <property name="groups" value="*,/^javax?\./"/>
+            <!-- This ensures that static imports go first. -->
+            <property name="separated" value="true"/>
+            <property name="option" value="top"/>
+            <property name="tokens" value="STATIC_IMPORT, IMPORT"/>
+        </module>
+
+        <module name="AvoidStaticImport">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <module name="JavadocMethod">
+            <property name="scope" value="protected"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+        <module name="JavadocType">
+            <property name="scope" value="protected"/>
+            <property name="authorFormat" value="\S"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="scope" value="public"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="tokens" value="ANNOTATION_DEF, ANNOTATION_FIELD_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF, INTERFACE_DEF, METHOD_DEF, VARIABLE_DEF"/>
+        </module>
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z]$"/>
+        </module>
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+        </module>
+        <module name="LocalFinalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^_[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z]$"/>
+        </module>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$"/>
+        </module>
+        <module name="ParameterName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="StaticVariableName">
+            <!-- These should almost never be used -->
+            <property name="format" value="^g[A-Z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="TypeName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+        </module>
+
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="AnonInnerLength">
+            <property name="max" value="25"/>
+        </module>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="30"/>
+        </module>
+        <module name="LineLength">
+            <property name="max" value="140"/>
+        </module>
+        <module name="MethodCount">
+            <property name="maxTotal" value="100"/>
+            <property name="maxPrivate" value="100"/>
+            <property name="maxPackage" value="100"/>
+            <property name="maxProtected" value="100"/>
+            <property name="maxPublic" value="100"/>
+        </module>
+        <module name="MethodLength">
+            <property name="max" value="80"/>
+            <property name="countEmpty" value="false"/>
+        </module>
+        <module name="OuterTypeNumber">
+            <property name="max" value="1"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+        </module>
+
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForInitializerPad">
+            <property name="option" value="nospace"/>
+        </module>
+        <module name="EmptyForIteratorPad">
+            <property name="option" value="nospace"/>
+        </module>
+        <module name="GenericWhitespace">
+        </module>
+        <module name="MethodParamPad">
+            <property name="allowLineBreaks" value="false"/>
+            <property name="option" value="nospace"/>
+        </module>
+        <module name="NoWhitespaceAfter">
+            <!-- Tokens: include all tokens except: ARRAY_INIT
+            -->
+            <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+        </module>
+        <module name="OperatorWrap">
+        </module>
+        <module name="ParenPad">
+        </module>
+        <module name="TypecastParenPad">
+        </module>
+        <module name="WhitespaceAfter">
+        </module>
+        <module name="WhitespaceAround">
+            <!-- Tokens; includes all tokens except:
+                 1) LCURLY and RCURLY - To allow empty anonymous class definitions.
+             -->
+            <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+        </module>
+
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifier.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks">
+          <property name="allowInSwitchCase" value="true"/>
+        </module>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly">
+            <property name="option" value="eol"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="RightCurly">
+            <property name="option" value="same"/>
+        </module>
+
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!--module name="ArrayTrailingComma"/-->
+        <!--module name="AvoidInlineConditionals"/-->
+        <module name="CovariantEquals"/>
+        <module name="DefaultComesLast"/>
+        <module name="EqualsHashCode"/>
+        <module name="FinalLocalVariable"/>
+        <module name="HiddenField"/>
+        <module name="IllegalCatch"/>
+        <module name="IllegalInstantiation">
+            <property name="classes" value="java.lang.Boolean,java.lang.Integer,java.lang.Long,java.lang.Double,java.lang.Float,java.lang.Byte,java.lang.Char,java.lang.String,java.util.HashMap,java.util.HashSet"/>
+        </module>
+        <module name="IllegalThrows"/>
+        <module name="InnerAssignment"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="ModifiedControlVariable"/>
+        <module name="NoClone"/>
+        <module name="NoFinalizerCheck"/>
+        <module name="OneStatementPerLine"/>
+        <module name="PackageDeclaration"/>
+        <module name="ParameterAssignment"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="UnnecessaryParentheses"/>
+
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InnerTypeLast"/>
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+        <module name="ThrowsCount">
+            <property name="max" value="3"/>
+        </module>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+        <!-- <module name="DesignForExtension"/> -->
+
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters">
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, LITERAL_CATCH"/>
+        </module>
+        <module name="OuterTypeFilename"/>
+        <module name="UpperEll"/>
+
+        <!-- Disallow comparisons of this with null -->
+        <module name="DescendantToken">
+            <property name="tokens" value="EQUAL,NOT_EQUAL"/>
+            <property name="limitedTokens" value="LITERAL_THIS,LITERAL_NULL"/>
+            <property name="maximumNumber" value="1"/>
+            <property name="maximumDepth" value="1"/>
+            <property name="sumTokenCounts" value="true"/>
+        </module>
+
+        <!-- Disallow string literal equality checks (use .equals!) -->
+        <module name="DescendantToken">
+            <property name="tokens" value="EQUAL,NOT_EQUAL"/>
+            <property name="limitedTokens" value="STRING_LITERAL"/>
+            <property name="maximumNumber" value="0"/>
+            <property name="maximumDepth" value="1"/>
+        </module>
+
+        <!-- Uninitialized for loop (use while instead) -->
+        <module name="DescendantToken">
+            <property name="tokens" value="FOR_INIT"/>
+            <property name="limitedTokens" value="EXPR"/>
+            <property name="minimumNumber" value="1"/>
+        </module>
+
+        <!-- Missing condition in for loop -->
+        <module name="DescendantToken">
+            <property name="tokens" value="FOR_CONDITION"/>
+            <property name="limitedTokens" value="EXPR"/>
+            <property name="minimumNumber" value="1"/>
+        </module>
+
+        <!-- Additional Checks -->
+        <module name="MissingDeprecated"/>
+        <module name="AvoidStarImport">
+            <property name="excludes" value=""/>
+            <property name="allowClassImports" value="false"/>
+            <property name="allowStaticMemberImports" value="false"/>
+        </module>
+        <module name="UnusedImports"/>
+
+    </module>
+
+</module>

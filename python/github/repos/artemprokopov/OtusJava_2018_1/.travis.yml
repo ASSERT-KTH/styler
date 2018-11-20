@@ -1,0 +1,51 @@
+# используем язык java. Travis CI поддерживает другие языки тоже.
+language: java
+# используем режим обычного пользователя для сборки проекта.
+dist: trusty
+sudo: true
+jdk: oraclejdk9
+env:
+  - DB=mysql
+mysql: &mysql
+  adapter: mysql2
+  username: otus
+  password: 12345
+  database: otus
+# после выполнения сборки запустить скрипт, который будет собирать статистику по JaCoCo
+# Здесь используется сторонни сервис https://codecov.io/
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+# Отправлять уведомление на почту youremail@smtp.ru (Изменить на свою) если сборка упала
+notifications:
+  email:
+    recipients:
+      - art1828@mail.ru
+    on_success: always # default: change
+    on_failure: always # default: always
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
+      - net-tools
+before_install:
+  - sudo mysql_upgrade --force
+  - sudo mysql -e "use mysql; CREATE USER 'otus'@'localhost' IDENTIFIED BY '12345';"
+  - sudo mysql -e "SELECT User,Host FROM mysql.user;"
+  - sudo mysql -e "CREATE DATABASE IF NOT EXISTS otus; GRANT ALL ON * . * TO 'otus'@'localhost'; FLUSH PRIVILEGES;"
+  - sudo mysql -e "GRANT ALL PRIVILEGES ON * . * TO  'otus'@'localhost';FLUSH PRIVILEGES;"
+  - sudo mysql -e "SHOW DATABASES;"
+  - sudo mysql -e "use otus; CREATE TABLE myORM(id bigint(20) NOT NULL, name varchar(255), age int(3));"
+  - mysql -u otus --password="12345" -e "SHOW COLUMNS FROM myORM FROM otus;"
+  - sudo mysql -e "\s"
+  - sudo mysql_ssl_rsa_setup --uid=mysql
+  - sudo service mysql status
+  - sudo service mysql stop
+  - sudo usermod -d /var/lib/mysql/ mysql
+  - sudo service mysql start
+  - sudo mysql -e "\s"
+  - netstat -tln

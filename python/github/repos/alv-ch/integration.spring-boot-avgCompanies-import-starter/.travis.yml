@@ -1,0 +1,28 @@
+# Use docker-based build environment (instead of openvz)
+sudo: false
+
+language: java
+jdk:
+  - oraclejdk8
+
+before_install:
+  - mkdir /tmp/output
+
+# Build everything in 'script' phase
+install: /bin/true
+
+script:
+  - mvn clean install --settings travis-mvn-config.xml
+
+  # Submit test Coverage
+  - mvn coveralls:cobertura --settings travis-mvn-config.xml
+
+  # Deploy artifacts
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then mvn deploy --settings travis-mvn-config.xml ; fi
+
+  # Trick to avoid useless S3 cache updates
+  - mv $HOME/.m2/repository/ch/alv /tmp/cache-trick
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'

@@ -1,0 +1,76 @@
+language: java
+sudo: false
+
+addons:
+  firefox: "53.0"
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/mvn_repo
+  - $HOME/.node_modules
+branches:
+  only:
+    - master
+    - travis
+    - /^release-.+$/
+    - /^dev-.+/
+
+before_install:
+  - export MVN_CMD="mvn -Dmaven.repo.local=$HOME/mvn_repo -B"
+  - nvm install 7
+  - OLD_VERSION=`$MVN_CMD help:evaluate -Dexpression=project.version 2>/dev/null | grep -Ev "(^\[|Download)"`
+  - BASE_VERSION=${OLD_VERSION%-SNAPSHOT}
+  - NEW_VERSION=${BASE_VERSION}-dev-`printf %d $TRAVIS_BUILD_NUMBER`
+  - ECLIPSE_VERSION=${BASE_VERSION}.dev_`printf %d $TRAVIS_BUILD_NUMBER`
+  - export NEW_VERSION
+  - export ECLIPSE_VERSION
+  - export BASE_VERSION
+  - echo "Building version $NEW_VERSION"
+  - ./set-version.sh $NEW_VERSION $ECLIPSE_VERSION
+  - rm -rf $HOME/.phpenv
+  - rm -rf $HOME/.rvm
+  - rm -rf $HOME/.m2
+
+install:
+  - $MVN_CMD install -Dteavm.build.all=false -P with-idea -P with-eclipse -P with-cli -DskipTests=true -Dmaven.javadoc.skip=true -V
+  - pushd tests/src/test/js
+  - npm config set prefix=$HOME/.node_modules
+  - npm install
+  - npm run build
+  - popd
+  - rm -rf tools/idea/idea-artifacts/dependencies
+
+script:
+  - $MVN_CMD -e test -Dteavm.junit.optimized=false -Dteavm.junit.js.runner=none
+  - BASE_PATH=`pwd`
+  - pushd tests/src/test/js
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 10
+  - firefox index.html &
+  - FIREFOX_PID=$!
+  - node start.js $BASE_PATH/tests/target/js-tests
+  - node start.js $BASE_PATH/html4j/target/js-tests
+  - kill $FIREFOX_PID
+  - popd
+  - rm -rf $BASE_PATH/tests/target/js-tests
+  - rm -rf $BASE_PATH/html4j/target/js-tests
+  - du -sh $HOME/.[!.]* /home/travis/* | sort -h
+  - df
+
+after_success: >
+   if [[ "${TRAVIS_PULL_REQUEST:-unknown}" == "false" && $TRAVIS_BRANCH == dev-* ]] ; then
+     export NEW_VERSION
+     export TEAVM_FTP_HOST
+     export TEAVM_FTP_LOGIN
+     export TEAVM_FTP_PASSWORD
+     mv -f $HOME/built_artifacts_backup $HOME/mvn_repo/org/teavm
+     $MVN_CMD deploy -Dteavm.build.all=false -DskipTests --settings travis-settings.xml \
+       -P deploy-to-bintray -P with-idea -P !download-dependencies && \
+       ./upload-files.sh
+   fi
+before_cache:
+  - mv -f $HOME/mvn_repo/org/teavm $HOME/built_artifacts_backup

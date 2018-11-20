@@ -1,0 +1,36 @@
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+install:
+  ./mvnw --settings .settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+
+script:
+  ./mvnw --settings .settings.xml clean verify -DskipTests=false -Dmaven.javadoc.skip=true -Dgpg.skip -B -U
+
+before_deploy:
+  - ./mvnw help:evaluate -N -Dexpression=project.version | grep -v '\['
+  - export project_version=$(./mvnw help:evaluate -N -Dexpression=project.version | grep -v '\[')
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - sed -i -- "s/\${env.SONATYPE_PASSWORD}/$SONATYPE_PASSWORD/g" .settings.xml
+  - ./mvnw --settings .settings.xml clean deploy -DskipTests=true -Dmaven.javadoc.skip=false -B -U
+
+deploy:
+  provider: releases
+  api_key:
+    secure: D6QIU6EyLGlsZJMmnq/xK+GgjaeyVsXtt42pZMmxN5/CDJE83am6kAgF8TmM3ZLT8PGteRq/U+BYXMFipagXn4RDvFWRq+ZjjCPzXZ0+CLO7EbzTNgtIzweMYrx6EwnMyQ6TDP7M/hjylB5LePsi6ASP3GLbKQ9GuaDPCnLJGGDzuRJPbCuk0TIKpfEz+WxC7vL/FqJluPs3wINR1dv4rTGjz9I/unxBwiSkUZHgI08jbJOPr19mFUej2L5+hm40H9THKGqEwTCDEjIiJodv6gIAvK8Kt+upRewNdX8AJiLnK877KLnhm8gsZy14gVx8fZ3/xEC4EB44z4UQjfZL0FBtw2cwFe/zij0q8v53h0vjEpJEZeIqwW4QrbADk7Sr5EqCCVdq+S/lLxuEPgnAw7ARX87fELrIP3DyONVP773sC2k3ZUi9MZjBmlwSgHB2Si30deBSxIVKgWCRdGyM2hMAU2nSfM4tuZMMivucrh3+ibppJxNpl512UBUkXNX16/mjeQlv3Ve3FZ08C+GZ+1A+t7orPok9mz7k0h2FPx39YmvDc1pWbKBtPAbgFj+Uyebuc15wf5JDDTDgmr3oBGHjWMj6PaA+ovJ0lti4g5QzboP9rI3HC7Jz44KIlX55eUaRhcWBxZJWxIAfPpJ1cKKrztjMhPjPh147epLbXX4=
+  file:
+    - "feign-form/target/feign-form-$project_version.jar"
+    - "feign-form/target/feign-form-$project_version-javadoc.jar"
+    - "feign-form/target/feign-form-$project_version-sources.jar"
+    - "feign-form-spring/target/feign-form-spring-$project_version.jar"
+    - "feign-form-spring/target/feign-form-spring-$project_version-javadoc.jar"
+    - "feign-form-spring/target/feign-form-spring-$project_version-sources.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: OpenFeign/feign-form
+  name: $project_version

@@ -1,0 +1,33 @@
+language: java
+before_install:
+  - export ROOT=`pwd`
+  - export ANDROID_SDK_VERSION=22.0.1
+  - export ANDROID_SDK_TGZ=android-sdk_r${ANDROID_SDK_VERSION}-linux.tgz
+  - export ANDROID_API_LEVEL=17
+  - export ANDROID_TARGET=android-${ANDROID_API_LEVEL}
+  - export ANDROID_HOME=${ROOT}/android-sdk-linux
+  - export TARGET=release-nomarket
+  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+  - set
+  - pwd
+  - ls
+  # download the latest android sdk and unzip (http://developer.android.com/sdk/index.html)
+  - wget http://dl.google.com/android/${ANDROID_SDK_TGZ}
+  - tar -zvxf ${ANDROID_SDK_TGZ}
+  - ls /home/travis/build/altendky/polly/android-sdk-linux/tools
+  # only update the sdk for the tools and platform-tools (1,2) and whatever api level
+  # you are building for android (run "android list sdk" to get the full list.  9 = 2.3.3 or API level 10
+  # or see http://developer.android.com/guide/topics/manifest/uses-sdk-element.html
+  - android update sdk --filter 1,2,${ANDROID_TARGET} --no-ui --force <<< y
+script:
+  - android list targets
+  - android update project --path astrid --target ${ANDROID_TARGET}
+  - android update project --path android-aac-enc --target ${ANDROID_TARGET}
+  - android update project --path actionbarsherlock/library --target ${ANDROID_TARGET}
+  - android update project --path greendroid/GreenDroid --target ${ANDROID_TARGET}
+  - android update project --path viewPagerIndicator/library --target ${ANDROID_TARGET}
+  - android update project --path facebook/facebook --target ${ANDROID_TARGET}
+  - android update project --path api --target ${ANDROID_TARGET}
+  - ls ${ANDROID_HOME}/build-tools
+  - ls ${ANDROID_HOME}/build-tools/17.0.0
+  - ant ${TARGET}

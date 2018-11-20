@@ -1,0 +1,26 @@
+sudo: false
+
+language: java
+jdk: oraclejdk8
+
+install:
+    - mkdir -p ../utils
+    - curl -Ls https://github.com/s4u/travis/archive/master.tar.gz \
+      | tar -zx --strip-components 2 -C ../utils travis-master/src
+
+
+script:
+    - ../utils/mvn-push.sh clean deploy
+    - ../utils/mvn-pr.sh   clean verify
+
+cache:
+  directories:
+  - $HOME/.m2/repository
+
+before_cache:
+  - rm -rfv $HOME/.m2/repository/org/simplify4u/parent*
+
+env:
+  global:
+  - secure: EozM9YwDvaoQnTFIKDWCa7K76amwpkAILBt2QQpHpl0DIgZvPqEQixEMeI4YXECh/sdrFRsJveS8QGJrJta4Uhni2pCh2VdxNDxNDY2arsqzXU1lS7s8x6I753Dh5VbdDHRLXAMxHnVQNnnbeUoDv7rdaPUBVQnaLKGxcG4KC1Q=
+  - secure: D/0p02E8WkHlTeY8MAMYPVXqTE6HT6gWMTJ9hvEDpDpOgiZlGyVtNcZqrSAtMhAX1vFR+9C4qB+U1+Nc1qyRWFKFzcN4yySXPv5H0lBcp18bz8G69PZKU5B6KpGQBzwLHcKlMnFmNKvra9qohcrAz5jdMwM1VPUkGIFR8WHEHa4=

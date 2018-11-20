@@ -1,0 +1,30 @@
+language: java
+#
+# use the container based infra and get benefits of the cache
+#
+sudo: required
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.m2
+
+before_install:
+  - id
+  - echo $HOME
+  - pwd
+  - docker pull nodevops/maven-fury-confd:1.0
+
+# skip 'mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V'
+install: /bin/true
+
+script:
+  - chmod +x ./scripts/travis_build.sh
+  - ./scripts/travis_build.sh
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+

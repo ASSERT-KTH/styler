@@ -1,0 +1,62 @@
+sudo: false
+language: java
+jdk:
+- oraclejdk8
+notifications:
+  irc:
+    channels:
+    - chat.freenode.net#hawkular
+    on_success: change
+env:
+  global:
+  - MAVEN_OPTS="-Xmx1g"
+  - secure: PCD5uBTEymzkZooEiCR5LILSDlupqpzprb/9Y44psx2ioRtVFloVncc0e0seTc7/2ai1/HkLj/y2YqZ/6TeNJcYsCJfzG1Qn960RuqQLDESgYJtOPD9A2Angzg6DLoqgMS4l1ifkpsIAhUXXJbHqBionBv21Tseix11cgwwEB+7l9v70tAeA9NlF8B1oTsspc2IeOidcO8U3hmohnTj7ZWMmwsGPkNDMBszLpvrI7qyosZ5YRg3ZsL7lmClLJ6PTB/DVQEUTmJS8XmyAFw6bLrJaMXX7K8Hc18npVnp8FocAh0u7bVvIxW3AGQkGhDGH6BwxvQ53+3Dc5sC2JF6vM1nGDxM+wmZoiS43zi7A2wQg+3Vyh7MLwXYuWNdexaUoH5alb++VpIQWqQG9Yd7VN6pM4b9IEDiqXy364gzOPWcLtPIWIkpTq3pN1FqTUNQ2zkq+rWwEfQSgUPCfjJ1t6mdDNAF5EaX+4JrddIQRVZa7GAWjnR8msNLIgTfcr3P123EHToNjnpf2BCJp+Hy3WnDU6NYY2ey/TMdZQEoyQdC2mOg3Qa9y6uvLfAcjNtl4Spf4UkPBmfyJoxymW0yafKwq+1zos6Kr2LurXOVJGBrAzmfv43a9F3q1o9jrBUioJzOrMLYV+ELCqOFqk2leqV1otgAOYEDF17akvPoJFaw=
+  - secure: mlZnG9+AkxDqgZ/BZpQC6tb3D7ZSXiZRSbPTqR6af/4JMtvnD3pN+0L9YzRtMiWtfpacBQo8ygMHHMua5rcAkGyq8OhNXLs3aj6AdWo94x3VMgBGpSCKG5Zz7W854fGzKxDgrVMLeBQ0mFX4nkXWt9jyEVuLm1wb8iUkxhmYMGIk6pWeDCB9tOw5aKT25R8Mxf6M1qetKYF140ws0qSBRl+/A3NoHduQ+xhVMv234uH/27gr1b/1Fo5NohS5a5ge2Z4bzeX/N6TCJZMxuvAg1jFwO2FPyjIKg7kKyDlte3gj+WRniI2puU7ghFbEBbY3g6knpdSvAXjFi4SXukC5tyVg2OFc9A39g5JtyCu9idSL693iTbCWirf1i3vXtJMipNbUg7NTWM+I3LfS2RhI7GDyR8iuPrRyHwJSrYqArto26E94lGPnMqbrHLjpf1WSvMMlYiGUUut/qDA83NCld4hHExhs2tUJRpUyeeK8i2xPYUkRtLl4Wc0Cg1jDflumsVgfqJXSJhXDb/CRJVoA/rk59EZuPgiLWZ3uz7mmcTTlDYXFwrLDO2ajzYtAVtsb+lro6RbUrXUo86gW9AA5NaEeRU3GLPJeNhUA05hnSO8FmlTC0Tio/Y4rGJXrBRwqq7A8sKb6LQ24EQ7ZqSH27Pq7lt42l1LnUZQ0v7MHqQQ=
+addons:
+  coverity_scan:
+    project:
+      name: hawkular/hawkular-commons
+      description: Build submitted via Travis CI
+    notification_email: hwr@pilhuhn.de
+    build_command_prepend: ./mvnw clean
+    build_command: ./mvnw -DskipTests=true compile
+    branch_pattern: coverity_scan
+
+# manage the caches here https://travis-ci.org/hawkular/hawkular-commons/caches
+cache:
+  directories:
+  - $HOME/.m2/repository
+  - $HOME/.m2/wrapper
+
+install:
+- echo $MAVEN_OPTS
+- ./mvnw -version -B
+# unshallow is needed by license-maven-plugin
+- git fetch origin --unshallow
+script:
+- ./mvnw -s .travis.maven.settings.xml verify -Pitest -Dwildfly.logging.console.level=DEBUG -B | grep -vF "[INFO] Downloading:" | grep -vF "[INFO] Downloaded:"; test ${PIPESTATUS[0]} -eq 0
+
+before_cache:
+# Clean the cached directories once their size exceeds the space left on the partition.
+# This is important because Travis zips the chached directories to a temporary file on the same partition.
+# Note that while we consider the summed size of all cached dirs, we remove only those ones that tend to grow over time
+- CACHED_DIRECTORIES=("$HOME/.m2/repository" "$HOME/.m2/wrapper")
+- availBytes=$(df -P . | tail -1 | awk '{print $4}')
+- cachedBytes=$(du -cs "${CACHED_DIRECTORIES[@]}" | tail -1 | awk '{print $1}')
+- echo "Checking if the size of directories to cache ${cachedBytes} Bytes exceeds the free space ${availBytes} Bytes left on the current partition"
+- if [ "${cachedBytes}" -gt "${availBytes}" ] ; then
+    echo "Cleaning the cached dirs (${cachedBytes} Bytes) because their size exceeds the free space (${availBytes} Bytes) left on the current partition"
+    rm -Rf "$HOME/.m2"
+  fi
+
+after_success:
+- PROJECT_VERSION=`./mvnw --batch-mode org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\['`
+- if [[ "$PROJECT_VERSION" =~ .*SNAPSHOT ]] && [[ "${TRAVIS_BRANCH}" = "master" ]]  && [[ "${TRAVIS_PULL_REQUEST}" = "false" ]];
+  then
+    ./mvnw -s .travis.maven.settings.xml deploy -DskipTests ;
+  fi
+- if [[ "$PROJECT_VERSION" =~ .*SNAPSHOT ]] && [[ "${TRAVIS_BRANCH}" == "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]];
+  then
+    ./mvnw -s .travis.maven.settings.xml deploy -DskipTests ;
+    ./.travis.swagger.sh ;
+  fi;

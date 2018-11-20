@@ -1,0 +1,25 @@
+language: java
+sudo: false
+cache:
+  directories:
+  - "$HOME/.m2"
+jobs:
+  include:
+  - stage: test
+    script:
+    - "./mvnw verify site"
+jdk:
+- oraclejdk8
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
+
+before_script:
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- ./cc-test-reporter before-build
+
+after_script:
+- JACOCO_SOURCE_PATH=api-common/src/main/java ./cc-test-reporter format-coverage api-common/target/site/jacoco/jacoco.xml --input-type jacoco
+- ./cc-test-reporter upload-coverage

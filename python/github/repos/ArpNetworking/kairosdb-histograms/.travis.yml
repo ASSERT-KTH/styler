@@ -1,0 +1,35 @@
+cache:
+  directories:
+  - "$HOME/.m2"
+  - "$HOME/.jdk"
+sudo: false
+services:
+  - docker
+addons:
+  apt:
+    packages:
+    - rpm
+env:
+  global:
+  - TARGET=install
+  - secure: K/wq5aBOhwtGPBkXEmGKufeJ8owvUtXa/uNwhx7+D6CYEMmIaSSvs2pRVvU3xCrWxrIakpzjclLtyJ6g1IRp5piMmKYu5HX5BiHyvNqpMew/5dJ9CDl9913lNgOoflhn2sJuguq4UpQH5VlkzAyNnCt4gePDAHcJMfcDxcUyUpqC0B8fk1BW+J/9Zi2TF19NCwKOt49qUqEuevwLPtG5hw7E3S8kg5507yix6rMbmE3uLqxfQt5j1gw1KLgHIokkbAPGPSbrmUl81A22G8Wnl9Q/VYyiyInLETlHc+X0/TESorzlOCiaUTsAc8zynZ+QxkbrpxV9sqwDq5dq/Wtjg7GJ2E+GQaQNxF0HR0TFyNxlOlgY9iqYw/O+btrLRjx3DlQok1MO+V+ek/Cgs4GTl3vK8t++kfLx9y59nYaAAkl0nI/JoBXUKrODYAifBLd2ctYeGO41j1+TPfghkX4NoaThZeXHMNcpMejYugwHnNavxF3uXOhqmBklk1Rx6Emnj41xFwwgCC6JNjHR+8CjDbSRaYg/lLZs3ipUoIUBs5pks4gbYIOuWW619xxJETLRWLRkOedyoa4H23xli89SUjX+m9bQvZNtiNjIINJe38zif2A4qq9QmqPbfsqeityzA31LhQ3qhfICvBh4kr4t8Zlihy/b+7P66/QFq4t4h7A=
+  - secure: Dn+zGejcjA/OSYo88COIhqQF1AAQTDaQDSqN7GVNr7Di1jRkLTDrIp6y92o5RpYqRu82skkZD+mn6Hl3Sme41oUv1ved/4ZhJLPG6PTv8rejLOavS0tkZ9CKnAJNDdLNEvJ6jwh7Tqtiyk3CNdhWkYXTVFDc6SJiOZtPOl17xZ2Gr3EfMHmc7Po3DEQSjZYaGstHeiWKFl3TUqBRcF98DlFx85IIaK/mHtTEn56Khjs+Zfl+XTjuwaCd+9h9nH+kSNfZoYaaXJbNfJKm1Lqs7Wyl6Efl7plV7JSFtUK5u6NQg3fUXb/kcLW3+/FxGjpacnLGbJ+RbSmwOYOR40Al7/g0+ypMksaxT3g5JGqlWbLFD3aPh5ja6d4SUxdhE3dvZGjx25u8ECGSxvsnm0eCwtHHfGv6JFH2UyaBtCVh2YlEgfz1ai1aa8WTZ4JRU4LA9mle98K7FXzMAZZgJw/JAJ31o5rtx8vZKkZ622Mgjz9wcUZDcWA53B+zOrrrfp+xKS0uH3vyQFvxZMS2f/5LRoV96elFXa+vh6WHv6cCxVId9/UGdoIjQ/OWMUV8uKkBsGwIBrDvMCsL2vuByqNl8ciZqq0S2G/nd9xxf19FqV5N0L8p0erTzYet4Ie/7nj1+OXy2i/8AEq+3aIj2FaNXcicet/5p3WtLemWx0Y+Ytk=
+  - secure: cQPFNa1t1f37Hnlw7QhqaxxsaFWKmKIR8FMftzIxjUJkb2EqJBB0eAgf1hIJAReDoWFPj8YUJEJJQ+sT/S8I5XYf9XzUCQnfJIJsw09MaMl47NWeLx13Bvx+qTiTxei8R+qkho1Hzizx7Pie1shvEDz2vsaARb9wFZyDQOfSx5cbY4L6uUwmmHmKsubQBPyXXFujmKj9epo+NC8QfMKj3WL2zqrRTOnOR/HQnu5Tzz+nSVQiH2FJBRMtKEnOpEkuKf79zKgmeiGmaMu1YKbhuDGmUyn0LIflOczylAA9qVAxI5SP3yAqbDCc6oZqd9BCZe42xEu4qf7MBFYtgML3qs0TMn5esmXzZleI5QH42i8PA1uP7og0tvDvTT34NUjHb8PKWnDmjQ7+I7KU80TA/zViBIjXBBsV1cwxUMlNpDYaxdNeiiZPV5LYRJHho7/0DDLhKFVOXk9Xk46POVHUl4YEEYrrFWrZXa9z3taQSea2xgotHC25X2/jlCTZZMPTSoTwVcsNUmhvj/TlaHgL6S6MOeUWOvERyuquQITtU58XTar3/H2/RHzIuMsmll88sf3AVZO9R6UPlMazW2HOGNktAucyzrQp3Dmh94C22k7QWCwRUjyi8I1p4nDwuWJkFh5yF3TI3I/JfOVbCaoWMcmeVZZarSeF4/7Lp0j+7+8=
+install: true
+before_script:
+- gpg --import arpnetworking.key
+- if [ \( -n "${TRAVIS_TAG}" \) -a  "${TRAVIS_PULL_REQUEST}" = "false" ]; then export TARGET="deploy -P release --settings settings.xml"; fi;
+script:
+- ./jdk-wrapper.sh ./mvnw clean ${TARGET} -P rpm -U
+deploy:
+  provider: releases
+  api_key:
+    secure: rajBgPaGqNyf/uIVu7Ov8DEUzR6zijPQIEmwxjv+jP0AwQojDHsZAx1RPDL0EVymQcOIcccrShZXc7ozUH0F7/ffGU8syWbZG/6gvAN7ISbAI5Rx85j3T4OkFUP0/VxABbKU/oolKYIwFxyZZkUVq1SB8sxutu5+NjCXsT/t6xsJLR+opW6dVOVVwyMbXpiKQTidj718EJPafwLgwQnk52Tamx09jPRvDod+qq0YW8N7z2q04L+HHFhqjKCqMLTnSZG1QRzS+bXgKWHfYaT68+zpVs0mLmKsecGK9nIr+Sd+nhG6omRrb9AJSLXeTN6PokR5Trhb+aRAB5Gv+X7cCuNYixTB/Le0cD4YxEvN5wCE8DH8iVDfgRzv8f0IEKFSq8YcEUvTGj+U8/a6vs/p1gI8SnRpnC0l3kljVJXWSZwaEdw1wGdsCzbN25uPBEV5WgfGQKfMuPts2tDpyQ7dirkI1ZpGXyogAVTXYWdfvQ8lt4rM10b8Y0lF+pcJ8wbrdqW68Wp/WhbX9cXu0tVSbbWSEsJkJSXDoRxHtC74G8PGm8/vmG0s4Hrpub/2oNSSPlARYQmygqZ9MNJPR0F7izU7VvwxwppNEvFI+ruikoZx/RYvIolaPXarkqnqujDNL54uVrRSXjfumQ6Aef9A2k5Hr18Akbc/zHpJSpua2GY=
+  file:
+    - target/rpm/kairosdb-histograms/RPMS/noarch/kairosdb-histograms*.rpm
+    - target/kairosdb-histograms*-bin.tgz
+  file_glob: true
+  skip_cleanup: true
+  on:
+    repo: ArpNetworking/kairosdb-histograms
+    tags: true

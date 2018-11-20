@@ -1,0 +1,39 @@
+language: java
+sudo: false
+dist: trusty
+jdk: oraclejdk8
+
+before_install:
+- wget https://archive.apache.org/dist/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz
+- tar xf apache-maven-3.2.2-bin.tar.gz
+- export M2_HOME=$PWD/apache-maven-3.2.2
+- export PATH=$M2_HOME/bin:$PATH
+
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
+   
+cache:
+  directories:
+  - $HOME/.m2/repository
+  
+before_cache:
+  - rm -f $HOME/.m2/repository/com/torodb
+
+before_script:
+- export GIT_BRANCH=$TRAVIS_BRANCH
+
+script: mvn -Psafer -Pintegration -B -e -T 1C -Dcheckstyle.consoleOutput=false verify
+
+before_deploy:
+- echo "<settings><servers><server><id>ossrh-snapshot</id><username>\${env.MAVEN_DEPLOY_USER}</username><password>\${env.MAVEN_DEPLOY_PASS}</password></server><server><id>ossrh-release</id><username>\${env.MAVEN_DEPLOY_USER}</username><password>\${env.MAVEN_DEPLOY_PASS}</password></server></servers></settings>" > ~/settings.xml
+  
+deploy:
+- provider: script
+  script: bash deploy-nexus.sh
+  skip_cleanup: true
+  on:
+    repo: torodb/build-tools
+    branch: devel
+    jdk: oraclejdk8

@@ -1,0 +1,23 @@
+language: java
+jdk:
+- oraclejdk8
+notifications:
+  irc:
+    channels:
+    - chat.freenode.net#scribble
+    on_success: change
+    on_failure: change
+env:
+  global:
+  # Ex. travis encrypt -r org/repo GH_USER=your_github_account
+  - secure: "AvbUc7SM0c3JuiVE1zBzQGVsmGOuNHKz2spgMO0TdOTJMsvJ5Vpa8ytTTd4Gx7tdY1gwRYA3xo7ZeATuRSFOJt1H6u7DsN+qtxRlTxNvzFxgftN7jb7eqfETfKmMMDaNYY3rCiTQbyM2ZSsj9ayQZCfMddURV17NnO1SNf8Juyk="
+  # Ex. travis encrypt -r org/repo GH_TOKEN=XXX-https://github.com/settings/tokens-XXX
+  - secure: "jJD03jZ653EIIoYmvE/wqyWoKrywwyL/T25FLOeBK+8GIk1wJre3vGPjseD6YbW2adu2KKpNO0WBHAnTEBleaDIqpvqzuteIsIqKUjVdpdBmUKeyjFzBiVUQ47vKeoqCdb5vEbTHiQbSUO98xNJvFbhuSzUbP1oUKbLdR1hPeTo="
+
+install:
+- mvn -version -B
+script:
+- mvn install -B
+after_success:
+- test "${TRAVIS_BRANCH}" = "pages" && test "${TRAVIS_PULL_REQUEST}" = "false" &&
+  mvn -s .travis.settings.xml site

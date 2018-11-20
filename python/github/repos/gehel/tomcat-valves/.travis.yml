@@ -1,0 +1,18 @@
+branches:
+  except:
+    - /^tag\/.*$/
+env:
+  global:
+    - secure: "GJXohmSLYuTz9Aha1ADmiTpcG5YTwK9+Btb/75iAQRxXckIMQrk+wX/PFOBhiwJj9/qoorVhb3RXW9AXe8nM3AmiLdErZ6ohC47ixkPwtdjkH0newQySixAb3ise++VJenWp3cx8zrG6dBtXdT6nAkLUN9lYr1pXS75GmazDXqk="
+    - secure: "d59NB6W5jk/4HdhEuzlLWRq/bADUrHgM5KaqpSCz0Gvb7op93Ov05Cl8jtlVTJPC+BYAtB9Ho3A9h7UB9ItsDzgJW7PLH0wO8UrlCC75g85PKK1+frrE82vXiuYiF8HT1w8NcoM5KAYQX3lxLzR+GbekYML0lDF7EK5OkkLzIRU="
+language: java
+jdk:
+  - openjdk7
+  - oraclejdk7
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dcobertura.skip=true --settings settings.xml -B -V
+script:
+- mvn verify --settings settings.xml -B -V
+after_success:
+  - mvn clean deploy site --settings settings.xml -B -V
+git:
+  depth: 500

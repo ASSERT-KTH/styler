@@ -1,0 +1,39 @@
+language: java
+
+install: "./.travis_install.sh"
+
+env:
+  - TEST=fr.inria.astor.test.repair.evaluation.IntroClassTest
+  - TEST=fr.inria.astor.test.repair.evaluation.JGenProgTest
+  - TEST=fr.inria.astor.test.repair.evaluation.PatchValidationTest
+  - TEST=fr.inria.astor.test.repair.evaluation.jKaliTest
+  - TEST=fr.inria.astor.test.repair.evaluation.MutRepairTest
+  - TEST=fr.inria.astor.test.repair.evaluation.EvoSuiteGenerationTest
+  - TEST=fr.inria.astor.test.repair.evaluation.RepairOperatorTest
+  - TEST=fr.inria.astor.test.repair.evaluation.ValidationTest
+  - TEST=fr.inria.astor.test.repair.evaluation.IngredientSpaceTest
+  - TEST=fr.inria.astor.test.repair.evaluation.regression.EvoSuiteParticularClassesTest
+  - TEST=fr.inria.astor.test.repair.evaluation.regression.LangTest
+ 
+script:
+  - mvn clean
+  - mvn test -DskipTests
+  - mvn surefire:test -Dtest=$TEST
+
+sudo: required
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+  - examples/
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    - martin.monperrus@univ-lille1.fr
+    - matias.sebastian.martinez@gmail.com

@@ -1,0 +1,45 @@
+---
+language: java
+sudo: false
+install: true
+
+addons:
+  sonarcloud:
+    organization:   "$SONAR_ORGANIZATION"
+    token:
+      secure:       "$SONAR_TOKEN"
+    # github_token:
+    #   secure:       "$GH_TOKEN"
+    branches:
+      - master
+      - /[build|chore|ci|docs|feat|fix|perf|refactor|revert|spike|style|test].*/
+
+jdk:
+  - oraclejdk8
+  - openjdk8
+
+env:
+  - NODE_VERSION="8"
+
+before_install:
+  - nvm install $NODE_VERSION
+  - node --version
+  - chmod +x src/scripts/site2md.sh
+
+install:
+  - npm install
+
+script:
+  - npm run docs && ./src/scripts/site2md.sh
+  - mvn enforcer:display-info checkstyle:check duplicate-finder:check findbugs:check pmd:check pmd:cpd-check package dependency:analyze
+
+after_script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar coveralls:report
+
+after_success:
+  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'

@@ -1,0 +1,32 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - libxml2-utils
+
+before_script:
+  - mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version
+
+script:
+  - xmllint --valid --noout freelib-resources/src/main/resources/checkstyle/checkstyle.xml
+  - xmllint --valid --noout freelib-resources/src/main/resources/checkstyle/checkstyle-suppressions.xml
+  - mvn install
+  - export JAR_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version |grep -Ev '(^\[|Download\w+:)'`
+  - echo "Testing resource packaging for ${JAR_VERSION}"
+  - unzip -o -d freelib-resources/target/zipout "freelib-resources/target/freelib-resources-${JAR_VERSION}.jar"
+  - echo "Unpacked resources successfully"
+  - test "0" -eq $([ -f freelib-resources/target/zipout/checkstyle/checkstyle.xml ] && echo "0" || echo "1")
+  - test "0" -eq $([ -f freelib-resources/target/zipout/checkstyle/checkstyle-suppressions.xml ] && echo "0" || echo "1")
+
+notifications:
+  irc:
+    channels:
+      - irc.freenode.org#freelibrary
+    on_failure: change
+    on_success: change
+
+sudo: false

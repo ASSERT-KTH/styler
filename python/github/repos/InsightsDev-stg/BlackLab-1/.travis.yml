@@ -1,0 +1,24 @@
+jdk:
+- oraclejdk8
+language: java
+addons:
+  artifacts:
+    debug: true
+    paths:
+    - libs.zip
+    - build.zip
+    - testbuild.zip
+    - jacoco.exec
+    
+after_success:
+ -  wget --content-disposition http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.6.201602180812/jacoco-0.7.6.201602180812.zip
+ -  unzip -o jacoco-0.7.6.201602180812.zip 
+ -  cd lib  
+ -  mv * ../ 
+ -  cd .. 
+ -  chmod a+x * 
+ -  cd $PWD 
+ -  export JAVA_TOOL_OPTIONS=-javaagent:$PWD/jacocoagent.jar=destfile=$PWD/jacoco.exec  
+ -  travis_wait 60 mvn test -Dmaven.clover.skip=true -Dmaven.javadoc.skip=true -Drat.skip=true -Drat.ignoreErrors=true test-compile -Dgpg.skip=true  
+ -  cd ${PWD} 
+ -  find . -name '*.exec'

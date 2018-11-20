@@ -1,0 +1,23 @@
+language: java
+
+jdk:
+  - openjdk8
+  - oraclejdk8
+  - oraclejdk9
+
+script:
+  - mvn -B clean install -Prun-its
+
+addons:
+  sonarcloud:
+    organization: "wiiitek-github"
+    token:
+      secure: "mAr/3ATdHIkkzu4bS+Y56gNbPbIysbC5LzH5ixw62SqTZ0nTdjPRok+Bw8Gw3qP73tbYUhJaGLNKJnr0Kaid4nycwL1CnqOdCQXG5eXpdn+R7/itpOMLvos1YP0HfQXt88pulbwEBbTSDYZtTvCOh+W2dt1XIj3wZ9qFy70ZEE7x9yte+9cSJ4EQBcnsCAqN6u+V1hgppfQREI9d8Yd8QWY4RL4vLXpm/MYcxi1cpKeC/fXSmNM5cifp0vPp2Trz+CiAAxn/35b0Ok7+4SfQUAePzZ7WWm4rBFevxi6tSjOAhtXo+asjMHzYx5oS2SQRJO/6AQm9/AA3vU82xT1nSzblNLHKcfLg+y9JLSz6YpBVL1vrAyXLzUoPE17pw5Q5mxxXLzEkVQl8H+0JfvEwcIxxRvTA2q5+FUuQPWVkeOvfg6u6fkWxLV3EHfY98HJtu1uPMN4LrQNogz2/15wSsDpxkHSjFSFKLA+Hm2PVVJPiBdOHY5uSgMc49joi1atsIvbkxVLJ62+bLwnWqTx8cZk2O6eFonDp744KvxjLvhlhM8H6JKKaVUcFfs5UbfGQcWrkiQ/tindBmfzCwMnlcDXIR+T6Y3ulj+dgfJ/weot32MDYQzcvp1tXkXQQqIVQq5hLsp4Qp2sKwq0QD8Spd4ahHheF7iC6AZ+npi0OagU="
+
+# see
+# https://docs.travis-ci.com/user/build-stages#Build-Stages-and-Build-Matrix-Expansion
+jobs:
+  include:
+    - stage: sonar
+      jdk: oraclejdk8
+      script: mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar

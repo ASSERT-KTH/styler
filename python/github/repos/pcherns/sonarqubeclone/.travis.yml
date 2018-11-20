@@ -1,0 +1,37 @@
+language: generic
+sudo: required
+install: true
+jdk: oraclejdk8
+script: ./travis.sh
+dist: trusty
+
+branches:
+  except:
+  - /^dogfood\/.*$/
+  - public_master
+
+env:
+  - TARGET=BUILD
+  - TARGET=WEB_TESTS
+
+matrix:
+  fast_finish: true
+
+cache:
+  directories:
+    - $HOME/.sonar
+    - $HOME/jvm
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -fr $HOME/.gradle/caches/*/fileHashes/
+  - rm -fr $HOME/.gradle/caches/*/scripts/
+
+notifications:
+  email: false
+  webhooks:
+    - secure: "j09yiJk87kDbkAFWR9s2hJrYfIuTMpbprrnLuEiiZRkkHMGWBXrvj0oRVv89CAhOR/JU6u0n134VKZjCXLCpHIh/XVh+IvAFTHj2dXVSJNbssc0qdGvZthSSvxL7xQcfRmA3f37ZYnSJ3Mr1vCDEtkVyVd87nPg0v2OMKE1Wk+jxmNXrkShsZ3mMGCjwwQwNdSCMVwBKToCbqLbJ4r5EOlyjDNaKbRARxEQ7zojHkVMWWeEhOACLqm2Qh8v5YvetWb9/6wKtnbchbMPzWlcxRwv88XhHRs4tIf3zHIdlG4e1AVqTWChkxXnLAB3a7oiNSBNytldHaf9iyyvtKkDSufo+8iNqShLwxO8aBYUPDu0nOCCl/8z586XdaP5oKz2QrdXzoe24E9uxlK9gkuCR7uUCmWUQDrmf6jHu5co6VXeYsq9sHA/KK+OusQuN9IYvuEyOeFufWUJF3n3Uz6K1VVwQjdfMtCqdwM0CeZL9nNOIHZVbR3WBp/pUQnnuvF8Zj+NllBl5N9ProdHZqCVietlBonqNI0pV1x7HriFV+tU1PoqYIa1Cz/tSUxn9mOYGf85Rmho0CP4ZtTS3UgyQerl4BYPWkFs8WfcqipjPSzwGbQLBlCANDbPPbeo/VnXz9ExSFjQcII916DEMR3kb6kY8cduKYqdbZ52483agblY="
+  on_start: always

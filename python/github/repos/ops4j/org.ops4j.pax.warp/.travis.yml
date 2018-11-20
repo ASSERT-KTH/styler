@@ -1,0 +1,21 @@
+language: java
+
+jdk: oraclejdk8
+
+sudo: required
+
+services:
+- docker
+
+before_script:
+- openssl aes-256-cbc -K $encrypted_65639c0ca27a_key -iv $encrypted_65639c0ca27a_iv
+  -in .maven-settings.xml.enc -out .maven-settings.xml -d
+
+script: ./mvnw -s .maven-settings.xml -B -Pdocker,oracle -Ddocker.keepRunning clean install
+
+install: true
+
+cache:
+  directories:
+  - $HOME/.m2
+

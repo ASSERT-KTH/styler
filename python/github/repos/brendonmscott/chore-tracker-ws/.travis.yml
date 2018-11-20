@@ -1,0 +1,27 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+branches:
+  only:
+  - master
+  - develop
+
+cache:
+  directories:
+    - $HOME/.m2
+
+addons:
+  sonarqube:
+    token:
+      secure: ${SONAR_TOKEN}
+
+services:
+  - mongodb
+
+script: mvn clean install -Pcodecoverage-jacoco sonar:sonar
+
+after_script:
+  - echo "<settings><servers><server><id>github</id><username>\${env.GIT_HUB_USER}</username><password>\${env.GIT_HUB_PASS}</password></server></servers></settings>" > ~/settings.xml
+  - mvn deploy -e --settings ~/settings.xml

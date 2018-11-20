@@ -1,0 +1,68 @@
+# whitelist
+branches:
+  only:
+    - master
+sudo: required
+services:
+  - docker
+language: java
+jdk:
+  - openjdk7
+before_install:
+  - export AUTHOR=`git --no-pager show -s --format='%an <%ae>'`
+  - export DATE=`TZ=America/New_York date "+%m-%d-%y-%H%M"`
+  - wget https://archive.apache.org/dist/maven/binaries/apache-maven-2.2.1-bin.tar.gz
+  - tar xzvf apache-maven-2.2.1-bin.tar.gz
+  - rm -rf $HOME/.m2
+  - export M2_HOME=`pwd`/apache-maven-2.2.1
+  - export M2=$M2_HOME/bin
+  - export PATH=$M2:$PATH
+  - mvn -v
+script:
+  ###Build Script for nci-commons-ctrp
+  - cd nci-commons-ctrp
+  - mvn -Dhttps.protocols=TLSv1.1,TLSv1.2 package -e
+  - mkdir -p /tmp/buildresults/public
+  - mkdir -p /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-maven-plugin/1.4.22/
+  - cp plugin/target/nci-commons-ctrp-maven-plugin-1.4.22-SNAPSHOT.jar 
+    /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-maven-plugin/
+  - mkdir -p /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-core/1.4.22/
+  - cp core/target/nci-commons-ctrp-core-1.4.22-SNAPSHOT.jar 
+    /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-core/
+  - mkdir -p /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-struts2/1.4.22/
+  - cp struts2/target/nci-commons-ctrp-struts2-1.4.22-SNAPSHOT.jar 
+    /tmp/buildresults/public/gov/nih/nci/coppa/nci-commons-ctrp-struts2/
+  ###Build Script for coppa-commons
+  - cd ../coppa-commons
+  - mvn -Dhttps.protocols=TLSv1.1,TLSv1.2 package -e
+  - pwd
+  - mkdir -p /tmp/buildresults/public/gov/nih/nci/coppa/coppa-commons/1.3.23/
+  - cp ../coppa-commons/target/coppa-commons-1.3.23.jar  
+    /tmp/buildresults/public/gov/nih/nci/coppa/coppa-commons/1.3.23/
+  - cp ../coppa-commons/target/coppa-commons-1.3.23-tests.jar 
+    /tmp/buildresults/public/gov/nih/nci/coppa/coppa-commons/1.3.23/
+after_success:
+  - pwd
+  - ls -alth
+  - find ~/.m2/
+  - find ~/CBIIT/CTRP_4x_common/
+  - ls -alh /tmp/buildresults
+deploy:
+- provider: s3
+  access_key_id: $PROD_AWS_ACCESS_KEY_ID
+  secret_access_key: $PROD_AWS_SECRET_ACCESS_KEY  
+  # access_key_id: $AWS_ACCESS_KEY_ID
+  # secret_access_key: $AWS_SECRET_ACCESS_KEY
+  # bucket: "ctrp-repos-inttest"
+  bucket: "ctrp-repos"
+  skip_cleanup: true
+  local_dir: /tmp/buildresults
+- provider: s3
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY  
+  bucket: "ctrp-repos-inttest"
+  skip_cleanup: true
+  local_dir: /tmp/buildresults
+# after_script:
+notifications:
+  slack: clinicalbiomed:W5L3wQ69vtL1XJCo8uT3oQgY

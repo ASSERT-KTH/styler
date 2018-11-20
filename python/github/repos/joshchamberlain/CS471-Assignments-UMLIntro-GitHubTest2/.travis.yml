@@ -1,0 +1,44 @@
+language: java
+jdk:
+- openjdk8
+notifications:
+  email: false
+env:
+  global:
+  - CC_TEST_REPORTER_ID=5362b49f61c8d7fc3e953d9fd9685eabc3d60b06598dd4d16761ac0b88518b08
+  - secure: e4bHNfFlUqBB/FRZpeXm72W3D0dQnoP8ko9jPv7DjwrMLV8mE80ThzOZmXRwBiJQtVgXWt1ZOziFoHgtoQbqyNWdLp8rSPhmONx0wIDhe7UZKAhigqQju6mwqmnc0Grz9vbaFcpEpfe7UqUQvVmcHrpgMXYouj1gjUi4p5JLSj3OiE/bbNkXs2gsnruCQsN68MsmjMRTVHvlI8PXIQiJnVcEbT8ZoCDABoKiaIZw/A2EIhik9tqQWT/n3fEoYu96hYfr9ICU5tt4qTcnKvfocaN6s+x2s/nb1eqWqrUL65FTDyYFhi3ZdNQoTsAqZuRdPe335vbTT5oZSEh44suwmoYosuz8v+FyAYxD1RH9RgElnNs3LQXCMjcOOsjIXWfHnBzp1FxQxmGwRtnUyr3WH2KHx5qra4IXjWPL3nMF21eGecYLsLEBg64eL0w8ee3WAhdPWOl5yB6Q0Nr4NkYVsmSXo2ZLaL/M+mNLfrSeAGrh5gRldFWVe3i8IjEba2LWHbTukNcnaOK5FJKd+A6f775YNTGhKEuEys6UeV59FUzfkboIsZwYPmdxKePtc5Lfr91VIXzuNQDf8Rb7ByFaKmH7sd+vYXcdzuBDroXkuX+7b4KoNVUoBGFo+75aJI3gsCTFwuSh4XvrObFLwkWHHFNSuHrlKpRYFuuywHzjiuM=
+
+before_script:
+  - "curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter"
+  - chmod +x ./cc-test-reporter
+  - "./cc-test-reporter before-build"
+    
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report package sonar:sonar -Dsonar.organization=joshchamberlain-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN}
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./releng/travis/run_on_pull_requests; fi'
+
+after_script:
+  - cp ./target/site/jacoco/jacoco.xml ./src/main/java
+  - mv ./cc-test-reporter ./src/main/java
+  - cd src/main/java
+  - "./cc-test-reporter after-build"
+
+before_deploy:
+  - mvn package site -DskipTests
+  - chmod +x target/*.jar
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: lOL56wXx2nexa9XEj6Zfz3SdAoDkNcUSA3f9MJQtbn2okF6+uRpz6iGUlJWqoN6EmqmiTSlgFeYt2U7F014t2rklvO7kmzY4sHfqgvNEpgd48Q2viNS1Xer7wEaE0YLSz2+MBzL1CireoiWXS9UvadW0jy/wjhX0p9w5O4xdI/23pK28evFW4hCNQwAS38hO1ehzOV4djIuadR9isxhXh63XRtM1KaXrCAqsqKitx10UQpq/T7/mYKzD8zr24gu3r4yoPCjEFqxftmK6tT5EJm/rjDeyC8DFoH8+SbMpK9vmSVXuKQEiYDVgjL0ij/zH/OsXJLN4sMCcvs60H56My1ePdzH/jmrsMnX4F/dn+V/CsoIiO5z3pFjRWXm+za1aXGdoZ7TGDvUQoaJ1D9fXvRuisIXKQjC6hHSei4aBDWbqEJzMk3VK5Hh9dz2yO+s7Bp1XOA3hgaKCOvakue95Jq8bHnhQ2dsYQsDO+FpSbuPw93FeDagJq6ombGspDXYdHE+4Jaq967Nz4SSpFJ99W92a9ehed3c3HQ6WjtTQEno04zpVRr+qdwzUahec/3jOfALD0l52ici+D6dbwdgt8fPq3XIMUdIQPTH+CvXJdzhCIODqQe3NaY0FipAodN7NJdFz+NQSycmJIQo6rIGHQLO8xQBiQmANCDZWNoyYf8s=
+  file_glob: true
+  file: 
+      - target/*.jar
+      - target/site/*
+  on:
+    tags: true
+    repo: joshchamberlain/CS471-Assignments-UMLIntro-GitHubTest2
+cache:
+  directories:
+    - $HOME/.m2    
+    - $HOME/.sonar/cache

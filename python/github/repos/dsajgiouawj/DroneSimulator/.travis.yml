@@ -1,0 +1,21 @@
+language: java
+sudo: false
+jdk: oraclejdk8
+addons:
+  apt:
+    packages: oracle-java8-installer
+script: mvn clean verify
+after_success:
+- mvn clean test jacoco:report coveralls:report
+before_deploy:
+- mvn clean package -DskipTests=true -Dproject.finalName=DroneSimulator-$TRAVIS_TAG
+deploy:
+  provider: releases
+  api_key:
+    secure: pLXCBuDThrwLEbLxFNK8Tm5egos88a5RgSVDvPaELqjxAk9T1vUuKJsiMvJ5eGx0uvgQ7NShTfLAgmzv78ClmXRS65nqn3Wbo/t+ZaMEDfeq33dB7X67D3xUD3nQBdPvfQ8Lor8/AWDWmPc3gN4hMimv/dQH1LDwhCVnfdevtDmGVnEfO8aIO9uvvLisZaMpR6lyBktT4mvALNd2tSo5hyvcr/1wrERSUvVGCwZT2g0xWm8nQkN1ktNnbG1Y1QjPBNg3dhQoJWR5KAaIcJEHFnUPA8fCmNrAPJqor5CduTYn3pDTZ9cZ3lkv00HLdxl66nDkwC4saT3+8qHQJuc3/Zy9KzbqSm0/pblKEW8JBQrjKpl9c6rqvJqcteSg66XGhcBh00t4n5rxz19ebFeZb+Bi9nATKMZi8mvIDeQMA92kl//TF9LhsZbQbsmfCp+YR13dhX/Sh/WgFWdcQZFJMhADSwa+Yz3YUoQQY1OYpY+XqrSrN2Nc+HyavbBtMHMj71sYd85KE1T1mPBp7yfvQMfC3H41SfYEidT+PMFUbO8Y8boauXhiPcSoqikNYOIb+n+4GXcxLI06HWhxej6pLiU5Fw/VD6dD4uZe5kAH81UtIxIn4rOyU2SdowFZw4feWIZozbkmOLgEAe7PWFigneKQvDvrnUG6rEAJSpSnoUw=
+  file: target/DroneSimulator-$TRAVIS_TAG.jar
+  skip_cleanup: true
+  on:
+    repo: dsajgiouawj/DroneSimulator
+    all_branches: true
+    tags: true

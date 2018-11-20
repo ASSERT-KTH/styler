@@ -1,0 +1,35 @@
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+before_install:
+   - mvn --version
+
+install:
+  # install without any testing
+  - mvn install -U -Dmaven.test.skip=test -B -V -q -T 2C -C
+
+script:
+  # execute unit and integration tests
+  - mvn test -e verify -B
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)  
+  
+os:
+  - linux
+  - windows
+
+cache:
+  directories:
+  - $HOME/.m2
+
+branches:
+  only:
+  - master
+
+notifications:
+  email:
+  - saptarshi.devnath@gmail.com

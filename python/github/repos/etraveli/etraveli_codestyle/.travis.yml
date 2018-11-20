@@ -1,0 +1,22 @@
+language: java
+env:
+  - MAVEN_VERSION=3.5.2
+jdk:
+  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - graphviz
+install:
+  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+script: "./mvnw --show-version --errors --batch-mode clean install site"
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - lennart.jorelid@etraveli.com
+        - jonas.holmer@etraveli.com

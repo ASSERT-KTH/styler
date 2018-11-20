@@ -1,0 +1,75 @@
+language: java
+
+sudo: false
+
+before_script:
+  - unset GEM_PATH GEM_HOME IRBRC
+  - "export PATH=`pwd`/bin:$PATH"
+  - echo $HOME
+
+before_install:
+  - mvn -Xmx32M -v | grep 1.6.0; if [ $? = 0 ]; then export JAVA_OPTS="-client"; else export JAVA_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"; fi
+  - mvn -Xmx32M -v | grep 1.[67].0; if [ $? = 0 ]; then export JAVA_OPTS="-XX:MaxPermSize=224M $JAVA_OPTS"; else export JAVA_OPTS="-XX:MaxMetaspaceSize=224M -XX:CompressedClassSpaceSize=192M $JAVA_OPTS"; fi
+  - export JAVA_OPTS="-Xmn32M -Xmx544M $JAVA_OPTS" && echo $JAVA_OPTS
+  - mvn -Xmx32M -v | grep 1.[67].0; if [ $? = 0 ]; then export ANT_OPTS="-XX:MaxPermSize=80M"; else export ANT_OPTS="-XX:MaxMetaspaceSize=80M -XX:CompressedClassSpaceSize=72M"; fi
+  - export ANT_OPTS="-Xmn48M -Xmx160M $ANT_OPTS" && echo $ANT_OPTS
+
+jdk: openjdk6
+
+env:
+  # disable cext
+  global:
+    - JAVA_OPTS="-Djruby.cext.enabled=false $JAVA_OPTS"
+  matrix:
+    - TARGET='test-extended'
+    - TARGET='spec:ruby:fast'
+    - TARGET='spec:ruby19:fast'
+    - TARGET='jruby-jars'
+    - TARGET='complete'
+    - TARGET='osgi'
+    - TARGET='jruby-jars-extended'
+    - TARGET='main-extended'
+
+matrix:
+  include:
+    # there is one integration test which uses a external jar for jdk7+
+    - jdk: oraclejdk7
+      env: TARGET='main'
+    - jdk: oraclejdk7
+      env: TARGET='j2ee'
+    - jdk: openjdk7
+      env: TARGET='test-extended'
+    - jdk: openjdk7
+      env: TARGET='spec:ruby19:fast'
+    - jdk: oraclejdk8
+      env: TARGET='test-extended'
+    - jdk: oraclejdk8
+      env: TARGET='spec:ruby19:fast'
+    - jdk: oraclejdk8 # less process Kill-ing under 8 than 6/7
+      env: TARGET='jruby-jars-extended'
+    - jdk: oraclejdk8 # less process Kill-ing under 8 than 6/7
+      env: TARGET='main-extended'
+  fast_finish: true
+
+branches:
+  only:
+    - master
+    - jruby-1_7
+    - /^test-.*$/
+    - /^ha-feature/
+
+#before_install:
+#  - if [[ $TRAVIS_JDK_VERSION = 'oraclejdk8' ]]; then sudo apt-get update; sudo apt-get install oracle-java8-installer; else true; fi
+
+install: /bin/true
+# |^[[:space:]]*\[exec\][[:space:]]*$
+script: "travis_retry ant $TARGET | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ]"
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#jruby"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
+    skip_join: true

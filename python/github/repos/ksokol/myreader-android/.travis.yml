@@ -1,0 +1,26 @@
+language: android
+
+android:
+  components:
+    - build-tools-24.0.3
+    - android-16
+
+env:
+  global:
+     #PW
+     - secure: "Ghbu+Z8fu9fITlNm6LupeC1nwnOKxAkvtFVstVR8i4zTKVDXeIIunB5uPYTplBm4eBNWtmHRlgLXglVXwMGJ8TrcpnpxiTb9IM5TxsALtas/w7GLRdFB3Vx2xKcvJrYK+QvLMs/kdVEKfGL5WzKeJR1hLEk/KOIBLVQ4gjyQo1A="
+
+addons:
+  sonarqube:
+    organization: "ksokol-github"
+    token:
+      secure: "k6cMOv68cKvKiPDkh57Nu/bsKyPwK36iq6C+U+FyxePA5UMPKmyCaLDJvR/GsCNi12QkYxl2P21CKKndDVa6X6ChsGl+aZPucpcmnalr2cxlp2HKzRr0BMVvacU4SdT5OxRFmVilo5O1+S1I3XQ4BOouUr0W0C9FcdldtJbIafg="
+    github_token:
+      secure: "OTmsOk3QaT5vc7qJEjUcRl2+OngMyY6kFNEwgRCP/htzVs4dLhOIm9B6/2AY2wf+kD45d3/UE/cDVXkeKihoaYfVnnE7vOjg4U770WAKxlZqNs8NvVplHMxt8BBnDsR83L0KlZZNzec43KnQbsAUiRSZVEV13/9m+d3A0amKcOU="
+
+before_install:
+  - sudo apt-get install sshpass ant
+  
+before_script: mkdir -p $HOME/.android; cp debug.keystore $HOME/.android
+script: ant -f myreader-android/build.xml debug lint sonar
+after_success: branch=$TRAVIS_BRANCH | tr / -; sshpass -p "$PW" scp -o LogLevel=quiet -o StrictHostKeyChecking=no -P2323 myreader-android/bin/myreader_android-debug.apk travis@$DEPLOY_HOST:/usr/share/nginx/html/apk/myreader-debug-$TRAVIS_BRANCH-$TRAVIS_BUILD_NUMBER.apk

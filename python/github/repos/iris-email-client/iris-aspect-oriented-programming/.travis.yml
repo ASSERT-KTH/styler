@@ -1,0 +1,24 @@
+language: java
+
+jdk:
+  - openjdk7
+script:
+  - jdk_switcher use openjdk7
+
+before_install:
+  - wget -O VMCode --no-check-certificate https://www.dropbox.com/s/pqgj459a7zxrbc3/VMCode?dl=1
+  - export PATH=$PATH:`pwd`
+  - chmod +x VMCode
+  - cd iris-spl
+  - chmod +x generate_properties.sh
+  - chmod +x generate_products.sh
+  - chmod +x build_products.sh
+  - ./generate_properties.sh
+  - ./generate_products.sh -a
+  - cd $TRAVIS_BUILD_DIR
+
+install: 
+  - cd iris-spl
+  - ./build_products.sh
+
+script: true

@@ -1,0 +1,37 @@
+#
+# Licensed to Apereo under one or more contributor license
+# agreements. See the NOTICE file distributed with this work
+# for additional information regarding copyright ownership.
+# Apereo licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file
+# except in compliance with the License.  You may obtain a
+# copy of the License at the following location:
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+language: java
+sudo: false
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+before_install:
+  - rm ~/.m2/settings.xml
+  - cp -R $JAVA_HOME ~/.jdk
+  - export JAVA_HOME=~/.jdk
+  - curl -L --cookie 'oraclelicense=accept-securebackup-cookie;' http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip -o /tmp/policy.zip
+  - unzip -j -o /tmp/policy.zip *.jar -d $JAVA_HOME/jre/lib/security
+  - rm /tmp/policy.zip
+install:
+  - mvn install -P nocheck
+script:
+  - mvn test -P !nocheck

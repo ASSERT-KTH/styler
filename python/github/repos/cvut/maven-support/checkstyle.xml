@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright 2014-2016 Czech Technical University in Prague.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+
+    <!--
+       ========================================================================
+         Checks that does not require a TreeWalker
+       ========================================================================
+    -->
+
+    <!-- Checks whether source files are not longer then 800 lines. -->
+    <module name="FileLength">
+        <property name="max" value="800" />
+        <property name="fileExtensions" value="java, groovy" />
+    </module>
+
+    <!-- Checks that there are no tab characters in the source code. -->
+    <module name="FileTabCharacter">
+        <property name="fileExtensions" value="java, groovy, xml" />
+    </module>
+
+    <!-- Checks whether files end with a new line. -->
+    <module name="NewlineAtEndOfFile">
+        <!-- Only accept Unix line separator -->
+        <property name="lineSeparator" value="lf" />
+    </module>
+
+    <!-- Enforces Unix line endings. -->
+    <module name="RegexpMultiline">
+        <property name="format" value="(?s:\r\n.*)" />
+    </module>
+
+    <!-- Checks whether lines does not end with trailing whitespaces. -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$" />
+        <property name="minimum" value="0" />
+        <property name="maximum" value="0" />
+        <property name="message" value="Line has trailing spaces." />
+        <property name="fileExtensions" value="java, groovy, xml" />
+    </module>
+
+    <!-- Ensures the correct translation of code by checking property files for consistency regarding their keys. -->
+    <module name="Translation" />
+
+
+    <!--
+       ========================================================================
+         Checks that require a TreeWalker
+       ========================================================================
+    -->
+
+    <module name="TreeWalker">
+
+        <property name="tabWidth" value="4" />
+
+        <!--
+           ===================================================================
+             Annotations
+             http://checkstyle.sf.net/config_annotation.html
+           ===================================================================
+        -->
+        <module name="AnnotationUseStyle">
+            <property name="elementStyle" value="compact" />
+            <property name="trailingArrayComma" value="never" />
+            <property name="closingParens" value="never" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Block Checks
+             http://checkstyle.sf.net/config_blocks.html
+           ===================================================================
+        -->
+
+        <!-- Finds nested blocks, i.e. blocks that are used freely in the code. -->
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true" />
+        </module>
+
+        <!-- Checks for empty blocks. -->
+        <module name="EmptyBlock">
+            <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_FOR,
+                                           LITERAL_TRY, LITERAL_WHILE, STATIC_INIT" />
+        </module>
+
+        <!-- Checks that left curly braces ('{') for code blocks are always on the end of line. -->
+        <module name="LeftCurly">
+            <property name="maxLineLength" value="120" />
+        </module>
+
+        <!-- Checks for braces around code blocks. -->
+        <module name="NeedBraces">
+            <property name="allowSingleLineStatement" value="true" />
+            <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE" />
+        </module>
+
+        <!-- Checks that right curly braces ('}') are on the same line as the next statement. -->
+        <module name="RightCurly">
+            <property name="shouldStartLine" value="false" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Class design
+             http://checkstyle.sf.net/config_design.html
+           ===================================================================
+        -->
+
+        <!-- Checks visibility of class members. Only static final members may be public. -->
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true" />
+            <property name="packageAllowed" value="true" />
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="HideUtilityClassConstructor">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="MutableException">
+            <property name="severity" value="warning" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Coding
+             http://checkstyle.sf.net/config_coding.html
+           ===================================================================
+        -->
+
+        <!-- Checks that classes that define a covariant equals() method also override method equals(Object). -->
+        <module name="CovariantEquals">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks for declaration order:
+             1. class (static) variables, 2. instance variables, 3. constructors, 4. methods. -->
+        <module name="DeclarationOrder">
+            <property name="ignoreModifiers" value="true" />
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Check that the default is after all the cases in a switch statement. -->
+        <module name="DefaultComesLast" />
+
+        <!-- Checks that classes that override equals() also override hashCode(). -->
+        <module name="EqualsHashCode" />
+
+        <!-- Checks for fall through in switch statements. -->
+        <module name="FallThrough">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks that a local variable does not shadow a field that is defined in the same class. -->
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF" />
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks that particular classes like HashSet, ArrayList, ... are never used as types in return values
+             or parameters. -->
+        <module name="IllegalType">
+            <property name="tokens" value="PARAMETER_DEF, METHOD_DEF" />
+            <property name="format" value="^$" /> <!-- allow abstract classes -->
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks for assignments in subexpressions, such as in String s = Integer.toString(i = 2);. -->
+        <module name="InnerAssignment">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks that switch statement has "default" clause. -->
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks for overly complicated boolean expressions. -->
+        <module name="SimplifyBooleanExpression">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks for overly complicated boolean return statements. -->
+        <module name="SimplifyBooleanReturn">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks that string literals are not used with == or !=. -->
+        <module name="StringLiteralEquality" />
+
+
+        <!--
+           ===================================================================
+             Imports
+             http://checkstyle.sf.net/config_import.html
+           ===================================================================
+        -->
+
+        <module name="IllegalImport">
+            <property name="illegalPkgs" value="sun.*, com.sun.*" />
+        </module>
+
+        <module name="RedundantImport">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="UnusedImports">
+            <property name="severity" value="warning" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Miscellaneous
+             http://checkstyle.sf.net/config_misc.html
+           ===================================================================
+        -->
+
+        <!-- Checks the Java style of array type definitions. -->
+        <module name="ArrayTypeStyle" />
+
+        <!-- Checks that the outer type (class) name and the file name match. -->
+        <module name="OuterTypeFilename" />
+
+        <!-- Check that there are no calls to System.out and System.err. -->
+        <module name="Regexp">
+            <property name="format" value="System\.(out|err)\." />
+            <property name="illegalPattern" value="true" />
+            <property name="ignoreComments" value="true" />
+            <property name="severity" value="warning" />
+            <property name="message" value="System.out and System.err should not be directly called." />
+        </module>
+
+        <!-- Checks that long constants are defined with an upper ell. That is ' L' and not 'l'. -->
+        <module name="UpperEll" />
+
+
+        <!--
+           ===================================================================
+             Modifiers
+             http://checkstyle.sf.net/config_modifiers.html
+           ===================================================================
+        -->
+
+        <module name="RedundantModifier" />
+
+
+        <!--
+           ===================================================================
+             Naming Conventions
+             http://checkstyle.sf.net/config_naming.html
+           ===================================================================
+        -->
+
+        <module name="ClassTypeParameterName">
+            <property name="format" value="^[A-Z]+$" />
+        </module>
+
+        <!-- Note: Lombok uses 'log' for Logger variable (constant). -->
+        <module name="ConstantName">
+            <property name="format" value="^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|log)$" />
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="LocalFinalVariableName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="LocalVariableName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="MemberName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="MethodName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="MethodTypeParameterName">
+            <property name="format" value="^[A-Z]+$" />
+        </module>
+
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+        </module>
+
+        <module name="ParameterName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="StaticVariableName">
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="TypeName">
+            <property name="severity" value="warning" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Size Violations
+             http://checkstyle.sf.net/config_sizes.html
+           ===================================================================
+        -->
+
+        <module name="LineLength">
+            <property name="ignorePattern" value="(@version|@see|@link|^import)" />
+            <property name="max" value="140" />
+        </module>
+
+        <module name="LineLength">
+            <property name="ignorePattern" value="(@version|@see|@link|^import)" />
+            <property name="max" value="120" />
+            <property name="severity" value="warning" />
+        </module>
+
+        <module name="MethodLength">
+            <property name="max" value="100" />
+            <property name="countEmpty" value="false" />
+        </module>
+
+        <module name="ParameterNumber">
+            <property name="max" value="7" />
+        </module>
+
+
+        <!--
+           ===================================================================
+             Whitespace
+             http://checkstyle.sf.net/config_whitespace.html
+           ===================================================================
+        -->
+
+        <!-- Checks that the whitespace around the Generic tokens < and > is correct to the typical convention. -->
+        <module name="GenericWhitespace">
+            <property name="severity" value="warning" />
+        </module>
+
+        <!-- Checks that a token is surrounded by whitespace. -->
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                      value="BAND_ASSIGN, BOR_ASSIGN, BSR_ASSIGN, BXOR_ASSIGN, COLON, DIV_ASSIGN, LAND,
+                             LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR,
+                             LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR,
+                             MOD_ASSIGN, NOT_EQUAL, PLUS_ASSIGN, QUESTION, SL_ASSIGN, SR_ASSIGN, STAR_ASSIGN,
+                             TYPE_EXTENSION_AND" />
+            <property name="allowEmptyConstructors" value="true" />
+            <property name="allowEmptyMethods" value="true" />
+        </module>
+    </module>
+
+</module>

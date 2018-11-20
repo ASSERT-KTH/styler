@@ -1,0 +1,34 @@
+language: ruby
+
+language: java
+jdk:
+  - openjdk11
+script:
+  - jdk_switcher use openjdk11
+
+sudo: false
+
+env:
+  global:
+    - secure: ZZbLTxlO09e/2HyKeRSER6Z7x2z1G+suVsv+8FaRlhz1SAwohajRZ3C+fD1i4jEn33BfPiaN+hp+77biqBgUsyASFN+4nVWmz2O2KesxzuVdnTFMhl594gj1QNSfsj+d8YvCwzlznX6kHzxbwJK+2BGYAF9i8dZ6VUMwd+eFDrEPIsxExvs3+5GsNjOsq2lKHjW8RU+GlxBKkM86Jxks4DDjZ7eJd+4WD6u7vxU91YpCUb96xXN6ZxXdJpLdVgiT3f8dBEDt35pq53W1PAa9j2Ns3EoudKR44ahpdlyOwDtWHm6gIuhzvnhHw8i4RRi3QJhf128f8YJ9HwM2JSu1C/APg1VLI5Bi5KyaENXLIPe/mk1VKhdLqBVc3vWPFEzUDoMxUiaN2wZtIqzrwqs1P9d9W4gI/vnjEdHzj4sJaFstpR8bUMxgnphibTc3tUaTD/M3bRXM6sQViOTWcbUTOR+wQHVB2Sv9sLtsi10YwLW3tL6eYRxeoGxfxqfrqsjlQkDTigv+PzF6Jq8w1hKTA+N8otKtOEb1bmBZoj62JNEbT2tZk33Z5CV7Tgm8tLKBzDmrz9W8lmbc6fLKf5yShbDpOJgosFqdzS50BfY6DlgJILZtinjLbX/t8gS8/QYqLdbZPOVUbTxO9On3YEF9UvtpA/H+ej5Dqkk5ec1c+kI=
+    - secure: BjGLBViBdTlsCwkN73VLsf1d0lLVn+gQjgn79OlawX0bBXIb5gPK1yOi84KHhK+vX+E8/NmkEppcQBXtz7L4U8O1l7lIwMn60D5QfTwsa8ssbxSyEq0KZ5rgwnN8AvunSYCg+CF/210YI9u+yzC8NtfDyMZxVgc0gbeRfQN5iRrp/dtZAuZIdKCMI68OvdcSEMHQSK9Pkde4OvjQTWakB4StZ79Y8AILmalkPkIQoql6LcCByE99l70++8gv7D4pEzjdzX2WQ3Y37B90d6c7r5DoYZg8LDYJB6Pnu3ubus4cQuEpRaZhzD3Now1aJ2PfCoNz+nmhpk1tvBz7Mgx3q+92PoKeHTG78ZQoMw1Gt98/hiWJrmsytHRXJpwIUpG1EpJx1K6y0iQff4Um5Ii0cYgcllkhCPo4Xzaj2+1ZHgWqtwaGrufqB88l0Ye1X9GFoQ/sbtqyhWgEBAMEsFZLeaQWCBqbAB+obEbkbPHx5vPQj56HUEEOfv4ahwnuKarlJJCLw1aCLy9BQ/qJxUxr/WUIUKikBpCjfMuhKmvy8yqteA5NviFZ9qmLxiHneH2ZEVp18rS4HBA+yVr2TNUQsniKm5MZyl5KGk5NbicSnbHt2I66DRVFvDD9rQG2BcQr6R/VEi6AxeMNM0dHcqZkbzEBtrzs2ByPkPCjdFpI98g=
+
+    - export GIT_USERNAME=$CI_DEPLOY_USERNAME
+    - export GIT_EMAIL="webmaster@tesshu.com"
+    - export GH_TOKEN=$CI_DEPLOY_PASSWORD
+
+cache: bundler
+
+script: mvn deploy site
+
+before_script:
+  - REPO_URL=https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git
+  - git config --global user.name $GIT_USERNAME
+  - git config --global user.email $GIT_EMAIL
+
+after_success:
+
+  - git clone $REPO_URL dist
+  - cp -R target/site/* dist/docs
+  - cd dist && git add -A && git commit -m "site update"
+  - git push origin HEAD

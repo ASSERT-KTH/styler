@@ -1,0 +1,32 @@
+language: java
+jdk:
+  - oraclejdk8
+  
+services:
+  - docker
+  - docker-compose
+
+before_script:
+  - export MAVEN_OPTS="-Xmx2048m"
+
+before_install:
+  - git clone https://github.com/riveryang/dubbox.git
+  - cd dubbox
+  - cp build-notest.sh build-dubbo.sh
+  - git checkout dubbo-parent-3.0.0
+  - ./build-dubbo.sh
+  - cd ..
+  - rm -rf dubbox
+
+install:
+  - docker pull redis:alpine
+  - docker run -d -p 6380:6379 redis:alpine
+  - docker run -d -p 6381:6379 redis:alpine
+  - docker-compose up -d
+  - docker run -d -p 8500:8500 consul
+
+script:
+  - ./build.sh
+
+notifications:
+  email: false

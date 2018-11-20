@@ -1,0 +1,46 @@
+language: java
+
+notifications:
+  email:
+    recepients:
+      - dev@omid.incubator.apache.org
+  on_success: always
+  on_failure: always
+
+jdk:
+  - oraclejdk8
+
+branches:
+  only:
+    - master
+    - 0.9.0.0
+    - phoenix-integration
+
+cache:
+  directories:
+    - "~/.m2"
+
+install: true
+
+before_script:
+  # This is required to avoid failures of HBase minicluster related to Hadoop 1.x releases
+  - umask 022
+  - git config --global user.email "dev@omid.incubator.apache.org"
+  - git config --global user.name "Omid CI"
+  # Install protobuf to genearte TSO client-server protocol in each compilation
+  - cd ..
+  - wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
+  - tar -xzvf protobuf-2.5.0.tar.gz
+  - cd protobuf-2.5.0 && ./configure --prefix=/usr && make && sudo make install
+  - cd ../incubator-omid
+
+script:
+  - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then
+      git checkout master
+      &&
+      mvn clean cobertura:cobertura coveralls:report -Phbase-0 ;
+    else
+      git checkout -b tmp-build-branch
+      &&
+      mvn clean test -Phbase-0 ;
+    fi

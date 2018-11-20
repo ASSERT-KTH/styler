@@ -1,0 +1,56 @@
+# Run container based
+sudo: false
+
+language: java
+
+jdk:
+    - oraclejdk8
+    - oraclejdk7
+
+env:
+    global:
+        - DENT_TRAVIS_MVN_SETTINGS_REPO=https://github.com/deventropy/deventropy-parent.git
+        # JUNIT_HELPER_COVERALLS_REPO_KEY=<secret...>
+        - secure: "ljqZOiitoSOxeZQKbzVo29pXI/7AmJe8niNVTeH0Ty20HNDS03TvxQXAIuRy6Fu2+sfrj0Df6ykLT71SXhAmL/TJjo1JAv+hiV4C8e0ye7O9XvQN6ma0JR5zQZtkZNSgo+eorjLW4IZz/WnSMwXkVHR6Cmx1KnCfoLQZf3HlQ8r0b0HKq6CdG3tGy8A5TJVVMC+udeOI8exG6qRpP7SPtjrsPGMi5gs/xp9aKetO9kES+CCliKoDFTx7fRsC4/ncGn+pTSFsbmvKoVTdVGbMvialPymH59wwdK88FtlCyJHVfJUs8DiMEZI0TDoeMtQgXPMVSdVVaBCAnsONeNAJOYJN9ZMC4oKTp/0B3y9FVbwi11+O01tOQjmOFhrgWTDLDmkQmmlgUIvTZXzl48woVxUtKxqByto0WQUlYuDwXqfCY5u+gV+g33vcw3GI7VtmcFyoIov23MEyeQWEyvjIFS9bdTVQ42ce5NxwIQGOTkejLYL+fEPOX/m4jnKvGpPtsZl2fvrAx3Na6+BfjX6PU2O1c6UbCzckueGoPU33qy8jkADJ9DVFaWu/3qdxEa/gQzkpcpKDe3iPCJOj9dobilBmv65rKz5HplattvghdNrvors0w+mUPa1iZm7+aAEVGys+HJRWL6JbfITbvsdZ4he1UDcmo6+fEjWfoB4U0iA="
+        # CODACY_PROJECT_TOKEN=<secret...>
+        - secure: "BFw6wWwGCy4BsHEzVj5Ippmdqaq5DSko5iYdtMFuTOpM8QbKTR3zCp6/3ryI28gjW+xg4svOLH28xr/AXW6s5RcgIiAkRmtpfLMT3SP/LxkpnchUOND/tKo7KpyRKinJ1J1k5q6TOCkyv17XXs3OQdlNF1wEGgL5C4n9TgohmiaDMdBDYTkiRAjrVilm6X1EVJ3uO73Spby70b3nRtd4crjMxMwbY3aN7YML5TKWR/YYxrCsM+dyQkeT0kZpxqzTWzJ0Tkn6xyf5I7vGg3nVYHUe/mrjO9YWdpMIzSfcXoRHnK/LXOpFSyfbVoBifbF9MbJ9PE4Rh94KqSTIjTDif+aVYW4kmDL/FNVQ5OzTb2L5Ztxy4Kgt0/k5RYKGGgs6KN7Q5ksBqvSPDO27Xg0zlU61OiAc4QOEvj12Lm17IcU71uyn2mPTVWKJkk+VKPkYhQDKpn2HT5Sk9O2We2QIIzVX8t7SI7BEETpaBf3beQBk5zJWqrlp1lp5U/2B9eNeBia1x2XwbUFE/Wl9+hgNxzwraJHM7insZ3rOtYqgODL45uWNmH/qSlGAQ2wniwDdnOKeCdQY+M+/CyG+PDpc/mgPhrXuD/O1dDF0ggonp/P6gf+OFss/WEVlA9+31R0ntYG9KobuTjY0B5qTw7HiCWngCfcXw2v4gaqyHGg6xoc="
+
+# We use JFrog OSS Repository not available in the stock Travis CI environment; so custom settings.xml
+# See https://coderwall.com/p/9b_lfq/deploying-maven-artifacts-from-travis
+
+branches:
+    except:
+        - travis
+        - gh-pages
+
+before_install:
+    - "git clone -b travis ${DENT_TRAVIS_MVN_SETTINGS_REPO} target/travis"
+    - 'mkdir --parents target/jpm && curl -sL http://bit.ly/jpm4j > target/jpm/jpm4j.jar && java -jar target/jpm/jpm4j.jar -u init && export PATH=$PATH:$HOME/jpm/bin && jpm install com.codacy:codacy-coverage-reporter:assembly'
+
+install: "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V --settings target/travis/travis-mvn-settings.xml"
+
+script: "mvn test -B --settings target/travis/travis-mvn-settings.xml"
+
+after_success:
+    # Coverage report to coveralls.io (but not for pull requests)
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn clean test jacoco:report coveralls:report'
+    # The following needs to be repeated for every module (may want to script it at some point)
+    - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && codacy-coverage-reporter -l Java -r junit-helper-derby/target/site/jacoco/jacoco.xml --prefix junit-helper-derby/src/main/java/'
+
+# Speed up builds
+cache:
+    directories:
+        - $HOME/.m2/repository
+
+before_cache:
+    - rm -rf $HOME/.m2/repository/org/deventropy/junit-helper
+
+# Build Notifications (and avoid emails from forks)
+# Set the variable DENT_TRAVIS_NOTIFY_EMAIL in the web interface
+# Pending https://github.com/travis-ci/travis-ci/issues/1094, then use ${DENT_TRAVIS_NOTIFY_EMAIL}
+notifications:
+  email:
+    recipients:
+      - deventropy-commits@lists.sourceforge.net
+    on_success: always # [always|never|change] default: change
+    on_failure: always # [always|never|change] default: always

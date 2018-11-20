@@ -1,0 +1,24 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   # via the "travis encrypt" command using the project repo's public key
+   - secure: "tuuNYeVcl5KruSZnDGHvTUOKNfSO2gF2ul51DDjjuM0YOOLQMW9gkrjUwBXu0OI1Vqv1MKAdsdC3iCW75LvkLk4YyK1mhteeYDgS9+D77jpwJ0XVRd5ppRQStiLtzQRz7KGF5dXf2UcSamBnE7AdkgwBjaJ+ZHsRkv9x9FpqW2kXFU1nk+fosyDKqgmIPVz/jIFtRcdeeTZm/hmoTD4YEn36+Kh6oUrKCJjResBYm2aP4nYHvQ+dZYM2SYhBuEuBQ3Je/y92UMul2s/LgWgznptQLaVTLblyHOHdclPZpHgKMjhY7EjDopobBLztDsSsU3KonSkMFmCcA+WvtxayPmYGSfAuv3xCX/1t+SyzFo2hDxpE2lKOq2mW3QQVP/w66MjYneVu2NRNZR8OOmvKTTcflpwNB3weeKS7sFatsQGpEujkdiWNGkWZhxw/Qf+255QRH4A2TiSfC2NB5JnrKHqvu0hM4saKSEDDULUrY9lR6DMUxNzwz1/PgN2rwZW1YGVlXwzuAiK0g82GnWLC8AJrzyHNcpJmLQlxq3gdwpUpXBjYoWmjr/mCFW8WSG/4CL6mtq0OKzU1ufK/8nVtAS0H04s8/XYH7k7nhaQWMGqww1WU1j+98HnCKdYfj8LpdRBcgIFxlaqMKtyt2HsYSypBG/Yepas+hAU3fauYH/M="
+
+addons:
+  coverity_scan:
+    project:
+      name: "InterstellarOcean/terraforming"
+    notification_email: dariuswak@gmail.com
+    build_command_prepend: "mvn clean"
+    build_command: "mvn compile test-compile"
+    branch_pattern: coverity_scan
+
+script: if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then mvn test -B; fi
+
+after_success:
+  - if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then mvn jacoco:report coveralls:report; fi

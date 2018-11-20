@@ -1,0 +1,25 @@
+language: java
+jdk:
+- oraclejdk8
+cache:
+  directories:
+  - "$HOME/.m2"
+
+script: mvn -Dskip.surefire.tests=false -Dskip.failsafe.tests=false verify
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+
+before_deploy:
+- cat configuration/exestub.sh target/Deliverable.jar > git-issue
+# Set up git user name and tag this commit
+
+deploy:
+  provider: releases
+  api_key:
+    secure: FIx85GCXbu9KcvhcLcIX9b9czy5Z5Dm9IIyfx93A6p+v615NGilyfHEP0JkJnxojpP7WN8/hv0XxMOqvIoXphONh5ThlYYLzrw/z+JvUpH3UBtNQwXS4nPJNrsg4rURThjbTBT6NXgmA70cQHAyWQZiSiO1ub+faa7Wpoo7F8/s3U+iG+PkkarUTO6Fijtr7a5EKgMMrNbvoZUyE+eC1htq5aYdjLQqmEktnI3BjYAjYuoxsF15uq3aT8RCpCYrnZ3UO95V2mzP0+rETUJL0TQjy28ffy1dVLfYvjO1LtpDmjPNy8oWQU6DzU21+mUiHk0YnOMYj71wNqLvaISFOLFQK1k4kUeedwIxrgledwxE9iznVR3GBpSQ85cS7iIgKkFGCq+nqvrZK7YatT4dwOm60AMNVMxjEhxMdvqQjeqLVy5j1NQ5Vf6A9T+xVK3FC77CnNOl7ywyOI4/C+z+Zst8vw87PqXLO8+KmNjOsr+Vhxc54JreGKqrLy0lmSiPnWS3EJiFRVFnCfHMsTIw6YpkDgIqby6eHJBXD8wH7f+KAvCb0UhbdXs2itfI1Y3CwGDOUU6IY1FsnkBx1LhSQ3AiET4F05FV9f8+INOzl0DMm7YfOiQwaJgFkT95cAw9BBhp1hgdXU5FvTkfFtohPZCKMzZrtM5roYMu8IevhHng=
+  file: git-issue
+  skip_cleanup: true
+  on:
+    tags: true
+

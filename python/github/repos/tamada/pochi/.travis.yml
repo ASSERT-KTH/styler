@@ -1,0 +1,35 @@
+language: java
+jdk:
+   - oraclejdk8
+
+git:
+  submodule: false
+
+before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+
+env:
+  secure: "FEVnbx67LZNZEswG4BAs0pgHnLGifjFXYF3I2Ljt7HuW3JUzfzXJB6kl/pJy83Uig2QRrIeEKghsEJsa8D1TnwrWaWUH+PRTXqGnPe3FxWl6lCwh/oWVBLgj6pPAh/0LKpsw5hcw6ZZ590+3yHffvr3s8i1qKSbZGflf7UH3E07c1QHEM2qi8+rjSvuIjOt+ynSS44t6Jiewmc2iAY+J/eBbbLSkgevXo4tpUHhgsEtWqbCHmeKxoXMZX0ty8n+DmzVaZhrr6RCEkyfNIINvuwB2MldHuwCIsunZBTXPZViE8esSxiPPXwef7OwAsYaMzNCSdhmv7j3Gb1uMqCxqG4WpRfSzr+aeK9CcuPmdYXGODiN6MRcHwb/4/wf0F9Axg7vdAIB+fKUTkGDTV3/fwOLjuLcrss9v4uLot9p57t5HdmQ0zLDvIQCtCdlJgjpNssxb13peE8TD4JoD0opTCu9FQoC+gdwyTOkLK4aKTFFr8SNeiL6lx+0DsH8xaICm4BO1CMV/moRBOt6KChIgode7gUlDP2wm34/9EcapVoCaNSDPXHbYw0hPyHlBw59SAihomuEKGPPxX/bUABWzp5vJfSdKQlETNd1oiaEAGR2GnUl6RMYGVk7/uq2U+nAi7PYD0oXOHoMdr/yK7GGq/hR43bTeic514B+J1S5ronY="
+
+addons:
+   # use jdk1.8.0_141
+  apt:
+    packages:
+      - oracle-java8-installer
+  sonarqube:
+    token:
+      secure: "YL9JxEZXFIb8dkUwLiiEa7VoSk2zg7EW92nF682hGxOaDfoNr86u2+L0+C5vC4qagus1WiVcrLWhBJrPibwMvaTfQlvYO8LpY8JtlSDmRpmfp+ZDc7WI1XS79NrAdF3S6PuzjT6uRsoeMmyPBAHYmxma7gBXVjUHCXHD0boRW/6yxICwxvI9+eB52g0T2EpD0ieqFgisqh0H9v0GfL5BKquNUsWDcIRsFswp6H+KtYECKk+xcmZQLuqlfuG+kaqEbOgOBns6MX3n8o1DG9FjCaaC+Z5eYoYgDDT9Q96IPHXqzIJJfwALtWrCAemThyk1RLStC4z3/mCAokkeX0uvAe78gVw1qdtm09ZIiaRU5g/Jhv4Cmnx/3uPtE3SqOp4r1odIsQqcrcpRqZmwGK2k09HDi03267TkpDHU63U51VDtUPAdi5FEqLk5TbgdMo/4zJY+rSB5JwXRQFokmQulaswMdCiGwwkwKf3xkOc7pH6z7zKRkfHqoxd9ZDzhEbWtR9bboqlg4pH21d3L+5NpmJBKHhBPwZIGA8TeziMXn5IqGfgaipwyo1SlAh5XfjpV99y4mdJxwGkPH0S5Uy3PYmWmJLrLUtPl11F0cwCQcDIThY/qKEJYHDLSXOO59bbRK9lOy+gveMy91a89iF121VEIroievVqO+AQ4c9er6SQ="
+
+script:
+    - mvn install
+
+after_success:
+    - mvn -DrepoToken=$COVERALLS_TOKEN clean test jacoco:report coveralls:report
+    - mvn sonar:sonar
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+

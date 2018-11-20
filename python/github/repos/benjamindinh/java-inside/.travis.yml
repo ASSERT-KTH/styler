@@ -1,0 +1,23 @@
+language: java
+jdk: openjdk11
+
+# https://github.com/travis-ci/travis-ci/issues/8408
+before_install:
+  - unset _JAVA_OPTIONS
+
+install:
+  - cd $FOLDER
+  - java pro_wrapper.java version
+
+matrix:
+  include:
+    - env: FOLDER=lab02 PRO_SPECIAL_BUILD=early-access-amber
+    - env: FOLDER=TP1/lab1 PRO_SPECIAL_BUILD=early-access-amber  
+    - env: FOLDER=lab03 PRO_SPECIAL_BUILD=early-access
+    - env: FOLDER=lab03_bis PRO_SPECIAL_BUILD=early-access-amber
+    - env: FOLDER=lab04 PRO_SPECIAL_BUILD=early-access-loom
+    - env: FOLDER=lab05 PRO_SPECIAL_BUILD=early-access
+
+script:
+  - ./pro/bin/pro version
+  - ./pro/bin/pro

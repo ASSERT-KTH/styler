@@ -1,0 +1,125 @@
+#
+#  Copyright 2017 Agilx, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
+language: java
+sudo: false
+
+env:
+  matrix:
+    - METRICS_VERSION=3.2.6
+    - METRICS_VERSION=4.0.2
+
+jdk:
+  - oraclejdk8
+
+services:
+  - memcached
+  - redis-server
+
+addons:
+  sonarcloud:
+    organization: "$SONAR_ORG"
+    token:
+      secure: "$SONAR_TOKEN"
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.codacy/reporter'
+    - '$HOME/.rpmlint/'
+
+before_install:
+  - sudo apt-get install jq
+  - wget -O ~/.codacy/reporter/codacy-reporter-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+  - |
+    wget -O ~/.rpmlint/rpmlint-1.9.tar.gz https://github.com/rpm-software-management/rpmlint/archive/rpmlint-1.9.tar.gz;
+    tar xvfz ~/.rpmlint/rpmlint-1.9.tar.gz -C ~/.rpmlint;
+    BUILDER=$USER sudo make install -C ~$BUILDER/.rpmlint/rpmlint-rpmlint-1.9
+
+
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y xmlstarlet
+  - sudo apt-get install -y rpm python-rpm
+  - sudo apt-get install -y lintian
+#  - sudo apt-get install -y rpmlint
+
+before_script:
+  - if [[ "$METRICS_VERSION" = "3.2.6" ]]; then export IS_PRIMARY_MATRIX_JOB=true; fi
+  - xmlstarlet ed --inplace -u "/_:project/_:properties/_:metrics.version" -v "$METRICS_VERSION" pom.xml;
+  - SEMVER_REGEX="^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$"
+  - |
+    if [[ "$TRAVIS_TAG" =~ $SEMVER_REGEX ]]; then
+      export PACKAGE_VERSION=${TRAVIS_TAG#v};
+      xmlstarlet ed --inplace -u "/_:project/_:version" -v "$PACKAGE_VERSION" pom.xml;
+    fi
+  - echo $TRAVIS_TAG
+  - echo $PACKAGE_VERSION
+  - echo $IS_PRIMARY_MATRIX_JOB
+
+script:
+  - |
+    if [[ "$SONAR_ENABLED" = "true" ]] && [[ "$TRAVIS_PULL_REQUEST" = "false" ]] && [[ "$IS_PRIMARY_MATRIX_JOB" = "true" ]]; then
+      mvn verify sonar:sonar -Denv.server.ip=127.0.0.1
+    else
+      mvn verify -Denv.server.ip=127.0.0.1
+    fi
+  - make -C pkg/deb
+  - make -C pkg/rpm
+
+after_success:
+  - |
+    if [[ "$IS_PRIMARY_MATRIX_JOB" = "true" ]]; then
+      bash <(curl -s https://codecov.io/bash);
+      java -cp ~/.codacy/reporter/codacy-reporter-latest.jar com.codacy.CodacyCoverageReporter -l Java -r target/site/jacoco/jacoco.xml;
+    fi
+  - make lint -C pkg/deb
+  - make lint -C pkg/rpm
+
+before_deploy:
+  - PACKAGE_DATE=$(git log -1 --pretty="format:%ad" $TRAVIS_TAG --date=short);
+  - echo $PACKAGE_DATE;
+  - sed -e "s/@PACKAGE_DATE@/$PACKAGE_DATE/" -e "s/@PACKAGE_VERSION@/$PACKAGE_VERSION/" -i pkg/deb/bintray-descriptor.json;
+  - cat pkg/deb/bintray-descriptor.json;
+  - sed -e "s/@PACKAGE_DATE@/$PACKAGE_DATE/" -e "s/@PACKAGE_VERSION@/$PACKAGE_VERSION/" -i pkg/rpm/bintray-descriptor.json;
+  - cat pkg/rpm/bintray-descriptor.json;
+
+deploy:
+  - provider: script
+    script: "mvn -s .maven.settings.xml deploy -DskipTests=true -DskipVerifications=true && make -C pkg/deb && make -C pkg/rpm"
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: $PACKAGE_VERSION != "" && $IS_PRIMARY_MATRIX_JOB == "true" && $BINTRAY_API_KEY != ""
+  - edge:
+      branch: v1.8.47
+    provider: bintray
+    file: "pkg/deb/bintray-descriptor.json"
+    user: "$BINTRAY_USER"
+    key: "$BINTRAY_API_KEY"
+    on:
+      tags: true
+      condition: $PACKAGE_VERSION != "" && $IS_PRIMARY_MATRIX_JOB == "true" && $BINTRAY_API_KEY != ""
+  - edge:
+          branch: v1.8.47
+    provider: bintray
+    file: "pkg/rpm/bintray-descriptor.json"
+    user: "$BINTRAY_USER"
+    key: "$BINTRAY_API_KEY"
+    on:
+      tags: true
+      condition: $PACKAGE_VERSION != "" && $IS_PRIMARY_MATRIX_JOB == "true" && $BINTRAY_API_KEY != ""

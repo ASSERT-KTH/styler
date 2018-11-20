@@ -1,0 +1,26 @@
+language: java
+env:
+   global:
+     - CC_TEST_REPORTER_ID=3f1c0d93a3be444be021f93bdb077079ae9acee47374681435d9292821f4fe0c
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - mvn test
+after_script:
+  - ./cc-test-reporter format-coverage -d -t jacoco ./target/jacoco-ut/jacoco.xml
+  - ./cc-test-reporter upload-coverage -d
+before_deploy:
+- mvn help:evaluate -N -Dexpression=project.version|grep -v '\['
+- export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep
+  -v '\[')
+deploy:
+  provider: releases
+  api_key:
+    secure: iF2SlYVZkrGVtm7rWYPBvfnkfgbb91fLpU7CseqaL3oPp9IWHZm6OgrNEQjfRpvZ+hyvVxzSCN5oOSBcESfQZ8qXShAXbCRkENmji6dLLjgTzsQuvNLTxqKWybTFWniJSXQ9lFtJCcFg3WeRZJTX0pJjl7+/VyOtOO3lV9OYfoZXPxtFizJy/igJ0y80jRTRqqup1CTD24VlA4shs4cq1N0WeqDTjFx0SmJbe9wkaI4AHQ0klnEhNzgfiKqN6JW3IYg+K8GG6TcQmHxUe/os/l6DAZegVERDhOIty8sG65k9mFfplSnez8wQwiFvowWxq8TdeqnXWFjJrAaYvWHndwj9l9s880d82Hk+M6z+R+DH/mC8kUmOxZVf/mnSnqTc8v/y2GEqJucUKUvANm5ljh9hFI8fXQvyJywh06P4FrDJTUBLmWPDUOj1Pg0oM9hWUqi1yc8+VMRmbwk/CygpEyGEUTnD47BxSarockCCg5lfKOV6mE23zh2hCJuJD7ETfQcOCHqRE13puE+h9xJzEaDKA8U9cj2jyDdDKP2oq74EZzworqt3DeXlYiC2R1GFWVdvUJumMhzIJ9Xbw+gTh9eOG07SIL2ZtaugJqgYHaxh2joGG/LkjusYThFWmqTns2MK8bGY10q0E9DNjMFF75m7593famN9QTJcIiYhxlI=
+  file: "./target/language-$project_version.jar"
+  skip_cleanup: true
+  on:
+    repo: trickl/language
+  name: $project_version

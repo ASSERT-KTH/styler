@@ -1,0 +1,20 @@
+language: java
+
+jdk:
+  - oraclejdk10
+
+addons:
+  postgresql: "9.6"
+  hosts:
+    - dev.com
+
+install:
+  - chmod -R 777 ./mvnw
+  - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+before_script:
+  - psql -c "CREATE ROLE bicarb WITH LOGIN CREATEDB PASSWORD 'bicarb'" -U postgres
+  - psql -c "CREATE DATABASE bicarb_test OWNER bicarb" -U postgres
+
+after_success:
+  - ./mvnw clean test jacoco:report coveralls:report -Dcoveralls.token=$COVERALLS

@@ -1,0 +1,29 @@
+language: java
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn test
+  - mvn site
+
+notifications:
+  webhooks:
+    - http://octopull.rmhartog.me/api/travis/webhook
+  email:
+    - false
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - "[ \"$BUILD_PR_BRANCH\" = \"true\" ] && git checkout $TRAVIS_BRANCH && echo \"OCTOPULL_SHA=$(git rev-parse HEAD)\"; true"
+env:
+  - BUILD_PR_BRANCH=true
+
+matrix:
+  allow_failures:
+    - env:
+      - BUILD_PR_BRANCH=true
+
+after_script:
+  - echo "== CHECKSTYLE_RESULT ==" && cat "target/checkstyle-result.xml" && echo "== END_CHECKSTYLE_RESULT =="
+  - echo "== PMD_RESULT ==" && cat "target/pmd.xml" && echo "== END_PMD_RESULT =="
+  - echo "== FINDBUGS_RESULT ==" && cat "target/findbugsXml.xml" && echo "== END_FINDBUGS_RESULT =="

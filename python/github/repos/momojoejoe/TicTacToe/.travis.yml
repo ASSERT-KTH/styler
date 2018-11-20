@@ -1,0 +1,38 @@
+language: java
+jdk: openjdk7
+env:
+  global:
+  - secure: Pa4hi6K70lVAQEobhKNyh0tW29jy7Kah6f2JIV0tD+3S0Kgr+aG67PjrHNEQsch6+wQGlcSZ7I3YbggN02LlGib30+CJcAmaC9a61mRkR0TgNEBJGebS2EJlGx656dJy1taIbXqpdGavUpZGa1HMiOd/ysOCHpkvVg/K5zNPDbw=
+  - secure: SQiAWjQiGXzk24th2EAu6hgIo6qW7t0LJow7mv4mDodYhNl88UJD5igFZo6JwRHpkjRBAsl6kEn3vMDPIg+P7dxMj/OuPkThB5L4zASjQVrWTO2w4rj3GnFNhQhQBIDgvtrHpeaj+4JBSqyOHbh3ff2YXXgrJWUqYUetBqad1A4=
+notifications:
+  email:
+  - develpermanuel@gmail.com
+deploy:
+  provider: heroku
+  api_key: 
+    secure: Pa4hi6K70lVAQEobhKNyh0tW29jy7Kah6f2JIV0tD+3S0Kgr+aG67PjrHNEQsch6+wQGlcSZ7I3YbggN02LlGib30+CJcAmaC9a61mRkR0TgNEBJGebS2EJlGx656dJy1taIbXqpdGavUpZGa1HMiOd/ysOCHpkvVg/K5zNPDbw=
+  app:
+    master: muffinbandits
+  on:
+    repo: MuffinBandits/TicTacToe
+before_install:
+- wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+- git remote add heroku git@heroku.com:muffinbandits-staging.git
+- echo "Host heroku.com" >> ~/.ssh/config
+- echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+- echo "   CheckHostIP no" >> ~/.ssh/config
+- echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+- yes | heroku keys:add
+- yes | git push -f heroku master
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile
+  --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+install:
+- gem install selenium-webdriver
+
+script: 
+before_deploy:
+- sh bin/rainonme
+after_script:
+- sh -e /etc/init.d/xvfb stop

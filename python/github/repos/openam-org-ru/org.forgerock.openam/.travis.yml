@@ -1,0 +1,25 @@
+language: java
+os:
+ - linux
+before_install:
+ - date -u
+ - uname -a
+ - env | sort
+branches:
+ only:
+   - master
+   - v10.0.0-SNAPSHOT
+   - v13.0.0-SNAPSHOT
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+notifications:
+ email:
+  - support@openam.org.ru
+cache:
+  directories:
+  - $HOME/.m2
+script:
+  - mvn -q -f openam/ install
+  - mvn -q -f openam-agents/jee-agents install

@@ -1,0 +1,21 @@
+language: java
+jdk:
+    - oraclejdk8
+
+install: true
+script:
+    - export IS_RELEASE=`git log -1 --pretty=%s | grep "\[maven-release-plugin\] prepare release"`
+    -
+        if [ -z "$TRAVIS_TAG" -a -z "$IS_RELEASE" ]; then
+            if [ "$TRAVIS_PULL_REQUEST" = "false" -a "$TRAVIS_BRANCH" = "master" ]; then
+                $_MVN deploy;
+            else
+                $_MVN install;
+            fi
+        fi
+
+env:
+    global:
+        - _MVN='mvn -B -V -e -s .travis.xml -Pnexus'
+        - secure: "hqKFHd+QVxvqmEF1f/EHAK0HXlamR4NEBlF7PQAVa8aVmIe3WbMY22XyEjJbKj0JVQYPwGMuahRInbH1k2RHYHgckONROYP5bfLgIImfiqEOid5V0SVzu2QCOpOsryYjLMBXUrbCn97ioGC8tG4nVCgw72la9pE2Gdu0xheFi/M="
+        - secure: "GfCsgUrwweNVuN4GGs9yYo8zJuJsfbzuGYAjWYmJv6jGpXs4CjQwcrLCryvsHzzsRwBdmOgCuvZ6nOwanWj8CYqW4YTA4aGum3TIQP9SbOGX55c6oFO3nMPTm8I2Ck0/edSwWJemaHfOwISHrZne5PBACwwPup4EFuDOFznjXjo="

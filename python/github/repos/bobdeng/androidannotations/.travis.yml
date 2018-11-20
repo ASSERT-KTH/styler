@@ -1,0 +1,38 @@
+sudo: false
+
+cache:
+  directories:
+  - $HOME/.gradle
+  - $HOME/.m2
+
+language: android
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+
+android:
+  components:
+    - android-22
+    - build-tools-22.0.1
+  licenses:
+    - android-sdk-license-5be876d5
+
+before_script:
+  - export TERM=dumb
+
+script:
+  - mvn -f AndroidAnnotations/pom.xml install -P travis
+  - mvn -f examples/maven/pom.xml install
+  - ./examples/gradle/gradlew build --build-file examples/gradle/build.gradle
+
+after_success:
+  - if [[ $TRAVIS_REPO_SLUG == 'excilys/androidannotations' && $TRAVIS_BRANCH == 'develop' && $TRAVIS_PULL_REQUEST == 'false' && $TRAVIS_JDK_VERSION == 'oraclejdk7' ]]; then mvn -f AndroidAnnotations/pom.xml -DskipTests -Dquiet -s settings.xml deploy ; fi
+
+notifications:
+  webhooks:
+    urls:
+      - secure: "aiAYnuvIz4XGgyvXdg7OZk8A2OKDRABUHJX6U4aszTYDOETWxwjRtmTdUisztH2+4dvB3BFGuwTuYXbC3h4vpqM2eUb584R2TVDmgloZ9263jN74uaJ04u8fbL+2mXtSbAGjBluDhEOBmGI5NZjlDYkAkguqzF6M9cT/yAIOW6g="
+    on_success: change
+    on_failure: always
+    on_start: false

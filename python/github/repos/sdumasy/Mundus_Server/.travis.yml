@@ -1,0 +1,20 @@
+language: java
+notifications:
+  email: false
+
+jdk:
+  - oraclejdk8
+
+services:
+  - mysql
+
+before_script:
+  - mysql -u root -e 'CREATE DATABASE mundus;'
+  - mysql -u root mundus < mundus.sql
+
+script:
+- "mvn install -DskipTests=false"
+- "mvn cobertura:cobertura"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -t 57a58bb3-d5a1-40f3-ae00-3b8a3d8cf86f

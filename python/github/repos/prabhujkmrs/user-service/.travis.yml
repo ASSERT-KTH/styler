@@ -1,0 +1,43 @@
+language: java
+jdk: oraclejdk8
+install: true
+env:
+  - IMAGE_NAME = anger-service/user-service
+services:
+  - docker
+stages:
+  - test
+  - name: deploy
+    if: branch = master
+
+jobs:
+  include:
+    - stage: test
+      script: ./mvnw findbugs:findbugs
+      script: ./mvnw checkstyle:checkstyle
+      script:
+        - ./mvnw clean install
+        - bash <(curl -s https://codecov.io/bash)
+        - docker-compose up --build -d
+        - ./scripts/healthcheck.sh
+        - docker-compose down
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker build -t angerservice/user-service:$TRAVIS_BUILD_NUMBER .
+        - docker push angerservice/user-service:$TRAVIS_BUILD_NUMBER
+    - stage: deploy
+      script:
+        - docker run --rm -ti -v /var/run/docker.sock:/var/run/docker.sock -e DOCKER_HOST dockercloud/client angerservice/my-swarm-cluster
+        - docker service update \
+                  --force \
+                  --update-parallelism 1 \
+                  --update-delay 30s \
+                  --replicas 3 \
+                  angerservice/user-service:$TRAVIS_BUILD_NUMBER \
+                  user-service
+cache:
+  directories:
+  - $HOME/.m2
+
+notifications:
+    slack: microservices-course:kWyowfRrndmVbAVCZS41kaqM
+

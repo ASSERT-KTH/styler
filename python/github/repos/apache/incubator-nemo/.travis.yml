@@ -1,0 +1,48 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# .travis.yml
+# For maven builds
+language: java
+dist: trusty
+sudo: required
+install: true
+jdk:
+  - oraclejdk8
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - if [ "$TRAVIS_PULL_REQUEST" == false ]; then travis_retry mvn clean validate; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar -B -q -ff -Dsurefire.useFile=false -Dorg.slf4j.simpleLogger.defaultLogLevel=info; fi
+  - if [ "$TRAVIS_PULL_REQUEST" != false ]; then travis_retry mvn clean validate; mvn clean verify -B -q -ff -Dsurefire.useFile=false -Dorg.slf4j.simpleLogger.defaultLogLevel=info; fi
+
+notifications:
+  slack:
+    secure: iDNSliZcKu4PW55tOe8a2jxvr1OGfqaX2sCqAmHMkAH7rvOBFwln5UBaeUY8p8BIa0P12oHLCOAtqWzHiXqe2CGVz7xyXhMHD2FzAtUIQ6GocNRXkdU5JJBXMN4XOPGMX/r38GbHRhO1ThjHr3hJIhfISjnXaOMxUoIOE6aLr/Dk9LUm6iQ2eBUajmcz4vy7BuS8Wec1DOaUIH025SRDyxzkhezJjB2JgPdLsc91amWfV04tZg+NBLZmn3DhB6Jl3dRrvABbszhBqDM2tZfV1MXuI522fzKa2tMuT2dd1BxUIkIicF+IB5tLnlKmnbRXCT7gQR0KAP5bXzdZnRY8UZo+Bbd6AlHHdIHWcNItJ2b0k4LLOVJ0MfoaKmoOJoQgkAYNPIGaDHM+q1FrhJSGtPCRKN4oaGevwWQPBZot9RY8QCU0v07p+MG9wQ8sR1nbfjF0jLQiLODSVsSNVSv2c01t6HkwmOfHe+YbTy9WkKIxQq3wMLcPT7iNcHAzsY3QQ+MSJn+xWrWcvJmfsGocVUUy20DV946NGUzpfHlXnfAxLTSOkUIj4kTXmUthIolzsRDqueoTeliIN5yeHFhQr7aX+NMrrVPba48EXRLsdQUzq6okTF6XnTDoDiLSu/AxKzItqz2lAVmpc011L6F9YIN/RQi6kK44++CvHf5kaHw=
+
+cache:
+  directories:
+  - '$HOME/.m2/repository'
+  - '$HOME/.sonar/cache'
+
+addons:
+  sonarcloud:
+    organization: "apache-nemo"
+    token:
+      secure: "ZCt/oEtyomXzNtJIZUeTVuCN3tjJRqZ29OkLg/U3DJTHIqWcaLfaY4MRFJR4DLRwthB24le0UTcGhFZnzZcZU3ji+ADpF/21sIqMDZgPSaqnb45NBCcLRhDUxM6VmU+DevTU7ob6aGRatEGO+C49logQOQbWM6g3KTKeaCR/pds/6isEUJg8Yqj/Poorqy+DbcpaavHBRrg3Zyxi8xwR1teYo8b7lVVMyXvtEVg+YAPuRPMy7c01zGm0MDzngSL1Sv8Q3YmHsbO3SrIueo+Ik0umuTSKMU4pkRj9jIunpGV1UQ3h5LQHzU/9VnhlgTnK2Ut6fThDx9no7rJwUCfy3LTP0z0dN2hAgK43ZSxuM47lP/Bm4hDRCY7KFNNVxEVhA/5DboWhTQq+iPW0Cc0SztOTLR+j76Yh6qmHmN39OWF22UG34D2JFGGgqfWfXwOBxW4cXVxtFQVzsuBcbJ/5zw0gtuvcQhB9MOFewi2bH1DDu2H3QOjq/vp+V4FigQyMSXRbPYInpF/nUmtSZdroOmOJRt7Ov0Vku4eBVnKbol+npcMbX/pgLZzzaZhB5QVqKrkpY2AKE0jM1deCGb6ABdt/Slizp/ovtzWlF5xCnLvVgVDhsYR4Qo8ZeWbldsbFQBu4y+1SlBdVRHV6QNBsBDyqM9WL4mVhKZaar19HJTw="
+
+env:
+  - HADOOP_HOME="/"

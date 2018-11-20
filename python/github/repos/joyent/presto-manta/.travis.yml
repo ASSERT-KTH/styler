@@ -1,0 +1,38 @@
+dist: trusty
+language: java
+# We now cache the Maven dependencies directory for faster builds
+cache:
+  apt: true
+  directories:
+  - $HOME/.m2
+  - $HOME/.downloads
+sudo: true
+
+before_install:
+  - echo 'MAVEN_OPTS="-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"' >~/.mavenrc
+  - mkdir -p $HOME/.downloads
+  - wget -N -q -O $HOME/.downloads/hadoop-snappy-native-linux-amd64.tar.gz "https://us-east.manta.joyent.com/elijah.zupancic/public/hadoop/hadoop-snappy-native-linux-amd64.tar.gz"
+  - echo "ad0fcceb268ac01ecf50395a0aa58faa54239a6b3aebfa13fb7e3c6318dcb1e3  $HOME/.downloads/hadoop-snappy-native-linux-amd64.tar.gz"
+  - sudo tar -C /usr/local -xzf $HOME/.downloads/hadoop-snappy-native-linux-amd64.tar.gz
+
+matrix:
+  fast_finish: true
+  include:
+    # checkstyle
+    - jdk: oraclejdk8
+      env:
+        - DESC="checkstyle"
+        - CMD="mvn clean checkstyle:check"
+        - LANG=en_US.utf8
+    # unit tests (oraclejdk8)
+    - jdk: oraclejdk8
+      env:
+        - DESC="oraclejdk8 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8
+    # unit tests (openjdk8)
+    - jdk: openjdk8
+      env:
+        - DESC="openjdk8 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8

@@ -1,0 +1,33 @@
+# Travis CI configuration
+
+# Execute unit tests and checkstyle checks in parallel
+env:
+  - CI_TASK=unittest
+
+# Use the Java Travis CI environment
+language: java
+
+jdk:
+  - oraclejdk8
+
+# Use an up-to-date JDK, the above may not be up-to-date, causing issues with some unresolved imports.
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+      - oracle-java8-installer
+
+# No root access
+sudo: false
+
+# sanity check: compile first.
+#  try to compile, skip the tests, skip the javadocs, print the version, and use batch-mode.
+install:
+  - mvn test-compile -DskipTests=true -Dmaven.javadoc.skip=true -V -B
+
+script:
+  - if [[ "$CI_TASK" == "unittest" ]]; then mvn test; fi
+#  - if [[ "$CI_TASK" == "checkstyle" ]]; then mvn checkstyle:check; fi
+
+after_success:
+  - if [[ "$CI_TASK" == "unittest" ]]; then mvn clean cobertura:cobertura coveralls:report; fi

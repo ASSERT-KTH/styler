@@ -1,0 +1,31 @@
+language: java
+jdk:
+- oraclejdk9
+branches:
+  only:
+  - master
+  - dev
+
+sudo: required
+
+addons:
+  postgresql: "9.6"
+services:
+  - docker
+  - postgresql
+before_script:
+  - psql -c "create user shipcollision with password '123456';" -U postgres
+  - psql -c "create database game;" -U postgres
+  - psql -c "grant all on database game to shipcollision;" -U postgres
+
+deploy:
+  provider: heroku
+  skip_cleanup: true
+  app:
+    master: api-shipcollision
+    dev: dev-api-shipcollision
+  api_key:
+    master:
+      secure: HsPGJhnyIyOSZmwj2ktNc4lOACVq+gnmnaEL2tz21Pz2wfN+x1gjNOLPddOh8yliLnVsCho+tEXVI9e53oT4Gwlu1Xg3QzSXvvMmHapNwwmtpYdO08BCKN0h3how/1vkfIT2GKOLSEBs2EEOxxXAttYcb5QhN/oHFfaNQu+zuybVTo6qD/lM4d64V85bgyQs35jdCSqcJBpNZgW56XTWnlv7cKKyT0reS7Wivuvz9k9oDPCOk0HNlrNqJoOSskSiDkQRD0Qzz1uAMmW/YqdzYUYa0PhgVGyppZ+8cPhs2Go2SPoCj85xPy1uo4dVQealxYFr3xXLjf/AbLzgK/eZ45CvqG0wKJdFy73M03ofjICqcut4RmrL7VGMugjlcQ4y1Upat6EipEA8sqWzK2+lTbTZy0yTiusQhkA1HIpzo67sRcIIXapmkOcwK5bkOFKSYH+fdj2cTYZBETGU0CldnpVASSOt1W0WIGh/ADKUa7abP0mQZ7+0SGqTa0LHMpEd7KXzjGwtIWgAF0iYlF9hanrml4iK9CqJwxnaDkeIHuN4TWHFp7Lei7QxbrFoESdfGP1/z9GN8y7SoaHT7fZJg9BpVardSsfmfzOnOG0qxuwcB4b9tj1q7KdhP/LGDb4HgdB7o1NYrqkiAopMn/oXRTAdo1iWG8dvGhpLg/OgoCM=
+    dev:
+      secure: cBmzsbWVFTaFsuczdRxlXFV38yShvKgF2nbTcmucBDf3ZAIFtVAmU7Q79o3WBx5HVnTA6TUPHyM4Niq0LDqAunpSEJ5P2WtFSuvLlheR/5WEt+tKvUXg3iFTYs50xG7dS3+FAbUN5iWIgLh8HT9gBOe1cxz3eXxMFqbJRY1lkDNStdr2k1kZnqonYH6idKc/2+ojnEegdtrE/Wh1vrFSFJMx/ig3uUAUj88eAa0RR9ANQFNDuWs+mvnJZeVyR8KnJNdmU10Iai6SFs+Ik8a4DBvSX5VKKfDgeVJvYIClLXUMYwSwakjJ8Oz7Q5OVGFcsW3UnPAe6GTe3JYT4ga0k9IH/YkFdmXlrx4oBu9wlA1GZ7r1pGjtWkXbAQ54MpEpDR+SXqEJhww6QHbo5O9vCJnsUC0fjs1Nxo2D70VVYW7lQmAx3/kWYoMkPmbmH/Nik5umt0tC/izPK2F1PDTPtAP0zBGOfKvOKtv5jngCUD/Pg/lovtLuxjkGS+r5iLBbqIKsAVL9NZkAddejlD7Xioj58YQ53/5opOf9YTr38g1R8n2JSH5WAGIEELT0fopDiorl5bENIMt36zX5BY4VGoiONfyRxtSTosofPLjlzEEBhAF2o0ceXTwFLCeIFVN0WPTsMtVcj6JPNsrvTYGWBpLXZrhyLxz8wofOZ2hUr68g=

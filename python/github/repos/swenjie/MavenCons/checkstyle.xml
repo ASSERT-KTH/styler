@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Hibernate OGM, Domain model persistence for NoSQL datastores
+ ~
+ ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later
+ ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+
+    <module name="Header">
+        <property name="header" value="/*\n * Hibernate OGM, Domain model persistence for NoSQL datastores\n *\n * License: GNU Lesser General Public License (LGPL), version 2.1 or later\n * See the lgpl.txt file in the root directory or &lt;http://www.gnu.org/licenses/lgpl-2.1.html&gt;.\n */"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+
+    <module name="Header">
+        <property name="header" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\n&lt;!--\n ~ Hibernate OGM, Domain model persistence for NoSQL datastores\n ~\n ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later\n ~ See the lgpl.txt file in the root directory or &lt;http://www.gnu.org/licenses/lgpl-2.1.html&gt;.\n  --&gt;"/>
+        <property name="fileExtensions" value="xml"/>
+    </module>
+
+    <module name="TreeWalker">
+        <property name="cacheFile" value="${checkstyle.cache.file}" />
+
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\t* +\t*\S" />
+            <property name="message" value="Line has leading space characters; indentation should be performed with tabs only." />
+            <property name="ignoreComments" value="true" />
+        </module>
+
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="true" />
+        </module>
+        <module name="AvoidStarImport" />
+        <module name="RedundantImport" />
+        <module name="EqualsHashCode" />
+        <module name="IllegalInstantiation" />
+        <module name="ModifierOrder" />
+        <module name="GenericWhitespace" />
+        <module name="PackageAnnotation" />
+        <module name="CovariantEquals" />
+        <module name="ModifiedControlVariable" />
+        <module name="NeedBraces" />
+        <module name="OneStatementPerLine" />
+        <module name="EmptyStatement" />
+        <module name="DefaultComesLast" />
+        <module name="WhitespaceAround" />
+        <module name="TypecastParenPad" />
+        <module name="DeclarationOrder" />
+        <module name="RedundantModifier" />
+
+        <module name="MethodParamPad">
+            <property name="option" value="nospace" />
+            <property name="allowLineBreaks" value="false" />
+        </module>
+
+        <module name="LeftCurly">
+            <property name="option" value="eol" />
+        </module>
+
+        <module name="RightCurly">
+            <property name="option" value="alone" />
+        </module>
+
+        <module name="ParenPad">
+            <property name="tokens" value="CTOR_CALL, METHOD_CALL, SUPER_CTOR_CALL" />
+            <property name="option" value="space" />
+        </module>
+
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="TYPECAST" />
+        </module>
+
+        <module name="IllegalImport">
+            <!-- Making sure Jackson 1.x is not used; Jackson 2.x should be used instead-->
+            <property name="illegalPkgs" value="org.codehaus.jackson"/>
+        </module>
+    </module>
+
+    <!-- We are not using NewLineAtEndOfFile because the new line chars change 
+        on different operating systems and that rule allows only one type. This rule 
+        is not actually checking for new lines, but it will work if we check that 
+        there are not white spaces at the end of a line with another rule. -->
+    <module name="RegexpMultiline">
+        <property name="format" value="\S\z" />
+        <property name="message" value="Missing new line at the end of file" />
+    </module>
+
+    <module name="RegexpMultiline">
+        <property name="format" value="\S\r?\n(\r?\n)+\z" />
+        <property name="message" value="Only one new line is allowed at the end of a file" />
+    </module>
+
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$" />
+        <property name="message" value="White spaces at the end of line" />
+    </module>
+
+</module>

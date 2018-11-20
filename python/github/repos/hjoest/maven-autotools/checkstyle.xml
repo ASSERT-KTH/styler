@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<!--
+     Checkstyle configuration
+
+     For more information see:
+     http://checkstyle.sourceforge.net/config.html
+  -->
+<module name="Checker">
+    <!--
+         By default every check violation is considered an error and
+         therefore, the checking module intentionally breaks the build.
+      -->
+    <property name="severity" value="error"/>
+    <!--
+         This allows for giving pairs of comments in the code to suppress
+         check violations.
+
+         Here's an example of how to switch of the checker module
+         "ParameterNumber" for a certain region of Java code:
+
+             // CHECKSTYLE:ParameterNumber:OFF
+             public void aMethodWithManyParameters(...) {
+                 ...
+             }
+             // CHECKSTYLE:ParameterNumber:ON
+
+         IMPORTANT: Abide by the following rules!
+
+           1. Make use of it very, very rarely.
+           2. Do it only to get off the hook when there is no other solution.
+           3. Put a comment in place on why you need it so badly.
+
+      -->
+    <module name="SuppressionCommentFilter">
+        <property name="offCommentFormat" value="CHECKSTYLE\:([\w\|]+)\:OFF"/>
+        <property name="onCommentFormat" value="CHECKSTYLE\:([\w\|]+)\:ON"/>
+        <property name="checkFormat" value="$1"/>
+    </module>
+    <!--
+         Checks whether files end with a new line.  This is not limited to
+         Java sources.
+      -->
+    <module name="NewlineAtEndOfFile">
+        <property name="id" value="0001"/>
+    </module>
+    <!--
+         Checks that a package.html file exists for each package.  More
+         specifically, checks that each java file has a "package.html"
+         sibling.
+      -->
+      <!--
+        FIXME:
+    <module name="PackageHtml">
+        <property name="id" value="0002"/>
+        <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Checks that a package.html file exists for each package. More&#10;specifically, checks that each java file has a &quot;package.html&quot;&#10;sibling."/>
+    </module>
+    -->
+    <!--
+         Performs a line-by-line comparison of all code lines and reports
+         duplicate code if a sequence of lines differs only in indentation.
+      -->
+    <module name="StrictDuplicateCode">
+        <property name="id" value="0003"/>
+        <property name="min" value="100"/>
+    </module>
+    <!--
+         The TranslationCheck class helps to ensure the correct translation
+         of code by checking property files for consistency regarding their
+         keys.
+      -->
+    <module name="Translation">
+        <property name="id" value="0004"/>
+    </module>
+    <!--
+         The TreeWalker module is a collection of all modules that check
+         individual Java source files.
+      -->
+    <module name="TreeWalker">
+        <module name="FileContentsHolder"/>
+        <!--
+             Checks for long anonymous inner classes.  If an anonymous inner
+             class becomes very long it is hard to understand and to see the
+             flow of the method where the class is defined.  Therefore long
+             anonymous inner classes should usually be refactored into a named
+             inner class or even better in a free-standing class.
+          -->
+        <module name="AnonInnerLength">
+            <property name="id" value="0006"/>
+            <property name="max" value="20"/>
+        </module>
+        <!--
+             Checks that the style of array type definitions conforms to
+
+                 String[] values
+
+             rather than
+
+                 String args[]
+
+          -->
+        <module name="ArrayTypeStyle">
+            <property name="id" value="0008"/>
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Checks that the style of array type definitions conforms to&#10;                 String[] values&#10;rather than &#10;                 String args[]"/>
+        </module>
+        <!--
+             Detects inline conditionals.
+          -->
+        <module name="AvoidInlineConditionals">
+            <property name="id" value="0009"/>
+        </module>
+        <!--
+             Finds nested blocks, i.e. blocks that are used freely in the
+             code.
+          -->
+        <module name="AvoidNestedBlocks">
+            <property name="id" value="0010"/>
+        </module>
+        <!--
+             This check finds import statements that use the * notation.
+          -->
+        <module name="AvoidStarImport">
+            <property name="id" value="0011"/>
+        </module>
+        <!--
+             Restricts nested boolean operators (&&, ||, &, | and ^) to a
+             specified depth (default = 3).
+          -->
+        <module name="BooleanExpressionComplexity">
+            <property name="id" value="0012"/>
+            <property name="max" value="5"/>
+            <property name="tokens" value="LAND, LOR"/>
+        </module>
+        <module name="ClassDataAbstractionCoupling">
+            <property name="id" value="0075"/>
+            <property name="max" value="15"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="id" value="0076"/>
+            <property name="max" value="30"/>
+        </module>
+        <module name="ConstantName">
+            <property name="id" value="0013"/>
+        </module>
+        <module name="CovariantEquals">
+            <property name="id" value="0079"/>
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="id" value="0080"/>
+            <property name="max" value="20"/>
+        </module>
+        <module name="DeclarationOrder">
+            <property name="id" value="0081"/>
+        </module>
+        <module name="DefaultComesLast">
+            <property name="id" value="0082"/>
+        </module>
+        <module name="DoubleCheckedLocking">
+            <property name="id" value="0015"/>
+        </module>
+        <module name="EmptyBlock">
+            <property name="id" value="0016"/>
+        </module>
+        <module name="EmptyForInitializerPad">
+            <property name="id" value="0083"/>
+        </module>
+        <module name="EmptyForIteratorPad">
+            <property name="id" value="0017"/>
+        </module>
+        <module name="EmptyStatement">
+            <property name="id" value="0018"/>
+        </module>
+        <module name="EqualsHashCode">
+            <property name="id" value="0019"/>
+        </module>
+        <module name="ExecutableStatementCount">
+            <property name="id" value="0020"/>
+            <property name="max" value="40"/>
+            <property name="tokens" value="CTOR_DEF,METHOD_DEF"/>
+        </module>
+        <module name="ExplicitInitialization">
+            <property name="id" value="0084"/>
+        </module>
+        <module name="FallThrough">
+            <property name="id" value="0021"/>
+        </module>
+        <!--
+        FIXME:
+        <module name="FileLength">
+            <property name="id" value="0022"/>
+            <property name="max" value="1900"/>
+        </module>
+        -->
+        <module name="FinalClass">
+            <property name="id" value="0023"/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0025"/>
+            <property name="format" value="/\*\* *\*/"/>
+            <property name="message" value="Empty comments not allowed."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0026"/>
+            <property name="format" value="\s+$"/>
+            <property name="message" value="Line has trailing spaces."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0027"/>
+            <property name="format" value="System.out"/>
+            <property name="message" value="Not allowed to use &quot;System.out&quot;."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0028"/>
+            <property name="format" value="System.err"/>
+            <property name="message" value="Not allowed to use &quot;System.err&quot;."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0029"/>
+            <property name="format" value="printStackTrace\s*\(\s*\)"/>
+            <property name="message" value="Not allowed to use &quot;printStackTrace()&quot;."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0099"/>
+            <property name="format" value="(^\s*\*\s*@(param|throws|exception)\s+\w+\s*$)|(^\s*\*\s*@(return)\s*$)"/>
+            <property name="message" value="The description of a Javadoc tag should follow in the same line."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0100"/>
+            <property name="format" value="^\s*\*\s*@\w+.*\.$"/>
+            <property name="message" value="The description of a Javadoc tag should not end with a dot."/>
+        </module>
+        <module name="GenericIllegalRegexp">
+            <property name="id" value="0101"/>
+            <property name="format" value="^\s*\*\s*@(exception)"/>
+            <property name="message" value="Please use @throws instead of @exception."/>
+        </module>
+        <module name="HiddenField">
+            <property name="id" value="0030"/>
+            <property name="ignoreConstructorParameter" value="true"/>
+            <property name="ignoreSetter" value="true"/>
+        </module>
+        <module name="HideUtilityClassConstructor">
+            <property name="id" value="0031"/>
+        </module>
+        <module name="IllegalCatch">
+            <property name="id" value="0085"/>
+        </module>
+        <module name="IllegalImport">
+            <property name="id" value="0032"/>
+        </module>
+        <module name="IllegalInstantiation">
+            <property name="id" value="0033"/>
+            <property name="classes" value="java.lang.Boolean"/>
+        </module>
+        <module name="IllegalThrows">
+            <property name="id" value="0086"/>
+        </module>
+        <module name="InnerAssignment">
+            <property name="id" value="0034"/>
+        </module>
+        <module name="InterfaceIsType">
+            <property name="id" value="0035"/>
+            <property name="allowMarkerInterfaces" value="true"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="id" value="0036"/>
+            <property name="allowUndeclaredRTE" value="true"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="id" value="0037"/>
+        </module>
+        <module name="JavadocType">
+            <property name="id" value="0038"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="id" value="0039"/>
+            <property name="scope" value="protected"/>
+        </module>
+        <module name="JavaNCSS">
+            <property name="id" value="0078"/>
+            <property name="methodMaximum" value="50"/>
+            <property name="classMaximum" value="600"/>
+            <property name="fileMaximum" value="600"/>
+        </module>
+        <module name="LeftCurly">
+            <property name="id" value="0040"/>
+        </module>
+        <module name="LineLength">
+            <property name="id" value="0041"/>
+            <property name="max" value="80"/>
+        </module>
+        <module name="LocalFinalVariableName">
+            <property name="id" value="0042"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="id" value="0043"/>
+        </module>
+        <module name="MagicNumber">
+            <property name="id" value="0087"/>
+            <property name="ignoreNumbers" value="-2, -1, 0, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 16, 32, 64, 100, 128, 256, 1000, 1024"/>
+        </module>
+        <module name="MemberName">
+            <property name="id" value="0044"/>
+        </module>
+        <module name="MethodLength">
+            <property name="id" value="0045"/>
+            <property name="max" value="100"/>
+        </module>
+        <module name="MethodName">
+            <property name="id" value="0046"/>
+        </module>
+        <module name="MethodParamPad">
+            <property name="id" value="0047"/>
+        </module>
+        <module name="MissingSwitchDefault">
+            <property name="id" value="0048"/>
+        </module>
+        <module name="ModifiedControlVariable">
+            <property name="id" value="0088"/>
+        </module>
+        <module name="ModifierOrder">
+            <property name="id" value="0049"/>
+        </module>
+        <module name="MultipleStringLiterals">
+            <property name="id" value="0089"/>
+            <property name="allowedDuplicates" value="5"/>
+        </module>
+        <module name="MultipleVariableDeclarations">
+            <property name="id" value="0090"/>
+        </module>
+        <module name="MutableException">
+            <property name="id" value="0050"/>
+        </module>
+        <module name="NeedBraces">
+            <property name="id" value="0051"/>
+        </module>
+        <module name="NestedIfDepth">
+            <property name="id" value="0091"/>
+            <property name="max" value="2"/>
+        </module>
+        <module name="NestedTryDepth">
+            <property name="id" value="0092"/>
+        </module>
+        <module name="NoWhitespaceAfter">
+            <property name="id" value="0052"/>
+            <property name="tokens" value="BNOT,DEC,DOT,INC,LNOT,UNARY_MINUS,UNARY_PLUS,GENERIC_START"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="id" value="0053"/>
+            <property name="tokens" value="SEMI,POST_DEC,POST_INC,GENERIC_START,GENERIC_END"/>
+        </module>
+        <module name="NPathComplexity">
+            <property name="id" value="0077"/>
+            <property name="max" value="180"/>
+        </module>
+        <module name="OperatorWrap">
+            <property name="id" value="0054"/>
+        </module>
+        <module name="PackageDeclaration">
+            <property name="id" value="0098"/>
+        </module>
+        <module name="PackageName">
+            <property name="id" value="0055"/>
+        </module>
+        <module name="ParameterAssignment">
+            <property name="id" value="0093"/>
+        </module>
+        <module name="ParameterName">
+            <property name="id" value="0056"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="0057"/>
+            <property name="max" value="6"/>
+        </module>
+        <module name="ParenPad">
+            <property name="id" value="0058"/>
+        </module>
+        <module name="RedundantImport">
+            <property name="id" value="0059"/>
+        </module>
+        <module name="RedundantModifier">
+            <property name="id" value="0060"/>
+        </module>
+        <module name="RedundantThrows">
+            <property name="id" value="0094"/>
+            <property name="allowUnchecked" value="true"/>
+            <property name="allowSubclasses" value="true"/>
+        </module>
+        <module name="ReturnCount">
+            <property name="id" value="0095"/>
+            <property name="max" value="4"/>
+        </module>
+        <module name="RightCurly">
+            <property name="id" value="0061"/>
+        </module>
+        <module name="SimplifyBooleanExpression">
+            <property name="id" value="0062"/>
+        </module>
+        <module name="SimplifyBooleanReturn">
+            <property name="id" value="0063"/>
+        </module>
+        <module name="StaticVariableName">
+            <property name="id" value="0064"/>
+        </module>
+        <module name="StringLiteralEquality">
+            <property name="id" value="0096"/>
+        </module>
+        <module name="TabCharacter">
+            <property name="id" value="0065"/>
+        </module>
+        <module name="ThrowsCount">
+            <property name="id" value="0066"/>
+            <property name="max" value="3"/>
+        </module>
+        <module name="TypecastParenPad">
+            <property name="id" value="0068"/>
+        </module>
+        <module name="TypeName">
+            <property name="id" value="0069"/>
+        </module>
+        <module name="UnnecessaryParentheses">
+            <property name="id" value="0097"/>
+        </module>
+        <module name="UnusedImports">
+            <property name="id" value="0070"/>
+        </module>
+        <module name="UpperEll">
+            <property name="id" value="0071"/>
+        </module>
+        <module name="VisibilityModifier">
+            <property name="id" value="0072"/>
+        </module>
+        <module name="WhitespaceAfter">
+            <property name="id" value="0073"/>
+            <property name="tokens" value="COMMA,SEMI,TYPECAST,GENERIC_END"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="id" value="0074"/>
+            <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LCURLY,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,TYPE_EXTENSION_AND"/>
+        </module>
+    </module>
+</module>

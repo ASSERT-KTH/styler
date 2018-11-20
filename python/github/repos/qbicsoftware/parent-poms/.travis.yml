@@ -1,0 +1,76 @@
+# Build script for Travis CI
+#
+
+# non-sudo hosts are faster, according to Travis CI documentation
+sudo: false
+language: java
+jdk: openjdk8
+
+# speed up builds by caching maven local repository
+cache:
+  directories:
+  - "$HOME/.m2/repository"
+
+# as agreed in our SOP
+branches:
+  only:
+  - master
+  - development
+
+# added to make logs look cleaner, crisper, certified fresh
+before_install: unset _JAVA_OPTIONS 
+
+# speed up builds by telling Travis that we don't need any special "installation"
+install: true
+
+# as agreed in our SOP, build everything (don't deploy, just try to 'mvn install' locally, which covers all phases)
+script: mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml --file pom.xml clean install &&
+        mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml --file cli/pom.xml clean install &&
+        mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml --file portal/pom.xml clean install &&
+        mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml --file portal/portlet/pom.xml clean install
+# no after_success tasks when handling pure POMs
+
+deploy:
+  # as agreed in our SOP, builds on development branch will deploy to our maven repository after validating
+  # the artifact has a proper SNAPSHOT version
+  # artifact will be installed in our testing instance if it is a .war file
+- skip_cleanup: true
+  provider: script
+  script: mvn --quiet --activate-profiles development-build,!release-build --settings .travis.settings.xml --file pom.xml clean deploy &&
+          mvn --quiet --activate-profiles development-build,!release-build --settings .travis.settings.xml --file cli/pom.xml clean deploy &&
+          mvn --quiet --activate-profiles development-build,!release-build --settings .travis.settings.xml --file portal/pom.xml clean deploy &&
+          mvn --quiet --activate-profiles development-build,!release-build --settings .travis.settings.xml --file portal/portlet/pom.xml clean deploy
+  on:
+    branch: development
+    condition: '"$TRAVIS_EVENT_TYPE" = "push"'
+  # as agreed in our SOP, tagging a commit on the master branch will upload to our maven repository
+  # after validating the artifact has a proper release version
+  # artifact will be installed in our testing instance if it is a .war file
+- skip_cleanup: true
+  provider: script
+  script: mvn --quiet --activate-profiles !development-build,release-build --settings .travis.settings.xml --file pom.xml clean deploy &&
+          mvn --quiet --activate-profiles !development-build,release-build --settings .travis.settings.xml --file cli/pom.xml clean deploy &&
+          mvn --quiet --activate-profiles !development-build,release-build --settings .travis.settings.xml --file portal/pom.xml clean deploy &&
+          mvn --quiet --activate-profiles !development-build,release-build --settings .travis.settings.xml --file portal/portlet/pom.xml clean deploy
+  on:
+    branch: master
+    condition: '"$TRAVIS_EVENT_TYPE" = "push"'
+
+# encrypted credentials
+env:
+  global:
+    - secure: "vzWnQiMLQvb86/pITP0YdhUMCx5jnSKeV47pLEj6TdMab/ul7qtibmJByoq9VILsz78tH2PARHIrL3nCMTXrA6iFKJh1xbTYMb3X+6JvwOCIfoDFSnlpceWXtLvdOUj929zxDVy6tRqJP2A6Imbzkf9aqchcSR2mUFFQlS3dihZq9mvDc5tdr3ZQ0AOLuon6lLBVOd+ruR97Z5JUXCkiVTyNOiD2HKZx4KxnXKT2Rma2TasrwH2OApgmGqSSxuiqnfBF8VuUjKRTwQwgcG9vKreZk07K5gsX0k6eTrxDg5ZyFwSbEgcH0GjlvhXT8H7wookEA89zQ/uyv6mYktfaGKq7vi3yofsmA+gLoc10Ab54NocXCXb1aEWGGSQIGXe0fivzhypEZZMB6NH8pBdtdmpnVdOJXwWpzqmvINPMzYMKgLF+k9UP0db2zHP4GBLLoKjdJOsteVk7J91Yl2FXdFSuHeZml6jJ89OSQ2zTkOBrHmOMT2XLmzEnnvwza95AV5SoDeJTAKuLNWqyADLJ92hXx9vSZNAs8YogCp2rQGxmrQufJS7mYa4zituDgEKZM8jAve5O3OI2cU9XXLfsm/gvoJAknCdHIwFI+SU4TreEb7mCpthn2Q+A0r3xwKgCCoa2MlVGDIWauaNIdBJsal88pAkuWE5IY4RIKzfbtlQ="
+    - secure: "d5+Z9Mwa9jWz4sTpZm42kMpeS0kqZbwP9XJH0fyfqP54ampohLbmKpwmmFl21Z9Z/t9eiyeN2lDeh/hz4UQR0CQ1sOR0z43YpxTKJ22P4qI1xhJ/NI+YiX46RSyMC38txoKXV2VxUFuaZtDU5Nm79fc9PUB8X69lwfWIumIWWGB7pI0gOj6J9D/dLhU9QmsDk+UsKdFqtgT+8+Y4PNfbN5tJf5C2s+tR7e7vBfVMBOa0oIj1AAhrYKKYiu1wtudpkOnZeUDbLYr1XBIONjhx6+kxzXegjxpi0gWR6yOrJcpFdb3w4fUH3xFR+I5dP/7Wm+fyJ/rPVeD93PJiQOHLlf+n7WPFG6jjVw1+IA+s5ZTi8Jgn6f3f8J1yNtx+9okXh24Jxwq9aTPhxgttgQrzKQZxKYKW/JuOG7TDYZPo1T2MFpl9GXbZewncjw73boJ9Up6md0YJnp+Ch4aGxllNGsu9EUPvq4hDowYu+IAfHjlLKBjaXmnFh19uHECXLgup36/ONo158OzTyeAW2lHq6T0FzOg05T69Owiol+VPQAJ8y/uGaxKDSkqkOa9N8BbZmWbY3IBv+XQE48NW57vnjpRgg9yM0/LWz41Hcm5/8OHL4DdqhejUxQlzwsLnBbkSc3eId7kddeevcANC3R8DrCay5MCCmh+SH8LipRqpQdk="
+
+# change according to your needs, but we recommend to deactivate email notifications
+# for now, we configured Travis to send a notification to the #travis-ci channel 
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+  slack: 
+    on_success: never
+    on_failure: always
+    # edit the following section if you want to get slack notifications
+    rooms:
+      - secure: "KbCA/3Joqv98COAd19zk7hthc7XMPrniow/d1M9siGrEhTvdqnG/UiOT84B9MDzT3phXaz0OwvdkS62nYcDHJi7e5nt8e36st33cYbV/VxSTCMAXevPeQdkm6CeRltnrL2R4OMb9ONpLvCeGxPgIqt7M9qbHfqQOVJ+S1euQM8xyfhr6OcLqmovzyvgdDrvqkn+0wABc+p7nWmqsfXrojFcoxbbuUoBp7Fn9X+Ac8IzEhgKT2QJoxBd3jAGIJA0WzgW7jDZ568b9eG0Ike4s17cepsVQTgrO7/+VSYSH7+F5fGBTPrT81i0Nb759Zm1tSBtw4jR8mm/0IYfqIYWPyLy80ABuqeEzRh/DYiP4wWekBHt5nGg9ft2V5cIVgV+YRVOzSsFjSmTZ4UTJsIntjj/03pEiJ0diEQu0twV1ivhzbgGO50GtFHwHbGc0YjbI8bZlDdFjnSPSaGo18jt8uBgiWO2N/9Mxja57UTgxidUQgWatiN/VZwFrDQE242jr9/hAF4Lnx4ZhG/84PfqLo3fyY+hIZUe2p3QMRgqbv3r/jAMU2+NrvJu056ISWIEYsJbOSFtsucJqQltBsqrS1ej8dTqSnQHuZ6dgTj7vmXhjhOYwQe/n8rLx/w5ZsmFTA+xNXCrBdX8sKMy2fUJl6Grc2MjcU6SkBYAKXFDqQ5s="

@@ -1,0 +1,17 @@
+language: java
+sudo: required
+services:
+- docker
+script:
+- mvn package
+deploy:
+  provider: releases
+  api_key:
+    secure: Wcx9Juv/FirFDNkgcoTXKbz3tXRAUswrP9p5yK5B+QFx3zoFwobi6V3GHLQRcUNeg9QHolrAleGrQA83K9GYMEdAZOkp4X3XkwSQhar5/M306xyZF8E3kzZm86cOD8dFfTkZX6NPLsi2yQj2ggEg8FDauLOFWAN7xPel0tOxYgsEErj2EkAEW8xbmt7xAFMkaqEw5Exj07cnDsqn+IP9fyqpFKuBDu1CyAcAxdpa4kuhYFKfGpgDjgnMuf6FyMUxnZwbwTXFlMuCG1F+upYBg6H61EoOE80uqlKvb7GZbf0wGgb/f4+2azpSBwv0SCOcELfPJVpMC6t8LUtG82WRN5Jw4qae1xWPEut+o0EfCI9o3sei1JDi1qwIt2P9KTbbT8lM1B5kIxgC3DFXPB07Peh7fXO1E1DkUDFGQQFJyM4AvBoDVcMMcpdPa12zO6GAbYm0op9OqzHH4klI5RVU9MomIdzu229uEuLcyNIvgTPVaHPJH3Su5nwYvS3onu1CmGRJKhrWFo9y+dvEtIqX4H/8b3UiBlsh7OQJZXPTSF09a+rZvopQxh5aC+YaAwWagIZdJKwT9nb5MFAQm7dslhNjKkk96kblDSsXS9lFT+ySiLPG972707vy+oQ2LZJtz2fs7m8IB6Ux+n2044CpVeDb3ZlcI2YQVJILkp9jl6k=
+  file_glob: true
+  skip_cleanup: true
+  file:
+  - "kafka-connect-kudu/target/*.tar.gz"
+  on:
+    tags: true
+    repo: parrotcdc/parrot

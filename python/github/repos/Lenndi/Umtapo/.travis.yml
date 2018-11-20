@@ -1,0 +1,45 @@
+dist: trusty
+sudo: required
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+language: node_js java
+node_js:
+  - "7"
+jdk:
+  - oraclejdk8
+os:
+  - linux
+env:
+  global:
+    - DBUS_SESSION_BUS_ADDRESS=/dev/null
+  matrix:
+    - NG_SCRIPT=lint
+    #- NG_SCRIPT=single-test
+    - NG_SCRIPT=style-lint
+    - BK_SCRIPT=back-test
+
+
+before_install:
+  - if [[ "$NG_SCRIPT" ]]; then echo "Starting front tests..."; fi
+  - if [[ "$NG_SCRIPT" ]]; then cd front; fi
+  - if [[ "$NG_SCRIPT" ]]; then npm install -g npm; fi
+  - if [[ "$NG_SCRIPT" ]]; then npm install -g @angular/cli; fi
+  - if [[ "$NG_SCRIPT" ]]; then export CHROME_BIN=chromium-browser; fi
+  - if [[ "$NG_SCRIPT" ]]; then echo "--no-sandbox" > ~/.config/chromium-flags.conf; fi
+  - if [[ "$NG_SCRIPT" ]]; then npm config set spin false; fi
+  - if [[ "$NG_SCRIPT" ]]; then npm config set progress false; fi
+
+install:
+  - if [[ "$NG_SCRIPT" ]]; then npm install --no-optional; fi
+
+before_script:
+  - if [[ "$NG_SCRIPT" ]]; then export DISPLAY=:99.0; fi
+  - if [[ "$NG_SCRIPT" ]]; then sh -e /etc/init.d/xvfb start; fi
+  - sleep 3;
+
+script:
+  - if [[ "$NG_SCRIPT" ]]; then npm run $NG_SCRIPT; fi
+  - if [[ "$BK_SCRIPT" ]]; then cd back; fi
+  - if [[ "$BK_SCRIPT" ]]; then mvn test; fi

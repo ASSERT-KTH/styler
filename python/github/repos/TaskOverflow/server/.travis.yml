@@ -1,0 +1,44 @@
+language: groovy
+
+sudo: false
+
+jdk:
+ - openjdk7
+ - oraclejdk8
+
+env:
+ global:
+  - MONGODB_VERSION=3.4.0
+
+addons:
+ apt:
+  sources:
+   - mongodb-upstart
+   - mongodb-3.4-precise
+  packages:
+   - mongodb-org
+   - libssl1.0.0
+   - libssl-dev
+
+services:
+ - mongodb
+
+before_install:
+#grails installation
+ - curl -s get.sdkman.io | bash
+ - source "$HOME/.sdkman/bin/sdkman-init.sh"
+ - content=`more ~/.sdkman/etc/config | grep -v auto_answer`; echo "$content" > ~/.sdkman/etc/config; echo "sdkman_auto_answer=true" >> ~/.sdkman/etc/config
+ - sdk install grails
+ - grails -version
+#mongodb installation
+ - mkdir -p data/db
+ - mongod --dbpath=data/db &
+ - sleep 21
+
+before_script:
+  - sleep 15
+  - mongo task_overflow --eval 'db.addUser("admin", "admin");'
+  
+script:
+ - echo "Rien à exécuter voir .travis.yml"
+#grails test-app

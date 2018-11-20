@@ -1,0 +1,26 @@
+before_install:
+  - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-sv
+  - export LANG=sv_SE.UTF-8
+  - export LC_ALL="sv_SE.UTF-8"
+language: java
+env:
+  - MAVEN_VERSION=3.5.0
+jdk:
+  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - graphviz
+install:
+  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "./mvnw --show-version --errors --batch-mode validate"
+script: "./mvnw --show-version --errors --batch-mode clean install"
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - lennart.jorelid@gmail.com

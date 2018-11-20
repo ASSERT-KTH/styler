@@ -1,0 +1,39 @@
+language: java
+
+sudo: false
+
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8 #JBoss7 hangs on jdk8
+
+env:
+  global:
+    - WF_VERSION="9.0.1.Final"
+    - JBOSS_HOME=$HOME/wildfly-$WF_VERSION
+    - WF_LINK="http://download.jboss.org/wildfly/$WF_VERSION/wildfly-$WF_VERSION.tar.gz"
+    - MAVEN_PROFILES="it,wildfly"
+    - secure: WrQYhD3HBLqpKj83AxUH+Gf1EL1vlAX/kcfTAMPSJdjyIcYR/U1b0BYl9ne8Glro8UopZrH8X+3I0oP6GXXG7ihnb8L2sawCutC9EyccQOvFcfuMttSMhTpJpnLSLqEw5Gdp3qb4WDHOFALfo0G4hd/Yr2iIxSp/x6DQAuIz76M=
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $JBOSS_HOME
+
+before_script:
+  - bash docs/scripts/travis_before.sh
+
+script: "mvn clean verify -P$MAVEN_PROFILES"
+
+install: /bin/true
+
+after_success: "mvn clean cobertura:cobertura coveralls:cobertura -P$MAVEN_PROFILES"
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#carcv"
+    on_success: always
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"

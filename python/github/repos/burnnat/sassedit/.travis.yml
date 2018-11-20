@@ -1,0 +1,15 @@
+language: java
+install: true
+script: mvn -e install -P full
+after_success:
+ - git clone https://burnnat:${GITHUB_TOKEN}@github.com/burnnat/p2.git p2
+ - chmod u+x ./p2/stage.sh
+ - ./p2/stage.sh com.burnskids.eclipse.sass.p2/target/repository
+after_failure:
+ - cat *.test/target/surefire-reports/*.txt
+env:
+  global:
+   - secure: |-
+       WIrD5JydWiz4EaR3+bBMAfJgfWdJDjGlJgIQsJD89mJB+9MsaDxzCZsae1Y2
+       a9IrI106FMeCxRHhDCQsJOJKGZUK2dIdNDZSr8kLGb+uZg846L0CARvwDl+Q
+       elPrCJf3psJL047bszx1pJR93RTe5kTaqK+7kbEFexs5imcOr28=

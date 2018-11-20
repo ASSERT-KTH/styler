@@ -1,0 +1,238 @@
+<?xml version="1.0" ?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+    <!-- If translations are done, make sure that they are complete. -->
+    <module name="Translation"/>
+
+    <!-- All text files should end with a blank line. -->
+    <module name="NewlineAtEndOfFile">
+        <!--
+             Use unix style newlines. When set, the checker ensures the last byte in the file is \n.
+             So, it works for both \n (unix) and \r\n (Windows). Will not work on mac (\r).
+        -->
+        <property name="lineSeparator" value="lf"/>
+    </module>
+
+    <!-- File Header Checks --><!-- All source files should begin with the standard header comment contained in the following file. -->
+    <!--<module name="RegexpHeader">-->
+        <!--<property name="headerFile" value="${checkstyle.header.file}"/>-->
+    <!--</module>-->
+
+    <!-- The maximum number of lines allow in any source file is 200. -->
+    <module name="FileLength">
+        <property name="max" value="200"/>
+    </module>
+
+    <!-- Tab characters are not allowed in source files. --><!--        <module name="TabCharacter" />--><!-- TabCharacter replaced by FileTabCharacter in v5                               --><!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="FileTabCharacter"/>
+
+
+    <module name="TreeWalker">
+        <module name="FileContentsHolder"/>
+        <property name="cacheFile" value="target/checkstyle.cache"/>
+        <!-- Where Tabs are used (they shouldn't be), assume they indent four spaces worth, as that is the indentation depth -->
+        <property name="tabWidth" value="4"/>
+        <!-- Only check java files. -->
+        <property name="fileExtensions" value="java"/>
+
+        <!-- HTML Modules -->
+        <module name="JavadocStyle">
+            <!-- We want to ensure that the javadoc is stylistically correct -->
+            <property name="scope" value="protected"/>
+        </module>
+
+        <!-- Naming Conventions -->
+        <module name="ConstantName">
+            <!-- Static final constant names should begin with an uppercase letter, followed by any number of uppercase letters or digits, possibly separated by underscores. e.g. LIKE_THIS -->
+            <property name="format" value="^[A-Z]([A-Z0-9_]*[A-Z0-9])?$"/>
+        </module>
+        <module name="MemberName">
+            <!-- Both static (non-final) and non-static data member names should begin with an underscore, followed by a single lowercase letter, followed by any number of alphanumeric characters (upper or lower case letters or digits). e.g. _likeThis -->
+            <property name="format" value="^[_a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="StaticVariableName">
+            <!-- Both static (non-final) and non-static data member names should begin with an underscore, followed by a single lowercase letter, followed by any number of alphanumeric characters (upper or lower case letters or digits). e.g. _likeThis -->
+            <property name="format" value="^[_a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="PackageName">
+            <!-- Packages should be all lower case, with numbers if needed -->
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        </module>
+
+        <!-- Import Checks --><!-- Use of the &quot;import package.*&quot; is not permitted. Explicit imports only -->
+        <module name="AvoidStarImport"/>
+        <!-- Certain packages should not be used by our code. By default, this restricts access to the sun.* packages -->
+        <module name="IllegalImport">
+            <!-- This shadows Guava, but has no GWT emulation. We really shouldn't be using it anyway. -->
+            <property name="illegalPkgs" value="com.google.inject.internal"/>
+        </module>
+        <!-- Redundant imports are not allowed. A redundant import is one where the class is already visible (either through an earlier explicit import or due to the Java access rules -->
+        <module name="RedundantImport"/>
+        <!-- Unused imports clutter up the code (especially when forced to be explicit), and should be prevented -->
+        <module name="UnusedImports"/>
+        <module name="ImportOrder">
+            <!-- It would be good if we could define a list of packages to come _last_ -->
+            <property name="groups" value="java,javax"/>
+            <property name="ordered" value="false"/>
+            <!-- Should be true, but can't be as we want au.com.suncorp to be last -->
+        </module>
+
+        <!-- Size Violations --><!-- The maximum allowed line length is 120 characters. Rationale: 120 characters is the default for most IDEs. -->
+        <module name="LineLength">
+            <!-- Ignore the maximum line length restriction for import statements. -->
+            <property name="ignorePattern" value="^import"/>
+            <property name="max" value="150"/>
+        </module>
+        <!-- The maximum number of lines allowed in any method is 25. Rationale: Too many lines makes it hard to read. A method should be able to be displayed, in its entirety, within an IDE, in a reasonable screen resolution. -->
+        <module name="MethodLength">
+            <property name="max" value="25"/>
+        </module>
+        <!-- No more than seven parameters are to be allowed to a method. More than seven is unreadable. -->
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+        </module>
+
+        <!-- Whitespace Checks --><!-- We want to have a space where a for loop has an empty iterator. -->
+        <module name="EmptyForIteratorPad">
+            <property name="option" value="space"/>
+        </module>
+        <!-- Don't allow whitespace after typical unary operators (but not array initialisors). -->
+        <module name="NoWhitespaceAfter">
+            <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS"/>
+            <property name="allowLineBreaks" value="false"/>
+        </module>
+        <!-- Don't allow whitespace before the typical unary operators, either -->
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="false"/>
+        </module>
+        <!-- Line wraps should occur _after_ operators, not before them. The one exception is the colon operator as part of the ternary conditional operator. -->
+        <module name="OperatorWrap">
+            <property name="option" value="eol"/>
+            <property name="tokens"
+                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR"/>
+        </module>
+        <module name="OperatorWrap">
+            <property name="option" value="nl"/>
+            <property name="tokens" value="COLON"/>
+        </module>
+        <!-- There should be no whitespace after an opening parenthesis or before a closing parenthesis. -->
+        <module name="ParenPad"/>
+        <!-- No whitespaces inside of a typecast -->
+        <module name="TypecastParenPad"/>
+        <!-- Enforce whitespace after commas, semi-colons, and typecasts -->
+        <module name="WhitespaceAfter"/>
+        <!-- Enforce whitespace around most other typical operators. -->
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND, WILDCARD_TYPE"/>
+        </module>
+
+        <!-- Modifiers --><!-- Enforce modifiers are declared as per the Java Language Specification -->
+        <module name="ModifierOrder"/>
+        <!-- Ensure that redundant modifiers aren't permitted. -->
+        <module name="RedundantModifier"/>
+
+        <!-- Block Checks --><!-- We don't allow empty blocks; if an empty block is needed, please comment on why -->
+        <module name="EmptyBlock"/>
+        <!-- While we do not have a policy on where the left curly brace goes, we have a strong preference for it being on the end of the line. -->
+        <!-- <module name="LeftCurly" /> -->
+        <!-- All blocks require braces; no implicit one-statement blocks -->
+        <module name="NeedBraces"/>
+        <!-- Right curly braces should be on the same line as the following left curly brace, where there is (e.g. sequential if else, catches) -->
+        <module name="RightCurly"/>
+        <!-- Unnecessarily nested blocks aren't permitted -->
+        <module name="AvoidNestedBlocks"/>
+
+        <!-- Coding Problem Checks --><!-- Not Desired <module name="ArrayTrailingComma" /> --><!-- Not Desired <module name="AvoidInlineConditionals" /> --><!-- If you declare an equals() method taking anything but Object, you have to define the Object part as well. -->
+        <module name="CovariantEquals"/>
+        <!-- Disallows Double Checked Locking -->
+        <module name="DoubleCheckedLocking"/>
+        <!-- Disllows empty statements -->
+        <module name="EmptyStatement"/>
+        <!-- If you declare an equals() method, you need to declare hashCode as well -->
+        <module name="EqualsHashCode"/>
+        <!-- Not Desired <module name="FinalLocalVariable" /> This would be cute, but it's a lot of pain to remember to do. --><!-- Don't allow the following classes to be instantiated directly -->
+        <module name="IllegalInstantiation">
+            <property name="classes" value="java.lang.Boolean"/>
+        </module>
+        <!-- Only allow assignments as the primary point of a method, not as a side-effect -->
+        <module name="InnerAssignment"/>
+        <!--	Magic Number checking is disabled as it reports too many false positives; e.g. Base64.java
+                <module name="MagicNumber"/>
+        --><!-- Switch statements need to have a default case -->
+        <module name="MissingSwitchDefault"/>
+        <!-- Methods should not declare subclasses of types of exceptions (though they can document them). This helps avoid proliferation of exceptions -->
+        <module name="RedundantThrows"/>
+        <!-- Not Desired: <module name="SimplifyBooleanExpression" /> Specifying boolean values (e.g. bool == true, bool == false) promotes readability --><!-- Don't use complicated boolean logic for return statements -->
+        <module name="SimplifyBooleanReturn"/>
+        <!-- Dont allow for the use of == for String comparisions -->
+        <module name="StringLiteralEquality"/>
+        <!-- Don't allow deeply nested if statements -->
+        <module name="NestedIfDepth">
+            <property name="max" value="1"/>
+        </module>
+        <!-- Don't allow deeply nested if statements -->
+        <module name="NestedTryDepth">
+            <property name="max" value="1"/>
+        </module>
+        <!-- If you clone an object, invoke super.clone()! -->
+        <module name="SuperClone"/>
+        <!-- If you finalize an object, invoke super.clone()! -->
+        <module name="SuperFinalize"/>
+        <!-- Not Desired: <module name="IllegalCatch" /> This would be good, but too many other APIs throw Exception. --><!-- All classes should have packages. -->
+        <module name="PackageDeclaration"/>
+        <!-- Quick check to ensure that JUnit tests are set up right -->
+        <module name="JUnitTestCase"/>
+        <!-- Quick check to ensure that there aren't too many return statements in a method-->
+        <module name="ReturnCount">
+            <property name="max" value="4"/>
+        </module>
+        <!-- An excellent check to help ensure people aren't coding to concrete classes -->
+        <module name="IllegalType"/>
+        <!-- Enforce the declaration order. Declaration orders aren't really that big a deal, but they are described, so they should be enforced. -->
+        <module name="DeclarationOrder"/>
+        <!-- Rationale: Parameter assignment is often considered poor programming practice. Forcing developers to declare parameters as final is often onerous. Having a check ensure that parameters are never assigned would give the best of both worlds -->
+        <module name="ParameterAssignment"/>
+        <!-- Not Desired: <module name="ExplicitInitialization" />; indicating the default value is good practise, especially for junior developers. The minor inefficency is exactly that: minor. -->
+
+        <!-- Class Design Problems Checks --><!-- Ensure non-final members are private -->
+        <module name="VisibilityModifier"/>
+        <!-- Ensure that a class with only a private constructor is final; this is about expression of intent -->
+        <module name="FinalClass"/>
+        <!-- Interfaces should represent types. As such, interfaces with no methods (but a heap of constants) are not appropriate. The use of marker interfaces (e.g. Serializable) is okay, however -->
+        <module name="InterfaceIsType">
+            <property name="allowMarkerInterfaces" value="true"/>
+        </module>
+        <!-- Utitlity classes should not have constructors. However, please note it is better to create first-class objects than collections of utility methods -->
+        <module name="HideUtilityClassConstructor"/>
+        <!-- Not Desired: <module name="DesignForExtension"/> It's an interesting idea, but it's a pain to remember to declare all the methods as final --><!-- Ensure that exceptions are immutable -->
+        <module name="MutableException"/>
+        <!-- Limit the number of exceptions that can be thrown by a method. -->
+        <module name="ThrowsCount">
+            <property name="max" value="3"/>
+        </module>
+
+        <!-- Complexity checks -->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="7"/>
+        </module>
+
+        <!-- Misc. Checks --><!-- ToDos are explicitly permitted; they show up in the IntelliJ tabs --><!--        <module name="TodoComment" />--><!-- Make sure people use upper-case Ls -->
+        <module name="UpperEll"/>
+        <!-- Arrays should be declared type[] name, not type name[] -->
+        <module name="ArrayTypeStyle"/>
+
+        <!-- Not desired: <module name="FinalParameters"/> Actually, it is desired, but having to put in final is a pain, and there's a check to prevent assignment to parameters --><!-- Not desired: <module name="Indentation" /> Not configurable enough -->
+
+        <!-- Usage Checks -->        <!-- These have now all been moved as PMD covers the same checks. --><!-- Private fields need to be used. --><!-- module name="usage.UnusedPrivateField" --><!-- module name="usage.UnusedPrivateMethod" --><!-- Local variables need to be used after declaration. --><!-- module name="usage.UnusedLocalVariable" -->
+
+        <!-- J2EE Checks --><!-- Check that the Entity Bean specs are conformed to. --><!--        <module name="j2ee.EntityBean" />--><!-- Check that static variables in beans are final --><!--        <module name="j2ee.FinalStatic" />--><!-- Check that local beans are spec compliant. --><!--        <module name="j2ee.LocalHomeInterface" />--><!--        <module name="j2ee.LocalInterface" />--><!-- Check that Message Driven Beans are spec compliant --><!--        <module name="j2ee.MessageBean" />--><!-- Check that remote beans are spec compliant --><!--        <module name="j2ee.RemoteHomeInterface" />--><!--        <module name="j2ee.RemoteInterface" />--><!-- Check that Session Beans are spec compliant --><!--        <module name="j2ee.SessionBean" />--><!-- Check that no incorrect use of this is made for EJBs --><!--        <module name="j2ee.ThisParameter" />--><!--        <module name="j2ee.ThisReturn" />-->
+    </module>
+
+    <module name="SuppressionCommentFilter">
+        <property name="offCommentFormat" value="CHECKSTYLE\:OFF ([\w\|]+)"/>
+        <property name="onCommentFormat" value="CHECKSTYLE\:ON ([\w\|]+)"/>
+        <property name="checkFormat" value="$1"/>
+    </module>
+</module>

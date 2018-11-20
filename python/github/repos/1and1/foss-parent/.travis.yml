@@ -1,0 +1,18 @@
+language: java
+sudo: no
+env: JOB_URL=http://jenkins.example.com/ci/
+jdk:
+  - oraclejdk8
+install:
+  - "mvn -N -q io.takari:maven:wrapper -Dmaven=3.5.0"
+  - "./mvnw -Dinvoker.skip=true -Dmaven.site.skip=true clean verify site dependency:go-offline"
+script: 'env MAVEN_OPTS="-Xms64m -Xmx256m -XX:MaxPermSize=192m -Djava.awt.headless=true" ./mvnw -Dversions.skip=true clean verify site'
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - mfriedenhagen@gmail.com

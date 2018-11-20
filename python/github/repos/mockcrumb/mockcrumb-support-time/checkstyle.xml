@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+  Checkstyle configuration that checks the Ryanair coding conventions.
+  Coding convensions are based on the Sun conding convensions taken from:
+    - the Java Language Specification at
+      http://java.sun.com/docs/books/jls/second_edition/html/index.html
+    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
+    - the Javadoc guidelines at
+      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
+    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
+    - some best practices
+
+  Before redefining be sure to read the documentation at
+  http://checkstyle.sf.net (or in your downloaded distribution).
+-->
+
+<module name="Checker">
+    <!-- Checks that each Java package has a Javadoc file used for commenting. -->
+    <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage       -->
+    <module name="JavadocPackage">
+      <property name="allowLegacy" value="true"/>
+    </module>
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <module name="NewlineAtEndOfFile">
+        <!-- Unix style line separator -->
+        <property name="lineSeparator" value="lf" />
+    </module>
+
+    <!-- Enforce UNIX line endings. -->
+    <module name="RegexpMultiline">
+        <property name="format" value="\r\n"/>
+        <property name="maximum" value="0"/>
+    </module>
+
+    <!-- Checks that property files contain the same keys.         -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <module name="FileLength"/>
+
+    <!-- Following interprets the header file as regular expressions. -->
+    <!-- <module name="RegexpHeader"/>                                -->
+
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+    <module name="RegexpSingleline">
+        <!-- \s matches whitespace character, $ matches end of line. -->
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <!-- Checks that FIXME is not used in comments. TODO is preferred. -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//.*)|(\*.*))FIXME" />
+        <property name="message" value='TODO is preferred to FIXME. e.g. "TODO(gowinm): Refactor when v2 is released."' />
+    </module>
+
+    <!-- Checks that TODOs are named. (Actually, just that they are followed by an open paren.) -->
+    <module name="RegexpSingleline">
+        <property name="format" value="((//.*)|(\*.*))TODO[^(]" />
+        <property name="message" value='All TODOs should be named. e.g. "TODO(gowinm): Refactor when v2 is released."' />
+    </module>
+
+    <module name="SuppressionFilter">
+        <property name="file" value="${checkstyle.suppressions.file}" />
+    </module>
+
+    <module name="TreeWalker">
+        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html
+        <module name="JavadocMethod">
+            <property name="scope" value="protected"/>
+            <property name="severity" value="warning"/>
+            <property name="allowMissingJavadoc" value="true"/>
+            <property name="allowMissingParamTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowMissingThrowsTags" value="true"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
+            <property name="allowUndeclaredRTE" value="true"/>
+        </module>
+        <module name="JavadocType">
+            <property name="scope" value="protected"/>
+            <property name="severity" value="error"/>
+        </module>
+        <module name="JavadocVariable"/>
+        <module name="JavadocStyle">
+            <property name="severity" value="warning"/>
+        </module>
+        -->
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName">
+            <!--
+                Validates identifiers for package names against the supplied expression.
+                We don't use characters different than: a-z0-9.
+            -->
+            <property name="format" value="^[a-z]+(\.[a-z]([a-z0-9]*|_)*)*$"/>
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+        <module name="TypeNameCheck">
+            <!--
+                Validates static, final fields against the expression
+                "^[A-Z][a-zA-Z0-9]*$".
+            -->
+            <metadata name="altname" value="TypeName"/>
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ConstantNameCheck">
+            <!-- Validates non-private, static, final fields against the supplied
+                public/package final fields "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$". -->
+            <metadata name="altname" value="ConstantName"/>
+            <property name="applyToPublic" value="true"/>
+            <property name="applyToProtected" value="true"/>
+            <property name="applyToPackage" value="true"/>
+            <property name="applyToPrivate" value="false"/>
+            <property name="format" value="^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*|FLAG_.*)$"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="StaticVariableNameCheck">
+            <!-- Validates static, non-final fields against the supplied
+                expression "^[a-z][a-zA-Z0-9]*_?$". -->
+            <metadata name="altname" value="StaticVariableName"/>
+            <property name="applyToPublic" value="true"/>
+            <property name="applyToProtected" value="true"/>
+            <property name="applyToPackage" value="true"/>
+            <property name="applyToPrivate" value="true"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*_?$"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="MemberNameCheck">
+            <!-- Validates non-static members against the supplied expression. -->
+            <metadata name="altname" value="MemberName"/>
+            <property name="applyToPublic" value="true"/>
+            <property name="applyToProtected" value="true"/>
+            <property name="applyToPackage" value="true"/>
+            <property name="applyToPrivate" value="true"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="MethodNameCheck">
+            <!-- Validates identifiers for method names. -->
+            <metadata name="altname" value="MethodName"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ParameterName">
+            <!-- Validates identifiers for method parameters against the
+                expression "^[a-z][a-zA-Z0-9]*$". -->
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="LocalFinalVariableName">
+            <!-- Validates identifiers for local final variables against the
+                expression "^[a-z][a-zA-Z0-9]*$". -->
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="LocalVariableName">
+            <!-- Validates identifiers for local variables against the
+                expression "^[a-z][a-zA-Z0-9]*$". -->
+            <property name="severity" value="warning"/>
+        </module>
+
+        <!-- Checks for Headers                                -->
+        <!-- See http://checkstyle.sf.net/config_header.html   -->
+        <!-- <module name="Header">                            -->
+            <!-- The follow property value demonstrates the ability     -->
+            <!-- to have access to ANT properties. In this case it uses -->
+            <!-- the ${basedir} property to allow Checkstyle to be run  -->
+            <!-- from any directory within a project. See property      -->
+            <!-- expansion,                                             -->
+            <!-- http://checkstyle.sf.net/config.html#properties        -->
+            <!-- <property                                              -->
+            <!--     name="headerFile"                                  -->
+            <!--     value="${basedir}/java.header"/>                   -->
+        <!-- </module> -->
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+        <!--
+        <module name="ImportOrder">
+        -->
+            <!-- Checks for out of order import statements. -->
+        <!--
+            <property name="severity" value="warning"/>
+            <property name="groups" value="com.google,android,junit,net,org,java,javax"/>
+        -->
+            <!-- This ensures that static imports go first. -->
+        <!--
+            <property name="option" value="top"/>
+            <property name="tokens" value="STATIC_IMPORT, IMPORT"/>
+        </module>
+        -->
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <!-- Checks if a line is too long. -->
+            <property name="max" value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}" default="120"/>
+            <property name="severity" value="error"/>
+            <!-- Ignore method annotations, comment lines and import statements -->
+            <property name="ignorePattern" value="^[ ]*@[a-zA-Z]+\(.*\)$|^[ ]*\*.*$|^import.*$"/>
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber">
+            <property name="max" value="16"/>
+        </module>
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!-- <module name="AvoidInlineConditionals"/> -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <!-- <module name="HiddenField"/> -->
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+		<!-- <module name="MagicNumber"/> -->
+        <module name="MissingSwitchDefault"/>
+        <!-- Disabled due to a bug in the module which makes validation fail if the
+             exception classes haven't been compiled yet:
+             https://github.com/checkstyle/checkstyle/issues/74
+        <module name="RedundantThrows">
+            <property name="suppressLoadErrors" value="true"/>
+        </module>
+        -->
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="FallThrough">
+            <!-- Warn about falling through to the next case statement.  Similar to
+                javac -Xlint:fallthrough, but the check is suppressed if a single-line comment
+                on the last non-blank line preceding the fallen-into case contains 'fall through' (or
+                some other variants which we don't publicized to promote consistency).
+            -->
+            <property name="reliefPattern"
+                value="fall through|Fall through|fallthru|Fallthru|falls through|Falls through|fallthrough|Fallthrough|No break|NO break|no break|continue on"/>
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <!-- <module name="DesignForExtension"/> -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+    </module>
+</module>

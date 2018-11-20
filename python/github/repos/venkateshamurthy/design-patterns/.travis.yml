@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - oraclejdk7
+after_success:
+  - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/oss-deploy-settings.xml
+  - mvn -DrepoToken=${env.repoToken} clean jacoco:report site deploy --settings ~/oss-deploy-settings.xml

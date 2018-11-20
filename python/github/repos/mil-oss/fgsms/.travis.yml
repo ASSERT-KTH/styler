@@ -1,0 +1,76 @@
+language: java
+jdk: 
+ - oraclejdk7
+ - oraclejdk8
+ - openjdk7
+
+addons:
+  postgresql: "9.3"
+
+services:
+  - postgresql
+
+matrix:
+
+# sudo: required
+
+before_install:
+  #- export MAVEN_OPTS="-Xmx1524M -Xss128M -XX:MaxPermSize=1024M -XX:+CMSClassUnloadingEnabled"
+  - psql -U postgres -f database/dbcurrent.sql
+  #- sudo apt-get -qq install graphviz 2-20-2017 just stopped working
+  #- sudo apt-get -qq install qpidd qpid-tools
+
+before_script:
+  - echo "MAVEN_OPTS='-Xmx2g -XX:MaxPermSize=512m'" > ~/.mavenrc
+install:
+  - 
+#build
+script:
+  #- export MAVEN_OPTS="-Xmx1524M -Xss128M -XX:MaxPermSize=1024M -XX:+CMSClassUnloadingEnabled"
+  - mvn install -B
+  #start the server
+  - cd fgsms-server/fgsms-tomcat/target/tomcat/apache-tomcat-7.0.75/bin
+  - chmod 755 *.sh
+  - ./catalina.sh run &
+  - cd ../../../../../..
+  # start apache juddi
+  - cd apache-juddi/target/juddi-distro-3.3.3/juddi-tomcat-3.3.3/bin
+  - chmod 755 *.sh
+  - ./catalina.sh run &
+  - cd ../../../../..
+  # sleep a bit to prevent policy creation issues
+  - sleep 30s
+  # start the OS Agent
+  - cd fgsms-agents/fgsms-osagent/target/
+  - java -Djava.library.path=. -jar fgsms.OSAgent.jar &
+  - cd ../../.. 
+  - mvn install -Dintegration -Duddi -Dosagent
+  # stop juddi
+  - cd apache-juddi/target/juddi-distro-3.3.3/juddi-tomcat-3.3.3/bin
+  - ./catalina.sh stop &
+  - cd ../../../../..
+  
+  # test jboss esb
+  - pwd
+  - cd fgsms-tests
+  - pwd
+  - cd jboss.esb
+  - pwd
+  - mvn install
+  - cd target/esb/jbossesb-server-4.12/bin
+  - pwd
+  - chmod 755 *.sh
+  - ./run.sh &
+  - cd ../../../../
+  - pwd
+  - java -jar target/jboss.esb-jar-with-dependencies.jar waitForJbossESB
+  - cd target/esb/jbossesb-server-4.12/samples/quickstarts/webservice_proxy_basic_monitored/
+  - pwd
+  - ant deploy
+  - sleep 10;
+  - ant runtest
+  - cd ../../../../../../
+  - pwd
+  - java -jar target/jboss.esb-jar-with-dependencies.jar verifyCaptures
+
+# test

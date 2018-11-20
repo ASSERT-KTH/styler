@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+  THIS FILE IS BASED ON THE sun_checks.xml FILE, MODIFICATIONS MADE
+  BY THE YELLOW SELF PROJECT SHOULD BE COMMENTED WITH CAPITAL LETTERS.
+
+
+  Checkstyle configuration that checks the sun coding conventions from:
+
+    - the Java Language Specification at
+      http://java.sun.com/docs/books/jls/second_edition/html/index.html
+
+    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
+
+    - the Javadoc guidelines at
+      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
+
+    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
+
+    - some best practices
+
+  Checkstyle is very configurable. Be sure to read the documentation at
+  http://checkstyle.sf.net (or in your downloaded distribution).
+
+  Most Checks are configurable, be sure to consult the documentation.
+
+  To completely disable a check, just comment it out or delete it from the file.
+
+  Finally, it is worth reading the documentation.
+
+-->
+
+<module name="Checker">
+
+
+    <!-- Allow us to supress checks for certain files -->
+    <module name="TreeWalker">
+        <module name="FileContentsHolder"/>
+    </module>
+    <module name="SuppressionCommentFilter"/>
+    <!-- <module name="SuppressionFilter">
+        <property name="file" value="${project.build.directory}/checkstyle-suppressions.xml"/>
+    </module> -->
+
+
+    <!--
+        If you set the basedir property below, then all reported file
+        names will be relative to the specified directory. See
+        http://checkstyle.sourceforge.net/5.x/config.html#Checker
+
+        <property name="basedir" value="${basedir}"/>
+    -->
+
+    <!-- Checks that each Java package has a Javadoc file used for commenting. -->
+    <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage       -->
+    <!-- NOT USED IN YELLOW SELF
+    <module name="JavadocPackage">
+      <property name="allowLegacy" value="true"/>
+    </module>
+    -->
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <!--module name="NewlineAtEndOfFile"/-->
+
+    <!-- Checks that property files contain the same keys.         -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <module name="FileLength"/>
+
+    <!-- Following interprets the header file as regular expressions. -->
+    <!-- <module name="RegexpHeader"/>                                -->
+
+
+
+    <!-- REPLACED BY MODULE: RegexpSinglelineJava-->
+    <!--module name="RegexpSingleline"-->
+    <!-- \s matches whitespace character, $ matches end of line. -->
+    <!--property name="format" value="\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module-->
+
+    <module name="TreeWalker">
+
+        <!-- <property name="cacheFile" value="${checkstyle.cache.file}"/> -->
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <!-- NOT USED BY YELLOW SELF-->
+      <!--  <module name="JavadocMethod"/>-->
+        <!-- <module name="JavadocType"/> -->
+<!--        <module name="JavadocVariable"/>-->
+<!--        <module name="JavadocStyle"/> -->
+
+
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+	<!-- <module name="AbstractClassName"/> -->
+
+
+        <!-- Checks for Headers                                -->
+        <!-- See http://checkstyle.sf.net/config_header.html   -->
+        <!-- <module name="Header">                            -->
+        <!-- The follow property value demonstrates the ability     -->
+        <!-- to have access to ANT properties. In this case it uses -->
+        <!-- the ${basedir} property to allow Checkstyle to be run  -->
+        <!-- from any directory within a project. See property      -->
+        <!-- expansion,                                             -->
+        <!-- http://checkstyle.sf.net/config.html#properties        -->
+        <!-- <property                                              -->
+        <!--     name="headerFile"                                  -->
+        <!--     value="${basedir}/java.header"/>                   -->
+        <!-- </module> -->
+
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+
+        <!--There is nothing wrong with star imports!-->
+      	<module name="AvoidStarImport"/>
+        <module name="IllegalImport"/>
+        <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+	<module name="AvoidStaticImport">
+           <property name="excludes" value="java.lang.System.out,java.lang.Math.*"/>
+        </module>
+	<!-- <module name="ImportOrder">
+    		<property name="groups" value="/^javax?\./,org"/>
+		<property name="ordered" value="true"/>
+		<property name="separated" value="true"/>
+		<property name="option" value="above"/>
+	</module> -->
+
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <!--
+                YELLOW SELF IS A BIT MORE TOLERANT, ALLOWING MORE THAN 80 (DEFAULT)
+                ALSO, ALLOW LONGER LINES IN JAVADOC COMMENTS
+            -->
+            <property name="max" value="120"/>
+            <property name="ignorePattern" value="^\s\**.*?$"/>
+        </module>
+        <!--module name="MethodLength"/-->
+        <!--Makes 0 sense in combination with Jersey-->
+        <!--<module name="ParameterNumber"/>-->
+	<module name="EmptyForInitializerPad"/>
+	<module name="EmptyForIteratorPad"/>
+	<module name="NoWhitespaceAfter"/>
+	<module name="NoWhitespaceBefore"/>
+
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <!--This is a pain when using arrays in annotations-->
+        <module name="WhitespaceAfter"/>
+
+        <!--   <module name="WhitespaceAround">
+            &lt;!&ndash; SPECIAL CONFIGURATION FOR YELLOW SELF &ndash;&gt;
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR,           BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV,           DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT,           LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY,           LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED,           LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD,           MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL,           SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN,           TYPE_EXTENSION_AND"/>
+        </module>-->
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <module name="AvoidInlineConditionals">
+            <!-- ADDED FOR YELLOW SELF -->
+            <property name="severity" value="ignore"/>
+        </module>
+        <!-- <module name="DoubleCheckedLocking"/> -->
+        <!-- MY FAVOURITE -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="IllegalInstantiation"/>
+	<module name="ModifiedControlVariable"/>
+	<module name="EqualsAvoidNull"/>
+	<module name="IllegalToken">
+	    <property name="tokens" value="LITERAL_NATIVE"/>
+	</module>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber">
+            <!-- Metadata and property added in old file PABR -->
+            <metadata name="com.atlassw.tools.eclipse.checkstyle.lastEnabledSeverity" value="info"/>
+            <property name="severity" value="ignore"/>
+        </module>
+        <module name="MissingSwitchDefault"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+	<module name="StringLiteralEquality"/>
+	<module name="NestedIfDepth">
+	    <property name="max" value="3"/>
+	</module>
+	<module name="NestedTryDepth">
+	    <property name="max" value="2"/>
+	</module>
+	<module name="NoClone"/>
+	<module name="NoFinalizer"/>
+	<module name="SuperClone"/>
+	<module name="SuperFinalize"/>
+	<!-- <module name="IllegalCatch"/>-->
+	<module name="IllegalThrows"/>
+	<module name="PackageDeclaration"/>
+	<module name="JUnitTestCase"/>
+	<module name="ReturnCount">
+	    <property name="max" value="2"/>
+	</module>
+	<module name="IllegalType">
+	    <property name="ignoredMethodNames" value="getInstance"/>
+	</module>
+	<module name="DeclarationOrder"/>
+	<module name="ParameterAssignment"/>
+	<module name="MultipleVariableDeclarations"/>
+	<module name="UnnecessaryParentheses"/>
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <!-- module name="InterfaceIsType"/ -->
+        <module name="VisibilityModifier"/>
+	<module name="MutableException"/>
+	<module name="ThrowsCount">
+	    <property name="max" value="2"/>
+	</module>
+	
+	<module name="ArrayTrailingComma"/>
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <!--module name="TodoComment"/--><!-- REMOVED IN YELLOW SELF -->
+        <module name="UpperEll"/>
+	<module name="CovariantEquals"/>	
+        <!-- MISCELLANEOUS CHECKS ADDED BY YELLOW SELF -->
+        <!-- TODO: SHOULD WE USE THIS IN ORDER TO REPLACE MODULE: RegexpSingleline -->
+        <!--module name="RegexpSinglelineJava"-->
+        <!-- \s matches whitespace character, $ matches end of line. -->
+        <!--property name="format" value="\s+$"/>
+            <property name="message" value="Line has trailing spaces."/>
+            <property name="ignoreComments" value="true"/>
+        </module-->
+        <module name="BooleanExpressionComplexity"/>
+      	<module name="ClassDataAbstractionCoupling">
+    		<property name="max" value="30"/>
+	</module>
+        <module name="ClassFanOutComplexity">
+		<property name="max" value="50"/>
+	</module>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10"/>
+        </module>
+        <module name="NPathComplexity">
+            <property name="max" value="100"/>
+        </module>
+        <module name="JavaNCSS">
+            <property name="methodMaximum" value="50"/>
+            <property name="classMaximum" value="1500"/>
+            <property name="fileMaximum" value="2000"/>
+        </module>
+
+	<module name="UncommentedMain">
+	    <property name="excludedClasses" value="\.Main$"/>
+	</module>
+    </module>
+
+</module>

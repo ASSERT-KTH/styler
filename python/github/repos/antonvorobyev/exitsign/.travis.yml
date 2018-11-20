@@ -1,0 +1,69 @@
+language: java
+
+sudo: false
+
+env:
+  global:
+    - OSSRH_USERNAME=anton.vorobyev
+    - secure: "XGf6hAg3sr3rYVwcu5c+UtFE2c/4neXHM9v8RmfYm8nhUZJPBkvd3HE8UEX10y7Dixfww111owdmnXNmmpd5L70X/DJ2mlTfZebTw7Dxc+KB/ljVYMymu93U5/rRJhKvyhpuyCH6+W0CvaSJOQi6qQP8lJsu16jzMIuf7oWCsN1IgjQWvK+O4uJLOSHGtYOUoQrcHCfYCg1f/9BuGQUZYP4VZw8CK/nSawUyhVjsk1zuYT+dc87E8GxTx4tzHvizTT17D1upVQZTd/GHjHw5AZTr6a7ZZk2Tws+Js/8QoByIpPSzgAjM2nzlnshYYD6KLHD8xPW22HIX+aLFHjhSbdmgTxCtz1zSVXsSWaha/m+B7ZiHtevIytZseDXsi3G/l3dS/ZmSIPUd3EVm9ZZYk68KlvD9QnfHYTN19IM1c81hpn+JxflfbhIjBRLJO/6Z8YX55QlPH2JVU4YBt8BTtqwLOpl7ywRHwUuSs7FGKN4t5NgFnYNexG3Sg7CTyBUhqqclBmogPNNqvGYx4Onf6ZazoMRAeyIsWkVvYaC/wLGKr4FO7CUi/1GFQ0aO3e2qw8iSUte9lVPay1FYoykilVBiwAQs8QiAKqTsIV+GE9LfSrrTPuxbJz6qTSrRyP0v0mdi8Rptf481Y09tfDubGXlVPcl88PW3ILVX/hdR0Q0="
+    - secure: "6UbkFMuoem1bscYkz6iEyPi3gblLE2diVW7pDW2vMwkIiW2TFUyczIxpV129S/ADRGmQxzWeYp/6IB0NQEI8bw81UIChn+6psDBkxH3AdmdvA1SS2mxhyiblxuAvBE9ffUg5IW3TV4U6JWkSv37Ek8o4L76diBPZa86OFBfvmP/a/0b0ACs7WB+lvUdrjbn7TDxIIZML+UjLeZSGEe0LFqkDMw2+nuzl5sZAul0bu4XlNS7m8kwv/4GzI6T6wx6U1+rIdsjjeH1mJkG95/lW5noeedP7F38edRvtE/F9Ee6csTmfoQZ6ReR67Mq5NawFWHOSWWXqzUN+/3Zl+csOUz6SCu8/a5THQNOa4zWON87seK+zAWHOmIjK0MOaVxLVB5fu88LOGKg8F0R4HU0CI5WokNMwB6n+hZVaFn8xxuDKtGgq4t1uQ3Ipi8VPx6KG11oKG5M+jhcmgI7NgqWsStUncNdOMCOEIWUKEdKQfJaSJPtKN1mtyE7rfGqz4YUfT4KixHT/QoQVhF55CYzvPErYCtLH4UT6PwrfykkmUulQyQ0F9/+WotQiH+vaWXI2SQJictZYZtFFtbzcSb95aX6+sAx/c/pKBcxKFG9MnmYRZ2+ioMEEE5vJLxTlOqCR7veCxkMPwyyGbO5XnU4SRiTGZ1PWXSyI5nJFujBreOA="
+    - secure: "vIOw/jaDZuJ0HM9msv/RRBtHMgY+qfsrw2f4cQ02MybrKjZRk4exT54DFY9Q4fTwy6Sbvuy9HxyOrJA+rvEyMsf4ItpgliJCkNM1BOZVuw9GmPdIc+MqKrFomISaoZP/Mqk7vQJF1WHjh0z1MZAQdxR4rOYT1cHOy3ICSdIOyWEDXUZ+3aj/BXcjaE4+cmZXFBQ/7UEgRl/qNi9gNo0U0qNsOGBMbwyt0e2TuIjLRSLEKyJ0BWQVef6ZzAEjIPdJ7XT4QCD7lOAUFC29Q32NxdR8hDMQeSkiADyhAdmUVyuzRYo8qZxjn99fVTA0r66PgIpDUm+b7Nr5oLmSD1oJTDlkbCkRxvxhHZnVwmlt6BVeypkUSczKtlHIpaV6OycKf39h9ryMV0/LbLIzhYwC1rgg8nwcj1b74nXOhRsfoJkht59KXXTgpvn+hL9ucH0EtPGs2Oz6/EWRRBzzMMwmVRgHPWXrWeil+Qt+cm8LzA6cyEt+LUTl/PHSzwARA00NSoMoQTsqgqVwWKZwUvUnwLRfaxGlhVxD0J9Ar+2jw7xEux1WnsMXQ21G3dQ8PElY3t2GyZJqL8LsGHC4a/DuFCB6qv1l8jXmGF35RzYHaH6P+rEKpGchx9tz4paFeDMcxPnVP8NExjyKg6orsvfCV4uAvtClbJlpHAPQyg6Qeqc="
+
+before_install:
+   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export JAVA_HOME=$(/usr/libexec/java_home); fi
+   - echo $JAVA_HOME
+   - gpg --yes --batch --passphrase=$SECKEY_PASSWORD secring.gpg.gpg
+   - gpg --yes --batch --passphrase=$SECKEY_PASSWORD pubring.gpg.gpg
+   - gpg --yes --batch --passphrase=$SECKEY_PASSWORD id_rsa.gpg
+   - eval "$(ssh-agent -s)" # start the ssh agent
+   - chmod 600 id_rsa
+   - ssh-add id_rsa
+   - git config --global user.email "travis@vorobyev.co"
+   - git config --global user.name "Travis CI"
+
+
+#os:
+#- linux
+#- osx
+
+#matrix:
+#  fast_finish: true
+#  include:
+#    - os: linux
+#      jdk: oraclejdk8
+
+branches:
+  only:
+  - master
+
+cache:
+  directories:
+    - $HOME/.m2
+
+install: true
+# NOTE: Following line can be introduced later
+#script: mvn clean versions:set -DnewVersion=0.1.0 verify
+script: mvn clean deploy site-deploy --settings ./settings.xml
+# NOTE: Following line can be introduced later
+#after_success: mvn gpg:sign site deploy:deploy assembly:single
+#after_success: mvn gpg:sign deploy:deploy --settings ~/settings.xml
+
+#deploy:
+#  provider: script
+#  script: mvn deploy:deploy --settings ./settings.xml
+#  skip_cleanup: true
+
+# NOTE: Following line can be introduced later
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: FTi6CrTcx1dBGFHoWDp4O81BxJLkFFYVnSZP+z3Q4XvDbaYiA3HyG+tlul6A1XTn/4NzN9hrGoJQxU38PmOJ/F1rToi7Mb00lpv/FDI/bYLkWGHpisrixYo4pTKpqU9GtpnRrVTT4DjNChsha/k0SVgIm7EpBrViKGPvLgRkg4z9iWs6UQaQlNp/1tObsfVy+XFxIG9mtor7BKl3Vnj0HcetFG3cm2zKhp11zwBOcANjfD8O6QfmhSADH5UvFdutn2/p4ch1GcVMxtXxMaqdU7sfeogRWuodHaNfS+rCD3vDBWSg+r60x/MiOJbDiH+Kmh0uKa6c5SRNmRoDCRpsgWXMQ+s85t2XSVjLAqLrFyn+vAw02MpbwsG2ERia/xDnfL0iQXG2eEzdpVeIdOiHTkW/B0pWBqIsu3M9SGPTvUBBXZ0glTP+Pjy7gpjiOLqYEc3XMnE5d4BqIPB+EAGpjkRen1VcWmy2Roweu7marbTfSL1E+Wlo6kGjW/ExGcZuDWEyZb/LprRkxpDQcyt2taOnc+IbFFEmeVGznB1eqz52XnuJYWxTZ6J02nX91r6ZrQ1n+h9laE7Us+hlxi5oweQEd2eSr+gVNdrK4ALY1rHNVpI1apEDwfBTDCRjVDAOLyT8/x2nRjkIuZngHXJCqcNlHoBaR4AUtGFHvVBZMqA=
+#  file: target/exitsign-0.1.0.zip
+#  skip_cleanup: true
+#  on:
+#    repo: antonvorobyev/exitsign
+#    tags: true
+#
+#notifications:
+#  email:
+#    - anton@vorobyev.co

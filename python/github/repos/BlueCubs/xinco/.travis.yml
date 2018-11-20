@@ -1,0 +1,21 @@
+language: java
+sudo: required
+
+group: edge
+
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
+    
+dist: trusty
+jdk:
+- oraclejdk8
+- openjdk8
+
+before_script: cd Xinco
+script: git submodule update --init --recursive
+script: mvn install cobertura:cobertura -Dmaven.javadoc.skip=true -B -V --also-make-dependents
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)

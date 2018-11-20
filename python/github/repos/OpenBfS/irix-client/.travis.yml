@@ -1,0 +1,21 @@
+sudo: true
+dist: trusty
+cache:
+  directories:
+    - "$HOME/.m2"
+language: java
+git:
+  submodules: true
+before_install:
+  - rm ~/.m2/settings.xml
+  - sudo apt-get -qq update
+  - sudo apt-get install -y xsltproc
+script:
+  - mvn clean compile package install
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+jdk:
+- oraclejdk8
+- openjdk8

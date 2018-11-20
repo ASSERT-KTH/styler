@@ -1,0 +1,32 @@
+cache:
+  directories:
+    - $HOME/.m2
+install: true
+language: java
+jdk:
+- oraclejdk8
+os:
+  - linux
+sudo: required
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install python-pip
+  - sudo pip install --upgrade boltkit
+  - openssl aes-256-cbc -K $encrypted_1ad9bc7ab469_key -iv $encrypted_1ad9bc7ab469_iv -in .travisdeploykey.enc -out .travisdeploykey -d
+
+script: "mvn clean deploy -Dgithub.global.oauth2Token=${GITHUB_OAUTH2}"
+
+after_success:
+  - git config --global user.email "travis@bsimard.com"
+  - git config --global user.name "Travis CI"
+  - eval "$(ssh-agent -s)" #start the ssh agent
+  - chmod 600 .travisdeploykey
+  - ssh-add .travisdeploykey
+  - if [[ "$TRAVIS_PULL_REQUEST" = "false"  && "$TRAVIS_BRANCH" == "master" ]]; then mvn site -Dmaven.test.skip=true; fi
+  - if [[ "$TRAVIS_PULL_REQUEST" = "false"  && "$TRAVIS_BRANCH" == "master" ]]; then mvn clean cobertura:cobertura coveralls:report -Pcoverage -Dcoverall.token=$COVERALL_TOKEN; fi
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change

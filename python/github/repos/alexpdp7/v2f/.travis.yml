@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - oraclejdk8
+services:
+  - postgresql
+before_script:
+  - psql -c "create user v2f_samples_petclinic with superuser password 'v2f_samples_petclinic';" -U postgres
+  - psql -c "create database v2f_samples_petclinic with owner v2f_samples_petclinic;" -U postgres
+addons:
+  postgresql: "9.4"
+cache:
+  directories:
+  - $HOME/.m2
+after_success:
+  - mvn -pl v2f-coverage post-integration-test ; cd v2f-coverage ; mvn coveralls:report

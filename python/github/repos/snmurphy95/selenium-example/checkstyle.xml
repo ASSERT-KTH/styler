@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+
+    <!-- Checkstyle Options-->
+    <module name="RegexpSingleline">
+        <property name="severity" value="info"/>
+        <property name="format" value="^\s*\/\/\s*CHECKSTYLE\:OFF\:.+$"/>
+        <property name="message" value="Checkstyle is being suppressed."/>
+    </module>
+    <module name="SuppressionCommentFilter">
+        <property name="checkFormat" value="$1"/>
+        <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+        <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+    </module>
+
+    <!-- Â§1 Introduction -->
+
+    <!-- Â§2 Source Files -->
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Â§2.1 File Names -->
+    <module name="TreeWalker">
+        <module name="OuterTypeFilename">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§2.2 File Encoding-->
+    <property name="charset" value="UTF-8"/>
+
+    <!-- Â§2.3 Special Characters -->
+
+    <!-- Â§2.3.1 White Space -->
+    <module name="FileTabCharacter">
+        <property name="severity" value="error"/>
+        <property name="eachLine" value="true"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="severity" value="error"/>
+        <property name="format" value="\t"/>
+        <property name="message" value="Line has a tab."/>
+    </module>
+    <module name="TreeWalker">
+        <property name="severity" value="error"/>
+        <property name="tabWidth" value="4"/>
+    </module>
+
+    <!-- Â§2.3.2 Special Escape Sequences -->
+    <module name="TreeWalker">
+        <module name="IllegalTokenText">
+            <property name="severity" value="info"/>
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+            <property name="format"
+                      value="\\u00(08|09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+            <property name="message" value="Avoid using octal or Unicode escape for special characters."/>
+        </module>
+    </module>
+
+    <!-- Â§2.3.3 Non-ASCII Characters -->
+    <module name="TreeWalker">
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="severity" value="warning"/>
+            <property name="allowByTailComment" value="true"/>
+            <property name="allowIfAllCharactersEscaped" value="true"/>
+            <property name="allowNonPrintableEscapes" value="true"/>
+        </module>
+    </module>
+
+    <!-- Â§3 File Organization -->
+
+    <!-- Â§3.1 File Length -->
+    <module name="FileLength">
+        <property name="severity" value="error"/>
+    </module>
+
+    <!-- Â§3.2 File Contents -->
+    <module name="TreeWalker">
+        <module name="OneTopLevelClass">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§3.2.1 Package Statement -->
+
+    <!-- Â§3.2.2 Import Statements -->
+    <module name="TreeWalker">
+        <module name="AvoidStarImport">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="IllegalImport">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ImportOrder">
+            <property name="severity" value="info"/>
+            <property name="groups" value="/^(com.sample).*$/,*,/^java.*$/"/>
+            <property name="option" value="bottom"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+        </module>
+        <module name="RedundantImport">
+            <property name="severity" value="info"/>
+        </module>
+        <module name="UnusedImports">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§3.2.3 Class Declaration  -->
+
+    <!-- Â§3.2.3.1 Declaration Order -->
+    <module name="TreeWalker">
+        <module name="DeclarationOrder">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="OverloadMethodsDeclarationOrder">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§3.2.3.2 Methods -->
+    <module name="TreeWalker">
+        <module name="MethodLength">
+            <property name="severity" value="error"/>
+            <property name="countEmpty" value="false"/>
+            <property name="max" value="80"/>
+        </module>
+        <module name="ParameterAssignment"/>
+        <module name="ParameterNumber">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§4 Formatting  -->
+
+    <!-- Â§4.1 Braces -->
+
+    <!-- Â§4.1.1 Requirement -->
+    <module name="TreeWalker">
+        <module name="NeedBraces">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§4.1.2 Nonempty Blocks -->
+    <module name="TreeWalker">
+        <module name="LeftCurly">
+            <property name="severity" value="error"/>
+            <property name="maxLineLength" value="120"/>
+        </module>
+        <module name="RightCurly">
+            <property name="severity" value="error"/>
+            <property name="option" value="alone"/>
+            <property name="tokens"
+                      value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT"/>
+        </module>
+        <module name="RightCurly">
+            <property name="severity" value="error"/>
+            <property name="option" value="same"/>
+            <property name="tokens" value="LITERAL_DO"/>
+        </module>
+    </module>
+
+    <!-- Â§4.1.3 Empty Blocks -->
+    <module name="TreeWalker">
+        <module name="EmptyBlock">
+            <property name="severity" value="warning"/>
+            <property name="option" value="TEXT"/>
+            <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+        </module>
+    </module>
+
+    <!-- Â§4.2 Indentation -->
+    <module name="TreeWalker">
+        <module name="Indentation">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§4.2.1 Line Length -->
+    <module name="TreeWalker">
+        <module name="LineLength">
+            <property name="severity" value="error"/>
+            <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+            <property name="max" value="120"/>
+        </module>
+    </module>
+
+    <!-- Â§4.3 Wrapping Lines -->
+    <module name="TreeWalker">
+        <module name="OperatorWrap">
+            <property name="severity" value="warning"/>
+            <property name="option" value="NL"/>
+            <property name="tokens"
+                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
+        </module>
+    </module>
+
+    <!-- Â§5 Comments -->
+
+    <!-- Â§5.2 Documentation Comments -->
+    <module name="TreeWalker">
+        <module name="FileContentsHolder">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="severity" value="error"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+            <property name="scope" value="package"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="severity" value="error"/>
+            <property name="checkEmptyJavadoc" value="true"/>
+        </module>
+        <module name="JavadocType">
+            <property name="severity" value="error"/>
+            <property name="allowUnknownTags" value="false"/>
+        </module>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="severity" value="error"/>
+        <property name="format" value="^[\s\*\/]*(\@author).*$"/>
+        <property name="message" value="@author tags should be omitted"/>
+    </module>
+
+    <!-- Â§5.3 "TODO" Comments -->
+    <module name="TreeWalker">
+        <module name="TodoComment">
+            <property name="severity" value="warning"/>
+            <message key="todo.match" value="TODO comments should not be pushed to mainline branches."/>
+        </module>
+    </module>
+
+    <!-- Â§6 Annotations -->
+    <module name="TreeWalker">
+        <module name="AnnotationLocation">
+            <property name="severity" value="warning"/>
+            <property name="allowSamelineMultipleAnnotations" value="false"/>
+            <property name="allowSamelineParameterizedAnnotation" value="false"/>
+            <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
+        </module>
+    </module>
+
+    <!-- Â§7 Declarations -->
+
+    <!-- Â§7.1 Modifiers -->
+
+    <!-- Â§7.1.1 Order -->
+    <module name="TreeWalker">
+        <module name="ModifierOrder">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§7.1.2 Redundancy -->
+    <module name="TreeWalker">
+        <module name="RedundantModifier">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="VisibilityModifier">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§7.2 Number Per Line -->
+    <module name="TreeWalker">
+        <module name="MultipleVariableDeclarations">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§7.3 Placement -->
+
+    <!-- Â§7.4 Initialization -->
+    <module name="TreeWalker">
+        <module name="ExplicitInitialization">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§7.4.1 Arrays -->
+    <module name="TreeWalker">
+        <module name="ArrayTypeStyle">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§8 Constructs -->
+
+    <!-- Â§8.1 Simple Statements -->
+    <module name="TreeWalker">
+        <module name="OneStatementPerLine">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§8.2 Compound Statements -->
+    <module name="TreeWalker">
+        <module name="AvoidNestedBlocks">
+            <property name="severity" value="error"/>
+            <property name="allowInSwitchCase" value="true"/>
+        </module>
+    </module>
+
+    <!-- Â§8.3 Specific Constructs -->
+
+    <!-- Â§8.3.1 Return Statements -->
+    <module name="TreeWalker">
+        <module name="ReturnCount">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§8.3.2 Conditional Statements -->
+
+    <!-- Â§8.3.3 For Statements -->
+    <module name="TreeWalker">
+        <module name="EmptyForInitializerPad">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="EmptyForIteratorPad">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="ModifiedControlVariable">
+            <property name="severity" value="error"/>
+        </module>
+        <module name="NestedForDepth">
+            <property name="severity" value="error"/>
+            <property name="max" value="2"/>
+        </module>
+    </module>
+
+    <!-- Â§8.3.4 While Statements -->
+
+    <!-- Â§8.3.5 Do-While Statements -->
+
+    <!-- Â§8.3.6 Switch Statements -->
+    <module name="TreeWalker">
+        <module name="FallThrough"/>
+        <module name="MissingSwitchDefault">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§8.3.7 Try-Catch Statements -->
+    <module name="RegexpMultiline">
+        <property name="severity" value="error"/>
+        <property name="format" value="\.printStackTrace\(\s*\)"/>
+        <property name="message" value="printStackTrace should be replaced with logger debugging."/>
+    </module>
+    <module name="TreeWalker">
+        <module name="EmptyCatchBlock">
+            <property name="severity" value="error"/>
+            <property name="exceptionVariableName" value="expected|ignored"/>
+        </module>
+        <module name="IllegalCatch"/>
+    </module>
+
+    <!-- Â§9 White Space -->
+
+    <!-- Â§9.1 Blank Lines -->
+    <module name="TreeWalker">
+        <module name="EmptyLineSeparator">
+            <property name="severity" value="error"/>
+            <property name="tokens" value="CLASS_DEF, CTOR_DEF, ENUM_DEF, IMPORT, INTERFACE_DEF, METHOD_DEF"/>
+        </module>
+    </module>
+
+    <!-- Â§9.2 Blank Spaces -->
+    <module name="TreeWalker">
+        <module name="GenericWhitespace">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="MethodParamPad">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="NoWhitespaceAfter">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ParenPad">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="TypecastParenPad">
+            <property name="severity" value="warning"/>
+            <property name="tokens" value="RPAREN,TYPECAST"/>
+        </module>
+        <module name="WhitespaceAfter">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="severity" value="warning"/>
+        </module>
+    </module>
+
+    <!-- Â§9.2.1 Alignment -->
+
+    <!-- Â§9.2.2 Trailing Spaces -->
+    <module name="RegexpSingleline">
+        <property name="severity" value="warning"/>
+        <property name="format" value="[^\s]+\s+$"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <!-- Â§10 Naming Conventions -->
+    <module name="TreeWalker">
+        <module name="CatchParameterName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^(e|t|ex|[a-z][a-z][a-zA-Z]+)$"/>
+        </module>
+        <module name="ClassTypeParameterName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[A-Z]$"/>
+        </module>
+        <module name="ConstantName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+        </module>
+        <module name="LocalFinalVariableName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MemberName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MethodName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[A-Z]$"/>
+        </module>
+        <module name="PackageName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*"/>
+            <message key="name.invalidPattern"
+                     value="Package names should be all lowercase"/>
+        </module>
+        <module name="ParameterName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="StaticVariableName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="TypeName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ANNOTATION_DEF"/>
+        </module>
+        <module name="TypeName">
+            <property name="severity" value="error"/>
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*(?&lt;!Enum)$"/>
+            <property name="tokens" value="ENUM_DEF"/>
+            <message key="name.invalidPattern"
+                     value="Enums should be in upper camel case an not end in &quot;Enum&quot;"/>
+        </module>
+    </module>
+
+    <!-- Â§11 Programming Practices -->
+
+    <!-- Â§11.1 Strings -->
+    <module name="TreeWalker">
+        <module name="EqualsAvoidNull">
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="MultipleStringLiterals">
+            <property name="severity" value="warning"/>
+            <property name="allowedDuplicates" value="2"/>
+        </module>
+    </module>
+
+    <!-- Â§11.2 Providing Access to Instance and Class Variables -->
+
+    <!-- Â§11.3 Referring to Class Variables and Methods -->
+
+    <!-- Â§11.4 Variable Assignments -->
+
+    <!-- Â§11.5 Parentheses -->
+
+    <!-- Â§11.6 Miscellaneous -->
+
+    <!-- Â§11.6.1 Logging -->
+    <module name="RegexpMultiline">
+        <property name="severity" value="error"/>
+        <property name="id" value="consoleOutput"/>
+        <property name="format" value="System\.(out|err)\.print(ln)?\("/>
+        <property name="message" value="System.out/err should be replaced with logger debugging."/>
+    </module>
+
+    <!-- Â§11.6.2 Throws -->
+    <module name="TreeWalker">
+        <module name="IllegalThrows">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§11.6.3 finalize() -->
+    <module name="TreeWalker">
+        <module name="NoFinalizer">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§11.6.4 Long Literals -->
+    <module name="TreeWalker">
+        <module name="UpperEll">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+    <!-- Â§11.6.5 Interfaces Are Types -->
+    <module name="TreeWalker">
+        <module name="InterfaceIsType">
+            <property name="severity" value="error"/>
+        </module>
+    </module>
+
+</module>

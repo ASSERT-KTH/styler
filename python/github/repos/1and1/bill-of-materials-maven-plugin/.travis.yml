@@ -1,0 +1,20 @@
+language: java
+jdk:
+  - oraclejdk8
+env:
+  - MAVEN_VERSION=3.5.0
+  - MAVEN_VERSION=3.3.9
+install:
+  - "cat ~/.mavenrc || true"
+  - "mvn -N -q io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "./mvnw --activate-profiles foss-parent-verification --show-version --errors --batch-mode validate dependency:go-offline"
+script: "./mvnw --activate-profiles foss-parent-verification --show-version --errors --batch-mode -Dversions.skip=true clean verify site"
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - mfriedenhagen@gmail.com

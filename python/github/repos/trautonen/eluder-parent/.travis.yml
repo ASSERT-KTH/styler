@@ -1,0 +1,28 @@
+language: java
+
+sudo: false
+
+jdk:
+  - oraclejdk7
+  
+branches:
+  only:
+    - master
+
+env:
+  global:
+    - secure: "BL+mP8tyJ4PKz6aUxgVvkw0PIypsakruioKfzDxQHjCjFdwTbV8AORJ9U7cV\nuoJ5gHnT4q22bT74q1mNRFFkk7+7sR/HESggaZRwp6T0gqOOjBLmPMTR7b8u\nGP/lZFawNQUk9Mjcw0r7UDgKHUBDmYF1Du65WmeywGGsSXpLsKM="
+    - secure: "QQibn4m1cawpzAsnPCc9zCNM7p+oHpYd7FgzgS2ZWs2SzPcg6aBPZmxcY7t2\nqk3vZzDj8r/cManRtMxhHCrA9jm+EBqWIv+S4YLnQpnCDZQVqrX3E3yVo4CV\nCT45fK63yJ3hWHDioYjGnWdlxoYe66YoHrIqlx2Hi0HDhOeO8Q8="
+
+addons:
+  apt:
+    packages:
+      - python-yaml
+
+before_install:
+  - git submodule update --init --recursive
+
+before_script:
+  - python etc/travis-sonatype.py
+
+script: python etc/travis-build.py --settings ~/.m2/sonatype.xml

@@ -1,0 +1,14 @@
+language: java
+cache:
+  directories:
+  - $HOME/.m2
+  - odin-frontend/node
+  - odin-frontend/node_modules
+
+# Open JDK has limited certificates - see https://www.deps.co/guides/travis-ci-latest-java/
+matrix:
+  include:
+    - jdk: openjdk10
+      before_install:
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"

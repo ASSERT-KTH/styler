@@ -1,0 +1,26 @@
+dist: trusty
+
+language: java
+  
+os:
+  - linux
+  
+jdk:
+  - oraclejdk8 # used by maven runtime
+
+cache:
+  directories:
+  - $HOME/.m2/bin
+  - $HOME/.m2/repository
+
+before_cache:
+  - rm -rf $HOME/.m2/repository/com/vegardit
+
+install:
+  - ls -l /usr/lib/jvm/
+
+before_script:
+  - unset _JAVA_OPTIONS # https://github.com/travis-ci/travis-ci/issues/8408
+
+script:
+  - bash .travis/build.sh

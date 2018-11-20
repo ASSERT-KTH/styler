@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!-- Checkstyle-Configuration: Description: none -->
+<module name="Checker">
+    <property name="severity" value="error" />
+    <module name="TreeWalker">
+        <!-- FileContentsHolder required for SuppressWithNearbyCommentFilter -->
+        <module name="FileContentsHolder" />
+        <module name="LineLength">
+            <property name="max" value="160" />
+            <property name="tabWidth" value="4" />
+            <property name="ignorePattern" value="^\s*@(Given|When|Then|And)"/>
+        </module>
+        <!-- a lower case L on constants can be mistaken for the number 1 -->
+        <module name="UpperEll" />
+        <!-- Bracket placement should be same as Java coding std -->
+        <module name="LeftCurly" />
+        <module name="RightCurly" />
+        <!-- @Override must be shown to explicity declare overriding methods -->
+        <module name="MissingOverride" />
+        
+        <!--
+            Naming conventions follow Java coding std with these exceptions:
+            * "log" is allowed as a constant for loggers
+            * We allow class type parameters longer than single letter
+        -->
+        <module name="TypeName" />
+        <module name="ConstantName">
+            <property name="format"
+                value="^(log)|([A-Z][A-Z0-9]*(_[A-Z0-9]+)*)$" />
+        </module>
+        <module name="StaticVariableName" />
+        <module name="ParameterName" />
+        <module name="PackageName" >
+            <property name="format"
+              value="^[a-z]+(\.[a-z0-9]*)*$" />
+        </module>
+        <module name="MethodTypeParameterName" />
+        <module name="MethodName" />
+        <module name="MemberName" />
+        <module name="LocalVariableName" />
+        <module name="LocalFinalVariableName" />
+        <module name="ClassTypeParameterName">
+            <!-- Allow class type parameters longer than one character. This is mostly for AbstraceHazelcastRepository
+                 which follows Spring's naming convention for type parameters for a repository - T and ID -->
+            <property name="format" value="^[A-Z]+$" />
+        </module>
+
+        <!--
+            Checks for potential coding problems...
+        -->
+<!--
+dandrianov: I'm disabling this check. This is something I dreamed about for last 6 months.
+Disabling this check now because it annoys me with all the numbers from TimeUuidGenerator.
+Romans seems to be okay with it so hopefully one day we will remove it completely.
+        <module name="MagicNumber">
+            <property name="ignoreNumbers"
+                value="-1, 0, 1, 2, 3, 4, 5, 8, 10, 16, 32, 64, 100, 128, 255, 256, 1000, 1024, 65280, 65535, 4294967295, 281474976710655" />
+            <property name="ignoreHashCodeMethod" value="true" />
+        </module>
+-->
+        <module name="MethodLength" />
+        <module name="NeedBraces" />
+        <module name="OperatorWrap" />
+        <module name="CovariantEquals" />
+        <module name="ExplicitInitialization" />
+        <module name="OneStatementPerLine"/>
+        <module name="NoFinalizer"/>
+        <!--
+            Classes with just static final methods must not be instantiable
+        -->
+        <module name="HideUtilityClassConstructor" />
+        <module name="NestedTryDepth" />
+        <module name="OuterTypeNumber" />
+        
+        <!-- Default package is not allowed -->
+        <module name="PackageDeclaration" />
+
+        <module name="GenericWhitespace" />
+        <module name="WhitespaceAround">
+            <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, LCURLY, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LE, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, LITERAL_ASSERT, TYPE_EXTENSION_AND"/>
+        </module>
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA, SEMI"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens" value="SEMI, POST_DEC, POST_INC"/>
+        </module>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens" value="DOT"/>
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+
+    </module>
+    <!-- Copyright headed must be included -->
+    <module name="RegexpHeader">
+        <property name="header"
+            value="^/\*(\*)?\s?$\n^ \* Copyright \(C\) Estafet Ltd\s?$\n^ \*/\s?$" />
+        <property name="fileExtensions" value=".java" />
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="//([gG]iven|[wW]hen|[tT]hen)"/>
+        <property name="message"
+            value="Given/When/Then lines must have a space between comment and text."/>
+        <property name="fileExtensions" value=".java" />
+    </module>
+    <!--
+        4 spaces for tabs
+    -->
+    <module name="FileTabCharacter" />
+    <!-- Checks are relaxed for test classes in the filter file -->
+    <!-- <module name="SuppressionFilter"> -->
+    <!-- <property name="file" value="${checkstyle.suppressions.file}" /> -->
+    <!-- </module> -->
+    <!--
+        It's possible to suppress checks using a comment.
+        To suppress the "MagicNumber" check on the next line use:
+        /* @SuppressCheckstyle(MagicNumber) */
+
+        To suppress the "LineLength" check over the next 5 lines:
+        // @SuppressCheckstyle(MagicNumber, 5)
+
+        Note both /**/ and // comment styles are allowed.
+    -->
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value='@SuppressCheckstyle\s*\(\"?([0-9a-zA-Z_\.]+)\"?\)' />
+        <property name="checkFormat" value="$1" />
+        <property name="influenceFormat" value="1" />
+    </module>
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat"
+            value='@SuppressCheckstyle\s*\(\"?([0-9a-zA-Z_\.]+)\"?,\s*(\d+)\)' />
+        <property name="checkFormat" value="$1" />
+        <property name="influenceFormat" value="$2" />
+    </module>
+    <module name="SuppressionCommentFilter"/>
+</module>

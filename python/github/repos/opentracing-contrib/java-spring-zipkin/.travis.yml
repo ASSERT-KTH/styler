@@ -1,0 +1,42 @@
+sudo: required
+dist: trusty
+
+language: java
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2/repository
+
+before_install:
+  # allocate commits to CI, not the owner of the deploy key
+  - git config user.name "opentracingci"
+  - git config user.email "opentracingci+opentracing@googlegroups.com"
+  # setup https authentication credentials, used by ./mvnw release:prepare
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://$GH_TOKEN:@github.com" > .git/credentials
+
+install:
+  # Override default travis to use the maven wrapper
+  - ./mvnw clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+- ./travis/publish.sh
+
+branches:
+  except:
+    - /^[0-9]/
+
+env:
+  global:
+  # Ex. travis encrypt -r org/repo BINTRAY_USER=your_github_account
+  - secure: "JPIoJWNE94hK+mYIa3J+danmtrqe7qOs5BXhDSp+pO/Scy9MFeYbJN0qILqOl/MDnF1PhgmrdDzG9Uy9pcl8ANNDEZMyUIHWueHfkuV72xsB59EyhSL8Zg03eTNHTo5eAHVGBGl2xApjeNFlrVIhmxEWyXv56mUUjTSqSpL1VnfphbrSCmA5pSyks9zOrb/CLH7lfk7hKBF56AOTLMTUknWokCT9JqTZYJySBJovKFW1aXR/swXivS2NDSiQlfXcVNSI1NC8XSsYpySom9Wz5R/T8xNviDpXJ78X0kXhOlqFC2Xko+iQ6B+bUhXvEy35+wCtGDP2r68we+8hFXcTZF0q+E/kgOjnF2mhuTqWcLjM/Va87wuvf9zlwaBqU3BSvYm/oCIaeRC+/nFfotHkH4B+2eh/fT8oYLBe82mcJ/LiUqzxlLKomF4t0CASA8lQGk/WSqv54G1hPafGoGQAglavcN0e0w3tp/57nuIyDtmIogu4pXKwZ0BrqYITiQS5XJJ6ile2KDAdb52AEQLstO1Y4NLECt8kLYDxqydR4iSIZagDzjsTR6DyNfeA64IRYolNPCLXHDjvLmRywerCtwTYoIqh/6ADVomdVLRmnO1JFxSdAeh7Pe5I6ekMH/g7HuVrqlC4XA9XK+QjplOR3ZbnBvDv9oTuYOiaRZc/Ki8="
+  # Ex. travis encrypt -r org/repo BINTRAY_KEY=xxx-https://bintray.com/profile/edit-xxx --add
+  - secure: "xUXRe12BMUVBMvzSa1WA6nr/35Y0jN/vpgh67zjKLLuvpz2vpVMhngfRfNzKfe0B+dqrvmkzwUhEUaR52lOt2wbUhI7O8xGEgQD+kqYCn6TwnrglB11Av96xKv72XsAJuP75Yh+kgwhIiHG8/8SOm29as3JlJG2UE4rnzM6FJm/ds98yFy2jwrOTQxH4RdUyNxPF8qrrKgUzGlieU7WWexlO3kiNBpwiwAbq8CqQXLF7aY0UFK+adudZMF7vxdgO8kL7krblBwezCFDa/0dVhztjTx2bpDZYc+gswBlxi5GfdmNKQ19TS7fAuvNe5F3SUAkqZxWyaiWUjhaRS6jdBiDoHyhSu4l0hx2R01Sz33SsTCaKfXUb18vcs/VKjsCH8aCYhIJg5dgbWHKHtmajBL0/MxvdyJ9o+kuQGYd1dHjz8Hn3WVuInk2aeWNqbA2lBEWQyyjc/w62zBivNLFkmxlIGq8aPvHb/XzteM/me6dr8NCbNr+JVevIK5PtS+OQB9kxk6hRaCRQm+Ea8foAXraNl5XdPe1oZ1L2TVaJV58h2FoO+0PNcF2L7S3NMOcwbB2do7Um9Wg8gqwk1BNzt7XFZi+6MBLUGKineTyVfU+608BkCmsAKO6KjocaCpkB9XNwlWswdD5tRPCEVwwMKY1UR15khfbytT1fFQtc5tg="
+  # Ex. travis encrypt -r org/repo GH_TOKEN=XXX-https://github.com/settings/tokens-XXX --add
+  - secure: "Pph7s3is3e/X6dvpfQYHSrPD+rR/7sbOYsyP1C3vZpn9NCVm96RtZn4i/nAvrYdOqjVTB6Btwxk+euE+6agKwyKOX7DVQTjdH7oeYnUu2p3jnnLmGn8fI74v/d7OSanLa7PGPKn24FBo7DD0V89Rg1Bo08tq6r3ydInHyjVee8RHQe5W+hTGO3JfZIhgyRn2cVWSE05pfNUqhsgCCsVwbo47zyxbLTj+H0UGmbRZtqVJdzWMWghzCva6toIyLhppUCGGBtsefz3xMigc6Pm3bHPUYqyzZYoc89U2pGxioPixSS3ULsmT8BeVwFsUNrlcc7HhZ+Sbk6eQHA98FmUi4ywBgA62pFy+LLL2c3mV13qq5WWkoW4B1KPOn0sjjDmerYiGAQ3yQIRRzqcEhjSFmpPCFFOCtMzaiNwOtW6WcBnY4HJp35haPjP3LoaFodOF90uYkjlQj/rVriVcGYetPJ+C32Lu/Y9p/5G7zpQ44fS6TPrSCHbKh0Ms++ZyBhdn50Z2ZDTDLdnKsX0WLe37tOueiVXnmVJbeM0mqbF6ZCs36RcSp2zyoh4mMjcWmgZ1Fa3/c/csJ+oQr1tgIeWtbQnHnLI5wCgN9xOegb2CAxX9DcFjg+qsKsiPYivHSXGpcsbRbQkHJmXF53+nhTRPD/sDc7KZBVxRbj882hJx1Zo="
+  # Ex. travis encrypt -r org/repo SONATYPE_USER=your_sonatype_account
+  - secure: "Untw+QpIyyMD8nJYS57/u3rwxQ2YxelA3ioTaQj/6XPGYqvJA2NZZDiwGSDfJXOucb+DCEesFaCAUmeIwTBY3UZk9I+jwsB/wThtEvgZvspFKH6fs8QagN3XILAt+yWHpqCyMKcOalJYEuuA76uthNckFNcsRBkn/tSgxL0mKPEH9wBn4CMDXaooTZWzuWuhGGpItFrakcWOfUKEPaCdXu0J23qpF2iC5xffBG+pjdksdHBRcUeyOut3cUiy6oc6/CUcQX/VgnVRV5NrKLFCUxpIeR9uu9sO9qfvl0j/Nnnw3j89kNXdb4HO+jgj+rvcpAyAIaE+/zZjt7hszc9F9K8ZlfvNduHzHsC2yORShqyxGc6Yg8d21riIh5a5asizQG5fvBJdmy1E+jR9X+SJ/ygKWNx8OYUb57qeyZwcTtRZNRmwfDZqZwaHL7A6NYngwBiPzhiOm5ceA0fdWZnscO0Qbgv4HGW/tpajnoUvj9pETuZkCJdPOamTU/Hk+6OUMbgMgmO4bhM3FpKeAGLuREda85atNdo/jdFbVvfd0BVvn7t1o3Jp7gyMzBk1c2wVCMlIzuALSxH+AvN+DiYOHA94Dz/skfyZLXHn4+D4bvR934r74VVxgi8Ut3VSHtvBOvW5Naho9s8TI2xeAo1Zm+nEfjRfGpc4M74sWJtYwEY="
+  # Ex. travis encrypt -r org/repo SONATYPE_PASSWORD=your_sonatype_password
+  - secure: "RC9joLSJx1RiiiWEI+/LHFUFT6TJiSesTcOoFOtUmHd8uAfmh9ZBDEz+HIPQqPWZFr16xiEdmh5fsygQE2nqEyD261aq5WzX5t0yaVkl/2zKt45l05w2pvQRtjfS/RhcEhqw7EvOQKr3pY9dPNx5QeA7eBRcEJbO6TddngbtRjxSTYzszJT6rh2YhuS/bjTInv+keo0+wXnTXBSuAjXJvyL5vUdkf4gDl5J/QBzGEtY8eazzLM1bgnYdoD9Vb9GIKR3fPZESxyVrjaiskepw2vs9fNz/6HTOyPMJ/RSVay/1u2Gwxaxgx+0R6GomMyaKY1NHiBa2AKoS2GCq5Q2rm/LhMLgRHTTfE+V9hqFO11VT7wP7TM1MxAKZFn2Yw1FnKl2orpz3Dru0pZPoNOBrLcrcb14q4hwBCBnUSEb3MQRNSAWHotihzh8ARcd6gOP3CFe+Cii3lcH/I+D+Wz95Tc+HOVCo/bu7w+j/mwYL8Qe6OePgQcH/JTnCatd9p3wsMbJ/5EqXrIXEhnZ6Z33w9qegrYbJCKT0d2bC03dWdMSaC37HzPYgWk5Pia3C7gULO1oA80I9zQLxEgojztUF5jicT279F62Xd4uZK3O1Jc2xQ3CNg5vIKSZ3GAT+SlBoEZfcTl5FoZE1PWPEvb48FudG803xmjr2KZ2zqW3IN2I="

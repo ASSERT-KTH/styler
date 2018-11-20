@@ -1,0 +1,26 @@
+language: java
+sudo: false
+
+install:
+  -
+
+matrix:
+  fast_finish: true
+  include:
+    # mvn clean verify
+    - jdk: oraclejdk7
+      env: DESC="mvn_clean_verify" CMD="mvn clean verify"
+
+    # checkstyle-check
+    - jdk: oraclejdk7
+      env: DESC="checkstyle-check"
+      script: "mvn -P checkstyle-check clean verify"
+
+    # jacoco-check
+    - jdk: oraclejdk7
+      env: DESC="jacoco-check"
+      script: "mvn -P jacoco-check clean verify"
+
+branches:
+  only:
+    - master

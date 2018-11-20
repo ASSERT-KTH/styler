@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+
+  <properties>
+    <author email="mcconnell@dpml.net">Stephen McConnell</author>
+    <title>DPML Depot Checkstyle Task</title>
+  </properties>
+
+  <body>
+    <section name="Checkstyle Task">
+
+    <subsection name="Overview">
+
+      <p>
+      The checkstyle task provides support for the integration of checkstyle
+      code style validation and reporting into the DPML development environment.
+      The task allows the selection of a style format and
+      and postprocessing of XML based report output.
+      </p>
+
+    </subsection>
+
+    <subsection name="Example">
+
+      <p>
+      The following example buildfile applies checkstyle checks against the
+      project src path (typically target/build/src). In the case of
+      module projects the source path is prepared taking into account all
+      projects within the same group.  Output in generated into the target
+      directory and is subsequently post processed into a checkstyle report
+      directory as an html report.
+      </p>
+
+<source><![CDATA[
+  <target name="checkstyle" depends="prepare">
+    <property name="checkstyle.dir" location="${project.target.reports.dir}/checkstyle"/>
+    <property name="checkstyle.data" location="${checkstyle.dir}/checkstyle.xml"/>
+    <property name="project.checkstyle.data" location="${project.target.reports.dir}/checkstyle"/>
+    <x:plugin ref="dpml/depot/dpml-depot-checkstyle">
+      <task class="dpml.tools.checkstyle.CheckstyleTask" name="checkstyle"/>
+    </x:plugin>
+    <mkdir dir="${checkstyle.dir}"/>
+    <checkstyle>
+      <formatter type="xml" toFile="${checkstyle.data}"/>
+    </checkstyle>
+    <xslt style="${dpml.prefs}/dpml/tools/xsls/checkstyle-frames.xsl"
+        in="${checkstyle.data}"
+        out="${checkstyle.dir}/checkstyle_report.html" />
+]]></source>
+
+      <p>
+      Output from the above project is shown below.
+      </p>
+
+<pre>init:
+checkstyle:
+    [style] Processing D:\demo\target\checkstyle\checkstyle_errors.xml to
+D:\demo\target\reports\checkstyle\checkstyle_report.html
+    [style] Loading stylesheet D:\dpml\prefs\dpml\tools\xsls\checkstyle-frames.xsl
+</pre>
+
+    </subsection>
+
+    <subsection name="Properties">
+
+      <p>
+      The following optional properties may be used to override default behaviour.
+      </p>
+
+      <table>
+        <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+        <tr>
+          <td>${project.checkstyle.dest}</td>
+          <td>target/checkstyle</td>
+          <td>The destination directory for temporary data.</td>
+        </tr>
+        <tr>
+          <td>${project.checkstyle.format}</td>
+          <td>local:format:dpml/tools/dpml</td>
+          <td>Local uri of a checkstyle formating rule specification.</td>
+        </tr>
+        <tr>
+          <td>${project.checkstyle.reports}</td>
+          <td>target/reports/checkstyle</td>
+          <td>Destination directory for html report content.</td>
+        </tr>
+      </table>
+
+    </subsection>
+
+    <subsection name="Style Notes">
+
+      <p>
+      The default formatting rules correspond to the
+      <a href="/about/community/resources/code.html">DPML standard code format</a>
+      specification and is required for all contributions to the DPML.  Alternative
+      code format specifications include a format approximating the Sun coding guidlines.
+      </p>
+
+      <table>
+        <tr><td>Style</td><td>URI</td></tr>
+        <tr>
+          <td>DPML</td>
+          <td>local:format:dpml/tools/dpml</td>
+        </tr>
+        <tr>
+          <td>SUN</td>
+          <td>local:format:dpml/tools/sun</td>
+        </tr>
+      </table>
+
+    </subsection>
+
+    </section>
+
+  </body>
+
+</document>
+
