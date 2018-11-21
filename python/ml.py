@@ -4,11 +4,19 @@ import numpy as np
 from tensorflow import keras
 from javalang import tokenizer
 import random
+import json
+import glob
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 
 # tf.logging.set_verbosity(tf.logging.INFO)
+
+__synthetic_dir = '/home/benjaminl/Documents/synthetic-checkstyle-error-dataset/dataset'
+__protocol = 'protocol1'
+
+def get_dataset_dir(dataset):
+    return f'{__synthetic_dir}/{__protocol}/{dataset}'
 
 def open_file(file):
     content = ''
@@ -16,7 +24,49 @@ def open_file(file):
         content = file.read()
     return content
 
+def open_json(file):
+    with open(file) as f:
+        data = json.load(f)
+        return data
+    return None
+
 files = open_file('./ml_files.txt').split('\n')[:100]
+
+def get_token_value(token):
+    if isinstance(token, tokenizer.Keyword):
+        return token.value
+    if isinstance(token, tokenizer.Separator):
+        return token.value
+
+    if isinstance(token, tokenizer.Comment):
+        return token.__class__.__name__
+    if isinstance(token, tokenizer.Literal):
+        return token.__class__.__name__
+    if isinstance(token, tokenizer.Operator):
+        return token.value
+        if token.is_infix():
+            return "InfixOperator"
+        if token.is_prefix():
+            return "PrefixOperator"
+        if token.is_postfix():
+            return "PostfixOperator"
+        if token.is_assignment():
+            return "AssignmentOperator"
+
+    return token.__class__.__name__
+
+def get_space_value(space):
+    if space[0] == 0:
+        return f'{space[1]}_SP'
+    else:
+        result = f'{space[0]}_NL'
+        if space[1] == 0:
+            pass
+        elif space[1] > 0:
+            result += f'_{space[1]}_ID'
+        else:
+            result += f'_{-space[1]}_DD'
+        return result
 
 def build_vocabulary(files):
     count = {}
@@ -25,27 +75,10 @@ def build_vocabulary(files):
 
     threshold = 30
 
-    def get_value(token):
-        if isinstance(token, tokenizer.Comment):
-            return token.__class__.__name__
-        if isinstance(token, tokenizer.Literal):
-            return token.__class__.__name__
-        if isinstance(token, tokenizer.Operator):
-            if token.is_infix():
-                return "InfixOperator"
-            if token.is_prefix():
-                return "PrefixOperator"
-            if token.is_postfix():
-                return "PostfixOperator"
-            if token.is_assignment():
-                return "AssignmentOperator"
-
-        return token.__class__.__name__
-
     for spaces, tokens in tokenized_files:
         whitespace_id = set(spaces) | whitespace_id
         for token in tokens:
-            name = get_value(token)
+            name = get_token_value(token)
             if not name in count:
                 count[name] = 0
             count[name] += 1
@@ -61,8 +94,8 @@ def build_vocabulary(files):
 
     def get_vector(space, token):
         vector = np.array([0]*vec_size)
-        if get_value(token) in litterals:
-            vector[litterals[get_value(token)]] = 1
+        if get_token_value(token) in litterals:
+            vector[litterals[get_token_value(token)]] = 1
         else:
             vector[len_litterals] = 1
         vector[len_litterals + 1 + whitespace_id[space]] = 1
@@ -72,6 +105,40 @@ def build_vocabulary(files):
 
     return get_vector, whitespace_id
 
+def tokenize_errored_file(file, file_orig, error):
+    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
+    token_started = False
+    from_token = -1
+    to_token = -1
+    count = 0
+    tokens_errored = []
+    for token, space in zip(tokens, spaces):
+        if not token_started and int(error['line']) == token.position[0]:
+            token_started = True
+            tokens_errored.append(f'<{error["type"]}>')
+            from_token = count
+        if token_started and  int(error['line']) < token.position[0]:
+            token_started = False
+            tokens_errored.append(f'</{error["type"]}>')
+            to_token = count
+        tokens_errored.append(get_token_value(token))
+        tokens_errored.append(get_space_value(space))
+        count += 1
+    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
+    tokens_correct = []
+    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+        tokens_correct.append(get_token_value(token))
+        tokens_correct.append(get_space_value(space))
+    return tokens_errored, tokens_correct
+
+def whatever(dataset, folder, id):
+    dir = f'{get_dataset_dir(dataset)}/{folder}/{id}'
+    file_name = [ java_file for java_file in glob.glob(f'{dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
+    file = f'{dir}/{file_name}.java'
+    file_orig = f'{dir}/{file_name}-orig.java'
+    error_file = f'{dir}/metadata.json'
+    error = open_json(error_file)
+    return tokenize_errored_file(file, file_orig, error)
 
 def vectorize_file(path, vectorizer):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
@@ -83,42 +150,45 @@ def vectorize_file(path, vectorizer):
     return result
 
 if __name__ == "__main__":
-    k = 20
-    vectorizer, whitespace_id = build_vocabulary(files)
-    print(len(whitespace_id))
-    data = []
-    for file in files:
-        vector = []
-        vector = vectorize_file(file, vectorizer)
-        for i in range(k, len(vector) - k, 1):
-            io = dict()
-            io['input'] = np.array(vector[i-k:i+k+1]).copy()
-            for i in range(len(whitespace_id)):
-                io['input'][k][-1-i] = 0
-            ws = vector[i][-len(whitespace_id):]
-            i = 0
-            j = 0
-            for a in ws:
-                if j == 0 and a == 1:
-                    j = i
-                i += 1
-            # print(io['input'].shape)
-            io['output'] = j
-            # print(io['input'])
-            data.append(io)
-    random.shuffle(data)
-    train_len = int(len(data) * 0.8)
-    train_data = data[:train_len]
-    test_data = data[train_len:]
-    print(f'Train files {train_len}')
-
-    train_input = np.array([d['input'] for d in train_data])
-    train_labels = np.array([d['output'] for d in train_data])
+    tokens_errored, tokens_correct = whatever('spoon', 'learning', 0)
+    print(' '.join(tokens_errored))
+    print(' '.join(tokens_correct))
+    print(f'{len(tokens_errored)} tokens')
+    print(f'{len(set(tokens_errored))} unique token')
+    # k = 20
+    # vectorizer, whitespace_id = build_vocabulary(files)
+    # print(len(whitespace_id))
+    # data = []
+    # for file in files:
+    #     vector = []
+    #     vector = vectorize_file(file, vectorizer)
+    #     for i in range(k, len(vector) - k, 1):
+    #         io = dict()
+    #         io['input'] = np.array(vector[i-k:i+k+1]).copy()
+    #         for i in range(len(whitespace_id)):
+    #             io['input'][k][-1-i] = 0
+    #         ws = vector[i][-len(whitespace_id):]
+    #         i = 0
+    #         j = 0
+    #         for a in ws:
+    #             if j == 0 and a == 1:
+    #                 j = i
+    #             i += 1
+    #         # print(io['input'].shape)
+    #         io['output'] = j
+    #         # print(io['input'])
+    #         data.append(io)
+    # random.shuffle(data)
+    # train_len = int(len(data) * 0.8)
+    # train_data = data[:train_len]
+    # test_data = data[train_len:]
+    # print(f'Train files {train_len}')
     #
-    test_input = np.array([d['input'] for d in test_data])
-    test_labels = np.array([d['output'] for d in test_data])
-
-    print(train_input[0])
-
-
+    # train_input = np.array([d['input'] for d in train_data])
+    # train_labels = np.array([d['output'] for d in train_data])
+    # #
+    # test_input = np.array([d['input'] for d in test_data])
+    # test_labels = np.array([d['output'] for d in test_data])
+    #
+    # print(train_input[0])
     # tf.app.run()
