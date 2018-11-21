@@ -197,10 +197,8 @@ def stats(folders):
     count_modules = dict()
     count_properties = dict()
     count = 0
-    for folder in folders:
+    for folder in tqdm(folders):
         info = load_info(folder)
-        if info['past_week_commits'] == 0:
-            continue
         try:
             cs_rules = open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
         except:
@@ -213,14 +211,12 @@ def stats(folders):
             if key not in count_properties:
                 count_properties[key] = {}
             count_properties[key][value] = count_properties[key].get(value, 0) + 1
-        print(cs_properties)
+        # print(cs_properties)
         count+=1
     # Compute totals of count_properties
     for key, value in count_properties.items():
         count_properties[key]['total'] = sum(value.values())
-    print(count_modules)
-    print(count_properties)
-    print(count)
+    return count_properties, count_modules
 
 def load_folders(file):
     dirs = []
@@ -285,7 +281,6 @@ def join_intervals(data):
             count = 0
     return new_data
 
-
 def compute_density(from_size, to_size):
     data = join_intervals(flatten(density(from_size, to_size)))
     data_mapped = map(lambda res: f'{res["from_size"]},{res["to_size"]},{res["count"]}', data)
@@ -320,6 +315,10 @@ def venn(sets, repos):
         result[group] = len(list(filters(group_filters, repos)))
     return result
 
+def save_json(dir, file_name, content):
+    with open(os.path.join(dir, file_name), 'w') as f:
+        json.dump(content, f, indent=4, sort_keys=True)
+
 if __name__ == "__main__":
     # I know it's bad...
     os.popen("find . -name 'info.json' > downloaded.txt").read()
@@ -337,7 +336,10 @@ if __name__ == "__main__":
                 print(f'Error getting {repo}')
                 print(e)
     if sys.argv[1] == 'stats':
-        pass # TODO see stats(folder)
+        repos = load_folders('downloaded.txt')
+        count_properties, count_modules = stats(repos)
+        save_json('./', 'raw_count_properties.json', count_properties)
+        save_json('./', 'raw_count_modules.json', count_modules)
     if sys.argv[1] == "venn":
         repos = load_folders('downloaded.txt')
         sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
