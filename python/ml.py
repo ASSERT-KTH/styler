@@ -3,6 +3,8 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 from javalang import tokenizer
+from tqdm import tqdm
+import os
 import random
 import json
 import glob
@@ -18,17 +20,31 @@ __protocol = 'protocol1'
 def get_dataset_dir(dataset):
     return f'{__synthetic_dir}/{__protocol}/{dataset}'
 
+def get_sub_set_dir(dataset, sub_set):
+    return f'{get_dataset_dir(dataset)}/{sub_set}'
+
 def open_file(file):
     content = ''
     with open(file, 'r') as file:
         content = file.read()
     return content
 
+def save_file(dir, file_name, content):
+    with open(os.path.join(dir, file_name), 'w') as f:
+        f.write(content)
+
 def open_json(file):
     with open(file) as f:
         data = json.load(f)
         return data
     return None
+
+def create_dir(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+def list_folders(dir):
+    return [ folder for folder in os.listdir(dir) if os.path.isdir(os.path.join(dir, folder)) ]
 
 files = open_file('./ml_files.txt').split('\n')[:100]
 
@@ -140,6 +156,20 @@ def whatever(dataset, folder, id):
     error = open_json(error_file)
     return tokenize_errored_file(file, file_orig, error)
 
+def gen_IO(dataset, target):
+    create_dir(target)
+    dir = get_dataset_dir(dataset)
+    sub_sets = ['learning', 'validation', 'testing']
+    for sub_set in sub_sets:
+        sub_set_dir = get_sub_set_dir(dataset, sub_set)
+        target_sub_set = f'{target}/{sub_set}'
+        create_dir(target_sub_set)
+        synthesis_error_ids = list_folders(sub_set_dir)
+        for id in tqdm(synthesis_error_ids):
+            tokens_errored, tokens_correct = whatever(dataset, sub_set, id)
+            save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
+            save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
+
 def vectorize_file(path, vectorizer):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
 
@@ -150,11 +180,7 @@ def vectorize_file(path, vectorizer):
     return result
 
 if __name__ == "__main__":
-    tokens_errored, tokens_correct = whatever('spoon', 'learning', 0)
-    print(' '.join(tokens_errored))
-    print(' '.join(tokens_correct))
-    print(f'{len(tokens_errored)} tokens')
-    print(f'{len(set(tokens_errored))} unique token')
+    gen_IO('spoon', './synthetic_data')
     # k = 20
     # vectorizer, whitespace_id = build_vocabulary(files)
     # print(len(whitespace_id))
