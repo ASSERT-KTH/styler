@@ -5,12 +5,16 @@ import os
 from main import *
 from functools import reduce
 import atexit
+import subprocess
 import glob
 import pprint
 from tqdm import tqdm
 from tqdm import trange
+import git
+from git import Repo
 
 _OSS_dir = '/home/benjaminl/Documents/dataset-travis-log-oss'
+__git_repo_dir = '/home/benjaminl/Documents/kth/repos'
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -364,6 +368,56 @@ def get_build_commits(res):
             result[repo][build_id] = get_build(build_id)['commit']
     return result
 
+def clone_repo(user, repo_name):
+    dir = get_repo_dir(user, repo_name)
+    print(f'Clonning {user}/{repo_name}')
+    return Repo.clone_from(f'git@github.com:{user}/{repo_name}.git', dir)
+
+def get_repo_dir(user, repo_name):
+    return os.path.join(__git_repo_dir, f'./{user}/{repo_name}')
+
+def open_repo(user, repo_name):
+    dir = get_repo_dir(user, repo_name)
+    if os.path.exists(dir):
+        return Repo(dir)
+    else:
+        return clone_repo(user, repo_name)
+
+def find_all(path, name):
+    result = []
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            result.append(os.path.join(root, name))
+    return result
+
+def find_the_pom(path):
+    return sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))[0] # the main pom should be closser to the root
+
+def maven_checkstyle(repo, commit):
+    repo.git.checkout(commit)
+    dir = repo.working_dir
+    pom = find_the_pom(dir)
+    print(pom)
+    cmd = f'mvn -f {pom} checkstyle:checkstyle'
+    # print(cmd)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output
+
+def has_commit(repo, sha):
+    return sha in [ str(c) for c in repo.iter_commits() ]
+
+def find_commits(commits_data):
+    result = {}
+    for repo_full_name, commits in tqdm(commits_data.items()):
+        user, repo_name = repo_full_name.split('_')
+        repo = open_repo(user, repo_name)
+        result[repo_full_name] = {'found': 0}
+        result[repo_full_name]['total'] = len(commits)
+        for commit in commits.values():
+            result[repo_full_name]['found'] += has_commit(repo, commit)
+    return result
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -425,6 +479,12 @@ if __name__ == '__main__':
         commits = get_build_commits(res)
         pp.pprint(commits)
         save_json('./', 'commits.json', commits)
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'clone':
+        repo = open_repo('google', 'auto')
+        maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
+        # commits_data = open_json('./commits.json')
+        # reduced_commits_data = { key:commits_data[key] for key in ['facebook_presto', 'square_okhttp']}
+        # find_commits(reduced_commits_data)
     else:
         res = open_json('./results.json')
         repos = res.keys()
