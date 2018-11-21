@@ -156,6 +156,14 @@ def whatever(dataset, folder, id):
     error = open_json(error_file)
     return tokenize_errored_file(file, file_orig, error)
 
+def merge_IOs(sub_set, ids, target):
+    dir = f'{target}/{sub_set}'
+    for type in ['I', 'O']:
+        with open(os.path.join(target, f'{sub_set}-{type}.txt'), 'w+') as f:
+            for id in tqdm(ids, desc=f'merging {type}s...'):
+                f.write(open_file(os.path.join(dir, f'{id}-{type}.txt')))
+                f.write('\n')
+
 def gen_IO(dataset, target):
     create_dir(target)
     dir = get_dataset_dir(dataset)
@@ -165,10 +173,11 @@ def gen_IO(dataset, target):
         target_sub_set = f'{target}/{sub_set}'
         create_dir(target_sub_set)
         synthesis_error_ids = list_folders(sub_set_dir)
-        for id in tqdm(synthesis_error_ids):
+        for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
             tokens_errored, tokens_correct = whatever(dataset, sub_set, id)
             save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
             save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
+        merge_IOs(sub_set, synthesis_error_ids, target)
 
 def vectorize_file(path, vectorizer):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
