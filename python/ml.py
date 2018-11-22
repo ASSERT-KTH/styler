@@ -7,6 +7,7 @@ from tqdm import tqdm
 import os
 import random
 import json
+import sys
 import glob
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
@@ -164,6 +165,30 @@ def merge_IOs(sub_set, ids, target):
                 f.write(open_file(os.path.join(dir, f'{id}-{type}.txt')))
                 f.write('\n')
 
+def get_max_length_and_vocabulary(folder):
+    files = os.listdir(folder)
+    Is = [ file for file in files if 'I.txt' in file ]
+    Os = [ file for file in files if 'O.txt' in file ]
+    max_length = 0
+    max_out_length = 0
+    vocabulary = set()
+    for file in tqdm(Is, desc='Is'):
+        tokens = open_file(os.path.join(folder, file)).split(' ')
+        max_length = max(max_length, len(tokens))
+        vocabulary = vocabulary | set(tokens)
+    for file in tqdm(Os, desc='Os'):
+        tokens = open_file(os.path.join(folder, file)).split(' ')
+        max_out_length = max(max_out_length, len(tokens))
+        vocabulary = vocabulary | set(tokens)
+    return vocabulary, max_length, max_out_length
+
+def print_max_length_and_vocabulary(folder):
+    vocabulary, max_length, max_out_length = get_max_length_and_vocabulary(folder)
+    print(vocabulary)
+    print(len(vocabulary))
+    print(max_length)
+    print(max_out_length)
+
 def gen_IO(dataset, target):
     create_dir(target)
     dir = get_dataset_dir(dataset)
@@ -189,7 +214,16 @@ def vectorize_file(path, vectorizer):
     return result
 
 if __name__ == "__main__":
-    gen_IO('spoon', './synthetic_data')
+    if len(sys.argv) >= 2 and sys.argv[1] == 'gen':
+        target = './synthetic_data'
+        datasets = sys.argv[2:]
+        for dataset in datasets:
+            gen_IO(dataset, os.path.join(target, dataset))
+    if len(sys.argv) >= 2 and sys.argv[1] == 'info':
+        folder = sys.argv[2]
+        print_max_length_and_vocabulary(folder)
+
+def old_ml():
     # k = 20
     # vectorizer, whitespace_id = build_vocabulary(files)
     # print(len(whitespace_id))
@@ -227,3 +261,4 @@ if __name__ == "__main__":
     #
     # print(train_input[0])
     # tf.app.run()
+    pass
