@@ -12,9 +12,13 @@ from tqdm import tqdm
 from tqdm import trange
 import git
 from git import Repo
+import shutil
+sys.path.append('../')
+import checkstyle
 
 _OSS_dir = '/home/benjaminl/Documents/dataset-travis-log-oss'
 __git_repo_dir = '/home/benjaminl/Documents/kth/repos'
+__real_errors_dir = '/home/benjaminl/Documents/kth/real_errors'
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -393,15 +397,55 @@ def find_all(path, name):
 def find_the_pom(path):
     return sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))[0] # the main pom should be closser to the root
 
+def get_real_errors_repo_dir(repo):
+    return os.path.join(__real_errors_dir, repo)
+
+def get_real_errors_commit_dir(repo, commit):
+    return os.path.join(get_real_errors_repo_dir(repo), commit)
+
+def check_checkstyle_results(files):
+    reports_with_errors = {}
+    for file in files:
+        content = open_file(file)
+        results = checkstyle.parse_res(content)
+        files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
+        if len(files_with_errors):
+            reports_with_errors[file] = files_with_errors
+    return reports_with_errors
+
+
 def maven_checkstyle(repo, commit):
+    print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
+
+    # clean_up
+    checkstyle_results = find_all(dir, 'checkstyle-result.xml')
+    for checkstyle_result in checkstyle_results:
+        os.remove(checkstyle_result)
+
+    repo_name = dir.split('/')[-1]
     pom = find_the_pom(dir)
     print(pom)
-    cmd = f'mvn -f {pom} checkstyle:checkstyle'
-    # print(cmd)
+    cmd = f'mvn -f {pom} clean checkstyle:checkstyle'
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
+    results_files = find_all(dir, 'checkstyle-result.xml')
+    reports_with_errors = check_checkstyle_results(results_files)
+    count = 0
+    target = get_real_errors_commit_dir(repo_name, commit)
+    for report_dir, results in reports_with_errors.items():
+        checkstyle_checker = f'{"/".join(report_dir.split("/")[:-1])}/checkstyle-checker.xml'
+        for file, errors in results.items():
+            print(f'{file} has {len(errors)} errors')
+            file_name = file.split('/')[-1]
+            dir = os.path.join(target, str(count))
+            create_dir(dir)
+            shutil.copyfile(file, os.path.join(dir, file_name))
+            shutil.copyfile(checkstyle_checker, os.path.join(dir, 'checkstyle.xml'))
+            save_json(dir, 'errors.json', errors)
+            count += 1
+    print(find_all(dir, 'checkstyle-checker.xml'))
     return output
 
 def has_commit(repo, sha):
@@ -412,10 +456,10 @@ def find_commits(commits_data):
     for repo_full_name, commits in tqdm(commits_data.items()):
         user, repo_name = repo_full_name.split('_')
         repo = open_repo(user, repo_name)
-        result[repo_full_name] = {'found': 0}
-        result[repo_full_name]['total'] = len(commits)
+        result[repo_full_name] = []
         for commit in commits.values():
-            result[repo_full_name]['found'] += has_commit(repo, commit)
+            if has_commit(repo, commit):
+                result[repo_full_name].append(commit)
     return result
 
 if __name__ == '__main__':
@@ -480,11 +524,17 @@ if __name__ == '__main__':
         pp.pprint(commits)
         save_json('./', 'commits.json', commits)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'clone':
-        repo = open_repo('google', 'auto')
-        maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
-        # commits_data = open_json('./commits.json')
-        # reduced_commits_data = { key:commits_data[key] for key in ['facebook_presto', 'square_okhttp']}
-        # find_commits(reduced_commits_data)
+        # repo = open_repo('google', 'auto')
+        # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
+        commits_data = open_json('./commits.json')
+        reduced_commits_data = { key:commits_data[key] for key in ['facebook_presto']} # 'facebook_presto',
+        commits = find_commits(reduced_commits_data)
+        pp.pprint(commits)
+        for repo_full_name, valid_commits in commits.items():
+            user, repo_name = repo_full_name.split('_')
+            repo = open_repo(user, repo_name)
+            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+                maven_checkstyle(repo, commit)
     else:
         res = open_json('./results.json')
         repos = res.keys()
