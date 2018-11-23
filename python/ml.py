@@ -12,6 +12,9 @@ import glob
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 # tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -129,6 +132,7 @@ def tokenize_errored_file(file, file_orig, error):
     to_token = -1
     count = 0
     tokens_errored = []
+    n_lines = 5
     for token, space in zip(tokens, spaces):
         if not token_started and int(error['line']) == token.position[0]:
             token_started = True
@@ -138,9 +142,14 @@ def tokenize_errored_file(file, file_orig, error):
             token_started = False
             tokens_errored.append(f'</{error["type"]}>')
             to_token = count
-        tokens_errored.append(get_token_value(token))
-        tokens_errored.append(get_space_value(space))
+        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines :
+            tokens_errored.append(get_token_value(token))
+            tokens_errored.append(get_space_value(space))
         count += 1
+    if from_token == -1:
+        tokens_errored.append(f'<{error["type"]}>')
+        tokens_errored.append(f'</{error["type"]}>')
+
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
     tokens_correct = []
     for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
@@ -165,29 +174,40 @@ def merge_IOs(sub_set, ids, target):
                 f.write(open_file(os.path.join(dir, f'{id}-{type}.txt')))
                 f.write('\n')
 
-def get_max_length_and_vocabulary(folder):
+def get_length_and_vocabulary(folder):
     files = os.listdir(folder)
     Is = [ file for file in files if 'I.txt' in file ]
     Os = [ file for file in files if 'O.txt' in file ]
     max_length = 0
+    in_length = []
+    out_length = []
     max_out_length = 0
     vocabulary = set()
     for file in tqdm(Is, desc='Is'):
         tokens = open_file(os.path.join(folder, file)).split(' ')
-        max_length = max(max_length, len(tokens))
+        in_length.append(len(tokens))
         vocabulary = vocabulary | set(tokens)
     for file in tqdm(Os, desc='Os'):
         tokens = open_file(os.path.join(folder, file)).split(' ')
-        max_out_length = max(max_out_length, len(tokens))
+        out_length.append(len(tokens))
         vocabulary = vocabulary | set(tokens)
-    return vocabulary, max_length, max_out_length
+    return vocabulary, in_length, out_length
 
 def print_max_length_and_vocabulary(folder):
-    vocabulary, max_length, max_out_length = get_max_length_and_vocabulary(folder)
+    vocabulary, in_length, out_length = get_length_and_vocabulary(folder)
     print(vocabulary)
-    print(len(vocabulary))
-    print(max_length)
-    print(max_out_length)
+    print(f'Vocabulary size {len(vocabulary)}')
+    print(f'Max in lenght : {max(in_length)}')
+    print(f'Max out lenght : {max(out_length)}')
+    n_bins = 20
+
+    fig, axs = plt.subplots(1, 2, sharey=True, tight_layout=True)
+
+    # We can set the number of bins with the `bins` kwarg
+    axs[0].hist(in_length, bins=n_bins)
+    axs[1].hist(out_length, bins=n_bins)
+
+    plt.show()
 
 def gen_IO(dataset, target):
     create_dir(target)
@@ -215,7 +235,7 @@ def vectorize_file(path, vectorizer):
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == 'gen':
-        target = './synthetic_data'
+        target = '/home/benjaminl/Documents/kth/data/1'
         datasets = sys.argv[2:]
         for dataset in datasets:
             gen_IO(dataset, os.path.join(target, dataset))
