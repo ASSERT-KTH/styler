@@ -125,6 +125,90 @@ def build_vocabulary(files):
 
     return get_vector, whitespace_id
 
+def tokenize_errored_file_model2(file, file_orig, error):
+    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
+
+    token_started = False
+    token_line_start = -1
+    token_line_end = -1
+    count = 0
+
+    tokens_errored = []
+    n_lines = 5
+
+    start = len(tokens)
+    end = 0
+
+    from_token = 0
+    to_token = 0
+
+    for token, space in zip(tokens, spaces):
+        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines :
+            start = min(count, start)
+            end = max(count, end)
+        if not token_started and int(error['line']) == token.position[0]:
+            token_started = True
+            token_line_start = count
+        if token_started and  int(error['line']) < token.position[0]:
+            token_started = False
+            token_line_end = count
+        count += 1
+
+    if 'column' in error:
+        errored_token_index = -1
+        around = 5
+        for token, index in zip(tokens,range(len(tokens))):
+            if token.position[0] <= int(error['line']) and token.position[1] <= int(error['column']):
+                errored_token_index = index
+        from_token = max(0, errored_token_index - around)
+        to_token = min(len(tokens), errored_token_index + 1 + around)
+    else:
+        around = 2
+        if token_line_start != -1:
+            from_token = token_line_start - around
+            to_token = token_line_end + around + 1
+
+    tokens_errored_in_tag = []
+    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+        tokens_errored_in_tag.append(get_token_value(token))
+        tokens_errored_in_tag.append(get_space_value(space))
+
+    if token_line_start != -1:
+        for token, space in zip(tokens[start:from_token], spaces[start:from_token]):
+            tokens_errored.append(get_token_value(token))
+            tokens_errored.append(get_space_value(space))
+        tokens_errored.append(f'<{error["type"]}>')
+        for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+            tokens_errored.append(get_token_value(token))
+            tokens_errored.append(get_space_value(space))
+        tokens_errored.append(f'</{error["type"]}>')
+        for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
+            tokens_errored.append(get_token_value(token))
+            tokens_errored.append(get_space_value(space))
+    else:
+        for token, space in zip(tokens[start:end], spaces[start:end]):
+            tokens_errored.append(get_token_value(token))
+            tokens_errored.append(get_space_value(space))
+        tokens_errored.append(f'<{error["type"]}>')
+        tokens_errored.append(f'</{error["type"]}>')
+
+
+    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
+    tokens_correct = []
+
+    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+        tokens_correct.append(get_token_value(token))
+        tokens_correct.append(get_space_value(space))
+
+    if len(tokens_errored_in_tag) != len(tokens_correct):
+        print("WHAAAAATT")
+    count_diff = 0
+    for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
+        if t_A != t_B:
+            count_diff += 1
+
+    return tokens_errored, tokens_correct, count_diff
+
 def tokenize_errored_file(file, file_orig, error):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
     token_started = False
@@ -164,7 +248,7 @@ def whatever(dataset, folder, id):
     file_orig = f'{dir}/{file_name}-orig.java'
     error_file = f'{dir}/metadata.json'
     error = open_json(error_file)
-    return tokenize_errored_file(file, file_orig, error)
+    return tokenize_errored_file_model2(file, file_orig, error)
 
 def merge_IOs(sub_set, ids, target):
     dir = f'{target}/{sub_set}'
@@ -213,16 +297,23 @@ def gen_IO(dataset, target):
     create_dir(target)
     dir = get_dataset_dir(dataset)
     sub_sets = ['learning', 'validation', 'testing']
+    diffs = []
+    weirdos = []
     for sub_set in sub_sets:
         sub_set_dir = get_sub_set_dir(dataset, sub_set)
         target_sub_set = f'{target}/{sub_set}'
         create_dir(target_sub_set)
         synthesis_error_ids = list_folders(sub_set_dir)
         for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
-            tokens_errored, tokens_correct = whatever(dataset, sub_set, id)
+            tokens_errored, tokens_correct, count_diff = whatever(dataset, sub_set, id)
             save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
             save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
+            diffs.append(count_diff)
+            if count_diff == 2:
+                weirdos.append(f'{sub_set}/{id}')
         merge_IOs(sub_set, synthesis_error_ids, target)
+
+    print(weirdos)
 
 def vectorize_file(path, vectorizer):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
@@ -235,7 +326,7 @@ def vectorize_file(path, vectorizer):
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == 'gen':
-        target = '/home/benjaminl/Documents/kth/data/1'
+        target = '/home/benjaminl/Documents/kth/data/2'
         datasets = sys.argv[2:]
         for dataset in datasets:
             gen_IO(dataset, os.path.join(target, dataset))
