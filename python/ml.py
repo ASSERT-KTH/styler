@@ -269,7 +269,8 @@ def get_length_and_vocabulary(folder):
     vocabulary = set()
     for file in tqdm(Is, desc='Is'):
         tokens = open_file(os.path.join(folder, file)).split(' ')
-        in_length.append(len(tokens))
+        if len(tokens)<1000:
+            in_length.append(len(tokens))
         vocabulary = vocabulary | set(tokens)
     for file in tqdm(Os, desc='Os'):
         tokens = open_file(os.path.join(folder, file)).split(' ')
