@@ -2,6 +2,7 @@ import configparser
 from github import Github
 from github.GithubException import UnknownObjectException
 from github.GithubException import GithubException
+from collections import OrderedDict
 import time
 import datetime
 import os
@@ -213,10 +214,19 @@ def stats(folders):
             count_properties[key][value] = count_properties[key].get(value, 0) + 1
         # print(cs_properties)
         count+=1
+
+    sanitized_count_modules = {}
+    remove_check = lambda x: x if not x.endswith('Check') else x[:-len('Check')]
+    for module, count in count_modules.items():
+        sanitized_module = "/".join([ remove_check(e.split('.')[-1]) for e in module.split('/') ])
+        if sanitized_module not in sanitized_count_modules:
+            sanitized_count_modules[sanitized_module] = 0
+        sanitized_count_modules[sanitized_module] += count
+
     # Compute totals of count_properties
     for key, value in count_properties.items():
         count_properties[key]['total'] = sum(value.values())
-    return count_properties, count_modules
+    return count_properties, sanitized_count_modules
 
 def load_folders(file):
     dirs = []
@@ -315,9 +325,9 @@ def venn(sets, repos):
         result[group] = len(list(filters(group_filters, repos)))
     return result
 
-def save_json(dir, file_name, content):
+def save_json(dir, file_name, content, sort=False):
     with open(os.path.join(dir, file_name), 'w') as f:
-        json.dump(content, f, indent=4, sort_keys=True)
+        json.dump(content, f, indent=4, sort_keys=sort)
 
 if __name__ == "__main__":
     # I know it's bad...
@@ -338,8 +348,9 @@ if __name__ == "__main__":
     if sys.argv[1] == 'stats':
         repos = load_folders('downloaded.txt')
         count_properties, count_modules = stats(repos)
-        save_json('./', 'raw_count_properties.json', count_properties)
-        save_json('./', 'raw_count_modules.json', count_modules)
+        save_json('./', 'raw_count_properties.json', count_properties, sort=True)
+        count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
+        save_json('./', 'raw_count_modules.json', count_modules_ordered)
     if sys.argv[1] == "venn":
         repos = load_folders('downloaded.txt')
         sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
