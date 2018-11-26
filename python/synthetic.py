@@ -11,6 +11,7 @@ import configparser
 import sys
 import glob
 from tqdm import tqdm
+import uuid
 from functools import reduce
 
 config = configparser.ConfigParser()
@@ -49,6 +50,7 @@ class Checkstyle_Synthetic_Error:
     def load_errored(self):
         self.errored = open_file(f'{self.dir}/{self.file_name}.java')
 
+__experiments_dir = './experiments/ml'
 __base_dir = config['DEFAULT']['SYNTHETIC_DIR']
 
 # def gen_ugly(corpus):
@@ -59,6 +61,9 @@ __base_dir = config['DEFAULT']['SYNTHETIC_DIR']
 #         modifications[id][folder] = {}
 #         for index in range(n):
 #             modifications[id][folder][index] = java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/{}/".format(folder) + str(index) + "/")), action)
+
+def get_experiment_dir(id):
+    return f'{__experiments_dir}/{id}'
 
 def get_dir(dir):
     return os.path.join(__base_dir, dir)
@@ -96,6 +101,7 @@ def open_json(file):
 def create_dir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
+    return dir
 
 def copy_originals(corpus, repo_name):
     folder = os.path.join(get_repo_dir(repo_name), './originals')
@@ -210,6 +216,45 @@ def summary(repo):
     print(results)
     save_json(get_repo_dir(repo), 'stats.json', results)
 
+def copy_uglies(from_dir, to_dir):
+    create_dir(to_dir)
+    uglies = [
+        java_file for java_file in glob.glob(f'{from_dir}/*/*.java')
+        if 'orig' not in java_file
+    ]
+    for file in tqdm(uglies, desc='Copy uglies'):
+        id, file_name = file.split('/')[-2:]
+        target = os.path.join(to_dir, id)
+        create_dir(target)
+        target_file = os.path.join(target, file_name)
+        shutil.copy(file, target_file)
+
+def with_index(iterator):
+    return zip(iterator, range(len(iterator)))
+
+def copy_origs(from_dir, to_dir):
+    create_dir(to_dir)
+    origs = set([
+        file.split('/')[-1]
+        for file in glob.glob(f'{from_dir}/*/*-orig.java')
+    ])
+    for file_name, index in tqdm(with_index(origs), desc='Copy origs', total=len(origs)):
+        file_dir = glob.glob(f'{from_dir}/*/{file_name}')[0]
+        target = os.path.join(to_dir, str(index))
+        create_dir(target)
+        target_file = os.path.join(target, file_name)
+        shutil.copy(file_dir, target_file)
+
+
+def gen_experiment(dataset_name):
+    dir = get_repo_dir(dataset_name)
+    experiment_id = dataset_name
+    target = get_experiment_dir(experiment_id)
+    if os.path.exists(target):
+        shutil.rmtree(target)
+    copy_uglies(os.path.join(dir, 'testing') ,create_dir(os.path.join(target, 'ugly')))
+    copy_origs(os.path.join(dir, 'learning') ,create_dir(os.path.join(target, 'orig')))
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = []
@@ -218,5 +263,9 @@ if __name__ == '__main__':
         share = { key:config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         for corpus in corpora:
             gen_dataset(corpus, share)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
+        print(sys.argv[2:])
+        for dataset in sys.argv[2:]:
+            gen_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
