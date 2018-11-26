@@ -13,18 +13,22 @@ import glob
 from tqdm import tqdm
 import uuid
 from functools import reduce
+import java_lang_utils
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-class Checkstyle_Synthetic_Error:
+class Synthetic_Checkstyle_Error:
 
-    def __init__(self, repo, id):
-        self.dir = get_synthetic_error_dir(repo, id)
+    def __init__(self, dir):
+        self.dir = dir
         self.metadata = None
         self.original = None
         self.errored = None
-        self.file_name = [ java_file for java_file in glob.glob(f'{self.dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
+        self.file_name = glob.glob(f'{self.dir}/*.java')[0].split('/')[-1].split('.')[0]
+        if 'orig' in self.file_name:
+             self.file_name[:-5]
 
     def get_metadata(self):
         if not self.metadata:
@@ -41,14 +45,23 @@ class Checkstyle_Synthetic_Error:
             self.load_errored()
         return self.errored
 
+    def get_errored_path(self):
+        return f'{self.dir}/{self.file_name}.java'
+
+    def get_original_path(self):
+        return f'{self.dir}/{self.file_name}-orig.java'
+
+    def get_metadata_path(self):
+        return f'{self.dir}/metadata.json'
+
     def load_metadata(self):
-        self.metadata = open_json(f'{self.dir}/metadata.json')
+        self.metadata = open_json(self.get_metadata_path())
 
     def load_original(self):
-        self.original = open_file(f'{self.dir}/{self.file_name}-orig.java')
+        self.original = open_file(self.get_original_path())
 
     def load_errored(self):
-        self.errored = open_file(f'{self.dir}/{self.file_name}.java')
+        self.errored = open_file(self.get_errored_path())
 
 __experiments_dir = './experiments/ml'
 __base_dir = config['DEFAULT']['SYNTHETIC_DIR']
@@ -71,12 +84,18 @@ def get_dir(dir):
 def get_repo_dir(repo):
     return get_dir(f'./dataset/protocol1/{repo}')
 
-def get_synthetic_error_dir(repo, id):
-    return get_dir(f'{get_repo_dir(repo)}/{id}')
+def get_repo_type_dir(repo, type):
+    return get_dir(f'./dataset/protocol1/{repo}/{type}')
 
-def list_elements(repo):
-    dir = get_repo_dir(repo)
-    return [ element for element in os.listdir(dir) if os.path.isdir(get_synthetic_error_dir(repo, element)) ]
+def get_synthetic_error_dir(repo, type, id):
+    return get_dir(f'{get_repo_dir(repo)}/{type}/{id}')
+
+def list_elements(repo, type):
+    dir = get_repo_type_dir(repo, type)
+    return [ element for element in os.listdir(dir) if os.path.isdir(get_synthetic_error_dir(repo, type, element)) ]
+
+def list_folders(dir):
+    return [ element for element in os.listdir(dir) if os.path.isdir(os.path.join(dir, element)) ]
 
 def save_file(dir, file_name, content):
     with open(os.path.join(dir, file_name), 'w') as f:
@@ -205,7 +224,7 @@ def map_and_count(reducer, data):
 
 
 def load_repo(repo):
-    return [ Checkstyle_Synthetic_Error('spoon', synthetic_error) for synthetic_error in list_elements(repo) ]
+    return [ Synthetic_Checkstyle_Error('spoon', synthetic_error) for synthetic_error in list_elements(repo) ]
 
 def summary(repo):
     synthetic_errors = load_repo(repo)
@@ -215,6 +234,8 @@ def summary(repo):
     results['file_count'] = map_and_count(lambda x: x.file_name, synthetic_errors)
     print(results)
     save_json(get_repo_dir(repo), 'stats.json', results)
+
+###  Experiment ####
 
 def copy_uglies(from_dir, to_dir):
     create_dir(to_dir)
@@ -228,6 +249,11 @@ def copy_uglies(from_dir, to_dir):
         create_dir(target)
         target_file = os.path.join(target, file_name)
         shutil.copy(file, target_file)
+        # metadata
+        metadata_file = file[:file.rfind('/')] + '/metadata.json'
+        target_metadata = os.path.join(target, 'metadata.json')
+        shutil.copy(metadata_file, target_metadata)
+
 
 def with_index(iterator):
     return zip(iterator, range(len(iterator)))
@@ -245,15 +271,78 @@ def copy_origs(from_dir, to_dir):
         target_file = os.path.join(target, file_name)
         shutil.copy(file_dir, target_file)
 
-
 def gen_experiment(dataset_name):
     dir = get_repo_dir(dataset_name)
     experiment_id = dataset_name
     target = get_experiment_dir(experiment_id)
+    shutil.copy(os.path.join(dir, 'checkstyle.xml'), os.path.join(target, 'checkstyle.xml'))
+    shutil.copy(os.path.join(dir, 'repo.json'), os.path.join(target, 'repo.json'))
     if os.path.exists(target):
         shutil.rmtree(target)
-    copy_uglies(os.path.join(dir, 'testing') ,create_dir(os.path.join(target, 'ugly')))
-    copy_origs(os.path.join(dir, 'learning') ,create_dir(os.path.join(target, 'orig')))
+    ugly_dir = create_dir(os.path.join(target, 'ugly'))
+    copy_uglies(os.path.join(dir, 'testing'), ugly_dir)
+    orig_dir = create_dir(os.path.join(target, 'orig'))
+    copy_origs(os.path.join(dir, 'learning'), orig_dir)
+
+def gen_repair_and_get_errors(tool, dir):
+    ugly_dir = os.path.join(dir, 'ugly')
+    orig_dir = os.path.join(dir, 'orig')
+    tool_dir = os.path.join(dir, tool)
+    checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
+    call_repair_tool(tool, orig_dir, ugly_dir, tool_dir)
+    move_parse_exception_files(ns_dir, bin_dir)
+    return checkstyle.check(checkstyle_rules, tool_dir)
+
+def run_experiment(dataset_name):
+    experiment_id = dataset_name
+    dir = get_experiment_dir(experiment_id)
+    ugly_dir = os.path.join(dir, 'ugly')
+    orig_dir = os.path.join(dir, 'orig')
+    bin_dir = os.path.join(dir, 'bin')
+    # checkstyle_results, number_of_errors = gen_repair_and_get_errors('naturalize_sniper', dir)
+    checkstyle_results, number_of_errors = gen_repair_and_get_errors('codebuff_sniper', dir)
+    print(number_of_errors)
+
+def call_java(jar, args):
+    cmd = "java -jar {} {}".format(jar, " ".join(args))
+    # print(cmd)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output
+
+def list_dir_full_path(dir):
+    return [ os.path.join(dir, element) for element in os.listdir(dir) ]
+
+def call_repair_tool(tool, orig_dir, ugly_dir, output_dir):
+    if tool == 'naturalize_sniper':
+        return call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
+
+def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
+    create_dir(output_dir)
+    # TODO rebuild with sniper ...
+    args = ["-mode snipper", "-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+    uglies_dir = [
+        error
+        for error in list_dir_full_path(ugly_dir) if os.path.isdir(error)
+    ]
+    uglies = [
+        Synthetic_Checkstyle_Error(error)
+        for error in uglies_dir
+    ]
+    for ugly in uglies:
+        path = ugly.get_errored_path()
+    #     erorrs_lines = [ int(e["line"]) for e in file["errors"]]
+        erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
+        (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+        args.append(path + ":" + str(from_char) + ',' + str(to_char))
+    return call_java("../jars/naturalize.jar", args)
+
+def move_parse_exception_files(from_dir, to_dir):
+    files = java_lang_utils.get_bad_formated(from_dir)
+    create_dir(to_dir)
+    for file in files:
+        shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
+    return files
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
@@ -266,6 +355,7 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
         print(sys.argv[2:])
         for dataset in sys.argv[2:]:
-            gen_experiment(dataset)
+            run_experiment(dataset)
+            # gen_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
