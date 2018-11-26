@@ -287,10 +287,11 @@ def gen_experiment(dataset_name):
 def gen_repair_and_get_errors(tool, dir):
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
+    bin_dir = os.path.join(dir, 'bin')
     tool_dir = os.path.join(dir, tool)
     checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
     call_repair_tool(tool, orig_dir, ugly_dir, tool_dir)
-    move_parse_exception_files(ns_dir, bin_dir)
+    parse_exception_files = move_parse_exception_files(tool_dir, bin_dir)
     return checkstyle.check(checkstyle_rules, tool_dir)
 
 def run_experiment(dataset_name):
@@ -298,7 +299,7 @@ def run_experiment(dataset_name):
     dir = get_experiment_dir(experiment_id)
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
-    bin_dir = os.path.join(dir, 'bin')
+    # checkstyle_results, number_of_errors = gen_repair_and_get_errors('codebuff', dir)
     # checkstyle_results, number_of_errors = gen_repair_and_get_errors('naturalize_sniper', dir)
     checkstyle_results, number_of_errors = gen_repair_and_get_errors('codebuff_sniper', dir)
     print(number_of_errors)
@@ -316,11 +317,12 @@ def list_dir_full_path(dir):
 def call_repair_tool(tool, orig_dir, ugly_dir, output_dir):
     if tool == 'naturalize_sniper':
         return call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
+    if tool == 'codebuff':
+        return call_codebuff(orig_dir, ugly_dir, output_dir)
+    if tool == 'codebuff_sniper':
+        return call_codebuff(orig_dir, ugly_dir, output_dir)
 
-def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
-    create_dir(output_dir)
-    # TODO rebuild with sniper ...
-    args = ["-mode snipper", "-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+def get_uglies(ugly_dir):
     uglies_dir = [
         error
         for error in list_dir_full_path(ugly_dir) if os.path.isdir(error)
@@ -329,6 +331,13 @@ def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
         Synthetic_Checkstyle_Error(error)
         for error in uglies_dir
     ]
+    return uglies
+
+def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
+    create_dir(output_dir)
+    # TODO rebuild with sniper ...
+    args = ["-mode snipper", "-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+    uglies = get_uglies(ugly_dir)
     for ugly in uglies:
         path = ugly.get_errored_path()
     #     erorrs_lines = [ int(e["line"]) for e in file["errors"]]
@@ -336,6 +345,11 @@ def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
         (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
         args.append(path + ":" + str(from_char) + ',' + str(to_char))
     return call_java("../jars/naturalize.jar", args)
+
+def call_codebuff(orig_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
+    args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + orig_dir, "-files java", "-comment LINE_COMMENT", "-indent " + str(indent), "-o " + output_dir]
+    args.append(ugly_dir)
+    return call_java("../jars/codebuff-1.5.1.jar", args)
 
 def move_parse_exception_files(from_dir, to_dir):
     files = java_lang_utils.get_bad_formated(from_dir)
