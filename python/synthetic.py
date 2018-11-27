@@ -273,34 +273,43 @@ def copy_origs(from_dir, to_dir):
         shutil.copy(file_dir, target_file)
 
 def gen_experiment(dataset_name):
-    dir = get_repo_dir(dataset_name)
+    dir = create_dir(get_repo_dir(dataset_name))
     experiment_id = dataset_name
     target = get_experiment_dir(experiment_id)
+    create_dir(target)
     shutil.copy(os.path.join(dir, 'checkstyle.xml'), os.path.join(target, 'checkstyle.xml'))
-    shutil.copy(os.path.join(dir, 'repo.json'), os.path.join(target, 'repo.json'))
-    if os.path.exists(target):
-        shutil.rmtree(target)
+    shutil.copy(os.path.join(dir, 'repo.json'), os.path.join(target, 'metadata.json'))
     ugly_dir = create_dir(os.path.join(target, 'ugly'))
     copy_uglies(os.path.join(dir, 'testing'), ugly_dir)
     orig_dir = create_dir(os.path.join(target, 'orig'))
     copy_origs(os.path.join(dir, 'learning'), orig_dir)
 
-def gen_repair_and_get_errors(tool, dir):
+def gen_repaired(tool, dir, dataset_metadata):
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
     bin_dir = os.path.join(dir, 'bin')
     tool_dir = os.path.join(dir, tool)
     checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
-    call_repair_tool(tool, orig_dir, ugly_dir, tool_dir)
+    call_repair_tool(tool, orig_dir, ugly_dir, tool_dir, dataset_metadata)
     parse_exception_files = move_parse_exception_files(tool_dir, bin_dir)
-    return checkstyle.check(checkstyle_rules, tool_dir)
+    return tool, dir
 
 def get_checkstyle_results(tool, dir):
     tool_dir = os.path.join(dir, tool)
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
-    checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
-    return checkstyle.check(checkstyle_rules, tool_dir)
+    file_name = f'checkstyle_results_{tool}.json'
+    file_dir = f'{dir}/{file_name}'
+    results_json = {}
+    if os.path.exists(file_dir):
+        results_json = open_json(file_dir)
+    else:
+        checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
+        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir)
+        results_json['checkstyle_results'] = checkstyle_results
+        results_json['number_of_errors'] = number_of_errors
+        save_json(dir, file_name, results_json)
+    return results_json['checkstyle_results'], results_json['number_of_errors']
 
 def get_repaired(tool, dir):
     checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
@@ -314,13 +323,23 @@ def run_experiment(dataset_name):
     dir = get_experiment_dir(experiment_id)
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
-    # checkstyle_results, number_of_errors = gen_repair_and_get_errors('codebuff', dir)
-    # checkstyle_results, number_of_errors = gen_repair_and_get_errors('naturalize_sniper', dir)
-    # checkstyle_results, number_of_errors = gen_repair_and_get_errors('codebuff_sniper', dir)
-    repaired_naturalize_sniper = get_repaired('naturalize_sniper', dir)
-    repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
+    dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
+    # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
+    tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper']
+    # for tool in tqdm(tools, desc='gen'):
+    #     gen_repaired(tool, dir, dataset_metadata)
+
+    repaired = {}
+    for tool in tqdm(tools, desc=''):
+        repaired[tool] = get_repaired(tool, dir)
+    if 'naturalize_sniper' in tools and 'codebuff_sniper' in tools:
+        repaired['loriot_repair'] = list(set(repaired['naturalize_sniper']) | set(repaired['codebuff_sniper']))
+    # repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
     # checkstyle_results, number_of_errors = checkstyle_results('naturalize_sniper', dir)
-    print(len(set(repaired_naturalize_sniper) | set(repaired_codebuff_sniper)))
+    pp.pprint({
+        key:len(repaired_files)
+        for key, repaired_files in repaired.items()
+    })
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
@@ -332,26 +351,15 @@ def call_java(jar, args):
 def list_dir_full_path(dir):
     return [ os.path.join(dir, element) for element in os.listdir(dir) ]
 
-def call_repair_tool(tool, orig_dir, ugly_dir, output_dir):
+def call_repair_tool(tool, orig_dir, ugly_dir, output_dir, dataset_metadata):
+    if tool == 'naturalize':
+        return call_naturalize(orig_dir, ugly_dir, output_dir)
     if tool == 'naturalize_sniper':
         return call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
     if tool == 'codebuff':
-        return call_codebuff(orig_dir, ugly_dir, output_dir)
+        return call_codebuff(orig_dir, ugly_dir, output_dir, grammar=dataset_metadata['grammar'], indent=dataset_metadata['indent'])
     if tool == 'codebuff_sniper':
         return call_codebuff_sniper(orig_dir, ugly_dir, output_dir[:-7],output_dir)
-
-def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
-    uglies = get_uglies(ugly_dir)
-    for ugly in uglies:
-        file_path = ugly.get_errored_path()
-        codebuff_path = f'{codebuff_dir}/{ugly.id}/{ugly.file_name}.java'
-        output_path = f'{output_dir}/{ugly.id}/{ugly.file_name}.java'
-        erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
-        from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
-        try:
-            java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
-        except FileNotFoundError:
-            print("No file (probably codebuff trash)")
 
 def get_uglies(ugly_dir):
     uglies_dir = [
@@ -363,6 +371,10 @@ def get_uglies(ugly_dir):
         for error in uglies_dir
     ]
     return uglies
+
+def call_naturalize(orig_dir, ugly_dir, output_dir):
+    args = ["-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+    return call_java("../jars/naturalize.jar", args)
 
 def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
     create_dir(output_dir)
@@ -382,6 +394,19 @@ def call_codebuff(orig_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
     args.append(ugly_dir)
     return call_java("../jars/codebuff-1.5.1.jar", args)
 
+def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
+    uglies = get_uglies(ugly_dir)
+    for ugly in uglies:
+        file_path = ugly.get_errored_path()
+        codebuff_path = f'{codebuff_dir}/{ugly.id}/{ugly.file_name}.java'
+        output_path = f'{output_dir}/{ugly.id}/{ugly.file_name}.java'
+        erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
+        from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+        try:
+            java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
+        except FileNotFoundError:
+            print("No file (probably codebuff trash)")
+
 def move_parse_exception_files(from_dir, to_dir):
     files = java_lang_utils.get_bad_formated(from_dir)
     create_dir(to_dir)
@@ -400,7 +425,9 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
         print(sys.argv[2:])
         for dataset in sys.argv[2:]:
+            target = get_experiment_dir(dataset)
+            if not os.path.exists(target):
+                gen_experiment(dataset)
             run_experiment(dataset)
-            # gen_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
