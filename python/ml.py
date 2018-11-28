@@ -305,6 +305,7 @@ def gen_IO(dataset, target):
         target_sub_set = f'{target}/{sub_set}'
         create_dir(target_sub_set)
         synthesis_error_ids = list_folders(sub_set_dir)
+        synthesis_error_ids = sorted(synthesis_error_ids, key=int)
         for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
             tokens_errored, tokens_correct, count_diff = whatever(dataset, sub_set, id)
             save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
