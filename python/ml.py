@@ -134,7 +134,7 @@ def tokenize_errored_file_model2(file, file_orig, error):
     count = 0
 
     tokens_errored = []
-    n_lines = 5
+    n_lines = 6
 
     start = len(tokens)
     end = 0
@@ -153,6 +153,8 @@ def tokenize_errored_file_model2(file, file_orig, error):
             token_started = False
             token_line_end = count
         count += 1
+    if token_line_end == -1:
+        token_line_end = token_line_start
 
     if 'column' in error:
         errored_token_index = -1
@@ -163,34 +165,42 @@ def tokenize_errored_file_model2(file, file_orig, error):
         from_token = max(0, errored_token_index - around)
         to_token = min(len(tokens), errored_token_index + 1 + around)
     else:
-        around = 2
+        around = 3
+        errored_token_index = -1
         if token_line_start != -1:
-            from_token = token_line_start - around
-            to_token = token_line_end + around + 1
-
+            from_token = max(start, token_line_start - around)
+            to_token = min(end, token_line_end + around + 1)
+        else:
+            errored_token_index = -1
+            around = 4
+            for token, index in zip(tokens,range(len(tokens))):
+                if token.position[0] <= int(error['line']):
+                    errored_token_index = index
+            from_token = max(0, errored_token_index - around)
+            to_token = min(len(tokens), errored_token_index + 1 + around)
     tokens_errored_in_tag = []
     for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
         tokens_errored_in_tag.append(get_token_value(token))
         tokens_errored_in_tag.append(get_space_value(space))
 
-    if token_line_start != -1:
-        for token, space in zip(tokens[start:from_token], spaces[start:from_token]):
-            tokens_errored.append(get_token_value(token))
-            tokens_errored.append(get_space_value(space))
-        tokens_errored.append(f'<{error["type"]}>')
-        for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-            tokens_errored.append(get_token_value(token))
-            tokens_errored.append(get_space_value(space))
-        tokens_errored.append(f'</{error["type"]}>')
-        for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
-            tokens_errored.append(get_token_value(token))
-            tokens_errored.append(get_space_value(space))
-    else:
-        for token, space in zip(tokens[start:end], spaces[start:end]):
-            tokens_errored.append(get_token_value(token))
-            tokens_errored.append(get_space_value(space))
-        tokens_errored.append(f'<{error["type"]}>')
-        tokens_errored.append(f'</{error["type"]}>')
+
+    for token, space in zip(tokens[start:from_token], spaces[start:from_token]):
+        tokens_errored.append(get_token_value(token))
+        tokens_errored.append(get_space_value(space))
+    tokens_errored.append(f'<{error["type"]}>')
+    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+        tokens_errored.append(get_token_value(token))
+        tokens_errored.append(get_space_value(space))
+    tokens_errored.append(f'</{error["type"]}>')
+    for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
+        tokens_errored.append(get_token_value(token))
+        tokens_errored.append(get_space_value(space))
+    # else:
+    #     for token, space in zip(tokens[start:end], spaces[start:end]):
+    #         tokens_errored.append(get_token_value(token))
+    #         tokens_errored.append(get_space_value(space))
+    #     tokens_errored.append(f'<{error["type"]}>')
+    #     tokens_errored.append(f'</{error["type"]}>')
 
 
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
@@ -335,6 +345,27 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == 'info':
         folder = sys.argv[2]
         print_max_length_and_vocabulary(folder)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'test':
+        target = '/home/benjaminl/Documents/kth/data/2/spoon'
+        sub_set = 'testing'
+        target_sub_set = f'{target}/{sub_set}'
+        count_diff_size = []
+        for id in tqdm(range(1000)):
+            tokens_errored, tokens_correct, count_diff = whatever('spoon', 'testing', id)
+            save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
+            save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
+            count_diff_size.append(count_diff)
+            # print(count_diff)
+        print(sum([ c == 0 for c in count_diff_size ]))
+    if len(sys.argv) >= 2 and sys.argv[1] == 'test2':
+        target = '/home/benjaminl/Documents/kth/data/2/spoon'
+        sub_set = 'testing'
+        target_sub_set = f'{target}/{sub_set}'
+        id = 93
+        tokens_errored, tokens_correct, count_diff = whatever('spoon', 'testing', id)
+        save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
+        save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
+            # print(count_diff)
 
 def old_ml():
     # k = 20
