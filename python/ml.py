@@ -8,13 +8,15 @@ import os
 import random
 import json
 import sys
+import pprint
 import glob
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
 import matplotlib
+from termcolor import colored
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+from difflib import Differ
+
+pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -336,35 +338,80 @@ def vectorize_file(path, vectorizer):
 
     return result
 
+def is_odd(number):
+    return number % 2 == 0
+
+def print_diff(stringA, stringB):
+    diffs = token_diff(stringA, stringB)
+    count = 0
+    for token in diffs:
+        if token.startswith(' '):
+            print(token[2:], end=' ')
+            count += 1
+        elif token.startswith('-'):
+            if is_odd(count):
+                print(colored(token[2:], 'blue'), end=' ')
+            else:
+                print(colored(token[2:], 'green'), end=' ')
+            count += 1
+
+    count = 0
+    for token in diffs:
+        if token.startswith(' '):
+            print(token[2:], end=' ')
+            count += 1
+        elif token.startswith('+'):
+            if is_odd(count):
+                print(colored(token[2:], 'blue'), end=' ')
+            else:
+                print(colored(token[2:], 'red'), end=' ')
+            count += 1
+    print('')
+
+def token_diff(stringA, stringB):
+    d = Differ()
+    tokensA = stringA.split(' ')
+    tokensB = stringB.split(' ')
+    result = list(d.compare(tokensA, tokensB))
+    return result
+
 def beam_search(target_dir, pred_dir, n=1):
     target_file = open(target_dir, 'r')
     pred_file = open(pred_dir, 'r')
     count = { i:0 for i in range(n)}
     total = 0
     target = target_file.readline()
+    not_predicted = {}
     while target:
         preds = [ pred_file.readline() for i in range(n) ]
         if target in preds:
             count[preds.index(target)] += 1
+        else:
+            not_predicted[target] = preds
+            for pred in preds:
+                print_diff(target, pred)
+            print('')
+            print('')
         total += 1
         target = target_file.readline()
     target_file.close()
     pred_file.close()
-    print({ i:c/total for i,c in count.items() })
-    print(sum(count.values()) / total)
+    pp.pprint({ i:c/total for i,c in count.items() })
+    pp.pprint(sum(count.values()) / total)
+    # pp.pprint(not_predicted)
 
-if __name__ == "__main__":
-    if len(sys.argv) >= 2 and sys.argv[1] == 'gen':
+def main(args):
+    if len(args) >= 2 and args[1] == 'gen':
         target = '/home/benjaminl/Documents/kth/data/2'
-        datasets = sys.argv[2:]
+        datasets = args[2:]
         for dataset in datasets:
             gen_IO(dataset, os.path.join(target, dataset))
-    if len(sys.argv) >= 2 and sys.argv[1] == 'info':
-        folder = sys.argv[2]
+    if len(args) >= 2 and args[1] == 'info':
+        folder = args[2]
         print_max_length_and_vocabulary(folder)
-    if len(sys.argv) == 4 and sys.argv[1] == 'beam':
-        beam_search(sys.argv[2], sys.argv[3], n=int(sys.argv[4]))
-    if len(sys.argv) >= 2 and sys.argv[1] == 'test':
+    if len(args) == 5 and args[1] == 'beam':
+        beam_search(args[2], args[3], n=int(args[4]))
+    if len(args) >= 2 and args[1] == 'test':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
         target_sub_set = f'{target}/{sub_set}'
@@ -376,7 +423,7 @@ if __name__ == "__main__":
             count_diff_size.append(count_diff)
             # print(count_diff)
         print(sum([ c == 0 for c in count_diff_size ]))
-    if len(sys.argv) >= 2 and sys.argv[1] == 'test2':
+    if len(args) >= 2 and args[1] == 'test2':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
         target_sub_set = f'{target}/{sub_set}'
@@ -385,6 +432,9 @@ if __name__ == "__main__":
         save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
         save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
             # print(count_diff)
+
+if __name__ == "__main__":
+    main(sys.argv)
 
 def old_ml():
     # k = 20
