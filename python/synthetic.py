@@ -326,8 +326,8 @@ def run_experiment(dataset_name):
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
     # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
     tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper']
-    # for tool in tqdm(tools, desc='gen'):
-    #     gen_repaired(tool, dir, dataset_metadata)
+    for tool in tqdm(tools, desc='gen'):
+        gen_repaired(tool, dir, dataset_metadata)
 
     repaired = {}
     for tool in tqdm(tools, desc=''):

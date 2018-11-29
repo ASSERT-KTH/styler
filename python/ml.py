@@ -336,6 +336,23 @@ def vectorize_file(path, vectorizer):
 
     return result
 
+def beam_search(target_dir, pred_dir, n=1):
+    target_file = open(target_dir, 'r')
+    pred_file = open(pred_dir, 'r')
+    count = { i:0 for i in range(n)}
+    total = 0
+    target = target_file.readline()
+    while target:
+        preds = [ pred_file.readline() for i in range(n) ]
+        if target in preds:
+            count[preds.index(target)] += 1
+        total += 1
+        target = target_file.readline()
+    target_file.close()
+    pred_file.close()
+    print({ i:c/total for i,c in count.items() })
+    print(sum(count.values()) / total)
+
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == 'gen':
         target = '/home/benjaminl/Documents/kth/data/2'
@@ -345,6 +362,8 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == 'info':
         folder = sys.argv[2]
         print_max_length_and_vocabulary(folder)
+    if len(sys.argv) == 4 and sys.argv[1] == 'beam':
+        beam_search(sys.argv[2], sys.argv[3], n=int(sys.argv[4]))
     if len(sys.argv) >= 2 and sys.argv[1] == 'test':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
