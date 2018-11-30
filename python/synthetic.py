@@ -318,7 +318,7 @@ def get_repaired(tool, dir):
         for file, result in checkstyle_results.items() if len(result['errors']) == 0
     ]
 
-def run_experiment(dataset_name):
+def run_experiment(dataset_name, gen_repaired_files=True):
     experiment_id = dataset_name
     dir = get_experiment_dir(experiment_id)
     ugly_dir = os.path.join(dir, 'ugly')
@@ -326,8 +326,9 @@ def run_experiment(dataset_name):
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
     # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
     tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper']
-    for tool in tqdm(tools, desc='gen'):
-        gen_repaired(tool, dir, dataset_metadata)
+    if gen_repaired_files:
+        for tool in tqdm(tools, desc='gen'):
+            gen_repaired(tool, dir, dataset_metadata)
 
     repaired = {}
     for tool in tqdm(tools, desc=''):
@@ -423,11 +424,14 @@ if __name__ == '__main__':
         for corpus in corpora:
             gen_dataset(corpus, share)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
-        print(sys.argv[2:])
         for dataset in sys.argv[2:]:
             target = get_experiment_dir(dataset)
             if not os.path.exists(target):
                 gen_experiment(dataset)
             run_experiment(dataset)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'exp-cs':
+        for dataset in sys.argv[2:]:
+            target = get_experiment_dir(dataset)
+            run_experiment(dataset, gen_repaired_files=False)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
