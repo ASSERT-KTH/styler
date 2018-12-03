@@ -278,6 +278,9 @@ def gen_experiment(dataset_name):
     target = get_experiment_dir(experiment_id)
     create_dir(target)
     shutil.copy(os.path.join(dir, 'checkstyle.xml'), os.path.join(target, 'checkstyle.xml'))
+    checkstyle_suppressions_file_dir = os.path.join(dir, 'checkstyle-suppressions.xml')
+    if os.path.exists(checkstyle_suppressions_file_dir):
+        shutil.copy(checkstyle_suppressions_file_dir, os.path.join(target, 'checkstyle-suppressions.xml'))
     shutil.copy(os.path.join(dir, 'repo.json'), os.path.join(target, 'metadata.json'))
     ugly_dir = create_dir(os.path.join(target, 'ugly'))
     copy_uglies(os.path.join(dir, 'testing'), ugly_dir)
@@ -344,7 +347,6 @@ def run_experiment(dataset_name, gen_repaired_files=True):
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
-    # print(cmd)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     return output
