@@ -159,7 +159,11 @@ def gen_get_random_file(corpus, numbers):
         shuffle_list = shuffle_list[to:]
     print(values)
     def get_file(goal):
-        return files[random.choice(values[goal])]
+        file = files[random.choice(values[goal])]
+        # check if we can parse the file
+        while not jlu.check_well_formed(file[2]):
+            file = files[random.choice(values[goal])]
+        return file
     return get_file
 
 def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
@@ -170,7 +174,15 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
     done = False
     error = None
     ugly_file = ""
+    max_attepts = 10
+    attepts = 0
     while not done:
+        if attepts >= max_attepts: # it is ugly but it i made in order to avoid the loop to get stuck
+            file =  get_random_corpus_file(goal)
+            file_dir = file[2]
+            file_name = file[0].split('.')[0]
+            attepts = 0
+            continue
         if os.path.exists(folder):
             shutil.rmtree(folder)
         create_dir(folder)
@@ -179,9 +191,11 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         modification = jlu.gen_ugly(file_dir, folder, modification_number=injection_operator_types[injection_operator])
         # print(modification)
         if not jlu.check_well_formed(ugly_file):
+            attepts = attepts + 1
             continue
         cs_result, number_of_errors = checkstyle.check(corpus.checkstyle, ugly_file)
         if number_of_errors != 1:
+            attepts = attepts + 1
             continue
         error = list(cs_result.values())[0]['errors'][0]
         done = True
