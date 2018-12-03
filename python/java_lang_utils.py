@@ -241,6 +241,8 @@ def check_well_formed(file_path):
         return True
     except javalang.parser.JavaSyntaxError:
         return False
+    except:
+        return False
 
 def get_bad_formated(dir):
     bad_formated_files = []
