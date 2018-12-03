@@ -193,7 +193,11 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         if not jlu.check_well_formed(ugly_file):
             attepts = attepts + 1
             continue
-        cs_result, number_of_errors = checkstyle.check(corpus.checkstyle, ugly_file)
+        try:
+            cs_result, number_of_errors = checkstyle.check(corpus.checkstyle, ugly_file)
+        except:
+            attepts = attepts + 1
+            continue
         if number_of_errors != 1:
             attepts = attepts + 1
             continue
