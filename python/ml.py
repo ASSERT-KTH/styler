@@ -45,6 +45,10 @@ def open_json(file):
         return data
     return None
 
+def save_json(dir, file_name, content, sort=False):
+    with open(os.path.join(dir, file_name), 'w') as f:
+        json.dump(content, f, indent=4, sort_keys=sort)
+
 def create_dir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -130,6 +134,8 @@ def build_vocabulary(files):
 def tokenize_errored_file_model2(file, file_orig, error):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
 
+    info = {}
+
     token_started = False
     token_line_start = -1
     token_line_end = -1
@@ -214,12 +220,17 @@ def tokenize_errored_file_model2(file, file_orig, error):
 
     if len(tokens_errored_in_tag) != len(tokens_correct):
         print("WHAAAAATT")
-    count_diff = 0
+    info['count_diff'] = 0
     for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
         if t_A != t_B:
-            count_diff += 1
+            info['count_diff'] += 1
 
-    return tokens_errored, tokens_correct, count_diff
+    info['from_token'] = from_token
+    info['to_token'] = to_token
+    info['start'] = start
+    info['end'] = end
+
+    return tokens_errored, tokens_correct, tokens_errored_in_tag, info
 
 def tokenize_errored_file(file, file_orig, error):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
@@ -264,7 +275,7 @@ def whatever(dataset, folder, id):
 
 def merge_IOs(sub_set, ids, target):
     dir = f'{target}/{sub_set}'
-    for type in ['I', 'O']:
+    for type in ['I', 'O', 'E']:
         with open(os.path.join(target, f'{sub_set}-{type}.txt'), 'w+') as f:
             for id in tqdm(ids, desc=f'merging {type}s...'):
                 f.write(open_file(os.path.join(dir, f'{id}-{type}.txt')))
@@ -319,15 +330,17 @@ def gen_IO(dataset, target):
         synthesis_error_ids = list_folders(sub_set_dir)
         synthesis_error_ids = sorted(synthesis_error_ids, key=int)
         for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
-            tokens_errored, tokens_correct, count_diff = whatever(dataset, sub_set, id)
+            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
             save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
             save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
-            diffs.append(count_diff)
-            if count_diff == 2:
+            save_file(target_sub_set, f'{id}-E.txt', " ".join(tokens_errored_in_tag))
+            save_json(target_sub_set, f'{id}-info.json', info)
+            diffs.append(info['count_diff'])
+            if info['count_diff'] == 2:
                 weirdos.append(f'{sub_set}/{id}')
         merge_IOs(sub_set, synthesis_error_ids, target)
 
-    print(weirdos)
+    # print(weirdos)
 
 def vectorize_file(path, vectorizer):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
@@ -417,21 +430,19 @@ def main(args):
         target_sub_set = f'{target}/{sub_set}'
         count_diff_size = []
         for id in tqdm(range(1000)):
-            tokens_errored, tokens_correct, count_diff = whatever('spoon', 'testing', id)
+            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever('spoon', 'testing', id)
             save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
             save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
-            count_diff_size.append(count_diff)
-            # print(count_diff)
+            count_diff_size.append(info['count_diff'])
         print(sum([ c == 0 for c in count_diff_size ]))
     if len(args) >= 2 and args[1] == 'test2':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
         target_sub_set = f'{target}/{sub_set}'
         id = 93
-        tokens_errored, tokens_correct, count_diff = whatever('spoon', 'testing', id)
+        tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever('spoon', 'testing', id)
         save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
         save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
-            # print(count_diff)
 
 if __name__ == "__main__":
     main(sys.argv)
