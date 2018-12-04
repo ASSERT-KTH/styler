@@ -407,10 +407,13 @@ def check_checkstyle_results(files):
     reports_with_errors = {}
     for file in files:
         content = open_file(file)
-        results = checkstyle.parse_res(content)
-        files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
-        if len(files_with_errors):
-            reports_with_errors[file] = files_with_errors
+        try:
+            results = checkstyle.parse_res(content)
+            files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
+            if len(files_with_errors):
+                reports_with_errors[file] = files_with_errors
+        except:
+            pass
     return reports_with_errors
 
 
@@ -527,7 +530,7 @@ if __name__ == '__main__':
         # repo = open_repo('google', 'auto')
         # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
         commits_data = open_json('./commits.json')
-        reduced_commits_data = { key:commits_data[key] for key in ['facebook_presto']} # 'facebook_presto',
+        reduced_commits_data = commits_data # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
         commits = find_commits(reduced_commits_data)
         pp.pprint(commits)
         for repo_full_name, valid_commits in commits.items():
