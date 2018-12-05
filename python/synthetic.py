@@ -283,6 +283,9 @@ def copy_origs(from_dir, to_dir):
         file.split('/')[-1]
         for file in glob.glob(f'{from_dir}/*/*-orig.java')
     ])
+    if len(origs) > 500:
+        random.seed(a=hash("".join(from_dir.split('/')[-3:-1])))
+        origs = random.sample(origs, k=500)
     for file_name, index in tqdm(with_index(origs), desc='Copy origs', total=len(origs)):
         file_dir = glob.glob(f'{from_dir}/*/{file_name}')[0]
         target = os.path.join(to_dir, str(index))
