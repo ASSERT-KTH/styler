@@ -349,7 +349,7 @@ def run_experiment(dataset_name, gen_repaired_files=True):
     orig_dir = os.path.join(dir, 'orig')
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
     # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
-    tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper']
+    tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper', 'styler']
     if gen_repaired_files:
         for tool in tqdm(tools, desc='gen'):
             gen_repaired(tool, dir, dataset_metadata)

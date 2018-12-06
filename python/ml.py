@@ -11,6 +11,9 @@ import sys
 import pprint
 import glob
 import matplotlib
+import java_lang_utils
+import shutil
+import uuid
 from termcolor import colored
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -413,6 +416,68 @@ def beam_search(target_dir, pred_dir, n=1):
     pp.pprint(sum(count.values()) / total)
     # pp.pprint(not_predicted)
 
+def whitespace_token_to_tuple(token: str) -> tuple:
+    spaces: int = 0
+    new_line: int = 0
+    if 'SP' in token:
+        spaces = int(token.split('_')[0])
+    elif 'NL' in token:
+        new_line = int(token.split('_')[0])
+        if 'DD' in token or 'ID' in token:
+            spaces = int(token.split('_')[2])
+        if 'DD' in token:
+            spaces = -spaces
+
+    return (new_line, spaces)
+
+def de_tokenize(errored_source, error_info, new_tokens):
+    whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
+    from_token = error_info['from_token']
+    to_token = error_info['to_token']
+
+    new_white_space_tokens = new_tokens[1::2]
+    # print(new_white_space_tokens)
+    new_white_space = [ whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
+    # print(new_white_space)
+
+    whitespace[from_token:to_token] = new_white_space
+
+    result = jlu.reformat(whitespace, tokens)
+    return result
+
+def de_tokenize_file(dataset, n, id):
+    # get the tokenization informations
+    tokenized_dir = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
+    tokenized_testing_dir = f'{tokenized_dir}/testing'
+    error_info = open_json(os.path.join(tokenized_testing_dir, f'{id}-info.json'))
+    # Get the errored file
+    synthetic_dir = os.path.join(get_dataset_dir(dataset), f'testing/{id}')
+    errored_file_name = [ file for file in  os.listdir(synthetic_dir) if (file.endswith('.java') and 'orig' not in file ) ][0]
+    errored_source = open_file(os.path.join(synthetic_dir, errored_file_name))
+    # get the new tokens
+    new_tokens_predictions = open_file(os.path.join(tokenized_dir, f'pred_{n}.txt')).split('\n')[(id*n):(id*n + n)]
+
+    tokenized_result = de_tokenize(errored_source, error_info, new_tokens_predictions[0].split(' '))
+
+    return tokenized_result, errored_file_name
+
+def de_tokenize_dataset(dataset, n):
+    target = f'./experiments/ml/{dataset}/styler'
+    for id in [529]:
+    # for id in tqdm(range(1000)):
+        tokenized_result, errored_file_name = de_tokenize_file(dataset, n, id)
+        new_file_folder = os.path.join(target, str(id))
+        create_dir(new_file_folder)
+        save_file(new_file_folder, errored_file_name, tokenized_result)
+    move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
+
+def move_parse_exception_files(from_dir, to_dir):
+    files = java_lang_utils.get_bad_formated(from_dir)
+    create_dir(to_dir)
+    for file in files:
+        shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
+    return files
+
 def main(args):
     if len(args) >= 2 and args[1] == 'gen':
         target = '/home/benjaminl/Documents/kth/data/2'
@@ -422,8 +487,15 @@ def main(args):
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]
         print_max_length_and_vocabulary(folder)
-    if len(args) == 5 and args[1] == 'beam':
-        beam_search(args[2], args[3], n=int(args[4]))
+    if args[1] == 'de-tokenize':
+        de_tokenize_dataset('java-design-patterns', n=5)
+    if len(args) == 4 and args[1] == 'beam':
+        n = int(args[3])
+        dataset = args[2]
+        data_folder = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
+        pred_path = f'{data_folder}/pred_{n}.txt'
+        testing_O_path = f'{data_folder}/testing-O.txt'
+        beam_search(testing_O_path, pred_path, n=n)
     if len(args) >= 2 and args[1] == 'test':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
