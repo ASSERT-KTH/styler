@@ -214,7 +214,7 @@ def tokenize_with_white_space(file_content):
                 # new line
                 whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
                 position_last_line = next_token_position[1]
-    whitespace.append((0,1))
+    whitespace.append((1,0))
     # rewritten = reformat(whitespace, tokens)
     # print(rewritten)
     # return rewritten
