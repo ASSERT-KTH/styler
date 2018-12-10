@@ -337,10 +337,28 @@ def get_checkstyle_results(tool, dir):
 
 def get_repaired(tool, dir):
     checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
-    return [
-        file.split('/')[-2]
-        for file, result in checkstyle_results.items() if len(result['errors']) == 0
-    ]
+    if tool == 'styler':
+        batch_result = {
+            batch:set([
+                file.split('/')[-2]
+                for file, result in checkstyle_results.items()
+                if len(result['errors']) == 0
+                and f'batch_{batch}' == file.split('/')[-3]
+            ])
+            for batch in range(5)
+        }
+        return list(
+            reduce(
+                lambda acc, cur: acc | cur,
+                batch_result.values()
+            )
+        )
+    else:
+        return [
+            file.split('/')[-2]
+            for file, result in checkstyle_results.items()
+            if len(result['errors']) == 0
+        ]
 
 def run_experiment(dataset_name, gen_repaired_files=True):
     experiment_id = dataset_name
