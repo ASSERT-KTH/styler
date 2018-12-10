@@ -1,5 +1,6 @@
 import java_lang_utils as jlu
 import tensorflow as tf
+from functools import reduce
 import numpy as np
 from tensorflow import keras
 from javalang import tokenizer
@@ -164,6 +165,8 @@ def tokenize_errored_file_model2(file, file_orig, error):
             token_started = False
             token_line_end = count
         count += 1
+    start = max(0, start - 2)
+    end = min(len(tokens), end + 2)
     if token_line_end == -1:
         token_line_end = token_line_start
 
@@ -394,27 +397,42 @@ def token_diff(stringA, stringB):
 def beam_search(target_dir, pred_dir, n=1):
     target_file = open(target_dir, 'r')
     pred_file = open(pred_dir, 'r')
-    count = { i:0 for i in range(n)}
+    count = { i:0 for i in range(n) }
+    count_whitepace = { i:0 for i in range(n) }
     total = 0
     target = target_file.readline()
     not_predicted = {}
     while target:
         preds = [ pred_file.readline() for i in range(n) ]
+        select_whitespace = lambda x: " ".join(x.split(' ')[1::2])
+        preds_whitespace = [ select_whitespace(pred) for pred in preds ]
+        target_whitespace = select_whitespace(target)
+        if target_whitespace in preds_whitespace:
+            count_whitepace[preds_whitespace.index(target_whitespace)] += 1
+            if preds_whitespace.index(target_whitespace) != 0:
+                for pred in preds:
+                    print_diff(target, pred)
+                print('')
+                print('')
         if target in preds:
             count[preds.index(target)] += 1
         else:
             not_predicted[target] = preds
-            for pred in preds:
-                print_diff(target, pred)
-            print('')
-            print('')
         total += 1
         target = target_file.readline()
     target_file.close()
     pred_file.close()
     pp.pprint({ i:c/total for i,c in count.items() })
     pp.pprint(sum(count.values()) / total)
+    pp.pprint({ i:c/total for i,c in count_whitepace.items() })
+    pp.pprint(sum(count_whitepace.values()) / total)
+
     # pp.pprint(not_predicted)
+
+def is_whitespace_token(token: str) -> bool:
+    if ( 'SP' in token or 'NL' in token ) and '_' in token:
+        return True
+    return False
 
 def whitespace_token_to_tuple(token: str) -> tuple:
     spaces: int = 0
@@ -457,18 +475,22 @@ def de_tokenize_file(dataset, n, id):
     # get the new tokens
     new_tokens_predictions = open_file(os.path.join(tokenized_dir, f'pred_{n}.txt')).split('\n')[(id*n):(id*n + n)]
 
-    tokenized_result = de_tokenize(errored_source, error_info, new_tokens_predictions[0].split(' '))
+    tokenized_results = [
+        de_tokenize(errored_source, error_info, new_tokens.split(' '))
+        for new_tokens in new_tokens_predictions
+    ]
 
-    return tokenized_result, errored_file_name
+    return tokenized_results, errored_file_name
 
 def de_tokenize_dataset(dataset, n):
     target = f'./experiments/ml/{dataset}/styler'
-    for id in [529]:
-    # for id in tqdm(range(1000)):
-        tokenized_result, errored_file_name = de_tokenize_file(dataset, n, id)
-        new_file_folder = os.path.join(target, str(id))
-        create_dir(new_file_folder)
-        save_file(new_file_folder, errored_file_name, tokenized_result)
+    # for id in [529]:
+    for id in tqdm(range(1000)):
+        tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id)
+        for index in range(n):
+            new_file_folder = os.path.join(target, f'batch_{index}/{id}')
+            create_dir(new_file_folder)
+            save_file(new_file_folder, errored_file_name, tokenized_results[index])
     move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
 
 def move_parse_exception_files(from_dir, to_dir):
@@ -488,7 +510,7 @@ def main(args):
         folder = args[2]
         print_max_length_and_vocabulary(folder)
     if args[1] == 'de-tokenize':
-        de_tokenize_dataset('java-design-patterns', n=5)
+        de_tokenize_dataset(args[2], n=5)
     if len(args) == 4 and args[1] == 'beam':
         n = int(args[3])
         dataset = args[2]
@@ -508,13 +530,15 @@ def main(args):
             count_diff_size.append(info['count_diff'])
         print(sum([ c == 0 for c in count_diff_size ]))
     if len(args) >= 2 and args[1] == 'test2':
-        target = '/home/benjaminl/Documents/kth/data/2/spoon'
+        dataset = 'java-design-patterns'
+        target = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
         sub_set = 'testing'
         target_sub_set = f'{target}/{sub_set}'
-        id = 93
-        tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever('spoon', 'testing', id)
-        save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
-        save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
+        id = 529
+        tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
+        save_file(f'{target}/{sub_set}', f'{id}-I.txt', " ".join(tokens_errored))
+        save_file(f'{target}/{sub_set}', f'{id}-O.txt', " ".join(tokens_correct))
+        save_file(f'{target}/{sub_set}', f'{id}-E.txt', " ".join(tokens_errored_in_tag))
 
 if __name__ == "__main__":
     main(sys.argv)
