@@ -308,6 +308,23 @@ def gen_experiment(dataset_name):
     orig_dir = create_dir(os.path.join(target, 'orig'))
     copy_origs(os.path.join(dir, 'learning'), orig_dir)
 
+def file_has_new_line_at_EOF(file_path):
+    char = b''
+    with open(file_path, 'rb+') as f:
+        f.seek(-1,2)
+        char = f.read()
+    return char == b'\n'
+
+def insert_new_line_at_EOF(dir):
+    files_path = glob.glob(f'{dir}/*/*.java')
+    modified_files = []
+    for file in files_path:
+        if not file_has_new_line_at_EOF(file):
+            modified_files.append(file)
+            with open(file, 'a+') as f:
+                f.write('\n')
+    return modified_files
+
 def gen_repaired(tool, dir, dataset_metadata):
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
@@ -316,6 +333,7 @@ def gen_repaired(tool, dir, dataset_metadata):
     checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
     call_repair_tool(tool, orig_dir, ugly_dir, tool_dir, dataset_metadata)
     parse_exception_files = move_parse_exception_files(tool_dir, bin_dir)
+    insert_new_line_at_EOF(tool_dir)
     return tool, dir
 
 def get_checkstyle_results(tool, dir):
@@ -368,6 +386,7 @@ def run_experiment(dataset_name, gen_repaired_files=True):
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
     # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
     tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper', 'styler']
+    # tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper'] #, 'styler']
     if gen_repaired_files:
         for tool in tqdm(tools, desc='gen'):
             gen_repaired(tool, dir, dataset_metadata)
