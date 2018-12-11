@@ -291,9 +291,23 @@ def analyse_builds(builds):
     result['errored_build_ids'] = errored_build_ids
     return result
 
+def sum_dict(acc, cur):
+    result = acc.copy()
+    for name, value in cur.items():
+        if name in result:
+            result[name] += value
+        else:
+            result[name] = value
+    return result
+
 def print_res(res):
     synthesis = get_synthesis(res)
     pp.pprint(synthesis)
+
+    pp.pprint(reduce(sum_dict, [
+        repo['check_type_count']
+        for repo in synthesis['repo'].values()
+    ]))
     # pp.pprint(set(checks_messages['CustomImportOrder']))
     # print([ key for key, value in checks_messages.items() if len(value) > 5])
 
