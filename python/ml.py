@@ -30,6 +30,9 @@ __protocol = 'protocol1'
 def get_dataset_dir(dataset):
     return f'{__synthetic_dir}/{__protocol}/{dataset}'
 
+def get_tokenized_dir(dataset):
+    return f'/home/benjaminl/Documents/kth/data/2/{dataset}'
+
 def get_sub_set_dir(dataset, sub_set):
     return f'{get_dataset_dir(dataset)}/{sub_set}'
 
@@ -448,6 +451,30 @@ def whitespace_token_to_tuple(token: str) -> tuple:
 
     return (new_line, spaces)
 
+def match_input_to_source(source, error_info, input):
+    whitespace, tokens = jlu.tokenize_with_white_space(source)
+    start = error_info['start']
+    end = error_info['end']
+
+    sub_sequence = tokens[start:end]
+    ws_sub_sequence = whitespace[start:end]
+
+    result = []
+    count = 0
+    ws_count = 0
+    for input_token in input.split(' '):
+        if is_whitespace_token(input_token):
+            result.append((input_token, get_space_value(ws_sub_sequence[ws_count])))
+            ws_count += 1
+        elif input_token.startswith('<') and input_token.endswith('>'):
+            result.append((input_token, input_token))
+        else:
+            result.append((input_token, sub_sequence[count].value))
+            count += 1
+
+
+    return result
+
 def de_tokenize(errored_source, error_info, new_tokens):
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
@@ -463,17 +490,46 @@ def de_tokenize(errored_source, error_info, new_tokens):
     result = jlu.reformat(whitespace, tokens)
     return result
 
-def de_tokenize_file(dataset, n, id):
-    # get the tokenization informations
-    tokenized_dir = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
-    tokenized_testing_dir = f'{tokenized_dir}/testing'
-    error_info = open_json(os.path.join(tokenized_testing_dir, f'{id}-info.json'))
-    # Get the errored file
+def get_predictions(dataset, n, id):
+    tokenized_dir = get_tokenized_dir(dataset)
+    return open_file(os.path.join(tokenized_dir, f'pred_{n}.txt')).split('\n')[(id*n):(id*n + n)]
+
+def get_I(dataset, type, id):
+    tokenized_dir = get_tokenized_dir(dataset)
+    return get_line(os.path.join(tokenized_dir, f'{type}-I.txt'), id)
+
+def get_O(dataset, type, id):
+    tokenized_dir = get_tokenized_dir(dataset)
+    return get_line(os.path.join(tokenized_dir, f'{type}-O.txt'), id)
+
+def get_line(file, line):
+    return open_file(file).split('\n')[line]
+
+def get_error_filename_and_content(dataset, id):
     synthetic_dir = os.path.join(get_dataset_dir(dataset), f'testing/{id}')
     errored_file_name = [ file for file in  os.listdir(synthetic_dir) if (file.endswith('.java') and 'orig' not in file ) ][0]
     errored_source = open_file(os.path.join(synthetic_dir, errored_file_name))
+    return errored_file_name, errored_source
+
+def get_orig_filename_and_content(dataset, id):
+    synthetic_dir = os.path.join(get_dataset_dir(dataset), f'testing/{id}')
+    orig_file_name = [ file for file in  os.listdir(synthetic_dir) if (file.endswith('.java') and 'orig' in file ) ][0]
+    orig_source = open_file(os.path.join(synthetic_dir, orig_file_name))
+    return orig_file_name, orig_source
+
+def get_error_info(dataset, id):
+    tokenized_dir = get_tokenized_dir(dataset)
+    tokenized_testing_dir = f'{tokenized_dir}/testing'
+    error_info = open_json(os.path.join(tokenized_testing_dir, f'{id}-info.json'))
+    return error_info
+
+def de_tokenize_file(dataset, n, id):
+    # get the tokenization informations
+    error_info = get_error_info(dataset, id)
+    # Get the errored file
+    errored_file_name, errored_source = get_error_filename_and_content(dataset, id)
     # get the new tokens
-    new_tokens_predictions = open_file(os.path.join(tokenized_dir, f'pred_{n}.txt')).split('\n')[(id*n):(id*n + n)]
+    new_tokens_predictions = get_predictions(dataset, n, id)
 
     tokenized_results = [
         de_tokenize(errored_source, error_info, new_tokens.split(' '))
@@ -500,6 +556,30 @@ def move_parse_exception_files(from_dir, to_dir):
         shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
     return files
 
+def get_aligned_strings(tokens, n=2):
+    result = ['']*n
+    for t in tokens:
+        l = max([len(e) for e in t])
+        pattern = f'{{:{l}}} '
+        if is_whitespace_token(t[0]):
+            equals = True
+            for token_to_compare in t[1:]:
+                equals = equals and (token_to_compare == t[0])
+            if not equals:
+                pattern = colored(pattern, color='red')
+
+        for i, content in enumerate(t):
+            result[i] = result[i] + pattern.format(content)
+    return result
+
+def print_aligned_strings(strings):
+    line_lenght = int(os.popen('stty size', 'r').read().split()[1])
+    length = max([ len(s) for s in strings])
+    for from_char in range(0,length, line_lenght):
+        for string in strings:
+            print(string[from_char:(from_char + line_lenght)])
+        print()
+
 def main(args):
     if len(args) >= 2 and args[1] == 'gen':
         target = '/home/benjaminl/Documents/kth/data/2'
@@ -518,6 +598,17 @@ def main(args):
         pred_path = f'{data_folder}/pred_{n}.txt'
         testing_O_path = f'{data_folder}/testing-O.txt'
         beam_search(testing_O_path, pred_path, n=n)
+    if len(args) == 5 and args[1] == 'get':
+        n = int(args[3])
+        id = int(args[4])
+        dataset = args[2]
+        input = get_I(dataset, 'testing', id)
+        predictions = get_predictions(dataset, n, id)
+        output = get_O(dataset, 'testing', id)
+        error_info = get_error_info(dataset, id)
+        orig_file_name, orig_source = get_orig_filename_and_content(dataset, id)
+
+        print_aligned_strings(get_aligned_strings(match_input_to_source(orig_source, error_info, input)))
     if len(args) >= 2 and args[1] == 'test':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
         sub_set = 'testing'
@@ -542,43 +633,3 @@ def main(args):
 
 if __name__ == "__main__":
     main(sys.argv)
-
-def old_ml():
-    # k = 20
-    # vectorizer, whitespace_id = build_vocabulary(files)
-    # print(len(whitespace_id))
-    # data = []
-    # for file in files:
-    #     vector = []
-    #     vector = vectorize_file(file, vectorizer)
-    #     for i in range(k, len(vector) - k, 1):
-    #         io = dict()
-    #         io['input'] = np.array(vector[i-k:i+k+1]).copy()
-    #         for i in range(len(whitespace_id)):
-    #             io['input'][k][-1-i] = 0
-    #         ws = vector[i][-len(whitespace_id):]
-    #         i = 0
-    #         j = 0
-    #         for a in ws:
-    #             if j == 0 and a == 1:
-    #                 j = i
-    #             i += 1
-    #         # print(io['input'].shape)
-    #         io['output'] = j
-    #         # print(io['input'])
-    #         data.append(io)
-    # random.shuffle(data)
-    # train_len = int(len(data) * 0.8)
-    # train_data = data[:train_len]
-    # test_data = data[train_len:]
-    # print(f'Train files {train_len}')
-    #
-    # train_input = np.array([d['input'] for d in train_data])
-    # train_labels = np.array([d['output'] for d in train_data])
-    # #
-    # test_input = np.array([d['input'] for d in test_data])
-    # test_labels = np.array([d['output'] for d in test_data])
-    #
-    # print(train_input[0])
-    # tf.app.run()
-    pass
