@@ -148,6 +148,38 @@ def plot_repaired_files(results):
     # Create legend & Show graphic
     plt.legend()
 
+def n_bar_plot(plot_data):
+    counts = plot_data['labels']
+
+    barWidth = 1. / (len(counts) + 1)
+    bars = [ # Transpose
+        [ line[collumn] for line in plot_data['data'].values() ]
+        for collumn in range(len(plot_data['labels']))
+    ]
+
+    labels = list(plot_data['data'].keys())
+
+    r = []
+    r.append(np.arange(len(labels)))
+    for i in range(1,len(counts)):
+        r.append([x + barWidth for x in r[i-1]])
+
+    def with_percentage(bars):
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., 1*height, f'{(height*100):.1f}%', ha='center', va='bottom')
+    # Make the plot
+    for i, count in enumerate(counts):
+        with_percentage(plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count))
+
+    # Add xticks on the middle of the group bars
+    plt.xlabel('Proportion of files repaired', fontweight='bold')
+    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.20)
+    # Create legend & Show graphic
+    plt.legend()
+    plt.show()
+
 def plot_diffs(results):
     modifications = (2,2,2,2,2)
 

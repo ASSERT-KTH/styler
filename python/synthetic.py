@@ -14,7 +14,7 @@ from tqdm import tqdm
 import uuid
 from functools import reduce
 import java_lang_utils
-
+import graph_plot
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -394,14 +394,18 @@ def run_experiment(dataset_name, gen_repaired_files=True):
     repaired = {}
     for tool in tqdm(tools, desc=''):
         repaired[tool] = get_repaired(tool, dir)
+    if 'styler' in tool:
+        print(sorted( set(range(1000)) - set([int(x) for x in repaired['styler']])))
     if 'naturalize_sniper' in tools and 'codebuff_sniper' in tools:
         repaired['loriot_repair'] = list(set(repaired['naturalize_sniper']) | set(repaired['codebuff_sniper']))
     # repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
     # checkstyle_results, number_of_errors = checkstyle_results('naturalize_sniper', dir)
-    pp.pprint({
+    result = {
         key:len(repaired_files)
         for key, repaired_files in repaired.items()
-    })
+    }
+    result['total'] = 1000
+    return result
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
@@ -468,6 +472,9 @@ def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
         except FileNotFoundError:
             print("No file (probably codebuff trash)")
 
+def json_pp(obj):
+    print(json.dumps(obj, indent=4))
+
 def move_parse_exception_files(from_dir, to_dir):
     files = java_lang_utils.get_bad_formated(from_dir)
     create_dir(to_dir)
@@ -490,8 +497,18 @@ if __name__ == '__main__':
                 gen_experiment(dataset)
             run_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp-cs':
+        results = {}
         for dataset in sys.argv[2:]:
             target = get_experiment_dir(dataset)
-            run_experiment(dataset, gen_repaired_files=False)
+            results[dataset] = run_experiment(dataset, gen_repaired_files=False)
+        json_pp(results)
+        graph = {}
+        graph['labels'] = ('naturalize', 'codebuff', 'loriot_repair', 'styler')
+        graph['data'] = {
+            dataset:[ res[label]/res['total'] for label in graph['labels']]
+            for dataset, res in results.items()
+        }
+        json_pp(graph)
+        graph_plot.n_bar_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         summary('spoon')
