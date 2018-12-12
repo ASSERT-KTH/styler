@@ -173,28 +173,32 @@ def tokenize_errored_file_model2(file, file_orig, error):
     if token_line_end == -1:
         token_line_end = token_line_start
 
-    if 'column' in error:
+    # print(error)
+
+    if 'column' in error and error['type'] != 'OneStatementPerLine':
         errored_token_index = -1
-        around = 5
+        around = 10
         for token, index in zip(tokens,range(len(tokens))):
             if token.position[0] <= int(error['line']) and token.position[1] <= int(error['column']):
                 errored_token_index = index
         from_token = max(0, errored_token_index - around)
         to_token = min(len(tokens), errored_token_index + 1 + around)
     else:
-        around = 3
+        around = 2
+        around_after = 13
         errored_token_index = -1
         if token_line_start != -1:
             from_token = max(start, token_line_start - around)
-            to_token = min(end, token_line_end + around + 1)
+            to_token = min(end, token_line_end + around_after + 1)
         else:
             errored_token_index = -1
-            around = 4
+            around = 2
+            around_after = 18
             for token, index in zip(tokens,range(len(tokens))):
-                if token.position[0] <= int(error['line']):
+                if token.position[0] < int(error['line']):
                     errored_token_index = index
             from_token = max(0, errored_token_index - around)
-            to_token = min(len(tokens), errored_token_index + 1 + around)
+            to_token = min(len(tokens), errored_token_index + 1 + around_after)
     tokens_errored_in_tag = []
     for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
         tokens_errored_in_tag.append(get_token_value(token))
@@ -496,11 +500,11 @@ def get_predictions(dataset, n, id):
 
 def get_I(dataset, type, id):
     tokenized_dir = get_tokenized_dir(dataset)
-    return get_line(os.path.join(tokenized_dir, f'{type}-I.txt'), id)
+    return open_file(os.path.join(tokenized_dir, f'{type}/{id}-I.txt'))
 
 def get_O(dataset, type, id):
     tokenized_dir = get_tokenized_dir(dataset)
-    return get_line(os.path.join(tokenized_dir, f'{type}-O.txt'), id)
+    return open_file(os.path.join(tokenized_dir, f'{type}/{id}-O.txt'))
 
 def get_line(file, line):
     return open_file(file).split('\n')[line]
@@ -542,11 +546,14 @@ def de_tokenize_dataset(dataset, n):
     target = f'./experiments/ml/{dataset}/styler'
     # for id in [529]:
     for id in tqdm(range(1000)):
-        tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id)
-        for index in range(n):
-            new_file_folder = os.path.join(target, f'batch_{index}/{id}')
-            create_dir(new_file_folder)
-            save_file(new_file_folder, errored_file_name, tokenized_results[index])
+        try:
+            tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id)
+            for index in range(n):
+                new_file_folder = os.path.join(target, f'batch_{index}/{id}')
+                create_dir(new_file_folder)
+                save_file(new_file_folder, errored_file_name, tokenized_results[index])
+        except:
+            pass
     move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
 
 def move_parse_exception_files(from_dir, to_dir):
@@ -607,7 +614,6 @@ def main(args):
         output = get_O(dataset, 'testing', id)
         error_info = get_error_info(dataset, id)
         orig_file_name, orig_source = get_orig_filename_and_content(dataset, id)
-
         print_aligned_strings(get_aligned_strings(match_input_to_source(orig_source, error_info, input)))
     if len(args) >= 2 and args[1] == 'test':
         target = '/home/benjaminl/Documents/kth/data/2/spoon'
@@ -621,11 +627,11 @@ def main(args):
             count_diff_size.append(info['count_diff'])
         print(sum([ c == 0 for c in count_diff_size ]))
     if len(args) >= 2 and args[1] == 'test2':
-        dataset = 'java-design-patterns'
+        dataset = 'neo4j'
         target = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
         sub_set = 'testing'
         target_sub_set = f'{target}/{sub_set}'
-        id = 529
+        id = 11
         tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
         save_file(f'{target}/{sub_set}', f'{id}-I.txt', " ".join(tokens_errored))
         save_file(f'{target}/{sub_set}', f'{id}-O.txt', " ".join(tokens_correct))
