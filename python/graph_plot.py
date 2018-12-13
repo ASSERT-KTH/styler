@@ -340,6 +340,66 @@ def plot_errors_types(results, counts): # protocol1
     patches = [ mpatches.Patch(color=c, label="{} ({:.2f}%)".format(l.split(".")[-1], total_error_count[l] / sum_total_error_count * 100)) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
 
+def cumulatives_bars(plot_data):
+
+    errors_labels = set()
+    labels = tuple(plot_data['data'].keys())
+
+    for count in plot_data['data'].values():
+        errors_labels = errors_labels | set(count.keys())
+
+    data = plot_data['data']
+
+    layers = {}
+
+    for label in errors_labels:
+        layers[label] = []
+        for name in labels:
+            layers[label].append(data[name].get(label,0))
+
+    n_errors_labels = len(errors_labels)
+    colors = []
+    if ( n_errors_labels > 1):
+        for i in range( 0, n_errors_labels ):
+            colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.3, 0.7), random.uniform(0.3, 0.7)))))
+        random.shuffle(colors)
+    else :
+        colors.append('#ff00ff')
+
+    lables_colors = dict()
+    for i, error_label in enumerate(errors_labels):
+        lables_colors[error_label] = colors[i]
+
+    barWidth = 0.5
+    # Set position of bar on X axis
+    r = []
+    r.append(np.arange(len(data.keys())))
+    # for i in range(1,len(counts)):
+    #     r.append([x + barWidth for x in r[i-1]])
+
+
+    def add_layers_to_the_graph(layers, position):
+        sum = [0] * len(labels)
+        for key, values in layers.items():
+            plt.bar(position, values, width=barWidth, color=lables_colors[key], bottom=sum, edgecolor='white')
+            sum = list(map( lambda x, y: x + y, sum, values))
+        return sum
+    # plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
+    # plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
+    i = 0
+    sums = []
+    sums.append(add_layers_to_the_graph(layers, r[0]))
+
+    # Add xticks on the middle of the group bars
+    plt.xlabel(plot_data['title'], fontweight='bold')
+    plt.xticks( range(len(labels)), labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(top=0.75)
+    plt.subplots_adjust(bottom=0.20)
+    # Create legend & Show graphic
+    patches = [ mpatches.Patch(color=c, label=l.split(".")[-1]) for l, c in lables_colors.items()]
+    plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
+    plt.show()
+
 def plot_errors_types_per_injection_type(results):
     modifications = (2,2,2,2,2)
 
