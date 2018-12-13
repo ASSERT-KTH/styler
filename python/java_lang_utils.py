@@ -184,13 +184,16 @@ def open_file(file_path):
         content = f.read()
     return content
 
-def reformat(whitespace, tokens):
+def reformat(whitespace, tokens, tabulations=False):
     result = ''
     position = 0
     for ws, t in zip(whitespace, tokens):
         if ws[0] > 0:
             position += ws[1]
-            result += str(t.value) + "\n" * ws[0] + " " * position
+            if tabulations:
+                result += str(t.value) + "\n" * ws[0] + "\t" * position
+            else:
+                result += str(t.value) + "\n" * ws[0] + " " * position
         else:
             result += str(t.value) + " " * ws[1]
     return result

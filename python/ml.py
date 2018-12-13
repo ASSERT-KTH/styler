@@ -479,7 +479,7 @@ def match_input_to_source(source, error_info, input):
 
     return result
 
-def de_tokenize(errored_source, error_info, new_tokens):
+def de_tokenize(errored_source, error_info, new_tokens, tabulations):
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
     to_token = error_info['to_token']
@@ -491,7 +491,7 @@ def de_tokenize(errored_source, error_info, new_tokens):
 
     whitespace[from_token:to_token] = new_white_space
 
-    result = jlu.reformat(whitespace, tokens)
+    result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
     return result
 
 def get_predictions(dataset, n, id):
@@ -534,9 +534,11 @@ def de_tokenize_file(dataset, n, id):
     errored_file_name, errored_source = get_error_filename_and_content(dataset, id)
     # get the new tokens
     new_tokens_predictions = get_predictions(dataset, n, id)
-
+    tabulations = False
+    if dataset == 'spoon':
+        tabulations = True
     tokenized_results = [
-        de_tokenize(errored_source, error_info, new_tokens.split(' '))
+        de_tokenize(errored_source, error_info, new_tokens.split(' '), tabulations)
         for new_tokens in new_tokens_predictions
     ]
 
