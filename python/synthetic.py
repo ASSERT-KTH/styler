@@ -538,7 +538,7 @@ if __name__ == '__main__':
         results = {}
         for dataset in sys.argv[2:]:
             results[dataset] = check_token_length(dataset)
-        json_pp(results)
+        save_json('./', 'check.json',results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         results = {}
         for dataset in sys.argv[2:]:
