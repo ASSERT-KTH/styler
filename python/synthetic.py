@@ -24,12 +24,13 @@ class Synthetic_Checkstyle_Error:
     def __init__(self, dir):
         self.dir = dir
         self.id = int(dir.split('/')[-1])
+        self.type = dir.split('/')[-2]
         self.metadata = None
         self.original = None
         self.errored = None
         self.file_name = glob.glob(f'{self.dir}/*.java')[0].split('/')[-1].split('.')[0]
         if 'orig' in self.file_name:
-             self.file_name[:-5]
+             self.file_name = self.file_name[:-5]
 
     def get_metadata(self):
         if not self.metadata:
@@ -82,14 +83,23 @@ def get_experiment_dir(id):
 def get_dir(dir):
     return os.path.join(__base_dir, dir)
 
+__protocol = 'protocol1'
+
 def get_repo_dir(repo):
-    return get_dir(f'./dataset/protocol1/{repo}')
+    return get_dir(f'./dataset/{__protocol}/{repo}')
 
 def get_repo_type_dir(repo, type):
-    return get_dir(f'./dataset/protocol1/{repo}/{type}')
+    return get_dir(f'./dataset/{__protocol}/{repo}/{type}')
 
 def get_synthetic_error_dir(repo, type, id):
     return get_dir(f'{get_repo_dir(repo)}/{type}/{id}')
+
+def list_errors(repo):
+    types = ('learning', 'validation', 'testing')
+    result = []
+    for type in types:
+        result += [ get_synthetic_error_dir(repo, type, element) for element in list_elements(repo, type) ]
+    return result
 
 def list_elements(repo, type):
     dir = get_repo_type_dir(repo, type)
@@ -243,16 +253,30 @@ def map_and_count(reducer, data):
 
 
 def load_repo(repo):
-    return [ Synthetic_Checkstyle_Error('spoon', synthetic_error) for synthetic_error in list_elements(repo) ]
+    return [ Synthetic_Checkstyle_Error(synthetic_error) for synthetic_error in list_errors(repo) ]
+
+def check_token_length(repo):
+    synthetic_errors = load_repo(repo)
+    not_good = []
+    for error in tqdm(synthetic_errors, desc=dataset):
+        spaces_original, tokens_original = jlu.tokenize_with_white_space(error.get_original())
+        spaces_errored, tokens_errored = jlu.tokenize_with_white_space(error.get_errored())
+        if len(tokens_original) != len(tokens_errored):
+            not_good.append({ 'type': error.type, 'id': error.id })
+    return not_good
 
 def summary(repo):
     synthetic_errors = load_repo(repo)
+    for error in synthetic_errors:
+        if error.get_metadata()['type'] == 'EmptyBlock':
+            print(error.dir)
     results = {}
     results['type_count'] = map_and_count(lambda x: x.get_metadata()['type'], synthetic_errors)
     results['operator_count'] = map_and_count(lambda x: x.get_metadata()['injection_operator'], synthetic_errors)
     results['file_count'] = map_and_count(lambda x: x.file_name, synthetic_errors)
-    print(results)
+    # print(results)
     save_json(get_repo_dir(repo), 'stats.json', results)
+    return results
 
 ###  Experiment ####
 
@@ -510,5 +534,17 @@ if __name__ == '__main__':
         }
         json_pp(graph)
         graph_plot.n_bar_plot(graph)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'check':
+        results = {}
+        for dataset in sys.argv[2:]:
+            results[dataset] = check_token_length(dataset)
+        json_pp(results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
-        summary('spoon')
+        results = {}
+        for dataset in sys.argv[2:]:
+            results[dataset] = summary(dataset)
+        error_types = {
+            dataset:summary['type_count']
+            for dataset, summary in results.items()
+        }
+        graph_plot.cumulatives_bars({'data': error_types, 'title': 'Number of error type per dataset'})
