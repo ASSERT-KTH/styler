@@ -173,7 +173,8 @@ def n_bar_plot(plot_data):
         with_percentage(plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count))
 
     # Add xticks on the middle of the group bars
-    plt.xlabel('Proportion of files repaired', fontweight='bold')
+    plt.xlabel(plot_data.get('x_label', ''))
+    plt.ylabel(plot_data.get('y_label', ''))
     plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
     plt.subplots_adjust(bottom=0.20)
     # Create legend & Show graphic

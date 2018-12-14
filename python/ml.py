@@ -63,7 +63,6 @@ def create_dir(dir):
 def list_folders(dir):
     return [ folder for folder in os.listdir(dir) if os.path.isdir(os.path.join(dir, folder)) ]
 
-files = open_file('./ml_files.txt').split('\n')[:100]
 
 def get_token_value(token):
     if isinstance(token, tokenizer.Keyword):

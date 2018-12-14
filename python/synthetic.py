@@ -26,11 +26,28 @@ class Synthetic_Checkstyle_Error:
         self.id = int(dir.split('/')[-1])
         self.type = dir.split('/')[-2]
         self.metadata = None
+        self.diff = None
         self.original = None
         self.errored = None
         self.file_name = glob.glob(f'{self.dir}/*.java')[0].split('/')[-1].split('.')[0]
         if 'orig' in self.file_name:
              self.file_name = self.file_name[:-5]
+
+    def get_diff(self):
+        if not self.diff:
+            self.load_diff()
+        return self.diff
+
+    def get_count(self):
+        diff = self.get_diff()
+        plus = 0
+        minus = 0
+        for line in diff.split('\n'):
+            if line.startswith('> '):
+                plus += 1
+            if line.startswith('< '):
+                minus += 1
+        return max(plus, minus)
 
     def get_metadata(self):
         if not self.metadata:
@@ -47,6 +64,9 @@ class Synthetic_Checkstyle_Error:
             self.load_errored()
         return self.errored
 
+    def get_diff_path(self):
+        return f'{self.dir}/diff.diff'
+
     def get_errored_path(self):
         return f'{self.dir}/{self.file_name}.java'
 
@@ -55,6 +75,9 @@ class Synthetic_Checkstyle_Error:
 
     def get_metadata_path(self):
         return f'{self.dir}/metadata.json'
+
+    def load_diff(self):
+        self.diff = open_file(self.get_diff_path())
 
     def load_metadata(self):
         self.metadata = open_json(self.get_metadata_path())
@@ -262,7 +285,7 @@ def check_token_length(repo):
         spaces_original, tokens_original = jlu.tokenize_with_white_space(error.get_original())
         spaces_errored, tokens_errored = jlu.tokenize_with_white_space(error.get_errored())
         if len(tokens_original) != len(tokens_errored):
-            not_good.append({ 'type': error.type, 'id': error.id })
+            not_good.append({ 'type': error.type, 'id': error.id, 'error': error.get_metadata()['type'] })
     return not_good
 
 def summary(repo):
@@ -522,12 +545,19 @@ if __name__ == '__main__':
             run_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp-cs':
         results = {}
-        for dataset in sys.argv[2:]:
+        if sys.argv[2] == 'all':
+            dataset_list = list_folders(get_experiment_dir(''))
+        else:
+            dataset_list = sys.argv[2:]
+
+        for dataset in dataset_list:
             target = get_experiment_dir(dataset)
             results[dataset] = run_experiment(dataset, gen_repaired_files=False)
         json_pp(results)
         graph = {}
         graph['labels'] = ('naturalize', 'codebuff', 'loriot_repair', 'styler')
+        graph['x_label'] = ''
+        graph['y_label'] = 'Proportion of repaired file'
         graph['data'] = {
             dataset:[ res[label]/res['total'] for label in graph['labels']]
             for dataset, res in results.items()
@@ -541,7 +571,12 @@ if __name__ == '__main__':
         save_json('./', 'check.json',results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         results = {}
-        for dataset in sys.argv[2:]:
+        if sys.argv[2] == 'all':
+            dataset_list = list_folders(get_repo_dir(''))
+        else:
+            dataset_list = sys.argv[2:]
+
+        for dataset in dataset_list:
             results[dataset] = summary(dataset)
         error_types = {
             dataset:summary['type_count']
