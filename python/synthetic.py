@@ -425,6 +425,24 @@ def get_repaired(tool, dir):
             if len(result['errors']) == 0
         ]
 
+def compute_diff_size(experiment_id, dataset, tool):
+    dir = os.path.join(get_experiment_dir(experiment_id), tool)
+    original_dir = os.path.join(get_repo_dir(dataset), 'testing')
+    repaired_files = get_repaired(tool, get_experiment_dir(experiment_id))
+    total_sum = 0
+    if tool == 'loriot_repair':
+        repaired_files_codebuff_sniper = get_repaired('codebuff_sniper', get_experiment_dir(experiment_id))
+        repaired_files_naturalize_sniper = get_repaired('naturalize_sniper', get_experiment_dir(experiment_id))
+
+    else:
+        for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
+            new_file_path = glob.glob(f'{dir}/{file_id}/*.java')[0]
+            original_file_path = glob.glob(f'{original_dir}/{file_id}/*-orig.java')[0]
+            # print(new_file_path, original_file_path)
+            diffs = java_lang_utils.compute_diff_size(new_file_path, original_file_path)
+            total_sum += diffs
+    return total_sum
+
 def run_experiment(dataset_name, gen_repaired_files=True):
     experiment_id = dataset_name
     dir = get_experiment_dir(experiment_id)
@@ -447,12 +465,17 @@ def run_experiment(dataset_name, gen_repaired_files=True):
         repaired['loriot_repair'] = list(set(repaired['naturalize_sniper']) | set(repaired['codebuff_sniper']))
     # repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
     # checkstyle_results, number_of_errors = checkstyle_results('naturalize_sniper', dir)
+    # diff = {
+    #     tool:compute_diff_size(experiment_id, dataset_name, tool)
+    #     for tool, repaired_files in repaired.items() if tool not in ['styler', 'loriot_repair']
+    # }
+
     result = {
         key:len(repaired_files)
         for key, repaired_files in repaired.items()
     }
     result['total'] = 1000
-    return result
+    return result, diff
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
@@ -545,6 +568,7 @@ if __name__ == '__main__':
             run_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp-cs':
         results = {}
+        diff = {}
         if sys.argv[2] == 'all':
             dataset_list = list_folders(get_experiment_dir(''))
         else:
@@ -552,10 +576,11 @@ if __name__ == '__main__':
 
         for dataset in dataset_list:
             target = get_experiment_dir(dataset)
-            results[dataset] = run_experiment(dataset, gen_repaired_files=False)
-        json_pp(results)
+            results[dataset], diff[dataset] = run_experiment(dataset, gen_repaired_files=False)
+        # json_pp(diff)
+        # Graph
         graph = {}
-        graph['labels'] = ('naturalize', 'codebuff', 'loriot_repair', 'styler')
+        graph['labels'] = ('naturalize', 'codebuff', 'styler')
         graph['x_label'] = ''
         graph['y_label'] = 'Proportion of repaired file'
         graph['data'] = {
