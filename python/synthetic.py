@@ -234,6 +234,11 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         if number_of_errors != 1:
             attepts = attepts + 1
             continue
+        spaces_original, tokens_original = jlu.tokenize_with_white_space(file)
+        spaces_errored, tokens_errored = jlu.tokenize_with_white_space(ugly_file)
+        if len(tokens_original) != len(tokens_errored):
+            attepts = attepts + 1
+            continue
         error = list(cs_result.values())[0]['errors'][0]
         done = True
 
