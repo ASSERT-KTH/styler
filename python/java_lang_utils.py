@@ -260,7 +260,7 @@ def compute_diff_size(file_A, file_B):
     cmd = 'diff {} {}'.format(file_A, file_B)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output.count(b'\n>')
+    return output.count(b'\n>') + output.count(b'\n<')
 
 if __name__ == "__main__":
     if (sys.argv[1] == "char_pos"):

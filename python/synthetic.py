@@ -405,20 +405,23 @@ def get_checkstyle_results(tool, dir):
         save_json(dir, file_name, results_json)
     return results_json['checkstyle_results'], results_json['number_of_errors']
 
+def get_batch_results(checkstyle_results):
+    return {
+        batch:set([
+            file.split('/')[-2]
+            for file, result in checkstyle_results.items()
+            if len(result['errors']) == 0
+            and f'batch_{batch}' == file.split('/')[-3]
+        ])
+        for batch in range(5)
+    }
+
 def get_repaired(tool, dir):
     if not os.path.exists(f'{dir}/{tool}'):
         return []
     checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
     if tool == 'styler':
-        batch_result = {
-            batch:set([
-                file.split('/')[-2]
-                for file, result in checkstyle_results.items()
-                if len(result['errors']) == 0
-                and f'batch_{batch}' == file.split('/')[-3]
-            ])
-            for batch in range(5)
-        }
+        batch_result = get_batch_results(checkstyle_results)
         return list(
             reduce(
                 lambda acc, cur: acc | cur,
@@ -433,22 +436,64 @@ def get_repaired(tool, dir):
         ]
 
 def compute_diff_size(experiment_id, dataset, tool):
-    dir = os.path.join(get_experiment_dir(experiment_id), tool)
+    experiment_dir = get_experiment_dir(experiment_id)
+    json_file_name = f'diff_results_{tool}.json'
+    json_path = os.path.join(experiment_dir, json_file_name)
+    if os.path.exists(json_path):
+        return open_json(json_path)
+
+    dir = os.path.join(experiment_dir, tool)
     original_dir = os.path.join(get_repo_dir(dataset), 'testing')
-    repaired_files = get_repaired(tool, get_experiment_dir(experiment_id))
-    total_sum = 0
+    repaired_files = get_repaired(tool, experiment_dir)
+    diffs = []
+
+    def get_orig(original_dir, file_id):
+        return [
+            path
+            for path in glob.glob(f'{original_dir}/{file_id}/*.java')
+            if 'orig' not in path
+        ][0]
+
     if tool == 'loriot_repair':
-        repaired_files_codebuff_sniper = get_repaired('codebuff_sniper', get_experiment_dir(experiment_id))
-        repaired_files_naturalize_sniper = get_repaired('naturalize_sniper', get_experiment_dir(experiment_id))
+        repaired_files_codebuff_sniper = get_repaired('codebuff_sniper', experiment_dir)
+        repaired_files_naturalize_sniper = get_repaired('naturalize_sniper', experiment_dir)
+        dir_codebuff_sniper = os.path.join(get_experiment_dir(experiment_id), 'codebuff_sniper')
+        dir_naturalize_sniper = os.path.join(get_experiment_dir(experiment_id), 'naturalize_sniper')
+        repaired_files = list(set(repaired_files_naturalize_sniper) | set(repaired_files_codebuff_sniper))
+        for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
+            original_file_path = get_orig(original_dir, file_id)
+            diffs_count = sys.maxsize
+            if file_id in repaired_files_codebuff_sniper:
+                new_file_path = glob.glob(f'{dir_codebuff_sniper}/{file_id}/*.java')[0]
+                diffs_count = min(java_lang_utils.compute_diff_size(new_file_path, original_file_path), diffs_count)
+            if file_id in repaired_files_naturalize_sniper:
+                new_file_path = glob.glob(f'{dir_naturalize_sniper}/{file_id}/*.java')[0]
+                diffs_count = min(java_lang_utils.compute_diff_size(new_file_path, original_file_path), diffs_count)
+            diffs += [diffs_count]
+    elif tool == 'styler':
+        checkstyle_results, number_of_errors = get_checkstyle_results(tool, experiment_dir)
+        batch_result = get_batch_results(checkstyle_results)
+        batch_size = len(batch_result)
+        for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
+            original_file_path = get_orig(original_dir, file_id)
+            diffs_count = sys.maxsize
+            for batch_id in range(batch_size):
+                if file_id in batch_result[batch_id]:
+                    new_file_path = glob.glob(f'{dir}/batch_{batch_id}/{file_id}/*.java')[0]
+                    diffs_count = min(java_lang_utils.compute_diff_size(new_file_path, original_file_path), diffs_count)
+            diffs += [diffs_count]
 
     else:
         for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
             new_file_path = glob.glob(f'{dir}/{file_id}/*.java')[0]
-            original_file_path = glob.glob(f'{original_dir}/{file_id}/*-orig.java')[0]
+            original_file_path = get_orig(original_dir, file_id)
             # print(new_file_path, original_file_path)
-            diffs = java_lang_utils.compute_diff_size(new_file_path, original_file_path)
-            total_sum += diffs
-    return total_sum
+            diffs_count = java_lang_utils.compute_diff_size(new_file_path, original_file_path)
+            diffs += [diffs_count]
+
+    save_json(experiment_dir, json_file_name, diffs)
+
+    return diffs
 
 def run_experiment(dataset_name, gen_repaired_files=True):
     experiment_id = dataset_name
@@ -472,17 +517,20 @@ def run_experiment(dataset_name, gen_repaired_files=True):
         repaired['loriot_repair'] = list(set(repaired['naturalize_sniper']) | set(repaired['codebuff_sniper']))
     # repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
     # checkstyle_results, number_of_errors = checkstyle_results('naturalize_sniper', dir)
-    # diff = {
-    #     tool:compute_diff_size(experiment_id, dataset_name, tool)
-    #     for tool, repaired_files in repaired.items() if tool not in ['styler', 'loriot_repair']
-    # }
 
     result = {
         key:len(repaired_files)
         for key, repaired_files in repaired.items()
     }
     result['total'] = 1000
-    return result, diff
+    return result
+
+def get_diff_dataset(experiment_id, tools):
+    dataset_name = experiment_id
+    return {
+        tool:compute_diff_size(experiment_id, dataset_name, tool)
+        for tool in tools # if tool not in ['styler']
+    }
 
 def call_java(jar, args):
     cmd = "java -jar {} {}".format(jar, " ".join(args))
@@ -560,6 +608,11 @@ def move_parse_exception_files(from_dir, to_dir):
     return files
 
 if __name__ == '__main__':
+    if sys.argv[2] == 'all':
+        dataset_list = list_folders(get_repo_dir(''))
+    else:
+        dataset_list = sys.argv[2:]
+
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = []
         for corpus in sys.argv[2:]:
@@ -568,22 +621,15 @@ if __name__ == '__main__':
         for corpus in corpora:
             gen_dataset(corpus, share)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
-        for dataset in sys.argv[2:]:
+        for dataset in dataset_list:
             target = get_experiment_dir(dataset)
             if not os.path.exists(target):
                 gen_experiment(dataset)
             run_experiment(dataset)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp-cs':
         results = {}
-        diff = {}
-        if sys.argv[2] == 'all':
-            dataset_list = list_folders(get_experiment_dir(''))
-        else:
-            dataset_list = sys.argv[2:]
-
         for dataset in dataset_list:
-            target = get_experiment_dir(dataset)
-            results[dataset], diff[dataset] = run_experiment(dataset, gen_repaired_files=False)
+            results[dataset] = run_experiment(dataset, gen_repaired_files=False)
         # json_pp(diff)
         # Graph
         graph = {}
@@ -596,6 +642,22 @@ if __name__ == '__main__':
         }
         json_pp(graph)
         graph_plot.n_bar_plot(graph)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'diff':
+        diff = {}
+        tools = ('naturalize', 'codebuff', 'loriot_repair', 'styler')
+        for dataset in tqdm(dataset_list, desc='Diff datasets'):
+            diff[dataset] = get_diff_dataset(dataset, tools)
+        graph = {}
+        graph['sub_labels'] = tools
+        graph['labels'] = dataset_list
+        graph['x_label'] = ''
+        graph['y_label'] = 'Proportion of repaired file'
+        graph['data'] = {
+            dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }
+            for dataset, res in diff.items()
+        }
+        json_pp(graph)
+        graph_plot.boxplot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'check':
         results = {}
         for dataset in sys.argv[2:]:
@@ -603,11 +665,6 @@ if __name__ == '__main__':
         save_json('./', 'check.json',results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         results = {}
-        if sys.argv[2] == 'all':
-            dataset_list = list_folders(get_repo_dir(''))
-        else:
-            dataset_list = sys.argv[2:]
-
         for dataset in dataset_list:
             results[dataset] = summary(dataset)
         error_types = {

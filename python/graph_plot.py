@@ -373,7 +373,9 @@ def cumulatives_bars(plot_data):
 
     barWidth = 0.5
     # Set position of bar on X axis
-    r = []
+    r = [
+
+    ]
     r.append(np.arange(len(data.keys())))
     # for i in range(1,len(counts)):
     #     r.append([x + barWidth for x in r[i-1]])
@@ -400,6 +402,63 @@ def cumulatives_bars(plot_data):
     patches = [ mpatches.Patch(color=c, label=l.split(".")[-1]) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
+
+def boxplot(plot_data):
+    labels = plot_data['labels']
+    sub_labels = plot_data['sub_labels']
+    vert = plot_data.get('vert', False)
+
+    boxWidth = 1. / (len(sub_labels) + 1)
+
+    r = []
+    r.append(list(np.arange(len(labels))))
+    for i in range(1,len(sub_labels)):
+        r.append([x + boxWidth for x in r[i-1]])
+    r = sorted(reduce(list.__add__,r))
+
+    data = []
+    for data_list in plot_data['data'].values():
+        for label in sub_labels:
+            data += [data_list[label]]
+    fig7, ax7 = plt.subplots()
+    bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels))
+    colors = ['pink', 'lightblue', 'lightgreen', 'red']
+    for patch, color in zip(bplot['boxes'], colors  * len(labels)):
+        patch.set_facecolor(color)
+    patches = [ mpatches.Patch(color=c, label=l) for l, c in zip(sub_labels, colors)]
+    plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True)
+    if vert:
+        plt.xticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
+    else:
+        plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
+
+    plt.show()
+
+# def boxplot(plot_data):
+#     labels = plot_data['labels']
+#     sub_labels = plot_data['sub_labels']
+#     vert = plot_data.get('vert', False)
+#
+#     boxWidth = 1. / (len(sub_labels) + 1)
+#
+#     r = []
+#     r.append(list(np.arange(len(labels))))
+#     for i in range(1,len(sub_labels)):
+#         r.append([x + boxWidth for x in r[i-1]])
+#
+#     data = [ [] for i in range(len(sub_labels)) ]
+#     fig, axes = plt.subplots(nrows=1, ncols=len(sub_labels))
+#     for data_list in plot_data['data'].values():
+#         for index, label in enumerate(sub_labels):
+#             data[index] += [data_list[label]]
+#     for index in range(len(sub_labels)):
+#         axes[index].boxplot(data[index], positions=r[index], widths=boxWidth*0.8, vert=vert, patch_artist=True)
+#     if vert:
+#         plt.xticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
+#     else:
+#         plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
+#
+#     plt.show()
 
 def plot_errors_types_per_injection_type(results):
     modifications = (2,2,2,2,2)
