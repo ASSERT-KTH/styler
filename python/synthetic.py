@@ -378,6 +378,8 @@ def insert_new_line_at_EOF(dir):
     return modified_files
 
 def gen_repaired(tool, dir, dataset_metadata):
+    if tool == 'styler':
+        return tool, dir
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
     bin_dir = os.path.join(dir, 'bin')
@@ -390,8 +392,6 @@ def gen_repaired(tool, dir, dataset_metadata):
 
 def get_checkstyle_results(tool, dir):
     tool_dir = os.path.join(dir, tool)
-    ugly_dir = os.path.join(dir, 'ugly')
-    orig_dir = os.path.join(dir, 'orig')
     file_name = f'checkstyle_results_{tool}.json'
     file_dir = f'{dir}/{file_name}'
     results_json = {}
@@ -406,6 +406,8 @@ def get_checkstyle_results(tool, dir):
     return results_json['checkstyle_results'], results_json['number_of_errors']
 
 def get_repaired(tool, dir):
+    if not os.path.exists(f'{dir}/{tool}'):
+        return []
     checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
     if tool == 'styler':
         batch_result = {
