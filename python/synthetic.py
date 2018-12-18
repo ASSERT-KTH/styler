@@ -635,28 +635,33 @@ if __name__ == '__main__':
         graph = {}
         graph['labels'] = ('naturalize', 'codebuff', 'styler')
         graph['x_label'] = ''
-        graph['y_label'] = 'Proportion of repaired file'
+        graph['y_label'] = 'Proportion of repaired files'
         graph['data'] = {
             dataset:[ res[label]/res['total'] for label in graph['labels']]
             for dataset, res in results.items()
         }
+        if 'java-design-patterns' in graph['data']:
+            graph['data']['jdp'] = graph['data']['java-design-patterns'].copy()
+            del graph['data']['java-design-patterns']
         json_pp(graph)
         graph_plot.n_bar_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'diff':
         diff = {}
-        tools = ('naturalize', 'codebuff', 'loriot_repair', 'styler')
+        tools = ('naturalize', 'codebuff', 'styler')
         for dataset in tqdm(dataset_list, desc='Diff datasets'):
             diff[dataset] = get_diff_dataset(dataset, tools)
         graph = {}
         graph['sub_labels'] = tools
-        graph['labels'] = dataset_list
-        graph['x_label'] = ''
-        graph['y_label'] = 'Proportion of repaired file'
+        graph['colors'] = ['pink', 'lightblue', 'red']
+        graph['x_label'] = 'Diff size'
         graph['data'] = {
             dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }
             for dataset, res in diff.items()
         }
-        json_pp(graph)
+        if 'java-design-patterns' in graph['data']:
+            graph['data']['jdp'] = graph['data']['java-design-patterns'].copy()
+            del graph['data']['java-design-patterns']
+        pp.pprint(list(graph['data'].keys()))
         graph_plot.boxplot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'check':
         results = {}

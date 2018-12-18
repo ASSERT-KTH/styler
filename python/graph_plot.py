@@ -148,8 +148,13 @@ def plot_repaired_files(results):
     # Create legend & Show graphic
     plt.legend()
 
+def avg(l):
+    return sum(l)/len(l)
+
 def n_bar_plot(plot_data):
     counts = plot_data['labels']
+
+    plot_average = True
 
     barWidth = 1. / (len(counts) + 1)
     bars = [ # Transpose
@@ -159,8 +164,20 @@ def n_bar_plot(plot_data):
 
     labels = list(plot_data['data'].keys())
 
+    if plot_average:
+        print(bars)
+        bars = [
+            numbers + [avg(numbers)]
+            for numbers in bars
+        ]
+        labels += ['average']
+        print(labels)
+
+
     r = []
-    r.append(np.arange(len(labels)))
+    r.append(list(np.arange(len(labels))))
+    if plot_average:
+        r[0][-1] += 0.5
     for i in range(1,len(counts)):
         r.append([x + barWidth for x in r[i-1]])
 
@@ -175,8 +192,9 @@ def n_bar_plot(plot_data):
     # Add xticks on the middle of the group bars
     plt.xlabel(plot_data.get('x_label', ''))
     plt.ylabel(plot_data.get('y_label', ''))
-    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
-    plt.subplots_adjust(bottom=0.20)
+    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in r[0]], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.10, left=0.05, right=0.99, top=0.99)
+
     # Create legend & Show graphic
     plt.legend()
     plt.show()
@@ -404,9 +422,10 @@ def cumulatives_bars(plot_data):
     plt.show()
 
 def boxplot(plot_data):
-    labels = plot_data['labels']
+    labels = tuple(plot_data['data'].keys())
     sub_labels = plot_data['sub_labels']
     vert = plot_data.get('vert', False)
+    colors = plot_data['colors']
 
     boxWidth = 1. / (len(sub_labels) + 1)
 
@@ -422,7 +441,6 @@ def boxplot(plot_data):
             data += [data_list[label]]
     fig7, ax7 = plt.subplots()
     bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels))
-    colors = ['pink', 'lightblue', 'lightgreen', 'red']
     for patch, color in zip(bplot['boxes'], colors  * len(labels)):
         patch.set_facecolor(color)
     patches = [ mpatches.Patch(color=c, label=l) for l, c in zip(sub_labels, colors)]
@@ -431,7 +449,8 @@ def boxplot(plot_data):
         plt.xticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
     else:
         plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
-
+    plt.xlabel(plot_data.get('x_label', ''))
+    plt.ylabel(plot_data.get('y_label', ''))
     plt.show()
 
 # def boxplot(plot_data):
