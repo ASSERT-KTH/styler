@@ -478,7 +478,7 @@ def has_commit(repo, sha):
 def find_commits(commits_data):
     result = {}
     for repo_full_name, commits in tqdm(commits_data.items()):
-        user, repo_name = repo_full_name.split('_')
+        user, repo_name = repo_full_name.split('/')
         repo = open_repo(user, repo_name)
         result[repo_full_name] = []
         for commit in commits.values():
@@ -555,7 +555,7 @@ if __name__ == '__main__':
         commits = find_commits(reduced_commits_data)
         pp.pprint(commits)
         for repo_full_name, valid_commits in commits.items():
-            user, repo_name = repo_full_name.split('_')
+            user, repo_name = repo_full_name.split('/')
             repo = open_repo(user, repo_name)
             for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
                 maven_checkstyle(repo, commit)
