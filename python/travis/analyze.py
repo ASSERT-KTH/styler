@@ -486,6 +486,45 @@ def find_commits(commits_data):
                 result[repo_full_name].append(commit)
     return result
 
+def if_not_null(data, f):
+    if data:
+        return f(data)
+    return None
+
+def unique(array, key):
+    seen = set()
+    return [seen.add(key(obj)) or obj for obj in array if key(obj) not in seen and key(obj) != None]
+
+def count(array):
+    result = {}
+    for i in array:
+        if i not in result:
+            result[i] = 0
+        result[i] += 1
+    return result
+
+def safe_get_first(l):
+    if len(l) > 0:
+        return l[0]
+    else:
+        return None
+
+def load_errors_info():
+    filepath_from_json_path = lambda x: safe_get_first(glob.glob(pathname=f'{x.rpartition("/")[0]}/*.java'))
+    error_json_path = glob.glob(pathname=f'{__real_errors_dir}/*/*/*/*.json')
+    errors_info = unique([
+        {
+            'repo': path_splitted[-4],
+            'commit': path_splitted[-3],
+            'id': int(path_splitted[-2]),
+            'errors': open_json(path),
+            'filepath': filepath_from_json_path(path),
+            'hash': if_not_null(if_not_null(filepath_from_json_path(path),open_file), hash)
+        }
+        for path_splitted, path in zip(map(lambda x: x.split('/'), error_json_path), error_json_path)
+    ], lambda obj: obj['hash'])
+    return errors_info
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -560,23 +599,10 @@ if __name__ == '__main__':
             for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
                 maven_checkstyle(repo, commit)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'real-errors-stats':
-        def safe_get_first(l):
-            if len(l) > 0:
-                return l[0]
-            else:
-                return None
-        filepath_from_json_path = lambda x: safe_get_first(glob.glob(pathname=f'{x.rpartition("/")[0]}/*.java'))
-        error_json_path = glob.glob(pathname=f'{__real_errors_dir}/*/*/*/*.json')
-        errors_info = [
-            {
-                'repo': path_splitted[-4],
-                'commit': path_splitted[-3],
-                'id': int(path_splitted[-2]),
-                'errors': open_json(path),
-                'filepath': filepath_from_json_path(path)
-            }
-            for path_splitted, path in zip(map(lambda x: x.split('/'), error_json_path), error_json_path)
-        ]
+        errors_info = load_errors_info()
+
+        print(len(errors_info))
+
         errors_count = [
             len(error_info['errors'])
             for error_info in errors_info
@@ -587,14 +613,22 @@ if __name__ == '__main__':
             for error in errors_info if len(error['errors']) == 1
         ]
 
+        errors = [
+            error['source']
+            for info in errors_info
+            if len(info['errors']) <= 5
+            for error in info['errors']
+        ]
+        pp.pprint(count(errors))
+
         errors_hash =  [
             hash(open_file(error['filepath']))
             for error in errors_info if error['filepath']
         ]
 
-        print(errors_hash)
-        print(len(errors_hash))
-        print(len(set(errors_hash)))
+        # print(errors_hash)
+        # print(len(errors_hash))
+        # print(len(set(errors_hash)))
 
         # only 22/144 unique single errors
         # only 743/2923 unique single errors
@@ -602,8 +636,8 @@ if __name__ == '__main__':
         single_error_count = sum([ count == 1 for count in errors_count ])
         average = sum(errors_count) / len(errors_count)
 
-        print(f'A total of {single_error_count} single error files has been retreived.')
-        print(f'The average number of errors is {average}.')
+        # print(f'A total of {single_error_count} single error files has been retreived.')
+        # print(f'The average number of errors is {average}.')
 
         fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
         ax.hist(errors_count, bins=20)
