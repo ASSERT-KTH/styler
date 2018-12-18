@@ -550,7 +550,7 @@ if __name__ == '__main__':
     elif len(sys.argv) >= 2 and sys.argv[1] == 'clone':
         # repo = open_repo('google', 'auto')
         # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
-        commits_data = open_json('./commits.json')
+        commits_data = { '_'.join(repo.split('/')):commits for repo, commits in open_json('./commits.json') }
         reduced_commits_data = commits_data # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
         commits = find_commits(reduced_commits_data)
         pp.pprint(commits)
