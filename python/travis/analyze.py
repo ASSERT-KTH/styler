@@ -573,7 +573,7 @@ if __name__ == '__main__':
                 'commit': path_splitted[-3],
                 'id': int(path_splitted[-2]),
                 'errors': open_json(path),
-                'filepath': filepath_from_jsongithub-commits_path(path)
+                'filepath': filepath_from_json_path(path)
             }
             for path_splitted, path in zip(map(lambda x: x.split('/'), error_json_path), error_json_path)
         ]
