@@ -640,7 +640,7 @@ if __name__ == '__main__':
         # print(f'The average number of errors is {average}.')
 
         fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
-        ax.hist(errors_count, bins=20)
+        ax.hist(errors_count, bins=100)
         plt.show()
     else:
         res = open_json('./results.json')
