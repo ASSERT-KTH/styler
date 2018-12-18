@@ -18,10 +18,14 @@ import checkstyle
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import configparser
 
-_OSS_dir = '/home/benjaminl/Documents/dataset-travis-log-oss'
-__git_repo_dir = '/home/benjaminl/Documents/kth/repos'
-__real_errors_dir = '/home/benjaminl/Documents/kth/real_errors'
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+_OSS_dir = config['DEFAULT']['OSS_dir']
+__git_repo_dir = config['DEFAULT']['git_repo_dir']
+__real_errors_dir = config['DEFAULT']['real_errors_dir']
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -539,7 +543,7 @@ if __name__ == '__main__':
         print_res(res)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'github-commits':
         # square_picasso : ['17673347', '26883826']
-        res = open_json('./results_oss.json')
+        res = open_json('./results.json')
         commits = get_build_commits(res)
         pp.pprint(commits)
         save_json('./', 'commits.json', commits)
@@ -569,7 +573,7 @@ if __name__ == '__main__':
                 'commit': path_splitted[-3],
                 'id': int(path_splitted[-2]),
                 'errors': open_json(path),
-                'filepath': filepath_from_json_path(path)
+                'filepath': filepath_from_jsongithub-commits_path(path)
             }
             for path_splitted, path in zip(map(lambda x: x.split('/'), error_json_path), error_json_path)
         ]
