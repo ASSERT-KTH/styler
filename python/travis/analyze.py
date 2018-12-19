@@ -94,7 +94,7 @@ def get_logs_id(repo, build):
     return [ tar.split('/')[-2] for tar in glob.glob(f'{get_build_dir(repo, build)}/*/log.txt') ]
 
 def error_check_parser(error):
-    check = ''
+    check == ''
 
     error = error.lower()
 
@@ -614,12 +614,13 @@ if __name__ == '__main__':
         ]
 
         errors = [
-            error['source']
+            error['source'].split('.')[-1]
             for info in errors_info
-            if len(info['errors']) <= 5
+            # if len(info['errors']) <= 5
             for error in info['errors']
         ]
         pp.pprint(count(errors))
+        pp.pprint(count(errors_count))
 
         errors_hash =  [
             hash(open_file(error['filepath']))
@@ -639,9 +640,9 @@ if __name__ == '__main__':
         # print(f'A total of {single_error_count} single error files has been retreived.')
         # print(f'The average number of errors is {average}.')
 
-        fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
-        ax.hist(errors_count, bins=100)
-        plt.show()
+        # fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
+        # ax.hist(errors_count, bins=100)
+        # plt.show()
     else:
         res = open_json('./results.json')
         repos = res.keys()
