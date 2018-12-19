@@ -28,7 +28,7 @@ __git_repo_dir = config['DEFAULT']['git_repo_dir']
 __real_errors_dir = config['DEFAULT']['real_errors_dir']
 __real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
-pp = pprint.PrettyPrinter(indent=4, depth=4)
+pp = pprint.PrettyPrinter(indent=4, depth=3)
 
 opened_builds = {}
 
@@ -550,14 +550,30 @@ def structure_real_error_dataset(errors_info):
 
     return dataset
 
+def create_realerror_dataset(target):
+    if os.path.exists(target):
+        shutil.rmtree(target)
+    errors_info = load_errors_info()
+    dataset = structure_real_error_dataset(errors_info)
+    pp.pprint(dataset)
+    for project, number_of_errors_per_file in dataset.items():
+        for number_of_errors, file_list in number_of_errors_per_file.items():
+            for id, file_info in enumerate(file_list):
+                dir = os.path.join(target, f'{project}/{number_of_errors}/{id}')
+                metadata = {
+                    'commit': file_info['commit'],
+                    'file_name': file_info['filepath'].split('/')[-1],
+                    'errors': file_info['errors']
+                }
+                create_dir(dir)
+                save_json(dir, 'metadata.json', metadata)
+                shutil.copy(file_info['filepath'], os.path.join(dir,metadata['file_name']))
+
+
 def real_errors_stats():
     errors_info = load_errors_info()
 
     print(len(errors_info))
-
-    dataset = structure_real_error_dataset(errors_info)
-
-    pp.pprint(dataset)
 
     errors_count = [
         len(error_info['errors'])
@@ -666,7 +682,7 @@ if __name__ == '__main__':
     elif len(sys.argv) >= 2 and sys.argv[1] == 'real-errors-stats':
         real_errors_stats()
     elif len(sys.argv) >= 2 and sys.argv[1] == 'copy-real-dataset':
-        real_errors_stats()
+        create_realerror_dataset(__real_dataset_dir)
     else:
         res = open_json('./results.json')
         repos = res.keys()
