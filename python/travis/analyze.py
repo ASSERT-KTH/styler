@@ -26,8 +26,9 @@ config.read('config.ini')
 _OSS_dir = config['DEFAULT']['OSS_dir']
 __git_repo_dir = config['DEFAULT']['git_repo_dir']
 __real_errors_dir = config['DEFAULT']['real_errors_dir']
+__real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
-pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter(indent=4, depth=4)
 
 opened_builds = {}
 
@@ -315,7 +316,6 @@ def print_res(res):
     # pp.pprint(set(checks_messages['CustomImportOrder']))
     # print([ key for key, value in checks_messages.items() if len(value) > 5])
 
-
 def get_synthesis(res):
     repos = res.keys()
 
@@ -437,7 +437,6 @@ def check_checkstyle_results(files):
             pass
     return reports_with_errors
 
-
 def maven_checkstyle(repo, commit):
     print(f'{repo}/{commit}')
     repo.git.checkout(commit)
@@ -525,6 +524,82 @@ def load_errors_info():
     ], lambda obj: obj['hash'])
     return errors_info
 
+def clone():
+    # repo = open_repo('google', 'auto')
+    # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
+    commits_data = open_json('./commits.json')
+    reduced_commits_data = commits_data # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
+    commits = find_commits(reduced_commits_data)
+    pp.pprint(commits)
+    for repo_full_name, valid_commits in commits.items():
+        user, repo_name = repo_full_name.split('/')
+        repo = open_repo(user, repo_name)
+        for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+            maven_checkstyle(repo, commit)
+
+def structure_real_error_dataset(errors_info):
+    dataset = {}
+    for error in errors_info:
+        if error['repo'] not in dataset:
+            dataset[error['repo']] = {}
+        n_errors = len(error['errors'])
+        if n_errors not in dataset[error['repo']]:
+            dataset[error['repo']][n_errors] = []
+        dataset[error['repo']][n_errors] += [error]
+
+
+    return dataset
+
+def real_errors_stats():
+    errors_info = load_errors_info()
+
+    print(len(errors_info))
+
+    dataset = structure_real_error_dataset(errors_info)
+
+    pp.pprint(dataset)
+
+    errors_count = [
+        len(error_info['errors'])
+        for error_info in errors_info
+    ]
+
+    single_error = [
+        error
+        for error in errors_info if len(error['errors']) == 1
+    ]
+
+    errors = [
+        error['source'].split('.')[-1]
+        for info in errors_info
+        # if len(info['errors']) <= 5
+        for error in info['errors']
+    ]
+    # pp.pprint(count(errors))
+    # pp.pprint(count(errors_count))
+
+    errors_hash =  [
+        hash(open_file(error['filepath']))
+        for error in errors_info if error['filepath']
+    ]
+
+    # print(errors_hash)
+    # print(len(errors_hash))
+    # print(len(set(errors_hash)))
+
+    # only 22/144 unique single errors
+    # only 743/2923 unique single errors
+
+    single_error_count = sum([ count == 1 for count in errors_count ])
+    average = sum(errors_count) / len(errors_count)
+
+    # print(f'A total of {single_error_count} single error files has been retreived.')
+    # print(f'The average number of errors is {average}.')
+
+    # fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
+    # ax.hist(errors_count, bins=100)
+    # plt.show()
+
 if __name__ == '__main__':
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         repos = get_repo_names()
@@ -587,62 +662,11 @@ if __name__ == '__main__':
         pp.pprint(commits)
         save_json('./', 'commits.json', commits)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'clone':
-        # repo = open_repo('google', 'auto')
-        # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
-        commits_data = open_json('./commits.json')
-        reduced_commits_data = commits_data # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
-        commits = find_commits(reduced_commits_data)
-        pp.pprint(commits)
-        for repo_full_name, valid_commits in commits.items():
-            user, repo_name = repo_full_name.split('/')
-            repo = open_repo(user, repo_name)
-            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-                maven_checkstyle(repo, commit)
+        clone()
     elif len(sys.argv) >= 2 and sys.argv[1] == 'real-errors-stats':
-        errors_info = load_errors_info()
-
-        print(len(errors_info))
-
-        errors_count = [
-            len(error_info['errors'])
-            for error_info in errors_info
-        ]
-
-        single_error = [
-            error
-            for error in errors_info if len(error['errors']) == 1
-        ]
-
-        errors = [
-            error['source'].split('.')[-1]
-            for info in errors_info
-            # if len(info['errors']) <= 5
-            for error in info['errors']
-        ]
-        pp.pprint(count(errors))
-        pp.pprint(count(errors_count))
-
-        errors_hash =  [
-            hash(open_file(error['filepath']))
-            for error in errors_info if error['filepath']
-        ]
-
-        # print(errors_hash)
-        # print(len(errors_hash))
-        # print(len(set(errors_hash)))
-
-        # only 22/144 unique single errors
-        # only 743/2923 unique single errors
-
-        single_error_count = sum([ count == 1 for count in errors_count ])
-        average = sum(errors_count) / len(errors_count)
-
-        # print(f'A total of {single_error_count} single error files has been retreived.')
-        # print(f'The average number of errors is {average}.')
-
-        # fig, ax = plt.subplots(1, 1, sharey=True, tight_layout=True)
-        # ax.hist(errors_count, bins=100)
-        # plt.show()
+        real_errors_stats()
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'copy-real-dataset':
+        real_errors_stats()
     else:
         res = open_json('./results.json')
         repos = res.keys()
