@@ -610,7 +610,7 @@ def move_parse_exception_files(from_dir, to_dir):
 
 def re_gen(dataset, type, id):
     corpus = Corpus(config['CORPUS'][dataset], dataset)
-    get_random_corpus_file = lambda: glob.glob(os.path.join(get_repo_dir(dataset), f'./{type}/{id}/*-orig.java'))[0]
+    get_random_corpus_file = lambda type: glob.glob(os.path.join(get_repo_dir(dataset), f'./{type}/{id}/*-orig.java'))[0]
     gen_errored(corpus, get_random_corpus_file, dataset, type, id)
 
 if __name__ == '__main__':
