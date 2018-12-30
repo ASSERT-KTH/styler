@@ -613,7 +613,7 @@ def re_gen(dataset, type, id):
     tmp_dir = f'./tmp/{dataset}/{type}/{id}'
     create_dir(tmp_dir)
     def get_random_corpus_file(type):
-        original_file_path = glob.glob(os.path.join(get_repo_dir(dataset), f'./{type}/*/*-orig.java'))[0]
+        original_file_path = random.sample(glob.glob(os.path.join(get_repo_dir(dataset), f'./{type}/*/*-orig.java')), 1)[0]
         original_file_name = original_file_path.split('/')[-1].split('-orig')[0] + '.java'
         tmp_original_path = os.path.join(tmp_dir, original_file_name)
         shutil.copy(original_file_path, tmp_original_path)
