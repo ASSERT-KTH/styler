@@ -691,6 +691,11 @@ if __name__ == '__main__':
         type = sys.argv[3]
         id =  int(sys.argv[4])
         re_gen(dataset, type, id)
+    if len(sys.argv) >= 2 and sys.argv[1] == 're-gen-check':
+        wrong_token_lenght = open_json('./check.json')
+        for dataset, errors in tqdm(wrong_token_lenght.items(), desc='dataset'):
+            for error in tqdm(errors, desc=dataset):
+                re_gen(dataset, error['type'],  error['id'])
     if len(sys.argv) >= 2 and sys.argv[1] == 'check':
         results = {}
         for dataset in dataset_list:
