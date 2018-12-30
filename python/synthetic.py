@@ -243,7 +243,8 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         done = True
 
     original_file = os.path.join(folder, f'./{file_name}-orig.java')
-    shutil.copyfile(file_dir, original_file)
+    if file_dir != original_file:
+        shutil.copyfile(file_dir, original_file)
     save_file(folder, 'diff.diff', run_diff(original_file, ugly_file))
 
     report = {}
@@ -607,6 +608,11 @@ def move_parse_exception_files(from_dir, to_dir):
         shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
     return files
 
+def re_gen(dataset, type, id):
+    corpus = Corpus(config['CORPUS'][dataset], dataset)
+    get_random_corpus_file = lambda: glob.glob(os.path.join(get_repo_dir(dataset), f'./{type}/{id}/*-orig.java'))[0]
+    gen_errored(corpus, get_random_corpus_file, dataset, type, id)
+
 if __name__ == '__main__':
     if sys.argv[2] == 'all':
         dataset_list = list_folders(get_repo_dir(''))
@@ -663,9 +669,14 @@ if __name__ == '__main__':
             del graph['data']['java-design-patterns']
         pp.pprint(list(graph['data'].keys()))
         graph_plot.boxplot(graph)
+    if len(sys.argv) >= 2 and sys.argv[1] == 're-gen':
+        dataset = sys.argv[2]
+        type = sys.argv[3]
+        id =  int(sys.argv[4])
+        re_gen(dataset, type, id)
     if len(sys.argv) >= 2 and sys.argv[1] == 'check':
         results = {}
-        for dataset in sys.argv[2:]:
+        for dataset in dataset_list:
             results[dataset] = check_token_length(dataset)
         save_json('./', 'check.json',results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
