@@ -200,6 +200,7 @@ def gen_get_random_file(corpus, numbers):
     return get_file
 
 def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
+    DEBUG = False
     folder = os.path.join(get_repo_dir(repo_name), f'./{goal}/{id}')
     file =  get_random_corpus_file(goal)
     file_dir = file[2]
@@ -222,25 +223,30 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         injection_operator = random.choice(list(injection_operator_types.keys()))
         ugly_file = os.path.join(folder, f'./{file_name}.java')
         modification = jlu.gen_ugly(file_dir, folder, modification_number=injection_operator_types[injection_operator])
-        # print(modification)
+        if DEBUG:
+            print(modification)
         if not jlu.check_well_formed(ugly_file):
-            print('Not well formed')
+            if DEBUG:
+                print('Not well formed')
             attepts = attepts + 1
             continue
         try:
             cs_result, number_of_errors = checkstyle.check(corpus.checkstyle, ugly_file)
         except:
-            print('Cant run checkstule')
+            if DEBUG:
+                print('Cant run checkstule')
             attepts = attepts + 1
             continue
         if number_of_errors != 1:
-            print(f'{number_of_errors} errors')
+            if DEBUG:
+                print(f'{number_of_errors} errors')
             attepts = attepts + 1
             continue
-        spaces_original, tokens_original = jlu.tokenize_with_white_space(file_dir)
-        spaces_errored, tokens_errored = jlu.tokenize_with_white_space(ugly_file)
+        spaces_original, tokens_original = jlu.tokenize_with_white_space(open_file(file_dir))
+        spaces_errored, tokens_errored = jlu.tokenize_with_white_space(open_file(ugly_file))
         if len(tokens_original) != len(tokens_errored):
-            print(f'Not the same length : orig {len(tokens_original)} vs {len(tokens_errored)}')
+            if DEBUG:
+                print(f'Not the same length : orig {len(tokens_original)} vs {len(tokens_errored)}')
             attepts = attepts + 1
             continue
         error = list(cs_result.values())[0]['errors'][0]
