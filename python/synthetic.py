@@ -224,19 +224,23 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
         modification = jlu.gen_ugly(file_dir, folder, modification_number=injection_operator_types[injection_operator])
         # print(modification)
         if not jlu.check_well_formed(ugly_file):
+            print('Not well formed')
             attepts = attepts + 1
             continue
         try:
             cs_result, number_of_errors = checkstyle.check(corpus.checkstyle, ugly_file)
         except:
+            print('Cant run checkstule')
             attepts = attepts + 1
             continue
         if number_of_errors != 1:
+            print(f'{number_of_errors} errors')
             attepts = attepts + 1
             continue
-        spaces_original, tokens_original = jlu.tokenize_with_white_space(file[2])
+        spaces_original, tokens_original = jlu.tokenize_with_white_space(file_dir)
         spaces_errored, tokens_errored = jlu.tokenize_with_white_space(ugly_file)
         if len(tokens_original) != len(tokens_errored):
+            print(f'Not the same length : orig {len(tokens_original)} vs {len(tokens_errored)}')
             attepts = attepts + 1
             continue
         error = list(cs_result.values())[0]['errors'][0]
