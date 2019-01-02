@@ -703,7 +703,7 @@ if __name__ == '__main__':
         save_json('./', 'check.json',results)
     if len(sys.argv) >= 2 and sys.argv[1] == 'analyse':
         results = {}
-        for dataset in dataset_list:
+        for dataset in tqdm(dataset_list):
             results[dataset] = summary(dataset)
         error_types = {
             dataset:summary['type_count']

@@ -589,10 +589,14 @@ def print_aligned_strings(strings):
         print()
 
 def main(args):
+    if sys.argv[2] == 'all':
+        dataset_list = list_folders(get_dataset_dir(''))
+    else:
+        dataset_list = sys.argv[2:]
+
     if len(args) >= 2 and args[1] == 'gen':
         target = '/home/benjaminl/Documents/kth/data/2'
-        datasets = args[2:]
-        for dataset in datasets:
+        for dataset in dataset_list:
             gen_IO(dataset, os.path.join(target, dataset))
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]

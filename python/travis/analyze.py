@@ -585,13 +585,18 @@ def real_errors_stats():
         for error in errors_info if len(error['errors']) == 1
     ]
 
+    print(len([
+        error
+        for error in errors_info if len(error['errors']) <= 10
+    ]))
+
     errors = [
         error['source'].split('.')[-1]
         for info in errors_info
-        # if len(info['errors']) <= 5
+        if len(info['errors']) <= 10
         for error in info['errors']
     ]
-    # pp.pprint(count(errors))
+    pp.pprint(count(errors))
     # pp.pprint(count(errors_count))
 
     errors_hash =  [

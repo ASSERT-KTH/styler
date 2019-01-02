@@ -364,6 +364,10 @@ def cumulatives_bars(plot_data):
     errors_labels = set()
     labels = tuple(plot_data['data'].keys())
 
+    compute_avg = plot_data.get('avg', True)
+
+    label_sum = {}
+
     for count in plot_data['data'].values():
         errors_labels = errors_labels | set(count.keys())
 
@@ -373,8 +377,14 @@ def cumulatives_bars(plot_data):
 
     for label in errors_labels:
         layers[label] = []
+        label_sum[label] = 0
         for name in labels:
             layers[label].append(data[name].get(label,0))
+            label_sum[label] += data[name].get(label,0)
+
+    total_sum = sum(label_sum.values())
+    avg = { label:(value/total_sum*100.) for label, value in label_sum.items() }
+    print(avg)
 
     n_errors_labels = len(errors_labels)
     colors = []
@@ -417,7 +427,7 @@ def cumulatives_bars(plot_data):
     plt.subplots_adjust(top=0.75)
     plt.subplots_adjust(bottom=0.20)
     # Create legend & Show graphic
-    patches = [ mpatches.Patch(color=c, label=l.split(".")[-1]) for l, c in lables_colors.items()]
+    patches = [ mpatches.Patch(color=c, label=f'{l} ({avg[l]:.2f}%)') for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
