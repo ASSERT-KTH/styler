@@ -432,12 +432,17 @@ def cumulatives_bars(plot_data):
     plt.show()
 
 def boxplot(plot_data):
-    labels = tuple(plot_data['data'].keys())
+    labels = list(plot_data['data'].keys())
     sub_labels = plot_data['sub_labels']
     vert = plot_data.get('vert', False)
     colors = plot_data['colors']
 
     boxWidth = 1. / (len(sub_labels) + 1)
+
+    show_all = plot_data.get('show_all', True)
+
+    if show_all:
+        labels.append('all')
 
     r = []
     r.append(list(np.arange(len(labels))))
@@ -449,6 +454,12 @@ def boxplot(plot_data):
     for data_list in plot_data['data'].values():
         for label in sub_labels:
             data += [data_list[label]]
+    print(len(data[0]))
+    if show_all:
+        all = [ reduce(list.__add__, data[i::len(sub_labels)]) for i in range(len(sub_labels)) ]
+        print(all)
+        data += all
+
     fig7, ax7 = plt.subplots()
     bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels))
     for patch, color in zip(bplot['boxes'], colors  * len(labels)):
@@ -461,6 +472,7 @@ def boxplot(plot_data):
         plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
     plt.xlabel(plot_data.get('x_label', ''))
     plt.ylabel(plot_data.get('y_label', ''))
+    plt.xlim(0,40)
     plt.show()
 
 # def boxplot(plot_data):
