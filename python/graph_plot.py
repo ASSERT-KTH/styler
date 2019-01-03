@@ -153,6 +153,7 @@ def avg(l):
 
 def n_bar_plot(plot_data):
     counts = plot_data['labels']
+    colors = plot_data['colors']
 
     plot_average = True
 
@@ -187,7 +188,7 @@ def n_bar_plot(plot_data):
             plt.text(bar.get_x() + bar.get_width()/2., 1*height, f'{(height*100):.1f}%', ha='center', va='bottom')
     # Make the plot
     for i, count in enumerate(counts):
-        with_percentage(plt.bar(r[i], bars[i], width=barWidth, edgecolor='white', label=count))
+        with_percentage(plt.bar(r[i], bars[i], width=barWidth * 0.75, edgecolor='black', label=count, color=colors[count]))
 
     # Add xticks on the middle of the group bars
     plt.xlabel(plot_data.get('x_label', ''))
@@ -446,6 +447,9 @@ def boxplot(plot_data):
 
     r = []
     r.append(list(np.arange(len(labels))))
+    if show_all:
+        r[0][-1] += 0.5
+
     for i in range(1,len(sub_labels)):
         r.append([x + boxWidth for x in r[i-1]])
     r = sorted(reduce(list.__add__,r))
@@ -461,18 +465,20 @@ def boxplot(plot_data):
         data += all
 
     fig7, ax7 = plt.subplots()
-    bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels))
+    medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
+    bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels), medianprops=medianprops)
     for patch, color in zip(bplot['boxes'], colors  * len(labels)):
         patch.set_facecolor(color)
     patches = [ mpatches.Patch(color=c, label=l) for l, c in zip(sub_labels, colors)]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True)
     if vert:
-        plt.xticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
+        plt.xticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, rotation=45, fontsize=8)
     else:
-        plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
+        plt.yticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, fontsize=8)
     plt.xlabel(plot_data.get('x_label', ''))
     plt.ylabel(plot_data.get('y_label', ''))
     plt.xlim(0,40)
+    plt.gca().invert_yaxis()
     plt.show()
 
 # def boxplot(plot_data):

@@ -19,6 +19,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import configparser
+from termcolor import colored
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -61,6 +62,40 @@ known_check = (
 'EmptyBlock',
 'VisibilityModifier',
 'ArrayTypeStyle')
+
+targeted_errors = (
+    'MethodParamPad',
+    'GenericWhitespace',
+    'RegexpMultiline',
+    'JavadocTagContinuationIndentation',
+    'FileTabCharacter',
+    'OneStatementPerLine',
+    'Regexp',
+    'VisibilityModifier',
+    'WhitespaceAround',
+    'EmptyLineSeparator',
+    'OperatorWrap',
+    'NoWhitespaceAfter',
+    'SingleLineJavadoc',
+    'MethodLength',
+    'NoWhitespaceBefore',
+    'AnnotationLocation',
+    'UnusedImports',
+    'JavadocMethod',
+    'WhitespaceAfter',
+    'LineLength',
+    'SeparatorWrap',
+    'RegexpSinglelineJava',
+    'NoLineWrap',
+    'RightCurly',
+    'Indentation',
+    'ParenPad',
+    'JavadocType',
+    'MissingDeprecated',
+    'RegexpSingleline',
+    'LeftCurly',
+    'TypecastParenPad'
+)
 
 def get_logs(repo, build, job):
     build_folder = get_build_dir(repo, build)
@@ -494,7 +529,7 @@ def unique(array, key):
     seen = set()
     return [seen.add(key(obj)) or obj for obj in array if key(obj) not in seen and key(obj) != None]
 
-def count(array):
+def dict_count(array):
     result = {}
     for i in array:
         if i not in result:
@@ -591,12 +626,16 @@ def real_errors_stats():
     ]))
 
     errors = [
-        error['source'].split('.')[-1]
+        error['source'].split('.')[-1][:-5]
         for info in errors_info
         if len(info['errors']) <= 10
         for error in info['errors']
     ]
-    pp.pprint(count(errors))
+    for error, count in dict_count(errors).items():
+        if error in targeted_errors:
+            print(colored(f'{error:<30} : {count}', color='green'))
+        else:
+            print(f'{error:<30} : {count}')
     # pp.pprint(count(errors_count))
 
     errors_hash =  [

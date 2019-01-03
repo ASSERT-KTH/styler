@@ -602,7 +602,8 @@ def main(args):
         folder = args[2]
         print_max_length_and_vocabulary(folder)
     if args[1] == 'de-tokenize':
-        de_tokenize_dataset(args[2], n=5)
+        for dataset in tqdm(dataset_list, desc='de tokenize'):
+            de_tokenize_dataset(dataset, n=5)
     if len(args) == 4 and args[1] == 'beam':
         n = int(args[3])
         dataset = args[2]

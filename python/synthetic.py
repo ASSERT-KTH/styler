@@ -100,6 +100,40 @@ __base_dir = config['DEFAULT']['SYNTHETIC_DIR']
 #         for index in range(n):
 #             modifications[id][folder][index] = java_lang_utils.gen_ugly( file[2], self.get_dir( os.path.join("./ugly/" + str(id) + "/{}/".format(folder) + str(index) + "/")), action)
 
+targeted_errors = (
+    'MethodParamPad',
+    'GenericWhitespace',
+    'RegexpMultiline',
+    'JavadocTagContinuationIndentation',
+    'FileTabCharacter',
+    'OneStatementPerLine',
+    'Regexp',
+    'VisibilityModifier',
+    'WhitespaceAround',
+    'EmptyLineSeparator',
+    'OperatorWrap',
+    'NoWhitespaceAfter',
+    'SingleLineJavadoc',
+    'MethodLength',
+    'NoWhitespaceBefore',
+    'AnnotationLocation',
+    'UnusedImports',
+    'JavadocMethod',
+    'WhitespaceAfter',
+    'LineLength',
+    'SeparatorWrap',
+    'RegexpSinglelineJava',
+    'NoLineWrap',
+    'RightCurly',
+    'Indentation',
+    'ParenPad',
+    'JavadocType',
+    'MissingDeprecated',
+    'RegexpSingleline',
+    'LeftCurly',
+    'TypecastParenPad'
+)
+
 def get_experiment_dir(id):
     return f'{__experiments_dir}/{id}'
 
@@ -644,7 +678,7 @@ if __name__ == '__main__':
         for corpus in corpora:
             gen_dataset(corpus, share)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':
-        for dataset in dataset_list:
+        for dataset in tqdm(dataset_list, desc='datasets'):
             target = get_experiment_dir(dataset)
             if not os.path.exists(target):
                 gen_experiment(dataset)
@@ -656,9 +690,14 @@ if __name__ == '__main__':
         # json_pp(diff)
         # Graph
         graph = {}
-        graph['labels'] = ('naturalize', 'codebuff', 'styler')
+        graph['labels'] = ('styler', 'codebuff', 'naturalize')
         graph['x_label'] = ''
         graph['y_label'] = 'Proportion of repaired files'
+        graph['colors'] = {
+            'styler': '#f44336',
+            'codebuff': '#b3e5fc',
+            'naturalize': '#f8bbd0'
+        }
         graph['data'] = {
             dataset:[ res[label]/res['total'] for label in graph['labels']]
             for dataset, res in results.items()
@@ -670,12 +709,12 @@ if __name__ == '__main__':
         graph_plot.n_bar_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'diff':
         diff = {}
-        tools = ('naturalize', 'codebuff', 'styler')
+        tools = ('styler', 'codebuff', 'naturalize')
         for dataset in tqdm(dataset_list, desc='Diff datasets'):
             diff[dataset] = get_diff_dataset(dataset, tools)
         graph = {}
         graph['sub_labels'] = tools
-        graph['colors'] = ['pink', 'lightblue', 'red']
+        graph['colors'] = ['#f44336', '#b3e5fc', '#f8bbd0']
         graph['x_label'] = 'Diff size'
         graph['data'] = {
             dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }
