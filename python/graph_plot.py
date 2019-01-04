@@ -188,7 +188,7 @@ def n_bar_plot(plot_data):
             plt.text(bar.get_x() + bar.get_width()/2., 1*height, f'{(height*100):.1f}%', ha='center', va='bottom')
     # Make the plot
     for i, count in enumerate(counts):
-        with_percentage(plt.bar(r[i], bars[i], width=barWidth * 0.75, edgecolor='black', label=count, color=colors[count]))
+        with_percentage(plt.bar(r[i], bars[i], width=barWidth * 0.95, edgecolor='white', label=count, color=colors[count]))
 
     # Add xticks on the middle of the group bars
     plt.xlabel(plot_data.get('x_label', ''))
@@ -478,6 +478,7 @@ def boxplot(plot_data):
     plt.xlabel(plot_data.get('x_label', ''))
     plt.ylabel(plot_data.get('y_label', ''))
     plt.xlim(0,40)
+    plt.subplots_adjust(bottom=0.06, left=0.11, right=0.95, top=0.95)
     plt.gca().invert_yaxis()
     plt.show()
 

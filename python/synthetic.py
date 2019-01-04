@@ -694,9 +694,9 @@ if __name__ == '__main__':
         graph['x_label'] = ''
         graph['y_label'] = 'Proportion of repaired files'
         graph['colors'] = {
-            'styler': '#f44336',
-            'codebuff': '#b3e5fc',
-            'naturalize': '#f8bbd0'
+            'styler': '#64dd17',
+            'codebuff': '#1565c0',
+            'naturalize': '#fdd835'
         }
         graph['data'] = {
             dataset:[ res[label]/res['total'] for label in graph['labels']]
@@ -714,7 +714,7 @@ if __name__ == '__main__':
             diff[dataset] = get_diff_dataset(dataset, tools)
         graph = {}
         graph['sub_labels'] = tools
-        graph['colors'] = ['#f44336', '#b3e5fc', '#f8bbd0']
+        graph['colors'] = ['#64dd17', '#1565c0', '#fdd835']
         graph['x_label'] = 'Diff size'
         graph['data'] = {
             dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }
