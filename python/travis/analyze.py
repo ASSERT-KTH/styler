@@ -97,6 +97,15 @@ targeted_errors = (
     'TypecastParenPad'
 )
 
+corner_cases_errors = (
+    'VisibilityModifier',
+    'SingleLineJavadoc',
+    'UnusedImports',
+    'JavadocMethod',
+    'JavadocType',
+    'MissingDeprecated'
+)
+
 def get_logs(repo, build, job):
     build_folder = get_build_dir(repo, build)
     if not build_is_open(repo, build):
@@ -608,40 +617,68 @@ def create_realerror_dataset(target):
 def real_errors_stats():
     errors_info = load_errors_info()
 
-    print(len(errors_info))
+    def group_by(key_func, iterable):
+        result = {}
+        for item in iterable:
+            key = key_func(item)
+            if key not in result:
+                result[key] = []
+            result[key] += [item]
+        return result
 
-    errors_count = [
-        len(error_info['errors'])
-        for error_info in errors_info
-    ]
+    # errors_count = [
+    #     len(error_info['errors'])
+    #     for error_info in errors_info
+    # ]
+    #
+    # single_error = [
+    #     error
+    #     for error in errors_info if len(error['errors']) == 1
+    # ]
+    #
+    # print(len([
+    #     error
+    #     for error in errors_info if len(error['errors']) <= 10
+    # ]))
+    #
+    # errors = [
+    #     error['source'].split('.')[-1][:-5]
+    #     for info in errors_info
+    #     for error in info['errors']
+    # ]
+    for repo, errors_info in group_by(lambda e: e['repo'], errors_info).items():
+        errors = [
+            error['source'].split('.')[-1][:-5]
+            for info in errors_info
+            if len(info['errors']) <= 10
+            for error in info['errors']
+        ]
+        print(colored(f'{repo} : {len(errors)} errors', attrs=['bold']))
+        for size, errors_info in sorted(group_by(lambda e: len(e['errors']), errors_info).items()):
+            errors = [
+                error['source'].split('.')[-1][:-5]
+                for info in errors_info
+                if len(info['errors']) <= 10
+                for error in info['errors']
+            ]
+            if len(errors) > 0:
+                print(colored(f'\t{size} errors per file ({len(errors)/size:.0f} file(s))', attrs=['bold']))
 
-    single_error = [
-        error
-        for error in errors_info if len(error['errors']) == 1
-    ]
-
-    print(len([
-        error
-        for error in errors_info if len(error['errors']) <= 10
-    ]))
-
-    errors = [
-        error['source'].split('.')[-1][:-5]
-        for info in errors_info
-        if len(info['errors']) <= 10
-        for error in info['errors']
-    ]
-    for error, count in dict_count(errors).items():
-        if error in targeted_errors:
-            print(colored(f'{error:<30} : {count}', color='green'))
-        else:
-            print(f'{error:<30} : {count}')
+                for error, count in dict_count(errors).items():
+                    print('\t\t', end='')
+                    if error in targeted_errors:
+                        if error not in corner_cases_errors:
+                            print(colored(f'{error:<30} : {count}', color='green'))
+                        else:
+                            print(colored(f'{error:<30} : {count}', color='yellow'))
+                    else:
+                        print(f'{error:<30} : {count}')
     # pp.pprint(count(errors_count))
 
-    errors_hash =  [
-        hash(open_file(error['filepath']))
-        for error in errors_info if error['filepath']
-    ]
+    # errors_hash =  [
+    #     hash(open_file(error['filepath']))
+    #     for error in errors_info if error['filepath']
+    # ]
 
     # print(errors_hash)
     # print(len(errors_hash))
@@ -650,8 +687,8 @@ def real_errors_stats():
     # only 22/144 unique single errors
     # only 743/2923 unique single errors
 
-    single_error_count = sum([ count == 1 for count in errors_count ])
-    average = sum(errors_count) / len(errors_count)
+    # single_error_count = sum([ count == 1 for count in errors_count ])
+    # average = sum(errors_count) / len(errors_count)
 
     # print(f'A total of {single_error_count} single error files has been retreived.')
     # print(f'The average number of errors is {average}.')
