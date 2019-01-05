@@ -123,16 +123,26 @@ def join_token(tokens):
 def print_translations(file_path, metadata_path, translate):
     metadata = open_json(metadata_path)
     for tokenized_errors, info in tokenize_errors(file_path, metadata['errors']):
+        print(info)
         for translation in translate(tokenized_errors):
-            ml.print_diff(join_token(info['tokens_errored_in_tag']), translation)
+            ml.print_diff(join_token(info['tokens_errored_in_tag']) + '\n', translation)
             print()
+
+def de_tokenize(file_path, info, new_tokens):
+    source_code = open_file(file_path)
+    result = ml.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False)
+    return result
 
 def main(args):
     dir= './styler/test'
-    file_path = f'{dir}/CharConsumer.java'
+    file_path = f'{dir}/QueryContext.java'
     metadata_path = f'{dir}/metadata.json'
     translate = gen_translator('./styler/model.pt')
     print_translations(file_path, metadata_path, translate)
+    # for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
+    #     for translation in translate(tokenized_errors):
+    #         print(de_tokenize(file_path, info, translation))
+    #         print()
 
 
 if __name__ == "__main__":

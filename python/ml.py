@@ -100,6 +100,7 @@ def get_space_value(space):
             result += f'_{-space[1]}_DD'
         return result
 
+#Deprecated
 def build_vocabulary(files):
     count = {}
     tokenized_files = [ jlu.tokenize_with_white_space(jlu.open_file(path)) for path in files ]
@@ -137,8 +138,8 @@ def build_vocabulary(files):
 
     return get_vector, whitespace_id
 
-def tokenize_errored_file_model2(file, file_orig, error):
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
+def tokenize_file_to_repair(file_path, error):
+    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_path))
 
     info = {}
 
@@ -215,6 +216,17 @@ def tokenize_errored_file_model2(file, file_orig, error):
     for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
         tokens_errored.append(get_token_value(token))
         tokens_errored.append(get_space_value(space))
+
+    info['from_token'] = from_token
+    info['to_token'] = to_token
+    info['start'] = start
+    info['end'] = end
+    info['tokens_errored_in_tag'] = tokens_errored_in_tag
+
+    return tokens_errored, info
+
+def tokenize_errored_file_model2(file, file_orig, error):
+
     # else:
     #     for token, space in zip(tokens[start:end], spaces[start:end]):
     #         tokens_errored.append(get_token_value(token))
@@ -222,6 +234,11 @@ def tokenize_errored_file_model2(file, file_orig, error):
     #     tokens_errored.append(f'<{error["type"]}>')
     #     tokens_errored.append(f'</{error["type"]}>')
 
+    tokens_errored, info = tokenize_file_to_repair(file, error)
+
+    tokens_errored_in_tag = info['tokens_errored_in_tag']
+    from_token = info['from_token']
+    to_token = info['to_token']
 
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
     tokens_correct = []
@@ -236,11 +253,6 @@ def tokenize_errored_file_model2(file, file_orig, error):
     for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
         if t_A != t_B:
             info['count_diff'] += 1
-
-    info['from_token'] = from_token
-    info['to_token'] = to_token
-    info['start'] = start
-    info['end'] = end
 
     return tokens_errored, tokens_correct, tokens_errored_in_tag, info
 
