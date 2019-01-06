@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 from difflib import Differ
 
 from core import *
-import token as token_utils
+import token_utils
 
 pp = pprint.PrettyPrinter(indent=4)
 

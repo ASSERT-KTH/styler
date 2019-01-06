@@ -6,10 +6,11 @@ import subprocess
 import glob
 import git
 from git import Repo
-import checkstyle
 import shutil
+from tqdm import tqdm
 
 from core import *
+import checkstyle
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -101,19 +102,29 @@ def create_corpus(dir, commit, checkstyle_relative_dir):
     print(f'Found {len(files_without_errors)} files with no errors.')
     print(f'Found {len(files_with_errors)} files with errors.')
 
-    candidate_files = list(filter(lambda f: f.endswith('.java'), files_without_errors))
-    #
-    # shutil.copy(checkstyle, os.path.join(corpus_dir, 'checkstyle.xml'))
-    # for id, file in enumerate(candidate_files):
-    #     file_target_dir = os.path.join(corpus_dir, f'{id}')
-    #     file_name = file.split('/')[-1]
-    #     file_target = os.path.join(file_target_dir, file_name)
-    #
-    # copus_info = {
-    #     'grammar': 'Java8',
-    #     'indent': '4'
-    # }
-    # save_json(corpus_dir, 'corpus.json', corpus_info)
+    def is_good_candidate(file_path):
+        if '/test/' in file_path:
+            return False
+        if not file_path.endswith('.java'):
+            return False
+        return True
+
+    candidate_files = filter(is_good_candidate, files_without_errors)
+
+    create_dir(corpus_dir)
+    shutil.copy(checkstyle_dir, os.path.join(corpus_dir, 'checkstyle.xml'))
+    for id, file in tqdm(enumerate(candidate_files), desc='Copy'):
+        file_target_dir = os.path.join(corpus_dir, f'data/{id}')
+        file_name = file.split('/')[-1]
+        file_target = os.path.join(file_target_dir, file_name)
+        create_dir(file_target_dir)
+        shutil.copy(file, file_target)
+
+    corpus_info = {
+        'grammar': 'Java8',
+        'indent': '4'
+    }
+    save_json(corpus_dir, 'corpus.json', corpus_info)
 
 def repair():
     dir= './styler/test'
