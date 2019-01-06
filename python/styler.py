@@ -3,77 +3,13 @@ import sys
 import json
 import os
 import subprocess
+import glob
+import git
+from git import Repo
+import checkstyle
+import shutil
 
-targeted_errors = (
-    'MethodParamPad',
-    'GenericWhitespace',
-    'RegexpMultiline',
-    'JavadocTagContinuationIndentation',
-    'FileTabCharacter',
-    'OneStatementPerLine',
-    'Regexp',
-    'VisibilityModifier',
-    'WhitespaceAround',
-    'EmptyLineSeparator',
-    'OperatorWrap',
-    'NoWhitespaceAfter',
-    'SingleLineJavadoc',
-    'MethodLength',
-    'NoWhitespaceBefore',
-    'AnnotationLocation',
-    'UnusedImports',
-    'JavadocMethod',
-    'WhitespaceAfter',
-    'LineLength',
-    'SeparatorWrap',
-    'RegexpSinglelineJava',
-    'NoLineWrap',
-    'RightCurly',
-    'Indentation',
-    'ParenPad',
-    'JavadocType',
-    'MissingDeprecated',
-    'RegexpSingleline',
-    'LeftCurly',
-    'TypecastParenPad'
-)
-
-corner_cases_errors = (
-    'VisibilityModifier',
-    'SingleLineJavadoc',
-    'UnusedImports',
-    'JavadocMethod',
-    'JavadocType',
-    'MissingDeprecated'
-)
-
-def open_file(file):
-    content = ''
-    with open(file, 'r') as file:
-        content = file.read()
-    return content
-
-def save_file(dir, file_name, content):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        f.write(content)
-
-def open_json(file):
-    with open(file) as f:
-        data = json.load(f)
-        return data
-    return None
-
-def save_json(dir, file_name, content, sort=False):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        json.dump(content, f, indent=4, sort_keys=sort)
-
-def checkstyle_source_to_error_type(source):
-    class_name = source.split('.')[-1]
-    if class_name.endswith('Check'):
-        type = class_name[:-len('Check')]
-    else:
-        type = class_name
-    return type
+from core import *
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -133,7 +69,53 @@ def de_tokenize(file_path, info, new_tokens):
     result = ml.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False)
     return result
 
-def main(args):
+def get_files_without_errors(checkstyle_result):
+    return [ file for file, result in checkstyle_result.items() if len(result['errors']) == 0 ]
+
+def get_files_with_errors(checkstyle_result):
+    return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
+
+def create_corpus(dir, commit, checkstyle_relative_dir):
+    if dir.endswith('/'):
+        dir = dir[:-1]
+    corpus_dir = f'{dir}-corpus'
+
+    repo = Repo(dir)
+    repo.git.checkout(commit)
+
+    checkstyle_results = find_all(dir, 'checkstyle-result.xml')
+    for checkstyle_result in checkstyle_results:
+        os.remove(checkstyle_result)
+
+    # pom_relative_dir = './pom.xml'
+    checkstyle_relative_dir = './checkstyle.xml'
+    # pom_dir = os.path.join(dir, pom_relative_dir)
+    checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
+    # cmd = f'java -jar ../jars/checkstyle-8.12-all.jar -c {checkstyle_dir} -f xml {dir}'
+    (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
+
+    # results_files = find_all(dir, 'checkstyle-result.xml')
+    files_without_errors = get_files_without_errors(output)
+    files_with_errors = get_files_with_errors(output)
+
+    print(f'Found {len(files_without_errors)} files with no errors.')
+    print(f'Found {len(files_with_errors)} files with errors.')
+
+    candidate_files = list(filter(lambda f: f.endswith('.java'), files_without_errors))
+    #
+    # shutil.copy(checkstyle, os.path.join(corpus_dir, 'checkstyle.xml'))
+    # for id, file in enumerate(candidate_files):
+    #     file_target_dir = os.path.join(corpus_dir, f'{id}')
+    #     file_name = file.split('/')[-1]
+    #     file_target = os.path.join(file_target_dir, file_name)
+    #
+    # copus_info = {
+    #     'grammar': 'Java8',
+    #     'indent': '4'
+    # }
+    # save_json(corpus_dir, 'corpus.json', corpus_info)
+
+def repair():
     dir= './styler/test'
     file_path = f'{dir}/QueryContext.java'
     metadata_path = f'{dir}/metadata.json'
@@ -143,6 +125,10 @@ def main(args):
     #     for translation in translate(tokenized_errors):
     #         print(de_tokenize(file_path, info, translation))
     #         print()
+
+def main(args):
+    create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
+
 
 
 if __name__ == "__main__":

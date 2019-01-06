@@ -20,6 +20,8 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from difflib import Differ
 
+from core import *
+
 pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
@@ -35,33 +37,6 @@ def get_tokenized_dir(dataset):
 
 def get_sub_set_dir(dataset, sub_set):
     return f'{get_dataset_dir(dataset)}/{sub_set}'
-
-def open_file(file):
-    content = ''
-    with open(file, 'r') as file:
-        content = file.read()
-    return content
-
-def save_file(dir, file_name, content):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        f.write(content)
-
-def open_json(file):
-    with open(file) as f:
-        data = json.load(f)
-        return data
-    return None
-
-def save_json(dir, file_name, content, sort=False):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        json.dump(content, f, indent=4, sort_keys=sort)
-
-def create_dir(dir):
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
-def list_folders(dir):
-    return [ folder for folder in os.listdir(dir) if os.path.isdir(os.path.join(dir, folder)) ]
 
 
 def get_token_value(token):
@@ -375,9 +350,6 @@ def vectorize_file(path, vectorizer):
 
     return result
 
-def is_odd(number):
-    return number % 2 == 0
-
 def print_diff(stringA, stringB):
     diffs = token_diff(stringA, stringB)
     count = 0
@@ -568,13 +540,6 @@ def de_tokenize_dataset(dataset, n):
         except:
             pass
     move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
-
-def move_parse_exception_files(from_dir, to_dir):
-    files = java_lang_utils.get_bad_formated(from_dir)
-    create_dir(to_dir)
-    for file in files:
-        shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
-    return files
 
 def get_aligned_strings(tokens, n=2):
     result = ['']*n
