@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from difflib import Differ
 
 from core import *
+import token as token_utils
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -419,25 +420,6 @@ def beam_search(target_dir, pred_dir, n=1):
 
     # pp.pprint(not_predicted)
 
-def is_whitespace_token(token: str) -> bool:
-    if ( 'SP' in token or 'NL' in token ) and '_' in token:
-        return True
-    return False
-
-def whitespace_token_to_tuple(token: str) -> tuple:
-    spaces: int = 0
-    new_line: int = 0
-    if 'SP' in token:
-        spaces = int(token.split('_')[0])
-    elif 'NL' in token:
-        new_line = int(token.split('_')[0])
-        if 'DD' in token or 'ID' in token:
-            spaces = int(token.split('_')[2])
-        if 'DD' in token:
-            spaces = -spaces
-
-    return (new_line, spaces)
-
 def match_input_to_source(source, error_info, input):
     whitespace, tokens = jlu.tokenize_with_white_space(source)
     start = error_info['start']
@@ -450,7 +432,7 @@ def match_input_to_source(source, error_info, input):
     count = 0
     ws_count = 0
     for input_token in input.split(' '):
-        if is_whitespace_token(input_token):
+        if token_utils.is_whitespace_token(input_token):
             result.append((input_token, get_space_value(ws_sub_sequence[ws_count])))
             ws_count += 1
         elif input_token.startswith('<') and input_token.endswith('>'):
@@ -469,7 +451,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
 
     new_white_space_tokens = new_tokens[1::2]
     # print(new_white_space_tokens)
-    new_white_space = [ whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
+    new_white_space = [ token_utils.whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
     # print(new_white_space)
 
     whitespace[from_token:to_token] = new_white_space
@@ -546,7 +528,7 @@ def get_aligned_strings(tokens, n=2):
     for t in tokens:
         l = max([len(e) for e in t])
         pattern = f'{{:{l}}} '
-        if is_whitespace_token(t[0]):
+        if token_utils.is_whitespace_token(t[0]):
             equals = True
             for token_to_compare in t[1:]:
                 equals = equals and (token_to_compare == t[0])
