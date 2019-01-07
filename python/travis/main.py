@@ -10,6 +10,8 @@ import tarfile
 import configparser
 import glob
 
+sys.path.append('../')
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -64,26 +66,6 @@ def get_job_log(job):
 def get_jobs(repo, build):
     return get_build(repo, build)['matrix']
 
-def save_file(dir, file_name, content):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        f.write(content)
-
-def save_json(dir, file_name, content):
-    with open(os.path.join(dir, file_name), 'w') as f:
-        json.dump(content, f)
-
-def open_file(file):
-    content = ''
-    with open(file, 'r') as file:
-        content = file.read()
-    return content
-
-def open_json(file):
-    with open(file) as f:
-        data = json.load(f)
-        return data
-    return None
-
 def load_repo_list(file):
     content = open_file(file)
     return content.split('\n')
@@ -128,10 +110,6 @@ def tar_dir(path):
             for file in files:
                 file_path = os.path.join(root, file)
                 tar_handle.add(file_path, arcname=file_path[len(path):])
-
-def create_dir(dir):
-    if not os.path.exists(dir):
-        os.makedirs(dir)
 
 def get_repo_names(min_size=1):
     repos = [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
