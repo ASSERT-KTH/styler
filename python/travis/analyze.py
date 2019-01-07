@@ -13,13 +13,16 @@ from tqdm import trange
 import git
 from git import Repo
 import shutil
-sys.path.append('../')
-import checkstyle
+
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import configparser
 from termcolor import colored
+
+sys.path.append('../')
+import checkstyle
+from core import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -62,49 +65,6 @@ known_check = (
 'EmptyBlock',
 'VisibilityModifier',
 'ArrayTypeStyle')
-
-targeted_errors = (
-    'MethodParamPad',
-    'GenericWhitespace',
-    'RegexpMultiline',
-    'JavadocTagContinuationIndentation',
-    'FileTabCharacter',
-    'OneStatementPerLine',
-    'Regexp',
-    'VisibilityModifier',
-    'WhitespaceAround',
-    'EmptyLineSeparator',
-    'OperatorWrap',
-    'NoWhitespaceAfter',
-    'SingleLineJavadoc',
-    'MethodLength',
-    'NoWhitespaceBefore',
-    'AnnotationLocation',
-    'UnusedImports',
-    'JavadocMethod',
-    'WhitespaceAfter',
-    'LineLength',
-    'SeparatorWrap',
-    'RegexpSinglelineJava',
-    'NoLineWrap',
-    'RightCurly',
-    'Indentation',
-    'ParenPad',
-    'JavadocType',
-    'MissingDeprecated',
-    'RegexpSingleline',
-    'LeftCurly',
-    'TypecastParenPad'
-)
-
-corner_cases_errors = (
-    'VisibilityModifier',
-    'SingleLineJavadoc',
-    'UnusedImports',
-    'JavadocMethod',
-    'JavadocType',
-    'MissingDeprecated'
-)
 
 def get_logs(repo, build, job):
     build_folder = get_build_dir(repo, build)
@@ -468,20 +428,15 @@ def get_real_errors_repo_dir(repo):
 def get_real_errors_commit_dir(repo, commit):
     return os.path.join(get_real_errors_repo_dir(repo), commit)
 
-def check_checkstyle_results(files):
+def check_checkstyle_results(checkstyle_results):
     reports_with_errors = {}
-    for file in files:
-        content = open_file(file)
-        try:
-            results = checkstyle.parse_res(content)
-            files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
-            if len(files_with_errors):
-                reports_with_errors[file] = files_with_errors
-        except:
-            pass
+    for id, results in enumerate(checkstyle_results):
+        files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
+        if len(files_with_errors):
+            reports_with_errors[id] = files_with_errors
     return reports_with_errors
 
-def maven_checkstyle(repo, commit):
+def find_errored_files(repo, commit, use_maven=False):
     print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
@@ -494,22 +449,31 @@ def maven_checkstyle(repo, commit):
     repo_name = dir.split('/')[-1]
     pom = find_the_pom(dir)
     print(pom)
-    cmd = f'mvn -f {pom} clean checkstyle:checkstyle'
-    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    results_files = find_all(dir, 'checkstyle-result.xml')
-    reports_with_errors = check_checkstyle_results(results_files)
+    if use_maven:
+        cmd = f'mvn -f {pom} clean checkstyle:checkstyle'
+        process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        checkstyle_results = [ checkstyle.parse_res(open_file(file)) for file in find_all(dir, 'checkstyle-result.xml') ]
+    else:
+        checkstyle_relative_dir = 'checkstyle.xml'
+        checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
+        output, returncode = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir, checkstyle_jar='../../jars/checkstyle-8.12-all.jar')
+        checkstyle_results += [output]
+
+
+    reports_with_errors = check_checkstyle_results(checkstyle_results)
+
     count = 0
     target = get_real_errors_commit_dir(repo_name, commit)
     for report_dir, results in reports_with_errors.items():
-        checkstyle_checker = f'{"/".join(report_dir.split("/")[:-1])}/checkstyle-checker.xml'
+        # checkstyle_checker = f'{"/".join(report_dir.split("/")[:-1])}/checkstyle-checker.xml'
         for file, errors in results.items():
             print(f'{file} has {len(errors)} errors')
             file_name = file.split('/')[-1]
             dir = os.path.join(target, str(count))
             create_dir(dir)
             shutil.copyfile(file, os.path.join(dir, file_name))
-            shutil.copyfile(checkstyle_checker, os.path.join(dir, 'checkstyle.xml'))
+            # shutil.copyfile(checkstyle_checker, os.path.join(dir, 'checkstyle.xml'))
             save_json(dir, 'errors.json', errors)
             count += 1
     print(find_all(dir, 'checkstyle-checker.xml'))
@@ -572,14 +536,14 @@ def clone():
     # repo = open_repo('google', 'auto')
     # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
     commits_data = open_json('./commits.json')
-    reduced_commits_data = commits_data # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
+    reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['DevelopmentOnTheEdge/be5']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
     commits = find_commits(reduced_commits_data)
     pp.pprint(commits)
     for repo_full_name, valid_commits in commits.items():
         user, repo_name = repo_full_name.split('/')
         repo = open_repo(user, repo_name)
         for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-            maven_checkstyle(repo, commit)
+            find_errored_files(repo, commit)
 
 def structure_real_error_dataset(errors_info):
     dataset = {}

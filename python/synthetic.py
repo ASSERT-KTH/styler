@@ -18,6 +18,7 @@ import graph_plot
 
 from core import *
 import repair
+import styler
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -379,38 +380,12 @@ def gen_repaired(tool, dir, dataset_metadata):
     insert_new_line_at_EOF(tool_dir)
     return tool, dir
 
-def get_checkstyle_results(tool, dir):
-    tool_dir = os.path.join(dir, tool)
-    file_name = f'checkstyle_results_{tool}.json'
-    file_dir = f'{dir}/{file_name}'
-    results_json = {}
-    if os.path.exists(file_dir):
-        results_json = open_json(file_dir)
-    else:
-        checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
-        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir)
-        results_json['checkstyle_results'] = checkstyle_results
-        results_json['number_of_errors'] = number_of_errors
-        save_json(dir, file_name, results_json)
-    return results_json['checkstyle_results'], results_json['number_of_errors']
-
-def get_batch_results(checkstyle_results):
-    return {
-        batch:set([
-            file.split('/')[-2]
-            for file, result in checkstyle_results.items()
-            if len(result['errors']) == 0
-            and f'batch_{batch}' == file.split('/')[-3]
-        ])
-        for batch in range(5)
-    }
-
 def get_repaired(tool, dir):
     if not os.path.exists(f'{dir}/{tool}'):
         return []
-    checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
+    checkstyle_results, number_of_errors = repair.get_checkstyle_results(tool, dir)
     if tool == 'styler':
-        batch_result = get_batch_results(checkstyle_results)
+        batch_result = styler.get_batch_results(checkstyle_results)
         return list(
             reduce(
                 lambda acc, cur: acc | cur,
@@ -460,8 +435,8 @@ def compute_diff_size(experiment_id, dataset, tool):
                 diffs_count = min(java_lang_utils.compute_diff_size(new_file_path, original_file_path), diffs_count)
             diffs += [diffs_count]
     elif tool == 'styler':
-        checkstyle_results, number_of_errors = get_checkstyle_results(tool, experiment_dir)
-        batch_result = get_batch_results(checkstyle_results)
+        checkstyle_results, number_of_errors = repair.get_checkstyle_results(tool, experiment_dir)
+        batch_result = styler.get_batch_results(checkstyle_results)
         batch_size = len(batch_result)
         for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
             original_file_path = get_orig(original_dir, file_id)
@@ -490,7 +465,7 @@ def run_experiment(dataset_name, gen_repaired_files=True):
     ugly_dir = os.path.join(dir, 'ugly')
     orig_dir = os.path.join(dir, 'orig')
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
-    # checkstyle_results, number_of_errors = get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
+    # checkstyle_results, number_of_errors = repair.get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
     # tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper', 'styler']
     tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper'] #, 'styler']
     if gen_repaired_files:

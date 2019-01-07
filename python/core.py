@@ -9,6 +9,7 @@ import checkstyle
 import shutil
 import java_lang_utils
 import shutil
+import uuid
 
 targeted_errors = (
     'MethodParamPad',
@@ -140,6 +141,8 @@ def is_odd(number):
     return number % 2 == 0
 
 def move_parse_exception_files(from_dir, to_dir):
+    """Move all the .java recursively contained in the dir that are not parsable
+    """
     files = java_lang_utils.get_bad_formated(from_dir)
     create_dir(to_dir)
     for file in files:

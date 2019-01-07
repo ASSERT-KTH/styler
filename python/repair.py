@@ -57,3 +57,18 @@ def get_uglies(ugly_dir):
         for error in uglies_dir
     ]
     return uglies
+
+def get_checkstyle_results(tool, dir):
+    tool_dir = os.path.join(dir, tool)
+    file_name = f'checkstyle_results_{tool}.json'
+    file_dir = f'{dir}/{file_name}'
+    results_json = {}
+    if os.path.exists(file_dir):
+        results_json = open_json(file_dir)
+    else:
+        checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
+        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir)
+        results_json['checkstyle_results'] = checkstyle_results
+        results_json['number_of_errors'] = number_of_errors
+        save_json(dir, file_name, results_json)
+    return results_json['checkstyle_results'], results_json['number_of_errors']

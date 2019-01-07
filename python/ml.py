@@ -197,6 +197,7 @@ def tokenize_file_to_repair(file_path, error):
     info['to_token'] = to_token
     info['start'] = start
     info['end'] = end
+    info['error'] = error
     info['tokens_errored_in_tag'] = tokens_errored_in_tag
 
     return tokens_errored, info
@@ -448,6 +449,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
     to_token = error_info['to_token']
+    line = int(error_info['error']['line'])
 
     new_white_space_tokens = new_tokens[1::2]
     # print(new_white_space_tokens)
@@ -457,6 +459,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
     whitespace[from_token:to_token] = new_white_space
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
+
     return result
 
 def get_predictions(dataset, n, id):

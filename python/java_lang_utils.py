@@ -9,6 +9,8 @@ import collections
 import sys
 import os
 
+from core import *
+
 def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     insertions_sample_size_space = modification_number[0]
     insertions_sample_size_tab = modification_number[1]
@@ -123,13 +125,58 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
             line_num = line_num + 1
     return tuple(set(deletions) | set(insertions.keys()))
 
+def mix_sources(source_A, source_B, from_line, to_line=-1):
+    if to_line == -1:
+        to_line = from_line
+
+    file_A_lines = [ line + '\n' for line in source_A.split('\n') ]
+    file_B_lines = [ line + '\n' for line in source_B.split('\n') ]
+
+    tokens_A = tokenizer.tokenize(source_A)
+    tokens_B = tokenizer.tokenize(source_B)
+
+    tokens = zip(tokens_A, tokens_B)
+    lines = range(from_line, to_line)
+
+    output_source = ""
+
+    first_part = ''.join(file_A_lines[:(from_line-1)])
+    output_source += first_part
+    from_token = None
+    first_token_of_A = None
+    to_token = None
+    last_token_of_A = None
+    for token_A, token_B in tokens:
+        if token_A.position[0] >= from_line and token_A.position[0] <= to_line:
+            if 'form_token' not in locals():
+                form_token = token_B
+                first_token_of_A = token_A
+            to_token = token_B
+            last_token_of_A = token_A
+    # print(first_token_of_A,last_token_of_A)
+    if last_token_of_A:
+        if first_token_of_A.position[0] != from_line:
+            output_source += ''.join(file_A_lines[(from_line-1):(first_token_of_A.position[0]-1)])
+        output_source += " "*(first_token_of_A.position[1]-1)
+        output_source += source_B[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)]
+        output_source += '\n'
+        if last_token_of_A.position[0] != to_line:
+            output_source += ''.join(file_A_lines[(last_token_of_A.position[0]):(to_line)])
+        output_source += ''.join(file_A_lines[(to_line):])
+    else:
+        output_source += ''.join(file_A_lines[(from_line-1):])
+
+    return output_source
+
 # The tokens should be the same
 # Patch parts of B into A,
 def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     if to_line == -1:
         to_line = from_line
+
     with open(file_A_path) as f:
         file_A_lines = f.readlines()
+
     try:
         with open(file_B_path) as f:
             file_B_lines = f.readlines()
@@ -141,41 +188,14 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     file_A_content = "".join(file_A_lines)
     file_B_content = "".join(file_B_lines)
 
-    tokens_A = tokenizer.tokenize(file_A_content)
-    tokens_B = tokenizer.tokenize(file_B_content)
+    output_source = mix_sources(file_A_content, file_B_content, from_line, to_line=to_line)
 
     output_dir = "/".join(output_file.split("/")[:-1])
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    tokens = zip(tokens_A, tokens_B)
-    lines = range(from_line, to_line)
     with open(output_file, "w") as output_file_object:
-        first_part = ''.join(file_A_lines[:(from_line-1)])
-        output_file_object.write(first_part)
-        from_token = None
-        first_token_of_A = None
-        to_token = None
-        last_token_of_A = None
-        for token_A, token_B in tokens:
-            if token_A.position[0] >= from_line and token_A.position[0] <= to_line:
-                if 'form_token' not in locals():
-                    form_token = token_B
-                    first_token_of_A = token_A
-                to_token = token_B
-                last_token_of_A = token_A
-        print(first_token_of_A,last_token_of_A)
-        if last_token_of_A:
-            if first_token_of_A.position[0] != from_line:
-                output_file_object.write(''.join(file_A_lines[(from_line-1):(first_token_of_A.position[0]-1)]))
-            output_file_object.write(" "*(first_token_of_A.position[1]-1))
-            output_file_object.write(file_B_content[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)])
-            output_file_object.write('\n')
-            if last_token_of_A.position[0] != to_line:
-                output_file_object.write(''.join(file_A_lines[(last_token_of_A.position[0]):(to_line)]))
-            output_file_object.write(''.join(file_A_lines[(to_line):]))
-        else:
-            output_file_object.write(''.join(file_A_lines[(from_line-1):]))
+        output_file_object.write(output_source)
 
     return output_file
 

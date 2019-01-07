@@ -16,8 +16,8 @@ pp = pprint.PrettyPrinter(indent=4)
 _CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
 
 
-def check(checkstyle_file_path, file_path):
-    cmd = "java -jar {} -f xml -c {} {}".format(_CHECKSTYLE_JAR, checkstyle_file_path, file_path)
+def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR):
+    cmd = "java -jar {} -f xml -c {} {}".format(checkstyle_jar, checkstyle_file_path, file_path)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     # deletion of non xml strings

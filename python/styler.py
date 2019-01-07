@@ -11,6 +11,8 @@ from tqdm import tqdm
 
 from core import *
 import checkstyle
+import repair
+from functools import reduce
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -126,20 +128,41 @@ def create_corpus(dir, commit, checkstyle_relative_dir):
     }
     save_json(corpus_dir, 'corpus.json', corpus_info)
 
-def repair():
+def get_batch_results(checkstyle_results):
+    return {
+        batch:set([
+            file.split('/')[-2]
+            for file, result in checkstyle_results.items()
+            if len(result['errors']) == 0
+            and f'batch_{batch}' == file.split('/')[-3]
+        ])
+        for batch in range(5)
+    }
+
+def repair_files():
     dir= './styler/test'
-    file_path = f'{dir}/QueryContext.java'
-    metadata_path = f'{dir}/metadata.json'
+    target = './styler/test-repaired'
+    checkstyle_rules = './styler/checkstyle.xml'
+    bin = './styler/test-bin'
+    create_dir(target)
+    create_dir(bin)
     translate = gen_translator('./styler/model.pt')
-    print_translations(file_path, metadata_path, translate)
-    # for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
-    #     for translation in translate(tokenized_errors):
-    #         print(de_tokenize(file_path, info, translation))
-    #         print()
+    for folder_id in tqdm(list_folders(dir)):
+        file_path = glob.glob(f'{dir}/{folder_id}/*.java')[0]
+        metadata_path = f'{dir}/{folder_id}/metadata.json'
+        for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
+            for proposal_id, translation in enumerate(translate(tokenized_errors)):
+                de_tokenized_translation = de_tokenize(file_path, info, translation)
+                folder = f'{target}/batch_{proposal_id}/{folder_id}'
+                create_dir(folder)
+                save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
+    move_parse_exception_files(target, bin)
+    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target)
+    print(reduce(lambda a, b: a|b, get_batch_results(checkstyle_result).values()))
 
 def main(args):
-    create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
-
+    # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
+    repair_files()
 
 
 if __name__ == "__main__":
