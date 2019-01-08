@@ -126,6 +126,8 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     return tuple(set(deletions) | set(insertions.keys()))
 
 def mix_sources(source_A, source_B, from_line, to_line=-1):
+    """Put a little bit of B into A
+    """
     if to_line == -1:
         to_line = from_line
 
@@ -171,6 +173,8 @@ def mix_sources(source_A, source_B, from_line, to_line=-1):
 # The tokens should be the same
 # Patch parts of B into A,
 def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
+    """Put a little bit of B into A
+    """
     if to_line == -1:
         to_line = from_line
 

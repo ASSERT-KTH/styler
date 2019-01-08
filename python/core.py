@@ -148,3 +148,8 @@ def move_parse_exception_files(from_dir, to_dir):
     for file in files:
         shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
     return files
+
+def json_pp(obj):
+    """Pretty print a collection
+    """
+    print(json.dumps(obj, indent=4))

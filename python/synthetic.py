@@ -496,9 +496,6 @@ def get_diff_dataset(experiment_id, tools):
         for tool in tools # if tool not in ['styler']
     }
 
-def json_pp(obj):
-    print(json.dumps(obj, indent=4))
-
 def re_gen(dataset, type, id):
     corpus = Corpus(config['CORPUS'][dataset], dataset)
     tmp_dir = f'./tmp/{dataset}/{type}/{id}'

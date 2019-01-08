@@ -460,7 +460,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
 
-    return result
+    return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
 
 def get_predictions(dataset, n, id):
     tokenized_dir = get_tokenized_dir(dataset)

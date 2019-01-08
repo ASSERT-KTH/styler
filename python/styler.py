@@ -8,11 +8,12 @@ import git
 from git import Repo
 import shutil
 from tqdm import tqdm
+from functools import reduce
+import pydash
 
 from core import *
 import checkstyle
 import repair
-from functools import reduce
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -139,9 +140,29 @@ def get_batch_results(checkstyle_results):
         for batch in range(5)
     }
 
+def reverse_collection(collection, key_func=pydash.utilities.identity):
+    result = {}
+    for key, items in collection.items():
+        for item in items:
+            value = key_func(item)
+            if value not in result:
+                result[value] = []
+            result[value] += [key]
+    return result
+
+def select_the_best_repair(correct_repairs, original):
+    min_diff = 10000000
+    file = ''
+    for correct_repair in correct_repairs:
+        diff_size = java_lang_utils.compute_diff_size(original, correct_repair)
+        if diff_size < min_diff:
+            file = correct_repair
+    return file
+
 def repair_files():
     dir= './styler/test'
     target = './styler/test-repaired'
+    target_final = './styler/test-final'
     checkstyle_rules = './styler/checkstyle.xml'
     bin = './styler/test-bin'
     create_dir(target)
@@ -158,7 +179,20 @@ def repair_files():
                 save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
     move_parse_exception_files(target, bin)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target)
-    print(reduce(lambda a, b: a|b, get_batch_results(checkstyle_result).values()))
+    files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
+    final_repairs = {
+        id:select_the_best_repair(
+            [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
+            glob.glob(f'{dir}/{id}/*.java')[0]
+        )
+        for id, repairs
+        in files_properly_repaired.items()
+    }
+    json_pp(final_repairs)
+    for id, path in final_repairs.items():
+        folder = create_dir(f'{target_final}/{id}')
+        shutil.copy(path, folder)
+
 
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
