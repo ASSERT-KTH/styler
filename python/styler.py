@@ -1,21 +1,14 @@
 import ml
 import sys
-import json
-import os
-import subprocess
 import glob
-import git
 from git import Repo
-import shutil
 from tqdm import tqdm
-from functools import reduce
 import pydash
+import real
 
 from core import *
 import checkstyle
-import repair
 
-from travis import analyze
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -195,7 +188,7 @@ def repair_files():
 
 def test():
     repos = list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
-    for info in tqdm(analyze.get_repo_with_checkstyle(repos), desc='Total'):
+    for info in tqdm(real.get_repo_with_checkstyle(repos), desc='Total'):
         print(info['repo_full_name'])
 
 def main(args):

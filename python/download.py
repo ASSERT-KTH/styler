@@ -10,7 +10,7 @@ import tarfile
 import configparser
 import glob
 
-sys.path.append('../')
+from core import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -19,17 +19,22 @@ token = config['DEFAULT']['token']
 
 __base_dir = "/home/benjaminl/Documents/travis-ci-build-log-dataset"
 
+
 def get_dir(dir):
     return os.path.join(__base_dir, dir)
+
 
 def get_repo_dir(repo):
     return get_dir(f'./{repo}')
 
+
 def get_build_dir(repo, build):
     return os.path.join(get_repo_dir(repo), f'./{build}')
 
+
 def get_job_dir(repo, build, job):
     return os.path.join(get_build_dir(repo, build), f'./{job}')
+
 
 def get_travis(endpoint, payload={}):
     headers = {}
@@ -37,7 +42,8 @@ def get_travis(endpoint, payload={}):
         headers['Authorization'] = f'token {token}'
     r = requests.get(f'https://api.travis-ci.org{endpoint}', headers=headers, params=payload)
     # print(f'Get {r.url}')
-    return r;
+    return r
+
 
 def get_builds(repo, max_builds_collected=100):
     result = []
@@ -57,24 +63,30 @@ def get_builds(repo, max_builds_collected=100):
         result = result[:max_builds_collected]
     return result
 
+
 def get_build(build):
     return get_travis(f'/builds/{build}').json()
+
 
 def get_job_log(job):
     return get_travis(f'/jobs/{job}/log.txt').text
 
+
 def get_jobs(repo, build):
     return get_build(repo, build)['matrix']
+
 
 def load_repo_list(file):
     content = open_file(file)
     return content.split('\n')
+
 
 def download_job_info(repo, build_id, job_id):
     folder = get_job_dir(repo, build_id, job_id)
     create_dir(folder)
     log = get_job_log(job_id)
     save_file(folder, 'log.txt', log)
+
 
 def download_build_info(repo, build_id):
     folder = get_build_dir(repo, build_id)
@@ -87,6 +99,7 @@ def download_build_info(repo, build_id):
         download_job_info(repo, build_id, job_id)
     tar_and_delete(folder)
 
+
 def download_repo_info(repo):
     folder = get_repo_dir(repo)
     create_dir(folder)
@@ -95,9 +108,11 @@ def download_repo_info(repo):
     for build_id in builds_id:
         download_build_info(repo, build_id)
 
+
 def tar_and_delete(path):
     tar_dir(path)
     delete_dir(path)
+
 
 def tar_dir(path):
     folder_name = path.split('/')[-1]
@@ -108,15 +123,19 @@ def tar_dir(path):
                 file_path = os.path.join(root, file)
                 tar_handle.add(file_path, arcname=file_path[len(path):])
 
+
 def get_repo_names(min_size=1):
     repos = [ "/".join(d.split("/")[-3:-1]) for d in glob.glob(f'{get_dir("")}/*/*/') ]
     return [ repo for repo in repos if number_of_builds(repo) >= min_size ]
 
+
 def get_builds_id(repo):
     return [ tar.split('/')[-1].split('.')[0] for tar in glob.glob(f'{get_repo_dir(repo)}/*.tar.bz') ]
 
+
 def number_of_builds(repo):
     return len(glob.glob(f'{get_repo_dir(repo)}/*.tar.bz'))
+
 
 def start_pool(repos, size):
     print(repos)
@@ -141,6 +160,7 @@ def start_pool(repos, size):
     for thread in threads:
         thread.join()
 
+
 if __name__ == "__main__":
     create_dir(__base_dir)
     if len(sys.argv) >= 2 and sys.argv[1] == "get":
@@ -157,5 +177,5 @@ if __name__ == "__main__":
         start_pool(repo_list, number_of_threads)
     if len(sys.argv) >= 3 and sys.argv[1] == "get-pool-missing":
         number_of_threads = int(sys.argv[2])
-        repo_list = set(load_repo_list('./repos.txt')) - set(load_repo_list('./list.txt'))
+        repo_list = set(load_repo_list('./travis/repos.txt')) - set(load_repo_list('./travis/list.txt'))
         start_pool(repo_list, number_of_threads)

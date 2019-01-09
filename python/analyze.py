@@ -1,30 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import tarfile
-import os
-from .download import *
+from download import *
 import sys
 from functools import reduce
 import atexit
-import subprocess
 import glob
 import pprint
 from tqdm import tqdm
-from tqdm import trange
-import git
 from git import Repo
-import shutil
+import configparser
+from core import *
+import git_helper
 
 import matplotlib
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import configparser
-from termcolor import colored
 
-sys.path.append('../')
-import checkstyle
-import real
-from core import *
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -104,6 +94,7 @@ def error_check_parser(error):
     # check == ''
 
     error = error.lower()
+    check = 'Ukn'
 
     if 'unused import' in error or 'import.unused' in error:
         check = 'UnusedImports'
@@ -399,27 +390,9 @@ def get_build_commits(res):
             result[repo][build_id] = get_build(build_id)['commit']
     return result
 
-def clone_repo(user, repo_name):
-    dir = get_repo_dir(user, repo_name)
-    print(f'Clonning {user}/{repo_name}')
-    return Repo.clone_from(f'git@github.com:{user}/{repo_name}.git', dir)
-
-def get_repo_dir(user, repo_name):
-    return os.path.join(__git_repo_dir, f'./{user}/{repo_name}')
-
-def open_repo(user, repo_name):
-    dir = get_repo_dir(user, repo_name)
-    if os.path.exists(dir):
-        return Repo(dir)
-    else:
-        return clone_repo(user, repo_name)
-
-
-def get_real_errors_repo_dir(repo):
-    return os.path.join(__real_errors_dir, repo)
 
 def get_real_errors_commit_dir(repo, commit):
-    return os.path.join(get_real_errors_repo_dir(repo), commit)
+    return os.path.join(git_helper.get_real_errors_repo_dir(repo), commit)
 
 
 def has_commit(repo, sha):
@@ -436,7 +409,7 @@ if __name__ == '__main__':
             for repo in repos:
                 print(f'Analyse {repo}, with {number_of_builds(repo)} builds')
                 res[repo] = analyse_repo(repo)
-            save_json('./', 'results.json', res)
+            save_json('./travis/', 'results.json', res)
         except Exception as e:
             print('somethig went wrong')
             print(e)
@@ -452,7 +425,7 @@ if __name__ == '__main__':
             for repo in repos:
                 print(f'Analyse {repo}, with {len(get_oss_builds_id(repo))} builds')
                 res[repo] = analyse_oss_repo(repo)
-            save_json('./', 'results_oss.json', res)
+            save_json('./travis/', 'results_oss.json', res)
         except Exception as e:
             print('somethig went wrong')
             print(e)
@@ -468,7 +441,7 @@ if __name__ == '__main__':
             out += '\n'.join([ ','.join(line) for line in  ordered_res])
         else:
             out = '\n'.join(repos)
-        save_file('./', 'list.txt', out)
+        save_file('./travis/', 'list.txt', out)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'utf-8':
         res = open_json('./results.json')
         repos = res.keys()
@@ -477,18 +450,18 @@ if __name__ == '__main__':
         plots = [ f'{repo:40s}{synthesis[repo]["build_with_errors"]}' for repo in synthesis.keys()]
         print('\n'.join(plots))
     elif len(sys.argv) >= 2 and sys.argv[1] == 'res-oss':
-        res = open_json('./results_oss.json')
+        res = open_json('./travis/results_oss.json')
         repos = res.keys()
         print(f'Found {len(repos)} repos')
         print_res(res)
     elif len(sys.argv) >= 2 and sys.argv[1] == 'github-commits':
         # square_picasso : ['17673347', '26883826']
-        res = open_json('./results.json')
+        res = open_json('./travis/results.json')
         commits = get_build_commits(res)
         pp.pprint(commits)
-        save_json('./', 'commits.json', commits)
+        save_json('./travis/', 'commits.json', commits)
     else:
-        res = open_json('./results.json')
+        res = open_json('./travis/results.json')
         repos = res.keys()
         print(f'Found {len(repos)} repos')
         print_res(res)

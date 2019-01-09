@@ -4,7 +4,7 @@ import os
 import configparser
 
 config = configparser.ConfigParser()
-config.read('./travis/config.ini')
+config.read('./config.ini')
 
 __git_repo_dir = config['DEFAULT']['git_repo_dir']
 

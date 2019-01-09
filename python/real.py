@@ -14,7 +14,7 @@ import git_helper
 from core import *
 
 config = configparser.ConfigParser()
-config.read('./travis/config.ini')
+config.read('config.ini')
 
 _OSS_dir = config['DEFAULT']['OSS_dir']
 __git_repo_dir = config['DEFAULT']['git_repo_dir']
@@ -28,6 +28,7 @@ def get_real_errors_repo_dir(repo):
 
 def get_real_errors_commit_dir(repo, commit):
     return os.path.join(get_real_errors_repo_dir(repo), commit)
+
 
 def real_errors_stats():
     errors_info = load_errors_info()
