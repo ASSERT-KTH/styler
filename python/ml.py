@@ -19,6 +19,7 @@ from termcolor import colored
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from difflib import Differ
+import configparser
 
 from core import *
 import token_utils
@@ -26,12 +27,14 @@ import token_utils
 pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-__synthetic_dir = '/home/benjaminl/Documents/synthetic-checkstyle-error-dataset/dataset'
+__synthetic_dir = config['DEFAULT']['SYNTHETIC_DIR']
 __protocol = 'protocol1'
 
 def get_dataset_dir(dataset):
-    return f'{__synthetic_dir}/{__protocol}/{dataset}'
+    return f'{__synthetic_dir}/dataset/{__protocol}/{dataset}'
 
 def get_tokenized_dir(dataset):
     return f'/home/benjaminl/Documents/kth/data/2/{dataset}'
@@ -340,7 +343,7 @@ def gen_IO(dataset, target):
             if info['count_diff'] == 2:
                 weirdos.append(f'{sub_set}/{id}')
         merge_IOs(sub_set, synthesis_error_ids, target)
-
+    shutil.copy('./utils/send.sh', target)
     # print(weirdos)
 
 def vectorize_file(path, vectorizer):
@@ -557,7 +560,7 @@ def main(args):
         dataset_list = sys.argv[2:]
 
     if len(args) >= 2 and args[1] == 'gen':
-        target = '/home/benjaminl/Documents/kth/data/2'
+        target = '/home/benjaminl/Documents/kth/data/real'
         for dataset in dataset_list:
             gen_IO(dataset, os.path.join(target, dataset))
     if len(args) >= 2 and args[1] == 'info':

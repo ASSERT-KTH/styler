@@ -9,6 +9,8 @@ import checkstyle
 import shutil
 import java_lang_utils
 import shutil
+import random
+import copy
 import uuid
 
 targeted_errors = (
@@ -153,3 +155,10 @@ def json_pp(obj):
     """Pretty print a collection
     """
     print(json.dumps(obj, indent=4))
+
+def shuffled(array):
+    """Return a shallow copy of the list shuffled
+    """
+    array_copy = copy.copy(array)
+    random.shuffle(array_copy)
+    return array_copy

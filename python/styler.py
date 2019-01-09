@@ -92,7 +92,7 @@ def create_corpus(dir, commit, checkstyle_relative_dir):
         os.remove(checkstyle_result)
 
     # pom_relative_dir = './pom.xml'
-    checkstyle_relative_dir = './checkstyle.xml'
+    # checkstyle_relative_dir = './checkstyle.xml'
     # pom_dir = os.path.join(dir, pom_relative_dir)
     checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
     # cmd = f'java -jar ../jars/checkstyle-8.12-all.jar -c {checkstyle_dir} -f xml {dir}'
@@ -106,8 +106,6 @@ def create_corpus(dir, commit, checkstyle_relative_dir):
     print(f'Found {len(files_with_errors)} files with errors.')
 
     def is_good_candidate(file_path):
-        if '/test/' in file_path:
-            return False
         if not file_path.endswith('.java'):
             return False
         return True
@@ -196,7 +194,8 @@ def repair_files():
 
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
-    repair_files()
+    create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
+    # repair_files()
 
 
 if __name__ == "__main__":

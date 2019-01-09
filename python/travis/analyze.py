@@ -431,34 +431,36 @@ def get_real_errors_commit_dir(repo, commit):
 def check_checkstyle_results(checkstyle_results):
     reports_with_errors = {}
     for id, results in enumerate(checkstyle_results):
-        files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors'])}
+        files_with_errors = { file:result['errors'] for file, result in results.items() if len(result['errors']) and file.endswith('.java')}
         if len(files_with_errors):
             reports_with_errors[id] = files_with_errors
     return reports_with_errors
 
-def find_errored_files(repo, commit, use_maven=False):
+def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyle.xml'):
     print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
 
     # clean_up
-    checkstyle_results = find_all(dir, 'checkstyle-result.xml')
-    for checkstyle_result in checkstyle_results:
-        os.remove(checkstyle_result)
+    checkstyle_result_xml = find_all(dir, 'checkstyle-result.xml')
+    for file in checkstyle_result_xml:
+        os.remove(file)
 
     repo_name = dir.split('/')[-1]
     pom = find_the_pom(dir)
-    print(pom)
     if use_maven:
         cmd = f'mvn -f {pom} clean checkstyle:checkstyle'
         process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
         output = process.communicate()[0]
         checkstyle_results = [ checkstyle.parse_res(open_file(file)) for file in find_all(dir, 'checkstyle-result.xml') ]
     else:
-        checkstyle_relative_dir = 'checkstyle.xml'
-        checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
-        output, returncode = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir, checkstyle_jar='../../jars/checkstyle-8.12-all.jar')
-        checkstyle_results += [output]
+        # checkstyle_relative_dir = find_all(dir, checkstyle_path)
+        checkstyle_dir = os.path.join(dir, checkstyle_path)
+        if not os.path.isfile(checkstyle_dir):
+            checkstyle_results = []
+        else :
+            output, returncode = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir, checkstyle_jar='../../jars/checkstyle-8.12-all.jar')
+            checkstyle_results = [output]
 
 
     reports_with_errors = check_checkstyle_results(checkstyle_results)
@@ -532,6 +534,21 @@ def load_errors_info():
     ], lambda obj: obj['hash'])
     return errors_info
 
+def commit_until_last_modification(repo, file):
+    repo.git.checkout('master')
+    wd = os.getcwd()
+    os.chdir(repo.git.rev_parse("--show-toplevel"))
+    cmd_commit_list = 'git log --pretty=format:%H'
+    cmd_commit_checkstyle = f'git log -n 1 --pretty=format:%H -- {file}'
+    p1 = subprocess.Popen(cmd_commit_list.split(' '), stdout=subprocess.PIPE)
+    commit_list_array = p1.communicate()[0].decode("utf-8")
+    p2 = subprocess.Popen(cmd_commit_checkstyle.split(' '), stdout=subprocess.PIPE)
+    commit_checkstyle = p2.communicate()[0].decode("utf-8")
+    os.chdir(wd)
+    repo.git.checkout('master')
+    commit_list = commit_list_array.split('\n')
+    return commit_list[:commit_list.index(commit_checkstyle)] + [commit_checkstyle]
+
 def clone():
     # repo = open_repo('google', 'auto')
     # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
@@ -539,11 +556,33 @@ def clone():
     reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['DevelopmentOnTheEdge/be5']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
     commits = find_commits(reduced_commits_data)
     pp.pprint(commits)
+    repo_information = {}
+    repo_information['facebook/presto'] = {
+        'use_maven': False,
+        'checkstyle_path': './src/checkstyle/checks.xml'
+    }
+    repo_information['vorburger/MariaDB4j'] = {
+        'use_maven': False,
+        'checkstyle_path': '../checkstyle.xml'
+    }
+    repo_information['google/auto'] = {
+        'use_maven': False,
+        'checkstyle_path': '../checkstyle.xml'
+    }
+    repo_information['DevelopmentOnTheEdge/be5'] = {
+        'use_maven': False,
+        'checkstyle_path': './checkstyle.xml'
+    }
+    commits['DevelopmentOnTheEdge/be5'] = shuffled(commit_until_last_modification(repo, repo_information[repo_full_name]['checkstyle_path']))
     for repo_full_name, valid_commits in commits.items():
         user, repo_name = repo_full_name.split('/')
         repo = open_repo(user, repo_name)
         for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-            find_errored_files(repo, commit)
+            if not repo_information[repo_full_name]['use_maven']:
+                find_errored_files(repo, commit, use_maven=False, checkstyle_path=repo_information[repo_full_name]['checkstyle_path'])
+            else:
+                find_errored_files(repo, commit, use_maven=True)
+
 
 def structure_real_error_dataset(errors_info):
     dataset = {}
