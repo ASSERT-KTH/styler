@@ -420,8 +420,15 @@ def find_all(path, name):
     return result
 
 def find_the_pom(path):
-    return sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))[0] # the main pom should be closser to the root
+    return safe_get_first(sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))) # the main pom should be closser to the root
 
+def find_the_checkstyle(repo):
+    path = repo.working_dir
+    checkstyle_path = safe_get_first(sorted(find_all(path, 'checkstyle.xml'), key=lambda x: x.count('/')))
+    if checkstyle_path:
+        return checkstyle_path, '.' + checkstyle_path[len(path):]
+    else:
+        return None, None
 def get_real_errors_repo_dir(repo):
     return os.path.join(__real_errors_dir, repo)
 
@@ -437,7 +444,7 @@ def check_checkstyle_results(checkstyle_results):
     return reports_with_errors
 
 def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyle.xml'):
-    print(f'{repo}/{commit}')
+    # print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
 
@@ -470,7 +477,7 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
     for report_dir, results in reports_with_errors.items():
         # checkstyle_checker = f'{"/".join(report_dir.split("/")[:-1])}/checkstyle-checker.xml'
         for file, errors in results.items():
-            print(f'{file} has {len(errors)} errors')
+            # print(f'{file} has {len(errors)} errors')
             file_name = file.split('/')[-1]
             dir = os.path.join(target, str(count))
             create_dir(dir)
@@ -478,7 +485,7 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
             # shutil.copyfile(checkstyle_checker, os.path.join(dir, 'checkstyle.xml'))
             save_json(dir, 'errors.json', errors)
             count += 1
-    print(find_all(dir, 'checkstyle-checker.xml'))
+    find_all(dir, 'checkstyle-checker.xml')
     return output
 
 def has_commit(repo, sha):
@@ -535,23 +542,75 @@ def load_errors_info():
     return errors_info
 
 def commit_until_last_modification(repo, file):
-    repo.git.checkout('master')
+    result = []
     wd = os.getcwd()
-    os.chdir(repo.git.rev_parse("--show-toplevel"))
-    cmd_commit_list = 'git log --pretty=format:%H'
-    cmd_commit_checkstyle = f'git log -n 1 --pretty=format:%H -- {file}'
-    p1 = subprocess.Popen(cmd_commit_list.split(' '), stdout=subprocess.PIPE)
-    commit_list_array = p1.communicate()[0].decode("utf-8")
-    p2 = subprocess.Popen(cmd_commit_checkstyle.split(' '), stdout=subprocess.PIPE)
-    commit_checkstyle = p2.communicate()[0].decode("utf-8")
+    try:
+        repo.git.checkout('master')
+        os.chdir(repo.git.rev_parse("--show-toplevel"))
+        cmd_commit_list = 'git log --pretty=format:%H'
+        cmd_commit_checkstyle = f'git log -n 1 --pretty=format:%H -- {file}'
+        p1 = subprocess.Popen(cmd_commit_list.split(' '), stdout=subprocess.PIPE)
+        commit_list_array = p1.communicate()[0].decode("utf-8")
+        p2 = subprocess.Popen(cmd_commit_checkstyle.split(' '), stdout=subprocess.PIPE)
+        commit_checkstyle = p2.communicate()[0].decode("utf-8")
+        repo.git.checkout('master')
+        commit_list = commit_list_array.split('\n')
+        result = commit_list[:commit_list.index(commit_checkstyle)] + [commit_checkstyle]
+    except:
+        pass
     os.chdir(wd)
-    repo.git.checkout('master')
-    commit_list = commit_list_array.split('\n')
-    return commit_list[:commit_list.index(commit_checkstyle)] + [commit_checkstyle]
+    return result
+
+def sanitize_checkstyle(content):
+    lines = content.split('\n')
+    for line in lines:
+        line_stripped: str = line.strip()
+        if line_stripped.startswith('<!--') and line_stripped.endswith('-->'):
+            continue
+        if '${' in line:
+            return False
+        if 'suppressions' in line:
+            return False
+    return True
+
+def get_repo_with_checkstyle(repos):
+    result = []
+    for repo_full_name in repos:
+        user, repo_name = repo_full_name.split('/')
+        repo = open_repo(user, repo_name)
+        checkstyle_absolute, checkstyle_relative = find_the_checkstyle(repo)
+        if not checkstyle_absolute:
+            continue
+        if sanitize_checkstyle(open_file(checkstyle_absolute)):
+            pom_line = open_file(find_the_pom(repo.working_dir)).split('\n')
+            good = True
+            for l in pom_line:
+                if 'suppressionsLocation' in l:
+                    good = False
+            if good:
+                result.append({
+                    'repo': repo,
+                    'checkstyle': checkstyle_absolute,
+                    'repo_full_name': repo_full_name
+                })
+    return result
 
 def clone():
-    # repo = open_repo('google', 'auto')
-    # maven_checkstyle(repo, 'eb0bafd6c00069fee58f5cb513dc73f1754bd02d')
+    repos = list(open_json('./commits.json').keys()) + list(open_json('./commits_oss.json').keys())
+    for info in get_repo_with_checkstyle(repos):
+        repo = info['repo']
+        checkstyle = info['checkstyle']
+        repo_full_name = info['repo_full_name']
+        user, repo_name = repo_full_name.split('/')
+        valid_commits = shuffled(commit_until_last_modification(repo, checkstyle))
+        try:
+            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+                find_errored_files(repo, commit, use_maven=False, checkstyle_path=checkstyle)
+        except:
+            print(f'did not complet the error collection of {repo_full_name}')
+        # print(f'{repo_name} {}')
+
+def clone_old():
     commits_data = open_json('./commits.json')
     reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['DevelopmentOnTheEdge/be5']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
     commits = find_commits(reduced_commits_data)

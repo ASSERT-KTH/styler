@@ -59,6 +59,8 @@ corner_cases_errors = (
 def open_file(file):
     """Open a file and read the content
     """
+    if not file:
+        return ''
     content = ''
     with open(file, 'r') as file:
         content = file.read()
