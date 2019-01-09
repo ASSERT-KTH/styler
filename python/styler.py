@@ -15,6 +15,8 @@ from core import *
 import checkstyle
 import repair
 
+from travis import analyze
+
 def tokenize_errors(file_path, errors):
     inputs = []
     for error in errors:
@@ -191,11 +193,16 @@ def repair_files():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
 
+def test():
+    repos = list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
+    for info in tqdm(analyze.get_repo_with_checkstyle(repos), desc='Total'):
+        print(info['repo_full_name'])
 
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
-    create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
+    # create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
     # repair_files()
+    test()
 
 
 if __name__ == "__main__":

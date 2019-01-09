@@ -99,9 +99,6 @@ def tar_and_delete(path):
     tar_dir(path)
     delete_dir(path)
 
-def delete_dir(path):
-    shutil.rmtree(path)
-
 def tar_dir(path):
     folder_name = path.split('/')[-1]
     parent_dir = "/".join(path.split('/')[:-1])
