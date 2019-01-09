@@ -3,7 +3,6 @@ import sys
 import glob
 from git import Repo
 from tqdm import tqdm
-import pydash
 import real
 
 from core import *
@@ -77,7 +76,7 @@ def get_files_with_errors(checkstyle_result):
 def create_corpus(dir, commit, checkstyle_relative_dir):
     if dir.endswith('/'):
         dir = dir[:-1]
-    corpus_dir = f'{dir}-corpus'
+    corpus_dir = f'./styler/{dir.split("/")[-1]}-corpus'
 
     repo = Repo(dir)
     repo.git.checkout(commit)
@@ -133,7 +132,12 @@ def get_batch_results(checkstyle_results):
         for batch in range(5)
     }
 
-def reverse_collection(collection, key_func=pydash.utilities.identity):
+def identity(a):
+    return a
+
+def reverse_collection(collection, key_func=None):
+    if key_func == None:
+        key_func = identity
     result = {}
     for key, items in collection.items():
         for item in items:
@@ -187,9 +191,14 @@ def repair_files():
         shutil.copy(path, folder)
 
 def test():
-    repos = list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
+    repos = ['eclipse/milo', 'square/picasso', 'Spirals-Team/repairnator', 'ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
     for info in tqdm(real.get_repo_with_checkstyle(repos), desc='Total'):
-        print(info['repo_full_name'])
+        # print(info)
+        commits = real.commit_until_last_modification(info['repo'], info['checkstyle_relative'])
+        if len(commits):
+            oldest_commit = commits[-1]
+            print(f'{info["repo_full_name"]} -> {oldest_commit}')
+            create_corpus(info['repo'].working_dir, oldest_commit, info['checkstyle_relative'])
 
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')

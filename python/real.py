@@ -200,6 +200,7 @@ def get_repo_with_checkstyle(repos):
                 result.append({
                     'repo': repo,
                     'checkstyle': checkstyle_absolute,
+                    'checkstyle_relative': checkstyle_relative,
                     'repo_full_name': repo_full_name
                 })
     return result
