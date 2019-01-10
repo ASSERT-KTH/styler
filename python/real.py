@@ -203,10 +203,13 @@ def get_repo_with_checkstyle(repos):
                 if 'suppressionsLocation' in l:
                     good = False
             if good:
+
+                save_file(os.path.join(repo.working_dir, '../'), 'checkstyle.xml', sanitize_checkstyle(open_file(checkstyle_absolute)))
                 result.append({
                     'repo': repo,
                     'checkstyle': checkstyle_absolute,
                     'checkstyle_relative': checkstyle_relative,
+                    'checkstyle_clean': os.path.join(repo.working_dir, '../checkstyle.xml'),
                     'repo_full_name': repo_full_name
                 })
     return result
@@ -214,19 +217,40 @@ def get_repo_with_checkstyle(repos):
 
 def sanitize_checkstyle(content):
     lines = content.split('\n')
+    restult = ''
     for line in lines:
         line_stripped: str = line.strip()
         if line_stripped.startswith('<!--') and line_stripped.endswith('-->'):
             continue
         if '${' in line:
-            return False
+            if 'cacheFile' not in line:
+                print(line)
+                return False
+            else:
+                continue
         if 'suppressions' in line:
             return False
-    return True
+        if 'RedundantThrows' in line:
+            continue
+        restult += line + '\n'
+    return restult
 
 
 def clone():
-    repos = list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
+    repos = set(list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys()))
+    repos = repos - set((
+        # 'square/picasso',
+        'pedrovgs/Renderers',
+        'square/wire',
+        'opentracing-contrib/java-spring-cloud',
+        # 'ONSdigital/rm-notify-gateway',
+        'INRIA/spoon',
+        # 'eclipse/milo',
+        # 'vorburger/MariaDB4j',
+        # 'Spirals-Team/repairnator',
+        'shyiko/mysql-binlog-connector-java'
+    ))
+    repos = list(repos)
     for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
         repo = info['repo']
         checkstyle_path = info['checkstyle']
@@ -235,7 +259,7 @@ def clone():
         valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
         try:
             for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-                find_errored_files(repo, commit, use_maven=False, checkstyle_path=checkstyle_path)
+                find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
         except:
             print(f'did not complet the error collection of {repo_full_name}')
         # print(f'{repo_name} {}')
