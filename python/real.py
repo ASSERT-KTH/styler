@@ -247,7 +247,7 @@ def clone():
         # 'INRIA/spoon',
         'eclipse/milo',
         'vorburger/MariaDB4j',
-        'Clonning DevelopmentOnTheEdge/be5',
+        'DevelopmentOnTheEdge/be5',
         'Spirals-Team/repairnator',
         # 'shyiko/mysql-binlog-connector-java'
     ))
