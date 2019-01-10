@@ -223,7 +223,7 @@ def sanitize_checkstyle(content):
         if line_stripped.startswith('<!--') and line_stripped.endswith('-->'):
             continue
         if '${' in line:
-            if 'cacheFile' not in line:
+            if 'cacheFile' not in line and 'basedir' not in line :
                 print(line)
                 return False
             else:
@@ -239,16 +239,17 @@ def sanitize_checkstyle(content):
 def clone():
     repos = set(list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys()))
     repos = repos - set((
-        # 'square/picasso',
-        'pedrovgs/Renderers',
-        'square/wire',
-        'opentracing-contrib/java-spring-cloud',
-        # 'ONSdigital/rm-notify-gateway',
-        'INRIA/spoon',
-        # 'eclipse/milo',
-        # 'vorburger/MariaDB4j',
-        # 'Spirals-Team/repairnator',
-        'shyiko/mysql-binlog-connector-java'
+        'square/picasso',
+        # 'pedrovgs/Renderers',
+        # 'square/wire',
+        # 'opentracing-contrib/java-spring-cloud',
+        'ONSdigital/rm-notify-gateway',
+        # 'INRIA/spoon',
+        'eclipse/milo',
+        'vorburger/MariaDB4j',
+        'Clonning DevelopmentOnTheEdge/be5',
+        'Spirals-Team/repairnator',
+        # 'shyiko/mysql-binlog-connector-java'
     ))
     repos = list(repos)
     for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
@@ -256,13 +257,13 @@ def clone():
         checkstyle_path = info['checkstyle']
         repo_full_name = info['repo_full_name']
         user, repo_name = repo_full_name.split('/')
-        valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
-        try:
-            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-                find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
-        except:
-            print(f'did not complet the error collection of {repo_full_name}')
-        # print(f'{repo_name} {}')
+        # valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
+        # try:
+        #     for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+        #         find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
+        # except:
+        #     print(f'did not complet the error collection of {repo_full_name}')
+        print(f'{repo_name}')
 
 
 def find_commits(commits_data):
