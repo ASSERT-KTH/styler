@@ -257,13 +257,13 @@ def clone():
         checkstyle_path = info['checkstyle']
         repo_full_name = info['repo_full_name']
         user, repo_name = repo_full_name.split('/')
-        # valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
-        # try:
-        #     for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-        #         find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
-        # except:
-        #     print(f'did not complet the error collection of {repo_full_name}')
-        print(f'{repo_name}')
+        valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
+        try:
+            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+                find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
+        except:
+            print(f'did not complet the error collection of {repo_full_name}')
+        # print(f'{repo_name}')
 
 
 def find_commits(commits_data):
