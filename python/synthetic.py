@@ -338,8 +338,7 @@ def copy_origs(from_dir, to_dir):
 def gen_experiment(dataset_name):
     dir = create_dir(get_repo_dir(dataset_name))
     experiment_id = dataset_name
-    target = get_experiment_dir(experiment_id)
-    create_dir(target)
+    target = create_dir(get_experiment_dir(experiment_id))
     shutil.copy(os.path.join(dir, 'checkstyle.xml'), os.path.join(target, 'checkstyle.xml'))
     checkstyle_suppressions_file_dir = os.path.join(dir, 'checkstyle-suppressions.xml')
     if os.path.exists(checkstyle_suppressions_file_dir):
@@ -380,24 +379,6 @@ def gen_repaired(tool, dir, dataset_metadata):
     insert_new_line_at_EOF(tool_dir)
     return tool, dir
 
-def get_repaired(tool, dir):
-    if not os.path.exists(f'{dir}/{tool}'):
-        return []
-    checkstyle_results, number_of_errors = repair.get_checkstyle_results(tool, dir)
-    if tool == 'styler':
-        batch_result = styler.get_batch_results(checkstyle_results)
-        return list(
-            reduce(
-                lambda acc, cur: acc | cur,
-                batch_result.values()
-            )
-        )
-    else:
-        return [
-            file.split('/')[-2]
-            for file, result in checkstyle_results.items()
-            if len(result['errors']) == 0
-        ]
 
 def compute_diff_size(experiment_id, dataset, tool):
     experiment_dir = get_experiment_dir(experiment_id)
@@ -408,7 +389,10 @@ def compute_diff_size(experiment_id, dataset, tool):
 
     dir = os.path.join(experiment_dir, tool)
     original_dir = os.path.join(get_repo_dir(dataset), 'testing')
-    repaired_files = get_repaired(tool, experiment_dir)
+    if tool == 'styler':
+        repaired_files = repair.get_repaired(tool, experiment_dir, batch=True)
+    else:
+        repaired_files = repair.get_repaired(tool, experiment_dir)
     diffs = []
 
     def get_orig(original_dir, file_id):
@@ -419,8 +403,8 @@ def compute_diff_size(experiment_id, dataset, tool):
         ][0]
 
     if tool == 'loriot_repair':
-        repaired_files_codebuff_sniper = get_repaired('codebuff_sniper', experiment_dir)
-        repaired_files_naturalize_sniper = get_repaired('naturalize_sniper', experiment_dir)
+        repaired_files_codebuff_sniper = repair.get_repaired('codebuff_sniper', experiment_dir)
+        repaired_files_naturalize_sniper = repair.get_repaired('naturalize_sniper', experiment_dir)
         dir_codebuff_sniper = os.path.join(get_experiment_dir(experiment_id), 'codebuff_sniper')
         dir_naturalize_sniper = os.path.join(get_experiment_dir(experiment_id), 'naturalize_sniper')
         repaired_files = list(set(repaired_files_naturalize_sniper) | set(repaired_files_codebuff_sniper))
@@ -474,12 +458,15 @@ def run_experiment(dataset_name, gen_repaired_files=True):
 
     repaired = {}
     for tool in tqdm(tools, desc=''):
-        repaired[tool] = get_repaired(tool, dir)
+        if tool == 'styler':
+            repaired[tool] = repair.get_repaired(tool, dir, batch=True)
+        else:
+            repaired[tool] = repair.get_repaired(tool, dir)
     if 'styler' in tool:
         print(sorted( set(range(1000)) - set([int(x) for x in repaired['styler']])))
     if 'naturalize_sniper' in tools and 'codebuff_sniper' in tools:
         repaired['loriot_repair'] = list(set(repaired['naturalize_sniper']) | set(repaired['codebuff_sniper']))
-    # repaired_codebuff_sniper = get_repaired('codebuff_sniper', dir)
+    # repaired_codebuff_sniper = repair.get_repaired('codebuff_sniper', dir)
     # checkstyle_results, number_of_errors = checkstyle_results('naturalize_sniper', dir)
 
     result = {

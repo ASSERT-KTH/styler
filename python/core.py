@@ -155,9 +155,14 @@ def move_parse_exception_files(from_dir, to_dir):
     """Move all the .java recursively contained in the dir that are not parsable
     """
     files = java_lang_utils.get_bad_formated(from_dir)
-    create_dir(to_dir)
-    for file in files:
-        shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}.java')
+    if to_dir:
+        create_dir(to_dir)
+        for file in files:
+            shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}_{"_".join(file.split("/")[-3:-1])}.java')
+    else:
+        print(files)
+        for file in files:
+            os.remove(file)
     return files
 
 

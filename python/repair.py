@@ -2,16 +2,18 @@ from core import *
 from synthetic import Synthetic_Checkstyle_Error
 import java_lang_utils
 import checkstyle
+import styler
 
 def call_repair_tool(tool, orig_dir, ugly_dir, output_dir, dataset_metadata):
     if tool == 'naturalize':
-        return call_naturalize(orig_dir, ugly_dir, output_dir)
+        call_naturalize(orig_dir, ugly_dir, output_dir)
     if tool == 'naturalize_sniper':
-        return call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
+        call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
     if tool == 'codebuff':
-        return call_codebuff(orig_dir, ugly_dir, output_dir, grammar=dataset_metadata['grammar'], indent=dataset_metadata['indent'])
+        call_codebuff(orig_dir, ugly_dir, output_dir, grammar=dataset_metadata['grammar'], indent=dataset_metadata['indent'])
     if tool == 'codebuff_sniper':
-        return call_codebuff_sniper(orig_dir, ugly_dir, output_dir[:-7],output_dir)
+        call_codebuff_sniper(orig_dir, ugly_dir, output_dir[:-7],output_dir)
+    return move_parse_exception_files(output_dir, None)
 
 def call_naturalize(orig_dir, ugly_dir, output_dir):
     args = ["-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
@@ -73,3 +75,23 @@ def get_checkstyle_results(tool, dir):
         results_json['number_of_errors'] = number_of_errors
         save_json(dir, file_name, results_json)
     return results_json['checkstyle_results'], results_json['number_of_errors']
+
+
+def get_repaired(tool, dir, batch=False):
+    if not os.path.exists(f'{dir}/{tool}'):
+        return []
+    checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir)
+    if batch:
+        batch_result = styler.get_batch_results(checkstyle_results)
+        return list(
+            reduce(
+                lambda acc, cur: acc | cur,
+                batch_result.values()
+            )
+        )
+    else:
+        return [
+            file.split('/')[-2]
+            for file, result in checkstyle_results.items()
+            if len(result['errors']) == 0
+        ]

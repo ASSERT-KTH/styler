@@ -8,6 +8,10 @@ import real
 from core import *
 import checkstyle
 
+__model_dir = './styler/models'
+
+def get_model_dir(name):
+    return os.path.join(__model_dir, f'{name}.pt')
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -21,8 +25,9 @@ def tokenize_errors(file_path, errors):
 def de_tokenize(original_file_path, info):
     pass
 
-def gen_translator(model, batch_size=5):
+def gen_translator(model_name, batch_size=5):
     tmp_dir = './styler/tmp'
+    model_dir = get_model_dir(model_name)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -30,16 +35,16 @@ def gen_translator(model, batch_size=5):
     tmp_output_file_path = os.path.join(tmp_dir, tmp_output_file_name)
     def translator(input):
         save_file(tmp_dir, tmp_input_file_name, input)
-        run_translate(model, tmp_input_file_path, tmp_output_file_path, batch_size=batch_size)
+        run_translate(model_dir, tmp_input_file_path, tmp_output_file_path, batch_size=batch_size)
         return list(filter(lambda a: a!='', open_file(tmp_output_file_path).split('\n')))
     return translator
 
-def run_translate(model, input_file, output_file, batch_size=5):
+def run_translate(model_dir, input_file, output_file, batch_size=5):
     open_nmt_dir = './OpenNMT-py'
     translate_script = os.path.join(open_nmt_dir, 'translate.py')
 
     options = [
-        f'-model {model}',
+        f'-model {model_dir}',
         f'-src {input_file}',
         f'-output {output_file}',
         f'-n_best {batch_size}'
@@ -85,14 +90,9 @@ def create_corpus(dir, commit, checkstyle_relative_dir):
     for checkstyle_result in checkstyle_results:
         os.remove(checkstyle_result)
 
-    # pom_relative_dir = './pom.xml'
-    # checkstyle_relative_dir = './checkstyle.xml'
-    # pom_dir = os.path.join(dir, pom_relative_dir)
     checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
-    # cmd = f'java -jar ../jars/checkstyle-8.12-all.jar -c {checkstyle_dir} -f xml {dir}'
     (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
 
-    # results_files = find_all(dir, 'checkstyle-result.xml')
     files_without_errors = get_files_without_errors(output)
     files_with_errors = get_files_with_errors(output)
 
@@ -156,31 +156,32 @@ def select_the_best_repair(correct_repairs, original):
             file = correct_repair
     return file
 
-def repair_files():
-    dir= './styler/test'
-    target = './styler/test-repaired'
-    target_final = './styler/test-final'
-    checkstyle_rules = './styler/checkstyle.xml'
-    bin = './styler/test-bin'
+def repair_files(dir, model_name):
+    # dir= './styler/test'
+    dir_files = os.path.join(dir, 'files/1')
+    target = os.path.join(dir, 'repair-attempt')
+    target_final = os.path.join(dir, 'files-repaired')
+    checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
+    waste = os.path.join(dir, 'waste')
     create_dir(target)
-    create_dir(bin)
-    translate = gen_translator('./styler/model.pt')
-    for folder_id in tqdm(list_folders(dir)):
-        file_path = glob.glob(f'{dir}/{folder_id}/*.java')[0]
-        metadata_path = f'{dir}/{folder_id}/metadata.json'
+    create_dir(waste)
+    translate = gen_translator(model_name)
+    for folder_id in tqdm(list_folders(dir_files)):
+        file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
+        metadata_path = f'{dir_files}/{folder_id}/metadata.json'
         for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
             for proposal_id, translation in enumerate(translate(tokenized_errors)):
                 de_tokenized_translation = de_tokenize(file_path, info, translation)
                 folder = f'{target}/batch_{proposal_id}/{folder_id}'
                 create_dir(folder)
                 save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
-    move_parse_exception_files(target, bin)
+    move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target)
     files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
     final_repairs = {
         id:select_the_best_repair(
             [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
-            glob.glob(f'{dir}/{id}/*.java')[0]
+            glob.glob(f'{dir_files}/{id}/*.java')[0]
         )
         for id, repairs
         in files_properly_repaired.items()
@@ -190,7 +191,7 @@ def repair_files():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
 
-def test():
+def lits_and_create_corpora():
     repos = ['eclipse/milo', 'square/picasso', 'Spirals-Team/repairnator', 'ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
     for info in tqdm(real.get_repo_with_checkstyle(repos), desc='Total'):
         # print(info)
@@ -200,12 +201,21 @@ def test():
             print(f'{info["repo_full_name"]} -> {oldest_commit}')
             create_corpus(info['repo'].working_dir, oldest_commit, info['checkstyle_relative'])
 
+
+def repair_real(name):
+    repair_files(f'./styler/{name}', name)
+
+
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
     # create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
-    # repair_files()
-    test()
-
+    # test()
+    print_translations(
+        './styler/be5/files/1/11/ErrorProcessing.java',
+        './styler/be5/files/1/11/metadata.json',
+        gen_translator('be5')
+    )
+    # repair_real('be5')
 
 if __name__ == "__main__":
     main(sys.argv)

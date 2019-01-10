@@ -8,8 +8,10 @@ import sys
 import configparser
 import checkstyle
 import glob
+import repair
 from termcolor import colored
 import git_helper
+from Corpus import Corpus
 
 from core import *
 
@@ -24,6 +26,10 @@ __real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
 def get_real_errors_repo_dir(repo):
     return os.path.join(__real_errors_dir, repo)
+
+
+def get_real_dataset_dir(name):
+    return os.path.join(__real_dataset_dir, name)
 
 
 def get_real_errors_commit_dir(repo, commit):
@@ -297,6 +303,48 @@ def commit_until_last_modification(repo, file):
     os.chdir(wd)
     return result
 
+def experiment(name, corpus_dir):
+    dataset_dir = create_dir(get_real_dataset_dir(name))
+    experiment_dir = f'./experiments/real/{name}'
+    errored_dir = os.path.join(experiment_dir, f'./errored')
+    clean_dir = os.path.join(experiment_dir, f'./clean')
+    naturalize_dir = os.path.join(experiment_dir, f'./naturalize')
+    if not os.path.exists(experiment_dir):
+        create_dir(experiment_dir)
+        for number_of_errors in range(1,2):
+            from_folder = os.path.join(dataset_dir, str(number_of_errors))
+            to_folder = os.path.join(errored_dir, str(number_of_errors))
+            shutil.copytree(from_folder, to_folder)
+        shutil.copytree(
+            os.path.join(corpus_dir, 'data'),
+            clean_dir
+        )
+        shutil.copy(
+            os.path.join(corpus_dir, 'checkstyle.xml'),
+            experiment_dir
+        )
+        shutil.copy(
+            os.path.join(corpus_dir, 'corpus.json'),
+            os.path.join(experiment_dir, 'metadata.json')
+        )
+
+    metadata = open_json(os.path.join(experiment_dir, 'metadata.json'))
+
+    result = {}
+
+    for tool in ('naturalize', 'codebuff', 'styler'):
+        target = os.path.join(experiment_dir, f'./{tool}')
+        if not os.path.exists(target):
+            if tool == 'styler':
+                shutil.copytree(f'./styler/{name}/files-repaired', target)
+            else:
+                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
+        repaired = repair.get_repaired(tool, experiment_dir)
+        result[tool] = len(repaired)
+        # print(f'{tool} : {len(repaired)}')
+        # json_pp(repaired)
+    result['out_of'] = len(list_folders(f'./styler/{name}/repair-attempt/batch_0'))
+    return result
 
 def main(args):
     if len(args) >= 2 and args[1] == 'clone':
@@ -305,6 +353,13 @@ def main(args):
         real_errors_stats()
     elif len(args) >= 2 and args[1] == 'copy-real-dataset':
         create_real_error_dataset(__real_dataset_dir)
+    elif len(args) >= 2 and args[1] == 'exp':
+        result = {}
+        for name in args[2:]:
+            # print(name)
+            result[name] = experiment(name, f'./styler/{name}-corpus')
+        json_pp(result)
+
 
 
 if __name__ == "__main__":

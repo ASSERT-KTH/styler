@@ -329,6 +329,8 @@ def gen_IO(dataset, target):
     weirdos = []
     for sub_set in sub_sets:
         sub_set_dir = get_sub_set_dir(dataset, sub_set)
+        if not os.path.exists(sub_set_dir):
+            continue
         target_sub_set = f'{target}/{sub_set}'
         create_dir(target_sub_set)
         synthesis_error_ids = list_folders(sub_set_dir)
@@ -463,7 +465,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
 
-    return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+    return result# jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
 
 def get_predictions(dataset, n, id):
     tokenized_dir = get_tokenized_dir(dataset)
@@ -572,7 +574,7 @@ def main(args):
     if len(args) == 4 and args[1] == 'beam':
         n = int(args[3])
         dataset = args[2]
-        data_folder = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
+        data_folder = f'/home/benjaminl/Documents/kth/data/real/{dataset}'
         pred_path = f'{data_folder}/pred_{n}.txt'
         testing_O_path = f'{data_folder}/testing-O.txt'
         beam_search(testing_O_path, pred_path, n=n)
