@@ -3,6 +3,7 @@ from synthetic import Synthetic_Checkstyle_Error
 import java_lang_utils
 import checkstyle
 import styler
+from functools import reduce
 
 def call_repair_tool(tool, orig_dir, ugly_dir, output_dir, dataset_metadata):
     if tool == 'naturalize':

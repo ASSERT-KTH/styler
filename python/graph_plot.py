@@ -432,6 +432,24 @@ def cumulatives_bars(plot_data):
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
+def violin_plot(plot_data):
+    data = plot_data['data']
+
+
+    fig, axes = plt.subplots()
+
+    axes.violinplot([list(filter(lambda a: a<50, points)) for points in data.values()], range(len(data)), points=1000, vert=False, widths=0.3,
+                          showmeans=False, showextrema=False, showmedians=False,
+                          bw_method='silverman')
+    axes.boxplot(list(data.values()), positions=range(len(data)), vert=False)
+    axes.set_title('Custom violinplot 1', fontsize=10)
+
+    labels = tuple(data.keys())
+    plt.yticks( range(len(labels)), labels, fontsize=8)
+
+    plt.xlim(0,40)
+    plt.show()
+
 def boxplot(plot_data):
     labels = list(plot_data['data'].keys())
     sub_labels = plot_data['sub_labels']

@@ -160,7 +160,7 @@ def move_parse_exception_files(from_dir, to_dir):
         for file in files:
             shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}_{"_".join(file.split("/")[-3:-1])}.java')
     else:
-        print(files)
+        # print(files)
         for file in files:
             os.remove(file)
     return files

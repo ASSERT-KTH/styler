@@ -19,6 +19,7 @@ import graph_plot
 from core import *
 import repair
 import styler
+import ml
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -450,14 +451,17 @@ def run_experiment(dataset_name, gen_repaired_files=True):
     orig_dir = os.path.join(dir, 'orig')
     dataset_metadata = open_json(os.path.join(dir, 'metadata.json'))
     # checkstyle_results, number_of_errors = repair.get_checkstyle_results(*gen_repaired('naturalize', dir, dataset_metadata))
-    # tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper', 'styler']
-    tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper'] #, 'styler']
+    tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper', 'styler']
+    # tools = ['naturalize', 'codebuff', 'naturalize_sniper', 'codebuff_sniper'] #, 'styler']
     if gen_repaired_files:
         for tool in tqdm(tools, desc='gen'):
-            gen_repaired(tool, dir, dataset_metadata)
+            if tool == 'styler':
+                ml.de_tokenize_dataset(dataset_name, n=5, only_formatting=True)
+            else:
+                gen_repaired(tool, dir, dataset_metadata)
 
     repaired = {}
-    for tool in tqdm(tools, desc=''):
+    for tool in tqdm(tools, desc=dataset_name):
         if tool == 'styler':
             repaired[tool] = repair.get_repaired(tool, dir, batch=True)
         else:
@@ -563,7 +567,9 @@ if __name__ == '__main__':
             diff[dataset] = get_diff_dataset(dataset, tools)
         keys = list(list(diff.values())[0].keys())
         total = { key:reduce( list.__add__ ,[e[key] for e in diff.values()]) for key in keys }
-        print(total)
+        graph = {}
+        graph['data'] = total
+        graph_plot.violin_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 're-gen':
         dataset = sys.argv[2]
         type = sys.argv[3]

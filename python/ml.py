@@ -37,7 +37,7 @@ def get_dataset_dir(dataset):
     return f'{__synthetic_dir}/dataset/{__protocol}/{dataset}'
 
 def get_tokenized_dir(dataset):
-    return f'/home/benjaminl/Documents/kth/data/2/{dataset}'
+    return f'/home/benjaminl/Documents/kth/data/synthetic_only_formatting/{dataset}'
 
 def get_sub_set_dir(dataset, sub_set):
     return f'{get_dataset_dir(dataset)}/{sub_set}'
@@ -394,7 +394,7 @@ def token_diff(stringA, stringB):
     result = list(d.compare(tokensA, tokensB))
     return result
 
-def beam_search(target_dir, pred_dir, n=1):
+def beam_search(target_dir, pred_dir, n=1, only_formatting=False):
     target_file = open(target_dir, 'r')
     pred_file = open(pred_dir, 'r')
     count = { i:0 for i in range(n) }
@@ -457,7 +457,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
     to_token = error_info['to_token']
-    line = int(error_info['error']['line'])
+    # line = int(error_info['error']['line'])
 
     if only_formatting:
         new_white_space_tokens = new_tokens
@@ -471,7 +471,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
 
-    return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+    return result # jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
 
 def get_predictions(dataset, n, id):
     tokenized_dir = get_tokenized_dir(dataset)
@@ -506,7 +506,7 @@ def get_error_info(dataset, id):
     error_info = open_json(os.path.join(tokenized_testing_dir, f'{id}-info.json'))
     return error_info
 
-def de_tokenize_file(dataset, n, id):
+def de_tokenize_file(dataset, n, id, only_formatting=False):
     # get the tokenization informations
     error_info = get_error_info(dataset, id)
     # Get the errored file
@@ -517,18 +517,18 @@ def de_tokenize_file(dataset, n, id):
     if dataset == 'spoon':
         tabulations = True
     tokenized_results = [
-        de_tokenize(errored_source, error_info, new_tokens.split(' '), tabulations)
+        de_tokenize(errored_source, error_info, new_tokens.split(' '), tabulations, only_formatting=only_formatting)
         for new_tokens in new_tokens_predictions
     ]
 
     return tokenized_results, errored_file_name
 
-def de_tokenize_dataset(dataset, n):
+def de_tokenize_dataset(dataset, n, only_formatting=False):
     target = f'./experiments/ml/{dataset}/styler'
     # for id in [529]:
     for id in tqdm(range(1000)):
         try:
-            tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id)
+            tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id, only_formatting=only_formatting)
             for index in range(n):
                 new_file_folder = os.path.join(target, f'batch_{index}/{id}')
                 create_dir(new_file_folder)
@@ -568,7 +568,7 @@ def main(args):
         dataset_list = sys.argv[2:]
 
     if len(args) >= 2 and args[1] == 'gen':
-        target = '/home/benjaminl/Documents/kth/data/synthetic_only_formatting'
+        target = get_tokenized_dir('')
         for dataset in dataset_list:
             gen_IO(dataset, os.path.join(target, dataset), only_formatting=True)
     if len(args) >= 2 and args[1] == 'info':
@@ -576,14 +576,14 @@ def main(args):
         print_max_length_and_vocabulary(folder)
     if args[1] == 'de-tokenize':
         for dataset in tqdm(dataset_list, desc='de tokenize'):
-            de_tokenize_dataset(dataset, n=5)
+            de_tokenize_dataset(dataset, n=5, only_formatting=True)
     if len(args) == 4 and args[1] == 'beam':
         n = int(args[3])
         dataset = args[2]
-        data_folder = f'/home/benjaminl/Documents/kth/data/real/{dataset}'
+        data_folder = get_tokenized_dir(dataset)
         pred_path = f'{data_folder}/pred_{n}.txt'
         testing_O_path = f'{data_folder}/testing-O.txt'
-        beam_search(testing_O_path, pred_path, n=n)
+        beam_search(testing_O_path, pred_path, n=n, only_formatting=True)
     if len(args) == 5 and args[1] == 'get':
         n = int(args[3])
         id = int(args[4])
