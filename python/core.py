@@ -228,5 +228,25 @@ def find_all(path, name):
             result.append(os.path.join(root, name))
     return result
 
+
 def delete_dir(path):
     shutil.rmtree(path)
+
+
+def run_if_true(function, boolean, data):
+    """
+    Run the given function if the boolean is true.
+    Else return the data.
+    """
+    if boolean:
+        return function(data)
+    return data
+
+
+def is_error_targeted(error):
+    error_type = checkstyle_source_to_error_type(error['source'])
+    return (error_type in targeted_errors and error_type not in corner_cases_errors)
+
+
+def filter_targeted_error(errors):
+    return list(filter(is_error_targeted, errors))

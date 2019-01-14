@@ -1,3 +1,4 @@
+
 import ml
 import sys
 import glob
@@ -10,14 +11,17 @@ import checkstyle
 
 __model_dir = './styler/models'
 
-def get_model_dir(name):
-    return os.path.join(__model_dir, f'{name}.pt')
+def get_model_dir(name, only_formatting=False):
+    if only_formatting:
+        return os.path.join(__model_dir, f'{name}-of.pt')
+    else:
+        return os.path.join(__model_dir, f'{name}.pt')
 
 def tokenize_errors(file_path, errors):
     inputs = []
     for error in errors:
         error['type'] = checkstyle_source_to_error_type(error['source'])
-        if error['type'] in targeted_errors and error['type'] not in corner_cases_errors:
+        if is_error_targeted(error):
             tokenized_file, info = ml.tokenize_file_to_repair(file_path, error)
             inputs += [ (" ".join(tokenized_file), info) ]
     return inputs
@@ -25,9 +29,9 @@ def tokenize_errors(file_path, errors):
 def de_tokenize(original_file_path, info):
     pass
 
-def gen_translator(model_name, batch_size=5):
+def gen_translator(model_name, batch_size=5, only_formatting=False):
     tmp_dir = './styler/tmp'
-    model_dir = get_model_dir(model_name)
+    model_dir = get_model_dir(model_name, only_formatting=only_formatting)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -67,9 +71,9 @@ def print_translations(file_path, metadata_path, translate):
             ml.print_diff(join_token(info['tokens_errored_in_tag']) + '\n', translation)
             print()
 
-def de_tokenize(file_path, info, new_tokens):
+def de_tokenize(file_path, info, new_tokens, only_formatting=False):
     source_code = open_file(file_path)
-    result = ml.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False)
+    result = ml.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False, only_formatting=only_formatting)
     return result
 
 def get_files_without_errors(checkstyle_result):
@@ -156,7 +160,7 @@ def select_the_best_repair(correct_repairs, original):
             file = correct_repair
     return file
 
-def repair_files(dir, model_name):
+def repair_files(dir, model_name, only_formatting=False):
     # dir= './styler/test'
     dir_files = os.path.join(dir, 'files/1')
     target = os.path.join(dir, 'repair-attempt')
@@ -165,18 +169,19 @@ def repair_files(dir, model_name):
     waste = os.path.join(dir, 'waste')
     create_dir(target)
     create_dir(waste)
-    translate = gen_translator(model_name)
+    translate = gen_translator(model_name, batch_size=5, only_formatting=only_formatting)
     for folder_id in tqdm(list_folders(dir_files)):
         file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
         metadata_path = f'{dir_files}/{folder_id}/metadata.json'
         for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
             for proposal_id, translation in enumerate(translate(tokenized_errors)):
-                de_tokenized_translation = de_tokenize(file_path, info, translation)
+                de_tokenized_translation = de_tokenize(file_path, info, translation, only_formatting=only_formatting)
                 folder = f'{target}/batch_{proposal_id}/{folder_id}'
                 create_dir(folder)
                 save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
     move_parse_exception_files(target, waste)
-    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target)
+    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
+    # json_pp(checkstyle_result)
     files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
     final_repairs = {
         id:select_the_best_repair(
@@ -192,30 +197,30 @@ def repair_files(dir, model_name):
         shutil.copy(path, folder)
 
 def lits_and_create_corpora():
-    repos = ['eclipse/milo', 'square/picasso', 'Spirals-Team/repairnator', 'ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
+    repos = ['ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
     for info in tqdm(real.get_repo_with_checkstyle(repos), desc='Total'):
         # print(info)
         commits = real.commit_until_last_modification(info['repo'], info['checkstyle_relative'])
         if len(commits):
             oldest_commit = commits[-1]
             print(f'{info["repo_full_name"]} -> {oldest_commit}')
-            create_corpus(info['repo'].working_dir, oldest_commit, info['checkstyle_relative'])
+            create_corpus(info['repo'].working_dir, oldest_commit, info['checkstyle_clean'])
 
 
 def repair_real(name):
-    repair_files(f'./styler/{name}', name)
+    repair_files(f'./styler/{name}', name, only_formatting=True)
 
 
 def main(args):
     # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
     # create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
-    # test()
-    print_translations(
-        './styler/be5/files/1/11/ErrorProcessing.java',
-        './styler/be5/files/1/11/metadata.json',
-        gen_translator('be5')
-    )
-    # repair_real('be5')
+    # lits_and_create_corpora()
+    # print_translations(
+    #     './styler/be5/files/1/11/ErrorProcessing.java',
+    #     './styler/be5/files/1/11/metadata.json',
+    #     gen_translator('be5')
+    # )
+    repair_real('okhttp')
 
 if __name__ == "__main__":
     main(sys.argv)

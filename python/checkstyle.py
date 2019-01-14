@@ -13,10 +13,12 @@ from functools import reduce
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
+from core import *
+
 _CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
 
 
-def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR):
+def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_targeted=False):
     cmd = "java -jar {} -f xml -c {} {}".format(checkstyle_jar, checkstyle_file_path, file_path)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
@@ -24,10 +26,10 @@ def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR):
     if ( process.returncode > 0):
         output = b''.join(output.split(b'</checkstyle>')[0:-1]) + b'</checkstyle>'
     # parsing
-    output = parse_res(output)
+    output = parse_res(output, only_targeted=only_targeted)
     return (output, process.returncode)
 
-def parse_res(output):
+def parse_res(output, only_targeted=False):
     xml_output = ET.fromstring(output)
     output_parsed = dict()
     for elem_file in xml_output.getchildren():
@@ -35,7 +37,11 @@ def parse_res(output):
         output_parsed[elem_file.attrib['name']]['errors'] = list()
         for elem_error in elem_file.getchildren():
             if ( elem_error.tag == 'error' ):
-                output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
+                if only_targeted:
+                    if is_error_targeted(elem_error.attrib):
+                        output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
+                else:
+                    output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
     return output_parsed
 
 def parse_file(file_path):

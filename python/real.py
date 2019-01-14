@@ -12,6 +12,7 @@ import repair
 from termcolor import colored
 import git_helper
 from Corpus import Corpus
+from terminaltables import GithubFlavoredMarkdownTable
 
 from core import *
 
@@ -37,8 +38,8 @@ def get_real_errors_commit_dir(repo, commit):
 
 
 def real_errors_stats():
-    errors_info = load_errors_info()
-    print(errors_info)
+    errors_info = load_errors_info(only_targeted=True)
+    # print(errors_info)
 
     for repo, errors_info in group_by(lambda e: e['repo'], errors_info).items():
         errors = [
@@ -69,7 +70,7 @@ def real_errors_stats():
                         print(f'{error:<30} : {count}')
 
 
-def load_errors_info():
+def load_errors_info(only_targeted=False):
     def filepath_from_json_path(x):
         return safe_get_first(glob.glob(pathname=f'{x.rpartition("/")[0]}/*.java'))
     error_json_path = glob.glob(pathname=f'{__real_errors_dir}/*/*/*/*.json')
@@ -78,11 +79,12 @@ def load_errors_info():
             'repo': path_splitted[-4],
             'commit': path_splitted[-3],
             'id': int(path_splitted[-2]),
-            'errors': open_json(path),
+            'errors': run_if_true(filter_targeted_error, only_targeted, open_json(path)),
+            'only_targeted': only_targeted,
             'filepath': filepath_from_json_path(path),
             'hash': if_not_null(if_not_null(filepath_from_json_path(path),open_file), hash)
         }
-        for path_splitted, path in zip(map(lambda x: x.split('/'), error_json_path), error_json_path)
+        for path_splitted, path in tqdm(zip(map(lambda x: x.split('/'), error_json_path), error_json_path), desc='reading', total=len(error_json_path))
     ], lambda obj: obj['hash'])
     return errors_info
 
@@ -171,7 +173,7 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
 def create_real_error_dataset(target):
     if os.path.exists(target):
         shutil.rmtree(target)
-    errors_info = load_errors_info()
+    errors_info = load_errors_info(only_targeted=True)
     dataset = structure_real_error_dataset(errors_info)
     # pp.pprint(dataset)
     for project, number_of_errors_per_file in dataset.items():
@@ -252,6 +254,7 @@ def clone():
         # 'shyiko/mysql-binlog-connector-java'
     ))
     repos = list(repos)
+    repos = ['DevelopmentOnTheEdge/be5']
     for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
         repo = info['repo']
         checkstyle_path = info['checkstyle']
@@ -278,8 +281,8 @@ def find_commits(commits_data):
     return result
 
 def clone_old():
-    commits_data = open_json('./commits.json')
-    reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['DevelopmentOnTheEdge/be5']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
+    commits_data = open_json('./travis/commits_oss.json')
+    reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['google/auto']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
     commits = find_commits(reduced_commits_data)
     repo_information = {}
     repo_information['facebook/presto'] = {
@@ -298,7 +301,8 @@ def clone_old():
         'use_maven': False,
         'checkstyle_path': './checkstyle.xml'
     }
-    commits['DevelopmentOnTheEdge/be5'] = shuffled(commit_until_last_modification(repo, repo_information[repo_full_name]['checkstyle_path']))
+    repo = git_helper.open_repo('google', 'auto')
+    commits['google/auto'] = shuffled(commit_until_last_modification(repo, './checkstyle.xml'))
     for repo_full_name, valid_commits in commits.items():
         user, repo_name = repo_full_name.split('/')
         repo = git_helper.open_repo(user, repo_name)
@@ -364,7 +368,7 @@ def experiment(name, corpus_dir):
                 shutil.copytree(f'./styler/{name}/files-repaired', target)
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
-        repaired = repair.get_repaired(tool, experiment_dir)
+        repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
         result[tool] = len(repaired)
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
@@ -374,17 +378,22 @@ def experiment(name, corpus_dir):
 def main(args):
     if len(args) >= 2 and args[1] == 'clone':
         clone()
-    elif len(args) >= 2 and args[1] == 'real-errors-stats':
+    elif len(args) >= 2 and args[1] == 'stats':
         real_errors_stats()
-    elif len(args) >= 2 and args[1] == 'copy-real-dataset':
+    elif len(args) >= 2 and args[1] == 'copy':
         create_real_error_dataset(__real_dataset_dir)
     elif len(args) >= 2 and args[1] == 'exp':
         result = {}
         for name in args[2:]:
             # print(name)
             result[name] = experiment(name, f'./styler/{name}-corpus')
-        json_pp(result)
-
+        # json_pp(result)
+        keys = list(list(result.values())[0].keys())
+        result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
+        #json_pp(total)
+        table = [ [''] + keys]
+        table += [ [key] + list(values.values()) for key, values in result.items() ]
+        print(GithubFlavoredMarkdownTable(table).table)
 
 
 if __name__ == "__main__":

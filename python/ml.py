@@ -268,7 +268,7 @@ def tokenize_errored_file(file, file_orig, error):
         tokens_correct.append(get_space_value(space))
     return tokens_errored, tokens_correct
 
-def whatever(dataset, folder, id):
+def whatever(dataset, folder, id, only_formatting=False):
     dir = f'{get_dataset_dir(dataset)}/{folder}/{id}'
     file_name = [ java_file for java_file in glob.glob(f'{dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
     file = f'{dir}/{file_name}.java'
@@ -321,7 +321,7 @@ def print_max_length_and_vocabulary(folder):
 
     plt.show()
 
-def gen_IO(dataset, target):
+def gen_IO(dataset, target, only_formatting=False):
     create_dir(target)
     dir = get_dataset_dir(dataset)
     sub_sets = ['learning', 'validation', 'testing']
@@ -337,6 +337,9 @@ def gen_IO(dataset, target):
         synthesis_error_ids = sorted(synthesis_error_ids, key=int)
         for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
             tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
+            if only_formatting:
+                tokens_correct = tokens_correct[1::2]
+                tokens_errored_in_tag = tokens_errored_in_tag[1::2]
             save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
             save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
             save_file(target_sub_set, f'{id}-E.txt', " ".join(tokens_errored_in_tag))
@@ -450,13 +453,16 @@ def match_input_to_source(source, error_info, input):
 
     return result
 
-def de_tokenize(errored_source, error_info, new_tokens, tabulations):
+def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_formatting=False):
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
     to_token = error_info['to_token']
     line = int(error_info['error']['line'])
 
-    new_white_space_tokens = new_tokens[1::2]
+    if only_formatting:
+        new_white_space_tokens = new_tokens
+    else:
+        new_white_space_tokens = new_tokens[1::2]
     # print(new_white_space_tokens)
     new_white_space = [ token_utils.whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
     # print(new_white_space)
@@ -465,7 +471,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations):
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
 
-    return result# jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+    return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
 
 def get_predictions(dataset, n, id):
     tokenized_dir = get_tokenized_dir(dataset)
@@ -562,9 +568,9 @@ def main(args):
         dataset_list = sys.argv[2:]
 
     if len(args) >= 2 and args[1] == 'gen':
-        target = '/home/benjaminl/Documents/kth/data/real'
+        target = '/home/benjaminl/Documents/kth/data/synthetic_only_formatting'
         for dataset in dataset_list:
-            gen_IO(dataset, os.path.join(target, dataset))
+            gen_IO(dataset, os.path.join(target, dataset), only_formatting=True)
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]
         print_max_length_and_vocabulary(folder)

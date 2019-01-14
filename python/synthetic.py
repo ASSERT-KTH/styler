@@ -556,6 +556,14 @@ if __name__ == '__main__':
             del graph['data']['java-design-patterns']
         pp.pprint(list(graph['data'].keys()))
         graph_plot.boxplot(graph)
+    if len(sys.argv) >= 2 and sys.argv[1] == 'diff-violin':
+        diff = {}
+        tools = ('styler', 'codebuff', 'naturalize')
+        for dataset in tqdm(dataset_list, desc='Diff datasets'):
+            diff[dataset] = get_diff_dataset(dataset, tools)
+        keys = list(list(diff.values())[0].keys())
+        total = { key:reduce( list.__add__ ,[e[key] for e in diff.values()]) for key in keys }
+        print(total)
     if len(sys.argv) >= 2 and sys.argv[1] == 're-gen':
         dataset = sys.argv[2]
         type = sys.argv[3]
