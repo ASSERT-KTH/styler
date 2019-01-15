@@ -484,17 +484,17 @@ def boxplot(plot_data):
 
     fig7, ax7 = plt.subplots()
     medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
-    bplot = ax7.boxplot(data, positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels), medianprops=medianprops)
+    bplot = ax7.boxplot(data, whis=[5, 95],positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels), medianprops=medianprops)
     for patch, color in zip(bplot['boxes'], colors  * len(labels)):
         patch.set_facecolor(color)
     patches = [ mpatches.Patch(color=c, label=l) for l, c in zip(sub_labels, colors)]
-    plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True)
+    plt.legend(handles = patches, loc='upper right', ncol=3, fancybox=True, fontsize=15)
     if vert:
-        plt.xticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, rotation=45, fontsize=8)
+        plt.xticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, rotation=45, fontsize=15)
     else:
-        plt.yticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, fontsize=8)
-    plt.xlabel(plot_data.get('x_label', ''))
-    plt.ylabel(plot_data.get('y_label', ''))
+        plt.yticks([pos + boxWidth * (len(sub_labels)-1) / 2 for pos in r[::len(sub_labels)]], labels, fontsize=15)
+    plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
+    plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
     plt.xlim(0,40)
     plt.subplots_adjust(bottom=0.06, left=0.11, right=0.95, top=0.95)
     plt.gca().invert_yaxis()
