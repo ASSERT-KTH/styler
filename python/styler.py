@@ -220,7 +220,13 @@ def main(args):
     #     './styler/be5/files/1/11/metadata.json',
     #     gen_translator('be5')
     # )
-    repair_real('okhttp')
+    if args[1] == 'repair':
+        if args[2] == 'all':
+            datasets = ['be5', 'dagger', 'milo', 'okhttp', 'picasso']
+        else:
+            datasets = args[2:]
+        for dataset in tqdm(datasets):
+            repair_real(dataset)
 
 if __name__ == "__main__":
     main(sys.argv)

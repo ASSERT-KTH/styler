@@ -151,11 +151,17 @@ def plot_repaired_files(results):
 def avg(l):
     return sum(l)/len(l)
 
+def hex_to_rgb(hex_color):
+    hex = hex_color.lstrip('#')
+    return tuple(int(hex[i:i+2], 16)/255. for i in (0, 2 ,4))
+
 def n_bar_plot(plot_data):
     counts = plot_data['labels']
     colors = plot_data['colors']
 
     plot_average = True
+
+    horizontal = True
 
     barWidth = 1. / (len(counts) + 1)
     bars = [ # Transpose
@@ -182,19 +188,35 @@ def n_bar_plot(plot_data):
     for i in range(1,len(counts)):
         r.append([x + barWidth for x in r[i-1]])
 
-    def with_percentage(bars):
-        for bar in bars:
-            height = bar.get_height()
-            plt.text(bar.get_x() + bar.get_width()/2., 1*height, f'{(height*100):.1f}%', ha='center', va='bottom')
+    def with_percentage(bars, bar_color='#FFFFFF'):
+        if horizontal:
+            for bar in bars:
+                width = bar.get_width()
+                ha = 'right' if width > 0.2 else 'left'
+                color = '#000000' if ha == 'left' or colorsys.rgb_to_hls(*hex_to_rgb(bar_color))[1] > 0.45 else '#FFFFFF'
+                plt.text(1*width, bar.get_y() + bar.get_height()*1.25/2. , f'{(width*100):.1f}%', ha=ha, va='center', fontsize=12, color=color)
+        else:
+            for bar in bars:
+                height = bar.get_height()
+                plt.text(bar.get_x() + bar.get_width()/2., 1*height, f'{(height*100):.1f}%', ha='center', va='bottom')
     # Make the plot
     for i, count in enumerate(counts):
-        with_percentage(plt.bar(r[i], bars[i], width=barWidth * 0.95, edgecolor='white', label=count, color=colors[count]))
+        if horizontal:
+            with_percentage(plt.barh(r[i], bars[i], height=barWidth * 0.95, edgecolor='white', label=count, color=colors[count]), bar_color=colors[count])
+        else:
+            with_percentage(plt.bar(r[i], bars[i], width=barWidth * 0.95, edgecolor='white', label=count, color=colors[count]))
 
     # Add xticks on the middle of the group bars
-    plt.xlabel(plot_data.get('x_label', ''))
-    plt.ylabel(plot_data.get('y_label', ''))
-    plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in r[0]], labels, rotation=45, fontsize=8)
-    plt.subplots_adjust(bottom=0.10, left=0.05, right=0.99, top=0.99)
+    plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
+    plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
+    if horizontal:
+        plt.yticks([r + barWidth * (len(counts)-1) / 2 for r in r[0]], labels, fontsize=15)
+    else:
+        plt.xticks([r + barWidth * (len(counts)-1) / 2 for r in r[0]], labels, rotation=45, fontsize=8)
+    plt.subplots_adjust(bottom=0.05, left=0.17, right=0.99, top=0.99)
+
+    if horizontal:
+        plt.gca().invert_yaxis()
 
     # Create legend & Show graphic
     plt.legend()
@@ -432,21 +454,29 @@ def cumulatives_bars(plot_data):
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
+def dict_to_list(dict, order):
+    return [dict[key] for key in order]
+
 def violin_plot(plot_data):
     data = plot_data['data']
-
+    colors = plot_data['colors']
+    order = tuple(colors.keys())
+    print(order)
 
     fig, axes = plt.subplots()
 
-    axes.violinplot([list(filter(lambda a: a<50, points)) for points in data.values()], range(len(data)), points=1000, vert=False, widths=0.3,
+    parts = axes.violinplot([list(filter(lambda a: a<50, points)) for points in dict_to_list(data, order)], range(len(data)), points=1000, vert=False, widths=0.7,
                           showmeans=False, showextrema=False, showmedians=False,
                           bw_method='silverman')
-    axes.boxplot(list(data.values()), positions=range(len(data)), vert=False)
-    axes.set_title('Custom violinplot 1', fontsize=10)
+    for pc, label in zip(parts['bodies'], order) :
+        print(pc)
+        pc.set_facecolor(colors[label])
+        pc.set_alpha(0.8)
+    axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False)
 
-    labels = tuple(data.keys())
-    plt.yticks( range(len(labels)), labels, fontsize=8)
-
+    plt.yticks( range(len(order)), order, fontsize=15)
+    plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
+    plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
     plt.xlim(0,40)
     plt.show()
 
@@ -484,7 +514,7 @@ def boxplot(plot_data):
 
     fig7, ax7 = plt.subplots()
     medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
-    bplot = ax7.boxplot(data, whis=[5, 95],positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels), medianprops=medianprops)
+    bplot = ax7.boxplot(data, whis=[5, 95], positions=r, widths=boxWidth*0.8, vert=vert, patch_artist=True, labels=sub_labels*len(labels), medianprops=medianprops)
     for patch, color in zip(bplot['boxes'], colors  * len(labels)):
         patch.set_facecolor(color)
     patches = [ mpatches.Patch(color=c, label=l) for l, c in zip(sub_labels, colors)]

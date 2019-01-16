@@ -13,8 +13,10 @@ from termcolor import colored
 import git_helper
 from Corpus import Corpus
 from terminaltables import GithubFlavoredMarkdownTable
+from functools import reduce
 
 from core import *
+import graph_plot
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -205,7 +207,6 @@ def get_repo_with_checkstyle(repos):
                 if 'suppressionsLocation' in l:
                     good = False
             if good:
-
                 save_file(os.path.join(repo.working_dir, '../'), 'checkstyle.xml', sanitize_checkstyle(open_file(checkstyle_absolute)))
                 result.append({
                     'repo': repo,
@@ -240,21 +241,21 @@ def sanitize_checkstyle(content):
 
 def clone():
     repos = set(list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys()))
-    repos = repos - set((
-        'square/picasso',
-        # 'pedrovgs/Renderers',
-        # 'square/wire',
-        # 'opentracing-contrib/java-spring-cloud',
-        'ONSdigital/rm-notify-gateway',
-        # 'INRIA/spoon',
-        'eclipse/milo',
-        'vorburger/MariaDB4j',
-        'DevelopmentOnTheEdge/be5',
-        'Spirals-Team/repairnator',
-        # 'shyiko/mysql-binlog-connector-java'
-    ))
-    repos = list(repos)
-    repos = ['DevelopmentOnTheEdge/be5']
+    # repos = repos - set((
+    #     'square/picasso',
+    #     # 'pedrovgs/Renderers',
+    #     # 'square/wire',
+    #     # 'opentracing-contrib/java-spring-cloud',
+    #     'ONSdigital/rm-notify-gateway',
+    #     # 'INRIA/spoon',
+    #     'eclipse/milo',
+    #     'vorburger/MariaDB4j',
+    #     'DevelopmentOnTheEdge/be5',
+    #     'Spirals-Team/repairnator',
+    #     # 'shyiko/mysql-binlog-connector-java'
+    # ))
+    # repos = list(repos)
+    # repos = ['DevelopmentOnTheEdge/be5']
     for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
         repo = info['repo']
         checkstyle_path = info['checkstyle']
@@ -263,7 +264,14 @@ def clone():
         valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
         try:
             for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-                find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
+                repo.git.checkout(commit)
+                pom_line = open_file(find_the_pom(repo.working_dir)).split('\n')
+                good = True
+                for l in pom_line:
+                    if 'suppressionsLocation' in l:
+                        good = False
+                if good:
+                    find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
         except:
             print(f'did not complet the error collection of {repo_full_name}')
         # print(f'{repo_name}')
@@ -375,6 +383,28 @@ def experiment(name, corpus_dir):
     result['out_of'] = len(list_folders(f'./styler/{name}/repair-attempt/batch_0'))
     return result
 
+def compute_diff_size(name, tool):
+    diffs = []
+    experiment_dir = f'./experiments/real/{name}'
+    repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
+    errored_dir = os.path.join(experiment_dir, f'./errored/1')
+    repaired_dir = os.path.join(experiment_dir, f'./{tool}')
+    for repaired_id in repaired:
+        original_folder = os.path.join(errored_dir, str(repaired_id))
+        repaired_folder = os.path.join(repaired_dir, str(repaired_id))
+        original_file = glob.glob(f'{original_folder}/*.java')[0]
+        repaired_file = glob.glob(f'{repaired_folder}/*.java')[0]
+        diffs_count = java_lang_utils.compute_diff_size(original_file, repaired_file)
+        diffs += [diffs_count]
+    return diffs
+
+def get_diff_dataset(experiment_id, tools):
+    dataset_name = experiment_id
+    return {
+        tool:compute_diff_size(experiment_id, tool)
+        for tool in tools # if tool not in ['styler']
+    }
+
 def main(args):
     if len(args) >= 2 and args[1] == 'clone':
         clone()
@@ -394,6 +424,23 @@ def main(args):
         table = [ [''] + keys]
         table += [ [key] + list(values.values()) for key, values in result.items() ]
         print(GithubFlavoredMarkdownTable(table).table)
+    elif len(args) >= 2 and args[1] == 'diff':
+        tools = ('styler', 'naturalize', 'codebuff')
+        result = {}
+        for name in args[2:]:
+            result[name] = get_diff_dataset(name, ('naturalize', 'codebuff', 'styler'))
+        json_pp(result)
+        keys = list(list(result.values())[0].keys())
+        total = { key:reduce( list.__add__ ,[e[key] for e in result.values()]) for key in keys }
+        graph = {}
+        graph['data'] = total
+        graph['x_label'] = 'Diff size'
+        graph['colors'] = {
+            'naturalize': naturalize_color,
+            'codebuff': codebuff_color,
+            'styler': styler_color
+        }
+        graph_plot.violin_plot(graph)
 
 
 if __name__ == "__main__":

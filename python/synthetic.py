@@ -431,7 +431,6 @@ def compute_diff_size(experiment_id, dataset, tool):
                     new_file_path = glob.glob(f'{dir}/batch_{batch_id}/{file_id}/*.java')[0]
                     diffs_count = min(java_lang_utils.compute_diff_size(new_file_path, original_file_path), diffs_count)
             diffs += [diffs_count]
-
     else:
         for file_id in tqdm(repaired_files, desc=f'diff {tool}'):
             new_file_path = glob.glob(f'{dir}/{file_id}/*.java')[0]
@@ -526,12 +525,12 @@ if __name__ == '__main__':
         # Graph
         graph = {}
         graph['labels'] = ('styler', 'codebuff', 'naturalize')
-        graph['x_label'] = ''
-        graph['y_label'] = 'Proportion of repaired files'
+        graph['y_label'] = ''
+        graph['x_label'] = 'Proportion of repaired files'
         graph['colors'] = {
-            'styler': '#64dd17',
-            'codebuff': '#1565c0',
-            'naturalize': '#fdd835'
+            'styler': styler_color,
+            'codebuff': codebuff_color,
+            'naturalize': naturalize_color
         }
         graph['data'] = {
             dataset:[ res[label]/res['total'] for label in graph['labels']]
@@ -540,7 +539,7 @@ if __name__ == '__main__':
         if 'java-design-patterns' in graph['data']:
             graph['data']['jdp'] = graph['data']['java-design-patterns'].copy()
             del graph['data']['java-design-patterns']
-        json_pp(graph)
+        # json_pp(graph)
         graph_plot.n_bar_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'diff':
         diff = {}
@@ -549,7 +548,7 @@ if __name__ == '__main__':
             diff[dataset] = get_diff_dataset(dataset, tools)
         graph = {}
         graph['sub_labels'] = tools
-        graph['colors'] = ['#64dd17', '#1565c0', '#fdd835']
+        graph['colors'] = [styler_color, codebuff_color, naturalize_color]
         graph['x_label'] = 'Diff size'
         graph['data'] = {
             dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }

@@ -7,6 +7,10 @@ import random
 import copy
 import uuid
 
+codebuff_color = '#1565c0'
+styler_color = '#64dd17'
+naturalize_color = '#fdd835'
+
 targeted_errors = (
     'MethodParamPad',
     'GenericWhitespace',
