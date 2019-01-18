@@ -524,7 +524,7 @@ if __name__ == '__main__':
         # json_pp(diff)
         # Graph
         graph = {}
-        graph['labels'] = ('styler', 'codebuff', 'naturalize')
+        graph['labels'] = ('styler', 'naturalize', 'codebuff')
         graph['y_label'] = ''
         graph['x_label'] = 'Proportion of repaired files'
         graph['colors'] = {
@@ -539,16 +539,19 @@ if __name__ == '__main__':
         if 'java-design-patterns' in graph['data']:
             graph['data']['jdp'] = graph['data']['java-design-patterns'].copy()
             del graph['data']['java-design-patterns']
+        if 'commons-lang' in graph['data']:
+            graph['data']['commons-\nlang'] = graph['data']['commons-lang'].copy()
+            del graph['data']['commons-lang']
         # json_pp(graph)
         graph_plot.n_bar_plot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'diff':
         diff = {}
-        tools = ('styler', 'codebuff', 'naturalize')
+        tools = ('styler', 'naturalize', 'codebuff')
         for dataset in tqdm(dataset_list, desc='Diff datasets'):
             diff[dataset] = get_diff_dataset(dataset, tools)
         graph = {}
         graph['sub_labels'] = tools
-        graph['colors'] = [styler_color, codebuff_color, naturalize_color]
+        graph['colors'] = [styler_color, naturalize_color, codebuff_color]
         graph['x_label'] = 'Diff size'
         graph['data'] = {
             dataset:{ key:value for key, value in res.items() if key in graph['sub_labels'] }
@@ -557,11 +560,14 @@ if __name__ == '__main__':
         if 'java-design-patterns' in graph['data']:
             graph['data']['jdp'] = graph['data']['java-design-patterns'].copy()
             del graph['data']['java-design-patterns']
+        if 'commons-lang' in graph['data']:
+            graph['data']['commons-\nlang'] = graph['data']['commons-lang'].copy()
+            del graph['data']['commons-lang']
         pp.pprint(list(graph['data'].keys()))
         graph_plot.boxplot(graph)
     if len(sys.argv) >= 2 and sys.argv[1] == 'diff-violin':
         diff = {}
-        tools = ('styler', 'codebuff', 'naturalize')
+        tools = ('styler', 'naturalize', 'codebuff')
         for dataset in tqdm(dataset_list, desc='Diff datasets'):
             diff[dataset] = get_diff_dataset(dataset, tools)
         keys = list(list(diff.values())[0].keys())

@@ -5,6 +5,7 @@ import glob
 from git import Repo
 from tqdm import tqdm
 import real
+from scipy import stats
 
 from core import *
 import checkstyle

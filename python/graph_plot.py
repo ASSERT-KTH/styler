@@ -13,6 +13,9 @@ import sys
 import os
 import json
 import datetime
+from matplotlib import pyplot as plt
+from matplotlib_venn import venn3
+
 
 from functools import reduce
 
@@ -27,6 +30,9 @@ def protocol6(results, repair_tools, disposition=110):
 
     return fig
 
+def venn(data):
+    venn3(data.values(), tuple(data.keys()))
+    plt.show()
 
 def protocol6_subplot(results, repair_tool, ax, y_axis=True):
 
@@ -177,7 +183,7 @@ def n_bar_plot(plot_data):
             numbers + [avg(numbers)]
             for numbers in bars
         ]
-        labels += ['average']
+        labels += ['Average']
         print(labels)
 
 
@@ -469,12 +475,15 @@ def violin_plot(plot_data):
                           showmeans=False, showextrema=False, showmedians=False,
                           bw_method='silverman')
     for pc, label in zip(parts['bodies'], order) :
-        print(pc)
+        # print(pc)
         pc.set_facecolor(colors[label])
         pc.set_alpha(0.8)
     axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False)
 
-    plt.yticks( range(len(order)), order, fontsize=15)
+    patches = [ mpatches.Patch(color=c, label=l) for l, c in colors.items()]
+    plt.legend(handles = patches, loc='upper right', ncol=3, fancybox=True, fontsize=15)
+    # plt.yticks( range(len(order)), order, fontsize=15)
+    plt.yticks( [1], ('all \nprojects',), fontsize=15)
     plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
     plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
     plt.xlim(0,40)

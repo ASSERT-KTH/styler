@@ -14,6 +14,8 @@ import git_helper
 from Corpus import Corpus
 from terminaltables import GithubFlavoredMarkdownTable
 from functools import reduce
+import time
+from scipy import stats
 
 from core import *
 import graph_plot
@@ -26,6 +28,33 @@ __git_repo_dir = config['DEFAULT']['git_repo_dir']
 __real_errors_dir = config['DEFAULT']['real_errors_dir']
 __real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
+class Timer:
+    def __init__(self):
+        self.tasks = {}
+
+    def start_task(self, name):
+        timestamp = time.time()
+        self.tasks[name] = {
+            'start': time.time()
+        }
+        return timestamp
+
+    def end_task(self, name):
+        timestamp = time.time()
+        if name in self.tasks:
+            self.tasks[name]['end'] = timestamp
+            self.tasks[name]['duration'] = self.tasks[name]['end'] - self.tasks[name]['start']
+
+        return None
+
+    def get_durations(self):
+        return {
+            key:values['duration']
+            for key, values in self.tasks.items()
+            if 'duration' in values
+        }
+
+# timer = Timer()
 
 def get_real_errors_repo_dir(repo):
     return os.path.join(__real_errors_dir, repo)
@@ -345,7 +374,6 @@ def experiment(name, corpus_dir):
     experiment_dir = f'./experiments/real/{name}'
     errored_dir = os.path.join(experiment_dir, f'./errored')
     clean_dir = os.path.join(experiment_dir, f'./clean')
-    naturalize_dir = os.path.join(experiment_dir, f'./naturalize')
     if not os.path.exists(experiment_dir):
         create_dir(experiment_dir)
         for number_of_errors in range(1,2):
@@ -370,17 +398,19 @@ def experiment(name, corpus_dir):
     result = {}
 
     for tool in ('naturalize', 'codebuff', 'styler'):
+        # timer.start_task(f'{name}_{tool}')
         target = os.path.join(experiment_dir, f'./{tool}')
         if not os.path.exists(target):
             if tool == 'styler':
                 shutil.copytree(f'./styler/{name}/files-repaired', target)
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
+        # timer.end_task(f'{name}_{tool}')
         repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
-        result[tool] = len(repaired)
+        result[tool] = repaired
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
-    result['out_of'] = len(list_folders(f'./styler/{name}/repair-attempt/batch_0'))
+    result['out_of'] = list_folders(f'./styler/{name}/repair-attempt/batch_0')
     return result
 
 def compute_diff_size(name, tool):
@@ -405,6 +435,54 @@ def get_diff_dataset(experiment_id, tools):
         for tool in tools # if tool not in ['styler']
     }
 
+def benchmark(name, corpus_dir, tools):
+    points = [1,5,10,15,20,25,30,35,40]
+    dataset_dir = get_real_dataset_dir(name)
+    experiment_dir = f'./experiments/benchmark/{name}'
+    errored_dir = os.path.join(experiment_dir, f'./errored')
+    clean_dir = os.path.join(experiment_dir, f'./clean')
+    if not os.path.exists(experiment_dir):
+        create_dir(experiment_dir)
+        number_of_errors = 1
+        from_folder = os.path.join(dataset_dir, str(number_of_errors))
+        files = list_folders(from_folder)
+        points = list(filter(lambda e: e < len(files), points))
+        for point in points:
+            sample = random.sample(files, point)
+            to_folder = create_dir(os.path.join(errored_dir, str(point)))
+            for folder in sample:
+                shutil.copytree(os.path.join(from_folder, str(folder)), os.path.join(to_folder, folder))
+        shutil.copytree(
+            os.path.join(corpus_dir, 'data'),
+            clean_dir
+        )
+        shutil.copy(
+            os.path.join(corpus_dir, 'checkstyle.xml'),
+            experiment_dir
+        )
+        shutil.copy(
+            os.path.join(corpus_dir, 'corpus.json'),
+            os.path.join(experiment_dir, 'metadata.json')
+        )
+    timers = {tool:Timer() for tool in tools}
+    metadata = open_json(os.path.join(experiment_dir, 'metadata.json'))
+    for point in tqdm(points):
+        for tool in tools:
+            timers[tool].start_task(point)
+            target = os.path.join(experiment_dir, f'./{tool}/{point}')
+            if not os.path.exists(target):
+                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/{point}', output_dir=target, dataset_metadata=metadata)
+            timers[tool].end_task(point)
+            # repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
+            # result[tool] = len(repaired)
+    return {tool:timer.get_durations() for tool,timer in timers.items()}
+
+def dict_sum(A, B):
+    if isinstance(A, dict) and isinstance(B, dict):
+        return {key:dict_sum(value, B[key])  for key, value in A.items()}
+    else:
+        return A+B
+
 def main(args):
     if len(args) >= 2 and args[1] == 'clone':
         clone()
@@ -419,11 +497,47 @@ def main(args):
             result[name] = experiment(name, f'./styler/{name}-corpus')
         # json_pp(result)
         keys = list(list(result.values())[0].keys())
+        tools = ('naturalize', 'styler', 'codebuff')
+        flat_result = {
+            tool:set(
+                reduce(
+                    list.__add__,
+                    [
+                        [f'{project}{repaired}' for repaired in p_results[tool] ]
+                        for project, p_results in result.items()
+                    ]
+                )
+            )
+            for tool in tools
+        }
+        result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
         result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
         #json_pp(total)
         table = [ [''] + keys]
         table += [ [key] + list(values.values()) for key, values in result.items() ]
         print(GithubFlavoredMarkdownTable(table).table)
+        graph_plot.venn(flat_result)
+        # json_pp(timer.get_durations())
+    elif len(args) >= 2 and args[1] == 'benchmark':
+        result = {}
+        for name in args[2:]:
+            result[name] = benchmark(name, f'./styler/{name}-corpus', ('naturalize', 'codebuff'))
+            save_json('./', 'benchmark.json', result)
+        json_pp(result)
+        save_json('./', 'benchmark.json', result)
+    elif len(args) >= 2 and args[1] == 'benchmark-stats':
+        results = [open_json('./benchmark.json')] + [open_json(f'./benchmark{id}.json') for id in range(2)]
+        result = reduce(dict_sum, results)
+        length = len(results)
+        # print(result['be5']['code'])
+        regression = {
+            name:{
+                tool:stats.linregress([float(x) for x in data.keys()], [y/length for y in data.values()])
+                for tool, data in values.items()
+            }
+            for name, values in result.items()
+        }
+        json_pp(regression)
     elif len(args) >= 2 and args[1] == 'diff':
         tools = ('styler', 'naturalize', 'codebuff')
         result = {}
@@ -436,8 +550,8 @@ def main(args):
         graph['data'] = total
         graph['x_label'] = 'Diff size'
         graph['colors'] = {
-            'naturalize': naturalize_color,
             'codebuff': codebuff_color,
+            'naturalize': naturalize_color,
             'styler': styler_color
         }
         graph_plot.violin_plot(graph)
