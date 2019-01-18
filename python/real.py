@@ -317,6 +317,7 @@ def find_commits(commits_data):
                 result[repo_full_name].append(commit)
     return result
 
+
 def clone_old():
     commits_data = open_json('./travis/commits_oss.json')
     reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['google/auto']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
@@ -349,6 +350,7 @@ def clone_old():
             else:
                 find_errored_files(repo, commit, use_maven=True)
 
+
 def commit_until_last_modification(repo, file):
     result = []
     wd = os.getcwd()
@@ -368,6 +370,7 @@ def commit_until_last_modification(repo, file):
         pass
     os.chdir(wd)
     return result
+
 
 def experiment(name, corpus_dir):
     dataset_dir = create_dir(get_real_dataset_dir(name))
@@ -413,6 +416,7 @@ def experiment(name, corpus_dir):
     result['out_of'] = list_folders(f'./styler/{name}/repair-attempt/batch_0')
     return result
 
+
 def compute_diff_size(name, tool):
     diffs = []
     experiment_dir = f'./experiments/real/{name}'
@@ -428,12 +432,14 @@ def compute_diff_size(name, tool):
         diffs += [diffs_count]
     return diffs
 
+
 def get_diff_dataset(experiment_id, tools):
     dataset_name = experiment_id
     return {
         tool:compute_diff_size(experiment_id, tool)
         for tool in tools # if tool not in ['styler']
     }
+
 
 def benchmark(name, corpus_dir, tools):
     points = [1,5,10,15,20,25,30,35,40]
@@ -477,11 +483,56 @@ def benchmark(name, corpus_dir, tools):
             # result[tool] = len(repaired)
     return {tool:timer.get_durations() for tool,timer in timers.items()}
 
-def dict_sum(A, B):
-    if isinstance(A, dict) and isinstance(B, dict):
-        return {key:dict_sum(value, B[key])  for key, value in A.items()}
-    else:
-        return A+B
+
+def exp(projects):
+    result = {}
+    for name in projects:
+        # print(name)
+        result[name] = experiment(name, f'./styler/{name}-corpus')
+    # json_pp(result)
+    keys = list(list(result.values())[0].keys())
+    result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
+    result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
+    #json_pp(total)
+    table = [ [''] + keys]
+    table += [ [key] + list(values.values()) for key, values in result.items() ]
+    print(GithubFlavoredMarkdownTable(table).table)
+
+
+def exp_venn(projects):
+    result = {}
+    for name in projects:
+        result[name] = experiment(name, f'./styler/{name}-corpus')
+
+    tools = ('naturalize', 'styler', 'codebuff')
+    flat_result = {
+        tool:set(
+            reduce(
+                list.__add__,
+                [
+                    [f'{project}{repaired}' for repaired in p_results[tool] ]
+                    for project, p_results in result.items()
+                ]
+            )
+        )
+        for tool in tools
+    }
+    graph_plot.venn(flat_result)
+
+
+def benchmark_stats(results):
+    result = reduce(dict_sum, results)
+    length = len(results)
+    # print(result['be5']['code'])
+    regression = {
+        name:{
+            tool:stats.linregress([float(x) for x in data.keys()], [y/length for y in data.values()])
+            for tool, data in values.items()
+        }
+        for name, values in result.items()
+    }
+    json_pp(regression)
+
 
 def main(args):
     if len(args) >= 2 and args[1] == 'clone':
@@ -491,33 +542,9 @@ def main(args):
     elif len(args) >= 2 and args[1] == 'copy':
         create_real_error_dataset(__real_dataset_dir)
     elif len(args) >= 2 and args[1] == 'exp':
-        result = {}
-        for name in args[2:]:
-            # print(name)
-            result[name] = experiment(name, f'./styler/{name}-corpus')
-        # json_pp(result)
-        keys = list(list(result.values())[0].keys())
-        tools = ('naturalize', 'styler', 'codebuff')
-        flat_result = {
-            tool:set(
-                reduce(
-                    list.__add__,
-                    [
-                        [f'{project}{repaired}' for repaired in p_results[tool] ]
-                        for project, p_results in result.items()
-                    ]
-                )
-            )
-            for tool in tools
-        }
-        result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
-        result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
-        #json_pp(total)
-        table = [ [''] + keys]
-        table += [ [key] + list(values.values()) for key, values in result.items() ]
-        print(GithubFlavoredMarkdownTable(table).table)
-        graph_plot.venn(flat_result)
-        # json_pp(timer.get_durations())
+        exp(args[2:])
+    elif len(args) >= 2 and args[1] == 'exp-venn':
+        exp_venn(args[2:])
     elif len(args) >= 2 and args[1] == 'benchmark':
         result = {}
         for name in args[2:]:
@@ -527,17 +554,7 @@ def main(args):
         save_json('./', 'benchmark.json', result)
     elif len(args) >= 2 and args[1] == 'benchmark-stats':
         results = [open_json('./benchmark.json')] + [open_json(f'./benchmark{id}.json') for id in range(2)]
-        result = reduce(dict_sum, results)
-        length = len(results)
-        # print(result['be5']['code'])
-        regression = {
-            name:{
-                tool:stats.linregress([float(x) for x in data.keys()], [y/length for y in data.values()])
-                for tool, data in values.items()
-            }
-            for name, values in result.items()
-        }
-        json_pp(regression)
+        benchmark_stats(results)
     elif len(args) >= 2 and args[1] == 'diff':
         tools = ('styler', 'naturalize', 'codebuff')
         result = {}

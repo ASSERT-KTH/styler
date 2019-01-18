@@ -254,3 +254,10 @@ def is_error_targeted(error):
 
 def filter_targeted_error(errors):
     return list(filter(is_error_targeted, errors))
+
+
+def dict_sum(A, B):
+    if isinstance(A, dict) and isinstance(B, dict):
+        return {key:dict_sum(value, B[key])  for key, value in A.items()}
+    else:
+        return A+B
