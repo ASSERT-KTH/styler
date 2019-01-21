@@ -261,3 +261,7 @@ def dict_sum(A, B):
         return {key:dict_sum(value, B[key])  for key, value in A.items()}
     else:
         return A+B
+
+
+def map_keys(func, dictionary: dict) -> dict:
+    return { func(key):value for key, value in dictionary.items()}

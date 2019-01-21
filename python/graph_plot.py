@@ -14,8 +14,11 @@ import os
 import json
 import datetime
 from matplotlib import pyplot as plt
-from matplotlib_venn import venn3
+from matplotlib_venn import venn3, venn3_circles
+from itertools import product
+import string
 
+from core import *
 
 from functools import reduce
 
@@ -30,8 +33,47 @@ def protocol6(results, repair_tools, disposition=110):
 
     return fig
 
+def mix_colors(*colors):
+    color_avg = [0] * 3
+    colors_len = len(colors)
+    for color in colors:
+        rgb = hex_to_rgb(color)
+        for i in range(len(rgb)):
+            color_avg[i] += rgb[i] / colors_len
+    print(color_avg)
+    return color_avg
+
+def gen_get_colors_venn(lables, colors):
+    def get_colors_venn(id):
+        result = []
+        for index, value in enumerate(id):
+            if value == '1':
+                result.append(colors[lables[index]])
+        return tuple(result)
+    return get_colors_venn
+
 def venn(data):
-    venn3(data.values(), tuple(data.keys()))
+    labels = tuple(data.keys())
+    v = venn3(data.values(), labels)
+    colors = {
+        'Codebuff': codebuff_color,
+        'Naturalize': naturalize_color,
+        'Styler': styler_color
+    }
+    get_colors_venn = gen_get_colors_venn(labels, colors)
+    alpha = 2/3
+    for id in [''.join(elements) for elements in product('01', repeat=3)]:
+        if id != '000':
+            v.get_patch_by_id(id).set_color(mix_colors(*get_colors_venn(id)))
+            v.get_patch_by_id(id).set_alpha(alpha)
+    # v.get_patch_by_id('110').set_color(mix_colors(core.naturalize_color, core.styler_color))
+    # v.get_patch_by_id('110').set_color(mix_colors(core.naturalize_color, core.styler_color))
+    # v.get_patch_by_id('010').set_color(core.styler_color)
+    # v.get_patch_by_id('011').set_color(mix_colors(core.styler_color, core.codebuff_color))
+    # v.get_patch_by_id('001').set_color(core.codebuff_color)
+    # v.get_patch_by_id('101').set_color(mix_colors(core.naturalize_color, core.codebuff_color))
+    # v.get_patch_by_id('111').set_color(mix_colors(core.naturalize_color, core.codebuff_color, core.styler_color))
+
     plt.show()
 
 def protocol6_subplot(results, repair_tool, ax, y_axis=True):
