@@ -132,7 +132,11 @@ def list_errors(repo):
 
 def list_elements(repo, type):
     dir = get_repo_type_dir(repo, type)
-    return [ element for element in os.listdir(dir) if os.path.isdir(get_synthetic_error_dir(repo, type, element)) ]
+    if os.path.exists(dir):
+        return [ element for element in os.listdir(dir) if os.path.isdir(get_synthetic_error_dir(repo, type, element)) ]
+    else:
+        return []
+
 
 def list_folders(dir):
     return [ element for element in os.listdir(dir) if os.path.isdir(os.path.join(dir, element)) ]

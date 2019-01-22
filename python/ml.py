@@ -457,7 +457,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
     whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
     from_token = error_info['from_token']
     to_token = error_info['to_token']
-    # line = int(error_info['error']['line'])
+
 
     if only_formatting:
         new_white_space_tokens = new_tokens
@@ -467,11 +467,19 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
     new_white_space = [ token_utils.whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
     # print(new_white_space)
 
-    whitespace[from_token:to_token] = new_white_space
+    # whitespace[from_token:to_token] = new_white_space
+    # whitespace[from_token:min(from_token + len(new_white_space),to_token)] = new_white_space[:min(to_token - from_token, len(new_white_space))]
+    for index in range(min(to_token - from_token, len(new_white_space))):
+        whitespace[from_token + index] = new_white_space[index]
 
     result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
 
-    return result # jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
+    if 'error' in error_info:
+        line = int(error_info['error']['line'])
+        return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+    else:
+        return result #jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
+    # return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
 
 def get_predictions(dataset, n, id):
     tokenized_dir = get_tokenized_dir(dataset)

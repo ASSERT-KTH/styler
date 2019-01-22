@@ -13,9 +13,11 @@ from termcolor import colored
 import git_helper
 from Corpus import Corpus
 from terminaltables import GithubFlavoredMarkdownTable
+from terminaltables import SingleTable
 from functools import reduce
 import time
 from scipy import stats
+import string
 
 from core import *
 import graph_plot
@@ -55,6 +57,9 @@ class Timer:
         }
 
 # timer = Timer()
+def get_experiment_dir(name):
+    return f'./experiments/real/{name}'
+
 
 def get_real_errors_repo_dir(repo):
     return os.path.join(__real_errors_dir, repo)
@@ -374,7 +379,7 @@ def commit_until_last_modification(repo, file):
 
 def experiment(name, corpus_dir):
     dataset_dir = create_dir(get_real_dataset_dir(name))
-    experiment_dir = f'./experiments/real/{name}'
+    experiment_dir = get_experiment_dir(name)
     errored_dir = os.path.join(experiment_dir, f'./errored')
     clean_dir = os.path.join(experiment_dir, f'./clean')
     if not os.path.exists(experiment_dir):
@@ -419,7 +424,7 @@ def experiment(name, corpus_dir):
 
 def compute_diff_size(name, tool):
     diffs = []
-    experiment_dir = f'./experiments/real/{name}'
+    experiment_dir = get_experiment_dir(name)
     repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
     errored_dir = os.path.join(experiment_dir, f'./errored/1')
     repaired_dir = os.path.join(experiment_dir, f'./{tool}')
@@ -499,6 +504,56 @@ def exp(projects):
     print(GithubFlavoredMarkdownTable(table).table)
 
 
+def exp_stats(projects):
+    exp_result = {}
+    all_tools = ('naturalize', 'codebuff', 'styler')
+    for name in projects:
+        # print(name)
+        exp_result[name] = experiment(name, f'./styler/{name}-corpus')
+        exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
+    tools = ('naturalize', 'codebuff', 'styler', 'all_tools')
+    repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
+    for project, project_result in exp_result.items():
+        experiment_dir = get_experiment_dir(project)
+        errored_dir = os.path.join(experiment_dir, f'./errored/1')
+        for tool, repaired_files in project_result.items():
+            # repaired_files = project_result[tool]
+            error_types = reduce(
+                list.__add__,
+                [
+                    [
+                        checkstyle_source_to_error_type(error['source'])
+                        for error in open_json(os.path.join(errored_dir, f'{id}/metadata.json'))['errors']
+                    ]
+                    for id in repaired_files
+                ]
+            )
+            repaired_error_types[tool] += error_types
+    repaired_error_types_count = {
+        tool:dict_count(values)
+        for tool, values in repaired_error_types.items()
+    }
+    repaired_error_types_count_relative = {
+        tool:{
+            error_type:(float(count) / repaired_error_types_count['out_of'][error_type] * 100.)
+            for error_type, count in repaired_error_types_count[tool].items()
+        }
+        for tool in tools
+    }
+    # json_pp(repaired_error_types_count_relative)
+    keys = list(repaired_error_types_count['out_of'].keys())
+    # result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
+    # result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
+    #json_pp(total)
+    table_data = [ [''] + [f'{key}\n( /{repaired_error_types_count["out_of"][key]})' for key in keys]]
+    table_data += [
+        [tool] + [f'{repaired_error_types_count_relative[tool].get(error_type, 0):.1f}%' for error_type in keys]
+        for tool in tools
+    ]
+    table = SingleTable(table_data)
+    print(table.table)
+    return repaired_error_types_count
+
 def exp_venn(projects):
     result = {}
     for name in projects:
@@ -517,7 +572,7 @@ def exp_venn(projects):
         )
         for tool in tools
     }
-    graph_plot.venn(flat_result)
+    graph_plot.venn(map_keys(lambda x: x.capitalize(), flat_result))
 
 
 def benchmark_stats(results):
@@ -543,6 +598,8 @@ def main(args):
         create_real_error_dataset(__real_dataset_dir)
     elif len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
+    elif len(args) >= 2 and args[1] == 'exp-stats':
+        exp_stats(args[2:])
     elif len(args) >= 2 and args[1] == 'exp-venn':
         exp_venn(args[2:])
     elif len(args) >= 2 and args[1] == 'benchmark':
