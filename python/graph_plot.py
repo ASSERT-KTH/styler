@@ -520,9 +520,10 @@ def violin_plot(plot_data):
         # print(pc)
         pc.set_facecolor(colors[label])
         pc.set_alpha(0.8)
-    axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False)
+    medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
+    axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False, medianprops=medianprops)
 
-    patches = [ mpatches.Patch(color=c, label=l) for l, c in colors.items()]
+    patches = [ mpatches.Patch(color=c, label=l) for l, c in list(colors.items())[::-1]]
     plt.legend(handles = patches, loc='upper right', ncol=3, fancybox=True, fontsize=15)
     # plt.yticks( range(len(order)), order, fontsize=15)
     plt.yticks( [1], ('all \nprojects',), fontsize=15)
