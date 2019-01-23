@@ -10,19 +10,19 @@ import json
 import datetime
 from itertools import product
 
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-
 import numpy as np
 
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3, venn3_circles
 
+matplotlib.use('TkAgg')
+
 
 def protocol6(results, repair_tools, disposition=110):
-    fig = plt.figure(figsize=(15,12))
+    fig = plt.figure(figsize=(15, 12))
 
     axs = []
     for tool, index in zip(repair_tools, range(len(repair_tools))):
@@ -31,6 +31,7 @@ def protocol6(results, repair_tools, disposition=110):
         protocol6_subplot(results, tool, ax, not index)
 
     return fig
+
 
 def mix_colors(*colors):
     color_avg = [0] * 3
@@ -42,14 +43,16 @@ def mix_colors(*colors):
     print(color_avg)
     return color_avg
 
-def gen_get_colors_venn(lables, colors):
-    def get_colors_venn(id):
+
+def gen_get_colors_venn(labels, colors):
+    def get_colors_venn(group_id):
         result = []
-        for index, value in enumerate(id):
+        for index, value in enumerate(group_id):
             if value == '1':
-                result.append(colors[lables[index]])
+                result.append(colors[labels[index]])
         return tuple(result)
     return get_colors_venn
+
 
 def venn(data):
     labels = tuple(data.keys())
@@ -65,19 +68,11 @@ def venn(data):
         if id != '000':
             v.get_patch_by_id(id).set_color(mix_colors(*get_colors_venn(id)))
             v.get_patch_by_id(id).set_alpha(alpha)
-    # v.get_patch_by_id('110').set_color(mix_colors(core.naturalize_color, core.styler_color))
-    # v.get_patch_by_id('110').set_color(mix_colors(core.naturalize_color, core.styler_color))
-    # v.get_patch_by_id('010').set_color(core.styler_color)
-    # v.get_patch_by_id('011').set_color(mix_colors(core.styler_color, core.codebuff_color))
-    # v.get_patch_by_id('001').set_color(core.codebuff_color)
-    # v.get_patch_by_id('101').set_color(mix_colors(core.naturalize_color, core.codebuff_color))
-    # v.get_patch_by_id('111').set_color(mix_colors(core.naturalize_color, core.codebuff_color, core.styler_color))
 
     plt.show()
 
+
 def protocol6_subplot(results, repair_tool, ax, y_axis=True):
-
-
     error_type_repair = dict()
     for result in results:
         file_with_cs_errors = result["file_with_cs_errors_{}".format(repair_tool)]
@@ -93,19 +88,13 @@ def protocol6_subplot(results, repair_tool, ax, y_axis=True):
                         else:
                             errors_after_repair = errors
 
-
                 for error in errors:
                     if error not in error_type_repair:
                         error_type_repair[error] = {"repaired": 0, "errors_remaining": 0, "not_repaired": 0}
-                        # error_type_repair[error] = {"repaired": 0, "other_errors": 0, "new_errors": 0, "not_repaired": 0}
                     if error in errors_after_repair:
                         error_type_repair[error]["not_repaired"] += 1
                     else:
                         if len(errors_after_repair):
-                            # if len(list(filter(lambda x: x not in errors, errors_after_repair))):
-                                # error_type_repair[error]["new_errors"] += 1
-                            # else:
-                                # error_type_repair[error]["other_errors"] += 1
                             error_type_repair[error]["errors_remaining"] += 1
                         else:
                             error_type_repair[error]["repaired"] += 1
@@ -131,7 +120,6 @@ def protocol6_subplot(results, repair_tool, ax, y_axis=True):
             value = error["sum"]
             plt.text(1.02, pos - 0.2, '%d' % int(value), ha='center', va='bottom')
     with_percentage(error_type_repair, y_pos)
-    # ax.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
     if y_axis:
         plt.yticks(y_pos, objects, rotation=0)
     else:
@@ -139,6 +127,7 @@ def protocol6_subplot(results, repair_tool, ax, y_axis=True):
     plt.xlabel('')
     plt.title('Percentage of repaired checkstyle errors by {}.'.format(repair_tool))
     plt.legend()
+
 
 def plot_repaired_files(results):
 
@@ -195,12 +184,15 @@ def plot_repaired_files(results):
     # Create legend & Show graphic
     plt.legend()
 
+
 def avg(array_list):
     return sum(array_list)/len(array_list)
+
 
 def hex_to_rgb(hex_color):
     hex = hex_color.lstrip('#')
     return tuple(int(hex[i:i+2], 16)/255. for i in (0, 2 ,4))
+
 
 def n_bar_plot(plot_data):
     counts = plot_data['labels']
@@ -269,6 +261,7 @@ def n_bar_plot(plot_data):
     plt.legend()
     plt.show()
 
+
 def plot_diffs(results):
     modifications = (2,2,2,2,2)
 
@@ -306,8 +299,9 @@ def plot_diffs(results):
     # Create legend & Show graphic
     plt.legend()
 
+
 def plot_percentage_of_errors(results):
-    modifications = (5,5)
+    modifications = (5, 5)
 
     barWidth = 0.25
     bars1 = []
@@ -342,8 +336,9 @@ def plot_percentage_of_errors(results):
     # Create legend & Show graphic
     plt.legend()
 
+
 def plot_errors_types(results, counts): # protocol1
-    modifications = (2,2,2,2,2)
+    modifications = (2, 2, 2, 2, 2)
 
     labels = []
 
@@ -366,7 +361,7 @@ def plot_errors_types(results, counts): # protocol1
 
     n_errors_labels = len(errors_labels)
     colors = []
-    if ( n_errors_labels > 1):
+    if n_errors_labels > 1:
         for i in range( 0, n_errors_labels ):
             colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
         random.shuffle(colors)
@@ -396,12 +391,11 @@ def plot_errors_types(results, counts): # protocol1
     for count in counts:
         layers[count] = compute_errors_layer(count)
 
-
     barWidth = 1. / (len(counts) + 1)
     # Set position of bar on X axis
     r = []
     r.append(np.arange(len(labels)))
-    for i in range(1,len(counts)):
+    for i in range(1, len(counts)):
         r.append([x + barWidth for x in r[i-1]])
 
 
@@ -453,7 +447,7 @@ def cumulatives_bars(plot_data):
             label_sum[label] += data[name].get(label,0)
 
     total_sum = sum(label_sum.values())
-    avg = { label:(value/total_sum*100.) for label, value in label_sum.items() }
+    avg = {label: (value/total_sum*100.) for label, value in label_sum.items()}
     print(avg)
 
     n_errors_labels = len(errors_labels)
@@ -469,24 +463,22 @@ def cumulatives_bars(plot_data):
     for i, error_label in enumerate(errors_labels):
         lables_colors[error_label] = colors[i]
 
-    barWidth = 0.5
+    bar_width = 0.5
     # Set position of bar on X axis
-    r = [
-
-    ]
+    r = list()
     r.append(np.arange(len(data.keys())))
     # for i in range(1,len(counts)):
-    #     r.append([x + barWidth for x in r[i-1]])
+    #     r.append([x + bar_width for x in r[i-1]])
 
 
     def add_layers_to_the_graph(layers, position):
         sum = [0] * len(labels)
         for key, values in layers.items():
-            plt.bar(position, values, width=barWidth, color=lables_colors[key], bottom=sum, edgecolor='white')
+            plt.bar(position, values, width=bar_width, color=lables_colors[key], bottom=sum, edgecolor='white')
             sum = list(map( lambda x, y: x + y, sum, values))
         return sum
-    # plt.bar(r2, naturalize_res, color='#f1c40f', width=barWidth, edgecolor='white', label='Naturalize')
-    # plt.bar(r3, codebuff_res, color='#1abc9c', width=barWidth, edgecolor='white', label='Codebuff')
+    # plt.bar(r2, naturalize_res, color='#f1c40f', width=bar_width, edgecolor='white', label='Naturalize')
+    # plt.bar(r3, codebuff_res, color='#1abc9c', width=bar_width, edgecolor='white', label='Codebuff')
     i = 0
     sums = []
     sums.append(add_layers_to_the_graph(layers, r[0]))
@@ -501,8 +493,10 @@ def cumulatives_bars(plot_data):
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
     plt.show()
 
+
 def dict_to_list(dict, order):
     return [dict[key] for key in order]
+
 
 def violin_plot(plot_data):
     data = plot_data['data']
@@ -581,34 +575,9 @@ def boxplot(plot_data):
     plt.gca().invert_yaxis()
     plt.show()
 
-# def boxplot(plot_data):
-#     labels = plot_data['labels']
-#     sub_labels = plot_data['sub_labels']
-#     vert = plot_data.get('vert', False)
-#
-#     boxWidth = 1. / (len(sub_labels) + 1)
-#
-#     r = []
-#     r.append(list(np.arange(len(labels))))
-#     for i in range(1,len(sub_labels)):
-#         r.append([x + boxWidth for x in r[i-1]])
-#
-#     data = [ [] for i in range(len(sub_labels)) ]
-#     fig, axes = plt.subplots(nrows=1, ncols=len(sub_labels))
-#     for data_list in plot_data['data'].values():
-#         for index, label in enumerate(sub_labels):
-#             data[index] += [data_list[label]]
-#     for index in range(len(sub_labels)):
-#         axes[index].boxplot(data[index], positions=r[index], widths=boxWidth*0.8, vert=vert, patch_artist=True)
-#     if vert:
-#         plt.xticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, rotation=45, fontsize=8)
-#     else:
-#         plt.yticks([r + boxWidth * (len(sub_labels)-1) / 2 for r in range(len(labels))], labels, fontsize=8)
-#
-#     plt.show()
 
 def plot_errors_types_per_injection_type(results):
-    modifications = (2,2,2,2,2)
+    modifications = (2, 2, 2, 2, 2)
 
     counts = ("insertions-newline", "insertions-space", "insertions-tab", "deletions-newline", "deletions-space")
 
@@ -622,11 +591,11 @@ def plot_errors_types_per_injection_type(results):
 
     n_errors_labels = len(errors_labels)
     colors = []
-    if ( n_errors_labels > 1):
-        for i in range( 0, n_errors_labels ):
-            colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9 , random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
+    if n_errors_labels > 1:
+        for i in range(0, n_errors_labels):
+            colors.append('#%02x%02x%02x' % tuple(map(lambda x: int( x*256 ), colorsys.hls_to_rgb( 1 / (n_errors_labels-1) * i * 0.9, random.uniform(0.4, 0.6), random.uniform(0.4, 0.6)))))
         random.shuffle(colors)
-    else :
+    else:
         colors.append('#ff00ff')
 
     lables_colors = dict()
@@ -703,6 +672,7 @@ def plot_errors_types_per_injection_type(results):
     patches = [ mpatches.Patch(color=c, label="{}".format(l.split(".")[-1])) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
 
+
 def dist_from_modification(results):
     distances = []
     for result in results:
@@ -716,63 +686,10 @@ def dist_from_modification(results):
                 else:
                     distances.append(0)
     print(sum(distances)/len(distances))
+
+
 def load_results(dir):
     data = {}
     with open(os.path.join(dir, "results.json")) as f:
         data = json.load(f)
     return data
-
-if __name__ == "__main__":
-    fig_name = "figure"
-    now = datetime.datetime.now()
-    if len(sys.argv) > 2:
-        type = sys.argv[1]
-        save = False
-        show = True
-        i = 2
-        while sys.argv[i].startswith("--"):
-            if ( sys.argv[i] == "--save" ):
-                save = True
-            if ( sys.argv[i] == "--dontShow" ):
-                show = False
-            i+=1
-        folders = sys.argv[i:]
-        results = [ load_results(dir) for dir in folders ]
-        if (type == "protocol1" or type == "1"):
-            fig_name = "Experiment_injection_protocol1"
-            plot_errors_types(results, ("checkstyle_errors_count_ugly", "checkstyle_errors_count_naturalize", "checkstyle_errors_count_naturalize_sniper", "checkstyle_errors_count_codebuff", "checkstyle_errors_count_codebuff_sniper"))
-            repair_tools = ("naturalize", "naturalize_sniper", "codebuff", "codebuff_sniper")
-            union = lambda x, y: x|set(y);
-            parse_error_name = lambda x: x.split(".")[-1];
-            parse_error_names = lambda repair_tool, result: map(parse_error_name, result["checkstyle_errors_count_{}".format(repair_tool)].keys());
-            get_error_names = lambda repair_tool, results: map(lambda result: parse_error_names(repair_tool, result), results)
-            errors_types = {repair_tool: reduce(union, get_error_names(repair_tool, results), set()) for repair_tool in repair_tools}
-            ugly_error_types = reduce(union, get_error_names("ugly", results), set())
-            unique_error_types = {repair_tool: list(filter(lambda x: x not in ugly_error_types, errors)) for repair_tool, errors in errors_types.items()}
-            print(unique_error_types)
-        elif (type == "protocol2" or type == "2"):
-            fig_name = "Experiment_injection_protocol2"
-            plot_errors_types(results, ("checkstyle_errors_count_ugly",))
-        elif (type == "protocol3" or type == "3"):
-            fig_name = "Experiment_injection_protocol3"
-            plot_errors_types_per_injection_type(results)
-        elif (type == "protocol4" or type == "4"):
-            fig_name = "Experiment_injection_protocol4"
-            plot_repaired_files(results)
-        elif (type == "protocol5" or type == "5"):
-            plot_diffs(results)
-        elif (type == "protocol6" or type == "6"):
-            tools = ("naturalize_sniper", "codebuff_sniper")
-            fig_name = "Experiment_injection_protocol6_{}".format("_".join(tools))
-            fig = protocol6(results, tools, 120)
-        elif (type == "protocol7" or type == "7"):
-            dist_from_modification(results)
-        elif (type == "percentage_of_errors"):
-            plot_percentage_of_errors(results)
-        if show:
-            try:
-                plt.show()
-            except UnicodeDecodeError:
-                print("Bye mac os lover")
-        if save:
-            plt.savefig("../results/{}.pdf".format(fig_name),format='pdf')
