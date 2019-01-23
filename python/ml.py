@@ -268,8 +268,8 @@ def tokenize_errored_file(file, file_orig, error):
         tokens_correct.append(get_space_value(space))
     return tokens_errored, tokens_correct
 
-def whatever(dataset, folder, id, only_formatting=False):
-    dir = f'{get_dataset_dir(dataset)}/{folder}/{id}'
+def whatever(dir, folder, id, only_formatting=False):
+    dir = os.path.join(dir, f'./{folder}/{id}')
     file_name = [ java_file for java_file in glob.glob(f'{dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
     file = f'{dir}/{file_name}.java'
     file_orig = f'{dir}/{file_name}-orig.java'
@@ -321,22 +321,22 @@ def print_max_length_and_vocabulary(folder):
 
     plt.show()
 
-def gen_IO(dataset, target, only_formatting=False):
+def gen_IO(dir, target, only_formatting=False):
     create_dir(target)
-    dir = get_dataset_dir(dataset)
+    # dir = get_dataset_dir(dataset)
     sub_sets = ['learning', 'validation', 'testing']
     diffs = []
     weirdos = []
     for sub_set in sub_sets:
-        sub_set_dir = get_sub_set_dir(dataset, sub_set)
+        sub_set_dir = os.path.join(dir, f'./{sub_set}')
         if not os.path.exists(sub_set_dir):
             continue
         target_sub_set = f'{target}/{sub_set}'
         create_dir(target_sub_set)
         synthesis_error_ids = list_folders(sub_set_dir)
         synthesis_error_ids = sorted(synthesis_error_ids, key=int)
-        for id in tqdm(synthesis_error_ids, desc=f'{dataset}/{sub_set}'):
-            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
+        for id in tqdm(synthesis_error_ids, desc=f'{dir.split("/")[-1]}/{sub_set}'):
+            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dir, sub_set, id)
             if only_formatting:
                 tokens_correct = tokens_correct[1::2]
                 tokens_errored_in_tag = tokens_errored_in_tag[1::2]
@@ -578,7 +578,7 @@ def main(args):
     if len(args) >= 2 and args[1] == 'gen':
         target = get_tokenized_dir('')
         for dataset in dataset_list:
-            gen_IO(dataset, os.path.join(target, dataset), only_formatting=True)
+            gen_IO(get_dataset_dir(dataset), os.path.join(target, dataset), only_formatting=True)
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]
         print_max_length_and_vocabulary(folder)
@@ -602,27 +602,6 @@ def main(args):
         error_info = get_error_info(dataset, id)
         orig_file_name, orig_source = get_orig_filename_and_content(dataset, id)
         print_aligned_strings(get_aligned_strings(match_input_to_source(orig_source, error_info, input)))
-    if len(args) >= 2 and args[1] == 'test':
-        target = '/home/benjaminl/Documents/kth/data/2/spoon'
-        sub_set = 'testing'
-        target_sub_set = f'{target}/{sub_set}'
-        count_diff_size = []
-        for id in tqdm(range(1000)):
-            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever('spoon', 'testing', id)
-            save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-I.txt', " ".join(tokens_errored))
-            save_file('/home/benjaminl/Documents/kth/data/2/spoon/testing', f'{id}-O.txt', " ".join(tokens_correct))
-            count_diff_size.append(info['count_diff'])
-        print(sum([ c == 0 for c in count_diff_size ]))
-    if len(args) >= 2 and args[1] == 'test2':
-        dataset = 'neo4j'
-        target = f'/home/benjaminl/Documents/kth/data/2/{dataset}'
-        sub_set = 'testing'
-        target_sub_set = f'{target}/{sub_set}'
-        id = 11
-        tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dataset, sub_set, id)
-        save_file(f'{target}/{sub_set}', f'{id}-I.txt', " ".join(tokens_errored))
-        save_file(f'{target}/{sub_set}', f'{id}-O.txt', " ".join(tokens_correct))
-        save_file(f'{target}/{sub_set}', f'{id}-E.txt', " ".join(tokens_errored_in_tag))
 
 if __name__ == "__main__":
     main(sys.argv)

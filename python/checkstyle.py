@@ -19,6 +19,9 @@ _CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
 
 
 def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_targeted=False):
+    """
+    Run checkstyle on the dir
+    """
     cmd = "java -jar {} -f xml -c {} {}".format(checkstyle_jar, checkstyle_file_path, file_path)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
@@ -30,6 +33,9 @@ def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_
     return (output, process.returncode)
 
 def parse_res(output, only_targeted=False):
+    """
+    Parse the reults from XML to a dict
+    """
     xml_output = ET.fromstring(output)
     output_parsed = dict()
     for elem_file in xml_output.getchildren():
@@ -50,6 +56,10 @@ def parse_file(file_path):
     return parse_res(file_content)
 
 def analyse_results(results):
+    """
+    Depreciated.
+    Gives quick analyse of the checkstyle results
+    """
     FIXABLE = (
         'RegexpSinglelineCheck',
         'WitespaceAfterCheck',

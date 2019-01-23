@@ -6,10 +6,17 @@ import shutil
 import random
 import copy
 import uuid
+from tqdm import tqdm
+import copy
+import threading
+import configparser
 
 codebuff_color = '#1565c0'
 styler_color = '#64dd17'
 naturalize_color = '#fdd835'
+
+core_config = configparser.ConfigParser()
+core_config.read('config.ini')
 
 targeted_errors = (
     'MethodParamPad',
@@ -281,3 +288,27 @@ def map_keys(func, dictionary: dict) -> dict:
     Map the keys of a dict
     """
     return { func(key):value for key, value in dictionary.items()}
+
+
+def start_pool(queue, batch_size, function):
+    pbar = tqdm(total=len(queue))
+    def get_job():
+        if len(queue) > 0:
+            return queue.pop()
+        return False
+
+    def process():
+        job = get_job()
+        while job:
+            # print(f'Get {job}')
+            function(job)
+            pbar.update(1)
+            job = get_job()
+
+    threads = []
+    for i in range(batch_size):
+        threads.append(threading.Thread(target=process))
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()

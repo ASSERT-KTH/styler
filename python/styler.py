@@ -9,6 +9,9 @@ from scipy import stats
 
 from core import *
 import checkstyle
+from Corpus import Corpus
+import synthetic
+import ml
 
 __model_dir = './styler/models'
 
@@ -83,7 +86,43 @@ def get_files_without_errors(checkstyle_result):
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
 
-def create_corpus(dir, commit, checkstyle_relative_dir):
+def create_corpus(dir, name, checkstyle_dir):
+    if dir.endswith('/'):
+        dir = dir[:-1]
+    corpus_dir = f'./styler/{name}-corpus'
+
+    (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
+
+    files_without_errors = get_files_without_errors(output)
+    files_with_errors = get_files_with_errors(output)
+
+    print(f'Found {len(files_without_errors)} files with no errors.')
+    print(f'Found {len(files_with_errors)} files with errors.')
+
+    def is_good_candidate(file_path):
+        if not file_path.endswith('.java'):
+            return False
+        return True
+
+    candidate_files = filter(is_good_candidate, files_without_errors)
+
+    create_dir(corpus_dir)
+    shutil.copy(checkstyle_dir, os.path.join(corpus_dir, 'checkstyle.xml'))
+    for id, file in tqdm(enumerate(candidate_files), desc='Copy'):
+        file_target_dir = os.path.join(corpus_dir, f'data/{id}')
+        file_name = file.split('/')[-1]
+        file_target = os.path.join(file_target_dir, file_name)
+        create_dir(file_target_dir)
+        shutil.copy(file, file_target)
+
+    corpus_info = {
+        'grammar': 'Java8',
+        'indent': '4'
+    }
+    save_json(corpus_dir, 'corpus.json', corpus_info)
+    return corpus_dir
+
+def create_corpus_git(dir, commit, checkstyle_relative_dir):
     if dir.endswith('/'):
         dir = dir[:-1]
     corpus_dir = f'./styler/{dir.split("/")[-1]}-corpus'
@@ -205,7 +244,7 @@ def lits_and_create_corpora():
         if len(commits):
             oldest_commit = commits[-1]
             print(f'{info["repo_full_name"]} -> {oldest_commit}')
-            create_corpus(info['repo'].working_dir, oldest_commit, info['checkstyle_clean'])
+            create_corpus_git(info['repo'].working_dir, oldest_commit, info['checkstyle_clean'])
 
 
 def repair_real(name):
@@ -220,6 +259,17 @@ def main(args):
             datasets = args[2:]
         for dataset in tqdm(datasets):
             repair_real(dataset)
+    if args[1] == 'train':
+        # corpus_dir = create_corpus(
+        #     '/home/benjaminl/Documents/kth/repairnator/repairnator',
+        #     'test-rep',
+        #     '/home/benjaminl/Documents/kth/repairnator/repairnator/checkstyle.xml'
+        # )
+        # corpus = Corpus(corpus_dir, 'test-rep')
+        # share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
+        # synthetic.gen_dataset(corpus, share, target_dir='./styler/test-rep-errors' )
+        # ml.gen_IO('./styler/test-rep-errors', './styler/test-rep-tokens', only_formatting=True)
+        pass
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -15,6 +15,8 @@ import uuid
 from functools import reduce
 import java_lang_utils
 import graph_plot
+import copy
+import threading
 
 from core import *
 import repair
@@ -184,9 +186,9 @@ def gen_get_random_file(corpus, numbers):
         return file
     return get_file
 
-def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
+def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id, target_dir):
     DEBUG = False
-    folder = os.path.join(get_repo_dir(repo_name), f'./{goal}/{id}')
+    folder = os.path.join(target_dir, f'./{goal}/{id}')
     file =  get_random_corpus_file(goal)
     file_dir = file[2]
     file_name = file[0].split('.')[0]
@@ -252,9 +254,13 @@ def gen_errored(corpus, get_random_corpus_file, repo_name, goal, id):
 
     save_json(folder, 'metadata.json', report)
 
-def gen_dataset(corpus, numbers):
+
+def gen_dataset(corpus, numbers, target_dir=None):
     repo_name = corpus.name
-    dir = get_repo_dir(repo_name)
+    if target_dir is None:
+        dir = get_repo_dir(repo_name)
+    else:
+        dir=target_dir
     if os.path.exists(dir):
         shutil.rmtree(dir)
     create_dir(dir)
@@ -263,8 +269,28 @@ def gen_dataset(corpus, numbers):
     shutil.copyfile(corpus.checkstyle, os.path.join(dir, f'./checkstyle.xml'))
     for goal, number in numbers.items():
         for i in tqdm(range(number), desc=f'{repo_name}/{goal}'):
-            gen_errored(corpus, get_random_corpus_file, repo_name, goal, i)
+            gen_errored(corpus, get_random_corpus_file, repo_name, goal, i, dir)
     # copy_originals(corpus, repo_name)
+
+
+def gen_dataset_batch(corpus, numbers, batch_size=5, target_dir=None):
+    repo_name = corpus.name
+    if target_dir is None:
+        dir = get_repo_dir(repo_name)
+    else:
+        dir=target_dir
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+    create_dir(dir)
+    save_json(dir, 'repo.json', corpus.info)
+    get_random_corpus_file = gen_get_random_file(corpus, numbers)
+    shutil.copyfile(corpus.checkstyle, os.path.join(dir, f'./checkstyle.xml'))
+    # checkstyle_batch = gen_checkstyle_batch(batch_size, corpus.checkstyle)
+    for goal, number in numbers.items():
+        print(batch_size)
+        def task(i):
+            gen_errored(corpus, get_random_corpus_file, repo_name, goal, i, dir)
+        start_pool(list(range(number)), batch_size, task)
 
 def map_and_count(reducer, data):
     result = {}
@@ -500,7 +526,7 @@ def re_gen(dataset, type, id):
         tmp_original_path = os.path.join(tmp_dir, original_file_name)
         shutil.copy(original_file_path, tmp_original_path)
         return (original_file_name, '',tmp_original_path)
-    gen_errored(corpus, get_random_corpus_file, dataset, type, id)
+    gen_errored(corpus, get_random_corpus_file, dataset, type, id, get_repo_dir(dataset))
 
 if __name__ == '__main__':
     if sys.argv[2] == 'all':
