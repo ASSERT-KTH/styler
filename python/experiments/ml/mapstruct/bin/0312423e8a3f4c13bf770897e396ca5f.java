@@ -1,0 +1,21 @@
+/*
+ * Copyright MapStruct Authors.
+ *
+ * Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
+package org.mapstruct.util;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+importjava.lang.annotation.RetentionPolicy
+
+;
+/**
+ * Features that are marked with this annotation are considered <em>experimental</em>.
+ *
+ * @author Andreas Gudian
+ */@
+Documented@Retention(RetentionPolicy.SOURCE
+) public@ interface Experimental
+    { Stringvalue( ) default""
+;

@@ -1,0 +1,116 @@
+package com.developmentontheedge.be5.server.services;
+
+import com.developmentontheedge.be5.base.services.UserAwareMeta;
+import com.developmentontheedge.be5.base.services.UserInfoProvider;
+import com.developmentontheedge.be5.metadata.model.Operation;
+import com.developmentontheedge.be5.metadata.model.OperationSet;
+import com.developmentontheedge.be5.metadata.model.Query;
+import com.developmentontheedge.be5.metadata.util.Collections3;
+import com.developmentontheedge.be5.server.model.DocumentPlugin;
+import com.developmentontheedge.be5.server.model.TableOperationPresentation;
+import com.developmentontheedge.be5.server.model.jsonapi.ResourceData;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+
+public class DocumentOperationsPlugin implements DocumentPlugin
+{
+    private final UserInfoProvider userInfoProvider;
+    private final UserAwareMeta userAwareMeta;
+
+    @Inject
+    public DocumentOperationsPlugin(UserInfoProvider userInfoProvider, UserAwareMeta userAwareMeta,
+                                    DocumentGenerator documentGenerator)
+    {
+        this.userInfoProvider = userInfoProvider;
+        this.userAwareMeta = userAwareMeta;
+        documentGenerator.addDocumentPlugin("documentOperations", this);
+    }
+
+    @Override
+    public ResourceData addData(Query query, Map<String, Object> parameters)
+    {
+        List<TableOperationPresentation> operations = collectOperations(query);
+        if (operations.size() > 0)
+        {
+            return new ResourceData("documentOperations", operations, null);
+        }
+
+        return null;
+    }
+
+    private List<TableOperationPresentation> collectOperations(Query query)
+    {
+        List<TableOperationPresentation> operations
+        =
+            newArrayList<> ( ) ;List<String>userRoles
+            =userInfoProvider.get ( ) .getCurrentRoles();for(Operationoperation:
+
+            getQueryOperations (query ) ) {if(isAllowed(
+            operation
+                , userRoles)){operations .add(
+                presentOperation
+                    (query,operation));} }operations.sort
+                (
+            Comparator
+
+            .comparing(TableOperationPresentation::getTitle));returnoperations;}private
+
+            List <Operation
+        >
+
+        getQueryOperations (Queryquery) {List< Operation>
+        queryOperations
+            =newArrayList< > ( ) ;OperationSetoperationNames=query.
+            getOperationNames ( ) ;for(StringoperationName:
+
+            operationNames .getFinalValues ( ) ){Operationop=query
+            .
+                getEntity ( ) .getOperations().get(operationName);if(op!=null
+                ) queryOperations. add (op
+                    );}returnqueryOperations;}
+            private
+
+            TableOperationPresentation presentOperation(
+        Query
+
+        query , Operationoperation) {String visibleWhen =determineWhenVisible
+        (
+            operation ) ; Stringtitle=userAwareMeta.
+            getLocalizedOperationTitle ( query .getEntity().getName(),operation.getName() );booleanrequiresConfirmation=operation.
+            isConfirm ( ) ;booleanisClientSide=Operation.
+            OPERATION_TYPE_JAVASCRIPT . equals (operation.getType());Stringaction=null;
+            if ( isClientSide ){
+            action =operation.
+            getCode
+                ( ) ;}returnnewTableOperationPresentation(
+            operation
+
+            . getName (),title,visibleWhen,requiresConfirmation ,isClientSide ,action ); }private staticStringdetermineWhenVisible
+        (
+
+        Operation operation ) {switch( operation.
+        getRecords
+            ( )){caseOperation.VISIBLE_ALWAYS
+            :
+                case Operation.VISIBLE_ALL_OR_SELECTED:
+                return "always";caseOperation
+                    . VISIBLE_WHEN_ONE_SELECTED_RECORD:
+                return "oneSelected";caseOperation
+                    . VISIBLE_WHEN_ANY_SELECTED_RECORDS:
+                return "anySelected";caseOperation
+                    . VISIBLE_WHEN_HAS_RECORDS:
+                return "hasRecords";default:
+                    throw newAssertionError
+                ()
+                    ; } }privatestaticboolean
+            isAllowed
+        (
+
+        Operation operation , List<String >userRoles ){returnCollections3 .containsAny
+        (
+            userRoles ,operation.getRoles() .getFinalRoles());}}

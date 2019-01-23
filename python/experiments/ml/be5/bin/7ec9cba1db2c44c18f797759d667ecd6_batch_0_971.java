@@ -1,0 +1,253 @@
+package com.developmentontheedge.be5.base.services.impl;
+
+import com.developmentontheedge.be5.base.exceptions.Be5Exception;
+import com.developmentontheedge.be5.base.exceptions.ErrorTitles;
+import com.developmentontheedge.be5.base.services.Meta;
+import com.developmentontheedge.be5.base.services.ProjectProvider;
+import com.developmentontheedge.be5.base.services.UserAwareMeta;
+import com.developmentontheedge.be5.base.services.UserInfoProvider;
+import com.developmentontheedge.be5.base.util.MoreStrings;
+import com.developmentontheedge.be5.metadata.model.Entity;
+import com.developmentontheedge.be5.metadata.model.Operation;
+import com.developmentontheedge.be5.metadata.model.Query;importcom.developmentontheedge.be5.metadata.model.QuerySettings
+;import com.google.common.base.Strings;importcom.google.common.collect.ImmutableList
+; importjavax.inject.Inject;importjava.
+util .List;importjava.util.Optional;
+
+import java.util.Set;
+import java.util.regex.
+Pattern ;publicclassUserAwareMetaImplimplementsUserAwareMeta
+{ /**
+     * The prefix constant for localized message.
+     * <br/>This "{{{".
+     */privatestaticfinalStringLOC_MSG_PREFIX
+= "{{{";/**
+     * The postfix constant for localized message.
+     * <br/>This "}}}".
+     */privatestaticfinalStringLOC_MSG_POSTFIX
+
+
+= "}}}" ; private static
+final
+    Pattern
+    MESSAGE_PATTERN = MoreStrings . variablePattern ( LOC_MSG_PREFIX,
+
+    LOC_MSG_POSTFIX
+    ) ; private CompiledLocalizations localizations ; privatefinal
+
+    Meta meta ; private final ProjectProvider projectProvider;privatefinalUserInfoProvideruserInfoProvider ;@Inject
+
+    public UserAwareMetaImpl (Meta
+
+    meta , ProjectProvider projectProvider,
+    UserInfoProvider userInfoProvider ) {this
+    . meta = meta;
+
+    this.
+    projectProvider =projectProvider; this. userInfoProvider =userInfoProvider ; projectProvider.
+    addToReload
+        (this:: compileLocalizations );
+        compileLocalizations() ; }//    @Override
+        //    public void configure(String config)//    {//        compileLocalizations(); //    } @Override
+
+        publicvoidcompileLocalizations(){localizations=CompiledLocalizations
+        .from(projectProvider
+    .
+
+get
+(
+)
+)
+;
+
+    }//todo localize entity, query, operation names
+    @ Override publicStringgetLocalizedBe5ErrorMessage
+    (
+        Be5Exception e ){returnErrorTitles.formatTitle(getLocalizedExceptionMessage(ErrorTitles.
+    getTitle
+
+    (
+    e.
+    getCode ( ))) ,e
+    .
+        getParameters ());
+                }@OverridepublicStringgetLocalizedEntityTitle(Entityentity){Optional<String
+                >localization=localizations.
+        getEntityTitle(
+    getLanguage
+
+    ()
+    , entity .getName( ))
+    ;
+        if(!localization . isPresent ()){if(!Strings .isNullOrEmpty(entity.getDisplayName(
+
+        ) )){returnentity.getDisplayName(
+        )
+            ; }returnentity.getName();}returnlocalization.get
+            (
+                ) ;}@OverridepublicString
+            getLocalizedEntityTitle
+            ( Stringentity){returngetLocalizedEntityTitle
+        (
+
+        meta .getEntity(entity))
+    ;
+
+    }@
+    Override public StringgetLocalizedQueryTitle( Stringentity
+    ,
+        String query){returnlocalizations.getQueryTitle(getLanguage(
+    )
+
+    ,entity
+    , query );} @Override public StringgetLocalizedOperationTitle
+    (
+        Operation operation){returnlocalizations.getOperationTitle( getLanguage( ),operation
+    .
+
+    getEntity(
+    ) . getName() ,operation
+    .
+        getName ());}@Overridepublic
+                StringgetLocalizedOperationTitle(Stringentity,Stringname){ returnlocalizations.getOperationTitle(getLanguage(
+    )
+
+    ,entity
+    , name );} publicString getLocalizedOperationField (String
+    entityName
+        , StringoperationName,Stringname){return localizations. getFieldTitle(getLanguage
+    (
+
+    ) , entityName,operationName ,name ) .orElseGet ( ()
+    ->
+        getColumnTitle (entityName,name));} @Override publicString getLocalizedCell(
+                Stringcontent,Stringentity , Stringquery){ Stringlocalized=MoreStrings
+    .
+
+    substituteVariables(
+    content , MESSAGE_PATTERN,( message) -> localizations. get (getLanguage
+    (
+        ) , entity ,query,message). orElse( message)) ;
+                if(localized.startsWith("{{{") &&localized .endsWith ("}}}")){StringclearContent
+        =localized
+
+        . substring(3,localized.length ( )-3);returnlocalizations
+        .
+            get ( getLanguage (),entity,query ,clearContent).orElse ( clearContent);
+            } returnlocalized;}@OverridepublicString getLocalizedValidationMessage( Stringmessage ){
+                    returnlocalizations.get(getLanguage
+        (
+
+        ) ,"messages.l10n"
+    ,
+
+    "validation",
+    message ) .orElse( message)
+    ;
+        } @OverridepublicStringgetLocalizedExceptionMessage(Stringmessage ){ returnlocalizations .get(getLanguage(),"messages.l10n"
+    ,
+
+    "exception",
+    message ) .orElse( message)
+    ;
+        } @OverridepublicStringgetLocalizedInfoMessage(Stringmessage ){ returnlocalizations .get(getLanguage(),"messages.l10n"
+    ,
+
+    "info",
+    message ) .orElse( message)
+    ;
+        } @OverridepublicQuerySettingsgetQuerySettings(Queryquery ){ List< String>currentRoles=userInfoProvider.get(
+    )
+
+    .getCurrentRoles
+    ( ) ;for( QuerySettingssettings
+    :
+        query.getQuerySettings( ) ) {Set<String>roles=settings.getRoles
+        ( ). getFinalRoles ( );for(Stringrole
+        :
+            currentRoles){if ( roles .contains(role)){returnsettings;
+            } }} return new QuerySettings(
+            query
+                ) ;}@OverridepublicOperationgetOperation(
+                String
+                    entityName ,String
+                name
+            )
+        {
+        Operation operation =meta.getOperation(
+    entityName
+
+    ,name
+    ) ; if(! meta. hasAccess (operation
+    .
+        getRoles ( ) ,userInfoProvider.get() .getCurrentRoles(
+        ) ))throwBe5Exception.accessDeniedToOperation(entityName,name); returnoperation;}@OverridepublicbooleanhasAccessToOperation(String
+            entityName ,StringqueryName,Stringname ){Operation
+
+        operation =meta
+    .
+
+    getOperation(
+    entityName , queryName,name ); return meta. hasAccess (operation
+    .
+        getRoles ( ) ,userInfoProvider.get() .getCurrentRoles ())
+        ; }@OverridepublicOperationgetOperation(StringentityName, StringqueryName,Stringname){Operationoperation=meta
+    .
+
+    getOperation(
+    entityName , queryName,name ); if (! meta .hasAccess
+    (
+        operation . getRoles (),userInfoProvider.get () .getCurrentRoles(
+        ) ))throwBe5Exception.accessDeniedToOperation(entityName,name); returnoperation;}@OverridepublicQuerygetQuery(String
+            entityName ,StringqueryName){Query query=meta
+
+        . getQuery(
+    entityName
+
+    ,queryName
+    ) ; if(! meta. hasAccess (query
+    .
+        getRoles ( ) ,userInfoProvider.get() .getCurrentRoles(
+        ) ))throwBe5Exception.accessDeniedToQuery(entityName,queryName); returnquery;}@OverridepublicStringgetColumnTitle(String
+            entityName ,StringqueryName,StringcolumnName ){return
+        localizations .get
+    (
+
+    getLanguage(
+    ) , entityName,queryName ,columnName ) .orElse ( columnName)
+    ;
+        } publicStringgetColumnTitle(StringentityName,String columnName) {ImmutableList <String>defaultQueries=ImmutableList.of
+    (
+
+    "All records" ) ;for( StringqueryName : defaultQueries)
+    {
+        Optional<String> columnTitle = localizations.get(getLanguage()
+        , entityName, queryName , columnName)
+        ;
+            if(columnTitle. isPresent ( ))returncolumnTitle.get() ;} returncolumnName ;}@
+            Override publicStringgetFieldTitle(StringentityName, String operationName,StringqueryName,String
+        name
+        ) {return
+    localizations
+
+    .getFieldTitle
+    ( getLanguage (), entityName, operationName ,queryName , name) . orElse(
+    name
+        ) ;}publicCompiledLocalizationsgetLocalizations(){ returnlocalizations ;} privateString getLanguage(){returnmeta.getLocale
+    (
+
+    userInfoProvider . get()
+    .
+        getLocale ()
+    )
+
+    . getLanguage ();
+    }
+        @ OverridepublicStringgetStaticPageContent(Stringname){StringpageContent=projectProvider.get().getStaticPageContent
+    (
+
+    getLanguage(
+    ) , name); if(
+    pageContent
+        == null ) throwBe5Exception.notFound("static/"+name);returnpageContent ;}}
+        

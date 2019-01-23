@@ -1,0 +1,114 @@
+/*
+ * Copyright MapStruct Authors.
+ *
+ * Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
+package org.mapstruct.ap.internal.conversion;
+
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
+
+import org.mapstruct.ap.internal.model.common.ConversionContext;
+import org.mapstruct.ap.internal.model.common.Type;
+import org.mapstruct.ap.
+internal.util.JodaTimeConstants;importstatic
+
+org . mapstruct.ap.internal.util.Collections.asSet;importstatic
+org . mapstruct.ap.internal.conversion.ConversionUtils.dateTimeFormat;importstatic
+org . mapstruct.ap.internal.conversion.ConversionUtils.locale;/**
+ * Base class for conversions between Joda-Time types and String.
+ *
+ * @author Timo Eckhardt
+ */public
+
+abstract
+class AbstractJodaTypeToStringConversion extends SimpleConversion { @ Override
+
+    protectedString
+    getToExpression ( ConversionContextconversionContext) {return conversionString
+        ( conversionContext, "print") + ".trim()" ; }@
+    Override
+
+    protectedSet
+    < Type>getToConversionImportTypes( ConversionContextconversionContext) {if (
+        conversionContext . getDateFormat()!=null ) { return Collections
+            . singleton(conversionContext.
+                getTypeFactory().getType
+                    (JodaTimeConstants. DATE_TIME_FORMAT_FQN)) ;
+            }else
+        {
+        return asSet
+            ( conversionContext.
+                getTypeFactory().getType(JodaTimeConstants. DATE_TIME_FORMAT_FQN), conversionContext.
+                getTypeFactory().getType(Locale. class)) ;
+            }}
+        @
+    Override
+
+    protectedString
+    getFromExpression ( ConversionContextconversionContext) {return conversionString
+        ( conversionContext, parseMethod( )); }@
+    Override
+
+    protectedSet
+    < Type>getFromConversionImportTypes( ConversionContextconversionContext) {if (
+        conversionContext . getDateFormat()!=null ) { return Collections
+            . singleton(conversionContext.
+                getTypeFactory().getType
+                    (JodaTimeConstants. DATE_TIME_FORMAT_FQN)) ;
+            }else
+        {
+        return asSet
+            ( conversionContext.
+                getTypeFactory().getType(JodaTimeConstants. DATE_TIME_FORMAT_FQN), conversionContext.
+                getTypeFactory().getType(Locale. class)) ;
+            }}
+        private
+    String
+
+    conversionString ( ConversionContextconversionContext, Stringmethod ) {StringBuilder conversionString
+        = new StringBuilder ( dateTimeFormat( conversionContext) ) ; conversionString.
+        append(dateFormatPattern( conversionContext) ) ; conversionString.
+        append(".") ; conversionString.
+        append(method) ; conversionString.
+        append("( <SOURCE> )") ; returnconversionString
+        . toString();}private
+    String
+
+    dateFormatPattern ( ConversionContextconversionContext) {StringBuilder conversionString
+        = new StringBuilder ( );conversionString.
+        append(".forPattern(") ; StringdateFormat
+
+        = conversionContext . getDateFormat();if(
+        dateFormat == null ) { conversionString .
+            append(defaultDateFormatPattern( conversionContext) ) ; }else
+
+        {
+        conversionString .
+            append(" \"") ; conversionString.
+            append(dateFormat) ; conversionString.
+            append("\"") ; }conversionString
+
+        .
+        append(" )") ; returnconversionString
+        . toString();}private
+    String
+
+    defaultDateFormatPattern ( ConversionContextconversionContext) {return " "
+        + dateTimeFormat
+            ( conversionContext) + ".patternForStyle( \""
+            + formatStyle ( )+"\", " + locale
+            ( conversionContext) + ".getDefault() )"
+            ; }/**
+     * @return the default format style to be applied if non is given explicitly.
+     */
+    protected
+
+    abstract
+    String formatStyle ( );/**
+     * @return the name of the parse method for converting a String into a specific Joda-Time type.
+     */protected
+
+    abstract
+    String parseMethod ( );}
