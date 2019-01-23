@@ -31,6 +31,8 @@ __real_errors_dir = config['DEFAULT']['real_errors_dir']
 __real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
 class Timer:
+    """ Very basic class to time tasks
+    """
     def __init__(self):
         self.tasks = {}
 
@@ -576,6 +578,9 @@ def exp_venn(projects):
 
 
 def benchmark_stats(results):
+    """
+    Return the stats given a lit of results
+    """
     result = reduce(dict_sum, results)
     length = len(results)
     # print(result['be5']['code'])
