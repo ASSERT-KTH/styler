@@ -2,6 +2,8 @@
 
 Learning Formatting Conventions to Repair Checkstyle Errors
 
+
+
 ## Usages
 
 ### Maven
@@ -21,6 +23,18 @@ Add `https://todo.kth.se/todo` as Travis web hook, and Checkstyle-repair will ad
 ### Git hook
 
 You can enforce the checkstyle rules using a Git pre-commit hook. TODO write doc. 
+
+## Clone the repo
+
+Don't forget to clone the submodules :
+```
+git clone --recursive [repo]
+```
+or after clonning :
+```
+git submodule init
+git submodule update
+```
 
 ## License
 
