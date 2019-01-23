@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from core import *
+from functools import reduce
+import random
+import colorsys
+import sys
+import os
+import json
+import datetime
+from itertools import product
+
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -7,20 +17,9 @@ import matplotlib.patches as mpatches
 
 import numpy as np
 
-import random
-import colorsys
-import sys
-import os
-import json
-import datetime
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3, venn3_circles
-from itertools import product
-import string
 
-from core import *
-
-from functools import reduce
 
 def protocol6(results, repair_tools, disposition=110):
     fig = plt.figure(figsize=(15,12))
@@ -130,7 +129,7 @@ def protocol6_subplot(results, repair_tool, ax, y_axis=True):
     def with_percentage(error_type_repair, y_pos):
         for error, pos in zip(error_type_repair.values(), y_pos):
             value = error["sum"]
-            plt.text(1.02, pos - 0.2, '%d' % int(value) , ha='center', va='bottom')
+            plt.text(1.02, pos - 0.2, '%d' % int(value), ha='center', va='bottom')
     with_percentage(error_type_repair, y_pos)
     # ax.barh(y_pos, [item["other_errors"] for item in error_type_repair.values()], align='center', left=performance, color="#f39c12", label="Partially repaired")
     if y_axis:
@@ -196,8 +195,8 @@ def plot_repaired_files(results):
     # Create legend & Show graphic
     plt.legend()
 
-def avg(l):
-    return sum(l)/len(l)
+def avg(array_list):
+    return sum(array_list)/len(array_list)
 
 def hex_to_rgb(hex_color):
     hex = hex_color.lstrip('#')
@@ -319,7 +318,7 @@ def plot_percentage_of_errors(results):
     for result in results:
         # labels.append( exp.corpus.name + "(" + str(exp.corpus.get_number_of_files()) + " files)" )
         labels.append(result["name"])
-        bars1.append( result["corrupted_files_ratio_ugly"] )
+        bars1.append(result["corrupted_files_ratio_ugly"] )
         naturalize_res.append( result["corrupted_files_ratio_naturalize"] )
         codebuff_res.append( result["corrupted_files_ratio_codebuff"] )
 
