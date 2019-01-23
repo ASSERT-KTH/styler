@@ -198,7 +198,7 @@ def if_not_null(data, f):
     Execute the given function if the data is not null
     :param data:
     :param f:
-    :return:
+    :return: f(data) if data != None, else None
     """
     if data:
         return f(data)
@@ -234,6 +234,8 @@ def find_all(path, name):
 
 
 def delete_dir(path):
+    """rm a dir
+    """
     shutil.rmtree(path)
 
 
@@ -248,15 +250,26 @@ def run_if_true(function, boolean, data):
 
 
 def is_error_targeted(error):
+    """
+    Return true if the error is targeted
+    :param error: source of the checkstyle error
+    """
     error_type = checkstyle_source_to_error_type(error['source'])
     return (error_type in targeted_errors and error_type not in corner_cases_errors)
 
 
 def filter_targeted_error(errors):
+    """
+    Return the elements that are targeted
+    :param error: list of error sources
+    """
     return list(filter(is_error_targeted, errors))
 
 
 def dict_sum(A, B):
+    """
+    Sum the elements of A with the elements of B
+    """
     if isinstance(A, dict) and isinstance(B, dict):
         return {key:dict_sum(value, B[key])  for key, value in A.items()}
     else:
@@ -264,4 +277,7 @@ def dict_sum(A, B):
 
 
 def map_keys(func, dictionary: dict) -> dict:
+    """
+    Map the keys of a dict
+    """
     return { func(key):value for key, value in dictionary.items()}

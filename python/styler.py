@@ -213,14 +213,6 @@ def repair_real(name):
 
 
 def main(args):
-    # create_corpus('./styler/be5', '8cffdf6c26ed0d0ba420316d52e5cbff97218c61', './checkstyle.xml')
-    # create_corpus('./styler/auto', '0c06a2345f71f053714d37bb6549d3460c999f2d', '../checkstyle.xml')
-    # lits_and_create_corpora()
-    # print_translations(
-    #     './styler/be5/files/1/11/ErrorProcessing.java',
-    #     './styler/be5/files/1/11/metadata.json',
-    #     gen_translator('be5')
-    # )
     if args[1] == 'repair':
         if args[2] == 'all':
             datasets = ['be5', 'dagger', 'milo', 'okhttp', 'picasso']

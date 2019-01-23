@@ -11,7 +11,11 @@ import os
 
 from core import *
 
+
 def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
+    """
+    Gen an ugly vertsion of of .java file
+    """
     insertions_sample_size_space = modification_number[0]
     insertions_sample_size_tab = modification_number[1]
     insertions_sample_size_newline = modification_number[2]
@@ -125,6 +129,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
             line_num = line_num + 1
     return tuple(set(deletions) | set(insertions.keys()))
 
+
 def mix_sources(source_A, source_B, from_line, to_line=-1):
     """Put a little bit of B into A
     """
@@ -203,12 +208,12 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
 
     return output_file
 
-def open_file(file_path):
-    with open(file_path) as f:
-        content = f.read()
-    return content
 
 def reformat(whitespace, tokens, tabulations=False):
+    """
+    Given the sequence of whitespaces and javat token reformat the java source code
+    :return: the java source code
+    """
     result = ''
     position = 0
     for ws, t in zip(whitespace, tokens):
@@ -222,7 +227,13 @@ def reformat(whitespace, tokens, tabulations=False):
             result += str(t.value) + " " * ws[1]
     return result
 
+
 def tokenize_with_white_space(file_content):
+    """
+    Tokenize the java source code
+    :param file_content: the java source code
+    :return: (whitespace, tokens)
+    """
     position_last_line = 1;
     tokens = tokenizer.tokenize(file_content, parse_comments=True)
     tokens = [ t for t in tokens]
@@ -247,7 +258,13 @@ def tokenize_with_white_space(file_content):
     # return rewritten
     return whitespace, tokens
 
+
 def get_char_pos_from_lines(file_path, from_line, to_line=-1):
+    """
+    Tokenize the java source code
+    :param file_content: the java source code
+    :return: (whitespace, tokens)
+    """
     if to_line == -1:
         to_line = from_line
     file_lines = None
@@ -260,7 +277,12 @@ def get_char_pos_from_lines(file_path, from_line, to_line=-1):
     else:
         return (-1, -1)
 
+
 def check_well_formed(file_path):
+    """
+    Check if javalang can parse the file
+    :param file_path: the java file dir
+    """
     with open(file_path) as f:
         file_content = f.read()
     try:
@@ -271,7 +293,13 @@ def check_well_formed(file_path):
     except:
         return False
 
+
 def get_bad_formated(dir):
+    """
+    Get all the bad formated files from a dir
+    :param dir: dir to check recursively
+    :return: list of path to java files
+    """
     bad_formated_files = []
     for folder in os.walk(dir):
         for file_name in folder[2]:
@@ -280,11 +308,17 @@ def get_bad_formated(dir):
                 bad_formated_files.append(file_path)
     return bad_formated_files
 
+
 def compute_diff_size(file_A, file_B):
+    """
+    Check the diff size between file A and B
+    :return: the size of the diff
+    """
     cmd = 'diff {} {}'.format(file_A, file_B)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     return output.count(b'\n>') + output.count(b'\n<')
+
 
 if __name__ == "__main__":
     if (sys.argv[1] == "char_pos"):
