@@ -1,6 +1,6 @@
-# Checkstyle-repair
+# Styler
 
-Automatic repair system for Checkstyle errors
+Learning Formatting Conventions to Repair Checkstyle Errors
 
 ## Usages
 
