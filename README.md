@@ -1,30 +1,13 @@
-# Styler
-
-Learning Formatting Conventions to Repair Checkstyle Errors
+# Styler : Learning Formatting Conventions to Repair Checkstyle Errors
 
 
+## Abstract
 
-## Usages
+Formatting coding conventions play an important role on code readability.
+Styler is an automatic repair tool dedicated to fix formatting-related violations raised by Checkstyle, a highly configurable formatting-checker for Java.
+Styler learns fixes for formatting errors and predicts repairs for new errors using machine learning.
 
-### Maven
-
-You can call Checkstyle-repair on demand:
-
-    mvn repair:checkstyle
-   
-It repairs all the checkstyle errors of the source directory, according to the [list of supported checkstyle errors](https://github.com/kth-tcs/checkstyle-repair/master/supported-error-types.md)
-
-(depends on https://github.com/Spirals-Team/maven-repair)
-
-### Web hook
-
-Add `https://todo.kth.se/todo` as Travis web hook, and Checkstyle-repair will add checkstyle suggestions to the pull-requests of your project.
-
-### Git hook
-
-You can enforce the checkstyle rules using a Git pre-commit hook. TODO write doc. 
-
-## Clone the repo
+## Quickstart
 
 Don't forget to clone the submodules :
 ```
@@ -35,6 +18,21 @@ or after clonning :
 git submodule init
 git submodule update
 ```
+
+## Workflow
+
+## Sample output
+
+## Content of the repository
+
+This repository is organized as follows:
+
+  * [python](/python) contains the source of Styler and a guide for it's usage.
+  * [datasets](/datasets) contains all the datasets used for the experiments in the paper.
+  * [jars](/resources) contains the jars of Codebuff, Naturalize and Checkstyle used during the experiments.
+  * [results](/website) contains some results of the experiments conducted on Styler.
+
+Each directory contains its own Readme explaining its own internal organization.
 
 ## License
 
