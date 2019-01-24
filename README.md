@@ -22,6 +22,32 @@ git submodule update
 ## Workflow
 
 ## Sample output
+For exemple
+```Java
+...
+static class RootModule {
+  final A a;
+  RootModule(A a) {
+    this.a = a;
+  }
+  @Provides A provideA() { return a; } // <Checkstyle error : "'{' at column 28 should have line break after.">
+}
+...
+```
+```Java
+...
+static class RootModule {
+  final A a;
+  RootModule(A a) {
+    this.a = a;
+  }
+  @Provides A provideA() {
+    return a;
+  }
+
+}
+...
+```
 
 ## Content of the repository
 
