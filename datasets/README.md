@@ -13,6 +13,7 @@ Structure of the dataset:
     * checkstyle.xml
 
 ## Synthetic errors
+You can have a look at the [anonymous repo](https://anonymous.4open.science/repository/c915d375-df4c-46a9-ab40-c38e64b08480/).
 
 In order to avoid slowdowns on git you have to manually clone the synthetic dataset and keep the repo untracked:
 ```
