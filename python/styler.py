@@ -202,7 +202,7 @@ def select_the_best_repair(correct_repairs, original):
 
 def repair_files(dir, model_name, only_formatting=False):
     # dir= './styler/test'
-    dir_files = os.path.join(dir, 'files/1')
+    dir_files = os.path.join(dir, f'{model_name}/1')
     target = os.path.join(dir, 'repair-attempt')
     target_final = os.path.join(dir, 'files-repaired')
     checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
@@ -248,7 +248,7 @@ def lits_and_create_corpora():
 
 
 def repair_real(name):
-    repair_files(f'./styler/{name}', name, only_formatting=True)
+    repair_files(f'../datasets/real-errors', name, only_formatting=True)
 
 
 def main(args):
@@ -260,15 +260,18 @@ def main(args):
         for dataset in tqdm(datasets):
             repair_real(dataset)
     if args[1] == 'train':
-        # corpus_dir = create_corpus(
-        #     '/home/benjaminl/Documents/kth/repairnator/repairnator',
-        #     'test-rep',
-        #     '/home/benjaminl/Documents/kth/repairnator/repairnator/checkstyle.xml'
-        # )
-        # corpus = Corpus(corpus_dir, 'test-rep')
-        # share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
-        # synthetic.gen_dataset(corpus, share, target_dir='./styler/test-rep-errors' )
-        # ml.gen_IO('./styler/test-rep-errors', './styler/test-rep-tokens', only_formatting=True)
+        project_path = args[2]
+        checkstyle_file_path = args[3]
+        project_name = args[4]
+        corpus_dir = create_corpus(
+            project_path,
+            project_name,
+            checkstyle_file_path
+        )
+        corpus = Corpus(corpus_dir, project_name)
+        share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
+        synthetic.gen_dataset(corpus, share, target_dir=f'./styler/{project_name}-errors' )
+        ml.gen_IO(f'./styler/{project_name}-errors', f'./styler/{project_name}-tokens', only_formatting=True)
         pass
 
 if __name__ == "__main__":
