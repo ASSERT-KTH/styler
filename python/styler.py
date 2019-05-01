@@ -14,12 +14,18 @@ import synthetic
 import ml
 
 __model_dir = './models'
+__dataset_dir = '../datasets/real-errors'
 
 def get_model_dir(name, only_formatting=False):
     if only_formatting:
         return os.path.join(__model_dir, f'{name}-of.pt')
     else:
         return os.path.join(__model_dir, f'{name}.pt')
+
+
+def get_real_dataset_dir(name):
+    return os.path.join(__dataset_dir, f'{name}')
+
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -200,12 +206,16 @@ def select_the_best_repair(correct_repairs, original):
             file = correct_repair
     return file
 
-def repair_files(dir, model_name, only_formatting=False):
+def repair_files(dir, dir_files, model_name, only_formatting=False):
     # dir= './styler/test'
-    dir_files = os.path.join(dir, f'{model_name}/1')
     target = os.path.join(dir, 'repair-attempt')
     target_final = os.path.join(dir, 'files-repaired')
-    checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
+    checkstyle_rules = os.path.join(dir_files, 'checkstyle.xml')
+
+    # yet we focus on single error files
+    # TODO : Improve it
+    dir_files = os.path.join(dir_files, f'./1')
+
     waste = os.path.join(dir, 'waste')
     create_dir(target)
     create_dir(waste)
@@ -248,7 +258,10 @@ def lits_and_create_corpora():
 
 
 def repair_real(name):
-    repair_files(f'../datasets/real-errors', name, only_formatting=True)
+    directory = f'./styler/repairs/{name}'
+    create_dir(directory)
+    dir_files = get_real_dataset_dir(name)
+    repair_files(directory, dir_files, name, only_formatting=True)
 
 
 def main(args):
