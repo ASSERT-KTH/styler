@@ -1,0 +1,40 @@
+*** ./batch_0/3/FreemarkerSqlHandlerTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/3/FreemarkerSqlHandlerTest.java	Wed May  1 08:54:55 2019
+***************
+*** 88,100 ****
+          proj.setDatabaseSystem(Rdbms.POSTGRESQL);
+          FreemarkerScript sql = new FreemarkerScript("sql", proj.getApplication().getFreemarkerScripts());
+          DataElementUtils.save(sql);
+          FreemarkerScript sql2 = new FreemarkerScript("sql2", proj.getApplication().getFreemarkerScripts());
+          DataElementUtils.save(sql2);
+!         sql2.setSource("UPDATE test SET b = 'c';")
+!         ; sql . setSource("delete from test;-- hehehe\nINSERT INTO \"test\" VALUES('a','b','c');\nBEGIN update test SET a='a''b END;';END;\nDELETE FROM test;<#include 'sql2'/>");handler.execute(
+!         sql);
+          String result = new String(log.toByteArray(), StandardCharsets.UTF_8);
+          String expected = "\n" +
+                  "-- Execute test/application/Scripts/sql\n" +
+                  "-- At test/application/Scripts/sql[1,1]-[1,17]\n" +
+                  "delete from test;\n" +
+--- 88,100 ----
+          proj.setDatabaseSystem(Rdbms.POSTGRESQL);
+          FreemarkerScript sql = new FreemarkerScript("sql", proj.getApplication().getFreemarkerScripts());
+          DataElementUtils.save(sql);
+          FreemarkerScript sql2 = new FreemarkerScript("sql2", proj.getApplication().getFreemarkerScripts());
+          DataElementUtils.save(sql2);
+!         sql2.setSource("UPDATE test SET b = 'c';");
+!         sql.setSource("delete from test;-- hehehe\nINSERT INTO \"test\" VALUES('a','b','c');\nBEGIN update test SET a='a''b END;';END;\nDELETE FROM test;<#include 'sql2'/>");
+!         handler.execute(sql);
+          String result = new String(log.toByteArray(), StandardCharsets.UTF_8);
+          String expected = "\n" +
+                  "-- Execute test/application/Scripts/sql\n" +
+                  "-- At test/application/Scripts/sql[1,1]-[1,17]\n" +
+                  "delete from test;\n" +
+***************
+*** 115,120 ****
+          String outExpected = "xx:xx:xx: [>] test/application/Scripts/sql\n" +
+                  "xx:xx:xx: [>]   test/application/Scripts/sql2\n";
+          assertEquals(outExpected, outResult.replace("\r", "").replaceAll("\\d\\d", "xx"));
+      }
+  }
+- 
+--- 115,119 ----

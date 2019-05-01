@@ -1,0 +1,48 @@
+*** ./batch_0/14/CategoryFilterTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/14/CategoryFilterTest.java	Wed May  1 08:54:55 2019
+***************
+*** 9,35 ****
+  
+  public class CategoryFilterTest
+  {
+      @Test
+      public void testCategoryFilter()
+!     {AstStart
+! 
+! 
+!     start = SqlQuery
+!     .
+! 
+!         parse
+!         ("SELECT t.a, q.b FROM myTable t, otherTable q JOIN oneMoreTable a ON (a.ID=q.ID) WHERE t.b > 2"
+!         );
+!         new CategoryFilter("myTable", "ID",
+! 
+! 
+!         123 ) .apply(start);
+  
+          assertEquals("SELECT t.a, q.b FROM myTable t "
+                  + "INNER JOIN classifications ON classifications.categoryID = 123 "
+                  + "AND classifications.recordID ='myTable.'|| t.ID, otherTable q "
+                  + "INNER JOIN oneMoreTable a ON (a.ID = q.ID) "
+                  + "WHERE t.b > 2", start.format());
+      }
+  }
+- 
+--- 9,24 ----
+  
+  public class CategoryFilterTest
+  {
+      @Test
+      public void testCategoryFilter()
+!     {
+!         AstStart start = SqlQuery.parse("SELECT t.a, q.b FROM myTable t, otherTable q JOIN oneMoreTable a ON (a.ID=q.ID) WHERE t.b > 2");
+!         new CategoryFilter("myTable", "ID", 123).apply(start);
+  
+          assertEquals("SELECT t.a, q.b FROM myTable t "
+                  + "INNER JOIN classifications ON classifications.categoryID = 123 "
+                  + "AND classifications.recordID ='myTable.'|| t.ID, otherTable q "
+                  + "INNER JOIN oneMoreTable a ON (a.ID = q.ID) "
+                  + "WHERE t.b > 2", start.format());
+      }
+  }
