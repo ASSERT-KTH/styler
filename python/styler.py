@@ -13,7 +13,7 @@ from Corpus import Corpus
 import synthetic
 import ml
 
-__model_dir = './styler/models'
+__model_dir = './models'
 
 def get_model_dir(name, only_formatting=False):
     if only_formatting:

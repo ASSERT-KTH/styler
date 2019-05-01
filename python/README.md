@@ -9,7 +9,7 @@ virtualenv --python=python3.6 env
 source ./env/bin/activate
 pip install -r ./requirements.txt
 ```
-The required version of TorchText may not be available through PyPI, install as instructed here: https://github.com/pytorch/text/issues/517 
+The required version of TorchText may not be available through PyPI, install as instructed here: https://github.com/pytorch/text/issues/517
 
 Setup a `config.ini` file using the provided example: `config.example.ini`
 
@@ -26,7 +26,7 @@ python ./styler.py train [path to project] [path to checkstyle.xml] [project nam
 The `[project name]` is used to generate paths where the training and repair data will be stored.
 
 ### LSTM model training
-We use OpenNTM-py for model training. 
+We use OpenNTM-py for model training.
 
 ```
 cd OpenNMT-py
@@ -46,4 +46,4 @@ Init virtualenv :
 ```
 python ./styler.py repair [model name]
 ```
-The model must be stored in the `./styler/models` path.
+The model must be stored in the `./models` path.
