@@ -1,0 +1,38 @@
+*** ./batch_3/47/DispatcherTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/47/DispatcherTest.java	Wed May  1 08:54:55 2019
+***************
+*** 549,560 ****
+    private Dispatcher createDispatcher(ExecutorService service) {
+      return createDispatcher(service, true);
+    }
+  
+    private Dispatcher createDispatcher(ExecutorService service, boolean scansNetworkChanges) {
+!     when(connectivityManager.getActiveNetworkInfo()).thenReturn(scansNetworkChanges ? mock(NetworkInfo.class) :
+!       null);when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
+      when(context.checkCallingOrSelfPermission(anyString())).thenReturn(
+          scansNetworkChanges ? PERMISSION_GRANTED : PERMISSION_DENIED);
+      return new Dispatcher(context, service, mainThreadHandler, cache, stats);
+    }
+  
+--- 549,560 ----
+    private Dispatcher createDispatcher(ExecutorService service) {
+      return createDispatcher(service, true);
+    }
+  
+    private Dispatcher createDispatcher(ExecutorService service, boolean scansNetworkChanges) {
+!     when(connectivityManager.getActiveNetworkInfo()).thenReturn(scansNetworkChanges ? mock(NetworkInfo.class) : null);
+!     when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
+      when(context.checkCallingOrSelfPermission(anyString())).thenReturn(
+          scansNetworkChanges ? PERMISSION_GRANTED : PERMISSION_DENIED);
+      return new Dispatcher(context, service, mainThreadHandler, cache, stats);
+    }
+  
+***************
+*** 592,597 ****
+        @Override void error(Exception e) {
+        }
+      };
+    }
+  }
+- 
+--- 592,596 ----

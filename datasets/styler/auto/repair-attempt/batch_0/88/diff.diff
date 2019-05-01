@@ -1,0 +1,39 @@
+*** ./batch_0/88/GwtSerialization.java	Wed May  1 08:54:55 2019
+--- ../files/1/88/GwtSerialization.java	Wed May  1 08:54:55 2019
+***************
+*** 52,64 ****
+    private boolean shouldWriteGwtSerializer() {
+      List<? extends AnnotationMirror> annotations = type.getAnnotationMirrors();
+      for (AnnotationMirror annotation : annotations) {
+        String name = annotation.getAnnotationType().asElement().getSimpleName().toString();
+        if (name.equals("GwtCompatible")) {
+!         for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue >entry:annotation.getElementValues(
+!         ).entrySet()
+!       ) {
+            if (entry.getKey().getSimpleName().toString().equals("serializable")
+                && entry.getValue().getValue().equals(true)) {
+              return true;
+            }
+          }
+--- 52,63 ----
+    private boolean shouldWriteGwtSerializer() {
+      List<? extends AnnotationMirror> annotations = type.getAnnotationMirrors();
+      for (AnnotationMirror annotation : annotations) {
+        String name = annotation.getAnnotationType().asElement().getSimpleName().toString();
+        if (name.equals("GwtCompatible")) {
+!         for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry :
+!             annotation.getElementValues().entrySet()) {
+            if (entry.getKey().getSimpleName().toString().equals("serializable")
+                && entry.getValue().getValue().equals(true)) {
+              return true;
+            }
+          }
+***************
+*** 218,223 ****
+  
+    private static void update(CRC32 crc, String s) {
+      crc.update(s.getBytes(UTF8));
+    }
+  }
+- 
+--- 217,221 ----

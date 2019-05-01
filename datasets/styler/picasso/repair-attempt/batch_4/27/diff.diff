@@ -1,0 +1,36 @@
+*** ./batch_4/27/RequestCreatorTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/27/RequestCreatorTest.java	Wed May  1 08:54:55 2019
+***************
+*** 314,324 ****
+          spy(new Picasso(RuntimeEnvironment.application, mock(Dispatcher.class), UNUSED_CALL_FACTORY,
+              null, Cache.NONE, null, NO_TRANSFORMERS, null, mock(Stats.class), ARGB_8888, false,
+              false));
+      ImageView target = mockImageViewTarget();
+      new RequestCreator(picasso, URI_1, 0).placeholder(android.R.drawable.picture_frame).into(target);
+!     ArgumentCaptor<Drawable> drawableCaptor = ArgumentCaptor.forClass( Drawable . class);
+      verify(target).setImageDrawable(drawableCaptor.capture());
+      assertThat(shadowOf(drawableCaptor.getValue()).getCreatedFromResId()) //
+          .isEqualTo(android.R.drawable.picture_frame);
+      verify(picasso).enqueueAndSubmit(actionCaptor.capture());
+      assertThat(actionCaptor.getValue()).isInstanceOf(ImageViewAction.class);
+--- 314,324 ----
+          spy(new Picasso(RuntimeEnvironment.application, mock(Dispatcher.class), UNUSED_CALL_FACTORY,
+              null, Cache.NONE, null, NO_TRANSFORMERS, null, mock(Stats.class), ARGB_8888, false,
+              false));
+      ImageView target = mockImageViewTarget();
+      new RequestCreator(picasso, URI_1, 0).placeholder(android.R.drawable.picture_frame).into(target);
+!     ArgumentCaptor<Drawable> drawableCaptor = ArgumentCaptor.forClass(Drawable.class);
+      verify(target).setImageDrawable(drawableCaptor.capture());
+      assertThat(shadowOf(drawableCaptor.getValue()).getCreatedFromResId()) //
+          .isEqualTo(android.R.drawable.picture_frame);
+      verify(picasso).enqueueAndSubmit(actionCaptor.capture());
+      assertThat(actionCaptor.getValue()).isInstanceOf(ImageViewAction.class);
+***************
+*** 856,861 ****
+      new RequestCreator(picasso, URI_1, 0).purgeable().into(mockImageViewTarget());
+      verify(picasso).enqueueAndSubmit(actionCaptor.capture());
+      assertThat(actionCaptor.getValue().getRequest().purgeable).isTrue();
+    }
+  }
+- 
+--- 856,860 ----

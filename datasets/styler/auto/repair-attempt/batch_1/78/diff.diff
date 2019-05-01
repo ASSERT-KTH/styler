@@ -1,0 +1,39 @@
+*** ./batch_1/78/GwtSerialization.java	Wed May  1 08:54:55 2019
+--- ../files/1/78/GwtSerialization.java	Wed May  1 08:54:55 2019
+***************
+*** 57,69 ****
+  
+    private boolean shouldWriteGwtSerializer() {
+      Optional<AnnotationMirror> optionalGwtCompatible = gwtCompatibility.gwtCompatibleAnnotation();
+      if (optionalGwtCompatible.isPresent()) {
+        AnnotationMirror gwtCompatible = optionalGwtCompatible.get();
+!       for (Map.Entry<ExecutableElement,AnnotationValue>entry: Collections
+!         . unmodifiableMap ( gwtCompatible.getElementValues()).entrySet( )
+!       ) {
+          if (entry.getKey().getSimpleName().contentEquals("serializable")
+              && entry.getValue().getValue().equals(true)) {
+            return true;
+          }
+        }
+--- 57,68 ----
+  
+    private boolean shouldWriteGwtSerializer() {
+      Optional<AnnotationMirror> optionalGwtCompatible = gwtCompatibility.gwtCompatibleAnnotation();
+      if (optionalGwtCompatible.isPresent()) {
+        AnnotationMirror gwtCompatible = optionalGwtCompatible.get();
+!       for (Map.Entry<ExecutableElement, AnnotationValue> entry :
+!           Collections.unmodifiableMap(gwtCompatible.getElementValues()).entrySet()) {
+          if (entry.getKey().getSimpleName().contentEquals("serializable")
+              && entry.getValue().getValue().equals(true)) {
+            return true;
+          }
+        }
+***************
+*** 258,263 ****
+  
+    private static void update(CRC32 crc, String s) {
+      crc.update(s.getBytes(UTF8));
+    }
+  }
+- 
+--- 257,261 ----

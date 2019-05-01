@@ -1,0 +1,38 @@
+*** ./batch_1/19/FailoverLoaderTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/19/FailoverLoaderTest.java	Wed May  1 08:54:55 2019
+***************
+*** 33,45 ****
+  @RunWith(JUnit4.class)
+  public final class FailoverLoaderTest {
+  
+    @Module(injects = Entry$Point.class)
+    static class TestModule {
+!     @Provides String aString() {
+!       return "a";
+!     }
+    }
+  
+    /** A reflective module that will be loaded in place of a generated module for this test. */
+    static final class TestModule$$ModuleAdapter extends TestingModuleAdapter<TestModule> {
+      public TestModule$$ModuleAdapter() {
+--- 33,43 ----
+  @RunWith(JUnit4.class)
+  public final class FailoverLoaderTest {
+  
+    @Module(injects = Entry$Point.class)
+    static class TestModule {
+!     @Provides String aString() { return "a"; }
+    }
+  
+    /** A reflective module that will be loaded in place of a generated module for this test. */
+    static final class TestModule$$ModuleAdapter extends TestingModuleAdapter<TestModule> {
+      public TestModule$$ModuleAdapter() {
+***************
+*** 55,60 ****
+      Entry$Point entryPoint = new Entry$Point();
+      ObjectGraph.create(new TestModule()).inject(entryPoint);
+      assertThat(entryPoint.a).isEqualTo("a");
+    }
+  }
+- 
+--- 53,57 ----

@@ -1,0 +1,38 @@
+*** ./batch_0/11/ExtensionWithStateTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/11/ExtensionWithStateTest.java	Wed May  1 08:54:55 2019
+***************
+*** 39,51 ****
+    static class RootModule {
+      final A a;
+      RootModule(A a) {
+        this.a = a;
+      }
+!     @Provides A provideA() {
+!       return a;
+!     }
+    }
+  
+    @Module(addsTo = RootModule.class, injects = { B.class })
+    static class ExtensionModule { }
+  
+--- 39,49 ----
+    static class RootModule {
+      final A a;
+      RootModule(A a) {
+        this.a = a;
+      }
+!     @Provides A provideA() { return a; }
+    }
+  
+    @Module(addsTo = RootModule.class, injects = { B.class })
+    static class ExtensionModule { }
+  
+***************
+*** 59,64 ****
+      assertThat(extension.get(A.class)).isSameAs(a);
+      assertThat(extension.get(B.class).a).isSameAs(a);
+    }
+  
+  }
+- 
+--- 57,61 ----

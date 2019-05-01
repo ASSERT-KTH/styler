@@ -1,0 +1,36 @@
+*** ./batch_0/2/PollexorRequestTransformerTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/2/PollexorRequestTransformerTest.java	Wed May  1 08:54:55 2019
+***************
+*** 26,36 ****
+    private static final Uri IMAGE_URI = Uri.parse(IMAGE);
+  
+    private RequestTransformer transformer = new PollexorRequestTransformer(Thumbor.create(HOST));
+    private RequestTransformer secureTransformer =
+        new PollexorRequestTransformer(Thumbor.create(HOST, KEY));
+!       private RequestTransformer alwaysResizeTransformer = new PollexorRequestTransformer(Thumbor.create(HOST), true);
+  
+    @Test public void resourceIdRequestsAreNotTransformed() {
+      Request input = new Request.Builder(12).build();
+      Request output = transformer.transformRequest(input);
+      assertThat(output).isSameAs(input);
+--- 26,36 ----
+    private static final Uri IMAGE_URI = Uri.parse(IMAGE);
+  
+    private RequestTransformer transformer = new PollexorRequestTransformer(Thumbor.create(HOST));
+    private RequestTransformer secureTransformer =
+        new PollexorRequestTransformer(Thumbor.create(HOST, KEY));
+!   private RequestTransformer alwaysResizeTransformer = new PollexorRequestTransformer(Thumbor.create(HOST), true);
+  
+    @Test public void resourceIdRequestsAreNotTransformed() {
+      Request input = new Request.Builder(12).build();
+      Request output = transformer.transformRequest(input);
+      assertThat(output).isSameAs(input);
+***************
+*** 129,134 ****
+  
+      String expected = Thumbor.create(HOST, KEY).buildImage(IMAGE).resize(50, 50).fitIn().toUrl();
+      assertThat(output.uri.toString()).isEqualTo(expected);
+    }
+  }
+- 
+--- 129,133 ----

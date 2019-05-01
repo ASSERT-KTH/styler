@@ -1,0 +1,40 @@
+*** ./batch_3/101/AutoValueProcessor.java	Wed May  1 08:54:55 2019
+--- ../files/1/101/AutoValueProcessor.java	Wed May  1 08:54:55 2019
+***************
+*** 378,391 ****
+      if (implementsAnnotation(type)) {
+        errorReporter.abortWithError("@AutoValue may not be used to implement an annotation"
+            + " interface; try using @AutoAnnotation instead", type);
+      }
+  
+!     ImmutableSet<ExecutableElement > methods = getLocalAndInheritedMethods(type,processingEnv.getElementUtils
+! 
+!       ());ImmutableSet< ExecutableElement>methodsToImplement=methodsToImplement(methods)
+!       ;
+  
+      String fqExtClass = TypeSimplifier.classNameOf(type);
+      List<AutoValueExtension> appliedExtensions = new ArrayList<AutoValueExtension>();
+      AutoValueExtension.Context context = makeExtensionContext(type, methodsToImplement);
+      for (AutoValueExtension extension : extensions) {
+--- 378,389 ----
+      if (implementsAnnotation(type)) {
+        errorReporter.abortWithError("@AutoValue may not be used to implement an annotation"
+            + " interface; try using @AutoAnnotation instead", type);
+      }
+  
+!     ImmutableSet<ExecutableElement> methods = getLocalAndInheritedMethods(type, processingEnv.getElementUtils());
+!     ImmutableSet<ExecutableElement> methodsToImplement = methodsToImplement(methods);
+  
+      String fqExtClass = TypeSimplifier.classNameOf(type);
+      List<AutoValueExtension> appliedExtensions = new ArrayList<AutoValueExtension>();
+      AutoValueExtension.Context context = makeExtensionContext(type, methodsToImplement);
+      for (AutoValueExtension extension : extensions) {
+***************
+*** 812,817 ****
+  
+    private EclipseHack eclipseHack() {
+      return new EclipseHack(processingEnv);
+    }
+  }
+- 
+--- 810,814 ----

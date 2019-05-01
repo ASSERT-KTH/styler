@@ -1,0 +1,41 @@
+*** ./batch_4/143/BuilderSpec.java	Wed May  1 08:54:55 2019
+--- ../files/1/143/BuilderSpec.java	Wed May  1 08:54:55 2019
+***************
+*** 92,105 ****
+            builderTypeElement = Optional.of(containedClass);
+          }
+        }
+      }
+  
+!     Optional<ExecutableElement> validateMethod = Optional.absent();for(ExecutableElement containedMethod
+!       : ElementFilter . methodsIn(autoValueClass.getEnclosedElements()
+!       ) )
+!     {
+        if (MoreElements.isAnnotationPresent(containedMethod, AutoValue.Validate.class)) {
+          if (containedMethod.getModifiers().contains(Modifier.STATIC)) {
+            errorReporter.reportError(
+                "@AutoValue.Validate cannot apply to a static method", containedMethod);
+          } else if (!containedMethod.getParameters().isEmpty()) {
+--- 92,104 ----
+            builderTypeElement = Optional.of(containedClass);
+          }
+        }
+      }
+  
+!     Optional<ExecutableElement> validateMethod = Optional.absent();
+!     for (ExecutableElement containedMethod :
+!         ElementFilter.methodsIn(autoValueClass.getEnclosedElements())) {
+        if (MoreElements.isAnnotationPresent(containedMethod, AutoValue.Validate.class)) {
+          if (containedMethod.getModifiers().contains(Modifier.STATIC)) {
+            errorReporter.reportError(
+                "@AutoValue.Validate cannot apply to a static method", containedMethod);
+          } else if (!containedMethod.getParameters().isEmpty()) {
+***************
+*** 342,347 ****
+          abstractMethods.add(method);
+        }
+      }
+    }
+  }
+- 
+--- 341,345 ----

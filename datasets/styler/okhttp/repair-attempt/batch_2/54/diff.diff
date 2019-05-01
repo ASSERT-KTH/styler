@@ -1,0 +1,36 @@
+*** ./batch_2/54/CertificatePinnerChainValidationTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/54/CertificatePinnerChainValidationTest.java	Wed May  1 08:54:55 2019
+***************
+*** 328,343 ****
+      // Test setup fails on JDK9
+      // java.security.KeyStoreException: Certificate chain is not valid
+      // at sun.security.pkcs12.PKCS12KeyStore.setKeyEntry
+      // http://openjdk.java.net/jeps/229
+      // http://hg.openjdk.java.net/jdk9/jdk9/jdk/file/2c1c21d11e58/src/share/classes/sun/security/pkcs12/PKCS12KeyStore.java#l596
+!     String keystoreType = getPlatform().equals("jdk9") ?"JKS" : null;
+      X509KeyManager x509KeyManager = newKeyManager(keystoreType, heldCertificate, intermediates);
+      X509TrustManager trustManager = newTrustManager(
+          keystoreType, Collections.<X509Certificate>emptyList());
+      SSLContext sslContext = Platform.get().getSSLContext();
+      sslContext.init(new KeyManager[] { x509KeyManager }, new TrustManager[] { trustManager },
+          new SecureRandom());
+      return sslContext.getSocketFactory();
+    }
+  }
+- 
+--- 328,342 ----
+      // Test setup fails on JDK9
+      // java.security.KeyStoreException: Certificate chain is not valid
+      // at sun.security.pkcs12.PKCS12KeyStore.setKeyEntry
+      // http://openjdk.java.net/jeps/229
+      // http://hg.openjdk.java.net/jdk9/jdk9/jdk/file/2c1c21d11e58/src/share/classes/sun/security/pkcs12/PKCS12KeyStore.java#l596
+!     String keystoreType = getPlatform().equals("jdk9") ? "JKS" : null;
+      X509KeyManager x509KeyManager = newKeyManager(keystoreType, heldCertificate, intermediates);
+      X509TrustManager trustManager = newTrustManager(
+          keystoreType, Collections.<X509Certificate>emptyList());
+      SSLContext sslContext = Platform.get().getSSLContext();
+      sslContext.init(new KeyManager[] { x509KeyManager }, new TrustManager[] { trustManager },
+          new SecureRandom());
+      return sslContext.getSocketFactory();
+    }
+  }

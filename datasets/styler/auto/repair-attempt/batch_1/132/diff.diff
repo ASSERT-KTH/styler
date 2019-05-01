@@ -1,0 +1,40 @@
+*** ./batch_1/132/BuilderMethodClassifier.java	Wed May  1 08:54:55 2019
+--- ../files/1/132/BuilderMethodClassifier.java	Wed May  1 08:54:55 2019
+***************
+*** 459,471 ****
+      if (!targetType.getKind().equals(TypeKind.DECLARED)) {
+        return ImmutableList.of();
+      }
+      String copyOf = Optionalish.isOptional(targetType) ? "of" : "copyOf";
+      TypeElement immutableTargetType = MoreElements.asType(typeUtils.asElement(targetType));
+!     ImmutableList.Builder<ExecutableElement> copyOfMethods = ImmutableList.builder(); for
+!       ( ExecutableElement method :ElementFilter.methodsIn(immutableTargetType
+!       . getEnclosedElements())) {
+        if (method.getSimpleName().contentEquals(copyOf)
+            && method.getParameters().size() == 1
+            && method.getModifiers().contains(Modifier.STATIC)) {
+          copyOfMethods.add(method);
+        }
+--- 459,471 ----
+      if (!targetType.getKind().equals(TypeKind.DECLARED)) {
+        return ImmutableList.of();
+      }
+      String copyOf = Optionalish.isOptional(targetType) ? "of" : "copyOf";
+      TypeElement immutableTargetType = MoreElements.asType(typeUtils.asElement(targetType));
+!     ImmutableList.Builder<ExecutableElement> copyOfMethods = ImmutableList.builder();
+!     for (ExecutableElement method :
+!         ElementFilter.methodsIn(immutableTargetType.getEnclosedElements())) {
+        if (method.getSimpleName().contentEquals(copyOf)
+            && method.getParameters().size() == 1
+            && method.getModifiers().contains(Modifier.STATIC)) {
+          copyOfMethods.add(method);
+        }
+***************
+*** 481,486 ****
+  
+    private String typeParamsString() {
+      return TypeSimplifier.actualTypeParametersString(autoValueClass);
+    }
+  }
+- 
+--- 481,485 ----

@@ -1,0 +1,36 @@
+*** ./batch_2/49/CacheTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/49/CacheTest.java	Wed May  1 08:54:55 2019
+***************
+*** 1032,1042 ****
+      assertEquals("ABCABCABC", get(server.url("/")).body().string());
+      assertEquals("ABCABCABC", get(server.url("/")).body().string());
+    }
+  
+    @Test public void previouslyNotGzippedContentIsNotModifiedAndSpecifiesGzipEncoding() throws Exception {
+!       server.enqueue(new MockResponse()
+              .setBody("ABCABCABC")
+              .addHeader("Content-Type: text/plain")
+              .addHeader("Last-Modified: " + formatDate(-2, TimeUnit.HOURS))
+              .addHeader("Expires: " + formatDate(-1, TimeUnit.HOURS)));
+      server.enqueue(new MockResponse()
+--- 1032,1042 ----
+      assertEquals("ABCABCABC", get(server.url("/")).body().string());
+      assertEquals("ABCABCABC", get(server.url("/")).body().string());
+    }
+  
+    @Test public void previouslyNotGzippedContentIsNotModifiedAndSpecifiesGzipEncoding() throws Exception {
+!     server.enqueue(new MockResponse()
+              .setBody("ABCABCABC")
+              .addHeader("Content-Type: text/plain")
+              .addHeader("Last-Modified: " + formatDate(-2, TimeUnit.HOURS))
+              .addHeader("Expires: " + formatDate(-1, TimeUnit.HOURS)));
+      server.enqueue(new MockResponse()
+***************
+*** 2601,2606 ****
+      sink.writeUtf8(data);
+      sink.close();
+      return result;
+    }
+  }
+- 
+--- 2601,2605 ----

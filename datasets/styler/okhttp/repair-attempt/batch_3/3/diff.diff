@@ -1,0 +1,38 @@
+*** ./batch_3/3/RealWebSocketTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/3/RealWebSocketTest.java	Wed May  1 08:54:55 2019
+***************
+*** 212,224 ****
+      assertFalse(client.closed); // Not closed until close reply is received.
+  
+      // Manually write an invalid masked close frame.
+      server.sink.write(ByteString.decodeHex("888760b420bb635c68de0cd84f")).emit();
+  
+!     client.processNextFrame();
+! 
+!     // Detects error, disconnects immediately since close already sent.
+      assertTrue(client.closed);
+      client.listener.assertFailure(
+          ProtocolException.class, "Server-sent frames must not be masked.");
+  
+      server.listener.assertClosing(1000, "Hello");
+--- 212,222 ----
+      assertFalse(client.closed); // Not closed until close reply is received.
+  
+      // Manually write an invalid masked close frame.
+      server.sink.write(ByteString.decodeHex("888760b420bb635c68de0cd84f")).emit();
+  
+!     client.processNextFrame();// Detects error, disconnects immediately since close already sent.
+      assertTrue(client.closed);
+      client.listener.assertFailure(
+          ProtocolException.class, "Server-sent frames must not be masked.");
+  
+      server.listener.assertClosing(1000, "Hello");
+***************
+*** 338,343 ****
+          throw new RuntimeException("Oops!");
+        }
+      }
+    }
+  }
+- 
+--- 336,340 ----

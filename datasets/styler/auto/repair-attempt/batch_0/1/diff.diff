@@ -1,0 +1,40 @@
+*** ./batch_0/1/TypeSimplifierTest.java	Wed May  1 08:54:55 2019
+--- ../files/1/1/TypeSimplifierTest.java	Wed May  1 08:54:55 2019
+***************
+*** 246,258 ****
+      public void testImportsForArrayTypes() {
+        TypeElement list = typeElementOf("java.util.List");
+        TypeElement set = typeElementOf("java.util.Set");
+        Set<TypeMirror> types = ImmutableSet.<TypeMirror>of(
+            typeUtil.getArrayType(typeUtil.getPrimitiveType(TypeKind.INT)),
+!           typeUtil.getArrayType(typeMirrorOf("java.util.regex.Pattern")),typeUtil
+!           .getArrayType(// Set<Matcher[]>[]typeUtil. getDeclaredType(set,typeUtil.getArrayType(typeMirrorOf("java.util.regex.Matcher")))),
+!   typeUtil.getDeclaredType(list,
+                    typeUtil.getArrayType(typeMirrorOf("java.util.regex.Matcher")))),
+            typeUtil.getDeclaredType(list,  // List<Timer[]>
+                typeUtil.getArrayType(typeMirrorOf("java.util.Timer"))));
+        // Timer is referenced twice but should obviously only be imported once.
+        List<String> expectedImports = ImmutableList.of(
+--- 246,258 ----
+      public void testImportsForArrayTypes() {
+        TypeElement list = typeElementOf("java.util.List");
+        TypeElement set = typeElementOf("java.util.Set");
+        Set<TypeMirror> types = ImmutableSet.<TypeMirror>of(
+            typeUtil.getArrayType(typeUtil.getPrimitiveType(TypeKind.INT)),
+!           typeUtil.getArrayType(typeMirrorOf("java.util.regex.Pattern")),
+!           typeUtil.getArrayType(          // Set<Matcher[]>[]
+!               typeUtil.getDeclaredType(set,
+                    typeUtil.getArrayType(typeMirrorOf("java.util.regex.Matcher")))),
+            typeUtil.getDeclaredType(list,  // List<Timer[]>
+                typeUtil.getArrayType(typeMirrorOf("java.util.Timer"))));
+        // Timer is referenced twice but should obviously only be imported once.
+        List<String> expectedImports = ImmutableList.of(
+***************
+*** 386,391 ****
+        assertEquals("<K extends List<V> & Comparable<K>, V>",
+            typeSimplifier.formalTypeParametersString(multipleBoundsElement));
+      }
+    }
+  }
+- 
+--- 386,390 ----

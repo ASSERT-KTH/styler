@@ -1,0 +1,39 @@
+*** ./batch_0/10/TestingLoader.java	Wed May  1 08:54:55 2019
+--- ../files/1/10/TestingLoader.java	Wed May  1 08:54:55 2019
+***************
+*** 29,40 ****
+      ModuleAdapter<T> adapter = TestingModuleAdapter.create(type);
+      return adapter;
+    }
+  
+    @Override public Binding<?> getAtInjectBinding(String key, String className, ClassLoader ignored,
+!       boolean mustHaveInjections) {try
+!       { Class< ? >type = getClass () . getClassLoader( ).loadClass(className);
+        if (type.isInterface()) {
+          return null; // Short-circuit since we can't build reflective bindings for interfaces.
+        }
+        return ReflectiveAtInjectBinding.create(type, mustHaveInjections);
+      } catch (ClassNotFoundException e) {
+--- 29,41 ----
+      ModuleAdapter<T> adapter = TestingModuleAdapter.create(type);
+      return adapter;
+    }
+  
+    @Override public Binding<?> getAtInjectBinding(String key, String className, ClassLoader ignored,
+!       boolean mustHaveInjections) {
+!      try {
+!       Class<?> type = getClass().getClassLoader().loadClass(className);
+        if (type.isInterface()) {
+          return null; // Short-circuit since we can't build reflective bindings for interfaces.
+        }
+        return ReflectiveAtInjectBinding.create(type, mustHaveInjections);
+      } catch (ClassNotFoundException e) {
+***************
+*** 45,50 ****
+  
+    @Override public StaticInjection getStaticInjection(Class<?> injectedClass) {
+      return ReflectiveStaticInjection.create(injectedClass);
+    }
+  }
+- 
+--- 46,50 ----

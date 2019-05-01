@@ -1,0 +1,39 @@
+*** ./batch_2/2/DelegatingSSLSocket.java	Wed May  1 08:54:55 2019
+--- ../files/1/2/DelegatingSSLSocket.java	Wed May  1 08:54:55 2019
+***************
+*** 311,323 ****
+      }
+    }
+  
+    public <T> Socket setOption(SocketOption<T> name, T value) throws IOException {
+      try {
+!       SSLSocket.class.getMethod(
+!           "setOption", SocketOption.class, Object.class).invoke(delegate, name, value);
+!           return this;
+      } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new AssertionError();
+      }
+    }
+  
+--- 311,322 ----
+      }
+    }
+  
+    public <T> Socket setOption(SocketOption<T> name, T value) throws IOException {
+      try {
+!       SSLSocket.class.getMethod("setOption", SocketOption.class, Object.class).invoke(delegate, name, value);
+!       return this;
+      } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new AssertionError();
+      }
+    }
+  
+***************
+*** 335,340 ****
+      } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new AssertionError();
+      }
+    }
+  }
+- 
+--- 334,338 ----
