@@ -16,3 +16,15 @@
 
   - checkstyle.xml
 
+
+## Update the diffs
+
+Go in {dataset}/repair-attempt and run the followinf cmd:
+
+```bash
+for batch in $(ls); do
+        for id in $(ls $batch); do
+                diff -C 5 ./$batch/$id/*.java ../files/1/$id/*.java > ./$batch/$id/diff.diff
+        done
+done
+```
