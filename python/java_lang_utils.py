@@ -11,6 +11,88 @@ import os
 
 from core import *
 
+def gen_ugly_v2(file_path, output_dir, file_name=''):
+    n_modif = 1
+
+    java_source = open_file(file_path)
+    whitespace, tokens = tokenize_with_white_space(java_source, relative=True)
+
+    suitable_for_intertion = range(0, len(whitespace))
+
+    def token_ok_for_deletion(token):
+        if isinstance(token, tokenizer.Separator):
+            return True
+        if isinstance(token, tokenizer.Operator):
+            return True
+        return False
+
+    suitable_for_deletion = [
+        pos
+        for pos in range(0, len(whitespace) - 1)
+        if (whitespace[pos][0] > 1 
+            or whitespace[pos][0]
+            or token_ok_for_deletion(pos)
+            or token_ok_for_deletion(pos+1))
+    ]
+
+    for modif_id in range(n_modif):
+        operation = random.choice([1, -1])
+        index = random.choice([1, -1])
+        if operation > 0:
+            pos = random.choice(suitable_for_intertion)
+            original_whitespace = whitespace[pos]
+        else:
+            original_whitespace = (-1,-1)
+            while original_whitespace[index] + operation < 0:
+                pos = random.choice(suitable_for_deletion)
+                original_whitespace = whitespace[pos]
+
+        new_whitespace = list(original_whitespace)
+
+        new_whitespace[index] += operation
+
+        whitespace[pos] = tuple(new_whitespace)
+
+    new_java_source = reformat(whitespace, tokens, relative = True)
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    if file_name == '':
+        file_name = file_path.split("/")[-1]
+    
+    return save_file(output_dir, file_name, new_java_source)
+
+
+def mix_files_v2(file_A_path, file_B_path, output_file, from_line, to_line=-1):
+    java_source_A = open_file(file_A_path)
+    whitespace_A, tokens_A = tokenize_with_white_space(java_source_A, relative=True)
+
+    java_source_B = open_file(file_B_path)
+    whitespace_B, tokens_B = tokenize_with_white_space(java_source_B, relative=True)
+
+    if to_line == -1:
+        to_line = from_line
+
+    from_token = len(tokens_A)
+    to_token = 0
+
+    for pos, token in enumerate(tokens_A):
+        if token.line < from_line:
+            from_token = pos
+        if token.line <= to_line:
+            to_token = pos
+    from_token += 1
+
+    tokens = tokens_A
+    whitespace = whitespace_A[:from_token] + whitespace_B[from_token:to_token+1] + whitespace_A[to_token+1:]
+
+    new_java_source = reformat(whitespace, tokens, relative = True)
+    
+    output_dir = output_file.split('/')[:-1]
+    file_name = output_file.split('/')[-1]
+
+    return save_file(output_dir, file_name, new_java_source)    
 
 def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     """
@@ -234,7 +316,7 @@ def reformat(whitespace, tokens, tabulations=False, relative=True):
     return result
 
 
-def tokenize_with_white_space(file_content, relative=True):
+def tokenize_with_white_space(file_content, relative=True, new_line_at_the_end_of_file=True):
     """
     Tokenize the java source code
     :param file_content: the java source code
@@ -261,7 +343,16 @@ def tokenize_with_white_space(file_content, relative=True):
                     position_last_line = next_token_position[1]                
                 else:
                     whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))                    
-    whitespace.append((1,0))
+    if new_line_at_the_end_of_file:
+        whitespace.append((1,0))
+    else:
+        if file_content[-1] == '\n':
+            if file_content[-2] == '\n':
+                whitespace.append((2,0))
+            else:
+                whitespace.append((1,0))
+        else:
+            whitespace.append((0,0))
     # rewritten = reformat(whitespace, tokens)
     # print(rewritten)
     # return rewritten
@@ -297,10 +388,11 @@ def check_well_formed(file_path):
     try:
         tree = parse.parse(file_content)
         return True
-    except javalang.parser.JavaSyntaxError:
+    except javalang.parser.JavaSyntaxError as error:
+        print(error)
         return False
     except:
-        return False
+        pass
 
 
 def get_bad_formated(dir):
@@ -313,8 +405,9 @@ def get_bad_formated(dir):
     for folder in os.walk(dir):
         for file_name in folder[2]:
             file_path = os.path.join(folder[0], file_name)
-            if ( not check_well_formed(file_path) ):
-                bad_formated_files.append(file_path)
+            if file_path.endswith('.java'):
+                if ( not check_well_formed(file_path) ):
+                    bad_formated_files.append(file_path)
     return bad_formated_files
 
 
@@ -336,8 +429,8 @@ if __name__ == "__main__":
         print(gen_ugly( sys.argv[2], sys.argv[3] ))
     elif (sys.argv[1] == "tokenize_ws"):
         whitespace, tokens = tokenize_with_white_space(open_file(sys.argv[2]))
-        print(reformat(whitespace, tokens))
-        #print("\n".join([str(e) for e in zip(whitespace, tokens)]))
+        #print(reformat(whitespace, tokens))
+        print("\n".join([str(e) for e in zip(whitespace, tokens)]))
     elif (sys.argv[1] == "mix"):
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):

@@ -78,9 +78,10 @@ def open_file(file):
 def save_file(dir, file_name, content):
     """Write the content in a file
     """
-    with open(os.path.join(dir, file_name), 'w') as f:
+    path = os.path.join(dir, file_name)
+    with open(path, 'w') as f:
         f.write(content)
-
+    return path
 
 def open_json(file):
     """Read a json file and returns its content has a dict
