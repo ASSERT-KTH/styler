@@ -18,7 +18,7 @@ from core import *
 _CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
 
 
-def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_targeted=False):
+def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_targeted=False, only_java=False):
     """
     Run checkstyle on the dir
     """
@@ -29,25 +29,26 @@ def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_
     if ( process.returncode > 0):
         output = b''.join(output.split(b'</checkstyle>')[0:-1]) + b'</checkstyle>'
     # parsing
-    output = parse_res(output, only_targeted=only_targeted)
+    output = parse_res(output, only_targeted=only_targeted, only_java=only_java)
     return (output, process.returncode)
 
-def parse_res(output, only_targeted=False):
+def parse_res(output, only_targeted=False, only_java=False):
     """
     Parse the reults from XML to a dict
     """
     xml_output = ET.fromstring(output)
     output_parsed = dict()
     for elem_file in xml_output.getchildren():
-        output_parsed[elem_file.attrib['name']] = dict()
-        output_parsed[elem_file.attrib['name']]['errors'] = list()
-        for elem_error in elem_file.getchildren():
-            if ( elem_error.tag == 'error' ):
-                if only_targeted:
-                    if is_error_targeted(elem_error.attrib):
+        if not only_java or elem_file.attrib['name'].endswith('.java'):
+            output_parsed[elem_file.attrib['name']] = dict()
+            output_parsed[elem_file.attrib['name']]['errors'] = list()
+            for elem_error in elem_file.getchildren():
+                if ( elem_error.tag == 'error' ):
+                    if only_targeted:
+                        if is_error_targeted(elem_error.attrib):
+                            output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
+                    else:
                         output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
-                else:
-                    output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
     return output_parsed
 
 def parse_file(file_path, only_targeted=False):
@@ -110,4 +111,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == "read":
         pp.pprint(analyse_results(parse_file(sys.argv[2])))
     elif sys.argv[1] == "check":
-        check(sys.argv[2], sys.argv[3], only_targeted=True)
+        out, n = check(sys.argv[2], sys.argv[3], only_targeted=True, only_java=True)
+        json_pp(out)
+        json_pp({file_name:len(content['errors']) for file_name, content in out.items() })
+        json_pp(len([file_name for file_name, content in out.items() if len(content['errors']) == 0]))
