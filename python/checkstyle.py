@@ -50,10 +50,10 @@ def parse_res(output, only_targeted=False):
                     output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
     return output_parsed
 
-def parse_file(file_path):
+def parse_file(file_path, only_targeted=False):
     with open(file_path) as f:
         file_content = f.read()
-    return parse_res(file_content)
+    return parse_res(file_content, only_targeted=only_targeted)
 
 def analyse_results(results):
     """
@@ -109,3 +109,5 @@ if __name__ == "__main__":
         print(output_raw, errorcode)
     elif sys.argv[1] == "read":
         pp.pprint(analyse_results(parse_file(sys.argv[2])))
+    elif sys.argv[1] == "check":
+        check(sys.argv[2], sys.argv[3], only_targeted=True)
