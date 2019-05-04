@@ -31,13 +31,14 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 __synthetic_dir = config['DEFAULT']['SYNTHETIC_DIR']
+__tokenized_dir = config['DEFAULT']['TOKENIZED_DIR']
 __protocol = 'protocol1'
 
 def get_dataset_dir(dataset):
     return f'{__synthetic_dir}/dataset/{__protocol}/{dataset}'
 
 def get_tokenized_dir(dataset):
-    return f'/home/benjaminl/Documents/kth/data/synthetic_only_formatting/{dataset}'
+    return f'{__tokenized_dir}/{dataset}'
 
 def get_sub_set_dir(dataset, sub_set):
     return f'{get_dataset_dir(dataset)}/{sub_set}'

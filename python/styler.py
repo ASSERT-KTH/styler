@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import ml
 import sys
@@ -207,36 +208,47 @@ def select_the_best_repair(correct_repairs, original):
     return file
 
 def repair_files(dir, dir_files, model_name, only_formatting=False):
-    # dir= './styler/test'
+    # set the dirs
     target = os.path.join(dir, 'repair-attempt')
     target_final = os.path.join(dir, 'files-repaired')
     checkstyle_rules = os.path.join(dir_files, 'checkstyle.xml')
+    waste = os.path.join(dir, 'waste')
 
     # yet we focus on single error files
     # TODO : Improve it
     dir_files = os.path.join(dir_files, f'./1')
-
-    waste = os.path.join(dir, 'waste')
+    
+    # create the folders
     create_dir(target)
     create_dir(waste)
+
+    # Init of the translator
     translate = gen_translator(model_name, batch_size=5, only_formatting=only_formatting)
-    for folder_id in tqdm(list_folders(dir_files)):
+
+    list_of_fileids = list_folders(dir_files)
+    number_of_files = len(list_of_fileids)
+    #list_of_fileids = []
+    for folder_id in tqdm(list_of_fileids):
         file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
         metadata_path = f'{dir_files}/{folder_id}/metadata.json'
-        for tokenized_errors, info in tokenize_errors(file_path, open_json(metadata_path)['errors']):
+        for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
+            tokenized_errors, info = error
             for proposal_id, translation in enumerate(translate(tokenized_errors)):
                 de_tokenized_translation = de_tokenize(file_path, info, translation, only_formatting=only_formatting)
-                folder = f'{target}/batch_{proposal_id}/{folder_id}'
+                folder = f'{target}/batch_{proposal_id}/{int(folder_id) + error_id * number_of_files}'
                 create_dir(folder)
                 save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
+
     move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
-    # json_pp(checkstyle_result)
+    #json_pp(checkstyle_result)
+    #save_json('./', 'test.json', checkstyle_result)
     files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
+    #print(files_properly_repaired)
     final_repairs = {
         id:select_the_best_repair(
             [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
-            glob.glob(f'{dir_files}/{id}/*.java')[0]
+            glob.glob(f'{dir_files}/{int(id) % number_of_files}/*.java')[0]
         )
         for id, repairs
         in files_properly_repaired.items()
@@ -272,7 +284,7 @@ def main(args):
             datasets = args[2:]
         for dataset in tqdm(datasets):
             repair_real(dataset)
-    if args[1] == 'train':
+    if args[1] == 'gen_training_data':
         project_path = args[2]
         checkstyle_file_path = args[3]
         project_name = args[4]

@@ -209,7 +209,7 @@ def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     return output_file
 
 
-def reformat(whitespace, tokens, tabulations=False):
+def reformat(whitespace, tokens, tabulations=False, relative=True):
     """
     Given the sequence of whitespaces and javat token reformat the java source code
     :return: the java source code
@@ -218,17 +218,23 @@ def reformat(whitespace, tokens, tabulations=False):
     position = 0
     for ws, t in zip(whitespace, tokens):
         if ws[0] > 0:
-            position += ws[1]
-            if tabulations:
-                result += str(t.value) + "\n" * ws[0] + "\t" * position
+            if relative:
+                position = max(position + ws[1], 0)
+                if tabulations:
+                    result += str(t.value) + "\n" * ws[0] + "\t" * position
+                else:
+                    result += str(t.value) + "\n" * ws[0] + " " * position
             else:
-                result += str(t.value) + "\n" * ws[0] + " " * position
+                if tabulations:
+                    result += str(t.value) + "\n" * ws[0] + "\t" * ws[1]
+                else:
+                    result += str(t.value) + "\n" * ws[0] + " " * ws[1]
         else:
             result += str(t.value) + " " * ws[1]
     return result
 
 
-def tokenize_with_white_space(file_content):
+def tokenize_with_white_space(file_content, relative=True):
     """
     Tokenize the java source code
     :param file_content: the java source code
@@ -250,8 +256,11 @@ def tokenize_with_white_space(file_content):
                 whitespace.append(( 0, next_token_position[1] - end_of_token[1]))
             else:
                 # new line
-                whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
-                position_last_line = next_token_position[1]
+                if relative:
+                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
+                    position_last_line = next_token_position[1]                
+                else:
+                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))                    
     whitespace.append((1,0))
     # rewritten = reformat(whitespace, tokens)
     # print(rewritten)
@@ -327,7 +336,8 @@ if __name__ == "__main__":
         print(gen_ugly( sys.argv[2], sys.argv[3] ))
     elif (sys.argv[1] == "tokenize_ws"):
         whitespace, tokens = tokenize_with_white_space(open_file(sys.argv[2]))
-        # print("\n".join([str(e) for e in zip(whitespace, tokens)]))
+        print(reformat(whitespace, tokens))
+        #print("\n".join([str(e) for e in zip(whitespace, tokens)]))
     elif (sys.argv[1] == "mix"):
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):
