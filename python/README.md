@@ -51,3 +51,19 @@ Init virtualenv :
 python ./styler.py repair [model name]
 ```
 The model must be stored in the `./models` path.
+
+# Others (FIXME: this info is here but we will move it to somewhere else later)
+
+## Real Checkstyle Errors
+
+The collection process results in the following structure:
+
+```
+├── <repo name>: the name of the GitHub repository
+│   └── <commit id>: the commit where Checkstyle errors were reproduced
+│       └── <file with error id>: an id for the file; the ids of files start with 0 and go until the number of files with errors - 1 in the commit
+│           ├── <file name>.java: the Java class with error(s)
+│           └── errors.json: a json file containing information on the error(s) such as Checkstyle rule violation type and error line
+└── ...
+```
+
