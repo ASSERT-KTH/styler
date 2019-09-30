@@ -29,7 +29,7 @@ def gen_ugly_v2(file_path, output_dir, file_name=''):
     suitable_for_deletion = [
         pos
         for pos in range(0, len(whitespace) - 1)
-        if (whitespace[pos][0] > 1 
+        if (whitespace[pos][0] > 1
             or whitespace[pos][0]
             or token_ok_for_deletion(pos)
             or token_ok_for_deletion(pos+1))
@@ -60,7 +60,7 @@ def gen_ugly_v2(file_path, output_dir, file_name=''):
 
     if file_name == '':
         file_name = file_path.split("/")[-1]
-    
+
     return save_file(output_dir, file_name, new_java_source)
 
 
@@ -88,11 +88,11 @@ def mix_files_v2(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     whitespace = whitespace_A[:from_token] + whitespace_B[from_token:to_token+1] + whitespace_A[to_token+1:]
 
     new_java_source = reformat(whitespace, tokens, relative = True)
-    
+
     output_dir = output_file.split('/')[:-1]
     file_name = output_file.split('/')[-1]
 
-    return save_file(output_dir, file_name, new_java_source)    
+    return save_file(output_dir, file_name, new_java_source)
 
 def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     """
@@ -340,9 +340,9 @@ def tokenize_with_white_space(file_content, relative=True, new_line_at_the_end_o
                 # new line
                 if relative:
                     whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
-                    position_last_line = next_token_position[1]                
+                    position_last_line = next_token_position[1]
                 else:
-                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))                    
+                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))
     if new_line_at_the_end_of_file:
         whitespace.append((1,0))
     else:
@@ -435,3 +435,23 @@ if __name__ == "__main__":
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):
         print(compute_diff_size(sys.argv[2], sys.argv[3]))
+
+class TokenizedSource:
+    def __init__(self, white_spaces, tokens, tabulation=False, relative=True):
+        self.tokens = tokens
+        self.white_spaces = white_spaces
+
+    def reformat(self):
+        return reformat(white_spaces, tokens, tabulation=self.tabulation, relative=self.relative)
+
+    def enumerate_3_grams(self):
+        return enumerate(zip(self.tokens, self.white_spaces, self.tokens[1:]))
+
+class Tokenizer:
+    def __init__(self, tabulation=False, relative=True):
+        self.tabulation = tabulation
+        self.relative = relative
+
+    def tokenize(self, source):
+        white_spaces, tokens = tokenize_with_white_space(source)
+        return TokenizedSource(white_spaces, tokens, tabulation=self.tabulation, relative=self.relative)
