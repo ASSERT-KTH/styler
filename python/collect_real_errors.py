@@ -1,4 +1,5 @@
 import sys
+import os
 import git_helper
 import checkstyle
 
@@ -19,7 +20,7 @@ def get_real_errors_commit_dir(repo, commit):
 
 def sanitize_checkstyle(content):
     lines = content.split('\n')
-    restult = ''
+    result = ''
     for line in lines:
         line_stripped: str = line.strip()
         if line_stripped.startswith('<!--') and line_stripped.endswith('-->'):
@@ -34,8 +35,15 @@ def sanitize_checkstyle(content):
             return False
         if 'RedundantThrows' in line:
             continue
-        restult += line + '\n'
-    return restult
+        result += line + '\n'
+    return result
+
+def is_there_suppressionsLocation_in_pom(repo):
+    pom_line = open_file(find_the_pom(repo.working_dir)).split('\n')
+    for l in pom_line:
+        if 'suppressionsLocation' in l:
+            return True
+    return False
 
 def find_the_checkstyle(repo):
     path = repo.working_dir
@@ -46,7 +54,7 @@ def find_the_checkstyle(repo):
         return None, None
 
 def find_the_pom(path):
-    return safe_get_first(sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))) # the main pom should be closser to the root
+    return safe_get_first(sorted(find_all(path, 'pom.xml'), key=lambda x: x.count('/'))) # the main pom should be closer to the root
 
 def get_repo_with_checkstyle(repos):
     result = []
@@ -54,21 +62,16 @@ def get_repo_with_checkstyle(repos):
         user, repo_name = repo_full_name.split('/')
         repo = git_helper.open_repo(user, repo_name)
         if repo is not None:
-            checkstyle_absolute, checkstyle_relative = find_the_checkstyle(repo)
-            if not checkstyle_absolute:
+            checkstyle_absolute_path, checkstyle_relative_path = find_the_checkstyle(repo)
+            if not checkstyle_absolute_path:
                 continue
-            if sanitize_checkstyle(open_file(checkstyle_absolute)):
-                pom_line = open_file(find_the_pom(repo.working_dir)).split('\n')
-                good = True
-                for l in pom_line:
-                    if 'suppressionsLocation' in l:
-                        good = False
-                if good:
-                    save_file(os.path.join(repo.working_dir, '../'), 'checkstyle.xml', sanitize_checkstyle(open_file(checkstyle_absolute)))
+            if sanitize_checkstyle(open_file(checkstyle_absolute_path)):
+                if not is_there_suppressionsLocation_in_pom(repo):
+                    save_file(os.path.join(repo.working_dir, '../'), 'checkstyle.xml', sanitize_checkstyle(open_file(checkstyle_absolute_path)))
                     result.append({
                         'repo': repo,
-                        'checkstyle': checkstyle_absolute,
-                        'checkstyle_relative': checkstyle_relative,
+                        'checkstyle_absolute_path': checkstyle_absolute_path,
+                        'checkstyle_relative_path': checkstyle_relative_path,
                         'checkstyle_clean': os.path.join(repo.working_dir, '../checkstyle.xml'),
                         'repo_full_name': repo_full_name
                     })
@@ -86,6 +89,7 @@ def commit_until_last_modification(repo, file):
         commit_list_array = p1.communicate()[0].decode("utf-8")
         p2 = subprocess.Popen(cmd_commit_checkstyle.split(' '), stdout=subprocess.PIPE)
         commit_checkstyle = p2.communicate()[0].decode("utf-8")
+        print("The last modification in the checkstyle.xml file was in the commit %s." % commit_checkstyle)
         repo.git.checkout('master')
         commit_list = commit_list_array.split('\n')
         result = commit_list[:commit_list.index(commit_checkstyle)] + [commit_checkstyle]
@@ -103,7 +107,7 @@ def check_checkstyle_results(checkstyle_results):
     return reports_with_errors
 
 def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyle.xml'):
-    # print(f'{repo}/{commit}')
+    print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
 
@@ -136,7 +140,7 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
     for report_dir, results in reports_with_errors.items():
         # checkstyle_checker = f'{"/".join(report_dir.split("/")[:-1])}/checkstyle-checker.xml'
         for file, errors in results.items():
-            # print(f'{file} has {len(errors)} errors')
+            print(f'{file} has {len(errors)} error(s)')
             file_name = file.split('/')[-1]
             dir = os.path.join(target, str(count))
             create_dir(dir)
@@ -144,10 +148,12 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
             # shutil.copyfile(checkstyle_checker, os.path.join(dir, 'checkstyle.xml'))
             save_json(dir, 'errors.json', errors)
             count += 1
+    print("# Files with at least one error: %s" % count)
     find_all(dir, 'checkstyle-checker.xml')
     return output
 
 def clone():
+    # TODO: make the list of repos settable
     repos = set(list(open_json(os.path.join(dir_path, 'travis/commits.json')).keys()) + list(open_json(os.path.join(dir_path, 'travis/commits_oss.json')).keys()))
     # repos = repos - set((
     #     'square/picasso',
@@ -164,24 +170,22 @@ def clone():
     # ))
     # repos = list(repos)
     # repos = ['DevelopmentOnTheEdge/be5']
+    print("# Repos: %s" % len(repos))
     for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
         repo = info['repo']
-        checkstyle_path = info['checkstyle']
+        checkstyle_path = info['checkstyle_absolute_path']
         repo_full_name = info['repo_full_name']
+        print("Repo %s..." % repo_full_name)
         user, repo_name = repo_full_name.split('/')
         valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
+        print("%s commits were found after the last modification in the checkstyle.xml file." % len(valid_commits))
         try:
             for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
                 repo.git.checkout(commit)
-                pom_line = open_file(find_the_pom(repo.working_dir)).split('\n')
-                good = True
-                for l in pom_line:
-                    if 'suppressionsLocation' in l:
-                        good = False
-                if good:
+                if not is_there_suppressionsLocation_in_pom(repo):
                     find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
         except:
-            print(f'did not complet the error collection of {repo_full_name}')
+            print(f'[ERROR] The error collection of {repo_full_name} did not complete.')
         # print(f'{repo_name}')
 
 clone()
