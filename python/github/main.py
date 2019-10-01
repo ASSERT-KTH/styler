@@ -38,9 +38,9 @@ def g():
     return random.choice(githubs)
 
 
-def find_repos(file, from_size, to_size):
-    query = f'maven-checkstyle-plugin file:pom.xml size:{from_size}..{to_size}'
-    codes = g().search_code(query=query) # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
+def find_repos(query, file, from_size, to_size):
+    query = f'{query} size:{from_size}..{to_size}'
+    codes = g().search_code(query=query)
     repos = set()
     repos = set(load_repo_list(file))
     count = 0
@@ -141,8 +141,11 @@ def get_information(repo_name):
 
 def load_repo_list(path):
     repo_list = []
-    with open(path, 'r') as file:
-        repo_list = file.read().split('\n')
+    try:
+        with open(path, 'r') as file:
+            repo_list = file.read().split('\n')
+    except:
+        print("The list %s is still empty." % path)
     return repo_list;
 
 def load_downloaded_repo_list(path):
@@ -331,7 +334,8 @@ def save_json(dir, file_name, content, sort=False):
         json.dump(content, f, indent=4, sort_keys=sort)
 
 
-repos_file = os.path.join(dir_path, 'repos.txt')
+repos_maven = os.path.join(dir_path, 'repos_maven.txt')
+repos_gradle = os.path.join(dir_path, 'repos_gradle.txt')
 download_file = os.path.join(dir_path, 'downloaded.txt')
 if __name__ == "__main__":
     # I know it's bad...
@@ -341,7 +345,7 @@ if __name__ == "__main__":
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
         else:
-            repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
+            repo_list = set(load_repo_list(repos_maven)) + set(load_repo_list(repos_gradle)) - set(load_downloaded_repo_list(download_file))
         print(f'{len(repo_list)} repos to download')
         for repo in tqdm(repo_list, desc='Download the repos'):
             try:
@@ -375,9 +379,16 @@ if __name__ == "__main__":
         repos = load_folders(download_file)
         filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
-    if sys.argv[1] == "update-list":
+    if sys.argv[1] == "update-list-maven":
+        query = 'maven-checkstyle-plugin file:pom.xml' # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
         # compute_density(0, 100000)
         for interval in load_intervals():
             print(f'get {interval}')
-            find_repos(repos_file, interval[0], interval[1])
+            find_repos(query, repos_maven, interval[0], interval[1])
+    if sys.argv[1] == "update-list-gradle":
+        query = 'checkstyle file:build.gradle'
+        # compute_density(0, 100000)
+        for interval in load_intervals():
+            print(f'get {interval}')
+            find_repos(query, repos_gradle, interval[0], interval[1])            
             
