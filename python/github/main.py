@@ -92,14 +92,14 @@ def get_information(repo_name):
 
     # datetime info
     now = datetime.now()
-    one_week_before_now = now - timedelta(days=7)
+    one_year_before_now = now - timedelta(days=365)
 
     # commits
-    if repo.updated_at >= one_week_before_now:
-        commits = repo.get_commits(since=one_week_before_now, until=now)
-        repo_info['past_week_commits'] = commits.totalCount
+    if repo.updated_at >= one_year_before_now:
+        commits = repo.get_commits(since=one_year_before_now, until=now)
+        repo_info['past_year_commits'] = commits.totalCount
     else:
-        repo_info['past_week_commits'] = 0
+        repo_info['past_year_commits'] = 0
 
     # Gather some information
     repo_info['name'] = repo_name
@@ -182,7 +182,7 @@ def load_info(folder):
 
 def has_activity(folder):
     info = load_info(folder)
-    return info['past_week_commits'] > 0
+    return info['past_year_commits'] > 0
 
 def has_checkstyle(folder):
     try:
