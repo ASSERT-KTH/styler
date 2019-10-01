@@ -1,7 +1,5 @@
-from tqdm import tqdm
-import git
-from git import Repo
-import shutil
+#FIXME: a lot of things were extracted from here, and this code is not tested (it probably doesn't work for the moment)
+
 import os
 import subprocess
 import sys
@@ -9,6 +7,8 @@ import configparser
 import checkstyle
 import glob
 import repair
+import shutil
+from tqdm import tqdm
 from termcolor import colored
 import git_helper
 from Corpus import Corpus
@@ -25,9 +25,6 @@ import graph_plot
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-_OSS_dir = config['DEFAULT']['OSS_dir']
-__git_repo_dir = config['DEFAULT']['git_repo_dir']
-__real_errors_dir = config['DEFAULT']['real_errors_dir']
 __real_dataset_dir = config['DEFAULT']['real_dataset_dir']
 
 class Timer:
@@ -62,97 +59,8 @@ class Timer:
 def get_experiment_dir(name):
     return f'./experiments/real/{name}'
 
-
-
-
-
 def get_real_dataset_dir(name):
     return os.path.join(__real_dataset_dir, name)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def find_commits(commits_data):
-    result = {}
-    for repo_full_name, commits in tqdm(commits_data.items()):
-        user, repo_name = repo_full_name.split('/')
-        repo = git_helper.open_repo(user, repo_name)
-        result[repo_full_name] = []
-        for commit in commits.values():
-            if git_helper.has_commit(repo, commit):
-                result[repo_full_name].append(commit)
-    return result
-
-
-def clone_old():
-    commits_data = open_json('./travis/commits_oss.json')
-    reduced_commits_data = { key:commits_data[key] for key in commits_data if key in ['google/auto']} # { key:commits_data[key] for key in commits_data if len(commits_data[key]) >= 10 } # 'facebook_presto',
-    commits = find_commits(reduced_commits_data)
-    repo_information = {}
-    repo_information['facebook/presto'] = {
-        'use_maven': False,
-        'checkstyle_path': './src/checkstyle/checks.xml'
-    }
-    repo_information['vorburger/MariaDB4j'] = {
-        'use_maven': False,
-        'checkstyle_path': '../checkstyle.xml'
-    }
-    repo_information['google/auto'] = {
-        'use_maven': False,
-        'checkstyle_path': '../checkstyle.xml'
-    }
-    repo_information['DevelopmentOnTheEdge/be5'] = {
-        'use_maven': False,
-        'checkstyle_path': './checkstyle.xml'
-    }
-    repo = git_helper.open_repo('google', 'auto')
-    commits['google/auto'] = shuffled(commit_until_last_modification(repo, './checkstyle.xml'))
-    for repo_full_name, valid_commits in commits.items():
-        user, repo_name = repo_full_name.split('/')
-        repo = git_helper.open_repo(user, repo_name)
-        for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-            if not repo_information[repo_full_name]['use_maven']:
-                find_errored_files(repo, commit, use_maven=False, checkstyle_path=repo_information[repo_full_name]['checkstyle_path'])
-            else:
-                find_errored_files(repo, commit, use_maven=True)
-
-
-
-
 
 def experiment(name, corpus_dir):
     dataset_dir = create_dir(get_real_dataset_dir(name))

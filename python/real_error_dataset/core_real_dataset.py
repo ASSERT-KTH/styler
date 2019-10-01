@@ -1,10 +1,14 @@
+#!/usr/bin/python
+
 import os
+import sys
 import configparser
 import glob
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.dirname(dir_path))
 from core import *
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
 config.read(os.path.join(dir_path, "config.ini"))
 

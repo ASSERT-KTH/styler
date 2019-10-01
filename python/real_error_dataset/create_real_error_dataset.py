@@ -1,9 +1,13 @@
+#!/usr/bin/python
+
 import os
+import sys
 import configparser
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.dirname(dir_path))
 from core_real_dataset import *
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
 config.read(os.path.join(dir_path, "config.ini"))
 
@@ -21,16 +25,16 @@ def structure_real_error_dataset(errors_info):
 
     return dataset
 
-def create_real_error_dataset(target):
-    if os.path.exists(target):
-        shutil.rmtree(target)
+def create_real_error_dataset():
+    if os.path.exists(__real_dataset_dir):
+        shutil.rmtree(__real_dataset_dir)
     errors_info = load_errors_info(only_targeted=True)
     dataset = structure_real_error_dataset(errors_info)
     # pp.pprint(dataset)
     for project, number_of_errors_per_file in dataset.items():
         for number_of_errors, file_list in number_of_errors_per_file.items():
             for id, file_info in enumerate(file_list):
-                dir = os.path.join(target, f'{project}/{number_of_errors}/{id}')
+                dir = os.path.join(__real_dataset_dir, f'{project}/{number_of_errors}/{id}')
                 metadata = {
                     'commit': file_info['commit'],
                     'file_name': file_info['filepath'].split('/')[-1],
@@ -39,3 +43,5 @@ def create_real_error_dataset(target):
                 create_dir(dir)
                 save_json(dir, 'metadata.json', metadata)
                 shutil.copy(file_info['filepath'], os.path.join(dir,metadata['file_name']))
+
+create_real_error_dataset()

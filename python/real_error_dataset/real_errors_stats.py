@@ -1,16 +1,16 @@
 #!/usr/bin/python
 
 import os
+import sys
 import json
-
-import configparser
 
 from termcolor import colored
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.dirname(dir_path))
 from core import *
 from core_real_dataset import *
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
 config.read(os.path.join(dir_path, "config.ini"))
 

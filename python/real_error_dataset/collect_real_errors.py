@@ -1,15 +1,20 @@
-import sys
-import os
-import git_helper
-import checkstyle
+#!/usr/bin/python
 
-from core import *
+import os
+import sys
+
 from tqdm import tqdm
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.dirname(dir_path))
+import git_helper
+import checkstyle
+from core import *
+
 config = configparser.ConfigParser()
 config.read(os.path.join(dir_path, "config.ini"))
 
+__input_projects_path = config['DEFAULT']['input_projects_path']
 __real_errors_dir = config['DEFAULT']['real_errors_dir']
 
 def get_real_errors_repo_dir(repo):
@@ -107,7 +112,7 @@ def check_checkstyle_results(checkstyle_results):
     return reports_with_errors
 
 def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyle.xml'):
-    print(f'{repo}/{commit}')
+    # print(f'{repo}/{commit}')
     repo.git.checkout(commit)
     dir = repo.working_dir
 
@@ -153,40 +158,25 @@ def find_errored_files(repo, commit, use_maven=False, checkstyle_path='checkstyl
     return output
 
 def clone():
-    # TODO: make the list of repos settable
-    repos = set(list(open_json(os.path.join(dir_path, 'travis/commits.json')).keys()) + list(open_json(os.path.join(dir_path, 'travis/commits_oss.json')).keys()))
-    # repos = repos - set((
-    #     'square/picasso',
-    #     # 'pedrovgs/Renderers',
-    #     # 'square/wire',
-    #     # 'opentracing-contrib/java-spring-cloud',
-    #     'ONSdigital/rm-notify-gateway',
-    #     # 'INRIA/spoon',
-    #     'eclipse/milo',
-    #     'vorburger/MariaDB4j',
-    #     'DevelopmentOnTheEdge/be5',
-    #     'Spirals-Team/repairnator',
-    #     # 'shyiko/mysql-binlog-connector-java'
-    # ))
-    # repos = list(repos)
-    # repos = ['DevelopmentOnTheEdge/be5']
-    print("# Repos: %s" % len(repos))
-    for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
-        repo = info['repo']
-        checkstyle_path = info['checkstyle_absolute_path']
-        repo_full_name = info['repo_full_name']
-        print("Repo %s..." % repo_full_name)
-        user, repo_name = repo_full_name.split('/')
-        valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
-        print("%s commits were found after the last modification in the checkstyle.xml file." % len(valid_commits))
-        try:
-            for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
-                repo.git.checkout(commit)
-                if not is_there_suppressionsLocation_in_pom(repo):
-                    find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
-        except:
-            print(f'[ERROR] The error collection of {repo_full_name} did not complete.')
-        # print(f'{repo_name}')
+    with open(__input_projects_path) as temp_file:
+        repos = [line.rstrip('\n') for line in temp_file]
+        print("# Repos: %s" % len(repos))
+        for info in tqdm(get_repo_with_checkstyle(repos), desc='Total'):
+            repo = info['repo']
+            checkstyle_path = info['checkstyle_absolute_path']
+            repo_full_name = info['repo_full_name']
+            print("Repo %s..." % repo_full_name)
+            user, repo_name = repo_full_name.split('/')
+            valid_commits = shuffled(commit_until_last_modification(repo, checkstyle_path))
+            print("%s commits were found after the last modification in the checkstyle.xml file." % len(valid_commits))
+            try:
+                for commit in tqdm(valid_commits, desc=f'{user}/{repo_name}'):
+                    repo.git.checkout(commit)
+                    if not is_there_suppressionsLocation_in_pom(repo):
+                        find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
+            except:
+                print(f'[ERROR] The error collection of {repo_full_name} did not complete.')
+		    # print(f'{repo_name}')
 
 clone()
 

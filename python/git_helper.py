@@ -24,7 +24,7 @@ def get_repo_dir(user, repo_name):
     """
     returns the location of a given repo
     """
-    return os.path.join(__git_repo_dir, f'./{user}/{repo_name}')
+    return os.path.join(__git_repo_dir, f'{user}/{repo_name}')
 
 
 def open_repo(user, repo_name):
