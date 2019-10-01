@@ -85,7 +85,7 @@ def get_information(repo_name):
     except UnknownObjectException:
         print(f'Repo {repo_name} not found')
         return 'Not found'
-    base_dir = f'./repos/{repo_name}'
+    base_dir = f'{dir_path}/repos/{repo_name}'
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     repo_info = dict()
@@ -138,7 +138,7 @@ def load_downloaded_repo_list(path):
     repo_list = []
     with open(path, 'r') as file:
         repo_list = file.read().split('\n')
-    repo_list = [ "/".join(line.split('/')[2:4]) for line in repo_list ]
+    repo_list = [ "/".join(line.split('/')[4:6]) for line in repo_list ]
     return repo_list;
 
 def open_checkstyle(path):
