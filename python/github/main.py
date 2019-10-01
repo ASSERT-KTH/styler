@@ -345,7 +345,7 @@ if __name__ == "__main__":
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
         else:
-            repo_list = set(load_repo_list(repos_maven)) + set(load_repo_list(repos_gradle)) - set(load_downloaded_repo_list(download_file))
+            repo_list = set(load_repo_list(repos_maven)).union(set(load_repo_list(repos_gradle))) - set(load_downloaded_repo_list(download_file))
         print(f'{len(repo_list)} repos to download')
         for repo in tqdm(repo_list, desc='Download the repos'):
             try:
