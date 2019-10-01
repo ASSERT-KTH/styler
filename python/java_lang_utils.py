@@ -342,7 +342,7 @@ def tokenize_with_white_space(file_content, relative=True, new_line_at_the_end_o
                     whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
                     position_last_line = next_token_position[1]
                 else:
-                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))
+                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - 1))
     if new_line_at_the_end_of_file:
         whitespace.append((1,0))
     else:
@@ -440,9 +440,11 @@ class TokenizedSource:
     def __init__(self, white_spaces, tokens, tabulation=False, relative=True):
         self.tokens = tokens
         self.white_spaces = white_spaces
+        self.tabulation = tabulation
+        self.relative = relative
 
     def reformat(self):
-        return reformat(white_spaces, tokens, tabulation=self.tabulation, relative=self.relative)
+        return reformat(self.white_spaces, self.tokens, tabulations=self.tabulation, relative=self.relative)
 
     def enumerate_3_grams(self):
         return enumerate(zip(self.tokens, self.white_spaces, self.tokens[1:]))
@@ -453,5 +455,5 @@ class Tokenizer:
         self.relative = relative
 
     def tokenize(self, source):
-        white_spaces, tokens = tokenize_with_white_space(source)
+        white_spaces, tokens = tokenize_with_white_space(source, relative=self.relative)
         return TokenizedSource(white_spaces, tokens, tabulation=self.tabulation, relative=self.relative)
