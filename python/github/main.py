@@ -34,6 +34,8 @@ for owner_key in config['DEFAULT']['githubKeys'].split(','):
     githubs.append(Github(key));
 print("------------")
 
+checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml']
+
 def g():
     return random.choice(githubs)
 
@@ -110,14 +112,18 @@ def get_information(repo_name):
     repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # Get interesting files
-    files_checkstyle = [ file.path for file in g().search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
+    files_checkstyle = []
+    for checkstyle_file_name in checkstyle_file_names:
+        files = [ file.path for file in g().search_code(query=f'filename:{checkstyle_file_name} repo:{repo_name}') ]
+        if len(files) > 0:
+            files_checkstyle.extend(files)
     files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
     files_circleci = [ file.path for file in g().search_code(query=f'path:.circleci/ filename:config.yml repo:{repo_name}') ]
     files = files_checkstyle + files_travis + files_circleci
     repo_info['files'] = files
     for file in files:
-        print(file)
-        if file.split('/')[-1] == 'checkstyle.xml' or file.split('/')[-1] == 'checkstyle-suppressions.xml' or file == '.travis.yml' or file == '.circleci/config.yml':
+        cs_file = file.split('/')[-1]
+        if cs_file in checkstyle_file_names or cs_file == 'checkstyle-suppressions.xml' or file == '.travis.yml' or file == '.circleci/config.yml':
             dowload_and_save(repo, file, base_dir)
 
     with open(os.path.join(base_dir, './info.json'), 'w') as fp:
@@ -171,11 +177,15 @@ def has_activity(folder):
     return info['past_year_commits'] > 0
     
 def has_checkstyle(folder):
-    try:
-        open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
-    except:
-        return False
-    return True
+    for checkstyle_file_name in checkstyle_file_names:
+        path = os.path.join(folder, checkstyle_file_name)
+        if os.path.exists(path):
+            try:
+                open_checkstyle(path)
+                return True
+            except:
+                continue
+    return False
 
 def has_travis(folder):
     try:
@@ -198,7 +208,10 @@ def stats(folders):
     for folder in tqdm(folders):
         info = load_info(folder)
         try:
-            cs_rules = open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
+            for checkstyle_file_name in checkstyle_file_names:
+                path = os.path.join(folder, checkstyle_file_name)
+                if os.path.exists(path):
+                    cs_rules = open_checkstyle(path)
         except:
             continue
         cs_properties = get_cs_properties(cs_rules)
