@@ -114,25 +114,9 @@ def get_information(repo_name):
     files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
     files = files_checkstyle + files_travis
     repo_info['files'] = files
-    checkstyle_file = ''
-    checkstyle_suppressions_file = ''
-    travis_file = ''
     for file in files:
-        if file.split('/')[-1] == 'checkstyle.xml':
-            checkstyle_file = file
-        if file.split('/')[-1] == 'checkstyle-suppressions.xml':
-            checkstyle_suppressions_file = file
-
-        if file == '.travis.yml':
-            travis_file = file
-
-    # Download cs and travis
-    if checkstyle_file:
-        dowload_and_save(repo, checkstyle_file, base_dir)
-    if checkstyle_suppressions_file:
-        dowload_and_save(repo, checkstyle_suppressions_file, base_dir)
-    if travis_file:
-        dowload_and_save(repo, travis_file, base_dir)
+        if file.split('/')[-1] == 'checkstyle.xml' or file.split('/')[-1] == 'checkstyle-suppressions.xml' or file == '.travis.yml':
+            dowload_and_save(repo, file, base_dir)
 
     with open(os.path.join(base_dir, './info.json'), 'w') as fp:
         json.dump(repo_info, fp)
