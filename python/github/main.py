@@ -112,10 +112,12 @@ def get_information(repo_name):
     # Get interesting files
     files_checkstyle = [ file.path for file in g().search_code(query=f'filename:checkstyle.xml repo:{repo_name}') ]
     files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
-    files = files_checkstyle + files_travis
+    files_circleci = [ file.path for file in g().search_code(query=f'path:.circleci/ filename:config.yml repo:{repo_name}') ]
+    files = files_checkstyle + files_travis + files_circleci
     repo_info['files'] = files
     for file in files:
-        if file.split('/')[-1] == 'checkstyle.xml' or file.split('/')[-1] == 'checkstyle-suppressions.xml' or file == '.travis.yml':
+        print(file)
+        if file.split('/')[-1] == 'checkstyle.xml' or file.split('/')[-1] == 'checkstyle-suppressions.xml' or file == '.travis.yml' or file == '.circleci/config.yml':
             dowload_and_save(repo, file, base_dir)
 
     with open(os.path.join(base_dir, './info.json'), 'w') as fp:
@@ -146,7 +148,7 @@ def open_checkstyle(path):
     parsed_xml =  ET.fromstring(content)
     return parsed_xml
 
-def open_travis(path):
+def open_ci(path):
     content = ''
     with open(path, 'r') as f:
         content = f.read()
@@ -163,11 +165,11 @@ def load_info(folder):
     with open(os.path.join(folder, 'info.json')) as f:
         data = json.load(f)
     return data
-
+    
 def has_activity(folder):
     info = load_info(folder)
     return info['past_year_commits'] > 0
-
+    
 def has_checkstyle(folder):
     try:
         open_checkstyle(os.path.join(folder, 'checkstyle.xml'))
@@ -177,7 +179,14 @@ def has_checkstyle(folder):
 
 def has_travis(folder):
     try:
-        open_travis(os.path.join(folder, '.travis.yml'))
+        open_ci(os.path.join(folder, '.travis.yml'))
+    except:
+        return False
+    return True
+    
+def has_circleci(folder):
+    try:
+        open_ci(os.path.join(folder, 'config.yml'))
     except:
         return False
     return True
@@ -345,7 +354,7 @@ if __name__ == "__main__":
         save_json(dir_path, 'raw_count_modules.json', count_modules_ordered)
     if sys.argv[1] == "venn":
         repos = load_folders(download_file)
-        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
+        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis, 'circleci': has_circleci}
         result = venn(sets, repos)
         sets_values = []
         sets_values.append(result[('checkstyle',)])
@@ -355,7 +364,15 @@ if __name__ == "__main__":
         sets_values.append(result[('checkstyle', 'travis')])
         sets_values.append(result[('activity', 'travis')])
         sets_values.append(result[('checkstyle', 'activity', 'travis')])
-        sets_labels = ('checkstyle', 'activity', 'travis')
+        sets_values.append(result[('circleci',)])
+        sets_values.append(result[('checkstyle', 'circleci')])
+        sets_values.append(result[('activity', 'circleci')])
+        sets_values.append(result[('checkstyle', 'activity', 'circleci')])
+        sets_values.append(result[('travis', 'circleci')])
+        sets_values.append(result[('checkstyle', 'travis', 'circleci')])
+        sets_values.append(result[('activity', 'travis', 'circleci')])
+        sets_values.append(result[('checkstyle', 'activity', 'travis', 'circleci')])
+        sets_labels = ('checkstyle', 'activity', 'travis', 'circleci')
         print(sets_values)
         venn3(subsets = sets_values, set_labels = sets_labels)
         plt.show()
