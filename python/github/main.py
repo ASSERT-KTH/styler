@@ -21,8 +21,9 @@ from tqdm import tqdm
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(os.path.join(dir_path, "config.ini"))
 
 githubs = []
 
@@ -300,7 +301,7 @@ def compute_density(from_size, to_size):
 
 def load_intervals():
     intervals = []
-    with open('density.csv', 'r') as csvfile:
+    with open(os.path.join(dir_path, 'density.csv'), 'r') as csvfile:
         data = csv.reader(csvfile, delimiter=',')
         for row in data:
             if row[0].isnumeric():
@@ -329,15 +330,18 @@ def save_json(dir, file_name, content, sort=False):
     with open(os.path.join(dir, file_name), 'w') as f:
         json.dump(content, f, indent=4, sort_keys=sort)
 
+
+repos_file = os.path.join(dir_path, 'repos.txt')
+download_file = os.path.join(dir_path, 'downloaded.txt')
 if __name__ == "__main__":
     # I know it's bad...
-    os.popen("find . -name 'info.json' > downloaded.txt").read()
+    os.popen("find . -name 'info.json' > %s" % download_file).read()
     if sys.argv[1] == "dl":
         # Download the repos of the file repos.txt
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
         else:
-            repo_list = set(load_repo_list('repos.txt')) - set(load_downloaded_repo_list('downloaded.txt'))
+            repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
         print(f'{len(repo_list)} repos to download')
         for repo in tqdm(repo_list, desc='Download the repos'):
             try:
@@ -346,13 +350,13 @@ if __name__ == "__main__":
                 print(f'Error getting {repo}')
                 print(e)
     if sys.argv[1] == 'stats':
-        repos = load_folders('downloaded.txt')
+        repos = load_folders(download_file)
         count_properties, count_modules = stats(repos)
-        save_json('./', 'raw_count_properties.json', count_properties, sort=True)
+        save_json(dir_path, 'raw_count_properties.json', count_properties, sort=True)
         count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
-        save_json('./', 'raw_count_modules.json', count_modules_ordered)
+        save_json(dir_path, 'raw_count_modules.json', count_modules_ordered)
     if sys.argv[1] == "venn":
-        repos = load_folders('downloaded.txt')
+        repos = load_folders(download_file)
         sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis}
         result = venn(sets, repos)
         sets_values = []
@@ -368,11 +372,12 @@ if __name__ == "__main__":
         venn3(subsets = sets_values, set_labels = sets_labels)
         plt.show()
     if sys.argv[1] == "list":
-        repos = load_folders('downloaded.txt')
+        repos = load_folders(download_file)
         filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
     if sys.argv[1] == "update-list":
         # compute_density(0, 100000)
         for interval in load_intervals():
             print(f'get {interval}')
-            find_repos('repos.txt', interval[0], interval[1])
+            find_repos(repos_file, interval[0], interval[1])
+            
