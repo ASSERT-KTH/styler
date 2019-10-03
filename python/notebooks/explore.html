@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.11.3/diff2html-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.11.3/diff2html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.11.3/diff2html.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+    </div>
+  </body>
+
+  <script type="module">
+    import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.esm.browser.js'
+
+/*
+<div v-if="loaded">
+ <div v-for="repo in response.data">
+   {{repo}}
+ </div>
+</div>
+*/
+
+    Vue.component('explorer', {
+      template: `
+        <div>
+          <h1> Batch {{response.data.batch_id}} </h1>
+          <div class='rounded'>
+            <div v-for='(injection, id) in response.data.injection_report'>
+              <injection :info='injection' :id='id'/>
+            </div>
+          </div>
+        </div>
+      `,
+      props: ['url'],
+      data() {
+        return {
+          loaded: false,
+          response: null,
+        }
+      },
+      mounted() {
+        axios.get(this.url)
+          .then((response) => {
+            this.response = response
+            this.loaded = true
+            console.log(this.loaded)
+          })
+      },
+    })
+
+    Vue.component('injection', {
+      template: `
+        <div class='injection' v-bind:class="{'has-error': hasError}">
+          <div class='info_container'>
+            <span class='bold'>Id : </span> {{id}}
+            <div>
+              <span class='bold'>From : </span>{{info.modification.token_a}} {{info.modification.modification[0]}} {{info.modification.token_b}}
+            </div>
+            <div>
+              <span class='bold'>To : </span>{{info.modification.token_a}} {{info.modification.modification[1]}} {{info.modification.token_b}}
+            </div>
+          </div>
+          <div class='diff_container'>
+            <diff :strDiff='info.diff'/>
+          </div>
+          <div class='error_container'>
+            <div v-for='error in info.errors'>
+              <error :info='error'/>
+            </div>
+          </div>
+        </div>
+      `,
+      props: ['info', 'id'],
+      data() {
+        return {
+        }
+      },
+      computed: {
+        hasError() {
+          return this.info.errors.length>0;
+        },
+        prettyDiff() {
+          return this.info.diff.split('\n').map((line) => '<div>' + line + '</div>').reduce((a,b) => a+b)
+        }
+      }
+    })
+
+    Vue.component('diff', {
+      template: `
+        <div class='diff'>
+          <div v-html='prettyDiff'>
+          </div>
+        </div>
+      `,
+      props: ['strDiff'],
+      data() {
+        return {
+        }
+      },
+      computed: {
+        prettyDiff() {
+          return this.strDiff.split('\n').map((line) => '<div>' + line + '</div>').reduce((a,b) => a+b)
+        }
+      }
+    })
+
+    Vue.component('error', {
+      template: `
+        <div class='error'>
+          {{errorType}}
+        </div>
+      `,
+      props: ['info'],
+      data() {
+        return {
+        }
+      },
+      computed: {
+        errorType() {
+          let a = this.info.source.split('.')
+          return a[a.length - 1]
+        }
+      }
+    })
+
+    var app = new Vue({
+      el: '#app',
+      template: `<div>
+        <explorer :url="url"/>
+      </div>
+      `,
+      data: {
+        url: 'https://raw.githubusercontent.com/KTH/styler/new-injection/python/notebooks/batch_exemple/metadata.json'
+      }
+    })
+  </script>
+
+  <style>
+    body{
+      margin: 30px;
+      font-family: 'Avenir', Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #2c3e50;
+    }
+    .bold {
+      font-weight: bold;
+    }
+    .injection {
+      display: flex;
+      width: 100%;
+      padding: 00px 0;
+      border: 1px solid #2c3e50;
+      background-color: #ecf0f1;
+
+    }
+    .has-error {
+      background-color: #58afe8;
+    }
+    .injection > div {
+      padding: 10px;
+    }
+    .info_container {
+      width: 20%;
+    }
+    .diff_container {
+      width: 40%;
+    }
+    .error_container {
+      width: 40%;
+    }
+    .rounded > div:first-child > .injection {
+      border-radius: 30px 30px 0 0px;
+    }
+  </style>
+
+</html>
