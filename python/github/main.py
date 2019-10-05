@@ -34,7 +34,11 @@ for owner_key in config['DEFAULT']['githubKeys'].split(','):
     githubs.append(Github(key));
 print("------------")
 
-checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml']
+checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml', 'checkstyle-config.xml', 'checkstyle-checker.xml']
+checkstyle_file_names_search = ""
+for checkstyle_file_name in checkstyle_file_names:
+    checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
+checkstyle_file_names_search.strip()
 
 def g():
     return random.choice(githubs)
@@ -112,11 +116,7 @@ def get_information(repo_name):
     repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
 
     # Get interesting files
-    files_checkstyle = []
-    for checkstyle_file_name in checkstyle_file_names:
-        files = [ file.path for file in g().search_code(query=f'filename:{checkstyle_file_name} repo:{repo_name}') ]
-        if len(files) > 0:
-            files_checkstyle.extend(files)
+    files_checkstyle = [ file.path for file in g().search_code(query=f'{checkstyle_file_names_search} repo:{repo_name}') ]
     files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
     files_circleci = [ file.path for file in g().search_code(query=f'path:.circleci/ filename:config.yml repo:{repo_name}') ]
     files = files_checkstyle + files_travis + files_circleci
