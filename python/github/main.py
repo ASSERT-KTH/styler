@@ -27,12 +27,14 @@ config.read(os.path.join(dir_path, "config.ini"))
 
 githubs = []
 
-print("Got the keys of : ")
+print("Got the keys of: ")
 for owner_key in config['DEFAULT']['githubKeys'].split(','):
     owner, key = owner_key.split(':')
     print(owner)
-    githubs.append(Github(key));
+    githubs.append(Github(key,per_page=100,timeout=60));
 print("------------")
+
+githubKeyIndex = -1
 
 checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml', 'checkstyle-config.xml', 'checkstyle-checker.xml']
 checkstyle_file_names_search = ""
@@ -41,7 +43,21 @@ for checkstyle_file_name in checkstyle_file_names:
 checkstyle_file_names_search.strip()
 
 def g():
-    return random.choice(githubs)
+    global githubKeyIndex
+    if len(githubs) == 1 or (githubKeyIndex + 1) == len(githubs):
+        githubKeyIndex = 0
+    else:
+        githubKeyIndex += 1
+    api_wait_search(githubs[githubKeyIndex])
+    return githubs[githubKeyIndex]
+
+def api_wait_search(git):
+    limit = git.get_rate_limit()
+    if limit.search.remaining <= 10:
+        seconds = (limit.search.reset - datetime.now()).total_seconds()
+        print ("Waiting for %d seconds..." % (seconds))
+        time.sleep(seconds)
+        print ("Done waiting - resume.")
 
 
 def find_repos(query, file, from_size, to_size):
