@@ -161,13 +161,12 @@ def get_information(repo_name):
     repo_info['pushed_at'] = repo.pushed_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    one_year_before_now = now.date() - timedelta(days=365)
-    if repo.pushed_at.date() >= one_year_before_now:
-        commits = repo.get_commits(since=one_year_before_now, until=now.date())
+    repo_info['past_year_commits'] = 0
+    one_year_before_now = now - timedelta(days=365)
+    if repo.pushed_at >= one_year_before_now:
+        commits = repo.get_commits(since=one_year_before_now, until=now)
         if len(commits.get_page(0)):
             repo_info['past_year_commits'] = commits.totalCount
-    else:
-        repo_info['past_year_commits'] = 0
 
     # Get interesting files
     files = [ file.path for file in g().search_code(query=f'{checkstyle_file_names_search} filename:pom.xml filename:build.gradle filename:build.xml filename:.travis.yml repo:{repo_name}') ]
@@ -222,26 +221,26 @@ def has_activity(folder):
     return info['past_year_commits'] > 0
     
 def has_checkstyle(folder):
-    for checkstyle_file_name in checkstyle_file_names:
-        path = os.path.join(folder, checkstyle_file_name)
-        if os.path.exists(path):
-            try:
-                open_checkstyle(path)
-                return True
-            except:
-                continue
+    repo_info = load_info(folder)
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name in checkstyle_file_names:        
+            return True
     return False
 
 def has_travis(folder):
     repo_info = load_info(folder)
-    if '.travis.yml' in repo_info['files']:
-        return True
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name == '.travis.yml':        
+            return True
     return False
     
 def has_circleci(folder):
     repo_info = load_info(folder)
-    if 'config.yml' in repo_info['files']:
-        return True
+    for file_path in repo_info['files']:
+        if file_path.endswith('.circleci/config.yml'):        
+            return True
     return False
 
 def stats(folders):
@@ -255,18 +254,18 @@ def stats(folders):
                 path = os.path.join(folder, checkstyle_file_name)
                 if os.path.exists(path):
                     cs_rules = open_checkstyle(path)
+            cs_properties = get_cs_properties(cs_rules)
+            cs_modules = get_cs_modules(cs_rules)
+            for module in cs_modules:
+                count_modules[module] = count_modules.get(module, 0) + 1
+            for key, value in cs_properties.items():
+                if key not in count_properties:
+                    count_properties[key] = {}
+                count_properties[key][value] = count_properties[key].get(value, 0) + 1
+            # print(cs_properties)
+            count += 1
         except:
             continue
-        cs_properties = get_cs_properties(cs_rules)
-        cs_modules = get_cs_modules(cs_rules)
-        for module in cs_modules:
-            count_modules[module] = count_modules.get(module, 0) + 1
-        for key, value in cs_properties.items():
-            if key not in count_properties:
-                count_properties[key] = {}
-            count_properties[key][value] = count_properties[key].get(value, 0) + 1
-        # print(cs_properties)
-        count+=1
 
     sanitized_count_modules = {}
     remove_check = lambda x: x if not x.endswith('Check') else x[:-len('Check')]
@@ -311,8 +310,8 @@ def venn(sets, repos):
         result[group] = len(list(filters(group_filters, repos)))
     return result
 
-def save_json(dir, file_name, content, sort=False):
-    with open(os.path.join(dir, file_name), 'w') as f:
+def save_json(file_name, content, sort=False):
+    with open(file_name, 'w') as f:
         json.dump(content, f, indent=4, sort_keys=sort)
 
 result_folder_path = os.path.join(dir_path, 'results')
@@ -325,6 +324,9 @@ if not os.path.exists(repos_folder_path):
     os.mkdir(repos_folder_path)
 download_file = os.path.join(result_folder_path, 'downloaded.txt')
 info_file_name = 'info.json'
+properties_file = os.path.join(result_folder_path, 'raw_count_properties.json')
+modules_file = os.path.join(result_folder_path, 'raw_count_modules.json')
+
 if __name__ == "__main__":
     print(f'Beginning: {datetime.now()}')
 
@@ -361,7 +363,7 @@ if __name__ == "__main__":
             print("Provide a query for detailed search (query_detailed_search) in the config.ini file.")
             sys.exit()
 
-    os.popen("find . -name '{info_file_name}' > %s" % download_file).read()
+    os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
     if sys.argv[1] == "download":
         load_tokens()
 
@@ -384,38 +386,29 @@ if __name__ == "__main__":
     if sys.argv[1] == 'stats':
         repos = load_folders(download_file)
         count_properties, count_modules = stats(repos)
-        save_json(dir_path, 'raw_count_properties.json', count_properties, sort=True)
+        save_json(properties_file, count_properties, sort=True)
         count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
-        save_json(dir_path, 'raw_count_modules.json', count_modules_ordered)
+        save_json(modules_file, count_modules_ordered)
 
     if sys.argv[1] == "venn":
         repos = load_folders(download_file)
-        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis, 'circleci': has_circleci}
+        sets = {'checkstyle': has_checkstyle, 'travis': has_travis, 'circleci': has_circleci}
         result = venn(sets, repos)
         sets_values = []
         sets_values.append(result[('checkstyle',)])
-        sets_values.append(result[('activity',)])
-        sets_values.append(result[('checkstyle', 'activity')])
         sets_values.append(result[('travis',)])
         sets_values.append(result[('checkstyle', 'travis')])
-        sets_values.append(result[('activity', 'travis')])
-        sets_values.append(result[('checkstyle', 'activity', 'travis')])
         sets_values.append(result[('circleci',)])
         sets_values.append(result[('checkstyle', 'circleci')])
-        sets_values.append(result[('activity', 'circleci')])
-        sets_values.append(result[('checkstyle', 'activity', 'circleci')])
         sets_values.append(result[('travis', 'circleci')])
         sets_values.append(result[('checkstyle', 'travis', 'circleci')])
-        sets_values.append(result[('activity', 'travis', 'circleci')])
-        sets_values.append(result[('checkstyle', 'activity', 'travis', 'circleci')])
-        sets_labels = ('checkstyle', 'activity', 'travis', 'circleci')
-        print(sets_values)
+        sets_labels = ('checkstyle', 'travis', 'circleci')
         venn3(subsets = sets_values, set_labels = sets_labels)
         plt.show()
 
     if sys.argv[1] == "list":
         repos = load_folders(download_file)
-        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
+        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis], repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
 
     print(f'End: {datetime.now()}')
