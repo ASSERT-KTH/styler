@@ -1,23 +1,17 @@
-import configparser
-from github import Github
-from github.GithubException import UnknownObjectException
-from github.GithubException import GithubException
-from collections import OrderedDict
-import time
-import datetime
 import os
+import sys
+import configparser
+import time
 import requests
 import json
-import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
-from functools import reduce
-import csv
-import random
-import sys
 import itertools
-import glob
+from datetime import datetime, timedelta
+from github import Github
+from github.GithubException import GithubException
+from github.GithubException import UnknownObjectException
+from collections import OrderedDict
 from tqdm import tqdm
-
+import xml.etree.ElementTree as ET
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3
 
@@ -25,16 +19,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
 config.read(os.path.join(dir_path, "config.ini"))
 
-githubs = []
-
-print("Got the keys of: ")
-for owner_key in config['DEFAULT']['githubKeys'].split(','):
-    owner, key = owner_key.split(':')
-    print(owner)
-    githubs.append(Github(key,per_page=100,timeout=60));
-print("------------")
-
-githubKeyIndex = -1
+tokens = []
+tokenIndex = -1
 
 checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml', 'checkstyle-config.xml', 'checkstyle-checker.xml']
 checkstyle_file_names_search = ""
@@ -42,14 +28,19 @@ for checkstyle_file_name in checkstyle_file_names:
     checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
 checkstyle_file_names_search.strip()
 
+def load_tokens():
+    for token in config['DEFAULT']['tokens'].split(','):
+        tokens.append(Github(token,per_page=100,timeout=60));
+    print(f'Got {len(tokens)} GitHub tokens.')
+
 def g():
-    global githubKeyIndex
-    if len(githubs) == 1 or (githubKeyIndex + 1) == len(githubs):
-        githubKeyIndex = 0
+    global tokenIndex
+    if len(tokens) == 1 or (tokenIndex + 1) == len(tokens):
+        tokenIndex = 0
     else:
-        githubKeyIndex += 1
-    api_wait_search(githubs[githubKeyIndex])
-    return githubs[githubKeyIndex]
+        tokenIndex += 1
+    api_wait_search(tokens[tokenIndex])
+    return tokens[tokenIndex]
 
 def api_wait_search(git):
     limit = git.get_rate_limit()
@@ -67,6 +58,14 @@ def GithubException_handler(e, gh):
     print(f'Sleep for {sleep_time} seconds...')
     time.sleep(sleep_time)
     print ("Done waiting - resume.")
+
+
+def save_repos(file, repos):
+    sorted_repos = sorted(repos, key=str.lower)
+    with open(file,'w') as f:
+        for repo in sorted_repos:
+            if repo.strip(): 
+                f.write(repo + '\n')
 
 def iterate_repos(repositories, gh):
     repos = set()
@@ -94,12 +93,29 @@ def iterate_repos(repositories, gh):
             print(f'Done: Added: {nb_addded} - Discarded (duplicates): {nb_discarded} - Total: {nb_repos_after}.')
             run = False
 
-def save_repos(file, repos):
-    sorted_repos = sorted(repos, key=str.lower)
-    with open(file,'w') as f:
-        for repo in sorted_repos:
-            if repo.strip(): 
-                f.write(repo + '\n')
+def search_repos_in_dates(q, from_date, to_date, firstCall=False):
+    query = f'{q} created:{from_date}..{to_date}'
+    print(f'Query={query}')
+    gh = g()    
+    count = 0    
+    done = False
+    while not done:
+        try:
+            repositories = gh.search_repositories(query=query)
+            if len(repositories.get_page(0)):
+                count = repositories.totalCount
+            if firstCall:
+                print(f'Approximate number of repositories to be retrieved: {count}')
+            done = True
+        except GithubException as e:
+            GithubException_handler(e, gh)
+    if count < 1000 or from_date == to_date:
+        print(f'Recording {count} repositories...')
+        iterate_repos(repositories, gh)
+        return {"from_date": from_date, "to_date": to_date, "count": count}
+    else:
+        middle = from_date + (to_date - from_date)/2
+        return [ search_repos_in_dates(q, from_date, middle), search_repos_in_dates(q, middle + timedelta(days=1), to_date) ]
 
 def download_and_save_file(repo, file, repo_dir):
     print(f'Get file ({file}) of {repo.full_name}')
@@ -272,30 +288,6 @@ def load_folders(file):
     dirs = [ '/'.join(dir.split('/')[:-1]) for dir in dirs if dir != '']
     return dirs;
 
-def search_repos_in_dates(q, from_date, to_date, firstCall=False):
-    query = f'{q} created:{from_date}..{to_date}'
-    print(f'Query={query}')
-    gh = g()    
-    count = 0    
-    done = False
-    while not done:
-        try:
-            repositories = gh.search_repositories(query=query)
-            if len(repositories.get_page(0)):
-                count = repositories.totalCount
-            if firstCall:
-                print(f'Approximate number of repositories to be retrieved: {count}')
-            done = True
-        except GithubException as e:
-            GithubException_handler(e, gh)
-    if count < 1000 or from_date == to_date:
-        print(f'Recording {count} repositories...')
-        iterate_repos(repositories, gh)
-        return {"from_date": from_date, "to_date": to_date, "count": count}
-    else:
-        middle = from_date + (to_date - from_date)/2
-        return [ search_repos_in_dates(q, from_date, middle), search_repos_in_dates(q, middle + timedelta(days=1), to_date) ]
-
 def flatten(l):
     if len(l) == 0:
         return []
@@ -336,58 +328,9 @@ info_file_name = 'info.json'
 if __name__ == "__main__":
     print(f'Beginning: {datetime.now()}')
 
-    os.popen("find . -name '{info_file_name}' > %s" % download_file).read()
-    if sys.argv[1] == "download":
-        repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
-        print(f'{len(repo_list)} repos to download...')
-        for repo in tqdm(repo_list, desc='Download the repos'):
-            done = False
-            while not done:
-                try:
-                    get_information(repo)
-                    time.sleep(1)
-                    done = True
-                except GithubException as e:
-                    print(f'Error getting {repo}: {e}')
-                    sleep_time = 5
-                    print(f'Sleep for {sleep_time} seconds...')
-                    time.sleep(sleep_time)
-                    print ("Done waiting - resume.")
-    if sys.argv[1] == 'stats':
-        repos = load_folders(download_file)
-        count_properties, count_modules = stats(repos)
-        save_json(dir_path, 'raw_count_properties.json', count_properties, sort=True)
-        count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
-        save_json(dir_path, 'raw_count_modules.json', count_modules_ordered)
-    if sys.argv[1] == "venn":
-        repos = load_folders(download_file)
-        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis, 'circleci': has_circleci}
-        result = venn(sets, repos)
-        sets_values = []
-        sets_values.append(result[('checkstyle',)])
-        sets_values.append(result[('activity',)])
-        sets_values.append(result[('checkstyle', 'activity')])
-        sets_values.append(result[('travis',)])
-        sets_values.append(result[('checkstyle', 'travis')])
-        sets_values.append(result[('activity', 'travis')])
-        sets_values.append(result[('checkstyle', 'activity', 'travis')])
-        sets_values.append(result[('circleci',)])
-        sets_values.append(result[('checkstyle', 'circleci')])
-        sets_values.append(result[('activity', 'circleci')])
-        sets_values.append(result[('checkstyle', 'activity', 'circleci')])
-        sets_values.append(result[('travis', 'circleci')])
-        sets_values.append(result[('checkstyle', 'travis', 'circleci')])
-        sets_values.append(result[('activity', 'travis', 'circleci')])
-        sets_values.append(result[('checkstyle', 'activity', 'travis', 'circleci')])
-        sets_labels = ('checkstyle', 'activity', 'travis', 'circleci')
-        print(sets_values)
-        venn3(subsets = sets_values, set_labels = sets_labels)
-        plt.show()
-    if sys.argv[1] == "list":
-        repos = load_folders(download_file)
-        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
-        print("\n".join(sorted(filtered_repos, key=str.lower)))
     if sys.argv[1] == "search-repos":
+        load_tokens()
+
         try:        
             from_date = datetime.strptime(config['DEFAULT']['from_date'],"%Y/%m/%d").date()
             to_date = datetime.strptime(config['DEFAULT']['to_date'],"%Y/%m/%d").date()
@@ -417,5 +360,62 @@ if __name__ == "__main__":
         else:
             print("Provide a query for detailed search (query_detailed_search) in the config.ini file.")
             sys.exit()
+
+    os.popen("find . -name '{info_file_name}' > %s" % download_file).read()
+    if sys.argv[1] == "download":
+        load_tokens()
+
+        repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
+        print(f'{len(repo_list)} repos to download...')
+        for repo in tqdm(repo_list, desc='Download the repos'):
+            done = False
+            while not done:
+                try:
+                    get_information(repo)
+                    time.sleep(1)
+                    done = True
+                except GithubException as e:
+                    print(f'Error getting {repo}: {e}')
+                    sleep_time = 5
+                    print(f'Sleep for {sleep_time} seconds...')
+                    time.sleep(sleep_time)
+                    print ("Done waiting - resume.")
+
+    if sys.argv[1] == 'stats':
+        repos = load_folders(download_file)
+        count_properties, count_modules = stats(repos)
+        save_json(dir_path, 'raw_count_properties.json', count_properties, sort=True)
+        count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
+        save_json(dir_path, 'raw_count_modules.json', count_modules_ordered)
+
+    if sys.argv[1] == "venn":
+        repos = load_folders(download_file)
+        sets = {'checkstyle': has_checkstyle, 'activity': has_activity, 'travis': has_travis, 'circleci': has_circleci}
+        result = venn(sets, repos)
+        sets_values = []
+        sets_values.append(result[('checkstyle',)])
+        sets_values.append(result[('activity',)])
+        sets_values.append(result[('checkstyle', 'activity')])
+        sets_values.append(result[('travis',)])
+        sets_values.append(result[('checkstyle', 'travis')])
+        sets_values.append(result[('activity', 'travis')])
+        sets_values.append(result[('checkstyle', 'activity', 'travis')])
+        sets_values.append(result[('circleci',)])
+        sets_values.append(result[('checkstyle', 'circleci')])
+        sets_values.append(result[('activity', 'circleci')])
+        sets_values.append(result[('checkstyle', 'activity', 'circleci')])
+        sets_values.append(result[('travis', 'circleci')])
+        sets_values.append(result[('checkstyle', 'travis', 'circleci')])
+        sets_values.append(result[('activity', 'travis', 'circleci')])
+        sets_values.append(result[('checkstyle', 'activity', 'travis', 'circleci')])
+        sets_labels = ('checkstyle', 'activity', 'travis', 'circleci')
+        print(sets_values)
+        venn3(subsets = sets_values, set_labels = sets_labels)
+        plt.show()
+
+    if sys.argv[1] == "list":
+        repos = load_folders(download_file)
+        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
+        print("\n".join(sorted(filtered_repos, key=str.lower)))
 
     print(f'End: {datetime.now()}')
