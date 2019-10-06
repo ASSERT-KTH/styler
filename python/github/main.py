@@ -101,12 +101,22 @@ def save_repos(file, repos):
             if repo.strip(): 
                 f.write(repo + '\n')
 
-def dowload_and_save(repo, file, dir):
+def download_and_save_file(repo, file, repo_dir):
+    print(f'Get file ({file}) of {repo.full_name}')
+    
     file_name = file.split('/')[-1]
+    
+    path_to_save = os.path.join(repo_dir, file_name)
+    if '/' in file:
+        path_to_file = os.path.join(repo_dir, file[:file.rindex('/')])
+        if not os.path.exists(path_to_file):        
+            os.makedirs(path_to_file)
+        path_to_save = os.path.join(repo_dir, path_to_file, file_name)
+
     contents = repo.get_contents(file)
     request = requests.get(contents.download_url)
-    print(f'Get file ({file}) of {repo.name}')
-    with open(os.path.join(dir, file_name), 'wb') as f:
+    
+    with open(path_to_save, 'wb') as f:
         f.write(request.content)
 
 def get_information(repo_name):
@@ -114,47 +124,49 @@ def get_information(repo_name):
     try:
         repo = g().get_repo(repo_name)
     except UnknownObjectException:
-        print(f'Repo {repo_name} not found')
+        print(f'Repo {repo_name} not found.')
         return 'Not found'
-    base_dir = f'{dir_path}/repos/{repo_name}'
-    if not os.path.exists(base_dir):
-        os.makedirs(base_dir)
+
+    repo_dir = f'{repos_folder_path}/{repo_name}'
+    if not os.path.exists(repo_dir):
+        os.makedirs(repo_dir)
     repo_info = dict()
 
-    # datetime info
     now = datetime.now()
-    one_year_before_now = now - timedelta(days=365)
-
-    # commits
-    if repo.updated_at >= one_year_before_now:
-        commits = repo.get_commits(since=one_year_before_now, until=now)
-        repo_info['past_year_commits'] = commits.totalCount
-    else:
-        repo_info['past_year_commits'] = 0
 
     # Gather some information
     repo_info['name'] = repo_name
+    repo_info['id'] = repo.id
+    repo_info['created_at'] = repo.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    repo_info['watchers_count'] = repo.watchers_count
     repo_info['stargazers_count'] = repo.stargazers_count
-    repo_info['subscribers_count'] = repo.subscribers_count
     repo_info['forks_count'] = repo.forks_count
-    repo_info['last_update'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+    repo_info['updated_at'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+    repo_info['pushed_at'] = repo.pushed_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
 
+    one_year_before_now = now.date() - timedelta(days=365)
+    if repo.pushed_at.date() >= one_year_before_now:
+        commits = repo.get_commits(since=one_year_before_now, until=now.date())
+        if len(commits.get_page(0)):
+            repo_info['past_year_commits'] = commits.totalCount
+    else:
+        repo_info['past_year_commits'] = 0
+
     # Get interesting files
-    files_checkstyle = [ file.path for file in g().search_code(query=f'{checkstyle_file_names_search} repo:{repo_name}') ]
-    files_travis = [ file.path for file in g().search_code(query=f'filename:.travis.yml repo:{repo_name}') ]
-    files_circleci = [ file.path for file in g().search_code(query=f'path:.circleci/ filename:config.yml repo:{repo_name}') ]
-    files = files_checkstyle + files_travis + files_circleci
+    files = [ file.path for file in g().search_code(query=f'{checkstyle_file_names_search} filename:pom.xml filename:build.gradle filename:build.xml filename:.travis.yml repo:{repo_name}') ]
+    file_circleci = [ file.path for file in g().search_code(query=f'path:.circleci/ filename:config.yml repo:{repo_name}') ]
+    files = files + file_circleci
     repo_info['files'] = files
     for file in files:
         cs_file = file.split('/')[-1]
-        if cs_file in checkstyle_file_names or cs_file == 'checkstyle-suppressions.xml' or file == '.travis.yml' or file == '.circleci/config.yml':
-            dowload_and_save(repo, file, base_dir)
+        if cs_file in checkstyle_file_names:
+            download_and_save_file(repo, file, repo_dir)
 
-    with open(os.path.join(base_dir, './info.json'), 'w') as fp:
+    with open(os.path.join(repo_dir, info_file_name), 'w') as fp:
         json.dump(repo_info, fp)
 
-    return repo_info;
+    return repo_info
 
 def load_repo_list(path):
     repo_list = []
@@ -177,12 +189,6 @@ def open_checkstyle(path):
     parsed_xml =  ET.fromstring(content)
     return parsed_xml
 
-def open_ci(path):
-    content = ''
-    with open(path, 'r') as f:
-        content = f.read()
-    return content
-
 def get_cs_properties(cs):
     return { n.attrib['name']:n.attrib['value'] for n in cs if n.tag == 'property'}
 
@@ -191,7 +197,7 @@ def get_cs_modules(cs):
     return flatten([ keep_n_join(n.attrib['name'], get_cs_modules(n)) for n in cs if n.tag == 'module' ])
 
 def load_info(folder):
-    with open(os.path.join(folder, 'info.json')) as f:
+    with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
     return data
     
@@ -211,18 +217,16 @@ def has_checkstyle(folder):
     return False
 
 def has_travis(folder):
-    try:
-        open_ci(os.path.join(folder, '.travis.yml'))
-    except:
-        return False
-    return True
+    repo_info = load_info(folder)
+    if '.travis.yml' in repo_info['files']:
+        return True
+    return False
     
 def has_circleci(folder):
-    try:
-        open_ci(os.path.join(folder, 'config.yml'))
-    except:
-        return False
-    return True
+    repo_info = load_info(folder)
+    if 'config.yml' in repo_info['files']:
+        return True
+    return False
 
 def stats(folders):
     count_modules = dict()
@@ -320,27 +324,35 @@ def save_json(dir, file_name, content, sort=False):
         json.dump(content, f, indent=4, sort_keys=sort)
 
 result_folder_path = os.path.join(dir_path, 'results')
-os.mkdir(result_folder_path)
+if not os.path.exists(result_folder_path):
+    os.mkdir(result_folder_path)
 repos_file = os.path.join(result_folder_path, 'repos.txt')
 repos_raw_file = os.path.join(result_folder_path, 'repos_raw.txt')
+repos_folder_path = os.path.join(result_folder_path, 'repos')
+if not os.path.exists(repos_folder_path):
+    os.mkdir(repos_folder_path)
 download_file = os.path.join(result_folder_path, 'downloaded.txt')
+info_file_name = 'info.json'
 if __name__ == "__main__":
     print(f'Beginning: {datetime.now()}')
 
-    os.popen("find . -name 'info.json' > %s" % download_file).read()
-    if sys.argv[1] == "dl":
-        # Download the repos of the file repos.txt
-        if len(sys.argv) >= 3:
-            repo_list = sys.argv[2:]
-        else:
-            repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
-        print(f'{len(repo_list)} repos to download')
+    os.popen("find . -name '{info_file_name}' > %s" % download_file).read()
+    if sys.argv[1] == "download":
+        repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
+        print(f'{len(repo_list)} repos to download...')
         for repo in tqdm(repo_list, desc='Download the repos'):
-            try:
-                get_information(repo)
-            except Exception as e:
-                print(f'Error getting {repo}')
-                print(e)
+            done = False
+            while not done:
+                try:
+                    get_information(repo)
+                    time.sleep(1)
+                    done = True
+                except GithubException as e:
+                    print(f'Error getting {repo}: {e}')
+                    sleep_time = 5
+                    print(f'Sleep for {sleep_time} seconds...')
+                    time.sleep(sleep_time)
+                    print ("Done waiting - resume.")
     if sys.argv[1] == 'stats':
         repos = load_folders(download_file)
         count_properties, count_modules = stats(repos)
