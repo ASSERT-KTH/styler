@@ -54,43 +54,52 @@ def g():
 def api_wait_search(git):
     limit = git.get_rate_limit()
     if limit.search.remaining <= 10:
-        seconds = (limit.search.reset - datetime.now()).total_seconds()
-        print ("Waiting for %d seconds..." % (seconds))
-        time.sleep(seconds)
+        delta = limit.search.reset - datetime.now()
+        sleep_time = delta.seconds % 3600 + 5
+        print(f'Sleep for {sleep_time} seconds...')
+        time.sleep(sleep_time)
         print ("Done waiting - resume.")
 
+def GithubException_handler(e, gh):
+    print(f'GithubException: {e}')
+    delta = gh.get_rate_limit().search.reset - datetime.now()
+    sleep_time = delta.seconds % 3600 + 5
+    print(f'Sleep for {sleep_time} seconds...')
+    time.sleep(sleep_time)
+    print ("Done waiting - resume.")
 
-def find_repos(query, file, from_size, to_size):
-    query = f'{query} size:{from_size}..{to_size}'
-    codes = g().search_code(query=query)
+def iterate_repos(repositories, gh):
     repos = set()
-    repos = set(load_repo_list(file))
+    repos = set(load_repo_list(repos_file))
+    nb_repos_before = len(repos)
     count = 0
-    codes_iter = codes.__iter__()
+    _iter = repositories.__iter__()
     run = True
-    count=0
     while run:
         try:
-            page = codes_iter.__next__();
-            repo_name = page.repository.full_name
-            count += 1
+            repo = _iter.__next__()
+            count += 1            
+            repo_name = repo.full_name
             repos.add(repo_name)
-            if count >= 30:
-                save_repos(file, repos)
-                count = 0
-                time.sleep(15)
+            
+            with open(repos_raw_file,'a') as f:
+                f.write(repo_name + '\n')
         except GithubException as e:
-            print("GithubException")
+            GithubException_handler(e, gh)
         except StopIteration:
-            print("Done")
+            save_repos(repos_file, repos)
+            nb_repos_after = len(repos)
+            nb_addded = nb_repos_after - nb_repos_before
+            nb_discarded = count - nb_addded
+            print(f'Done: Added: {nb_addded} - Discarded (duplicates): {nb_discarded} - Total: {nb_repos_after}.')
             run = False
-
 
 def save_repos(file, repos):
     sorted_repos = sorted(repos, key=str.lower)
-    with open(file ,'w') as f:
+    with open(file,'w') as f:
         for repo in sorted_repos:
-            f.write(repo + '\n')
+            if repo.strip(): 
+                f.write(repo + '\n')
 
 def dowload_and_save(repo, file, dir):
     file_name = file.split('/')[-1]
@@ -149,11 +158,9 @@ def get_information(repo_name):
 
 def load_repo_list(path):
     repo_list = []
-    try:
+    if os.path.exists(path):
         with open(path, 'r') as file:
             repo_list = file.read().split('\n')
-    except:
-        print("The list %s is still empty." % path)
     return repo_list;
 
 def load_downloaded_repo_list(path):
@@ -261,77 +268,34 @@ def load_folders(file):
     dirs = [ '/'.join(dir.split('/')[:-1]) for dir in dirs if dir != '']
     return dirs;
 
-def density(from_size, to_size):
-    time.sleep(1)
-    query = f'maven-checkstyle-plugin file:pom.xml size:{from_size}..{to_size}'
-    print(query)
-    count = 0
+def search_repos_in_dates(q, from_date, to_date, firstCall=False):
+    query = f'{q} created:{from_date}..{to_date}'
+    print(f'Query={query}')
+    gh = g()    
+    count = 0    
     done = False
     while not done:
         try:
-            codes = g().search_code(query=query) # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
-            # In order to get the real totalCount we have to get a page
-            if len(codes.get_page(0)):
-                count = codes.totalCount
+            repositories = gh.search_repositories(query=query)
+            if len(repositories.get_page(0)):
+                count = repositories.totalCount
+            if firstCall:
+                print(f'Approximate number of repositories to be retrieved: {count}')
             done = True
         except GithubException as e:
-            reset = g().get_rate_limit().search.reset
-            print(reset)
-            delta = reset - datetime.now()
-            sleep_time = delta.seconds % 3600 + 5
-            print(f'Sleep for {sleep_time} sec')
-            time.sleep(sleep_time)
-    print(f'Results in [{from_size}, {to_size}] : {count}')
-    if count < 1000 or from_size == to_size:
-        return {"from_size": from_size, "to_size": to_size, "count": count}
+            GithubException_handler(e, gh)
+    if count < 1000 or from_date == to_date:
+        print(f'Recording {count} repositories...')
+        iterate_repos(repositories, gh)
+        return {"from_date": from_date, "to_date": to_date, "count": count}
     else:
-        middle = int((from_size + to_size) / 2)
-        return [ density(from_size, middle), density(middle + 1, to_size) ]
+        middle = from_date + (to_date - from_date)/2
+        return [ search_repos_in_dates(q, from_date, middle), search_repos_in_dates(q, middle + timedelta(days=1), to_date) ]
 
 def flatten(l):
     if len(l) == 0:
         return []
     return flatten(l[0]) + (flatten(l[1:]) if len(l) > 1 else []) if type(l) is list else [l]
-
-def join_intervals(data):
-    from_size = None
-    to_size = None
-    count = 0
-    new_data = []
-    for index in range(len(data)):
-        has_next = index < len(data) - 1
-        interval = data[index]
-        if has_next:
-            next_interval = data[index+1]
-        if from_size == None:
-            from_size = interval['from_size']
-            to_size = interval['to_size']
-            count = interval['count']
-        else:
-            count += interval['count']
-            to_size = interval['to_size']
-        if not has_next or count + next_interval['count'] > 1000:
-            new_data.append({"from_size": from_size, "to_size": to_size, "count": count})
-            from_size = None
-            to_size = None
-            count = 0
-    return new_data
-
-def compute_density(from_size, to_size):
-    data = join_intervals(flatten(density(from_size, to_size)))
-    data_mapped = map(lambda res: f'{res["from_size"]},{res["to_size"]},{res["count"]}', data)
-    csv = 'from,to,count\n' + '\n'.join(data_mapped)
-    with open('./density.csv', 'w') as f:
-        f.write(csv)
-
-def load_intervals():
-    intervals = []
-    with open(os.path.join(dir_path, 'density.csv'), 'r') as csvfile:
-        data = csv.reader(csvfile, delimiter=',')
-        for row in data:
-            if row[0].isnumeric():
-                intervals.append((int(row[0]), int(row[1])))
-    return intervals
 
 def findsubsets(S):
     return flatten([ list(itertools.combinations(S,r)) for r in range(0, len(S) + 1) ])
@@ -355,19 +319,21 @@ def save_json(dir, file_name, content, sort=False):
     with open(os.path.join(dir, file_name), 'w') as f:
         json.dump(content, f, indent=4, sort_keys=sort)
 
-
-repos_maven = os.path.join(dir_path, 'repos_maven.txt')
-repos_gradle = os.path.join(dir_path, 'repos_gradle.txt')
-download_file = os.path.join(dir_path, 'downloaded.txt')
+result_folder_path = os.path.join(dir_path, 'results')
+os.mkdir(result_folder_path)
+repos_file = os.path.join(result_folder_path, 'repos.txt')
+repos_raw_file = os.path.join(result_folder_path, 'repos_raw.txt')
+download_file = os.path.join(result_folder_path, 'downloaded.txt')
 if __name__ == "__main__":
-    # I know it's bad...
+    print(f'Beginning: {datetime.now()}')
+
     os.popen("find . -name 'info.json' > %s" % download_file).read()
     if sys.argv[1] == "dl":
         # Download the repos of the file repos.txt
         if len(sys.argv) >= 3:
             repo_list = sys.argv[2:]
         else:
-            repo_list = set(load_repo_list(repos_maven)).union(set(load_repo_list(repos_gradle))) - set(load_downloaded_repo_list(download_file))
+            repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
         print(f'{len(repo_list)} repos to download')
         for repo in tqdm(repo_list, desc='Download the repos'):
             try:
@@ -409,16 +375,35 @@ if __name__ == "__main__":
         repos = load_folders(download_file)
         filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis],repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
-    if sys.argv[1] == "update-list-maven":
-        query = 'maven-checkstyle-plugin file:pom.xml' # l=Maven+POM&q=maven-checkstyle-plugin&type=Code
-        # compute_density(0, 100000)
-        for interval in load_intervals():
-            print(f'get {interval}')
-            find_repos(query, repos_maven, interval[0], interval[1])
-    if sys.argv[1] == "update-list-gradle":
-        query = 'checkstyle file:build.gradle'
-        # compute_density(0, 100000)
-        for interval in load_intervals():
-            print(f'get {interval}')
-            find_repos(query, repos_gradle, interval[0], interval[1])            
-            
+    if sys.argv[1] == "search-repos":
+        try:        
+            from_date = datetime.strptime(config['DEFAULT']['from_date'],"%Y/%m/%d").date()
+            to_date = datetime.strptime(config['DEFAULT']['to_date'],"%Y/%m/%d").date()
+        except:
+            print("Provide dates (from_date and to_date) in the config.ini file following the format YYYY/MM/DD.")
+            sys.exit()
+
+        query_general_search = config['DEFAULT']['query_general_search']
+        if query_general_search:
+            query = f'{query_general_search} created:{from_date}..{to_date}'
+            print(f'Query={query}')
+            gh = g()    
+            done = False
+            while not done:
+                try:
+                    repositories = gh.search_repositories(query=query)
+                    if len(repositories.get_page(0)):
+                        count = repositories.totalCount
+                    print(f'Approximate number of repositories: {count}'  + '\n')
+                    done = True
+                except GithubException as e:
+                    GithubException_handler(e, gh)
+
+        query_detailed_search = config['DEFAULT']['query_detailed_search']
+        if query_detailed_search:
+            search_repos_in_dates(query_detailed_search, from_date, to_date, firstCall=True)
+        else:
+            print("Provide a query for detailed search (query_detailed_search) in the config.ini file.")
+            sys.exit()
+
+    print(f'End: {datetime.now()}')
