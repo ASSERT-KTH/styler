@@ -337,7 +337,7 @@ if __name__ == "__main__":
                     repositories = gh.search_repositories(query=query)
                     if len(repositories.get_page(0)):
                         count = repositories.totalCount
-                    print(f'Approximate number of repositories: {count}'  + '\n')
+                    print(f'Approximate number of repositories: {count}')
                     done = True
                 except RateLimitExceededException as e:
                     RateLimitExceededException_handler(e, gh)
