@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from github import Github
 from github.GithubException import GithubException
 from github.GithubException import UnknownObjectException
+from github.GithubException import RateLimitExceededException
 from collections import OrderedDict
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
@@ -40,26 +41,23 @@ def g():
         tokenIndex = 0
     else:
         tokenIndex += 1
-    api_wait_search(tokens[tokenIndex])
     return tokens[tokenIndex]
 
-def api_wait_search(git):
-    limit = git.get_rate_limit()
-    if limit.search.remaining <= 10:
-        delta = limit.search.reset - datetime.now()
-        sleep_time = delta.seconds % 3600 + 5
-        print(f'Sleep for {sleep_time} seconds...')
-        time.sleep(sleep_time)
-        print ("Done waiting - resume.")
-
-def GithubException_handler(e, gh):
-    print(f'GithubException: {e}')
-    delta = gh.get_rate_limit().search.reset - datetime.now()
-    sleep_time = delta.seconds % 3600 + 5
+def sleep(sleep_time):
     print(f'Sleep for {sleep_time} seconds...')
     time.sleep(sleep_time)
     print ("Done waiting - resume.")
 
+def RateLimitExceededException_handler(e, gh):
+    print(f'[RateLimitExceededException]: {e}')
+    delta = gh.get_rate_limit().search.reset - datetime.now()
+    sleep_time = delta.seconds % 3600 + 5
+    sleep(sleep_time)    
+
+def GithubException_abuse_handler(e):
+    print(f'[GithubException - ABUSE]: {e}')
+    sleep_time = 10
+    sleep(sleep_time)
 
 def save_repos(file, repos):
     sorted_repos = sorted(repos, key=str.lower)
@@ -84,8 +82,8 @@ def iterate_repos(repositories, gh):
             
             with open(repos_raw_file,'a') as f:
                 f.write(repo_name + '\n')
-        except GithubException as e:
-            GithubException_handler(e, gh)
+        except RateLimitExceededException as e:
+            RateLimitExceededException_handler(e, gh)
         except StopIteration:
             save_repos(repos_file, repos)
             nb_repos_after = len(repos)
@@ -108,8 +106,8 @@ def search_repos_in_dates(q, from_date, to_date, firstCall=False):
             if firstCall:
                 print(f'Approximate number of repositories to be retrieved: {count}')
             done = True
-        except GithubException as e:
-            GithubException_handler(e, gh)
+        except RateLimitExceededException as e:
+            RateLimitExceededException_handler(e, gh)
     if count < 1000 or from_date == to_date:
         print(f'Recording {count} repositories...')
         iterate_repos(repositories, gh)
@@ -119,7 +117,7 @@ def search_repos_in_dates(q, from_date, to_date, firstCall=False):
         return [ search_repos_in_dates(q, from_date, middle), search_repos_in_dates(q, middle + timedelta(days=1), to_date) ]
 
 def download_and_save_file(repo, file, repo_dir):
-    print(f'Get file ({file}) of {repo.full_name}')
+    print(f'Get file ({file}) from {repo.full_name}')
     
     file_name = file.split('/')[-1]
     
@@ -137,11 +135,11 @@ def download_and_save_file(repo, file, repo_dir):
         f.write(request.content)
 
 def get_information(repo_name):
-    print(f'Open repo {repo_name}')
+    print(f'Open {repo_name}')
     try:
         repo = g().get_repo(repo_name)
-    except UnknownObjectException:
-        print(f'Repo {repo_name} not found.')
+    except UnknownObjectException as e:
+        print(f'[UnknownObjectException]: {e}')
         return 'Not found'
 
     repo_dir = f'{repos_folder_path}/{repo_name}'
@@ -354,8 +352,8 @@ if __name__ == "__main__":
                         count = repositories.totalCount
                     print(f'Approximate number of repositories: {count}'  + '\n')
                     done = True
-                except GithubException as e:
-                    GithubException_handler(e, gh)
+                except RateLimitExceededException as e:
+                    RateLimitExceededException_handler(e, gh)
 
         query_detailed_search = config['DEFAULT']['query_detailed_search']
         if query_detailed_search:
@@ -375,14 +373,15 @@ if __name__ == "__main__":
             while not done:
                 try:
                     get_information(repo)
-                    time.sleep(1)
                     done = True
+                except RateLimitExceededException as e:
+                    RateLimitExceededException_handler(e, tokens[tokenIndex])
                 except GithubException as e:
-                    print(f'Error getting {repo}: {e}')
-                    sleep_time = 5
-                    print(f'Sleep for {sleep_time} seconds...')
-                    time.sleep(sleep_time)
-                    print ("Done waiting - resume.")
+                    if e.status == 403: # abuse-rate-limits
+                        GithubException_abuse_handler(e)
+                    else:
+                        print(f'[GithubException]: {e}')
+                        done = True
 
     if sys.argv[1] == 'stats':
         repos = load_folders(download_file)
