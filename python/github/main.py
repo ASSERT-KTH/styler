@@ -177,7 +177,7 @@ def load_repo_list(path):
     repo_list = []
     if os.path.exists(path):
         with open(path, 'r') as file:
-            repo_list = file.read().split('\n')
+            repo_list = file.read().strip().split('\n')
     return repo_list;
 
 def load_downloaded_repo_list(path):
