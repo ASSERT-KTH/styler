@@ -5,6 +5,7 @@ import time
 import requests
 import json
 import itertools
+import re
 from datetime import datetime, timedelta
 from github import Github
 from github.GithubException import GithubException
@@ -90,7 +91,7 @@ def iterate_repos(repositories, gh):
             nb_repos_after = len(repos)
             nb_addded = nb_repos_after - nb_repos_before
             nb_discarded = count - nb_addded
-            print(f'Done: Added: {nb_addded} - Discarded (duplicates): {nb_discarded} - Total: {nb_repos_after}.')
+            print(f'Done: Added: {nb_addded} - Discarded (duplicates): {nb_discarded} - Total: {nb_repos_after}')
             run = False
 
 def search_repos_in_dates(q, from_date, to_date, firstCall=False):
@@ -194,8 +195,8 @@ def load_downloaded_repo_list(path):
     repo_list = []
     with open(path, 'r') as file:
         repo_list = file.read().split('\n')
-    repo_list = [ "/".join(line.split('/')[4:6]) for line in repo_list ]
-    return repo_list;
+    repo_list = [ re.sub("/info.json", "", re.sub(".*/repos/", "", line)) for line in repo_list ]
+    return repo_list
 
 def open_checkstyle(path):
     content = ''
