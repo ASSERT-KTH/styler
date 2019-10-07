@@ -147,8 +147,6 @@ def get_information(repo_name):
         os.makedirs(repo_dir)
     repo_info = dict()
 
-    now = datetime.now()
-
     # Gather some information
     repo_info['name'] = repo_name
     repo_info['id'] = repo.id
@@ -158,14 +156,7 @@ def get_information(repo_name):
     repo_info['forks_count'] = repo.forks_count
     repo_info['updated_at'] = repo.updated_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['pushed_at'] = repo.pushed_at.strftime("%Y-%m-%d %H:%M:%S")
-    repo_info['fetched_at'] = now.strftime("%Y-%m-%d %H:%M:%S")
-
-    repo_info['past_year_commits'] = 0
-    one_year_before_now = now - timedelta(days=365)
-    if repo.pushed_at >= one_year_before_now:
-        commits = repo.get_commits(since=one_year_before_now, until=now)
-        if len(commits.get_page(0)):
-            repo_info['past_year_commits'] = commits.totalCount
+    repo_info['fetched_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Get interesting files
     files = [ file.path for file in g().search_code(query=f'{checkstyle_file_names_search} filename:pom.xml filename:build.gradle filename:build.xml filename:.travis.yml repo:{repo_name}') ]
@@ -214,10 +205,6 @@ def load_info(folder):
     with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
     return data
-    
-def has_activity(folder):
-    info = load_info(folder)
-    return info['past_year_commits'] > 0
     
 def has_checkstyle(folder):
     repo_info = load_info(folder)
@@ -408,7 +395,7 @@ if __name__ == "__main__":
 
     if sys.argv[1] == "list":
         repos = load_folders(download_file)
-        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_activity, has_travis], repos))
+        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_travis], repos))
         print("\n".join(sorted(filtered_repos, key=str.lower)))
 
     print(f'End: {datetime.now()}')
