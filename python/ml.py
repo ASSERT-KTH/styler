@@ -276,6 +276,9 @@ def whatever(dir, folder, id, only_formatting=False):
     file_orig = f'{dir}/{file_name}-orig.java'
     error_file = f'{dir}/metadata.json'
     error = open_json(error_file)
+    # Compatibility
+    if 'line' not in error:
+        error = error['error']
     return tokenize_errored_file_model2(file, file_orig, error)
 
 def merge_IOs(sub_set, ids, target):
@@ -361,8 +364,10 @@ def vectorize_file(path, vectorizer):
 
     return result
 
-def print_diff(stringA, stringB):
+def print_diff(stringA, stringB, only_formatting=False):
     diffs = token_diff(stringA, stringB)
+    print_aligned_strings(get_aligned_strings(zip(stringA.split(' '), stringB.split(' ')), color=False))
+    return
     count = 0
     for token in diffs:
         if token.startswith(' '):
@@ -412,7 +417,7 @@ def beam_search(target_dir, pred_dir, n=1, only_formatting=False):
             count_whitepace[preds_whitespace.index(target_whitespace)] += 1
             if preds_whitespace.index(target_whitespace) != 0:
                 for pred in preds:
-                    print_diff(target, pred)
+                    print_diff(target, pred, only_formatting=True)
                 print('')
                 print('')
         if target in preds:
@@ -425,8 +430,9 @@ def beam_search(target_dir, pred_dir, n=1, only_formatting=False):
     pred_file.close()
     pp.pprint({ i:c/total for i,c in count.items() })
     pp.pprint(sum(count.values()) / total)
-    pp.pprint({ i:c/total for i,c in count_whitepace.items() })
-    pp.pprint(sum(count_whitepace.values()) / total)
+    if not only_formatting:
+        pp.pprint({ i:c/total for i,c in count_whitepace.items() })
+        pp.pprint(sum(count_whitepace.values()) / total)
 
     # pp.pprint(not_predicted)
 
@@ -546,7 +552,7 @@ def de_tokenize_dataset(dataset, n, only_formatting=False):
             pass
     move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
 
-def get_aligned_strings(tokens, n=2):
+def get_aligned_strings(tokens, n=2, color=True):
     result = ['']*n
     for t in tokens:
         l = max([len(e) for e in t])
@@ -555,7 +561,7 @@ def get_aligned_strings(tokens, n=2):
             equals = True
             for token_to_compare in t[1:]:
                 equals = equals and (token_to_compare == t[0])
-            if not equals:
+            if not equals and color:
                 pattern = colored(pattern, color='red')
 
         for i, content in enumerate(t):

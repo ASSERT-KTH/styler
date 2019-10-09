@@ -91,9 +91,7 @@
 
     Vue.component('diff', {
       template: `
-        <div class='diff'>
-          <div v-html='prettyDiff'>
-          </div>
+        <div class='diff' v-html='prettyDiff'>
         </div>
       `,
       props: ['strDiff'],
@@ -103,7 +101,8 @@
       },
       computed: {
         prettyDiff() {
-          return this.strDiff.split('\n').map((line) => '<div>' + line + '</div>').reduce((a,b) => a+b)
+          //return this.strDiff.split('\n').map((line) => '<div>' + line + '</div>').reduce((a,b) => a+b)
+          return Diff2Html.getPrettyHtml(this.strDiff, {inputFormat: 'diff', showFiles: false, matching: 'lines'});
         }
       }
     })
@@ -168,13 +167,16 @@
       width: 20%;
     }
     .diff_container {
-      width: 40%;
+      width: 60%;
     }
     .error_container {
-      width: 40%;
+      width: 20%;
     }
     .rounded > div:first-child > .injection {
       border-radius: 30px 30px 0 0px;
+    }
+    .diff {
+      overflow-x: scroll;
     }
   </style>
 
