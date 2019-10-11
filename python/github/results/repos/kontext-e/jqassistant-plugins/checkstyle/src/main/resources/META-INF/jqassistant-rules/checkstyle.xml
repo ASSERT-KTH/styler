@@ -1,0 +1,35 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
+
+  <concept id="checkstyle:ConnectCheckstyleResultToJavaClass">
+    <description>Creates a relationship HAS_CHECKSTYLE_ERROR between CLASS labeled nodes and CHECKSTYLE_ERROR labeled nodes.</description>
+    <cypher><![CDATA[
+        MATCH
+                (cs:Checkstyle:File)
+        WITH
+                cs, replace(replace(replace(cs.path, '\\', '.'),'/','.'),'.java','') AS normalizedPath
+        MATCH
+                (class:Java:Class)
+        WHERE
+                 normalizedPath contains class.fqn
+        MERGE
+                (cs)-[:CHECKSTYLE_RESULT_FOR]->(class)
+        SET
+                cs.fqn = class.fqn
+        RETURN
+                class.fqn, normalizedPath
+        ]]></cypher>
+  </concept>
+
+  <concept id="checkstyle:ClassHasCheckstyleErrors">
+    <description>Creates a relationship HAS_CHECKSTYLE_ERROR between :Java:Class labeled nodes and :Checkstyle:Error labeled nodes.</description>
+    <cypher><![CDATA[
+            MATCH
+              (e:Checkstyle:Error)--(cs:Checkstyle:File)-[:CHECKSTYLE_RESULT_FOR]->(class:Java:Class)
+            CREATE UNIQUE
+              (class)-[:HAS_CHECKSTYLE_ERROR]->(e)
+            RETURN
+              count(class);
+	    ]]></cypher>
+  </concept>
+
+</jqa:jqassistant-rules>

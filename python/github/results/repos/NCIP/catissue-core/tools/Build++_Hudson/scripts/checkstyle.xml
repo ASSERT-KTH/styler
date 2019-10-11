@@ -1,0 +1,54 @@
+<!-- =================================================================== -->
+        <!-- Build file                                                          -->
+        <!-- =================================================================== -->
+
+<project name="CHECKSTYLE" default="checkstyle">
+    <!-- =================================================================== -->
+    <!-- Generic Stuff                                                       -->
+    <!-- =================================================================== -->
+    <import file="base.xml"/>
+
+    <path id="checkstyle.classpath">
+        <fileset dir="${checkstyle.lib.home}">
+            <include name="*all-4.4.jar"/>
+        </fileset>
+    </path>
+
+
+    <taskdef resource="checkstyletask.properties"  classpathref="checkstyle.classpath"/>
+
+    <target name="checkstyle.setup">
+        <delete dir="${output.checkstyle.dir}"></delete>
+        <mkdir dir="${output.checkstyle.dir}"></mkdir>
+    </target>
+
+    <target name="checkstyle" depends="checkstyle.setup">
+
+        <checkstyle config="${checkstyle.rules.path}"
+             failOnViolation="${checkstyle.failOnRuleViolation}" 
+			 failureProperty="checkstyle_fail">
+
+            <formatter type="xml"  toFile="${output.checkstyle.dir}/${checkstyle.report.txt.filename}" useFile="true"/>
+            <fileset dir="${project.src.dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </checkstyle>
+		 <if>
+               <equals arg1="${checkstyle_fail}" arg2="$${checkstyle_fail}"/>
+               <then>
+                   <echo>Number of Violation Count : 0</echo>
+               </then>
+               <else>
+                    <echo>Number of Violation Count : ${checkstyle_fail}</echo>
+               </else>
+          </if>
+
+    </target>
+
+</project>
+
+
+
+
+
+
