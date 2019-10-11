@@ -297,7 +297,6 @@ def main(args):
         share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         synthetic.gen_dataset(corpus, share, target_dir=f'./styler/{project_name}-errors' )
         ml.gen_IO(f'./styler/{project_name}-errors', f'./styler/{project_name}-tokens', only_formatting=True)
-        pass
 
 if __name__ == "__main__":
     main(sys.argv)
