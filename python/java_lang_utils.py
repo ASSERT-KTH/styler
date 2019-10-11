@@ -98,6 +98,27 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     """
     Gen an ugly vertsion of of .java file
     """
+    with open(file_path) as f:
+        file_lines = f.readlines()
+    file_content = "".join(file_lines)
+
+    output, modifications = gen_ugly_from_source(file_content, modification_number=modification_number)
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
+
+    with open(output_path, "w") as output_file_object:
+        output_file_object.write(output)
+
+    return modifications
+
+
+def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
+    """
+    Gen an ugly vertsion of of .java file
+    """
     insertions_sample_size_space = modification_number[0]
     insertions_sample_size_tab = modification_number[1]
     insertions_sample_size_newline = modification_number[2]
@@ -106,9 +127,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     deletions_sample_size_newline = modification_number[4]
     deletions_sample_size = deletions_sample_size_space + deletions_sample_size_newline
     # deletions_sample_size = modification_number - insertions_sample_size
-    with open(file_path) as f:
-        file_lines = f.readlines()
-    file_content = "".join(file_lines)
+    file_lines = [ line + '\n' for line in file_content.split('\n') ]
 
     tokens = tokenizer.tokenize(file_content)
     tokens = [ t for t in tokens]
@@ -188,28 +207,22 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
 
     # print(insertions)
     # print(deletions)
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
-
     # Write the output file
-    with open(output_path, "w") as output_file_object:
-        line_num = 1
-        for line in file_lines:
-            char_num = 1
-            for char in line:
-                skip = False
-                if ((line_num, char_num) in deletions):
-                    skip = True
-                if ((line_num, char_num) in insertions):
-                    output_file_object.write(insertions[(line_num, char_num)])
-                if ( not skip ):
-                    output_file_object.write(char)
-                char_num = char_num + 1
-            line_num = line_num + 1
-    return tuple(set(deletions) | set(insertions.keys()))
+    output = ""
+    line_num = 1
+    for line in file_lines:
+        char_num = 1
+        for char in line:
+            skip = False
+            if ((line_num, char_num) in deletions):
+                skip = True
+            if ((line_num, char_num) in insertions):
+                output += insertions[(line_num, char_num)]
+            if ( not skip ):
+                output += char
+            char_num = char_num + 1
+        line_num = line_num + 1
+    return output, tuple(set(deletions) | set(insertions.keys()))
 
 
 def mix_sources(source_A, source_B, from_line, to_line=-1):
@@ -385,14 +398,19 @@ def check_well_formed(file_path):
     """
     with open(file_path) as f:
         file_content = f.read()
+    return check_source_well_formed(file_content)
+
+
+def check_source_well_formed(file_content):
+    """
+    Check if javalang can parse the file
+    :param file_path: the java file dir
+    """
     try:
         tree = parse.parse(file_content)
         return True
     except javalang.parser.JavaSyntaxError as error:
-        print(error)
         return False
-    except:
-        pass
 
 
 def get_bad_formated(dir):

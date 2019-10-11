@@ -483,7 +483,7 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
 
     if 'error' in error_info:
         line = int(error_info['error']['line'])
-        return jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+        return result#jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
     else:
         return result #jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
     # return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
