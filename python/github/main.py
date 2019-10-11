@@ -24,7 +24,7 @@ config.read(os.path.join(dir_path, "config.ini"))
 tokens = []
 tokenIndex = -1
 
-checkstyle_file_names = ['checkstyle.xml', 'google_checks.xml', 'sun_checks.xml', 'checkstyle-config.xml', 'checkstyle-checker.xml']
+checkstyle_file_names = ['checkstyle.xml', 'checkstyle_rules.xml', 'checkstyle-rules.xml', 'checkstyle_config.xml', 'checkstyle-config.xml', 'checkstyle_configuration.xml', 'checkstyle-configuration.xml', 'checkstyle_checker.xml', 'checkstyle-checker.xml', 'checkstyle_checks.xml', 'checkstyle-checks.xml', 'google_checks.xml', 'google-checks.xml', 'sun_checks.xml', 'sun-checks.xml']
 checkstyle_file_names_search = ""
 for checkstyle_file_name in checkstyle_file_names:
     checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
@@ -140,6 +140,9 @@ def get_information(repo_name):
         repo = g().get_repo(repo_name)
     except UnknownObjectException as e:
         print(f'[UnknownObjectException]: {e}')
+        return 'Not found'
+    except:
+        print(f'[Exception] An exception occurred when trying to get the repo. The reason for that might be the renaming of the repo.')
         return 'Not found'
 
     repo_dir = f'{repos_folder_path}/{repo_name}'
