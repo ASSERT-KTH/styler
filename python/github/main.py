@@ -15,6 +15,7 @@ from collections import OrderedDict
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
 from matplotlib import pyplot as plt
+from matplotlib_venn import venn2
 from matplotlib_venn import venn3
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -29,6 +30,40 @@ checkstyle_file_names_search = ""
 for checkstyle_file_name in checkstyle_file_names:
     checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
 checkstyle_file_names_search.strip()
+
+formatting_rules = (
+    'AnnotationLocation',
+    'AnnotationOnSameLine',
+    'CommentsIndentation',
+    'EmptyForInitializerPad',
+    'EmptyForIteratorPad',
+    'EmptyLineSeparator',
+    'FileTabCharacter',
+    'GenericWhitespace',
+    'Indentation',
+    'JavadocTagContinuationIndentation',
+    'LeftCurly',
+    'LineLength',
+    'MethodParamPad',
+    'NewlineAtEndOfFile',
+    'NoLineWrap',
+    'NoWhitespaceAfter',
+    'NoWhitespaceBefore',
+    'OneStatementPerLine',
+    'OperatorWrap',
+    'ParenPad',
+    'Regexp',
+    'RegexpMultiline',
+    'RegexpSingleline',
+    'RegexpSinglelineJava',
+    'RightCurly',
+    'SeparatorWrap',
+    'SingleSpaceSeparator',
+    'TrailingComment',
+    'TypecastParenPad',
+    'WhitespaceAfter',
+    'WhitespaceAround'
+)
 
 def load_tokens():
     for token in config['DEFAULT']['tokens'].split(','):
@@ -190,11 +225,25 @@ def load_downloaded_repo_list(path):
     repo_list = [ re.sub("/info.json", "", re.sub(".*/repos/", "", line)) for line in repo_list ]
     return repo_list
 
+def get_checkstyle_file(repo_info, folder):
+    selected_file = ''
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name in checkstyle_file_names:
+            if os.path.exists(os.path.join(folder, file_path)):
+                if not selected_file:
+                    selected_file = file_path
+                else:
+                    if file_path.count('/') < selected_file.count('/'): # get the file closer to the root
+                        selected_file = file_path
+    return selected_file
+
 def open_checkstyle(path):
     content = ''
     with open(path, 'r') as f:
         content = f.read()
-    parsed_xml =  ET.fromstring(content)
+    content = re.sub("\<\!\-\-.*\-\-\>", "", content, flags=re.MULTILINE)
+    parsed_xml = ET.fromstring(content)
     return parsed_xml
 
 def get_cs_properties(cs):
@@ -205,6 +254,8 @@ def get_cs_modules(cs):
     return flatten([ keep_n_join(n.attrib['name'], get_cs_modules(n)) for n in cs if n.tag == 'module' ])
 
 def load_info(folder):
+    if len(folder.split('/')) == 2:
+        folder = os.path.join(repos_folder_path, folder)
     with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
     return data
@@ -214,6 +265,58 @@ def has_checkstyle(folder):
     for file_path in repo_info['files']:
         file_name = file_path.split('/')[-1]
         if file_name in checkstyle_file_names:        
+            return True
+    return False
+
+def is_formatting_rule(module):
+    module = re.sub("Check", "", module).split('/')[-1]
+    if module in formatting_rules:
+        return True
+    return False
+
+def get_formatting_rules(folder):
+    formatting_rules = []
+    try:
+        repo_info = load_info(folder)
+        if len(folder.split('/')) == 2:
+            folder = os.path.join(repos_folder_path, folder)
+        checkstyle_file = get_checkstyle_file(repo_info, folder)
+        if checkstyle_file:
+            cs_rules = open_checkstyle(os.path.join(folder, checkstyle_file))            
+            cs_modules = get_cs_modules(cs_rules)
+            for module in cs_modules:
+                if is_formatting_rule(module):
+                    formatting_rules.append(re.sub("Check", "", module).split('/')[-1])
+    except:
+        return []
+    return formatting_rules
+
+def has_formatting_rule(folder):
+    if len(get_formatting_rules(folder)) > 0:
+        return True
+    return False
+
+def has_maven(folder):
+    repo_info = load_info(folder)
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name == 'pom.xml':        
+            return True
+    return False
+    
+def has_gradle(folder):
+    repo_info = load_info(folder)
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name == 'build.gradle':        
+            return True
+    return False
+    
+def has_ant(folder):
+    repo_info = load_info(folder)
+    for file_path in repo_info['files']:
+        file_name = file_path.split('/')[-1]
+        if file_name == 'build.xml':        
             return True
     return False
 
@@ -232,42 +335,46 @@ def has_circleci(folder):
             return True
     return False
 
-def stats(folders):
+def checkstyle_rules_usage(folders):
     count_modules = dict()
     count_properties = dict()
-    count = 0
     for folder in tqdm(folders):
+        if len(folder.split('/')) == 2:
+            folder = os.path.join(repos_folder_path, folder)
         info = load_info(folder)
         try:
-            for checkstyle_file_name in checkstyle_file_names:
-                path = os.path.join(folder, checkstyle_file_name)
-                if os.path.exists(path):
-                    cs_rules = open_checkstyle(path)
-            cs_properties = get_cs_properties(cs_rules)
-            cs_modules = get_cs_modules(cs_rules)
-            for module in cs_modules:
-                count_modules[module] = count_modules.get(module, 0) + 1
-            for key, value in cs_properties.items():
-                if key not in count_properties:
-                    count_properties[key] = {}
-                count_properties[key][value] = count_properties[key].get(value, 0) + 1
-            # print(cs_properties)
-            count += 1
+            checkstyle_file = get_checkstyle_file(info, folder)
+            if checkstyle_file:
+                cs_rules = open_checkstyle(os.path.join(folder, checkstyle_file))            
+                cs_properties = get_cs_properties(cs_rules)
+                cs_modules = get_cs_modules(cs_rules)
+                for module in cs_modules:
+                    count_modules[module] = count_modules.get(module, 0) + 1
+                for key, value in cs_properties.items():
+                    if key not in count_properties:
+                        count_properties[key] = {}
+                    count_properties[key][value] = count_properties[key].get(value, 0) + 1
         except:
             continue
 
     sanitized_count_modules = {}
+    sanitized_count_modules_formatting = {}
     remove_check = lambda x: x if not x.endswith('Check') else x[:-len('Check')]
     for module, count in count_modules.items():
         sanitized_module = "/".join([ remove_check(e.split('.')[-1]) for e in module.split('/') ])
         if sanitized_module not in sanitized_count_modules:
             sanitized_count_modules[sanitized_module] = 0
         sanitized_count_modules[sanitized_module] += count
+        if is_formatting_rule(sanitized_module):
+            if sanitized_module not in sanitized_count_modules_formatting:
+                sanitized_count_modules_formatting[sanitized_module] = 0
+            sanitized_count_modules_formatting[sanitized_module] += count
 
     # Compute totals of count_properties
     for key, value in count_properties.items():
         count_properties[key]['total'] = sum(value.values())
-    return count_properties, sanitized_count_modules
+    
+    return count_properties, sanitized_count_modules, sanitized_count_modules_formatting
 
 def load_folders(file):
     dirs = []
@@ -302,6 +409,22 @@ def venn(sets, repos):
 def save_json(file_name, content, sort=False):
     with open(file_name, 'w') as f:
         json.dump(content, f, indent=4, sort_keys=sort)
+        
+def set_cover(universe, subsets):
+    """Find a family of subsets that covers the universal set"""
+    elements = set(e for s in subsets for e in s)
+    # Check the subsets cover the universe
+    if elements != universe:
+        return None
+    covered = set()
+    cover = []
+    # Greedily add the subsets with the most uncovered points
+    while covered != elements:
+        subset = max(subsets, key=lambda s: len(s - covered))
+        cover.append(subset)
+        covered |= subset
+ 
+    return cover
 
 result_folder_path = os.path.join(dir_path, 'results')
 if not os.path.exists(result_folder_path):
@@ -313,8 +436,11 @@ if not os.path.exists(repos_folder_path):
     os.mkdir(repos_folder_path)
 download_file = os.path.join(result_folder_path, 'downloaded.txt')
 info_file_name = 'info.json'
+repos_using_checkstyle_file = os.path.join(result_folder_path, 'repos_using_checkstyle.txt')
+repos_using_checkstyle_formatting_file = os.path.join(result_folder_path, 'repos_using_checkstyle_and_formatting_rule.txt')
 properties_file = os.path.join(result_folder_path, 'raw_count_properties.json')
 modules_file = os.path.join(result_folder_path, 'raw_count_modules.json')
+modules_formatting_file = os.path.join(result_folder_path, 'raw_count_modules_formatting_only.json')
 
 if __name__ == "__main__":
     print(f'Beginning: {datetime.now()}')
@@ -352,8 +478,9 @@ if __name__ == "__main__":
             print("Provide a query for detailed search (query_detailed_search) in the config.ini file.")
             sys.exit()
 
-    os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
     if sys.argv[1] == "download":
+        os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
+        
         load_tokens()
 
         repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
@@ -373,32 +500,68 @@ if __name__ == "__main__":
                         print(f'[GithubException]: {e}')
                         done = True
 
-    if sys.argv[1] == 'stats':
+    if sys.argv[1] == "list-checkstyle-repos":
+        os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
         repos = load_folders(download_file)
-        count_properties, count_modules = stats(repos)
+        filtered_repos = map(lambda folder: re.sub(".*/repos/", "", folder), filters([has_checkstyle], repos))
+        save_repos(repos_using_checkstyle_file, sorted(filtered_repos, key=str.lower))
+        
+    if sys.argv[1] == "list-checkstyle-formatting-repos":
+        repos = load_repo_list(repos_using_checkstyle_file)
+        filtered_repos = map(lambda folder: re.sub(".*/repos/", "", folder), filters([has_formatting_rule], repos))
+        save_repos(repos_using_checkstyle_formatting_file, sorted(filtered_repos, key=str.lower))
+        
+    if sys.argv[1] == "list-checkstyle-repos-filter-cover":
+        repos = load_repo_list(repos_using_checkstyle_formatting_file)
+        universe = set(formatting_rules)
+        subsets = []
+        map_project_rules = {}
+        for repo in repos:
+            subset = get_formatting_rules(repo)
+            if len(subset) > 0:
+                subsets.append(set(subset))
+                map_project_rules[repo] = set(subset)
+        cover = set_cover(universe, subsets)
+        for s in cover:
+            for repo, rules in map_project_rules.items():
+                if len(rules.symmetric_difference(s)) == 0:
+                    print(repo)
+
+    if sys.argv[1] == 'checkstyle-rules-usage':
+        repos = load_repo_list(repos_using_checkstyle_file)
+        count_properties, count_modules, count_modules_formatting = checkstyle_rules_usage(repos)
         save_json(properties_file, count_properties, sort=True)
-        count_modules_ordered = OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True))
-        save_json(modules_file, count_modules_ordered)
+        save_json(modules_file, OrderedDict(sorted(count_modules.items(), key=lambda k: k[1], reverse=True)))
+        save_json(modules_formatting_file, OrderedDict(sorted(count_modules_formatting.items(), key=lambda k: k[1], reverse=True)))
 
     if sys.argv[1] == "venn":
-        repos = load_folders(download_file)
-        sets = {'checkstyle': has_checkstyle, 'travis': has_travis, 'circleci': has_circleci}
+        repos = load_repo_list(repos_using_checkstyle_file)
+        
+        sets = {'maven': has_maven, 'gradle': has_gradle, 'ant': has_ant}
         result = venn(sets, repos)
         sets_values = []
-        sets_values.append(result[('checkstyle',)])
-        sets_values.append(result[('travis',)])
-        sets_values.append(result[('checkstyle', 'travis')])
-        sets_values.append(result[('circleci',)])
-        sets_values.append(result[('checkstyle', 'circleci')])
-        sets_values.append(result[('travis', 'circleci')])
-        sets_values.append(result[('checkstyle', 'travis', 'circleci')])
-        sets_labels = ('checkstyle', 'travis', 'circleci')
+        sets_values.append(result[('maven',)])
+        sets_values.append(result[('gradle',)])
+        sets_values.append(result[('maven', 'gradle')])
+        sets_values.append(result[('ant',)])
+        sets_values.append(result[('maven', 'ant')])
+        sets_values.append(result[('gradle', 'ant')])
+        sets_values.append(result[('maven', 'gradle', 'ant')])
+        sets_labels = ('maven', 'gradle', 'ant')
         venn3(subsets = sets_values, set_labels = sets_labels)
-        plt.show()
-
-    if sys.argv[1] == "list":
-        repos = load_folders(download_file)
-        filtered_repos = map(lambda folder: "/".join(folder.split("/")[2:]), filters([has_checkstyle, has_travis], repos))
-        print("\n".join(sorted(filtered_repos, key=str.lower)))
+        #plt.show()
+        plt.savefig(os.path.join(result_folder_path, 'venn_build_tool.pdf'))
+        plt.close()
+        
+        sets = {'travis': has_travis, 'circleci': has_circleci}
+        result = venn(sets, repos)
+        sets_values = []
+        sets_values.append(result[('travis',)])
+        sets_values.append(result[('circleci',)])
+        sets_values.append(result[('travis', 'circleci')])
+        sets_labels = ('travis', 'circleci')
+        venn2(subsets = sets_values, set_labels = sets_labels)
+        #plt.show()
+        plt.savefig(os.path.join(result_folder_path, 'venn_ci.pdf'))
 
     print(f'End: {datetime.now()}')
