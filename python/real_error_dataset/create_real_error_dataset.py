@@ -25,9 +25,8 @@ def structure_real_error_dataset(errors_info):
 
     return dataset
 
-def create_real_error_dataset():
-    if os.path.exists(__real_dataset_dir):
-        shutil.rmtree(__real_dataset_dir)
+if os.path.exists(__real_dataset_dir):
+    shutil.rmtree(__real_dataset_dir)
     errors_info = load_errors_info(only_targeted=True)
     dataset = structure_real_error_dataset(errors_info)
     # pp.pprint(dataset)
@@ -44,4 +43,3 @@ def create_real_error_dataset():
                 save_json(dir, 'metadata.json', metadata)
                 shutil.copy(file_info['filepath'], os.path.join(dir,metadata['file_name']))
 
-create_real_error_dataset()
