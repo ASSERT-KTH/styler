@@ -70,7 +70,7 @@ def open_file(file):
     if not file:
         return ''
     content = ''
-    with open(file, 'r') as file:
+    with open(file, 'r+', encoding="utf-8") as file:
         content = file.read()
     return content
 
@@ -79,7 +79,7 @@ def save_file(dir, file_name, content):
     """Write the content in a file
     """
     path = os.path.join(dir, file_name)
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding="utf-8") as f:
         f.write(content)
     return path
 
@@ -241,6 +241,11 @@ def find_all(path, name):
         if name in files:
             result.append(os.path.join(root, name))
     return result
+
+
+def delete_dir_if_exists(path):
+    if os.path.exists(path):
+        delete_dir(path)
 
 
 def delete_dir(path):

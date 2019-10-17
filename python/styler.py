@@ -5,8 +5,12 @@ import sys
 import glob
 from git import Repo
 from tqdm import tqdm
-import real
+from real_error_dataset import experiments as real
 from scipy import stats
+import git_helper
+
+from loguru import logger
+import gotify
 
 from core import *
 import checkstyle
@@ -16,7 +20,7 @@ import synthetic_2
 import ml
 
 __model_dir = './models'
-__dataset_dir = '../datasets/real-errors'
+__dataset_dir = '../datasets/real-errors-new'
 
 def get_model_dir(name, only_formatting=False):
     if only_formatting:
@@ -94,12 +98,22 @@ def get_files_without_errors(checkstyle_result):
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
 
+
+def get_corpus_dir(name):
+    return f'./styler/{name}-corpus'
+
+
 def create_corpus(dir, name, checkstyle_dir):
     if dir.endswith('/'):
         dir = dir[:-1]
-    corpus_dir = f'./styler/{name}-corpus'
+    corpus_dir = get_corpus_dir(name)
 
-    (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
+    (output, returncode) = checkstyle.check(
+        checkstyle_file_path=checkstyle_dir,
+        file_path=dir,
+        only_targeted=True,
+        only_java=True
+    )
 
     files_without_errors = get_files_without_errors(output)
     files_with_errors = get_files_with_errors(output)
@@ -277,6 +291,34 @@ def repair_real(name):
     repair_files(directory, dir_files, name, only_formatting=True)
 
 
+def gen_training_data_2(project_path, checkstyle_file_path, project_name):
+    protocols = (('random', 'three_grams'))
+    try:
+        corpus_dir = create_corpus(
+            project_path,
+            project_name,
+            checkstyle_file_path
+        )
+
+        corpus = Corpus(corpus_dir, project_name)
+        share = {
+            'learning': 0.8,
+            'validation': 0.1,
+            'testing': 0.1
+        }
+        for protocol in protocols:
+            synthetic_2.gen_dataset(corpus, share, 10000, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
+            ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
+    
+    except:
+        logger.exception("Something whent wrong during the generation training data")
+        delete_dir_if_exists(get_corpus_dir(project_name))
+        for protocol in protocols:
+            delete_dir_if_exists(f'./tmp/dataset/{protocol}/{project_name}')
+            delete_dir_if_exists(ml.get_tokenized_dir(f'{project_name}_{protocol}'))
+        gotify.notify('[error][data generation]', project_name)
+
+
 def main(args):
     if args[1] == 'repair':
         if args[2] == 'all':
@@ -302,20 +344,26 @@ def main(args):
         project_path = args[2]
         checkstyle_file_path = args[3]
         project_name = args[4]
-        corpus_dir = create_corpus(
-            project_path,
-            project_name,
-            checkstyle_file_path
-        )
-        corpus = Corpus(corpus_dir, project_name)
-        share = {
-            'learning': 0.8,
-            'validation': 0.1,
-            'testing': 0.1
-        }
-        for protocol in (('random', 'three_grams')):
-            synthetic_2.gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
-            ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
+        gen_training_data_2(project_path, checkstyle_file_path, project_name)
+    if args[1] == 'gen_training_for_real_errors':
+        errors_dataset_name = args[2]
+        errors_dataset_dir = get_real_dataset_dir(errors_dataset_name)
+        dataset_info = open_json(os.path.join(errors_dataset_dir, 'info.json'))
+
+        (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
+
+        repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
+        repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
+
+        checkstyle_file_path = os.path.join(errors_dataset_dir, 'checkstyle.xml')
+
+        logger.debug("Starting data generation")
+
+        gen_training_data_2(repo_dir, checkstyle_file_path, errors_dataset_name)
+
+        gotify.notify('[done][data generation]', errors_dataset_name)
+
+        delete_dir(repo_dir)
 
 if __name__ == "__main__":
     main(sys.argv)

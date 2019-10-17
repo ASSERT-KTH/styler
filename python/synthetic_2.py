@@ -15,6 +15,9 @@ import shutil
 import pandas as pd
 from token_utils import whitespace_token_to_tuple
 import random
+
+from loguru import logger
+
 BATCH_SIZE = 500
 
 config = configparser.ConfigParser()
@@ -244,6 +247,7 @@ class Batch:
             try:
                 modified_source, modification = modify_source(original_source, protocol=self.protocol)
             except InsertionException:
+                logger.debug(InsertionException)
                 continue
             modification_folder = os.path.join(self.batch_dir, str(index))
             create_dir(modification_folder)
@@ -261,7 +265,8 @@ class Batch:
         self.checkstyle_result, _ = checkstyle.check(
             self.checkstyle_dir,
             self.batch_dir,
-            only_java=True
+            only_java=True,
+            only_targeted=True
         )
         for file_dir, res in self.checkstyle_result.items():
             index = int(file_dir.split('/')[-2])
@@ -289,7 +294,10 @@ def gen_errors(files_dir, checkstyle_dir, target, number_of_errors, protocol='ra
                 batch_res = batch.gen()
             except KeyboardInterrupt:
                 raise KeyboardInterrupt
+            except UnicodeDecodeError:
+                continue
             except: # UnicodeEncodeError
+                logger.exception("Something went whrong")
                 continue
             batch_valid_errors = [
                 info
