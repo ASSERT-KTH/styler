@@ -5,6 +5,7 @@
     """
 
 
+import os
 import xml.etree.ElementTree as ET
 import subprocess
 import sys
@@ -15,7 +16,8 @@ pp = pprint.PrettyPrinter(indent=4)
 
 from core import *
 
-_CHECKSTYLE_JAR = "../jars/checkstyle-8.12-all.jar"
+dir_path = os.path.dirname(os.path.realpath(__file__))
+_CHECKSTYLE_JAR = os.path.join(dir_path, "../", "jars/checkstyle-8.23-all.jar")
 
 
 def check(checkstyle_file_path, file_path, checkstyle_jar=_CHECKSTYLE_JAR, only_targeted=False, only_java=False):
