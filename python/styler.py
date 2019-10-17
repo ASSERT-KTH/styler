@@ -12,6 +12,7 @@ from core import *
 import checkstyle
 from Corpus import Corpus
 import synthetic
+import synthetic_2
 import ml
 
 __model_dir = './models'
@@ -297,6 +298,24 @@ def main(args):
         share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         synthetic.gen_dataset(corpus, share, target_dir=f'./styler/{project_name}-errors' )
         ml.gen_IO(f'./styler/{project_name}-errors', f'./styler/{project_name}-tokens', only_formatting=True)
+    if args[1] == 'gen_training_data_2':
+        project_path = args[2]
+        checkstyle_file_path = args[3]
+        project_name = args[4]
+        corpus_dir = create_corpus(
+            project_path,
+            project_name,
+            checkstyle_file_path
+        )
+        corpus = Corpus(corpus_dir, project_name)
+        share = {
+            'learning': 0.8,
+            'validation': 0.1,
+            'testing': 0.1
+        }
+        for protocol in (('random', 'three_grams')):
+            synthetic_2.gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
+            ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
 
 if __name__ == "__main__":
     main(sys.argv)
