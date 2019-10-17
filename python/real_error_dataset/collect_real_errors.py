@@ -187,11 +187,11 @@ with open(__input_projects_path) as temp_file:
 		        if not is_there_suppressionsLocation_in_pom(repo):
 			        find_errored_files(repo, commit, use_maven=False, checkstyle_path=info['checkstyle_clean'])
 			
-		    repo_dir = get_real_errors_repo_dir(repo_name)
-		    if len(os.listdir(repo_dir) ) > 0:
-		        shutil.copyfile(checkstyle_dir, repo_dir)
+		    repo_dir = get_real_errors_repo_dir(f'{user}-{repo_name}')
+		    if len(os.listdir(repo_dir)) > 0:
+		        shutil.copyfile(os.path.join(repo.working_dir, info['checkstyle_clean']), os.path.join(repo_dir, 'checkstyle.xml'))
 		        info = {
-		            'repo_url': f'git clone https://github.com/{user}/{repo_name}.git',
+		            'repo_url': f'https://github.com/{user}/{repo_name}.git',
 		            'original_checkstyle_path': info['checkstyle_relative_path']
                 }
 		        save_json(repo_dir, 'info.json', info)
