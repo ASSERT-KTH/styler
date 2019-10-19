@@ -18,6 +18,7 @@ from functools import reduce
 import time
 from scipy import stats
 import string
+from loguru import logger
 
 from core import *
 import graph_plot
@@ -63,6 +64,8 @@ def get_real_dataset_dir(name):
     return os.path.join(__real_dataset_dir, name)
 
 def experiment(name, corpus_dir):
+    logger.debug(f'Starting the experiment for project {name}')
+
     dataset_dir = create_dir(get_real_dataset_dir(name))
     experiment_dir = get_experiment_dir(name)
     errored_dir = os.path.join(experiment_dir, f'./errored')
@@ -91,11 +94,12 @@ def experiment(name, corpus_dir):
     result = {}
 
     for tool in ('naturalize', 'codebuff', 'styler'):
+        logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
         target = os.path.join(experiment_dir, f'./{tool}')
         if not os.path.exists(target):
             if tool == 'styler':
-                shutil.copytree(f'./styler/{name}/files-repaired', target)
+                shutil.copytree(f'./styler/repairs/{name}/files-repaired', target)
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
@@ -103,7 +107,7 @@ def experiment(name, corpus_dir):
         result[tool] = repaired
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
-    result['out_of'] = list_folders(f'./styler/{name}/repair-attempt/batch_0')
+    result['out_of'] = list_folders(f'./styler/repairs/{name}/repair-attempt/batch_0')
     return result
 
 
