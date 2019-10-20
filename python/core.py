@@ -63,6 +63,18 @@ corner_cases_errors = (
     'MissingDeprecated'
 )
 
+protocols = (
+    'random',
+    'three_grams'
+)
+
+styler_tools = tuple([f'styler_{protocol}' for protocol in protocols])
+
+tools_list = tuple([
+    'naturalize',
+    'codebuff',
+    'intellij'
+] + list(styler_tools) )
 
 def open_file(file):
     """Open a file and read the content

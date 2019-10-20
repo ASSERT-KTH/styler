@@ -93,13 +93,16 @@ def experiment(name, corpus_dir):
 
     result = {}
 
-    for tool in ('naturalize', 'codebuff', 'styler'):
+    for tool in tools_list:
         logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
         target = os.path.join(experiment_dir, f'./{tool}')
         if not os.path.exists(target):
-            if tool == 'styler':
-                shutil.copytree(f'./styler/repairs/{name}/files-repaired', target)
+            if tool.startswith('styler'):
+                protocol = '_'.join(tool.split('_')[1:])
+                shutil.copytree(f'./styler/repairs/{name}_{protocol}/files-repaired', target)
+            elif tool == 'intellij':
+                pass
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
@@ -179,13 +182,25 @@ def benchmark(name, corpus_dir, tools):
 
 
 def exp(projects):
-    result = {}
+    result_raw = {}
     for name in projects:
         # print(name)
-        result[name] = experiment(name, f'./styler/{name}-corpus')
+        result_raw[name] = experiment(name, f'./styler/{name}-corpus')
     # json_pp(result)
+    
+    result = {
+        project:{
+            tool:len(repair)
+            for tool, repair in p_results.items()
+        } 
+        for project, p_results in result_raw.items()
+    }
+    for project in result.keys():
+        result[project]['styler'] = len(
+            reduce(lambda a,b: a|b, map(lambda styler_p: set(result_raw[project][styler_p]), styler_tools))
+        )
     keys = list(list(result.values())[0].keys())
-    result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
+        
     result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
     #json_pp(total)
     table = [ [''] + keys]
@@ -195,12 +210,13 @@ def exp(projects):
 
 def exp_stats(projects):
     exp_result = {}
-    all_tools = ('naturalize', 'codebuff', 'styler')
+    all_tools = tools_list
     for name in projects:
         # print(name)
         exp_result[name] = experiment(name, f'./styler/{name}-corpus')
         exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
-    tools = ('naturalize', 'codebuff', 'styler', 'all_tools')
+        exp_result[name]['styler'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in styler_tools]))
+    tools = tuple(list(tools_list) + ['styler', 'all_tools'])
     repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
     for project, project_result in exp_result.items():
         experiment_dir = get_experiment_dir(project)
