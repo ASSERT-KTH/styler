@@ -102,6 +102,9 @@ def experiment(name, corpus_dir):
                 protocol = '_'.join(tool.split('_')[1:])
                 shutil.copytree(f'./styler/repairs/{name}_{protocol}/files-repaired', target)
             elif tool == 'intellij':
+                intellij_dir = os.path.join(experiment_dir, 'intellij')
+                if not os.path.exists(intellij_dir):
+                    create_dir(intellij_dir)
                 pass
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
@@ -110,7 +113,7 @@ def experiment(name, corpus_dir):
         result[tool] = repaired
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
-    result['out_of'] = list_folders(f'./styler/repairs/{name}/repair-attempt/batch_0')
+    result['out_of'] = list_folders(f'./styler/repairs/{name}_random/repair-attempt/batch_0')
     return result
 
 
@@ -231,7 +234,8 @@ def exp_stats(projects):
                         for error in open_json(os.path.join(errored_dir, f'{id}/metadata.json'))['errors']
                     ]
                     for id in repaired_files
-                ]
+                ],
+                []
             )
             repaired_error_types[tool] += error_types
     repaired_error_types_count = {
@@ -258,6 +262,45 @@ def exp_stats(projects):
     table = SingleTable(table_data)
     print(table.table)
     return repaired_error_types_count
+
+@logger.catch
+def json_repport(experiment):
+    experiment_dir = get_experiment_dir(experiment)
+    checkstyle_path = os.path.join(experiment_dir, 'checkstyle.xml')
+    errored_dir = os.path.join(experiment_dir, 'errored/1')
+
+    logger.debug('Getting the original errors')
+    (errored_result, _) = checkstyle.check(checkstyle_path, errored_dir, only_targeted=True, only_java=True)
+
+    def get_file_id(file_path):
+        return file_path.split('/')[-2]
+
+    file_ids = sorted([get_file_id(file_path) for file_path in errored_result.keys()], key=int)
+
+    logger.debug('Getting the results from the tools')
+    tools_results = {
+        tool:open_json(os.path.join(experiment_dir, f'checkstyle_results_{tool}.json'))
+        for tool in tools_list
+    }
+
+    repport = {
+        get_file_id(file_path):{
+            'information':information,
+            'results': {
+                tool:None
+                for tool in tools_list
+            }
+        }
+        for file_path, information in errored_result.items()
+    }
+
+    for tool, result in tools_results.items():
+        for file_path, information in result['checkstyle_results'].items():
+            file_id = get_file_id(file_path)
+            repport[file_id]['results'][tool] = information['errors']
+
+    save_json(experiment_dir, 'repport.json', repport)
+
 
 def exp_venn(projects):
     result = {}
@@ -300,6 +343,8 @@ def benchmark_stats(results):
 def main(args):
     if len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
+    elif len(args) >= 2 and args[1] == 'repport':
+        json_repport(args[2])
     elif len(args) >= 2 and args[1] == 'exp-stats':
         exp_stats(args[2:])
     elif len(args) >= 2 and args[1] == 'exp-venn':

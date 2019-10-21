@@ -411,6 +411,8 @@ def check_source_well_formed(file_content):
         return True
     except javalang.parser.JavaSyntaxError as error:
         return False
+    except StopIteration as error:
+        return False
 
 
 def get_bad_formated(dir):
