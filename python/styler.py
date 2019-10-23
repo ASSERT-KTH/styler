@@ -189,12 +189,11 @@ def create_corpus_git(dir, commit, checkstyle_relative_dir):
 
 def get_batch_results(checkstyle_results):
     return {
-        batch:set([
-            file.split('/')[-2]
+        batch:{
+            file.split('/')[-2]:len(result['errors'])
             for file, result in checkstyle_results.items()
-            if len(result['errors']) == 0
-            and f'batch_{batch}' == file.split('/')[-3]
-        ])
+            if f'batch_{batch}' == file.split('/')[-3]
+        }
         for batch in range(5)
     }
 
@@ -205,12 +204,12 @@ def reverse_collection(collection, key_func=None):
     if key_func == None:
         key_func = identity
     result = {}
-    for key, items in collection.items():
-        for item in items:
-            value = key_func(item)
+    for (keyA, itemsA) in collection.items():
+        for (keyB, itemB) in itemsA.items():
+            value = key_func(keyB)
             if value not in result:
-                result[value] = []
-            result[value] += [key]
+                result[value] = {}
+            result[value][keyA] = itemB
     return result
 
 def select_the_best_repair(correct_repairs, original):
@@ -259,18 +258,36 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
     #json_pp(checkstyle_result)
     #save_json('./', 'test.json', checkstyle_result)
-    files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
-    #print(files_properly_repaired)
-    final_repairs = {
-        id:select_the_best_repair(
-            [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
-            glob.glob(f'{dir_files}/{int(id) % number_of_files}/*.java')[0]
+    def select_best_proposol(file_id, proposols):
+        file_path = glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
+        min_errors = min(list(proposols.values()))
+        good_proposols = [
+            id
+            for id, n_errors in proposols.items()
+            if n_errors == min_errors
+        ]
+        return select_the_best_repair(
+            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposols ],
+            glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
         )
-        for id, repairs
-        in files_properly_repaired.items()
+
+    best_proposols = {
+        file_id:select_best_proposol(file_id, proposols)
+        for file_id, proposols in reverse_collection(get_batch_results(checkstyle_result)).items()
     }
-    logger.debug(f"{len(final_repairs)} files repaired ({protocol})")
-    for id, path in final_repairs.items():
+    if False:
+        files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
+        #print(files_properly_repaired)
+        final_repairs = {
+            id:select_the_best_repair(
+                [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
+                glob.glob(f'{dir_files}/{int(id) % number_of_files}/*.java')[0]
+            )
+            for id, repairs
+            in files_properly_repaired.items()
+        }
+        logger.debug(f"{len(final_repairs)} files repaired ({protocol})")
+    for id, path in best_proposols.items():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
 
@@ -308,9 +325,10 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name):
             'testing': 0.1
         }
         for protocol in protocols:
+            gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
             synthetic_2.gen_dataset(corpus, share, 10000, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
             ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
-    
+            gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
         logger.exception("Something whent wrong during the generation training data")
         delete_dir_if_exists(get_corpus_dir(project_name))
