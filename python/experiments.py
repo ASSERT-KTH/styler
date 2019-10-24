@@ -98,7 +98,9 @@ def experiment(name, corpus_dir):
         # timer.start_task(f'{name}_{tool}')
         target = os.path.join(experiment_dir, f'./{tool}')
         if not os.path.exists(target):
-            if tool.startswith('styler'):
+            if tool == 'styler':
+                shutil.copytree(f'./styler/repairs/{name}/files-repaired', target)
+            elif tool.startswith('styler'):
                 protocol = '_'.join(tool.split('_')[1:])
                 shutil.copytree(f'./styler/repairs/{name}_{protocol}/files-repaired', target)
             elif tool == 'intellij':
@@ -126,7 +128,13 @@ def compute_diff_size(name, tool):
     for repaired_id in repaired:
         original_folder = os.path.join(errored_dir, str(repaired_id))
         repaired_folder = os.path.join(repaired_dir, str(repaired_id))
-        original_file = glob.glob(f'{original_folder}/*.java')[0]
+        potential_files = glob.glob(f'{original_folder}/*.java')
+        if len(potential_files) == 0:
+            continue
+        original_file = potential_files[0]
+        potential_files = glob.glob(f'{original_folder}/*.java')
+        if len(glob.glob(f'{repaired_folder}/*.java')) == 0:
+            continue
         repaired_file = glob.glob(f'{repaired_folder}/*.java')[0]
         diffs_count = java_lang_utils.compute_diff_size(original_file, repaired_file)
         diffs += [diffs_count]
@@ -198,10 +206,6 @@ def exp(projects):
         } 
         for project, p_results in result_raw.items()
     }
-    for project in result.keys():
-        result[project]['styler'] = len(
-            reduce(lambda a,b: a|b, map(lambda styler_p: set(result_raw[project][styler_p]), styler_tools))
-        )
     keys = list(list(result.values())[0].keys())
         
     result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
@@ -218,8 +222,7 @@ def exp_stats(projects):
         # print(name)
         exp_result[name] = experiment(name, f'./styler/{name}-corpus')
         exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
-        exp_result[name]['styler'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in styler_tools]))
-    tools = tuple(list(tools_list) + ['styler', 'all_tools'])
+    tools = tuple(list(tools_list) + ['all_tools'])
     repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
     for project, project_result in exp_result.items():
         experiment_dir = get_experiment_dir(project)
@@ -264,7 +267,7 @@ def exp_stats(projects):
     return repaired_error_types_count
 
 @logger.catch
-def json_repport(experiment):
+def json_report(experiment):
     experiment_dir = get_experiment_dir(experiment)
     checkstyle_path = os.path.join(experiment_dir, 'checkstyle.xml')
     errored_dir = os.path.join(experiment_dir, 'errored/1')
@@ -283,7 +286,7 @@ def json_repport(experiment):
         for tool in tools_list
     }
 
-    repport = {
+    report = {
         get_file_id(file_path):{
             'information':information,
             'results': {
@@ -297,9 +300,10 @@ def json_repport(experiment):
     for tool, result in tools_results.items():
         for file_path, information in result['checkstyle_results'].items():
             file_id = get_file_id(file_path)
-            repport[file_id]['results'][tool] = information['errors']
+            if file_id in report:
+                report[file_id]['results'][tool] = information['errors']
 
-    save_json(experiment_dir, 'repport.json', repport)
+    save_json(experiment_dir, 'report.json', report)
 
 
 def exp_venn(projects):
@@ -340,11 +344,33 @@ def benchmark_stats(results):
     json_pp(regression)
 
 
+def merge_reports(experiments):
+    all_reports = {}
+    for experiment in experiments:
+        experiment_dir = get_experiment_dir(experiment)
+        report_path = os.path.join(experiment_dir, 'report.json')
+        if os.path.exists(report_path):
+            report = open_json(report_path)
+            all_reports[experiment] = report
+    experiment_results = list(all_reports.keys())
+    logger.debug(f'Merging the results from {len(experiment_results)} reports ({", ".join(experiment_results)})')
+    merged_report = {}
+    file_count = 0
+    for experiment, report in all_reports.items():
+        for file_id, res in report.items():
+            merged_report[file_count] = res
+            file_count += 1
+    save_json(get_experiment_dir(''), 'report.json', merged_report)
+
 def main(args):
     if len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
-    elif len(args) >= 2 and args[1] == 'repport':
-        json_repport(args[2])
+    elif len(args) >= 2 and args[1] == 'report':
+        json_report(args[2])
+    elif len(args) >= 2 and args[1] == 'merge-reports':
+        experiments = list_folders(get_experiment_dir(''))
+        logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
+        merge_reports(experiments)
     elif len(args) >= 2 and args[1] == 'exp-stats':
         exp_stats(args[2:])
     elif len(args) >= 2 and args[1] == 'exp-venn':
@@ -363,8 +389,8 @@ def main(args):
         tools = ('styler', 'naturalize', 'codebuff')
         result = {}
         for name in args[2:]:
-            result[name] = get_diff_dataset(name, ('naturalize', 'codebuff', 'styler'))
-        json_pp(result)
+            result[name] = get_diff_dataset(name, ('naturalize', 'codebuff', 'styler', 'intellij'))
+        #json_pp(result)
         keys = list(list(result.values())[0].keys())
         total = { key:reduce( list.__add__ ,[e[key] for e in result.values()]) for key in keys }
         graph = {}
@@ -373,6 +399,7 @@ def main(args):
         graph['colors'] = {
             'codebuff': codebuff_color,
             'naturalize': naturalize_color,
+            'intellij': '#ff0000',
             'styler': styler_color
         }
         graph_plot.violin_plot(graph)

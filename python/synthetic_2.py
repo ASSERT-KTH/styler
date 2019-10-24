@@ -182,12 +182,10 @@ def modify_source_random(source):
         injection_operation = random.choice(injection_operator_pool)
         ugly_content, modification = jlu.gen_ugly_from_source(source, modification_number=injection_operator_types[injection_operation])
         if not jlu.check_source_well_formed(ugly_content):
-            logger.debug('Not well formed')
             continue
         spaces_original, tokens_original = jlu.tokenize_with_white_space(source)
         spaces_errored, tokens_errored = jlu.tokenize_with_white_space(ugly_content)
         if len(tokens_original) != len(tokens_errored):
-            logger.debug('Not same length')
             continue
         return ugly_content, (modification, injection_operation)
 

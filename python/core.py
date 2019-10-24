@@ -73,7 +73,8 @@ styler_tools = tuple([f'styler_{protocol}' for protocol in protocols])
 tools_list = tuple([
     'naturalize',
     'codebuff',
-    'intellij'
+    'intellij',
+    'styler'
 ] + list(styler_tools) )
 
 def open_file(file):

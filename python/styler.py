@@ -187,14 +187,14 @@ def create_corpus_git(dir, commit, checkstyle_relative_dir):
     }
     save_json(corpus_dir, 'corpus.json', corpus_info)
 
-def get_batch_results(checkstyle_results):
+def get_batch_results(checkstyle_results, n_batch=5):
     return {
         batch:{
             file.split('/')[-2]:len(result['errors'])
             for file, result in checkstyle_results.items()
             if f'batch_{batch}' == file.split('/')[-3]
         }
-        for batch in range(5)
+        for batch in range(n_batch)
     }
 
 def identity(a):
@@ -258,38 +258,29 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
     #json_pp(checkstyle_result)
     #save_json('./', 'test.json', checkstyle_result)
-    def select_best_proposol(file_id, proposols):
+    def select_best_proposal(file_id, proposals):
         file_path = glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
-        min_errors = min(list(proposols.values()))
-        good_proposols = [
+        min_errors = min(list(proposals.values()))
+        good_proposals = [
             id
-            for id, n_errors in proposols.items()
+            for id, n_errors in proposals.items()
             if n_errors == min_errors
         ]
         return select_the_best_repair(
-            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposols ],
+            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
             glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
         )
 
-    best_proposols = {
-        file_id:select_best_proposol(file_id, proposols)
-        for file_id, proposols in reverse_collection(get_batch_results(checkstyle_result)).items()
+    best_proposals = {
+        file_id:select_best_proposal(file_id, proposals)
+        for file_id, proposals in reverse_collection(get_batch_results(checkstyle_result)).items()
     }
-    if False:
-        files_properly_repaired = reverse_collection(get_batch_results(checkstyle_result))
-        #print(files_properly_repaired)
-        final_repairs = {
-            id:select_the_best_repair(
-                [ glob.glob(f'{target}/batch_{batch}/{id}/*.java')[0] for batch in repairs ],
-                glob.glob(f'{dir_files}/{int(id) % number_of_files}/*.java')[0]
-            )
-            for id, repairs
-            in files_properly_repaired.items()
-        }
-        logger.debug(f"{len(final_repairs)} files repaired ({protocol})")
-    for id, path in best_proposols.items():
+
+    for id, path in best_proposals.items():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
+
+    return target_final
 
 def lits_and_create_corpora():
     repos = ['ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
@@ -306,17 +297,58 @@ def repair_real(name, protocol):
     directory = f'./styler/repairs/{name}_{protocol}'
     create_dir(directory)
     dir_files = get_real_dataset_dir(name)
-    repair_files(directory, dir_files, name, protocol, only_formatting=True)
+    return repair_files(directory, dir_files, name, protocol, only_formatting=True)
 
 
-def gen_training_data_2(project_path, checkstyle_file_path, project_name):
+def join_protocols(name, protocols_repairs):
+    directory = f'./styler/repairs/{name}'
+    create_dir(directory)
+    target = os.path.join(directory, 'repair-attempt')
+    target_final = os.path.join(directory, 'files-repaired')
+    create_dir(target)
+    create_dir(target_final)
+    checkstyle_rules = os.path.join(get_real_dataset_dir(name), 'checkstyle.xml')
+    dir_files = os.path.join(get_real_dataset_dir(name), './1')
+    
+    for (protocol_id, (protocol, path)) in enumerate(protocols_repairs.items()):
+        protocol_target = os.path.join(target, f'./batch_{protocol_id}')
+        if os.path.exists(protocol_target):
+            shutil.rmtree(protocol_target)
+        shutil.copytree(path, protocol_target)
+    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
+    res = reverse_collection(get_batch_results(checkstyle_result, n_batch=len(protocols_repairs)))
+
+    def select_best_proposal(file_id, proposals):
+        file_path = glob.glob(f'{dir_files}/{int(file_id)}/*.java')[0]
+        min_errors = min(list(proposals.values()))
+        good_proposals = [
+            id
+            for id, n_errors in proposals.items()
+            if n_errors == min_errors
+        ]
+        return select_the_best_repair(
+            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
+            glob.glob(f'{dir_files}/{int(file_id)}/*.java')[0]
+        )
+
+    best_proposals = {
+        file_id:select_best_proposal(file_id, proposals)
+        for file_id, proposals in res.items()
+    }
+
+    for id, path in best_proposals.items():
+        folder = create_dir(f'{target_final}/{id}')
+        shutil.copy(path, folder)
+
+def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
     try:
-        corpus_dir = create_corpus(
-            project_path,
-            project_name,
-            checkstyle_file_path
-        )
+        if corpus_dir is None:
+            corpus_dir = create_corpus(
+                project_path,
+                project_name,
+                checkstyle_file_path
+            )
 
         corpus = Corpus(corpus_dir, project_name)
         share = {
@@ -331,7 +363,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name):
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
         logger.exception("Something whent wrong during the generation training data")
-        delete_dir_if_exists(get_corpus_dir(project_name))
+        #delete_dir_if_exists(get_corpus_dir(project_name))
         for protocol in protocols:
             delete_dir_if_exists(f'./tmp/dataset/{protocol}/{project_name}')
             delete_dir_if_exists(ml.get_tokenized_dir(f'{project_name}_{protocol}'))
@@ -345,8 +377,12 @@ def main(args):
         else:
             datasets = args[2:]
         for dataset in tqdm(datasets, desc='dataset'):
+            results = {}
             for protocol in tqdm(protocols, desc='protocol'):
-                repair_real(dataset, protocol)
+                results[protocol] = repair_real(dataset, protocol)
+            ## join protcols 
+            join_protocols(dataset, results)
+
     if args[1] == 'gen_training_data':
         project_path = args[2]
         checkstyle_file_path = args[3]
@@ -366,7 +402,12 @@ def main(args):
         project_name = args[4]
         gen_training_data_2(project_path, checkstyle_file_path, project_name)
     if args[1] == 'gen_training_for_real_errors':
-        errors_dataset_name = args[2]
+        corpus_dir = None
+        if args[2] == '--corpus':
+            corpus_dir = args[3]
+            errors_dataset_name = args[4]
+        else:
+            errors_dataset_name = args[2]
         errors_dataset_dir = get_real_dataset_dir(errors_dataset_name)
         dataset_info = open_json(os.path.join(errors_dataset_dir, 'info.json'))
 
@@ -379,7 +420,7 @@ def main(args):
 
         logger.debug("Starting data generation")
 
-        gen_training_data_2(repo_dir, checkstyle_file_path, errors_dataset_name)
+        gen_training_data_2(repo_dir, checkstyle_file_path, errors_dataset_name, corpus_dir=corpus_dir)
 
         gotify.notify('[done][data generation]', errors_dataset_name)
 

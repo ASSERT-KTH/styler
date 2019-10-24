@@ -13,12 +13,11 @@ from itertools import product
 import numpy as np
 
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3, venn3_circles
-
-matplotlib.use('TkAgg')
 
 
 def protocol6(results, repair_tools, disposition=110):
@@ -504,7 +503,7 @@ def violin_plot(plot_data):
     order = tuple(colors.keys())
     print(order)
 
-    fig, axes = plt.subplots()
+    fig, axes = plt.subplots(figsize=(15,12))
 
     parts = axes.violinplot([list(filter(lambda a: a<50, points)) for points in dict_to_list(data, order)], range(len(data)), points=1000, vert=False, widths=0.7,
                           showmeans=False, showextrema=False, showmedians=False,
@@ -519,11 +518,11 @@ def violin_plot(plot_data):
     patches = [ mpatches.Patch(color=c, label=l) for l, c in list(colors.items())[::-1]]
     plt.legend(handles = patches, loc='upper right', ncol=3, fancybox=True, fontsize=15)
     # plt.yticks( range(len(order)), order, fontsize=15)
-    plt.yticks( [1], ('all \nprojects',), fontsize=15)
+    plt.yticks( [1], ('',), fontsize=15)
     plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
     plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
     plt.xlim(0,40)
-    plt.show()
+    plt.savefig('plot_test.png')
 
 def boxplot(plot_data):
     labels = list(plot_data['data'].keys())
