@@ -245,6 +245,7 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
         #list_of_fileids = []
         for folder_id in tqdm(list_of_fileids):
             file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
+            logger.debug(file_path)
             metadata_path = f'{dir_files}/{folder_id}/metadata.json'
             for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
                 tokenized_errors, info = error
@@ -339,6 +340,7 @@ def join_protocols(name, protocols_repairs):
     for id, path in best_proposals.items():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
+    return best_proposals
 
 def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
@@ -376,12 +378,22 @@ def main(args):
             datasets = ['be5', 'dagger', 'milo', 'okhttp', 'picasso']
         else:
             datasets = args[2:]
+        protocol_choice_count = {
+            'random': 0,
+            'three_grams': 0
+        }
         for dataset in tqdm(datasets, desc='dataset'):
             results = {}
             for protocol in tqdm(protocols, desc='protocol'):
                 results[protocol] = repair_real(dataset, protocol)
             ## join protcols 
-            join_protocols(dataset, results)
+            choices = join_protocols(dataset, results)
+            for choice in choices.values():
+                if 'batch_0' in choice:
+                    protocol_choice_count['random'] += 1
+                if 'batch_1' in choice:
+                    protocol_choice_count['three_grams'] += 1
+        json_pp(protocol_choice_count)
 
     if args[1] == 'gen_training_data':
         project_path = args[2]
@@ -424,7 +436,7 @@ def main(args):
 
         gotify.notify('[done][data generation]', errors_dataset_name)
 
-        delete_dir(repo_dir)
+        #delete_dir(repo_dir)
 
 if __name__ == "__main__":
     main(sys.argv)

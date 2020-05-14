@@ -19,6 +19,7 @@ import time
 from scipy import stats
 import string
 from loguru import logger
+import pandas as pd
 
 from core import *
 import graph_plot
@@ -264,6 +265,27 @@ def exp_stats(projects):
     ]
     table = SingleTable(table_data)
     print(table.table)
+    def abreviation(error_type):
+        if error_type == 'JavadocTagContinuationIndentation':
+            return 'JavadocTag.'
+        return error_type
+    def tool_name(tool):
+        names = {
+            'codebuff': 'CodeBuff',
+            'naturalize': 'Naturalize',
+            'styler': 'Styler',
+            'intellij': 'Checkstyle-IDEA',
+        }
+        return names[tool]
+    df = pd.DataFrame.from_dict({
+        tool_name(tool):{
+            f'{abreviation(error_type)} ({repaired_error_types_count["out_of"][error_type]})':repaired_error_types_count_relative[tool].get(error_type, 0)
+            for error_type in keys
+        }
+        for tool in ('styler', 'intellij', 'naturalize', 'codebuff')
+    })
+    graph_plot.repair_heatmap(df)
+    graph_plot.repair_cluster(df)
     return repaired_error_types_count
 
 @logger.catch
@@ -362,6 +384,14 @@ def merge_reports(experiments):
             file_count += 1
     save_json(get_experiment_dir(''), 'report.json', merged_report)
 
+def compare_protocols(experiment_name):
+    exp_result = experiment(experiment_name, f'./styler/{experiment_name}-corpus')
+    res = {}
+    res['only_random'] = len(set(exp_result['styler_random']) - set(exp_result['styler_three_grams']))
+    res['only_three_grams'] = len(set(exp_result['styler_three_grams']) - set(exp_result['styler_random']))
+    res['both'] = len(set(exp_result['styler_three_grams']).intersection(set(exp_result['styler_random'])))
+    return res
+
 def main(args):
     if len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
@@ -371,6 +401,18 @@ def main(args):
         experiments = list_folders(get_experiment_dir(''))
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
         merge_reports(experiments)
+    elif len(args) >= 2 and args[1] == 'styler-protocols':
+        experiments = list_folders(get_experiment_dir(''))
+        logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
+        results = {}
+        for experiment_name in experiments:
+            results[experiment_name] = compare_protocols(experiment_name)
+        keys = list(results[experiments[0]].keys())
+        dict_sum = {key:0 for key in keys}
+        for res in results.values():
+            for key in keys:
+                dict_sum[key] += res[key]
+        json_pp(dict_sum)
     elif len(args) >= 2 and args[1] == 'exp-stats':
         exp_stats(args[2:])
     elif len(args) >= 2 and args[1] == 'exp-venn':
@@ -399,7 +441,7 @@ def main(args):
         graph['colors'] = {
             'codebuff': codebuff_color,
             'naturalize': naturalize_color,
-            'intellij': '#ff0000',
+            'intellij': intellij_color,
             'styler': styler_color
         }
         graph_plot.violin_plot(graph)

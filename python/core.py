@@ -16,6 +16,7 @@ import configparser
 codebuff_color = '#1565c0'
 styler_color = '#64dd17'
 naturalize_color = '#fdd835'
+intellij_color = '#ED4C67'
 
 core_config = configparser.ConfigParser()
 core_config.read('config.ini')

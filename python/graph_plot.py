@@ -16,6 +16,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn3, venn3_circles
 
@@ -503,9 +504,9 @@ def violin_plot(plot_data):
     order = tuple(colors.keys())
     print(order)
 
-    fig, axes = plt.subplots(figsize=(15,12))
+    fig, axes = plt.subplots(figsize=(7,4))
 
-    parts = axes.violinplot([list(filter(lambda a: a<50, points)) for points in dict_to_list(data, order)], range(len(data)), points=1000, vert=False, widths=0.7,
+    parts = axes.violinplot([list(filter(lambda a: a<150, points)) for points in dict_to_list(data, order)], range(len(data)), points=1000, vert=False, widths=0.7,
                           showmeans=False, showextrema=False, showmedians=False,
                           bw_method='silverman')
     for pc, label in zip(parts['bodies'], order) :
@@ -515,14 +516,22 @@ def violin_plot(plot_data):
     medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
     axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False, medianprops=medianprops)
 
-    patches = [ mpatches.Patch(color=c, label=l) for l, c in list(colors.items())[::-1]]
-    plt.legend(handles = patches, loc='upper right', ncol=3, fancybox=True, fontsize=15)
+    labels = {
+        'codebuff': 'CodeBuff',
+        'naturalize': 'Naturalize',
+        'styler': 'Styler',
+        'intellij': 'Checkstyle-IDEA',
+    }
+
+    patches = [ mpatches.Patch(color=c, label=labels[l]) for l, c in list(colors.items())[::-1]]
+    plt.legend(handles = patches, loc='upper right', ncol=2, fancybox=True, fontsize=15)
     # plt.yticks( range(len(order)), order, fontsize=15)
     plt.yticks( [1], ('',), fontsize=15)
     plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
     plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
-    plt.xlim(0,40)
-    plt.savefig('plot_test.png')
+    plt.xlim(0,100)
+    plt.subplots_adjust(bottom=0.15, left=0.01, right=0.99, top=0.99)
+    plt.savefig('../results/Figure_RQ_3_real.pdf', format='pdf')
 
 def boxplot(plot_data):
     labels = list(plot_data['data'].keys())
@@ -671,6 +680,22 @@ def plot_errors_types_per_injection_type(results):
     patches = [ mpatches.Patch(color=c, label="{}".format(l.split(".")[-1])) for l, c in lables_colors.items()]
     plt.legend(handles = patches, loc='upper center', ncol=3, fancybox=True, bbox_to_anchor=(0.5, 1.4))
 
+
+def repair_heatmap(data):
+    sns.set_context("paper", font_scale=1.2)                                                  
+    fig, axes = plt.subplots(figsize=(7,7))
+    ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)#, cmap='RdYlGn')
+    for t in ax.texts: t.set_text(t.get_text() + " %")
+    plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
+    plt.savefig('../results/repair_heatmap.pdf', format='pdf')
+
+def repair_cluster(data):
+    sns.set_context("paper", font_scale=1)                                                  
+    fig, axes = plt.subplots(figsize=(7,7))
+    g = sns.clustermap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)
+    for t in g.ax_heatmap.texts: t.set_text(t.get_text() + " %")
+    plt.subplots_adjust(right=0.75)
+    plt.savefig('../results/repair_cluster.pdf', format='pdf')
 
 def dist_from_modification(results):
     distances = []
