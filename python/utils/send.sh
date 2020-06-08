@@ -6,7 +6,7 @@ cp ./validation-O.txt ./remote_files/tgt-val.txt
 cp ./testing-I.txt ./remote_files/src-test.txt
 # touch ./remote_files/src-test.txt
 dataset=$(basename "$PWD")-sy-of
-uid=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
+uid=$(openssl rand -hex 4)
 name=$(echo "$dataset"_"$uid")
 ssh snic $(echo "mkdir ~/pfs/data/dataset/$name")
 scp ./remote_files/* snic:~/pfs/data/dataset/$name/

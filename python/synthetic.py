@@ -152,11 +152,11 @@ def copy_originals(corpus, repo_name):
         # print(corpus.files[file])
 
 injection_operator_types={
-'insertion-space': (1,0,0,0,0),
-'insertion-tab': (0,1,0,0,0),
-'insertion-newline': (0,0,1,0,0),
-'deletion-space': (0,0,0,1,0),
-'deletion-newline': (0,0,0,0,1)
+    'insertion-space': (1,0,0,0,0),
+    'insertion-tab': (0,1,0,0,0),
+    'insertion-newline': (0,0,1,0,0),
+    'deletion-space': (0,0,0,1,0),
+    'deletion-newline': (0,0,0,0,1)
 }
 
 def run_diff(fileA, fileB):
@@ -536,9 +536,18 @@ if __name__ == '__main__':
 
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = []
-        for corpus in sys.argv[2:]:
+        number_of_errors = int(sys.argv[2])
+        for corpus in sys.argv[3:]:
             corpora.append( Corpus(config['CORPUS'][corpus], corpus) )
-        share = { key:config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
+        share = { key:int(config['DATASHARE'].getfloat(key) * number_of_errors) for key in ['learning', 'validation', 'testing'] }
+        for corpus in corpora:
+            gen_dataset(corpus, share)
+    if len(sys.argv) >= 3 and sys.argv[1] == 'run_v2':
+        corpora = []
+        number_of_errors = int(sys.argv[3:])
+        for corpus in sys.argv[3:]:
+            corpora.append( Corpus(config['CORPUS'][corpus], corpus) )
+        share = { key:int(config['DATASHARE'].getfloat(key) * number_of_errors) for key in ['learning', 'validation', 'testing'] }
         for corpus in corpora:
             gen_dataset(corpus, share)
     if len(sys.argv) >= 2 and sys.argv[1] == 'exp':

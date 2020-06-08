@@ -29,7 +29,7 @@ def gen_ugly_v2(file_path, output_dir, file_name=''):
     suitable_for_deletion = [
         pos
         for pos in range(0, len(whitespace) - 1)
-        if (whitespace[pos][0] > 1 
+        if (whitespace[pos][0] > 1
             or whitespace[pos][0]
             or token_ok_for_deletion(pos)
             or token_ok_for_deletion(pos+1))
@@ -60,7 +60,7 @@ def gen_ugly_v2(file_path, output_dir, file_name=''):
 
     if file_name == '':
         file_name = file_path.split("/")[-1]
-    
+
     return save_file(output_dir, file_name, new_java_source)
 
 
@@ -88,13 +88,34 @@ def mix_files_v2(file_A_path, file_B_path, output_file, from_line, to_line=-1):
     whitespace = whitespace_A[:from_token] + whitespace_B[from_token:to_token+1] + whitespace_A[to_token+1:]
 
     new_java_source = reformat(whitespace, tokens, relative = True)
-    
+
     output_dir = output_file.split('/')[:-1]
     file_name = output_file.split('/')[-1]
 
-    return save_file(output_dir, file_name, new_java_source)    
+    return save_file(output_dir, file_name, new_java_source)
 
 def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
+    """
+    Gen an ugly vertsion of of .java file
+    """
+    with open(file_path) as f:
+        file_lines = f.readlines()
+    file_content = "".join(file_lines)
+
+    output, modifications = gen_ugly_from_source(file_content, modification_number=modification_number)
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
+
+    with open(output_path, "w") as output_file_object:
+        output_file_object.write(output)
+
+    return modifications
+
+
+def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
     """
     Gen an ugly vertsion of of .java file
     """
@@ -106,9 +127,7 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
     deletions_sample_size_newline = modification_number[4]
     deletions_sample_size = deletions_sample_size_space + deletions_sample_size_newline
     # deletions_sample_size = modification_number - insertions_sample_size
-    with open(file_path) as f:
-        file_lines = f.readlines()
-    file_content = "".join(file_lines)
+    file_lines = [ line + '\n' for line in file_content.split('\n') ]
 
     tokens = tokenizer.tokenize(file_content)
     tokens = [ t for t in tokens]
@@ -188,28 +207,22 @@ def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
 
     # print(insertions)
     # print(deletions)
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
-
     # Write the output file
-    with open(output_path, "w") as output_file_object:
-        line_num = 1
-        for line in file_lines:
-            char_num = 1
-            for char in line:
-                skip = False
-                if ((line_num, char_num) in deletions):
-                    skip = True
-                if ((line_num, char_num) in insertions):
-                    output_file_object.write(insertions[(line_num, char_num)])
-                if ( not skip ):
-                    output_file_object.write(char)
-                char_num = char_num + 1
-            line_num = line_num + 1
-    return tuple(set(deletions) | set(insertions.keys()))
+    output = ""
+    line_num = 1
+    for line in file_lines:
+        char_num = 1
+        for char in line:
+            skip = False
+            if ((line_num, char_num) in deletions):
+                skip = True
+            if ((line_num, char_num) in insertions):
+                output += insertions[(line_num, char_num)]
+            if ( not skip ):
+                output += char
+            char_num = char_num + 1
+        line_num = line_num + 1
+    return output, tuple(set(deletions) | set(insertions.keys()))
 
 
 def mix_sources(source_A, source_B, from_line, to_line=-1):
@@ -340,9 +353,9 @@ def tokenize_with_white_space(file_content, relative=True, new_line_at_the_end_o
                 # new line
                 if relative:
                     whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - position_last_line))
-                    position_last_line = next_token_position[1]                
+                    position_last_line = next_token_position[1]
                 else:
-                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1]))                    
+                    whitespace.append(( next_token_position[0] - end_of_token[0] - tokens[index].value.count('\n'), next_token_position[1] - 1))
     if new_line_at_the_end_of_file:
         whitespace.append((1,0))
     else:
@@ -385,14 +398,21 @@ def check_well_formed(file_path):
     """
     with open(file_path) as f:
         file_content = f.read()
+    return check_source_well_formed(file_content)
+
+
+def check_source_well_formed(file_content):
+    """
+    Check if javalang can parse the file
+    :param file_path: the java file dir
+    """
     try:
         tree = parse.parse(file_content)
         return True
     except javalang.parser.JavaSyntaxError as error:
-        print(error)
         return False
-    except:
-        pass
+    except StopIteration as error:
+        return False
 
 
 def get_bad_formated(dir):
@@ -435,3 +455,25 @@ if __name__ == "__main__":
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):
         print(compute_diff_size(sys.argv[2], sys.argv[3]))
+
+class TokenizedSource:
+    def __init__(self, white_spaces, tokens, tabulation=False, relative=True):
+        self.tokens = tokens
+        self.white_spaces = white_spaces
+        self.tabulation = tabulation
+        self.relative = relative
+
+    def reformat(self):
+        return reformat(self.white_spaces, self.tokens, tabulations=self.tabulation, relative=self.relative)
+
+    def enumerate_3_grams(self):
+        return enumerate(zip(self.tokens, self.white_spaces, self.tokens[1:]))
+
+class Tokenizer:
+    def __init__(self, tabulation=False, relative=True):
+        self.tabulation = tabulation
+        self.relative = relative
+
+    def tokenize(self, source):
+        white_spaces, tokens = tokenize_with_white_space(source, relative=self.relative)
+        return TokenizedSource(white_spaces, tokens, tabulation=self.tabulation, relative=self.relative)

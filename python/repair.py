@@ -103,7 +103,7 @@ def get_checkstyle_results(tool, dir, only_targeted=False, checkstyle_rules=None
     else:
         if checkstyle_rules is None:
             checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
-        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir, only_targeted=only_targeted)
+        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir, only_targeted=only_targeted, only_java=True)
         results_json['checkstyle_results'] = checkstyle_results
         results_json['number_of_errors'] = number_of_errors
         save_json(dir, file_name, results_json)

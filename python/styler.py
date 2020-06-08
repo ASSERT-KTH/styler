@@ -5,23 +5,28 @@ import sys
 import glob
 from git import Repo
 from tqdm import tqdm
-import real
+import experiments as real
 from scipy import stats
+import git_helper
+
+from loguru import logger
+import gotify
 
 from core import *
 import checkstyle
 from Corpus import Corpus
 import synthetic
+import synthetic_2
 import ml
 
 __model_dir = './models'
-__dataset_dir = '../datasets/real-errors'
+__dataset_dir = '../datasets/real-errors-new'
 
-def get_model_dir(name, only_formatting=False):
+def get_model_dir(name, protocol, only_formatting=False):
     if only_formatting:
-        return os.path.join(__model_dir, f'{name}-of.pt')
+        return os.path.join(__model_dir, f'{name}-of.{protocol}.pt')
     else:
-        return os.path.join(__model_dir, f'{name}.pt')
+        return os.path.join(__model_dir, f'{name}.{protocol}.pt')
 
 
 def get_real_dataset_dir(name):
@@ -40,9 +45,9 @@ def tokenize_errors(file_path, errors):
 def de_tokenize(original_file_path, info):
     pass
 
-def gen_translator(model_name, batch_size=5, only_formatting=False):
+def gen_translator(model_name, protocol, batch_size=5, only_formatting=False):
     tmp_dir = './styler/tmp'
-    model_dir = get_model_dir(model_name, only_formatting=only_formatting)
+    model_dir = get_model_dir(model_name, protocol, only_formatting=only_formatting)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -93,12 +98,22 @@ def get_files_without_errors(checkstyle_result):
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
 
+
+def get_corpus_dir(name):
+    return f'./styler/{name}-corpus'
+
+
 def create_corpus(dir, name, checkstyle_dir):
     if dir.endswith('/'):
         dir = dir[:-1]
-    corpus_dir = f'./styler/{name}-corpus'
+    corpus_dir = get_corpus_dir(name)
 
-    (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
+    (output, returncode) = checkstyle.check(
+        checkstyle_file_path=checkstyle_dir,
+        file_path=dir,
+        only_targeted=True,
+        only_java=True
+    )
 
     files_without_errors = get_files_without_errors(output)
     files_with_errors = get_files_with_errors(output)
@@ -207,7 +222,7 @@ def select_the_best_repair(correct_repairs, original):
             file = correct_repair
     return file
 
-def repair_files(dir, dir_files, model_name, only_formatting=False):
+def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
     # set the dirs
     target = os.path.join(dir, 'repair-attempt')
     target_final = os.path.join(dir, 'files-repaired')
@@ -218,28 +233,29 @@ def repair_files(dir, dir_files, model_name, only_formatting=False):
     # TODO : Improve it
     dir_files = os.path.join(dir_files, f'./1')
     
-    # create the folders
-    create_dir(target)
-    create_dir(waste)
-
-    # Init of the translator
-    translate = gen_translator(model_name, batch_size=5, only_formatting=only_formatting)
-
     list_of_fileids = list_folders(dir_files)
     number_of_files = len(list_of_fileids)
-    #list_of_fileids = []
-    for folder_id in tqdm(list_of_fileids):
-        file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
-        metadata_path = f'{dir_files}/{folder_id}/metadata.json'
-        for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
-            tokenized_errors, info = error
-            for proposal_id, translation in enumerate(translate(tokenized_errors)):
-                de_tokenized_translation = de_tokenize(file_path, info, translation, only_formatting=only_formatting)
-                folder = f'{target}/batch_{proposal_id}/{int(folder_id) + error_id * number_of_files}'
-                create_dir(folder)
-                save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
+    if not os.path.exists(target):
+        # create the folders
+        create_dir(target)
+        create_dir(waste)
 
-    move_parse_exception_files(target, waste)
+        # Init of the translator
+        translate = gen_translator(model_name, protocol, batch_size=5, only_formatting=only_formatting)
+
+        #list_of_fileids = []
+        for folder_id in tqdm(list_of_fileids):
+            file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
+            metadata_path = f'{dir_files}/{folder_id}/metadata.json'
+            for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
+                tokenized_errors, info = error
+                for proposal_id, translation in enumerate(translate(tokenized_errors)):
+                    de_tokenized_translation = de_tokenize(file_path, info, translation, only_formatting=only_formatting)
+                    folder = f'{target}/batch_{proposal_id}/{int(folder_id) + error_id * number_of_files}'
+                    create_dir(folder)
+                    save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
+
+        move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
     #json_pp(checkstyle_result)
     #save_json('./', 'test.json', checkstyle_result)
@@ -253,7 +269,7 @@ def repair_files(dir, dir_files, model_name, only_formatting=False):
         for id, repairs
         in files_properly_repaired.items()
     }
-    json_pp(final_repairs)
+    logger.debug(f"{len(final_repairs)} files repaired ({protocol})")
     for id, path in final_repairs.items():
         folder = create_dir(f'{target_final}/{id}')
         shutil.copy(path, folder)
@@ -269,11 +285,39 @@ def lits_and_create_corpora():
             create_corpus_git(info['repo'].working_dir, oldest_commit, info['checkstyle_clean'])
 
 
-def repair_real(name):
-    directory = f'./styler/repairs/{name}'
+def repair_real(name, protocol):
+    directory = f'./styler/repairs/{name}_{protocol}'
     create_dir(directory)
     dir_files = get_real_dataset_dir(name)
-    repair_files(directory, dir_files, name, only_formatting=True)
+    repair_files(directory, dir_files, name, protocol, only_formatting=True)
+
+
+def gen_training_data_2(project_path, checkstyle_file_path, project_name):
+    protocols = (('random', 'three_grams'))
+    try:
+        corpus_dir = create_corpus(
+            project_path,
+            project_name,
+            checkstyle_file_path
+        )
+
+        corpus = Corpus(corpus_dir, project_name)
+        share = {
+            'learning': 0.8,
+            'validation': 0.1,
+            'testing': 0.1
+        }
+        for protocol in protocols:
+            synthetic_2.gen_dataset(corpus, share, 10000, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
+            ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
+    
+    except:
+        logger.exception("Something whent wrong during the generation training data")
+        delete_dir_if_exists(get_corpus_dir(project_name))
+        for protocol in protocols:
+            delete_dir_if_exists(f'./tmp/dataset/{protocol}/{project_name}')
+            delete_dir_if_exists(ml.get_tokenized_dir(f'{project_name}_{protocol}'))
+        gotify.notify('[error][data generation]', project_name)
 
 
 def main(args):
@@ -282,8 +326,9 @@ def main(args):
             datasets = ['be5', 'dagger', 'milo', 'okhttp', 'picasso']
         else:
             datasets = args[2:]
-        for dataset in tqdm(datasets):
-            repair_real(dataset)
+        for dataset in tqdm(datasets, desc='dataset'):
+            for protocol in tqdm(protocols, desc='protocol'):
+                repair_real(dataset, protocol)
     if args[1] == 'gen_training_data':
         project_path = args[2]
         checkstyle_file_path = args[3]
@@ -297,7 +342,30 @@ def main(args):
         share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         synthetic.gen_dataset(corpus, share, target_dir=f'./styler/{project_name}-errors' )
         ml.gen_IO(f'./styler/{project_name}-errors', f'./styler/{project_name}-tokens', only_formatting=True)
-        pass
+    if args[1] == 'gen_training_data_2':
+        project_path = args[2]
+        checkstyle_file_path = args[3]
+        project_name = args[4]
+        gen_training_data_2(project_path, checkstyle_file_path, project_name)
+    if args[1] == 'gen_training_for_real_errors':
+        errors_dataset_name = args[2]
+        errors_dataset_dir = get_real_dataset_dir(errors_dataset_name)
+        dataset_info = open_json(os.path.join(errors_dataset_dir, 'info.json'))
+
+        (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
+
+        repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
+        repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
+
+        checkstyle_file_path = os.path.join(errors_dataset_dir, 'checkstyle.xml')
+
+        logger.debug("Starting data generation")
+
+        gen_training_data_2(repo_dir, checkstyle_file_path, errors_dataset_name)
+
+        gotify.notify('[done][data generation]', errors_dataset_name)
+
+        delete_dir(repo_dir)
 
 if __name__ == "__main__":
     main(sys.argv)
