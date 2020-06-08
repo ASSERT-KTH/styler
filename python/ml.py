@@ -16,7 +16,7 @@ import java_lang_utils
 import shutil
 import uuid
 from termcolor import colored
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from difflib import Differ
 import configparser
@@ -483,9 +483,9 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
 
     if 'error' in error_info:
         line = int(error_info['error']['line'])
-        return result#jlu.mix_sources(errored_source, result, line-1, to_line=line+1)
+        return jlu.mix_sources(errored_source, result, line-1, to_line=line+1) #result
     else:
-        return result #jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
+        return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0]) #result
     # return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
 
 def get_predictions(dataset, n, id):

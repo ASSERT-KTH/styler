@@ -8,6 +8,8 @@ import intervals as I
 import collections
 import sys
 import os
+import glob
+from loguru import logger
 
 from core import *
 
@@ -455,6 +457,16 @@ if __name__ == "__main__":
         mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
     elif (sys.argv[1] == "diff"):
         print(compute_diff_size(sys.argv[2], sys.argv[3]))
+    elif sys.argv[1] == "check":
+        folder_dir = sys.argv[2]
+        for file_path in glob.glob(f'{folder_dir}/*/*.java'):
+            logger.debug(file_path)
+            gen_ugly_from_source(open_file(file_path), modification_number = (1,0,0,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,1,0,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,1,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,1,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,0,1))
+
 
 class TokenizedSource:
     def __init__(self, white_spaces, tokens, tabulation=False, relative=True):

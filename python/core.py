@@ -16,6 +16,7 @@ import configparser
 codebuff_color = '#1565c0'
 styler_color = '#64dd17'
 naturalize_color = '#fdd835'
+intellij_color = '#ED4C67'
 
 core_config = configparser.ConfigParser()
 core_config.read('config.ini')
@@ -73,7 +74,8 @@ styler_tools = tuple([f'styler_{protocol}' for protocol in protocols])
 tools_list = tuple([
     'naturalize',
     'codebuff',
-    'intellij'
+    'intellij',
+    'styler'
 ] + list(styler_tools) )
 
 def open_file(file):
