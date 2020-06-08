@@ -352,6 +352,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
                 checkstyle_file_path
             )
 
+
         corpus = Corpus(corpus_dir, project_name)
         share = {
             'learning': 0.8,
@@ -366,6 +367,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
     except:
         logger.exception("Something whent wrong during the generation training data")
         #delete_dir_if_exists(get_corpus_dir(project_name))
+
         for protocol in protocols:
             delete_dir_if_exists(f'./tmp/dataset/{protocol}/{project_name}')
             delete_dir_if_exists(ml.get_tokenized_dir(f'{project_name}_{protocol}'))
@@ -394,6 +396,7 @@ def main(args):
                 if 'batch_1' in choice:
                     protocol_choice_count['three_grams'] += 1
         json_pp(protocol_choice_count)
+
 
     if args[1] == 'gen_training_data':
         project_path = args[2]
