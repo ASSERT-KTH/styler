@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!--
+
+  Checkstyle configuration that checks the sun coding conventions from:
+
+    - the Java Language Specification at
+      http://java.sun.com/docs/books/jls/second_edition/html/index.html
+
+    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
+
+    - the Javadoc guidelines at
+      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
+
+    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
+
+    - some best practices
+
+  Checkstyle is very configurable. Be sure to read the documentation at
+  http://checkstyle.sf.net (or in your downloaded distribution).
+
+  Most Checks are configurable, be sure to consult the documentation.
+
+  To completely disable a check, just comment it out or delete it from the file.
+
+  Finally, it is worth reading the documentation.
+
+-->
+
+<!--
+This file is based on sun_checks.xml with customizations marked with ***
+-->
+
+<module name="Checker">
+    <!--
+        If you set the basedir property below, then all reported file
+        names will be relative to the specified directory. See
+        http://checkstyle.sourceforge.net/5.x/config.html#Checker
+
+        <property name="basedir" value="${basedir}"/>
+    -->
+
+    <property name="fileExtensions" value="java, properties, xml"/>
+
+    <!-- Checks that a package-info.java file exists for each package.     -->
+    <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
+    <!--
+    *** Disabled JavadocPackage
+    -->
+    <!--<module name="JavadocPackage"/>-->
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- Checks that property files contain the same keys.         -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="FileLength"/>
+
+    <!-- Checks for whitespace                               -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Miscellaneous other checks.                   -->
+    <!-- See http://checkstyle.sf.net/config_misc.html -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="minimum" value="0"/>
+        <property name="maximum" value="0"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <!--<module name="SuppressionFilter">-->
+        <!--<property name="file" value="checkstyle/suppressions.xml"/>-->
+        <!--<property name="optional" value="true"/>-->
+    <!--</module>-->
+
+    <!-- Allow suppressing with an annotation -->
+    <module name="SuppressWarningsFilter" />
+
+    <!-- Checks for Headers                                -->
+    <!-- See http://checkstyle.sf.net/config_header.html   -->
+    <!-- <module name="Header"> -->
+    <!--   <property name="headerFile" value="${checkstyle.header.file}"/> -->
+    <!--   <property name="fileExtensions" value="java"/> -->
+    <!-- </module> -->
+
+    <module name="TreeWalker">
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <!--<module name="JavadocMethod">-->
+            <!--<property name="allowedAnnotations"-->
+                      <!--value="Override,Test,ParameterizedTest,Before,BeforeClass,BeforeEach,BeforeAll,After,AfterClass,AfterEach,AfterAll,DisplayName"/> &lt;!&ndash; *** no comment needed for tests and override methods &ndash;&gt;-->
+
+            <!--<property name="scope" value="package"/> &lt;!&ndash; *** don't document private methods &ndash;&gt;-->
+            <!--<property name="allowMissingParamTags" value="true"/>-->
+            <!--<property name="allowMissingThrowsTags" value="true"/>-->
+            <!--<property name="allowMissingReturnTag" value="true"/>-->
+            <!--<property name="minLineCount" value="2"/>-->
+            <!--<property name="allowThrowsTagsForSubclasses" value="true"/>-->
+            <!--<property name="allowMissingPropertyJavadoc" value="true"/>-->
+        <!--</module>-->
+        <!--<module name="JavadocType"/>-->
+        <!--<module name="JavadocVariable">-->
+            <!--<property name="scope" value="protected"/> &lt;!&ndash; *** don't document private fields &ndash;&gt;-->
+        <!--</module>-->
+        <!--<module name="JavadocStyle"/>-->
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"> <!-- *** using Google flavor to permit underscore in test method names -->
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern"
+                     value="Method name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_imports.html -->
+        <module name="AvoidStarImport">
+            <property
+                    name="excludes"
+                    value="java.awt,java.io,java.util,javax.swing,java.lang.Math,org.junit.Assert,org.mockito.Mockito,org.springframework.test.web.servlet.result.MockMvcResultMatchers"/> <!-- *** allowing star import for some packages -->
+        </module>
+        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports">
+            <property name="processJavadoc" value="false"/>
+        </module>
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="180"/> <!-- *** increased length to 120 -->
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForIteratorPad"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true" />
+            <property name="allowEmptyMethods" value="true" />
+            <property name="allowEmptyTypes" value="true" />
+        </module>
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <!-- *** permiting inline conditionals
+        <module name="AvoidInlineConditionals"/>
+        -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter"
+                      value="true"/> <!-- *** allow same name for constructor parameters -->
+            <property name="ignoreSetter" value="true"/> <!-- *** allow same name for setter parameter -->
+        </module>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber">
+            <property name="ignoreFieldDeclaration" value="true" /> <!-- *** ignore field declarations -->
+            <property name="ignoreAnnotation" value="true" /> <!-- *** ignore annotations -->
+            <property name="ignoreHashCodeMethod" value="true" /> <!-- *** ignore hashCode -->
+        </module>
+        <module name="MissingSwitchDefault"/>
+        <module name="NestedIfDepth"/> <!-- *** added if-depth check -->
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="CovariantEquals"/> <!-- *** added module -->
+        <module name="DeclarationOrder"/> <!-- *** added module -->
+        <module name="DefaultComesLast"/> <!-- *** added module -->
+        <module name="EqualsAvoidNull"/> <!-- *** added module -->
+        <module name="ExplicitInitialization"/> <!-- *** added module -->
+        <module name="FallThrough"/> <!-- *** added module -->
+        <module name="IllegalCatch"/> <!-- *** added module -->
+        <module name="IllegalThrows"/> <!-- *** added module -->
+        <module name="IllegalTokenText"> <!-- *** added module -->
+            <property name="tokens" value="STRING_LITERAL"/>
+            <property name="format" value="teh"/>
+        </module>
+        <module name="IllegalType"/> <!-- *** added module -->
+        <module name="ModifiedControlVariable"/> <!-- *** added module -->
+        <module name="MultipleVariableDeclarations"/> <!-- *** added module -->
+        <module name="NestedForDepth"/> <!-- *** added module -->
+        <module name="NestedTryDepth"/> <!-- *** added module -->
+        <module name="NoClone"/> <!-- *** added module -->
+        <module name="NoFinalizer"/> <!-- *** added module -->
+        <module name="OneStatementPerLine"/> <!-- *** added module -->
+        <module name="OverloadMethodsDeclarationOrder"/> <!-- *** added module -->
+        <module name="PackageDeclaration"/> <!-- *** added module -->
+        <module name="ParameterAssignment"/> <!-- *** added module -->
+        <module name="StringLiteralEquality"/> <!-- *** added module -->
+        <module name="UnnecessaryParentheses"/> <!-- *** added module -->
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <!--<module name="DesignForExtension"/>--> <!-- *** disabled rule -->
+        <module name="FinalClass"/>
+        <!--<module name="HideUtilityClassConstructor"/>-->
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier"/>
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <!--<module name="FinalParameters"/> *** disabled module -->
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+
+        <module name="CommentsIndentation"/> <!-- *** added module -->
+        <module name="EmptyLineSeparator"> <!-- *** added module -->
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="allowMultipleEmptyLines" value="false"/>
+        </module>
+
+        <!-- make annotations available to SuppressWarningsFilter -->
+        <module name="SuppressWarningsHolder" />
+    </module>
+
+</module>
