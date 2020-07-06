@@ -93,10 +93,7 @@ def checkstylerr_stats():
                 for error, count in dict_count(errors).items():
                     print('\t\t', end='')
                     if error in targeted_errors:
-                        if error not in corner_cases_errors:
-                            print(colored(f'{error:<30} : {count}', color='green'))
-                        else:
-                            print(colored(f'{error:<30} : {count}', color='yellow'))
+                        print(colored(f'{error:<30} : {count}', color='green'))
                     else:
                         print(f'{error:<30} : {count}')
 

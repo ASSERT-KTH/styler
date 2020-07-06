@@ -55,15 +55,6 @@ targeted_errors = (
     'WhitespaceAround'
 )
 
-corner_cases_errors = (
-    'VisibilityModifier',
-    'SingleLineJavadoc',
-    'UnusedImports',
-    'JavadocMethod',
-    'JavadocType',
-    'MissingDeprecated'
-)
-
 protocols = (
     'random',
     'three_grams'
@@ -287,7 +278,7 @@ def is_error_targeted(error):
     :param error: source of the checkstyle error
     """
     error_type = checkstyle_source_to_error_type(error['source'])
-    return (error_type in targeted_errors and error_type not in corner_cases_errors)
+    return (error_type in targeted_errors)
 
 
 def filter_targeted_error(errors):
