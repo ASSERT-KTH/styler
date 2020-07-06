@@ -100,8 +100,34 @@ def checkstylerr_stats():
                     else:
                         print(f'{error:<30} : {count}')
 
+def checkstylerr_stats_customized():
+    loaded_errors_info = load_errors_info(only_targeted=True)
+
+    number_of_projects = 0
+    
+    for repo, repo_errors_info in group_by(lambda e: e['repo'], loaded_errors_info).items():
+        for size, errors_info in sorted(group_by(lambda e: len(e['errors']), repo_errors_info).items()):
+            if (size == 1):
+                repo_errors = [
+                    error['source'].split('.')[-1][:-5]
+                    for info in errors_info
+                    if len(info['errors']) <= 10
+                    for error in info['errors']
+                ]
+                if len(repo_errors) >= 20:
+                    number_of_projects += 1
+                    print(colored(f'{repo}: {len(repo_errors)/size:.0f} errors', attrs=['bold']))
+                    for error, count in dict_count(repo_errors).items():
+                        if error in targeted_errors:
+                            print('\t\t\t', end='')
+                            print(colored(f'{error:<30} : {count}', color='green'))
+
+    print(f'Number of projects: {number_of_projects}')
+
 if __name__ == '__main__':
     if sys.argv[1] == 'show-checkstylerr-stats':
         checkstylerr_stats()
+    if sys.argv[1] == 'show-checkstylerr-stats-customized':
+        checkstylerr_stats_customized()
     if sys.argv[1] == 'create-dataset':
         create_dataset()
