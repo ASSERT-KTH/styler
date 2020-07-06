@@ -31,7 +31,6 @@ targeted_errors = (
     'FileTabCharacter',
     'GenericWhitespace',
     'Indentation',
-    'JavadocTagContinuationIndentation',
     'LeftCurly',
     'LineLength',
     'MethodParamPad',
