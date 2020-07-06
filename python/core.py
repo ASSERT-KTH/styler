@@ -84,8 +84,11 @@ def open_file(file):
     if not file:
         return ''
     content = ''
-    with open(file, 'r+', encoding="utf-8") as file:
-        content = file.read()
+    try:
+        with open(file, 'r+') as f:
+            content = f.read()
+    except Exception as err:
+        print(file)
     return content
 
 
