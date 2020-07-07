@@ -75,10 +75,10 @@ def open_file(file):
         return ''
     content = ''
     try:
-        with open(file, 'r+') as f:
+        with open(file, 'r+', encoding="utf-8") as f:
             content = f.read()
     except Exception as err:
-        print(file)
+        print('Something wrong happened while trying to open the file ' + file)
     return content
 
 
