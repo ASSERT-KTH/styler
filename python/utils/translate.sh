@@ -1,10 +1,12 @@
 #! /bin/bash
 
 export THC_CACHING_ALLOCATOR=0
-data_path="/home/l/loriotbe/pfs/data"
+project=$1
 n_best=5
+
 python ../OpenNMT-py/translate.py \
-	-model $data_path/dataset/$dataset/model_step_50000.pt\
-	-src $data_path/dataset/$dataset/src-test.txt\
-	-output $data_path/dataset/$dataset/pred_$n_best.txt\
+	-model $TRAINING_DATA/$project/model_step_50000.pt\
+	-src $TRAINING_DATA/$project/src-test.txt\
+	-output $TRAINING_DATA/$project/pred_$n_best.txt\
 	-n_best $n_best
+	
