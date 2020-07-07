@@ -1,5 +1,3 @@
-#FIXME: a lot of things were extracted from here, and this code is not tested (it probably doesn't work for the moment)
-
 import os
 import subprocess
 import sys

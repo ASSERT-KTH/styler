@@ -327,3 +327,18 @@ def start_pool(queue, batch_size, function):
         thread.start()
     for thread in threads:
         thread.join()
+
+def identity(a):
+    return a
+
+def reverse_collection(collection, key_func=None):
+    if key_func == None:
+        key_func = identity
+    result = {}
+    for (keyA, itemsA) in collection.items():
+        for (keyB, itemB) in itemsA.items():
+            value = key_func(keyB)
+            if value not in result:
+                result[value] = {}
+            result[value][keyA] = itemB
+    return result

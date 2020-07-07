@@ -19,8 +19,8 @@ import synthetic
 import synthetic_2
 import ml
 
-__model_dir = './models'
-__dataset_dir = '../datasets/real-errors-new'
+__model_dir = core_config['DEFAULT']['model_dir']
+__dataset_dir = core_config['DEFAULT']['real_dataset_dir']
 
 def get_model_dir(name, protocol, only_formatting=False):
     if only_formatting:
@@ -28,10 +28,8 @@ def get_model_dir(name, protocol, only_formatting=False):
     else:
         return os.path.join(__model_dir, f'{name}.{protocol}.pt')
 
-
 def get_real_dataset_dir(name):
     return os.path.join(__dataset_dir, f'{name}')
-
 
 def tokenize_errors(file_path, errors):
     inputs = []
@@ -144,49 +142,6 @@ def create_corpus(dir, name, checkstyle_dir):
     save_json(corpus_dir, 'corpus.json', corpus_info)
     return corpus_dir
 
-def create_corpus_git(dir, commit, checkstyle_relative_dir):
-    if dir.endswith('/'):
-        dir = dir[:-1]
-    corpus_dir = f'./styler/{dir.split("/")[-1]}-corpus'
-
-    repo = Repo(dir)
-    repo.git.checkout(commit)
-
-    checkstyle_results = find_all(dir, 'checkstyle-result.xml')
-    for checkstyle_result in checkstyle_results:
-        os.remove(checkstyle_result)
-
-    checkstyle_dir = os.path.join(dir, checkstyle_relative_dir)
-    (output, returncode) = checkstyle.check(checkstyle_file_path=checkstyle_dir, file_path=dir)
-
-    files_without_errors = get_files_without_errors(output)
-    files_with_errors = get_files_with_errors(output)
-
-    print(f'Found {len(files_without_errors)} files with no errors.')
-    print(f'Found {len(files_with_errors)} files with errors.')
-
-    def is_good_candidate(file_path):
-        if not file_path.endswith('.java'):
-            return False
-        return True
-
-    candidate_files = filter(is_good_candidate, files_without_errors)
-
-    create_dir(corpus_dir)
-    shutil.copy(checkstyle_dir, os.path.join(corpus_dir, 'checkstyle.xml'))
-    for id, file in tqdm(enumerate(candidate_files), desc='Copy'):
-        file_target_dir = os.path.join(corpus_dir, f'data/{id}')
-        file_name = file.split('/')[-1]
-        file_target = os.path.join(file_target_dir, file_name)
-        create_dir(file_target_dir)
-        shutil.copy(file, file_target)
-
-    corpus_info = {
-        'grammar': 'Java8',
-        'indent': '4'
-    }
-    save_json(corpus_dir, 'corpus.json', corpus_info)
-
 def get_batch_results(checkstyle_results, n_batch=5):
     return {
         batch:{
@@ -196,21 +151,6 @@ def get_batch_results(checkstyle_results, n_batch=5):
         }
         for batch in range(n_batch)
     }
-
-def identity(a):
-    return a
-
-def reverse_collection(collection, key_func=None):
-    if key_func == None:
-        key_func = identity
-    result = {}
-    for (keyA, itemsA) in collection.items():
-        for (keyB, itemB) in itemsA.items():
-            value = key_func(keyB)
-            if value not in result:
-                result[value] = {}
-            result[value][keyA] = itemB
-    return result
 
 def select_the_best_repair(correct_repairs, original):
     min_diff = 10000000
@@ -283,17 +223,6 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
 
     return target_final
 
-def lits_and_create_corpora():
-    repos = ['ONSdigital/rm-notify-gateway']#list(open_json('./travis/commits.json').keys()) + list(open_json('./travis/commits_oss.json').keys())
-    for info in tqdm(real.get_repo_with_checkstyle(repos), desc='Total'):
-        # print(info)
-        commits = real.commit_until_last_modification(info['repo'], info['checkstyle_relative'])
-        if len(commits):
-            oldest_commit = commits[-1]
-            print(f'{info["repo_full_name"]} -> {oldest_commit}')
-            create_corpus_git(info['repo'].working_dir, oldest_commit, info['checkstyle_clean'])
-
-
 def repair_real(name, protocol):
     directory = f'./styler/repairs/{name}_{protocol}'
     create_dir(directory)
@@ -354,14 +283,10 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
 
 
         corpus = Corpus(corpus_dir, project_name)
-        share = {
-            'learning': 0.8,
-            'validation': 0.1,
-            'testing': 0.1
-        }
+        share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
         for protocol in protocols:
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
-            synthetic_2.gen_dataset(corpus, share, 10000, f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
+            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE']['number_of_synthetic_errors'], f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
             ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
@@ -376,10 +301,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
 
 def main(args):
     if args[1] == 'repair':
-        if args[2] == 'all':
-            datasets = ['be5', 'dagger', 'milo', 'okhttp', 'picasso']
-        else:
-            datasets = args[2:]
+        datasets = args[2:]
         protocol_choice_count = {
             'random': 0,
             'three_grams': 0
@@ -397,25 +319,6 @@ def main(args):
                     protocol_choice_count['three_grams'] += 1
         json_pp(protocol_choice_count)
 
-
-    if args[1] == 'gen_training_data':
-        project_path = args[2]
-        checkstyle_file_path = args[3]
-        project_name = args[4]
-        corpus_dir = create_corpus(
-            project_path,
-            project_name,
-            checkstyle_file_path
-        )
-        corpus = Corpus(corpus_dir, project_name)
-        share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
-        synthetic.gen_dataset(corpus, share, target_dir=f'./styler/{project_name}-errors' )
-        ml.gen_IO(f'./styler/{project_name}-errors', f'./styler/{project_name}-tokens', only_formatting=True)
-    if args[1] == 'gen_training_data_2':
-        project_path = args[2]
-        checkstyle_file_path = args[3]
-        project_name = args[4]
-        gen_training_data_2(project_path, checkstyle_file_path, project_name)
     if args[1] == 'gen_training_for_real_errors':
         corpus_dir = None
         if args[2] == '--corpus':

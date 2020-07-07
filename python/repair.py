@@ -1,5 +1,5 @@
 from core import *
-from synthetic import Synthetic_Checkstyle_Error
+from Synthetic_Checkstyle_Error import Synthetic_Checkstyle_Error
 import java_lang_utils
 import checkstyle
 import styler

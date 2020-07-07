@@ -80,44 +80,6 @@ def get_space_value(space):
             result += f'_{-space[1]}_DD'
         return result
 
-#Deprecated
-def build_vocabulary(files):
-    count = {}
-    tokenized_files = [ jlu.tokenize_with_white_space(jlu.open_file(path)) for path in files ]
-    whitespace_id = set()
-
-    threshold = 30
-
-    for spaces, tokens in tokenized_files:
-        whitespace_id = set(spaces) | whitespace_id
-        for token in tokens:
-            name = get_token_value(token)
-            if not name in count:
-                count[name] = 0
-            count[name] += 1
-
-    litterals = list(filter(lambda key: count[key] >= threshold, count.keys()))
-    litterals = { key:value for key, value in zip(litterals, range(len(litterals))) }
-
-    whitespace_id = { key:value for key, value in zip(whitespace_id, range(len(whitespace_id))) }
-
-    len_litterals = len(litterals)
-    len_whitespace = len(whitespace_id)
-    vec_size = len_litterals + 1 + len_whitespace
-
-    def get_vector(space, token):
-        vector = np.array([0]*vec_size)
-        if get_token_value(token) in litterals:
-            vector[litterals[get_token_value(token)]] = 1
-        else:
-            vector[len_litterals] = 1
-        vector[len_litterals + 1 + whitespace_id[space]] = 1
-        return vector
-
-    print(litterals.keys())
-
-    return get_vector, whitespace_id
-
 def tokenize_file_to_repair(file_path, error):
     spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_path))
 
@@ -354,15 +316,6 @@ def gen_IO(dir, target, only_formatting=False):
         merge_IOs(sub_set, synthesis_error_ids, target)
     shutil.copy('./utils/send.sh', target)
     # print(weirdos)
-
-def vectorize_file(path, vectorizer):
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(path))
-
-    result = []
-    for ws, t in zip(spaces, tokens):
-        result.append(vectorizer(ws, t))
-
-    return result
 
 def print_diff(stringA, stringB, only_formatting=False):
     diffs = token_diff(stringA, stringB)
