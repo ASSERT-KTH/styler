@@ -21,7 +21,7 @@ __dataset_dir = config['DEFAULT']['dataset_dir']
 def load_errors_info(only_targeted=False):
     def filepath_from_json_path(x):
         return safe_get_first(glob.glob(pathname=f'{x.rpartition("/")[0]}/*.java'))
-    error_json_path = glob.glob(pathname=f'{__checkstylerr_checkedout_projects_dir}/h2database-h2database/*/*/*.json')
+    error_json_path = glob.glob(pathname=f'{__checkstylerr_checkedout_projects_dir}/*/*/*/*.json')
     errors_info = unique([
         {
             'repo': path_splitted[-4],

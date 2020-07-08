@@ -207,13 +207,6 @@ def diff(file_A, file_B, unified=True):
     output = process.communicate()[0]
     return output.decode("utf-8")
 
-
-share = {
-    'learning': 0.8,
-    'validation': 0.1,
-    'testing': 0.1
-}
-
 def split_files(corpus, share, random_state=100):
     files_list = [file for (_,_,file) in corpus.files.values()]
     n_files = len(files_list)
@@ -245,23 +238,26 @@ class Batch:
             file_name = file_dir.split('/')[-1]
             original_source = open_file(file_dir)
             try:
-                modified_source, modification = modify_source(original_source, protocol=self.protocol)
+                modified_source, modification = modify_source(original_source, protocol=self.protocol)    
+                modification_folder = os.path.join(self.batch_dir, str(index))
+                create_dir(modification_folder)
+                modified_file_dir = save_file(modification_folder, file_name, modified_source)
+                
+                diff_str = diff(file_dir, modified_file_dir)
+                diff_path = save_file(modification_folder, 'diff.diff', diff_str)
+                self.batch_injections[index] = {
+                    'modification': modification,
+                    'diff': diff_str,
+                    'dir': modification_folder,
+                    'orig': file_dir,
+                    'file_name': file_name
+                }
             except InsertionException:
                 logger.debug(InsertionException)
                 continue
-            modification_folder = os.path.join(self.batch_dir, str(index))
-            create_dir(modification_folder)
-            modified_file_dir = save_file(modification_folder, file_name, modified_source)
-            
-            diff_str = diff(file_dir, modified_file_dir)
-            diff_path = save_file(modification_folder, 'diff.diff', diff_str)
-            self.batch_injections[index] = {
-                'modification': modification,
-                'diff': diff_str,
-                'dir': modification_folder,
-                'orig': file_dir,
-                'file_name': file_name
-            }
+            except Exception as err:
+                print(err)
+                continue
         self.checkstyle_result, _ = checkstyle.check(
             self.checkstyle_dir,
             self.batch_dir,
@@ -302,7 +298,7 @@ def gen_errors(files_dir, checkstyle_dir, target, number_of_errors, protocol='ra
             batch_valid_errors = [
                 info
                 for info in batch_res['injection_report'].values() 
-                if len(info['errors']) == 1
+                if 'errors' in info and len(info['errors']) == 1
             ]
             valid_errors += batch_valid_errors
             pbar.update(len(batch_valid_errors))

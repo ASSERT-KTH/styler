@@ -15,7 +15,6 @@ import gotify
 from core import *
 import checkstyle
 from Corpus import Corpus
-import synthetic
 import synthetic_2
 import ml
 
@@ -283,10 +282,10 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
 
 
         corpus = Corpus(corpus_dir, project_name)
-        share = { key:core_config['DATASHARE'].getint(key) for key in ['learning', 'validation', 'testing'] }
+        share = { key: core_config['DATASHARE'].getfloat(key) for key in ['learning', 'validation', 'testing'] }
         for protocol in protocols:
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
-            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE']['number_of_synthetic_errors'], f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
+            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
             ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
