@@ -8,7 +8,6 @@ import repair
 import shutil
 from tqdm import tqdm
 from termcolor import colored
-import git_helper
 from Corpus import Corpus
 from terminaltables import GithubFlavoredMarkdownTable
 from terminaltables import SingleTable
@@ -59,9 +58,6 @@ class Timer:
 def get_experiment_dir(name):
     return f'./experiments/real/{name}'
 
-def get_real_dataset_dir(name):
-    return os.path.join(__real_dataset_dir, name)
-
 def experiment(name, corpus_dir):
     logger.debug(f'Starting the experiment for project {name}')
 
@@ -98,10 +94,10 @@ def experiment(name, corpus_dir):
         target = os.path.join(experiment_dir, f'./{tool}')
         if not os.path.exists(target):
             if tool == 'styler':
-                shutil.copytree(f'./styler/repairs/{name}/files-repaired', target)
+                shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', target)
             elif tool.startswith('styler'):
                 protocol = '_'.join(tool.split('_')[1:])
-                shutil.copytree(f'./styler/repairs/{name}_{protocol}/files-repaired', target)
+                shutil.copytree(f'{get_styler_repairs_by_protocol(name, protocol)}/files-repaired', target)
             elif tool == 'intellij':
                 intellij_dir = os.path.join(experiment_dir, 'intellij')
                 if not os.path.exists(intellij_dir):
@@ -114,7 +110,7 @@ def experiment(name, corpus_dir):
         result[tool] = repaired
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
-    result['out_of'] = list_folders(f'./styler/repairs/{name}_random/repair-attempt/batch_0')
+    result['out_of'] = list_folders(f'{get_real_dataset_dir(name)}/1')
     return result
 
 
@@ -195,7 +191,7 @@ def exp(projects):
     result_raw = {}
     for name in projects:
         # print(name)
-        result_raw[name] = experiment(name, f'./styler/{name}-corpus')
+        result_raw[name] = experiment(name, get_corpus_dir(name))
     # json_pp(result)
     
     result = {
@@ -219,7 +215,7 @@ def exp_stats(projects):
     all_tools = tools_list
     for name in projects:
         # print(name)
-        exp_result[name] = experiment(name, f'./styler/{name}-corpus')
+        exp_result[name] = experiment(name, get_corpus_dir(name))
         exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
     tools = tuple(list(tools_list) + ['all_tools'])
     repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
@@ -329,7 +325,7 @@ def json_report(experiment):
 def exp_venn(projects):
     result = {}
     for name in projects:
-        result[name] = experiment(name, f'./styler/{name}-corpus')
+        result[name] = experiment(name, get_corpus_dir(name))
 
     tools = ('naturalize', 'styler', 'codebuff')
     flat_result = {
@@ -383,7 +379,7 @@ def merge_reports(experiments):
     save_json(get_experiment_dir(''), 'report.json', merged_report)
 
 def compare_protocols(experiment_name):
-    exp_result = experiment(experiment_name, f'./styler/{experiment_name}-corpus')
+    exp_result = experiment(experiment_name, get_corpus_dir(experiment_name))
     res = {}
     res['only_random'] = len(set(exp_result['styler_random']) - set(exp_result['styler_three_grams']))
     res['only_three_grams'] = len(set(exp_result['styler_three_grams']) - set(exp_result['styler_random']))
@@ -418,7 +414,7 @@ def main(args):
     elif len(args) >= 2 and args[1] == 'benchmark':
         result = {}
         for name in args[2:]:
-            result[name] = benchmark(name, f'./styler/{name}-corpus', ('naturalize', 'codebuff'))
+            result[name] = benchmark(name, get_corpus_dir(name), ('naturalize', 'codebuff'))
             save_json('./', 'benchmark.json', result)
         json_pp(result)
         save_json('./', 'benchmark.json', result)

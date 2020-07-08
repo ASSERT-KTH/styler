@@ -21,6 +21,14 @@ intellij_color = '#ED4C67'
 core_config = configparser.ConfigParser()
 core_config.read('config.ini')
 
+__output_dir = core_config['DEFAULT']['output_dir']
+__synthetic_dir = core_config['DEFAULT']['synthetic_dir']
+__tokenized_dir = core_config['DEFAULT']['tokenized_dir']
+__tmp_dir = core_config['DEFAULT']['tmp_dir']
+__tmp_batches_dir = core_config['DEFAULT']['tmp_batches_dir']
+__real_dataset_dir = core_config['DEFAULT']['real_dataset_dir']
+__models_dir = core_config['DEFAULT']['models_dir']
+
 targeted_errors = (
     'AnnotationLocation',
     'AnnotationOnSameLine',
@@ -67,6 +75,45 @@ tools_list = tuple([
     'intellij',
     'styler'
 ] + list(styler_tools) )
+
+def get_project_dir(project_name):
+    return f'{__output_dir}/{project_name}'
+
+def get_corpus_dir(project_name):
+    return f'{get_project_dir(project_name)}/corpus'
+
+def get_styler_repairs(project_name):
+    return f'{get_project_dir(project_name)}/styler/repairs/final'
+
+def get_styler_repairs_by_protocol(project_name, protocol):
+    return f'{get_project_dir(project_name)}/styler/repairs/{protocol}'
+
+def get_tmp_dir(dataset):
+    return f'{get_project_dir(dataset)}/{__tmp_dir}'
+
+def get_tmp_batches_dir(dataset):
+    return f'{get_project_dir(dataset)}/{__tmp_batches_dir}'
+
+def get_synthetic_dataset_dir(dataset):
+    return f'{get_project_dir(dataset)}/{__synthetic_dir}'
+
+def get_synthetic_dataset_dir_by_protocol(dataset, protocol):
+    return f'{get_project_dir(dataset)}/{__synthetic_dir}/{protocol}'
+
+def get_tokenized_dir(dataset):
+    return f'{get_project_dir(dataset)}/{__tokenized_dir}'
+
+def get_tokenized_dir_by_protocol(dataset, protocol):
+    return f'{get_project_dir(dataset)}/{__tokenized_dir}/{protocol}'
+
+def get_model_dir(name, protocol, only_formatting=False):
+    if only_formatting:
+        return os.path.join(get_project_dir(name), __models_dir, protocol, 'model_step_50000.pt')
+    else:
+        return os.path.join(get_project_dir(name), __models_dir, protocol, 'model_step_50000.pt')
+
+def get_real_dataset_dir(name):
+    return os.path.join(get_project_dir(name), __real_dataset_dir)
 
 def open_file(file):
     """Open a file and read the content

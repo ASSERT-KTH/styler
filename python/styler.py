@@ -18,18 +18,6 @@ from Corpus import Corpus
 import synthetic_2
 import ml
 
-__model_dir = core_config['DEFAULT']['model_dir']
-__dataset_dir = core_config['DEFAULT']['real_dataset_dir']
-
-def get_model_dir(name, protocol, only_formatting=False):
-    if only_formatting:
-        return os.path.join(__model_dir, f'{name}-of.{protocol}.pt')
-    else:
-        return os.path.join(__model_dir, f'{name}.{protocol}.pt')
-
-def get_real_dataset_dir(name):
-    return os.path.join(__dataset_dir, f'{name}')
-
 def tokenize_errors(file_path, errors):
     inputs = []
     for error in errors:
@@ -43,7 +31,7 @@ def de_tokenize(original_file_path, info):
     pass
 
 def gen_translator(model_name, protocol, batch_size=5, only_formatting=False):
-    tmp_dir = './styler/tmp'
+    tmp_dir = get_tmp_dir(model_name)
     model_dir = get_model_dir(model_name, protocol, only_formatting=only_formatting)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
@@ -94,11 +82,6 @@ def get_files_without_errors(checkstyle_result):
 
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
-
-
-def get_corpus_dir(name):
-    return f'./styler/{name}-corpus'
-
 
 def create_corpus(dir, name, checkstyle_dir):
     if dir.endswith('/'):
@@ -223,14 +206,14 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
     return target_final
 
 def repair_real(name, protocol):
-    directory = f'./styler/repairs/{name}_{protocol}'
+    directory = get_styler_repairs_by_protocol(name, protocol)
     create_dir(directory)
     dir_files = get_real_dataset_dir(name)
     return repair_files(directory, dir_files, name, protocol, only_formatting=True)
 
 
 def join_protocols(name, protocols_repairs):
-    directory = f'./styler/repairs/{name}'
+    directory = get_styler_repairs(name)
     create_dir(directory)
     target = os.path.join(directory, 'repair-attempt')
     target_final = os.path.join(directory, 'files-repaired')
@@ -285,16 +268,17 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
         share = { key: core_config['DATASHARE'].getfloat(key) for key in ['learning', 'validation', 'testing'] }
         for protocol in protocols:
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
-            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), f'./tmp/dataset/{protocol}/{project_name}', protocol=protocol)
-            ml.gen_IO(f'./tmp/dataset/{protocol}/{project_name}', ml.get_tokenized_dir(f'{project_name}_{protocol}'), only_formatting=True)
+            synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
+            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, protocol=protocol)
+            ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
         logger.exception("Something whent wrong during the generation training data")
         #delete_dir_if_exists(get_corpus_dir(project_name))
 
         for protocol in protocols:
-            delete_dir_if_exists(f'./tmp/dataset/{protocol}/{project_name}')
-            delete_dir_if_exists(ml.get_tokenized_dir(f'{project_name}_{protocol}'))
+            delete_dir_if_exists(f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}')
+            delete_dir_if_exists(get_tokenized_dir_by_protocol(project_name, protocol))
         gotify.notify('[error][data generation]', project_name)
 
 
@@ -318,7 +302,7 @@ def main(args):
                     protocol_choice_count['three_grams'] += 1
         json_pp(protocol_choice_count)
 
-    if args[1] == 'gen_training_for_real_errors':
+    if args[1] == 'gen_training_data':
         corpus_dir = None
         if args[2] == '--corpus':
             corpus_dir = args[3]

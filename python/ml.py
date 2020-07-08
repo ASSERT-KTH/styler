@@ -27,22 +27,6 @@ import token_utils
 pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-__synthetic_dir = config['DEFAULT']['SYNTHETIC_DIR']
-__tokenized_dir = config['DEFAULT']['TOKENIZED_DIR']
-__protocol = 'protocol1'
-
-def get_dataset_dir(dataset):
-    return f'{__synthetic_dir}/dataset/{__protocol}/{dataset}'
-
-def get_tokenized_dir(dataset):
-    return f'{__tokenized_dir}/{dataset}'
-
-def get_sub_set_dir(dataset, sub_set):
-    return f'{get_dataset_dir(dataset)}/{sub_set}'
-
 
 def get_token_value(token):
     if isinstance(token, tokenizer.Keyword):
@@ -289,7 +273,6 @@ def print_max_length_and_vocabulary(folder):
 
 def gen_IO(dir, target, only_formatting=False):
     create_dir(target)
-    # dir = get_dataset_dir(dataset)
     sub_sets = ['learning', 'validation', 'testing']
     diffs = []
     weirdos = []
@@ -314,7 +297,6 @@ def gen_IO(dir, target, only_formatting=False):
             if info['count_diff'] == 2:
                 weirdos.append(f'{sub_set}/{id}')
         merge_IOs(sub_set, synthesis_error_ids, target)
-    shutil.copy('./utils/send.sh', target)
     # print(weirdos)
 
 def print_diff(stringA, stringB, only_formatting=False):
@@ -442,14 +424,17 @@ def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_format
     # return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
 
 def get_predictions(dataset, n, id):
+    print(dataset)
     tokenized_dir = get_tokenized_dir(dataset)
     return open_file(os.path.join(tokenized_dir, f'pred_{n}.txt')).split('\n')[(id*n):(id*n + n)]
 
 def get_I(dataset, type, id):
+    print(dataset)
     tokenized_dir = get_tokenized_dir(dataset)
     return open_file(os.path.join(tokenized_dir, f'{type}/{id}-I.txt'))
 
 def get_O(dataset, type, id):
+    print(dataset)
     tokenized_dir = get_tokenized_dir(dataset)
     return open_file(os.path.join(tokenized_dir, f'{type}/{id}-O.txt'))
 
@@ -457,13 +442,13 @@ def get_line(file, line):
     return open_file(file).split('\n')[line]
 
 def get_error_filename_and_content(dataset, id):
-    synthetic_dir = os.path.join(get_dataset_dir(dataset), f'testing/{id}')
+    synthetic_dir = os.path.join(get_synthetic_dataset_dir(dataset), f'testing/{id}')
     errored_file_name = [ file for file in  os.listdir(synthetic_dir) if (file.endswith('.java') and 'orig' not in file ) ][0]
     errored_source = open_file(os.path.join(synthetic_dir, errored_file_name))
     return errored_file_name, errored_source
 
 def get_orig_filename_and_content(dataset, id):
-    synthetic_dir = os.path.join(get_dataset_dir(dataset), f'testing/{id}')
+    synthetic_dir = os.path.join(get_synthetic_dataset_dir(dataset), f'testing/{id}')
     orig_file_name = [ file for file in  os.listdir(synthetic_dir) if (file.endswith('.java') and 'orig' in file ) ][0]
     orig_source = open_file(os.path.join(synthetic_dir, orig_file_name))
     return orig_file_name, orig_source
@@ -531,14 +516,14 @@ def print_aligned_strings(strings):
 
 def main(args):
     if sys.argv[2] == 'all':
-        dataset_list = list_folders(get_dataset_dir(''))
+        dataset_list = list_folders(get_synthetic_dataset_dir(''))
     else:
         dataset_list = sys.argv[2:]
 
     if len(args) >= 2 and args[1] == 'gen':
         target = get_tokenized_dir('')
         for dataset in dataset_list:
-            gen_IO(get_dataset_dir(dataset), os.path.join(target, dataset), only_formatting=True)
+            gen_IO(get_synthetic_dataset_dir(dataset), os.path.join(target, dataset), only_formatting=True)
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]
         print_max_length_and_vocabulary(folder)

@@ -5,12 +5,7 @@ import os
 from loguru import logger
 import configparser
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-config = configparser.ConfigParser()
-config.read(os.path.join(dir_path, "config.ini"))
-
-__git_repo_dir = config['DEFAULT']['git_repo_dir']
-
+from core import *
 
 def clone_repo(user, repo_name, https=False):
     """
@@ -28,7 +23,7 @@ def get_repo_dir(user, repo_name):
     """
     returns the location of a given repo
     """
-    return os.path.join(__git_repo_dir, f'{user}/{repo_name}')
+    return os.path.join(get_project_dir(f'{user}-{repo_name}'), core_config['DEFAULT']['git_repo_dir'], f'{user}-{repo_name}')
 
 
 def open_repo(user, repo_name):

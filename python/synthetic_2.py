@@ -20,10 +20,6 @@ from loguru import logger
 
 BATCH_SIZE = 500
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-
 def word_counter_to_csv(counter):
     # field names
     fields = ['token_1', 'ws', 'token_2', 'count']
@@ -228,7 +224,8 @@ class Batch:
         else:
             self.batch_id = batch_id
         self.batch_files = [random.choice(files_dir) for _ in range(BATCH_SIZE)]
-        self.batch_dir = f'./tmp/batches/{self.batch_id}'
+        self.project_name = checkstyle_dir.split('/')[-3]
+        self.batch_dir = f'{get_tmp_batches_dir(self.project_name)}/{self.batch_id}'
         self.protocol = protocol
     
     def gen(self):
@@ -264,16 +261,19 @@ class Batch:
             only_java=True,
             only_targeted=True
         )
-        for file_dir, res in self.checkstyle_result.items():
-            index = int(file_dir.split('/')[-2])
-            self.batch_injections[index]['errors'] = res['errors']
-            save_json(self.batch_injections[index]['dir'], 'errors.json', res['errors'])
-        self.batch_information = {
-            'batch_id': self.batch_id,
-            'injection_report': self.batch_injections
-        }
-        save_json(self.batch_dir, 'metadata.json', self.batch_information)
-        return self.batch_information
+        if self.checkstyle_result is not None:
+            for file_dir, res in self.checkstyle_result.items():
+                index = int(file_dir.split('/')[-2])
+                self.batch_injections[index]['errors'] = res['errors']
+                save_json(self.batch_injections[index]['dir'], 'errors.json', res['errors'])
+
+            self.batch_information = {
+                'batch_id': self.batch_id,
+                'injection_report': self.batch_injections
+            }
+            save_json(self.batch_dir, 'metadata.json', self.batch_information)
+            return self.batch_information
+        return None
     
     def clean(self):
         shutil.rmtree(self.batch_dir)
@@ -294,6 +294,8 @@ def gen_errors(files_dir, checkstyle_dir, target, number_of_errors, protocol='ra
                 continue
             except: # UnicodeEncodeError
                 logger.exception("Something went whrong")
+                continue
+            if batch_res is None:
                 continue
             batch_valid_errors = [
                 info
@@ -329,13 +331,13 @@ def gen_dataset(corpus, share, total, target, protocol='random'):
 
 if __name__ == '__main__':
     if sys.argv[2] == 'all':
-        dataset_list = config['CORPUS']['corpus_names'].split(',')
+        dataset_list = core_config['CORPUS']['corpus_names'].split(',')
     else:
         dataset_list = sys.argv[2:]
 
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = map(
-            lambda corpus: Corpus(config['CORPUS']['corpus_dir'] % corpus, corpus),
+            lambda corpus: Corpus(core_config['CORPUS']['corpus_dir'] % corpus, corpus),
             dataset_list
         )
         c = Counter()
@@ -349,5 +351,5 @@ if __name__ == '__main__':
         corpus_name = sys.argv[3]
         if protocol not in (('random', 'three_grams')):
             raise Exception('Unkown protocol')
-        corpus = Corpus(config['CORPUS']['corpus_dir'] % corpus_name, corpus_name)
+        corpus = Corpus(core_config['CORPUS']['corpus_dir'] % corpus_name, corpus_name)
         gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{corpus_name}', protocol=protocol)
