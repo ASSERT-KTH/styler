@@ -15,7 +15,7 @@ import gotify
 from core import *
 import checkstyle
 from Corpus import Corpus
-import synthetic_2
+import synthetic_error_generator
 import ml
 
 def tokenize_errors(file_path, errors):
@@ -271,7 +271,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, checkstyle_jar, proj
         for protocol in protocols:
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
             synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
-            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, checkstyle_jar, protocol=protocol)
+            synthetic_error_generator.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, checkstyle_jar, protocol=protocol)
             ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
