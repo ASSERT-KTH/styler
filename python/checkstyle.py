@@ -4,15 +4,10 @@
 """A basic python wrapper for checkstyle
     """
 
-
 import os
 import xml.etree.ElementTree as ET
 import subprocess
 import sys
-from functools import reduce
-
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
 
 from core import *
 
@@ -62,48 +57,6 @@ def parse_file(file_path, only_targeted=False):
         file_content = f.read()
     return parse_res(file_content, only_targeted=only_targeted)
 
-def analyse_results(results):
-    """
-    Depreciated.
-    Gives quick analyse of the checkstyle results
-    """
-    FIXABLE = (
-        'RegexpSinglelineCheck',
-        'WitespaceAfterCheck',
-        'OneStatementPerLineCheck',
-        'NoLineWrapCheck',
-        'OperatorWrapCheck',
-        'ParentPadCheck',
-        'NoWhitespaceBeforeCheck',
-        'FileTabCharacterCheck',
-        'IndentationCheck',
-    )
-
-    # sanitize the results
-    is_java = lambda file: file.split('.')[-1] == 'java'
-    results_sanitized = {key:value for key, value in results.items() if is_java(key)}
-
-    # count some stuff
-    number_of_files = len(results_sanitized)
-    files_with_errors = { key:value for key, value in results_sanitized.items() if len(value["errors"]) }
-    error_to_name = lambda error: error['source'].split('.')[-1]
-    errors = map(error_to_name, reduce(list.__add__, map(lambda x: x["errors"],files_with_errors.values())));
-    errors_count = {}
-    for error in errors:
-        errors_count[error] = errors_count.get(error, 0) + 1
-    total_number_of_errors = sum(errors_count.values())
-    number_of_files_error_free = number_of_files - len(files_with_errors)
-    possibly_fixable_errors_count = {key:value for key, value in errors_count.items() if key in FIXABLE}
-    possibly_fixable_count = sum(possibly_fixable_errors_count.values())
-    return {
-        "number_of_files": number_of_files,
-        "number_of_files_error_free": number_of_files_error_free,
-        "errors_count": errors_count,
-        "total_number_of_errors": total_number_of_errors,
-        "possibly_fixable_errors_count": possibly_fixable_errors_count,
-        "possibly_fixable_count": possibly_fixable_count,
-    }
-
 if __name__ == "__main__":
     if sys.argv[1] == "cs":
         checkstyle_path = "./test_corpora/commons-lang/checkstyle.xml"
@@ -114,8 +67,6 @@ if __name__ == "__main__":
 
         (output_raw, errorcode) = check(checkstyle_path, file_path)
         print(output_raw, errorcode)
-    elif sys.argv[1] == "read":
-        pp.pprint(analyse_results(parse_file(sys.argv[2])))
     elif sys.argv[1] == "check":
         out, n = check(sys.argv[2], sys.argv[3], only_targeted=True, only_java=True)
         json_pp(out)
