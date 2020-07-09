@@ -217,8 +217,9 @@ def split_files(corpus, share, random_state=100):
     }
 
 class Batch:
-    def __init__(self, files_dir, checkstyle_dir, batch_id=None, protocol='random'):
+    def __init__(self, files_dir, checkstyle_dir, checkstyle_jar, batch_id=None, protocol='random'):
         self.checkstyle_dir = checkstyle_dir
+        self.checkstyle_jar = checkstyle_jar
         if batch_id == None:
             self.batch_id = uuid.uuid4().hex
         else:
@@ -258,6 +259,7 @@ class Batch:
         self.checkstyle_result, _ = checkstyle.check(
             self.checkstyle_dir,
             self.batch_dir,
+            self.checkstyle_jar,
             only_java=True,
             only_targeted=True
         )
@@ -279,12 +281,12 @@ class Batch:
         shutil.rmtree(self.batch_dir)
 
 
-def gen_errors(files_dir, checkstyle_dir, target, number_of_errors, protocol='random'):
+def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_errors, protocol='random'):
     valid_errors = []
     batches = []
     with tqdm(total=number_of_errors) as pbar:
         while len(valid_errors) < number_of_errors:
-            batch = Batch(files_dir, checkstyle_dir, protocol=protocol)
+            batch = Batch(files_dir, checkstyle_dir, checkstyle_jar, protocol=protocol)
             batches.append(batch)
             try:
                 batch_res = batch.gen()
@@ -323,10 +325,10 @@ def gen_errors(files_dir, checkstyle_dir, target, number_of_errors, protocol='ra
     return selected_errors
 
 
-def gen_dataset(corpus, share, total, target, protocol='random'):
+def gen_dataset(corpus, share, total, target, checkstyle_jar, protocol='random'):
     splitted_files = split_files(corpus, share)
     for name, subset_share in share.items():
-        gen_errors(splitted_files[name], corpus.checkstyle, os.path.join(target, name), int(subset_share*total), protocol=protocol)
+        gen_errors(splitted_files[name], corpus.checkstyle, checkstyle_jar, os.path.join(target, name), int(subset_share*total), protocol=protocol)
 
 
 if __name__ == '__main__':

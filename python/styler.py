@@ -83,14 +83,15 @@ def get_files_without_errors(checkstyle_result):
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
 
-def create_corpus(dir, name, checkstyle_dir):
+def create_corpus(dir, name, checkstyle_dir, checkstyle_jar):
     if dir.endswith('/'):
         dir = dir[:-1]
     corpus_dir = get_corpus_dir(name)
 
     (output, returncode) = checkstyle.check(
         checkstyle_file_path=checkstyle_dir,
-        file_path=dir,
+        file_to_checkstyle_path=dir,
+        checkstyle_jar=checkstyle_jar,
         only_targeted=True,
         only_java=True
     )
@@ -143,7 +144,7 @@ def select_the_best_repair(correct_repairs, original):
             file = correct_repair
     return file
 
-def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
+def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_formatting=False):
     # set the dirs
     target = os.path.join(dir, 'repair-attempt')
     target_final = os.path.join(dir, 'files-repaired')
@@ -178,7 +179,7 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
                     save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
 
         move_parse_exception_files(target, waste)
-    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
+    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     #json_pp(checkstyle_result)
     #save_json('./', 'test.json', checkstyle_result)
     def select_best_proposal(file_id, proposals):
@@ -205,14 +206,14 @@ def repair_files(dir, dir_files, model_name, protocol, only_formatting=False):
 
     return target_final
 
-def repair_real(name, protocol):
+def repair_real(name, protocol, checkstyle_jar):
     directory = get_styler_repairs_by_protocol(name, protocol)
     create_dir(directory)
     dir_files = get_real_dataset_dir(name)
-    return repair_files(directory, dir_files, name, protocol, only_formatting=True)
+    return repair_files(directory, dir_files, name, protocol, checkstyle_jar, only_formatting=True)
 
 
-def join_protocols(name, protocols_repairs):
+def join_protocols(name, protocols_repairs, checkstyle_jar):
     directory = get_styler_repairs(name)
     create_dir(directory)
     target = os.path.join(directory, 'repair-attempt')
@@ -227,7 +228,7 @@ def join_protocols(name, protocols_repairs):
         if os.path.exists(protocol_target):
             shutil.rmtree(protocol_target)
         shutil.copytree(path, protocol_target)
-    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, only_targeted=True)
+    checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     res = reverse_collection(get_batch_results(checkstyle_result, n_batch=len(protocols_repairs)))
 
     def select_best_proposal(file_id, proposals):
@@ -253,14 +254,15 @@ def join_protocols(name, protocols_repairs):
         shutil.copy(path, folder)
     return best_proposals
 
-def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus_dir=None):
+def gen_training_data_2(project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
     try:
         if corpus_dir is None:
             corpus_dir = create_corpus(
                 project_path,
                 project_name,
-                checkstyle_file_path
+                checkstyle_file_path,
+                checkstyle_jar
             )
 
 
@@ -269,7 +271,7 @@ def gen_training_data_2(project_path, checkstyle_file_path, project_name, corpus
         for protocol in protocols:
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
             synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
-            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, protocol=protocol)
+            synthetic_2.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, checkstyle_jar, protocol=protocol)
             ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
@@ -290,11 +292,15 @@ def main(args):
             'three_grams': 0
         }
         for dataset in tqdm(datasets, desc='dataset'):
+            errors_dataset_dir = get_real_dataset_dir(dataset)
+            dataset_info = open_json(os.path.join(errors_dataset_dir, 'info.json'))
+            checkstyle_jar = dataset_info["checkstyle_jar"]
+
             results = {}
             for protocol in tqdm(protocols, desc='protocol'):
-                results[protocol] = repair_real(dataset, protocol)
+                results[protocol] = repair_real(dataset, protocol, checkstyle_jar)
             ## join protcols 
-            choices = join_protocols(dataset, results)
+            choices = join_protocols(dataset, results, checkstyle_jar)
             for choice in choices.values():
                 if 'batch_0' in choice:
                     protocol_choice_count['random'] += 1
@@ -312,6 +318,8 @@ def main(args):
         errors_dataset_dir = get_real_dataset_dir(errors_dataset_name)
         dataset_info = open_json(os.path.join(errors_dataset_dir, 'info.json'))
 
+        checkstyle_jar = dataset_info["checkstyle_jar"]
+
         (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
 
         repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
@@ -321,7 +329,7 @@ def main(args):
 
         logger.debug("Starting data generation")
 
-        gen_training_data_2(repo_dir, checkstyle_file_path, errors_dataset_name, corpus_dir=corpus_dir)
+        gen_training_data_2(repo_dir, checkstyle_file_path, checkstyle_jar, errors_dataset_name, corpus_dir=corpus_dir)
 
         gotify.notify('[done][data generation]', errors_dataset_name)
 
