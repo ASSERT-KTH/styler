@@ -29,7 +29,6 @@ python $DIR/OpenNMT-py/train.py \
 	-learning_rate 0.10 \
 	-adagrad_accumulator_init 0.1 \
 	-bridge \
-	-gpu_ranks 0 \
 	-train_steps 20000 \
 	-valid_steps 2000 \
 	-save_checkpoint_steps 2000 \
