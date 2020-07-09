@@ -104,6 +104,20 @@ def get_line_indent(line):
 
 
 def modify_source_three_grams(source, n_insertion=1):
+    lines = source.split("\n")
+    nb_tab = 0
+    nb_space = 0
+    for line in lines:
+        if len(line) == 0:
+            continue
+        if line[0] == "\t":
+            nb_tab += 1
+        elif line[0] == " ":
+            nb_space += 1
+
+    tokenizer.tabulation = nb_tab >= nb_space
+    tokenizer_absolute.tabulation = nb_tab >= nb_space
+
     tokenized_source = tokenizer.tokenize(source)
     tokenized_source_absolute = tokenizer_absolute.tokenize(source)
     insertion_spots = list(range(len(tokenized_source.tokens)-1))
