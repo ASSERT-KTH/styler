@@ -52,8 +52,7 @@ def tokenize_and_count(file_path):
     return counter
 
 
-
-df = pd.read_csv('./three_grams.csv')
+df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'three_grams.csv'))
 count_df = df.loc[:,['token_1', 'token_2', 'count']].groupby(['token_1', 'token_2']).agg(['count', 'sum'])
 count = count_df['count']['count']
 good_for_insertion = list(count[count>=2].index)
