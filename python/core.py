@@ -19,7 +19,7 @@ naturalize_color = '#fdd835'
 intellij_color = '#ED4C67'
 
 core_config = configparser.ConfigParser()
-core_config.read('config.ini')
+core_config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
 __output_dir = core_config['DEFAULT']['output_dir']
 __synthetic_dir = core_config['DEFAULT']['synthetic_dir']
