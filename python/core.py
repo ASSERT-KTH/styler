@@ -77,6 +77,8 @@ tools_list = tuple([
 ] + list(styler_tools) )
 
 def get_project_dir(project_name):
+    if __output_dir[0] != '/':
+        __output_dir = os.path.join(os.path.dirname(__file__), __output_dir)
     return f'{__output_dir}/{project_name}'
 
 def get_corpus_dir(project_name):
