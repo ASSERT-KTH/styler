@@ -271,7 +271,6 @@ def gen_training_data_2(project_path, checkstyle_file_path, checkstyle_jar, proj
             gotify.notify('[data generation]', f'Start {protocol} on {project_name}')
             synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
             synthetic_error_generator.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, checkstyle_jar, protocol=protocol)
-            ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
         logger.exception("Something whent wrong during the generation training data")
@@ -333,6 +332,12 @@ def main(args):
         gotify.notify('[done][data generation]', errors_dataset_name)
 
         #delete_dir(repo_dir)
+    
+    if args[1] == 'tokenize_training_data':
+        project_name = args[2]
+        for protocol in core.protocols:
+            synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
+            ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
 
 if __name__ == "__main__":
     main(sys.argv)
