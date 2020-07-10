@@ -56,13 +56,19 @@ class Timer:
 
 # timer = Timer()
 def get_experiment_dir(name):
-    return f'./experiments/real/{name}'
+    return f'{get_output_dir()}/../experiments/{name}'
 
 def experiment(name, corpus_dir):
     logger.debug(f'Starting the experiment for project {name}')
 
     dataset_dir = create_dir(get_real_dataset_dir(name))
+    dataset_info = open_json(os.path.join(dataset_dir, 'info.json'))
+    checkstyle_jar = dataset_info["checkstyle_jar"]
+    logger.debug(f'Checkstyle jar version: {checkstyle_jar}')
+
+    logger.debug(f'Real dataset dir: {dataset_dir}')
     experiment_dir = get_experiment_dir(name)
+    logger.debug(f'Experiment dir: {experiment_dir}')
     errored_dir = os.path.join(experiment_dir, f'./errored')
     clean_dir = os.path.join(experiment_dir, f'./clean')
     if not os.path.exists(experiment_dir):
@@ -106,7 +112,7 @@ def experiment(name, corpus_dir):
             else:
                 repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
-        repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
+        repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
         result[tool] = repaired
         # print(f'{tool} : {len(repaired)}')
         # json_pp(repaired)
@@ -288,8 +294,12 @@ def json_report(experiment):
     checkstyle_path = os.path.join(experiment_dir, 'checkstyle.xml')
     errored_dir = os.path.join(experiment_dir, 'errored/1')
 
+    dataset_dir = get_real_dataset_dir(experiment)
+    dataset_info = open_json(os.path.join(dataset_dir, 'info.json'))
+    checkstyle_jar = dataset_info["checkstyle_jar"]
+
     logger.debug('Getting the original errors')
-    (errored_result, _) = checkstyle.check(checkstyle_path, errored_dir, only_targeted=True, only_java=True)
+    (errored_result, _) = checkstyle.check(checkstyle_path, errored_dir, checkstyle_jar, only_targeted=True, only_java=True)
 
     def get_file_id(file_path):
         return file_path.split('/')[-2]

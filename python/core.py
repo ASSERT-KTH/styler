@@ -76,11 +76,14 @@ tools_list = tuple([
     'styler'
 ] + list(styler_tools) )
 
-def get_project_dir(project_name):
+def get_output_dir():
     global __output_dir
     if __output_dir[0] != '/':
         __output_dir = os.path.join(os.path.dirname(__file__), __output_dir)
-    return f'{__output_dir}/{project_name}'
+    return __output_dir
+
+def get_project_dir(project_name):
+    return f'{get_output_dir()}/{project_name}'
 
 def get_corpus_dir(project_name):
     return f'{get_project_dir(project_name)}/corpus'
@@ -111,9 +114,9 @@ def get_tokenized_dir_by_protocol(dataset, protocol):
 
 def get_model_dir(name, protocol, only_formatting=False):
     if only_formatting:
-        return os.path.join(get_project_dir(name), __models_dir, protocol, 'model_step_50000.pt')
+        return os.path.join(get_project_dir(name), __models_dir, protocol, 'general-1-256-256/model_step_20000.pt')
     else:
-        return os.path.join(get_project_dir(name), __models_dir, protocol, 'model_step_50000.pt')
+        return os.path.join(get_project_dir(name), __models_dir, protocol, 'general-1-256-256/model_step_20000.pt')
 
 def get_real_dataset_dir(name):
     return os.path.join(get_project_dir(name), __real_dataset_dir)

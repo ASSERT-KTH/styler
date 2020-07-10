@@ -90,7 +90,7 @@ def get_uglies(ugly_dir):
     return uglies
 
 
-def get_checkstyle_results(tool, dir, only_targeted=False, checkstyle_rules=None):
+def get_checkstyle_results(tool, dir, checkstyle_jar, only_targeted=False, checkstyle_rules=None):
     """
     Return the checkstyle results
     """
@@ -103,20 +103,20 @@ def get_checkstyle_results(tool, dir, only_targeted=False, checkstyle_rules=None
     else:
         if checkstyle_rules is None:
             checkstyle_rules = os.path.join(dir, 'checkstyle.xml')
-        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir, only_targeted=only_targeted, only_java=True)
+        checkstyle_results, number_of_errors = checkstyle.check(checkstyle_rules, tool_dir, checkstyle_jar, only_targeted=only_targeted, only_java=True)
         results_json['checkstyle_results'] = checkstyle_results
         results_json['number_of_errors'] = number_of_errors
         save_json(dir, file_name, results_json)
     return results_json['checkstyle_results'], results_json['number_of_errors']
 
 
-def get_repaired(tool, dir, batch=False, only_targeted=False, checkstyle_rules=None):
+def get_repaired(tool, dir, checkstyle_jar, batch=False, only_targeted=False, checkstyle_rules=None):
     """
     Return the list of files repaired during the experiment
     """
     if not os.path.exists(f'{dir}/{tool}'):
         return []
-    checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir,  only_targeted=only_targeted, checkstyle_rules=checkstyle_rules)
+    checkstyle_results, number_of_errors = get_checkstyle_results(tool, dir, checkstyle_jar, only_targeted=only_targeted, checkstyle_rules=checkstyle_rules)
     if batch:
         batch_result = styler.get_batch_results(checkstyle_results)
         return list(
@@ -126,8 +126,10 @@ def get_repaired(tool, dir, batch=False, only_targeted=False, checkstyle_rules=N
             )
         )
     else:
-        return [
-            file.split('/')[-2]
-            for file, result in checkstyle_results.items()
-            if len(result['errors']) == 0
-        ]
+        if checkstyle_results is not None:
+            return [
+                file.split('/')[-2]
+                for file, result in checkstyle_results.items()
+                if len(result['errors']) == 0
+            ]
+        return []

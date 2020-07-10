@@ -95,7 +95,7 @@ def repair_heatmap(data):
     ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)#, cmap='RdYlGn')
     for t in ax.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
-    plt.savefig('../results/repair_heatmap.pdf', format='pdf')
+    plt.savefig('./experiments/experiments/repair_heatmap.pdf', format='pdf')
 
 def repair_cluster(data):
     sns.set_context("paper", font_scale=1)                                                  
@@ -103,4 +103,4 @@ def repair_cluster(data):
     g = sns.clustermap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)
     for t in g.ax_heatmap.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(right=0.75)
-    plt.savefig('../results/repair_cluster.pdf', format='pdf')
+    plt.savefig('./experiments/experiments/repair_cluster.pdf', format='pdf')
