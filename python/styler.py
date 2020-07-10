@@ -17,6 +17,8 @@ from Corpus import Corpus
 import synthetic_error_generator
 import ml
 
+from datetime import datetime 
+
 def tokenize_errors(file_path, errors):
     inputs = []
     for error in errors:
@@ -307,6 +309,8 @@ def main(args):
         json_pp(protocol_choice_count)
 
     if args[1] == 'gen_training_data':
+        start_time = datetime.now() 
+
         corpus_dir = None
         if args[2] == '--corpus':
             corpus_dir = args[3]
@@ -332,6 +336,10 @@ def main(args):
         gotify.notify('[done][data generation]', errors_dataset_name)
 
         #delete_dir(repo_dir)
+
+        time_elapsed = datetime.now() - start_time 
+
+        logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
     
     if args[1] == 'tokenize_training_data':
         project_name = args[2]
