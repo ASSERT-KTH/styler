@@ -335,7 +335,7 @@ def main(args):
     
     if args[1] == 'tokenize_training_data':
         project_name = args[2]
-        for protocol in core.protocols:
+        for protocol in protocols:
             synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
             ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
 
