@@ -223,6 +223,10 @@ def split_files(corpus, share, random_state=100):
     random.shuffle(files_list)
     c_learning = int(share['learning']*n_files)
     c_validation = int(share['validation']*n_files)
+    if c_validation == 0:
+        c_validation = 1
+        if c_learning + c_validation > n_files:
+            c_learning -= 1
     return {
         'learning': files_list[:c_learning],
         'validation': files_list[c_learning: c_learning+c_validation],
