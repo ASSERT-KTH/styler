@@ -89,10 +89,10 @@ def get_corpus_dir(project_name):
     return f'{get_project_dir(project_name)}/corpus'
 
 def get_styler_repairs(project_name):
-    return f'{get_project_dir(project_name)}/styler/repairs/final'
+    return f'{get_project_dir(project_name)}/styler/final'
 
 def get_styler_repairs_by_protocol(project_name, protocol):
-    return f'{get_project_dir(project_name)}/styler/repairs/{protocol}'
+    return f'{get_project_dir(project_name)}/styler/{protocol}'
 
 def get_tmp_dir(dataset):
     return f'{get_project_dir(dataset)}/{__tmp_dir}'
@@ -112,11 +112,14 @@ def get_tokenized_dir(dataset):
 def get_tokenized_dir_by_protocol(dataset, protocol):
     return f'{get_project_dir(dataset)}/{__tokenized_dir}/{protocol}'
 
-def get_model_dir(name, protocol, only_formatting=False):
-    if only_formatting:
-        return os.path.join(get_project_dir(name), __models_dir, protocol, 'general-1-256-256/model_step_20000.pt')
-    else:
-        return os.path.join(get_project_dir(name), __models_dir, protocol, 'general-1-256-256/model_step_20000.pt')
+def get_model_dir(name, protocol):
+    if protocol = 'random':
+        model_path = 'general-2-512-512-model_step_20000.pt'
+    else
+        model_path = 'general-1-512-256-model_step_20000.pt'
+    if 'MODEL_PATH' in os.environ:
+        model_path = os.environ['MODEL_PATH']
+    return os.path.join(get_project_dir(name), __models_dir, protocol, model_path)
 
 def get_real_dataset_dir(name):
     return os.path.join(get_project_dir(name), __real_dataset_dir)

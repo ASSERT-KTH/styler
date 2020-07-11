@@ -31,9 +31,9 @@ def tokenize_errors(file_path, errors):
 def de_tokenize(original_file_path, info):
     pass
 
-def gen_translator(model_name, protocol, batch_size=5, only_formatting=False):
+def gen_translator(model_name, protocol, batch_size=5):
     tmp_dir = get_tmp_dir(model_name)
-    model_dir = get_model_dir(model_name, protocol, only_formatting=only_formatting)
+    model_dir = get_model_dir(model_name, protocol)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -164,7 +164,7 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
         create_dir(waste)
 
         # Init of the translator
-        translate = gen_translator(model_name, protocol, batch_size=5, only_formatting=only_formatting)
+        translate = gen_translator(model_name, protocol, batch_size=5)
 
         #list_of_fileids = []
         for folder_id in tqdm(list_of_fileids):
