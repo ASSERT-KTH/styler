@@ -181,8 +181,10 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
 
         move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
-    #json_pp(checkstyle_result)
-    #save_json('./', 'test.json', checkstyle_result)
+    if checkstyle_result is None:
+        return []
+    res = reverse_collection(get_batch_results(checkstyle_result))
+    
     def select_best_proposal(file_id, proposals):
         file_path = glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
         min_errors = min(list(proposals.values()))
@@ -198,7 +200,7 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
 
     best_proposals = {
         file_id:select_best_proposal(file_id, proposals)
-        for file_id, proposals in reverse_collection(get_batch_results(checkstyle_result)).items()
+        for file_id, proposals in res.items()
     }
 
     for id, path in best_proposals.items():
@@ -224,12 +226,16 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
     checkstyle_rules = os.path.join(get_real_dataset_dir(name), 'checkstyle.xml')
     dir_files = os.path.join(get_real_dataset_dir(name), './1')
     
-    for (protocol_id, (protocol, path)) in enumerate(protocols_repairs.items()):
+    for (protocol_id, (protocol, paths)) in enumerate(protocols_repairs.items()):
         protocol_target = os.path.join(target, f'./batch_{protocol_id}')
         if os.path.exists(protocol_target):
             shutil.rmtree(protocol_target)
-        shutil.copytree(path, protocol_target)
+        for path in paths:
+            if os.path.exists(path):
+                shutil.copytree(path, protocol_target)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
+    if checkstyle_result is None:
+        return []
     res = reverse_collection(get_batch_results(checkstyle_result, n_batch=len(protocols_repairs)))
 
     def select_best_proposal(file_id, proposals):
@@ -309,7 +315,7 @@ def main(args):
         json_pp(protocol_choice_count)
 
     if args[1] == 'gen_training_data':
-        start_time = datetime.now() 
+        start_time = datetime.now()
 
         corpus_dir = None
         if args[2] == '--corpus':
@@ -337,15 +343,19 @@ def main(args):
 
         #delete_dir(repo_dir)
 
-        time_elapsed = datetime.now() - start_time 
-
+        time_elapsed = datetime.now() - start_time
         logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
     
     if args[1] == 'tokenize_training_data':
+        start_time = datetime.now()
+
         project_name = args[2]
         for protocol in protocols:
             synthetic_dataset_dir_by_protocol = f'{get_synthetic_dataset_dir_by_protocol(project_name, protocol)}'
             ml.gen_IO(synthetic_dataset_dir_by_protocol, get_tokenized_dir_by_protocol(project_name, protocol), only_formatting=True)
+
+        time_elapsed = datetime.now() - start_time
+        logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
 
 if __name__ == "__main__":
     main(sys.argv)
