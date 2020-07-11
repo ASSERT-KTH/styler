@@ -113,7 +113,7 @@ def get_tokenized_dir_by_protocol(dataset, protocol):
     return f'{get_project_dir(dataset)}/{__tokenized_dir}/{protocol}'
 
 def get_model_dir(name, protocol):
-    if protocol = 'random':
+    if protocol == 'random':
         model_path = 'random-general-2-512-512-model_step_20000.pt'
     else
         model_path = 'three-grams-general-1-512-256-model_step_20000.pt'
