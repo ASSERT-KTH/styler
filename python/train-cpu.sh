@@ -17,7 +17,7 @@ if [ ! -d "$training_output_folder" ]; then
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-python $DIR/OpenNMT-py/train.py \
+time python $DIR/OpenNMT-py/train.py \
 	-data $PROJECTS_FOLDER/$PROJECT/03_preprocessed_error_dataset/$PROTOCOL/preprocessing \
 	-global_attention $global_attention \
 	-encoder_type brnn \

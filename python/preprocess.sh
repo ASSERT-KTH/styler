@@ -10,7 +10,7 @@ fi
 mkdir -p $preprocessing_output_folder
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-python $DIR/OpenNMT-py/preprocess.py \
+time python $DIR/OpenNMT-py/preprocess.py \
 	-train_src $PROJECTS_FOLDER/$PROJECT/02_tokenized_error_dataset/$PROTOCOL/learning-I.txt \
 	-train_tgt $PROJECTS_FOLDER/$PROJECT/02_tokenized_error_dataset/$PROTOCOL/learning-O.txt \
 	-valid_src $PROJECTS_FOLDER/$PROJECT/02_tokenized_error_dataset/$PROTOCOL/validation-I.txt \
