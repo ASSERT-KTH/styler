@@ -58,7 +58,7 @@ class Timer:
 def get_experiment_dir(name):
     return f'{get_output_dir()}/../experiments/{name}'
 
-def experiment(name, corpus_dir):
+def setup_experiment(name, corpus_dir):
     logger.debug(f'Starting the experiment for project {name}')
 
     dataset_dir = create_dir(get_real_dataset_dir(name))
@@ -92,25 +92,31 @@ def experiment(name, corpus_dir):
 
     metadata = open_json(os.path.join(experiment_dir, 'metadata.json'))
 
+    return experiment_dir, clean_dir, errored_dir, metadata, checkstyle_jar
+    
+
+def experiment(name, corpus_dir):
+    experiment_dir, clean_dir, errored_dir, metadata, checkstyle_jar = setup_experiment(name, corpus_dir)
+
     result = {}
 
     for tool in tools_list:
         logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
-        target = os.path.join(experiment_dir, f'./{tool}')
-        if not os.path.exists(target):
+        experiment_tool_dir = os.path.join(experiment_dir, tool)
+        if not os.path.exists(experiment_tool_dir):
             if tool == 'styler':
-                shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', target)
+                shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', experiment_tool_dir)
             elif tool.startswith('styler'):
                 protocol = '_'.join(tool.split('_')[1:])
-                shutil.copytree(f'{get_styler_repairs_by_protocol(name, protocol)}/files-repaired', target)
+                shutil.copytree(f'{get_styler_repairs_by_protocol(name, protocol)}/files-repaired', experiment_tool_dir)
             elif tool == 'intellij':
                 intellij_dir = os.path.join(experiment_dir, 'intellij')
                 if not os.path.exists(intellij_dir):
                     create_dir(intellij_dir)
                 pass
             else:
-                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=target, dataset_metadata=metadata)
+                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=experiment_tool_dir, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
         repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
         result[tool] = repaired
