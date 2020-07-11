@@ -114,12 +114,12 @@ def get_tokenized_dir_by_protocol(dataset, protocol):
 
 def get_model_dir(name, protocol):
     if protocol = 'random':
-        model_path = 'general-2-512-512-model_step_20000.pt'
+        model_path = 'random-general-2-512-512-model_step_20000.pt'
     else
-        model_path = 'general-1-512-256-model_step_20000.pt'
+        model_path = 'three-grams-general-1-512-256-model_step_20000.pt'
     if 'MODEL_PATH' in os.environ:
         model_path = os.environ['MODEL_PATH']
-    return os.path.join(get_project_dir(name), __models_dir, protocol, model_path)
+    return os.path.join(get_project_dir(name), __models_dir, model_path)
 
 def get_real_dataset_dir(name):
     return os.path.join(get_project_dir(name), __real_dataset_dir)
