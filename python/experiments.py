@@ -155,50 +155,6 @@ def get_diff_dataset(experiment_id, tools):
         for tool in tools # if tool not in ['styler']
     }
 
-
-def benchmark(name, corpus_dir, tools):
-    points = [1,5,10,15,20,25,30,35,40]
-    dataset_dir = get_real_dataset_dir(name)
-    experiment_dir = f'./experiments/benchmark/{name}'
-    errored_dir = os.path.join(experiment_dir, f'./errored')
-    clean_dir = os.path.join(experiment_dir, f'./clean')
-    if not os.path.exists(experiment_dir):
-        create_dir(experiment_dir)
-        number_of_errors = 1
-        from_folder = os.path.join(dataset_dir, str(number_of_errors))
-        files = list_folders(from_folder)
-        points = list(filter(lambda e: e < len(files), points))
-        for point in points:
-            sample = random.sample(files, point)
-            to_folder = create_dir(os.path.join(errored_dir, str(point)))
-            for folder in sample:
-                shutil.copytree(os.path.join(from_folder, str(folder)), os.path.join(to_folder, folder))
-        shutil.copytree(
-            os.path.join(corpus_dir, 'data'),
-            clean_dir
-        )
-        shutil.copy(
-            os.path.join(corpus_dir, 'checkstyle.xml'),
-            experiment_dir
-        )
-        shutil.copy(
-            os.path.join(corpus_dir, 'corpus.json'),
-            os.path.join(experiment_dir, 'metadata.json')
-        )
-    timers = {tool:Timer() for tool in tools}
-    metadata = open_json(os.path.join(experiment_dir, 'metadata.json'))
-    for point in tqdm(points):
-        for tool in tools:
-            timers[tool].start_task(point)
-            target = os.path.join(experiment_dir, f'./{tool}/{point}')
-            if not os.path.exists(target):
-                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/{point}', output_dir=target, dataset_metadata=metadata)
-            timers[tool].end_task(point)
-            # repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
-            # result[tool] = len(repaired)
-    return {tool:timer.get_durations() for tool,timer in timers.items()}
-
-
 def exp(projects):
     result_raw = {}
     for name in projects:
@@ -291,7 +247,6 @@ def exp_stats(projects):
         for tool in ('styler', 'intellij', 'naturalize', 'codebuff')
     })
     graph_plot.repair_heatmap(df)
-    graph_plot.repair_cluster(df)
     return repaired_error_types_count
 
 @logger.catch
@@ -358,24 +313,6 @@ def exp_venn(projects):
     }
     graph_plot.venn(map_keys(lambda x: x.capitalize(), flat_result))
 
-
-def benchmark_stats(results):
-    """
-    Return the stats given a lit of results
-    """
-    result = reduce(dict_sum, results)
-    length = len(results)
-    # print(result['be5']['code'])
-    regression = {
-        name:{
-            tool:stats.linregress([float(x) for x in data.keys()], [y/length for y in data.values()])
-            for tool, data in values.items()
-        }
-        for name, values in result.items()
-    }
-    json_pp(regression)
-
-
 def merge_reports(experiments):
     all_reports = {}
     for experiment in experiments:
@@ -427,16 +364,6 @@ def main(args):
         exp_stats(args[2:])
     elif len(args) >= 2 and args[1] == 'exp-venn':
         exp_venn(args[2:])
-    elif len(args) >= 2 and args[1] == 'benchmark':
-        result = {}
-        for name in args[2:]:
-            result[name] = benchmark(name, get_corpus_dir(name), ('naturalize', 'codebuff'))
-            save_json('./', 'benchmark.json', result)
-        json_pp(result)
-        save_json('./', 'benchmark.json', result)
-    elif len(args) >= 2 and args[1] == 'benchmark-stats':
-        results = [open_json('./benchmark.json')] + [open_json(f'./benchmark{id}.json') for id in range(2)]
-        benchmark_stats(results)
     elif len(args) >= 2 and args[1] == 'diff':
         tools = ('styler', 'naturalize', 'codebuff')
         result = {}
