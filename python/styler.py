@@ -292,6 +292,8 @@ def gen_training_data_2(project_path, checkstyle_file_path, checkstyle_jar, proj
 
 def main(args):
     if args[1] == 'repair':
+        start_time = datetime.now()
+        
         datasets = args[2:]
         protocol_choice_count = {
             'random': 0,
@@ -312,7 +314,10 @@ def main(args):
                     protocol_choice_count['random'] += 1
                 if 'batch_1' in choice:
                     protocol_choice_count['three_grams'] += 1
-        json_pp(protocol_choice_count)
+            save_json(get_styler_folder(dataset), 'protocol_choice_stats.json', protocol_choice_count)
+
+        time_elapsed = datetime.now() - start_time
+        logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
 
     if args[1] == 'gen_training_data':
         start_time = datetime.now()

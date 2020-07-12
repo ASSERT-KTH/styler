@@ -88,6 +88,9 @@ def get_project_dir(project_name):
 def get_corpus_dir(project_name):
     return f'{get_project_dir(project_name)}/corpus'
 
+def get_styler_folder(project_name):
+    return f'{get_project_dir(project_name)}/styler'
+
 def get_styler_repairs(project_name):
     return f'{get_project_dir(project_name)}/styler/final'
 
