@@ -226,13 +226,12 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
     checkstyle_rules = os.path.join(get_real_dataset_dir(name), 'checkstyle.xml')
     dir_files = os.path.join(get_real_dataset_dir(name), './1')
     
-    for (protocol_id, (protocol, paths)) in enumerate(protocols_repairs.items()):
+    for (protocol_id, (protocol, path)) in enumerate(protocols_repairs.items()):
         protocol_target = os.path.join(target, f'./batch_{protocol_id}')
         if os.path.exists(protocol_target):
             shutil.rmtree(protocol_target)
-        for path in paths:
-            if os.path.exists(path):
-                shutil.copytree(path, protocol_target)
+        if os.path.exists(path):
+            shutil.copytree(path, protocol_target)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     if checkstyle_result is None:
         return {}
