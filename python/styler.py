@@ -46,7 +46,7 @@ def gen_translator(model_name, protocol, batch_size=5):
     return translator
 
 def run_translate(model_dir, input_file, output_file, batch_size=5):
-    open_nmt_dir = './OpenNMT-py'
+    open_nmt_dir = os.path.join(os.path.dirname(__file__), 'OpenNMT-py')
     translate_script = os.path.join(open_nmt_dir, 'translate.py')
 
     options = [
