@@ -21,10 +21,17 @@ import pandas as pd
 from core import *
 import graph_plot
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+tools_list = tuple([
+    'naturalize',
+    'codebuff',
+    'intellij',
+    'styler'
+] + list(styler_tools) )
 
-__real_dataset_dir = config['DEFAULT']['real_dataset_dir']
+codebuff_color = '#1565c0'
+styler_color = '#64dd17'
+naturalize_color = '#fdd835'
+intellij_color = '#ED4C67'
 
 class Timer:
     """ Very basic class to time tasks
@@ -365,7 +372,6 @@ def main(args):
     elif len(args) >= 2 and args[1] == 'exp-venn':
         exp_venn(args[2:])
     elif len(args) >= 2 and args[1] == 'diff':
-        tools = ('styler', 'naturalize', 'codebuff')
         result = {}
         for name in args[2:]:
             result[name] = get_diff_dataset(name, ('naturalize', 'codebuff', 'styler', 'intellij'))
