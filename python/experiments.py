@@ -106,7 +106,7 @@ def setup_experiment(name, corpus_dir):
     return experiment_dir, clean_dir, errored_dir, metadata, checkstyle_jar
     
 
-def experiment(name, corpus_dir):
+def experiment(name, corpus_dir, execute=True):
     experiment_dir, clean_dir, errored_dir, metadata, checkstyle_jar = setup_experiment(name, corpus_dir)
 
     result = {}
@@ -115,7 +115,7 @@ def experiment(name, corpus_dir):
         logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
         experiment_tool_dir = os.path.join(experiment_dir, tool)
-        if not os.path.exists(experiment_tool_dir):
+        if not os.path.exists(experiment_tool_dir) and execute:
             if tool == 'styler':
                 shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', experiment_tool_dir)
             elif tool.startswith('styler'):
@@ -140,7 +140,11 @@ def experiment(name, corpus_dir):
 def compute_diff_size(name, tool):
     diffs = []
     experiment_dir = get_experiment_dir_of_project(name)
-    repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
+    dataset_dir = get_real_dataset_dir(name)
+    dataset_info = open_json(os.path.join(dataset_dir, 'info.json'))
+    checkstyle_jar = dataset_info["checkstyle_jar"]
+    repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
+
     errored_dir = os.path.join(experiment_dir, f'./errored/1')
     repaired_dir = os.path.join(experiment_dir, f'./{tool}')
     for repaired_id in repaired:
@@ -194,7 +198,7 @@ def exp_stats(projects):
     all_tools = tools_list
     for name in projects:
         # print(name)
-        exp_result[name] = experiment(name, get_corpus_dir(name))
+        exp_result[name] = experiment(name, get_corpus_dir(name), execute=False)
         exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
     tools = tuple(list(tools_list) + ['all_tools'])
     repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
@@ -296,10 +300,11 @@ def json_report(experiment):
     }
 
     for tool, result in tools_results.items():
-        for file_path, information in result['checkstyle_results'].items():
-            file_id = get_file_id(file_path)
-            if file_id in report:
-                report[file_id]['results'][tool] = information['errors']
+        if result is not None and result['checkstyle_results'] is not None:
+            for file_path, information in result['checkstyle_results'].items():
+                file_id = get_file_id(file_path)
+                if file_id in report:
+                    report[file_id]['results'][tool] = information['errors']
 
     save_json(experiment_dir, 'report.json', report)
 
@@ -307,7 +312,7 @@ def json_report(experiment):
 def exp_venn(projects):
     result = {}
     for name in projects:
-        result[name] = experiment(name, get_corpus_dir(name))
+        result[name] = experiment(name, get_corpus_dir(name), execute=False)
 
     tools = ('naturalize', 'styler', 'codebuff')
     flat_result = {
@@ -354,7 +359,8 @@ def main(args):
     if len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
     elif len(args) >= 2 and args[1] == 'report':
-        json_report(args[2])
+        for project_name in args[2:]:
+            json_report(project_name)
     elif len(args) >= 2 and args[1] == 'merge-reports':
         experiments = list_folders(get_experiment_dir())
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')

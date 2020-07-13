@@ -144,9 +144,11 @@ def save_file(dir, file_name, content):
 def open_json(file):
     """Read a json file and returns its content has a dict
     """
-    with open(file) as f:
-        data = json.load(f)
-        return data
+    if os.path.exists(file):
+        with open(file) as f:
+            data = json.load(f)
+            return data
+    print('File not found:' + file)
     return None
 
 

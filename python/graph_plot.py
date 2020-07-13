@@ -46,7 +46,8 @@ def venn(data):
             v.get_patch_by_id(id).set_color(mix_colors(*get_colors_venn(id)))
             v.get_patch_by_id(id).set_alpha(alpha)
 
-    plt.show()
+    plt.savefig(f'{get_experiment_dir()}/repair_venn.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/repair_venn.png', format='png')
 
 def hex_to_rgb(hex_color):
     hex = hex_color.lstrip('#')
@@ -89,6 +90,7 @@ def violin_plot(plot_data):
     plt.xlim(0,100)
     plt.subplots_adjust(bottom=0.15, left=0.01, right=0.99, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/Figure_RQ_3_real.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/Figure_RQ_3_real.png', format='png')
 
 def repair_heatmap(data):
     sns.set_context("paper", font_scale=1.2)                                                  
@@ -97,3 +99,4 @@ def repair_heatmap(data):
     for t in ax.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/repair_heatmap.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/repair_heatmap.png', format='png')
