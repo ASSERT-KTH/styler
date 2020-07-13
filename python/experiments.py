@@ -62,8 +62,12 @@ class Timer:
         }
 
 # timer = Timer()
-def get_experiment_dir(name):
-    return f'{get_output_dir()}/../experiments/{name}'
+
+def get_experiment_dir():
+    return f'{get_output_dir()}/../results'
+
+def get_experiment_dir_of_project(project_name):
+    return f'{get_experiment_dir()}/{project_name}'
 
 def setup_experiment(name, corpus_dir):
     logger.debug(f'Starting the experiment for project {name}')
@@ -74,7 +78,7 @@ def setup_experiment(name, corpus_dir):
     logger.debug(f'Checkstyle jar version: {checkstyle_jar}')
 
     logger.debug(f'Real dataset dir: {dataset_dir}')
-    experiment_dir = get_experiment_dir(name)
+    experiment_dir = get_experiment_dir_of_project(name)
     logger.debug(f'Experiment dir: {experiment_dir}')
     errored_dir = os.path.join(experiment_dir, f'./errored')
     clean_dir = os.path.join(experiment_dir, f'./clean')
@@ -135,7 +139,7 @@ def experiment(name, corpus_dir):
 
 def compute_diff_size(name, tool):
     diffs = []
-    experiment_dir = get_experiment_dir(name)
+    experiment_dir = get_experiment_dir_of_project(name)
     repaired = repair.get_repaired(tool, experiment_dir, only_targeted=True)
     errored_dir = os.path.join(experiment_dir, f'./errored/1')
     repaired_dir = os.path.join(experiment_dir, f'./{tool}')
@@ -195,7 +199,7 @@ def exp_stats(projects):
     tools = tuple(list(tools_list) + ['all_tools'])
     repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
     for project, project_result in exp_result.items():
-        experiment_dir = get_experiment_dir(project)
+        experiment_dir = get_experiment_dir_of_project(project)
         errored_dir = os.path.join(experiment_dir, f'./errored/1')
         for tool, repaired_files in project_result.items():
             # repaired_files = project_result[tool]
@@ -258,7 +262,7 @@ def exp_stats(projects):
 
 @logger.catch
 def json_report(experiment):
-    experiment_dir = get_experiment_dir(experiment)
+    experiment_dir = get_experiment_dir_of_project(experiment)
     checkstyle_path = os.path.join(experiment_dir, 'checkstyle.xml')
     errored_dir = os.path.join(experiment_dir, 'errored/1')
 
@@ -323,7 +327,7 @@ def exp_venn(projects):
 def merge_reports(experiments):
     all_reports = {}
     for experiment in experiments:
-        experiment_dir = get_experiment_dir(experiment)
+        experiment_dir = get_experiment_dir_of_project(experiment)
         report_path = os.path.join(experiment_dir, 'report.json')
         if os.path.exists(report_path):
             report = open_json(report_path)
@@ -336,7 +340,7 @@ def merge_reports(experiments):
         for file_id, res in report.items():
             merged_report[file_count] = res
             file_count += 1
-    save_json(get_experiment_dir(''), 'report.json', merged_report)
+    save_json(get_experiment_dir(), 'report.json', merged_report)
 
 def compare_protocols(experiment_name):
     exp_result = experiment(experiment_name, get_corpus_dir(experiment_name))
@@ -352,11 +356,11 @@ def main(args):
     elif len(args) >= 2 and args[1] == 'report':
         json_report(args[2])
     elif len(args) >= 2 and args[1] == 'merge-reports':
-        experiments = list_folders(get_experiment_dir(''))
+        experiments = list_folders(get_experiment_dir())
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
         merge_reports(experiments)
     elif len(args) >= 2 and args[1] == 'styler-protocols':
-        experiments = list_folders(get_experiment_dir(''))
+        experiments = list_folders(get_experiment_dir())
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
         results = {}
         for experiment_name in experiments:

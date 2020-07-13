@@ -88,7 +88,7 @@ def violin_plot(plot_data):
     plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
     plt.xlim(0,100)
     plt.subplots_adjust(bottom=0.15, left=0.01, right=0.99, top=0.99)
-    plt.savefig('../results/Figure_RQ_3_real.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/Figure_RQ_3_real.pdf', format='pdf')
 
 def repair_heatmap(data):
     sns.set_context("paper", font_scale=1.2)                                                  
@@ -96,4 +96,4 @@ def repair_heatmap(data):
     ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)#, cmap='RdYlGn')
     for t in ax.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
-    plt.savefig('./experiments/experiments/repair_heatmap.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/repair_heatmap.pdf', format='pdf')
