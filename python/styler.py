@@ -182,7 +182,7 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
         move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     if checkstyle_result is None:
-        return {}
+        return None
     res = reverse_collection(get_batch_results(checkstyle_result))
     
     def select_best_proposal(file_id, proposals):
@@ -230,7 +230,7 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
         protocol_target = os.path.join(target, f'./batch_{protocol_id}')
         if os.path.exists(protocol_target):
             shutil.rmtree(protocol_target)
-        if os.path.exists(path):
+        if path is not None and os.path.exists(path):
             shutil.copytree(path, protocol_target)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     if checkstyle_result is None:
