@@ -5,6 +5,8 @@ import checkstyle
 import styler
 from functools import reduce
 
+def get_jar_path(jar_file):
+    return os.path.join(os.path.dirname(__file__), 'jars', jar_file)
 
 def call_repair_tool(tool, orig_dir, ugly_dir, output_dir, dataset_metadata):
     """
@@ -26,7 +28,7 @@ def call_naturalize(orig_dir, ugly_dir, output_dir):
     Call a Naturalize
     """
     args = ["-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
-    return call_java("./jars/naturalize.jar", args)
+    return call_java(get_jar_path('naturalize.jar'), args)
 
 
 def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
@@ -44,7 +46,7 @@ def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
         erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
         (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
         args.append(path + ":" + str(from_char) + ',' + str(to_char))
-    return call_java("./jars/naturalize.jar", args)
+    return call_java(get_jar_path('naturalize.jar'), args)
 
 
 def call_codebuff(orig_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
@@ -53,7 +55,7 @@ def call_codebuff(orig_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
     """
     args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + orig_dir, "-files java", "-comment LINE_COMMENT", "-indent " + str(indent), "-o " + output_dir]
     args.append(ugly_dir)
-    return call_java("./jars/codebuff-1.5.1.jar", args)
+    return call_java(get_jar_path('codebuff-1.5.1.jar'), args)
 
 
 def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
