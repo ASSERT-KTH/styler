@@ -21,12 +21,19 @@ import pandas as pd
 from core import *
 import graph_plot
 
-tools_list = tuple([
-    'naturalize',
-    'codebuff',
-    'intellij',
-    'styler'
-] + list(styler_tools) )
+tools = ['styler', 'intellij', 'naturalize', 'codebuff']
+
+tools_plus_styler_protocols = tuple(list(tools) + list(styler_tools))
+tools_plus_all = tuple(list(tools) + ['all_tools'])
+tools_plus_styler_protocols_and_all = tuple(list(tools_plus_styler_protocols) + ['all_tools'])
+
+tool_names = {
+    'styler': 'Styler',
+    'intellij': 'Checkstyle-IDEA',
+    'naturalize': 'Naturalize',
+    'codebuff': 'CodeBuff',
+    'all_tools': 'All'
+}
 
 codebuff_color = '#1565c0'
 styler_color = '#64dd17'
@@ -111,7 +118,7 @@ def experiment(name, corpus_dir, execute=True):
 
     result = {}
 
-    for tool in tools_list:
+    for tool in tools_plus_styler_protocols:
         logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
         experiment_tool_dir = os.path.join(experiment_dir, tool)
@@ -120,7 +127,9 @@ def experiment(name, corpus_dir, execute=True):
                 shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', experiment_tool_dir)
             elif tool.startswith('styler'):
                 protocol = '_'.join(tool.split('_')[1:])
-                shutil.copytree(f'{get_styler_repairs_by_protocol(name, protocol)}/files-repaired', experiment_tool_dir)
+                path = f'{get_styler_repairs_by_protocol(name, protocol)}/files-repaired'
+                if os.path.exists(path):
+                    shutil.copytree(path, experiment_tool_dir)
             elif tool == 'intellij':
                 intellij_dir = os.path.join(experiment_dir, 'intellij')
                 if not os.path.exists(intellij_dir):
@@ -194,31 +203,35 @@ def exp(projects):
 
 
 def exp_stats(projects):
-    exp_result = {}
-    all_tools = tools_list
+    repaired_error_types = {tool:[] for tool in (*tools_plus_styler_protocols_and_all, 'out_of')}
     for name in projects:
-        # print(name)
-        exp_result[name] = experiment(name, get_corpus_dir(name), execute=False)
-        exp_result[name]['all_tools'] = list(reduce(lambda a,b: a|b, [ set(exp_result[name][tool]) for tool in all_tools]))
-    tools = tuple(list(tools_list) + ['all_tools'])
-    repaired_error_types = {tool:[] for tool in (*tools, 'out_of')}
-    for project, project_result in exp_result.items():
-        experiment_dir = get_experiment_dir_of_project(project)
-        errored_dir = os.path.join(experiment_dir, f'./errored/1')
-        for tool, repaired_files in project_result.items():
-            # repaired_files = project_result[tool]
-            error_types = reduce(
-                list.__add__,
-                [
-                    [
-                        checkstyle_source_to_error_type(error['source'])
-                        for error in open_json(os.path.join(errored_dir, f'{id}/metadata.json'))['errors']
-                    ]
-                    for id in repaired_files
-                ],
-                []
-            )
-            repaired_error_types[tool] += error_types
+        with open(os.path.join(get_experiment_dir_of_project(name), 'report.json'), 'r') as fd:
+            data = json.load(fd)
+            for bug_id in data:
+                all_tools_combined = False
+                lenn = len(data[bug_id]['information']['errors'])
+
+                experiment_dir = get_experiment_dir_of_project(name)
+                errored_dir = os.path.join(experiment_dir, f'./errored/1')
+                colectedError = open_json(os.path.join(errored_dir, f'{bug_id}/metadata.json'))['errors'][0]
+
+                if len(data[bug_id]['information']['errors']) != 1:
+                    print(f'Project {name}, {bug_id}, {lenn}', colectedError)
+                    continue
+                
+                error = data[bug_id]['information']['errors'][0]
+                if colectedError != error:
+                    print(name, colectedError['source'], error['source'])
+                error_type = checkstyle_source_to_error_type(error['source'])
+                repaired_error_types['out_of'].append(error_type)
+                for tool in tools_plus_styler_protocols:
+                    r = data[bug_id]['results'][tool]    
+                    if r is not None and len(r) == 0:
+                        repaired_error_types[tool].append(error_type)
+                        all_tools_combined = True
+                if all_tools_combined:
+                    repaired_error_types['all_tools'].append(error_type)
+
     repaired_error_types_count = {
         tool:dict_count(values)
         for tool, values in repaired_error_types.items()
@@ -228,7 +241,7 @@ def exp_stats(projects):
             error_type:(float(count) / repaired_error_types_count['out_of'][error_type] * 100.)
             for error_type, count in repaired_error_types_count[tool].items()
         }
-        for tool in tools
+        for tool in tools_plus_styler_protocols_and_all
     }
     # json_pp(repaired_error_types_count_relative)
     keys = list(repaired_error_types_count['out_of'].keys())
@@ -238,39 +251,30 @@ def exp_stats(projects):
     table_data = [ [''] + [f'{key}\n( /{repaired_error_types_count["out_of"][key]})' for key in keys]]
     table_data += [
         [tool] + [f'{repaired_error_types_count_relative[tool].get(error_type, 0):.1f}%' for error_type in keys]
-        for tool in tools
+        for tool in tools_plus_styler_protocols_and_all
     ]
     table = SingleTable(table_data)
     print(table.table)
-    def abreviation(error_type):
-        if error_type == 'JavadocTagContinuationIndentation':
-            return 'JavadocTag.'
-        return error_type
-    def tool_name(tool):
-        names = {
-            'codebuff': 'CodeBuff',
-            'naturalize': 'Naturalize',
-            'styler': 'Styler',
-            'intellij': 'Checkstyle-IDEA',
-        }
-        return names[tool]
+
     df = pd.DataFrame.from_dict({
-        tool_name(tool):{
-            f'{abreviation(error_type)} ({repaired_error_types_count["out_of"][error_type]})':repaired_error_types_count_relative[tool].get(error_type, 0)
+        tool_names[tool]:{
+            f'{error_type} ({repaired_error_types_count["out_of"][error_type]})':repaired_error_types_count_relative[tool].get(error_type, 0)
             for error_type in keys
         }
-        for tool in ('styler', 'intellij', 'naturalize', 'codebuff')
+        for tool in tools_plus_all
     })
     graph_plot.repair_heatmap(df)
     return repaired_error_types_count
 
 @logger.catch
-def json_report(experiment):
-    experiment_dir = get_experiment_dir_of_project(experiment)
+def json_report(project_name):
+    logger.debug(f'Project {project_name}')
+
+    experiment_dir = get_experiment_dir_of_project(project_name)
     checkstyle_path = os.path.join(experiment_dir, 'checkstyle.xml')
     errored_dir = os.path.join(experiment_dir, 'errored/1')
 
-    dataset_dir = get_real_dataset_dir(experiment)
+    dataset_dir = get_real_dataset_dir(project_name)
     dataset_info = open_json(os.path.join(dataset_dir, 'info.json'))
     checkstyle_jar = dataset_info["checkstyle_jar"]
 
@@ -285,7 +289,7 @@ def json_report(experiment):
     logger.debug('Getting the results from the tools')
     tools_results = {
         tool:open_json(os.path.join(experiment_dir, f'checkstyle_results_{tool}.json'))
-        for tool in tools_list
+        for tool in tools_plus_styler_protocols
     }
 
     report = {
@@ -293,7 +297,7 @@ def json_report(experiment):
             'information':information,
             'results': {
                 tool:None
-                for tool in tools_list
+                for tool in tools_plus_styler_protocols
             }
         }
         for file_path, information in errored_result.items()
@@ -314,7 +318,6 @@ def exp_venn(projects):
     for name in projects:
         result[name] = experiment(name, get_corpus_dir(name), execute=False)
 
-    tools = ('naturalize', 'styler', 'codebuff')
     flat_result = {
         tool:set(
             reduce(
@@ -325,7 +328,7 @@ def exp_venn(projects):
                 ]
             )
         )
-        for tool in tools
+        for tool in ('styler', 'intellij')
     }
     graph_plot.venn(map_keys(lambda x: x.capitalize(), flat_result))
 
@@ -348,7 +351,7 @@ def merge_reports(experiments):
     save_json(get_experiment_dir(), 'report.json', merged_report)
 
 def compare_protocols(experiment_name):
-    exp_result = experiment(experiment_name, get_corpus_dir(experiment_name))
+    exp_result = experiment(experiment_name, get_corpus_dir(experiment_name), execute=False)
     res = {}
     res['only_random'] = len(set(exp_result['styler_random']) - set(exp_result['styler_three_grams']))
     res['only_three_grams'] = len(set(exp_result['styler_three_grams']) - set(exp_result['styler_random']))
@@ -378,13 +381,22 @@ def main(args):
                 dict_sum[key] += res[key]
         json_pp(dict_sum)
     elif len(args) >= 2 and args[1] == 'exp-stats':
-        exp_stats(args[2:])
-    elif len(args) >= 2 and args[1] == 'exp-venn':
-        exp_venn(args[2:])
-    elif len(args) >= 2 and args[1] == 'diff':
+        projects = args[2:]
+        exp_stats(projects)
+        exp_venn(projects)
+        
         result = {}
-        for name in args[2:]:
-            result[name] = get_diff_dataset(name, ('naturalize', 'codebuff', 'styler', 'intellij'))
+        for name in projects:
+            result[name] = get_diff_dataset(name, tools)
+        result_per_tool = {}
+        for tool in tools:
+            result_per_tool[tool] = []
+            for project in projects:
+                result_per_tool[tool] += result[project][tool]
+        json_pp(result_per_tool)
+        for tool in tools:
+            print(f'{tool}: {len(result_per_tool[tool])}')
+
         #json_pp(result)
         keys = list(list(result.values())[0].keys())
         total = { key:reduce( list.__add__ ,[e[key] for e in result.values()]) for key in keys }

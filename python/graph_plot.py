@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
 from matplotlib import pyplot as plt
-from matplotlib_venn import venn3, venn3_circles
+from matplotlib_venn import venn2, venn2_circles
 
 def mix_colors(*colors):
     color_avg = [0] * 3
@@ -33,19 +33,10 @@ def gen_get_colors_venn(labels, colors):
 
 def venn(data):
     labels = tuple(data.keys())
-    v = venn3(data.values(), labels)
-    colors = {
-        'Codebuff': codebuff_color,
-        'Naturalize': naturalize_color,
-        'Styler': styler_color
-    }
-    get_colors_venn = gen_get_colors_venn(labels, colors)
-    alpha = 2/3
-    for id in [''.join(elements) for elements in product('01', repeat=3)]:
-        if id != '000':
-            v.get_patch_by_id(id).set_color(mix_colors(*get_colors_venn(id)))
-            v.get_patch_by_id(id).set_alpha(alpha)
-
+    plt.subplots(figsize=(5,4))
+    v = venn2(data.values(), labels, (styler_color, intellij_color))
+    
+    plt.subplots_adjust(bottom=0.05, left=0.01, right=0.99, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/repair_venn.pdf', format='pdf')
     plt.savefig(f'{get_experiment_dir()}/repair_venn.png', format='png')
 
@@ -74,27 +65,20 @@ def violin_plot(plot_data):
     medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
     axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False, medianprops=medianprops)
 
-    labels = {
-        'codebuff': 'CodeBuff',
-        'naturalize': 'Naturalize',
-        'styler': 'Styler',
-        'intellij': 'Checkstyle-IDEA',
-    }
-
-    patches = [ mpatches.Patch(color=c, label=labels[l]) for l, c in list(colors.items())[::-1]]
+    patches = [ mpatches.Patch(color=c, label=tool_names[l]) for l, c in list(colors.items())[::-1]]
     plt.legend(handles = patches, loc='upper right', ncol=2, fancybox=True, fontsize=15)
     # plt.yticks( range(len(order)), order, fontsize=15)
     plt.yticks( [1], ('',), fontsize=15)
     plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
     plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
-    plt.xlim(0,100)
+    plt.xlim(0,200)
     plt.subplots_adjust(bottom=0.15, left=0.01, right=0.99, top=0.99)
-    plt.savefig(f'{get_experiment_dir()}/Figure_RQ_3_real.pdf', format='pdf')
-    plt.savefig(f'{get_experiment_dir()}/Figure_RQ_3_real.png', format='png')
+    plt.savefig(f'{get_experiment_dir()}/repair_diffs.pdf', format='pdf')
+    plt.savefig(f'{get_experiment_dir()}/repair_diffs.png', format='png')
 
 def repair_heatmap(data):
-    sns.set_context("paper", font_scale=1.2)                                                  
-    fig, axes = plt.subplots(figsize=(7,7))
+    sns.set_context("paper", font_scale=1)                                                  
+    fig, axes = plt.subplots(figsize=(6.2,7))
     ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)#, cmap='RdYlGn')
     for t in ax.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
