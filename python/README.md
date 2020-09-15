@@ -4,13 +4,15 @@
 
 Init virtualenv :
 ```
-pip instal virtualenv
+pip install virtualenv
 virtualenv --python=python3.6 env
 source ./env/bin/activate
 ```
 And then install the requirements, first OpenNMT then Styler:
 ```
-pip install -r ./OpenNMT-py/requirements.txt
+cd OpenNMT-py/
+python setup.py install
+cd ..
 pip install -r ./requirements.txt
 ```
 The required version of TorchText may not be available through PyPI, install as instructed here: https://github.com/pytorch/text/issues/517
