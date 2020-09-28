@@ -132,14 +132,19 @@ def open_file(file):
 def save_file(dir, file_name, content):
     """Write the content in a file
     """
+    path = os.path.join(dir, file_name)
+    return save_file_in_path(path, content)
+
+def save_file_in_path(file_path, content):
+    """Write the content in a file
+    """
     try:
-        path = os.path.join(dir, file_name)
-        with open(path, 'w', encoding="utf-8") as f:
+        with open(file_path, 'w', encoding="utf-8") as f:
             f.write(content)
     except Exception as err:
         print(err)
         return None
-    return path
+    return file_path
 
 def open_json(file):
     """Read a json file and returns its content has a dict
