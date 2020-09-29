@@ -143,6 +143,7 @@ def select_the_best_repair(correct_repairs, original):
         diff_size = java_lang_utils.compute_diff_size(original, correct_repair)
         if diff_size < min_diff:
             file = correct_repair
+            min_diff = diff_size
     return file
 
 def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_formatting=False):
