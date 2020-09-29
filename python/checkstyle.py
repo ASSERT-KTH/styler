@@ -8,6 +8,7 @@ import os
 import xml.etree.ElementTree as ET
 import subprocess
 import sys
+import re
 
 from core import *
 
@@ -57,6 +58,7 @@ def check(checkstyle_file_path, file_to_checkstyle_path, checkstyle_jar=_CHECKST
     """
     Runs Checkstyle on the file_to_checkstyle_path
     """
+    insert_property_haltOnException_set_to_false_in_checkstyle_file(checkstyle_file_path)
     checkstyle_jar = os.path.join(_CHECKSTYLE_JARS_DIR, checkstyle_jar)
     cmd = "java -jar {} -f xml -c {} {} --exclude-regexp .*/test/.* --exclude-regexp .*/resources/.*".format(
         checkstyle_jar, checkstyle_file_path, file_to_checkstyle_path)
@@ -68,6 +70,20 @@ def check(checkstyle_file_path, file_to_checkstyle_path, checkstyle_jar=_CHECKST
     # parsing
     output = parse_output(output, only_targeted=only_targeted, only_java=only_java)
     return (output, process.returncode)
+
+def insert_property_haltOnException_set_to_false_in_checkstyle_file(checkstyle_file_path):
+    original_checkstyle_file_content = open_file(checkstyle_file_path)
+    
+    clean_checkstyle_file_content = re.sub(r'<property name\s*=\s*"haltOnException"[\s|\n]+value\s*=\s*"true"\s*/>', '', original_checkstyle_file_content, flags=re.DOTALL)
+    
+    if not re.search('<property name\s*=\s*"haltOnException"[\s|\n]+value\s*=\s*"false"\s*/>', clean_checkstyle_file_content):
+        lines = clean_checkstyle_file_content.split('\n')
+        new_checkstyle_file_content = ''
+        for line in lines:
+            new_checkstyle_file_content += line + '\n'
+            if 'module' in line and '"Checker"' in line:
+                new_checkstyle_file_content += '    <property name="haltOnException" value="false"/>' + '\n'
+        save_file_in_path(checkstyle_file_path, new_checkstyle_file_content)
 
 def parse_output(output, only_targeted=False, only_java=False):
     """
