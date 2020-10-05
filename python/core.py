@@ -103,7 +103,13 @@ def get_tokenized_dir(dataset):
 def get_tokenized_dir_by_protocol(dataset, protocol):
     return f'{get_project_dir(dataset)}/{__tokenized_dir}/{protocol}'
 
-def get_model_dir(name, protocol):
+def get_preprocessed_dir_by_protocol(dataset, protocol):
+    return f'{get_project_dir(dataset)}/03_preprocessed_error_dataset/{protocol}'
+
+def get_model_dir(project_name):
+    return os.path.join(get_project_dir(project_name), __models_dir)
+
+def get_model(name, protocol):
     if protocol == 'random':
         model_path = 'random-general-2-512-512-model_step_20000.pt'
     else:

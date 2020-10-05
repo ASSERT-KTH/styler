@@ -19,6 +19,8 @@ import ml
 
 from datetime import datetime 
 
+open_nmt_dir = os.path.join(os.path.dirname(__file__), 'OpenNMT-py')
+
 def tokenize_errors(file_path, errors):
     inputs = []
     for error in errors:
@@ -31,9 +33,66 @@ def tokenize_errors(file_path, errors):
 def de_tokenize(original_file_path, info):
     pass
 
+def run_preprocess(project, protocol):
+    tokenized_dir = get_tokenized_dir_by_protocol(project, protocol)
+    preprocessed_dir = get_preprocessed_dir_by_protocol(project, protocol)
+    create_dir(preprocessed_dir)
+
+    preprocess_script = os.path.join(open_nmt_dir, 'preprocess.py')
+    options = [
+        f'-train_src {tokenized_dir}/learning-I.txt',
+        f'-train_tgt {tokenized_dir}/learning-O.txt',
+        f'-valid_src {tokenized_dir}/validation-I.txt',
+        f'-valid_tgt {tokenized_dir}/validation-O.txt',
+        f'-save_data {preprocessed_dir}/preprocessing',
+        '-src_seq_length 650',
+        '-tgt_seq_length 105',
+        '-src_vocab_size 165',
+        '-tgt_vocab_size 165'
+    ]
+    cmd = f'python {preprocess_script} {" ".join(options)}'
+
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+
+    return output
+
+def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, gpu=True):
+    preprocessed_dir = get_preprocessed_dir_by_protocol(project, protocol)
+    model_dir = get_model_dir(project)
+
+    train_script = os.path.join(open_nmt_dir, 'train.py')
+    options = [
+        f'-data {preprocessed_dir}/preprocessing',
+        f'-global_attention {global_attention}',
+        '-encoder_type brnn',
+        '-decoder_type rnn',
+        f'-layers {layers}',
+        f'-rnn_size {rnn_size}',
+        f'-word_vec_size {word_vec_size}',
+        '-decoder_type rnn',
+        '-batch_size 32',
+        '-optim adagrad',
+        '-max_grad_norm 2',
+        '-learning_rate 0.10',
+        '-adagrad_accumulator_init 0.1',
+        '-bridge',
+        '-train_steps 20000',
+        '-save_checkpoint_steps 20000',
+        f'-save_model {model_dir}/{protocol}-{global_attention}-{layers}-{rnn_size}-{word_vec_size}-model'
+    ]
+    if gpu:
+        options.append('-gpu_ranks 0')
+    cmd = f'python {train_script} {" ".join(options)}'
+
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+
+    return output
+
 def gen_translator(model_name, protocol, batch_size=5):
     tmp_dir = get_tmp_dir(model_name)
-    model_dir = get_model_dir(model_name, protocol)
+    model = get_model(model_name, protocol)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -41,16 +100,14 @@ def gen_translator(model_name, protocol, batch_size=5):
     tmp_output_file_path = os.path.join(tmp_dir, tmp_output_file_name)
     def translator(input):
         save_file(tmp_dir, tmp_input_file_name, input)
-        run_translate(model_dir, tmp_input_file_path, tmp_output_file_path, batch_size=batch_size)
+        run_translate(model, tmp_input_file_path, tmp_output_file_path, batch_size=batch_size)
         return list(filter(lambda a: a!='', open_file(tmp_output_file_path).split('\n')))
     return translator
 
-def run_translate(model_dir, input_file, output_file, batch_size=5):
-    open_nmt_dir = os.path.join(os.path.dirname(__file__), 'OpenNMT-py')
+def run_translate(model, input_file, output_file, batch_size=5):
     translate_script = os.path.join(open_nmt_dir, 'translate.py')
-
     options = [
-        f'-model {model_dir}',
+        f'-model {model}',
         f'-src {input_file}',
         f'-output {output_file}',
         f'-n_best {batch_size}'
@@ -361,6 +418,32 @@ def main(args):
 
         time_elapsed = datetime.now() - start_time
         logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
+
+    if args[1] == 'preprocess_training_data':
+        start_time = datetime.now()
+
+        project_name = args[2]
+        for protocol in protocols:
+            run_preprocess(project_name, protocol)
+
+        time_elapsed = datetime.now() - start_time
+        logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
+
+    if args[1] == 'train_model':
+        start_time = datetime.now()
+
+        project_name = args[2]
+        protocol = args[3]
+        global_attention = args[4]
+        layers = args[5]
+        rnn_size = args[6]
+        word_vec_size = args[7]
+        gpu = args[8]
+        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, gpu)
+
+        time_elapsed = datetime.now() - start_time
+        logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
+
 
 if __name__ == "__main__":
     main(sys.argv)
