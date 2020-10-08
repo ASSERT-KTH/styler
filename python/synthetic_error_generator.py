@@ -216,23 +216,6 @@ def diff(file_A, file_B, unified=True):
     output = process.communicate()[0]
     return output.decode("utf-8")
 
-def split_files(corpus, share, random_state=100):
-    files_list = [file for (_,_,file) in corpus.files.values()]
-    n_files = len(files_list)
-    random.seed(random_state)
-    random.shuffle(files_list)
-    c_learning = int(share['learning']*n_files)
-    c_validation = int(share['validation']*n_files)
-    if c_validation == 0:
-        c_validation = 1
-        if c_learning + c_validation > n_files:
-            c_learning -= 1
-    return {
-        'learning': files_list[:c_learning],
-        'validation': files_list[c_learning: c_learning+c_validation],
-        'testing': files_list[c_learning+c_validation:]
-    }
-
 class Batch:
     def __init__(self, files_dir, checkstyle_dir, checkstyle_jar, batch_id=None, protocol='random'):
         self.checkstyle_dir = checkstyle_dir
@@ -342,10 +325,47 @@ def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_erro
     return selected_errors
 
 
-def gen_dataset(corpus, share, total, target, checkstyle_jar, protocol='random'):
-    splitted_files = split_files(corpus, share)
-    for name, subset_share in share.items():
-        gen_errors(splitted_files[name], corpus.checkstyle, checkstyle_jar, os.path.join(target, name), int(subset_share*total), protocol=protocol)
+def gen_dataset(corpus, share, number_of_synthetic_errors, synthetic_dataset_dir, checkstyle_jar, protocol='random'):
+    training_folder_path = os.path.join(synthetic_dataset_dir, 'training')
+    file_list = [file for (_,_,file) in corpus.files.values()]
+    gen_errors(file_list, corpus.checkstyle, checkstyle_jar, training_folder_path, number_of_synthetic_errors, protocol=protocol)
+    
+    error_types_to_errored_files = {}
+    for training_file in list_dir_full_path(training_folder_path):
+        with open(os.path.join(training_file, 'errors.json')) as json_file:
+            data = json.load(json_file)
+            if data[0]['source'] not in error_types_to_errored_files:
+                error_types_to_errored_files[data[0]['source']] = []
+            error_types_to_errored_files[data[0]['source']].append(training_file)
+    
+    for subset_name, subset_share in share.items():
+        if subset_share > 0:
+            create_dir(os.path.join(synthetic_dataset_dir, subset_name))
+    for error_type in error_types_to_errored_files:
+        errored_files = error_types_to_errored_files[error_type]
+        nb_files = len(errored_files)
+        logger.debug(f'{error_type}:{nb_files}')
+        random.shuffle(errored_files)
+        c_learning = int(share['learning']*nb_files)
+        c_validation = int(share['validation']*nb_files)
+        c_testing = int(share['testing']*nb_files)
+        sum_of_shares = c_learning + c_validation + c_testing
+        if sum_of_shares < nb_files:
+            if c_learning == 0:
+                c_learning += nb_files - sum_of_shares
+            else:
+                c_validation += nb_files - sum_of_shares
+        splitted_errored_files = {
+            'learning': errored_files[:c_learning],
+            'validation': errored_files[c_learning: c_learning+c_validation],
+            'testing': errored_files[c_learning+c_validation:]
+        }
+        for subset_name, subset_share in share.items():
+            target_file = f'{os.path.join(synthetic_dataset_dir, subset_name)}'
+            for training_file in splitted_errored_files[subset_name]:
+                shutil.move(training_file, target_file)
+
+    delete_dir_if_exists(training_folder_path)
 
 
 if __name__ == '__main__':
