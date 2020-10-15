@@ -193,7 +193,7 @@ def get_batch_results(checkstyle_results, n_batch=5):
         for batch in range(n_batch)
     }
 
-def select_the_best_repair(correct_repairs, original):
+def select_the_smallest_repair(correct_repairs, original):
     min_diff = 10000000
     file = ''
     for correct_repair in correct_repairs:
@@ -203,18 +203,18 @@ def select_the_best_repair(correct_repairs, original):
             min_diff = diff_size
     return file
 
-def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_formatting=False):
+def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name, protocol, checkstyle_jar, only_formatting=False):
     # set the dirs
-    target = os.path.join(dir, 'repair-attempt')
-    target_final = os.path.join(dir, 'files-repaired')
-    checkstyle_rules = os.path.join(dir_files, 'checkstyle.xml')
-    waste = os.path.join(dir, 'waste')
+    target = os.path.join(dir_repaired_files_by_protocol, 'repair-attempt')
+    target_final = os.path.join(dir_repaired_files_by_protocol, 'files-repaired')
+    checkstyle_rules = os.path.join(dir_files_to_repair, 'checkstyle.xml')
+    waste = os.path.join(dir_repaired_files_by_protocol, 'waste')
 
     # yet we focus on single error files
     # TODO : Improve it
-    dir_files = os.path.join(dir_files, f'./1')
+    dir_files_to_repair = os.path.join(dir_files_to_repair, f'./1')
     
-    list_of_fileids = list_folders(dir_files)
+    list_of_fileids = list_folders(dir_files_to_repair)
     number_of_files = len(list_of_fileids)
     if not os.path.exists(target):
         # create the folders
@@ -226,9 +226,9 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
 
         #list_of_fileids = []
         for folder_id in tqdm(list_of_fileids):
-            file_path = glob.glob(f'{dir_files}/{folder_id}/*.java')[0]
+            file_path = glob.glob(f'{dir_files_to_repair}/{folder_id}/*.java')[0]
             logger.debug(file_path)
-            metadata_path = f'{dir_files}/{folder_id}/metadata.json'
+            metadata_path = f'{dir_files_to_repair}/{folder_id}/metadata.json'
             for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
                 tokenized_errors, info = error
                 for proposal_id, translation in enumerate(translate(tokenized_errors)):
@@ -244,16 +244,16 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
     res = reverse_collection(get_batch_results(checkstyle_result))
     
     def select_best_proposal(file_id, proposals):
-        file_path = glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
+        file_path = glob.glob(f'{dir_files_to_repair}/{int(file_id) % number_of_files}/*.java')[0]
         min_errors = min(list(proposals.values()))
         good_proposals = [
             id
             for id, n_errors in proposals.items()
             if n_errors == min_errors
         ]
-        return select_the_best_repair(
+        return select_the_smallest_repair(
             [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
-            glob.glob(f'{dir_files}/{int(file_id) % number_of_files}/*.java')[0]
+            glob.glob(f'{dir_files_to_repair}/{int(file_id) % number_of_files}/*.java')[0]
         )
 
     best_proposals = {
@@ -267,13 +267,6 @@ def repair_files(dir, dir_files, model_name, protocol, checkstyle_jar, only_form
 
     return target_final
 
-def repair_real(name, protocol, checkstyle_jar):
-    directory = get_styler_repairs_by_protocol(name, protocol)
-    create_dir(directory)
-    dir_files = get_real_dataset_dir(name)
-    return repair_files(directory, dir_files, name, protocol, checkstyle_jar, only_formatting=True)
-
-
 def join_protocols(name, protocols_repairs, checkstyle_jar):
     directory = get_styler_repairs(name)
     create_dir(directory)
@@ -282,7 +275,7 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
     create_dir(target)
     create_dir(target_final)
     checkstyle_rules = os.path.join(get_real_dataset_dir(name), 'checkstyle.xml')
-    dir_files = os.path.join(get_real_dataset_dir(name), './1')
+    dir_files_to_repair = os.path.join(get_real_dataset_dir(name), './1')
     
     for (protocol_id, (protocol, path)) in enumerate(protocols_repairs.items()):
         protocol_target = os.path.join(target, f'./batch_{protocol_id}')
@@ -296,16 +289,16 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
     res = reverse_collection(get_batch_results(checkstyle_result, n_batch=len(protocols_repairs)))
 
     def select_best_proposal(file_id, proposals):
-        file_path = glob.glob(f'{dir_files}/{int(file_id)}/*.java')[0]
+        file_path = glob.glob(f'{dir_files_to_repair}/{int(file_id)}/*.java')[0]
         min_errors = min(list(proposals.values()))
         good_proposals = [
             id
             for id, n_errors in proposals.items()
             if n_errors == min_errors
         ]
-        return select_the_best_repair(
+        return select_the_smallest_repair(
             [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
-            glob.glob(f'{dir_files}/{int(file_id)}/*.java')[0]
+            glob.glob(f'{dir_files_to_repair}/{int(file_id)}/*.java')[0]
         )
 
     best_proposals = {
@@ -318,7 +311,7 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
         shutil.copy(path, folder)
     return best_proposals
 
-def gen_training_data_2(project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
+def gen_training_data(project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
     try:
         if corpus_dir is None:
@@ -363,7 +356,11 @@ def main(args):
 
             results = {}
             for protocol in tqdm(protocols, desc='protocol'):
-                results[protocol] = repair_real(dataset, protocol, checkstyle_jar)
+                dir_repaired_files_by_protocol = get_styler_repairs_by_protocol(dataset, protocol)
+                create_dir(dir_repaired_files_by_protocol)
+                dir_files_to_repair = get_real_dataset_dir(dataset)
+                results[protocol] = repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, dataset, protocol, checkstyle_jar, only_formatting=True)
+
             ## join protcols 
             choices = join_protocols(dataset, results, checkstyle_jar)
             for choice in choices.values():
@@ -399,7 +396,7 @@ def main(args):
 
         logger.debug("Starting data generation")
 
-        gen_training_data_2(repo_dir, checkstyle_file_path, checkstyle_jar, errors_dataset_name, corpus_dir=corpus_dir)
+        gen_training_data(repo_dir, checkstyle_file_path, checkstyle_jar, errors_dataset_name, corpus_dir=corpus_dir)
 
         gotify.notify('[done][data generation]', errors_dataset_name)
 
