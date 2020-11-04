@@ -1,25 +1,17 @@
-import os
-import subprocess
 import sys
-import configparser
-import checkstyle
-import glob
-import repair
-import shutil
-from tqdm import tqdm
-from termcolor import colored
+from os import path
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
+from core import *
 from Corpus import Corpus
+import checkstyle
+
+import repair
+import graph_plot
+
 from terminaltables import GithubFlavoredMarkdownTable
 from terminaltables import SingleTable
 from functools import reduce
-import time
-from scipy import stats
-import string
-from loguru import logger
 import pandas as pd
-
-from core import *
-import graph_plot
 
 tools = ['styler', 'intellij', 'naturalize', 'codebuff']
 
@@ -135,8 +127,8 @@ def experiment(name, corpus_dir, execute=True):
                 if not os.path.exists(intellij_dir):
                     create_dir(intellij_dir)
                 pass
-            else:
-                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=experiment_tool_dir, dataset_metadata=metadata)
+            #else:
+            #    repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=experiment_tool_dir, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
         repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
         result[tool] = repaired
@@ -146,7 +138,7 @@ def experiment(name, corpus_dir, execute=True):
     return result
 
 
-def compute_diff_size(name, tool):
+def compute_diff_repairs_size(name, tool):
     diffs = []
     experiment_dir = get_experiment_dir_of_project(name)
     dataset_dir = get_real_dataset_dir(name)
@@ -167,15 +159,15 @@ def compute_diff_size(name, tool):
         if len(glob.glob(f'{repaired_folder}/*.java')) == 0:
             continue
         repaired_file = glob.glob(f'{repaired_folder}/*.java')[0]
-        diffs_count = java_lang_utils.compute_diff_size(original_file, repaired_file)
+        diffs_count = compute_diff_size(original_file, repaired_file)
         diffs += [diffs_count]
     return diffs
 
 
-def get_diff_dataset(experiment_id, tools):
+def get_diff_repairs(experiment_id, tools):
     dataset_name = experiment_id
     return {
-        tool:compute_diff_size(experiment_id, tool)
+        tool:compute_diff_repairs_size(experiment_id, tool)
         for tool in tools # if tool not in ['styler']
     }
 
@@ -387,7 +379,7 @@ def main(args):
         
         result = {}
         for name in projects:
-            result[name] = get_diff_dataset(name, tools)
+            result[name] = get_diff_repairs(name, tools)
         result_per_tool = {}
         for tool in tools:
             result_per_tool[tool] = []

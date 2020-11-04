@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from core import *
-from Corpus import *
-import java_lang_utils as jlu
-import sys
-from ml import get_token_value, get_space_value
-from collections import Counter
-from functools import reduce
-from tqdm import tqdm
-import csv
-import uuid
-import checkstyle
-import shutil
-import pandas as pd
-from token_utils import whitespace_token_to_tuple
-import random
+import tokenizer
+from token_utils import *
 
-from loguru import logger
+from javalang import tokenizer as javalang_tokenizer
+import checkstyle
+import random
+import intervals as I
+import pandas as pd
 
 BATCH_SIZE = 500
 
@@ -40,7 +32,7 @@ def word_counter_to_csv(counter):
 
 
 def tokenize_and_count(file_path):
-    tokens = jlu.tokenize_with_white_space(open_file(file_path))
+    tokens = tokenizer.tokenize_with_white_space(open_file(file_path))
     tokenized_file = []
     for token, ws in zip(map(get_token_value, tokens[1]), map(get_space_value, tokens[0])):
         tokenized_file += [token, ws]
@@ -81,8 +73,8 @@ def list_alternatives_with_probability(token_a, ws, token_b):
     }
 
 
-tokenizer = jlu.Tokenizer()
-tokenizer_absolute = jlu.Tokenizer(relative=False)
+tokenizer_relative = tokenizer.Tokenizer()
+tokenizer_absolute = tokenizer.Tokenizer(relative=False)
 
 def pick_random(alternatives):
     random_number = random.random()
@@ -92,15 +84,6 @@ def pick_random(alternatives):
         if random_number <= probability_sum:
             return alternative
     return None
-
-
-def get_line_indent(line):
-    indent = 0
-    for c in line:
-        if c == ' ':
-            indent+=1
-        else:
-            return indent
 
 
 def modify_source_three_grams(source, n_insertion=1):
@@ -115,10 +98,10 @@ def modify_source_three_grams(source, n_insertion=1):
         elif line[0] == " ":
             nb_space += 1
 
-    tokenizer.tabulation = nb_tab >= nb_space
+    tokenizer_relative.tabulation = nb_tab >= nb_space
     tokenizer_absolute.tabulation = nb_tab >= nb_space
 
-    tokenized_source = tokenizer.tokenize(source)
+    tokenized_source = tokenizer_relative.tokenize(source)
     tokenized_source_absolute = tokenizer_absolute.tokenize(source)
     insertion_spots = list(range(len(tokenized_source.tokens)-1))
     random.shuffle(insertion_spots)
@@ -184,16 +167,146 @@ class InsertionException(Exception):
     pass
 
 
+def gen_ugly(file_path, output_dir, modification_number = (1,0,0,0,0)):
+    """
+    Gen an ugly vertsion of of .java file
+    """
+    with open(file_path) as f:
+        file_lines = f.readlines()
+    file_content = "".join(file_lines)
+
+    output, modifications = gen_ugly_from_source(file_content, modification_number=modification_number)
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_path = os.path.join(output_dir, f'./{file_path.split("/")[-1]}')
+
+    with open(output_path, "w") as output_file_object:
+        output_file_object.write(output)
+
+    return modifications
+
+
+def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
+    """
+    Gen an ugly vertsion of of .java file
+    """
+    insertions_sample_size_space = modification_number[0]
+    insertions_sample_size_tab = modification_number[1]
+    insertions_sample_size_newline = modification_number[2]
+    insertions_sample_size = insertions_sample_size_space + insertions_sample_size_tab + insertions_sample_size_newline
+    deletions_sample_size_space = modification_number[3]
+    deletions_sample_size_newline = modification_number[4]
+    deletions_sample_size = deletions_sample_size_space + deletions_sample_size_newline
+    # deletions_sample_size = modification_number - insertions_sample_size
+    file_lines = [ line + '\n' for line in file_content.split('\n') ]
+
+    tokens = javalang_tokenizer.tokenize(file_content)
+    tokens = [ t for t in tokens]
+    # print("\n".join([ str(t) for t in tokens]))
+
+
+    # Take a sample of locations suitable for insertions
+    insertions_sample = random.sample( tokens, min(insertions_sample_size, len(tokens)) )
+
+    insertions = dict();
+
+    insertions_chars = ([' '] * insertions_sample_size_space);
+    insertions_chars.extend(['\t'] * insertions_sample_size_tab)
+    insertions_chars.extend(['\n'] * insertions_sample_size_newline)
+    random.shuffle(insertions_chars)
+
+    for element, char in zip(insertions_sample, insertions_chars):
+        insertions[element.position] = char
+
+    # Select every locations suitable for deletions (i.e. before or after a separator/operator)
+    deletions_spots = list()
+    suitable_for_deletions = [javalang_tokenizer.Separator, javalang_tokenizer.Operator]
+    for index in range(0, len(tokens)-1):
+        if ( type(tokens[index]) in suitable_for_deletions):
+            prev_token_position = tokens[index-1].position;
+            tokens_position = tokens[index].position;
+            next_token_position = tokens[index+1].position;
+            end_of_prev_token = (prev_token_position[0], prev_token_position[1] + len(tokens[index-1].value))
+            end_of_token = (tokens_position[0], tokens_position[1] + len(tokens[index].value))
+            if (end_of_prev_token != tokens_position):
+                #print("prev : ", tokens[index-1].value , tokens[index].value, tokens[index+1].value, tokens[index].position)
+                deletions_spots.append((end_of_prev_token, tokens_position))
+            if (end_of_token != next_token_position):
+                #print("next : ", tokens[index-1].value , tokens[index].value, tokens[index+1].value, tokens[index].position)
+                deletions_spots.append((end_of_token, next_token_position))
+    deletions_spots = list(set(deletions_spots))
+
+    # Take a sample of locations suitable for deletions
+    deletions_sample = random.sample( deletions_spots, min(deletions_sample_size, len(deletions_spots)) )
+
+    deletions = dict()
+    for deletion_intervals in deletions_spots:
+        #print(deletion_intervals)
+        from_char = deletion_intervals[0]
+        to_char = deletion_intervals[1]
+        while from_char[0] <= to_char[0]:
+            if from_char[0] == to_char[0]:
+                interval = I.closedopen(from_char[1], to_char[1] )
+            else:
+                interval = I.closedopen(from_char[1], I.inf )
+            if ( from_char[0] not in deletions):
+                deletions[from_char[0]] = list()
+            deletions[from_char[0]].append(interval)
+            from_char=(from_char[0]+1, 0)
+
+
+    deletions_spots_chars = dict()
+    line_num = 1
+    for line in file_lines:
+        char_num = 1
+        for char in line:
+            if ( line_num in deletions ):
+                for intervals in deletions[line_num]:
+                    if char_num in intervals:
+                        if (char not in deletions_spots_chars):
+                            deletions_spots_chars[char] = []
+                        deletions_spots_chars[char].append((line_num, char_num))
+            char_num = char_num + 1
+        line_num = line_num + 1
+
+
+    deletions = []
+    if (' ' in deletions_spots_chars):
+        deletions.extend(random.sample(deletions_spots_chars[' '], deletions_sample_size_space))
+    if ('\n' in deletions_spots_chars):
+        deletions.extend(random.sample(deletions_spots_chars['\n'], deletions_sample_size_newline))
+
+    # print(insertions)
+    # print(deletions)
+    # Write the output file
+    output = ""
+    line_num = 1
+    for line in file_lines:
+        char_num = 1
+        for char in line:
+            skip = False
+            if ((line_num, char_num) in deletions):
+                skip = True
+            if ((line_num, char_num) in insertions):
+                output += insertions[(line_num, char_num)]
+            if ( not skip ):
+                output += char
+            char_num = char_num + 1
+        line_num = line_num + 1
+    return output, tuple(set(deletions) | set(insertions.keys()))
+
 def modify_source_random(source):
-    if not jlu.check_source_well_formed(source):
+    if not check_source_well_formed(source):
         raise InsertionException
     while True:
         injection_operation = random.choice(injection_operator_pool)
-        ugly_content, modification = jlu.gen_ugly_from_source(source, modification_number=injection_operator_types[injection_operation])
-        if not jlu.check_source_well_formed(ugly_content):
+        ugly_content, modification = gen_ugly_from_source(source, modification_number=injection_operator_types[injection_operation])
+        if not check_source_well_formed(ugly_content):
             continue
-        spaces_original, tokens_original = jlu.tokenize_with_white_space(source)
-        spaces_errored, tokens_errored = jlu.tokenize_with_white_space(ugly_content)
+        spaces_original, tokens_original = tokenizer.tokenize_with_white_space(source)
+        spaces_errored, tokens_errored = tokenizer.tokenize_with_white_space(ugly_content)
         if len(tokens_original) != len(tokens_errored):
             continue
         return ugly_content, (modification, injection_operation)
@@ -206,15 +319,6 @@ def modify_source(source, protocol='random'):
         return modify_source_three_grams(source)
     return modify_source_random(source)
 
-
-def diff(file_A, file_B, unified=True):
-    if unified:
-        cmd = 'diff -u {} {}'.format(file_A, file_B)
-    else:
-        cmd = 'diff {} {}'.format(file_A, file_B)
-    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    return output.decode("utf-8")
 
 class Batch:
     def __init__(self, files_dir, checkstyle_dir, checkstyle_jar, batch_id=None, protocol='random'):
@@ -392,3 +496,15 @@ if __name__ == '__main__':
             raise Exception('Unkown protocol')
         corpus = Corpus(core_config['CORPUS']['corpus_dir'] % corpus_name, corpus_name)
         gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{corpus_name}', protocol=protocol)
+
+    elif (sys.argv[1] == "ugly"):
+        print(gen_ugly( sys.argv[2], sys.argv[3] ))
+    elif sys.argv[1] == "check":
+        folder_dir = sys.argv[2]
+        for file_path in glob.glob(f'{folder_dir}/*/*.java'):
+            logger.debug(file_path)
+            gen_ugly_from_source(open_file(file_path), modification_number = (1,0,0,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,1,0,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,1,0,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,1,0))
+            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,0,1))

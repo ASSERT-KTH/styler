@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import glob
-from core import *
-
 class Synthetic_Checkstyle_Error:
     def __init__(self, dir):
         self.dir = dir

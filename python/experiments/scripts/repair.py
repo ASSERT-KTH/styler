@@ -1,8 +1,12 @@
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
 from core import *
 from Synthetic_Checkstyle_Error import Synthetic_Checkstyle_Error
-import java_lang_utils
-import checkstyle
+import tokenizer
 import styler
+import checkstyle
+
 from functools import reduce
 
 def get_jar_path(jar_file):
@@ -44,7 +48,7 @@ def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
         path = ugly.get_errored_path()
     #     erorrs_lines = [ int(e["line"]) for e in file["errors"]]
         erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
-        (from_char, to_char) = java_lang_utils.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
+        (from_char, to_char) = tokenizer.get_char_pos_from_lines(path, min(erorrs_lines) - 1, max(erorrs_lines) + 1)
         args.append(path + ":" + str(from_char) + ',' + str(to_char))
     return call_java(get_jar_path('naturalize.jar'), args)
 
@@ -71,7 +75,7 @@ def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
         erorrs_lines = [ int(ugly.get_metadata()["line"]) ]
         from_line, to_line = (min(erorrs_lines) - 1, max(erorrs_lines) + 1)
         try:
-            java_lang_utils.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
+            tokenizer.mix_files(file_path, codebuff_path, output_path, from_line, to_line=to_line )
         except FileNotFoundError:
             print("No file (probably codebuff trash)")
 
