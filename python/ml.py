@@ -1,219 +1,11 @@
-import java_lang_utils as jlu
-import tensorflow as tf
-from functools import reduce
-import numpy as np
-from tensorflow import keras
-from javalang import tokenizer
-from tqdm import tqdm
-import os
-import random
-import json
-import sys
-import pprint
-import glob
-import matplotlib
-import java_lang_utils
-import shutil
-import uuid
-from termcolor import colored
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from difflib import Differ
-import configparser
-
 from core import *
-import token_utils
+import tokenizer
+import pprint
+#import tensorflow as tf
 
 pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
-
-def get_token_value(token):
-    if isinstance(token, tokenizer.Keyword):
-        return token.value
-    if isinstance(token, tokenizer.Separator):
-        return token.value
-
-    if isinstance(token, tokenizer.Comment):
-        return token.__class__.__name__
-    if isinstance(token, tokenizer.Literal):
-        return token.__class__.__name__
-    if isinstance(token, tokenizer.Operator):
-        return token.value
-        if token.is_infix():
-            return "InfixOperator"
-        if token.is_prefix():
-            return "PrefixOperator"
-        if token.is_postfix():
-            return "PostfixOperator"
-        if token.is_assignment():
-            return "AssignmentOperator"
-
-    return token.__class__.__name__
-
-def get_space_value(space):
-    if space[0] == 0:
-        return f'{space[1]}_SP'
-    else:
-        result = f'{space[0]}_NL'
-        if space[1] == 0:
-            pass
-        elif space[1] > 0:
-            result += f'_{space[1]}_ID'
-        else:
-            result += f'_{-space[1]}_DD'
-        return result
-
-def tokenize_file_to_repair(file_path, error):
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_path))
-
-    info = {}
-
-    token_started = False
-    token_line_start = -1
-    token_line_end = -1
-    count = 0
-
-    tokens_errored = []
-    n_lines = 6
-
-    start = len(tokens)
-    end = 0
-
-    from_token = 0
-    to_token = 0
-
-    for token, space in zip(tokens, spaces):
-        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines :
-            start = min(count, start)
-            end = max(count, end)
-        if not token_started and int(error['line']) == token.position[0]:
-            token_started = True
-            token_line_start = count
-        if token_started and  int(error['line']) < token.position[0]:
-            token_started = False
-            token_line_end = count
-        count += 1
-    start = max(0, start - 2)
-    end = min(len(tokens), end + 2)
-    if token_line_end == -1:
-        token_line_end = token_line_start
-
-    # print(error)
-
-    if 'column' in error and error['type'] != 'OneStatementPerLine':
-        errored_token_index = -1
-        around = 10
-        for token, index in zip(tokens,range(len(tokens))):
-            if token.position[0] <= int(error['line']) and token.position[1] <= int(error['column']):
-                errored_token_index = index
-        from_token = max(0, errored_token_index - around)
-        to_token = min(len(tokens), errored_token_index + 1 + around)
-    else:
-        around = 2
-        around_after = 13
-        errored_token_index = -1
-        if token_line_start != -1:
-            from_token = max(start, token_line_start - around)
-            to_token = min(end, token_line_end + around_after + 1)
-        else:
-            errored_token_index = -1
-            around = 2
-            around_after = 18
-            for token, index in zip(tokens,range(len(tokens))):
-                if token.position[0] < int(error['line']):
-                    errored_token_index = index
-            from_token = max(0, errored_token_index - around)
-            to_token = min(len(tokens), errored_token_index + 1 + around_after)
-    tokens_errored_in_tag = []
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-        tokens_errored_in_tag.append(get_token_value(token))
-        tokens_errored_in_tag.append(get_space_value(space))
-
-
-    for token, space in zip(tokens[start:from_token], spaces[start:from_token]):
-        tokens_errored.append(get_token_value(token))
-        tokens_errored.append(get_space_value(space))
-    tokens_errored.append(f'<{error["type"]}>')
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-        tokens_errored.append(get_token_value(token))
-        tokens_errored.append(get_space_value(space))
-    tokens_errored.append(f'</{error["type"]}>')
-    for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
-        tokens_errored.append(get_token_value(token))
-        tokens_errored.append(get_space_value(space))
-
-    info['from_token'] = from_token
-    info['to_token'] = to_token
-    info['start'] = start
-    info['end'] = end
-    info['error'] = error
-    info['tokens_errored_in_tag'] = tokens_errored_in_tag
-
-    return tokens_errored, info
-
-def tokenize_errored_file_model2(file, file_orig, error):
-
-    # else:
-    #     for token, space in zip(tokens[start:end], spaces[start:end]):
-    #         tokens_errored.append(get_token_value(token))
-    #         tokens_errored.append(get_space_value(space))
-    #     tokens_errored.append(f'<{error["type"]}>')
-    #     tokens_errored.append(f'</{error["type"]}>')
-
-    tokens_errored, info = tokenize_file_to_repair(file, error)
-
-    tokens_errored_in_tag = info['tokens_errored_in_tag']
-    from_token = info['from_token']
-    to_token = info['to_token']
-
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
-    tokens_correct = []
-
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-        tokens_correct.append(get_token_value(token))
-        tokens_correct.append(get_space_value(space))
-
-    if len(tokens_errored_in_tag) != len(tokens_correct):
-        print("WHAAAAATT")
-    info['count_diff'] = 0
-    for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
-        if t_A != t_B:
-            info['count_diff'] += 1
-
-    return tokens_errored, tokens_correct, tokens_errored_in_tag, info
-
-def tokenize_errored_file(file, file_orig, error):
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file))
-    token_started = False
-    from_token = -1
-    to_token = -1
-    count = 0
-    tokens_errored = []
-    n_lines = 5
-    for token, space in zip(tokens, spaces):
-        if not token_started and int(error['line']) == token.position[0]:
-            token_started = True
-            tokens_errored.append(f'<{error["type"]}>')
-            from_token = count
-        if token_started and  int(error['line']) < token.position[0]:
-            token_started = False
-            tokens_errored.append(f'</{error["type"]}>')
-            to_token = count
-        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines :
-            tokens_errored.append(get_token_value(token))
-            tokens_errored.append(get_space_value(space))
-        count += 1
-    if from_token == -1:
-        tokens_errored.append(f'<{error["type"]}>')
-        tokens_errored.append(f'</{error["type"]}>')
-
-    spaces, tokens = jlu.tokenize_with_white_space(jlu.open_file(file_orig))
-    tokens_correct = []
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-        tokens_correct.append(get_token_value(token))
-        tokens_correct.append(get_space_value(space))
-    return tokens_errored, tokens_correct
 
 def whatever(dir, folder, id, only_formatting=False):
     dir = os.path.join(dir, f'./{folder}/{id}')
@@ -225,7 +17,7 @@ def whatever(dir, folder, id, only_formatting=False):
     # Compatibility
     if 'line' not in error:
         error = error['error']
-    return tokenize_errored_file_model2(file, file_orig, error)
+    return tokenizer.tokenize_errored_file_model2(file, file_orig, error)
 
 def merge_IOs(sub_set, ids, target):
     dir = f'{target}/{sub_set}'
@@ -372,7 +164,7 @@ def beam_search(target_dir, pred_dir, n=1, only_formatting=False):
     # pp.pprint(not_predicted)
 
 def match_input_to_source(source, error_info, input):
-    whitespace, tokens = jlu.tokenize_with_white_space(source)
+    whitespace, tokens = tokenizer.tokenize_with_white_space(source)
     start = error_info['start']
     end = error_info['end']
 
@@ -394,34 +186,6 @@ def match_input_to_source(source, error_info, input):
 
 
     return result
-
-def de_tokenize(errored_source, error_info, new_tokens, tabulations, only_formatting=False):
-    whitespace, tokens = jlu.tokenize_with_white_space(errored_source)
-    from_token = error_info['from_token']
-    to_token = error_info['to_token']
-
-
-    if only_formatting:
-        new_white_space_tokens = new_tokens
-    else:
-        new_white_space_tokens = new_tokens[1::2]
-    # print(new_white_space_tokens)
-    new_white_space = [ token_utils.whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
-    # print(new_white_space)
-
-    # whitespace[from_token:to_token] = new_white_space
-    # whitespace[from_token:min(from_token + len(new_white_space),to_token)] = new_white_space[:min(to_token - from_token, len(new_white_space))]
-    for index in range(min(to_token - from_token, len(new_white_space))):
-        whitespace[from_token + index] = new_white_space[index]
-
-    result = jlu.reformat(whitespace, tokens, tabulations=tabulations)
-
-    if 'error' in error_info:
-        line = int(error_info['error']['line'])
-        return jlu.mix_sources(errored_source, result, line-1, to_line=line+1) #result
-    else:
-        return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0]) #result
-    # return jlu.mix_sources(errored_source, result, tokens[from_token].position[0], to_line=tokens[to_token].position[0])
 
 def get_predictions(dataset, n, id):
     print(dataset)
@@ -458,37 +222,6 @@ def get_error_info(dataset, id):
     tokenized_testing_dir = f'{tokenized_dir}/testing'
     error_info = open_json(os.path.join(tokenized_testing_dir, f'{id}-info.json'))
     return error_info
-
-def de_tokenize_file(dataset, n, id, only_formatting=False):
-    # get the tokenization informations
-    error_info = get_error_info(dataset, id)
-    # Get the errored file
-    errored_file_name, errored_source = get_error_filename_and_content(dataset, id)
-    # get the new tokens
-    new_tokens_predictions = get_predictions(dataset, n, id)
-    tabulations = False
-    if dataset == 'spoon':
-        tabulations = True
-    tokenized_results = [
-        de_tokenize(errored_source, error_info, new_tokens.split(' '), tabulations, only_formatting=only_formatting)
-        for new_tokens in new_tokens_predictions
-    ]
-
-    return tokenized_results, errored_file_name
-
-def de_tokenize_dataset(dataset, n, only_formatting=False):
-    target = f'./experiments/ml/{dataset}/styler'
-    # for id in [529]:
-    for id in tqdm(range(1000)):
-        try:
-            tokenized_results, errored_file_name = de_tokenize_file(dataset, n, id, only_formatting=only_formatting)
-            for index in range(n):
-                new_file_folder = os.path.join(target, f'batch_{index}/{id}')
-                create_dir(new_file_folder)
-                save_file(new_file_folder, errored_file_name, tokenized_results[index])
-        except:
-            pass
-    move_parse_exception_files(target, f'./experiments/ml/{dataset}/bin')
 
 def get_aligned_strings(tokens, n=2, color=True):
     result = ['']*n
@@ -527,9 +260,6 @@ def main(args):
     if len(args) >= 2 and args[1] == 'info':
         folder = args[2]
         print_max_length_and_vocabulary(folder)
-    if args[1] == 'de-tokenize':
-        for dataset in tqdm(dataset_list, desc='de tokenize'):
-            de_tokenize_dataset(dataset, n=5, only_formatting=True)
     if len(args) == 4 and args[1] == 'beam':
         n = int(args[3])
         dataset = args[2]

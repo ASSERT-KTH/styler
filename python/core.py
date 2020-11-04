@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import json
 import os
+import sys
+import json
 import subprocess
-import java_lang_utils
 import shutil
-import random
-import copy
+import glob
 import uuid
+from datetime import datetime
 from tqdm import tqdm
-import copy
-import threading
 import configparser
+from loguru import logger
+
+import javalang
+from javalang import parse
 
 core_config = configparser.ConfigParser()
 core_config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
@@ -239,7 +241,7 @@ def is_odd(number):
 def move_parse_exception_files(from_dir, to_dir):
     """Move all the .java recursively contained in the dir that are not parsable
     """
-    files = java_lang_utils.get_bad_formated(from_dir)
+    files = get_bad_formated(from_dir)
     if to_dir:
         create_dir(to_dir)
         for file in files:
@@ -406,3 +408,61 @@ def reverse_collection(collection, key_func=None):
                 result[value] = {}
             result[value][keyA] = itemB
     return result
+
+def check_well_formed(file_path):
+    """
+    Check if javalang can parse the file
+    :param file_path: the java file dir
+    """
+    with open(file_path) as f:
+        file_content = f.read()
+    return check_source_well_formed(file_content)
+
+
+def check_source_well_formed(file_content):
+    """
+    Check if javalang can parse the file
+    :param file_path: the java file dir
+    """
+    try:
+        tree = parse.parse(file_content)
+        return True
+    except javalang.parser.JavaSyntaxError as error:
+        return False
+    except StopIteration as error:
+        return False
+
+
+def get_bad_formated(dir):
+    """
+    Get all the bad formated files from a dir
+    :param dir: dir to check recursively
+    :return: list of path to java files
+    """
+    bad_formated_files = []
+    for folder in os.walk(dir):
+        for file_name in folder[2]:
+            file_path = os.path.join(folder[0], file_name)
+            if file_path.endswith('.java'):
+                if ( not check_well_formed(file_path) ):
+                    bad_formated_files.append(file_path)
+    return bad_formated_files
+
+def diff(file_A, file_B, unified=True):
+    if unified:
+        cmd = 'diff -u {} {}'.format(file_A, file_B)
+    else:
+        cmd = 'diff {} {}'.format(file_A, file_B)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output.decode("utf-8")
+
+def compute_diff_size(file_A, file_B):
+    """
+    Check the diff size between file A and B
+    :return: the size of the diff
+    """
+    cmd = 'diff {} {}'.format(file_A, file_B)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output.count(b'\n>') + output.count(b'\n<')

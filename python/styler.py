@@ -1,23 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import ml
-import sys
-import glob
-from git import Repo
-from tqdm import tqdm
-from scipy import stats
-import git_helper
-
-from loguru import logger
-import gotify
-
 from core import *
-import checkstyle
+import git_helper
 from Corpus import Corpus
 import synthetic_error_generator
+import tokenizer
 import ml
-
-from datetime import datetime 
+import checkstyle
+import gotify
 
 open_nmt_dir = os.path.join(os.path.dirname(__file__), 'OpenNMT-py')
 
@@ -26,7 +16,7 @@ def tokenize_errors(file_path, errors):
     for error in errors:
         error['type'] = checkstyle_source_to_error_type(error['source'])
         if is_error_targeted(error):
-            tokenized_file, info = ml.tokenize_file_to_repair(file_path, error)
+            tokenized_file, info = tokenizer.tokenize_file_to_repair(file_path, error)
             inputs += [ (" ".join(tokenized_file), info) ]
     return inputs
 
@@ -119,20 +109,17 @@ def run_translate(model, input_file, output_file, batch_size=5):
 
     return output
 
-def join_token(tokens):
-    return ' '.join(tokens)
-
 def print_translations(file_path, metadata_path, translate):
     metadata = open_json(metadata_path)
     for tokenized_errors, info in tokenize_errors(file_path, metadata['errors']):
         print(info)
         for translation in translate(tokenized_errors):
-            ml.print_diff(join_token(info['tokens_errored_in_tag']) + '\n', translation)
+            ml.print_diff(' '.join(info['tokens_errored_in_tag']) + '\n', translation)
             print()
 
 def de_tokenize(file_path, info, new_tokens, only_formatting=False):
     source_code = open_file(file_path)
-    result = ml.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False, only_formatting=only_formatting)
+    result = tokenizer.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False, only_formatting=only_formatting)
     return result
 
 def get_files_without_errors(checkstyle_result):
@@ -197,7 +184,7 @@ def select_the_smallest_repair(correct_repairs, original):
     min_diff = 10000000
     file = ''
     for correct_repair in correct_repairs:
-        diff_size = java_lang_utils.compute_diff_size(original, correct_repair)
+        diff_size = compute_diff_size(original, correct_repair)
         if diff_size < min_diff:
             file = correct_repair
             min_diff = diff_size

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
 from core import *
-from experiments import *
-from itertools import product
 
+from experiments import *
+
+from itertools import product
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

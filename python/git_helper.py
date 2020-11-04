@@ -1,9 +1,5 @@
-import git
 from git import Repo
 from git import InvalidGitRepositoryError
-import os
-from loguru import logger
-import configparser
 
 from core import *
 
