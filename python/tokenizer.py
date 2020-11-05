@@ -84,11 +84,22 @@ def tokenize_file_to_repair(file_path, error):
     if 'column' in error:
         errored_token_index = -1
         around = 10
-        for token, index in zip(tokens,range(len(tokens))):
-            if token.position[0] <= int(error['line']) and token.position[1] <= int(error['column']):
-                errored_token_index = index
+        
+        column = int(error['column'])
+
+        if column <= tokens[token_line_start].position[1]:
+            errored_token_index = token_line_start
+        elif column >= tokens[token_line_end - 1].position[1]:
+            errored_token_index = token_line_end - 1
+        else:
+            index = token_line_start
+            for token in tokens[token_line_start:token_line_end]:
+                if token.position[1] <= column:
+                    errored_token_index = index
+                index += 1
+
         from_token = max(0, errored_token_index - around)
-        to_token = min(len(tokens), errored_token_index + 1 + around)
+        to_token = min(len(tokens), errored_token_index + around)
     else:
         around = 2
         around_after = 13
