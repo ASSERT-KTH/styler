@@ -81,7 +81,7 @@ def tokenize_file_to_repair(file_path, error):
 
     # print(error)
 
-    if 'column' in error and error['type'] != 'OneStatementPerLine':
+    if 'column' in error:
         errored_token_index = -1
         around = 10
         for token, index in zip(tokens,range(len(tokens))):
