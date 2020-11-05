@@ -16,7 +16,6 @@ import pandas as pd
 tools = ['styler', 'intellij', 'naturalize', 'codebuff']
 
 tools_plus_styler_protocols = tuple(list(tools) + list(styler_tools))
-tools_plus_all = tuple(list(tools) + ['all_tools'])
 tools_plus_styler_protocols_and_all = tuple(list(tools_plus_styler_protocols) + ['all_tools'])
 
 tool_names = {
@@ -63,7 +62,7 @@ class Timer:
 # timer = Timer()
 
 def get_experiment_dir():
-    return f'{get_output_dir()}/../results'
+    return os.path.abspath(f'{get_output_dir()}/../results')
 
 def get_experiment_dir_of_project(project_name):
     return f'{get_experiment_dir()}/{project_name}'
@@ -114,6 +113,7 @@ def experiment(name, corpus_dir, execute=True):
         logger.debug(f'Start {tool} ({name})')
         # timer.start_task(f'{name}_{tool}')
         experiment_tool_dir = os.path.join(experiment_dir, tool)
+        print(f'experiment_tool_dir {experiment_tool_dir}')
         if not os.path.exists(experiment_tool_dir) and execute:
             if tool == 'styler':
                 shutil.copytree(f'{get_styler_repairs(name)}/files-repaired', experiment_tool_dir)
@@ -123,12 +123,10 @@ def experiment(name, corpus_dir, execute=True):
                 if os.path.exists(path):
                     shutil.copytree(path, experiment_tool_dir)
             elif tool == 'intellij':
-                intellij_dir = os.path.join(experiment_dir, 'intellij')
-                if not os.path.exists(intellij_dir):
-                    create_dir(intellij_dir)
-                pass
-            #else:
-            #    repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=experiment_tool_dir, dataset_metadata=metadata)
+                create_dir(experiment_tool_dir)
+            else:
+                create_dir(experiment_tool_dir)
+                repair.call_repair_tool(tool, orig_dir=clean_dir, ugly_dir=f'{errored_dir}/1', output_dir=experiment_tool_dir, dataset_metadata=metadata)
         # timer.end_task(f'{name}_{tool}')
         repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
         result[tool] = repaired
@@ -137,30 +135,42 @@ def experiment(name, corpus_dir, execute=True):
     result['out_of'] = list_folders(f'{get_real_dataset_dir(name)}/1')
     return result
 
+def experiment_for_calibration(name, corpus_dir, results_dir, execute=True):
+    experiment_dir, clean_dir, errored_dir, metadata, checkstyle_jar = setup_experiment(name, corpus_dir)
+
+    result = {}
+
+    models = sorted(list_folders(results_dir))
+    print(f'{len(models)}: {models}')
+    for protocol in protocols:
+        for model in models:
+            model_protocol = protocol + '-' + model
+            logger.debug(f'Start {model_protocol}')
+            experiment_tool_dir = os.path.join(experiment_dir, model_protocol)
+            if not os.path.exists(experiment_tool_dir) and execute:
+                shutil.copytree(f'{results_dir}/{model}/{protocol}/files-repaired', experiment_tool_dir)
+            repaired = repair.get_repaired(model_protocol, experiment_dir, checkstyle_jar, only_targeted=True)
+            result[model_protocol] = repaired
+    result['out_of'] = list_folders(f'{get_real_dataset_dir(name)}/1')
+    return result
+
 
 def compute_diff_repairs_size(name, tool):
     diffs = []
-    experiment_dir = get_experiment_dir_of_project(name)
-    dataset_dir = get_real_dataset_dir(name)
-    dataset_info = open_json(os.path.join(dataset_dir, 'info.json'))
-    checkstyle_jar = dataset_info["checkstyle_jar"]
-    repaired = repair.get_repaired(tool, experiment_dir, checkstyle_jar, only_targeted=True)
-
-    errored_dir = os.path.join(experiment_dir, f'./errored/1')
-    repaired_dir = os.path.join(experiment_dir, f'./{tool}')
-    for repaired_id in repaired:
-        original_folder = os.path.join(errored_dir, str(repaired_id))
-        repaired_folder = os.path.join(repaired_dir, str(repaired_id))
-        potential_files = glob.glob(f'{original_folder}/*.java')
-        if len(potential_files) == 0:
-            continue
-        original_file = potential_files[0]
-        potential_files = glob.glob(f'{original_folder}/*.java')
-        if len(glob.glob(f'{repaired_folder}/*.java')) == 0:
-            continue
-        repaired_file = glob.glob(f'{repaired_folder}/*.java')[0]
-        diffs_count = compute_diff_size(original_file, repaired_file)
-        diffs += [diffs_count]
+    with open(os.path.join(get_experiment_dir_of_project(name), 'report.json'), 'r') as fd:
+        data = json.load(fd)
+        for bug in data:
+            for result in bug['results']:
+                result_by_tool = result['tool']
+                if result_by_tool == tool: 
+                    errors = result['errors']
+                    if errors is not None and len(errors) == 0:
+                        if result['diff_size'] == 0:
+                            print(tool)
+                            print(bug)
+                            diffs += [1]
+                        else:
+                            diffs += [result['diff_size']]
     return diffs
 
 
@@ -171,21 +181,31 @@ def get_diff_repairs(experiment_id, tools):
         for tool in tools # if tool not in ['styler']
     }
 
-def exp(projects):
+def exp(projects, results_dir=None, calibration=False):
     result_raw = {}
-    for name in projects:
-        # print(name)
-        result_raw[name] = experiment(name, get_corpus_dir(name))
-    # json_pp(result)
-    
-    result = {
-        project:{
-            tool:len(repair)
-            for tool, repair in p_results.items()
-        } 
-        for project, p_results in result_raw.items()
-    }
-    keys = list(list(result.values())[0].keys())
+    if not calibration:
+        for name in projects:
+            # print(name)
+            result_raw[name] = experiment(name, get_corpus_dir(name))
+        # json_pp(result)
+
+        result = {
+            project:{
+                tool:len(repair)
+                for tool, repair in p_results.items()
+            } 
+            for project, p_results in result_raw.items()
+        }
+        keys = list(list(result.values())[0].keys())
+    else:
+        result_raw[projects] = experiment_for_calibration(projects, get_corpus_dir(projects), results_dir)
+
+        result = {}
+        for project, p_results in result_raw.items():
+            for tool, repair in p_results.items():
+                result[tool] = { project:len(repair) }
+
+        keys = list(list(result.values())[0].keys())
         
     result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
     #json_pp(total)
@@ -194,31 +214,33 @@ def exp(projects):
     print(GithubFlavoredMarkdownTable(table).table)
 
 
-def exp_stats(projects):
-    repaired_error_types = {tool:[] for tool in (*tools_plus_styler_protocols_and_all, 'out_of')}
+def exp_stats(projects, tools_to_be_used):
+    tools_plus_all = tuple(sorted(list(tools_to_be_used)) + ['all_tools'])
+    repaired_error_types = {tool:[] for tool in (*tools_plus_all, 'out_of')}
     for name in projects:
         with open(os.path.join(get_experiment_dir_of_project(name), 'report.json'), 'r') as fd:
             data = json.load(fd)
-            for bug_id in data:
+            for bug in data:
+                bug_id = bug['error_id']
                 all_tools_combined = False
-                lenn = len(data[bug_id]['information']['errors'])
+                lenn = len(bug['information']['errors'])
 
                 experiment_dir = get_experiment_dir_of_project(name)
                 errored_dir = os.path.join(experiment_dir, f'./errored/1')
                 colectedError = open_json(os.path.join(errored_dir, f'{bug_id}/metadata.json'))['errors'][0]
 
-                if len(data[bug_id]['information']['errors']) != 1:
+                if len(bug['information']['errors']) != 1:
                     print(f'Project {name}, {bug_id}, {lenn}', colectedError)
                     continue
-                
-                error = data[bug_id]['information']['errors'][0]
+                error = bug['information']['errors'][0]
                 if colectedError != error:
                     print(name, colectedError['source'], error['source'])
                 error_type = checkstyle_source_to_error_type(error['source'])
                 repaired_error_types['out_of'].append(error_type)
-                for tool in tools_plus_styler_protocols:
-                    r = data[bug_id]['results'][tool]    
-                    if r is not None and len(r) == 0:
+                for result in bug['results']:
+                    tool = result['tool']
+                    errors = result['errors']
+                    if errors is not None and len(errors) == 0:
                         repaired_error_types[tool].append(error_type)
                         all_tools_combined = True
                 if all_tools_combined:
@@ -233,33 +255,37 @@ def exp_stats(projects):
             error_type:(float(count) / repaired_error_types_count['out_of'][error_type] * 100.)
             for error_type, count in repaired_error_types_count[tool].items()
         }
-        for tool in tools_plus_styler_protocols_and_all
+        for tool in tools_plus_all
     }
     # json_pp(repaired_error_types_count_relative)
-    keys = list(repaired_error_types_count['out_of'].keys())
+    keys = sorted(list(repaired_error_types_count['out_of'].keys()))
     # result = {project:{tool:len(repair) for tool, repair in p_results.items()} for project, p_results in result.items()}
     # result['total'] = { key:sum([e[key] for e in result.values()]) for key in keys }
     #json_pp(total)
     table_data = [ [''] + [f'{key}\n( /{repaired_error_types_count["out_of"][key]})' for key in keys]]
     table_data += [
         [tool] + [f'{repaired_error_types_count_relative[tool].get(error_type, 0):.1f}%' for error_type in keys]
-        for tool in tools_plus_styler_protocols_and_all
+        for tool in tools_plus_all
     ]
     table = SingleTable(table_data)
     print(table.table)
+
+    for tool in tools_plus_all:
+        if tool not in tool_names:
+            tool_names[tool] = tool
 
     df = pd.DataFrame.from_dict({
         tool_names[tool]:{
             f'{error_type} ({repaired_error_types_count["out_of"][error_type]})':repaired_error_types_count_relative[tool].get(error_type, 0)
             for error_type in keys
         }
-        for tool in tools_plus_all
+        for tool in tuple(list(tools) + ['all_tools'])
     })
     graph_plot.repair_heatmap(df)
     return repaired_error_types_count
 
 @logger.catch
-def json_report(project_name):
+def json_report(project_name, tools_to_be_used, report_for_website=False):
     logger.debug(f'Project {project_name}')
 
     experiment_dir = get_experiment_dir_of_project(project_name)
@@ -281,26 +307,95 @@ def json_report(project_name):
     logger.debug('Getting the results from the tools')
     tools_results = {
         tool:open_json(os.path.join(experiment_dir, f'checkstyle_results_{tool}.json'))
-        for tool in tools_plus_styler_protocols
+        for tool in tools_to_be_used
     }
 
-    report = {
-        get_file_id(file_path):{
-            'information':information,
-            'results': {
-                tool:None
-                for tool in tools_plus_styler_protocols
-            }
-        }
-        for file_path, information in errored_result.items()
-    }
+    report = []
+    for file_path, information in errored_result.items():
+        file_id = get_file_id(file_path)
+        original_file_path = glob.glob(f'{errored_dir}/{file_id}/*.java')[0]
+        metadata_file_path = f'{errored_dir}/{file_id}/metadata.json'
 
-    for tool, result in tools_results.items():
-        if result is not None and result['checkstyle_results'] is not None:
-            for file_path, information in result['checkstyle_results'].items():
-                file_id = get_file_id(file_path)
-                if file_id in report:
-                    report[file_id]['results'][tool] = information['errors']
+        repair = {}
+        repair['error_id'] = file_id
+        repair['information'] = information
+
+        errored_file = open_file(original_file_path)
+        errored_file_lines = errored_file.split('\n')
+
+        metadata_file = open_json(metadata_file_path)
+        errored_line_number = int(metadata_file['errors'][0]['line'])
+
+        if not is_error_targeted(metadata_file['errors'][0]):
+            continue
+        if len(information['errors']) == 0:
+            continue
+        #if information['errors'][0]['source'] != metadata_file['errors'][0]['source']:
+        #    continue
+
+        from_line = max(errored_line_number - 3, 0)
+        to_line = min(errored_line_number + 3, len(errored_file_lines) - 1)
+        errored_source_code = '\n'.join(errored_file_lines[from_line:to_line])
+
+        repair['source_code'] = errored_source_code
+
+        tools = []
+        repaired_by = []
+        not_repaired_by = list(tools_to_be_used)
+        for tool in tools_to_be_used:
+            tool_ = {}
+            tool_['tool'] = tool
+            tool_['errors'] = None
+            tool_['diff'] = None
+
+            for tool2, result in tools_results.items():
+                if tool2 == tool:
+                    if result is not None and result['checkstyle_results'] is not None:
+                        for file_path2, information2 in result['checkstyle_results'].items():
+                            file_id2 = get_file_id(file_path2)
+                            if file_id2 == file_id:
+                                tool_['errors'] = information2['errors']
+                                tool_path = glob.glob(f'{experiment_dir}/{tool}/{file_id}/*.java')[0]
+                                diff = compute_diff(original_file_path, tool_path)
+                                tool_['diff'] = diff
+                                tool_['diff_size'] = compute_diff_size(original_file_path, tool_path)
+                                if len(information2['errors']) == 0:
+                                    not_repaired_by.remove(tool)
+                                    repaired_by.append(tool)
+
+            tools.append(tool_)
+        repair['results'] = tools
+
+        if report_for_website:
+            website_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../', '../', '../', 'docs', 'data')
+
+            json_file = open_json(os.path.join(website_data_dir, 'all.json'))
+            if json_file is None:
+                json_file = []
+            error = {}
+            error['project_name'] = project_name
+            error['error_id'] = file_id
+            if len(repair['information']['errors']) == 0:
+                print(f'ERROR not reproduced: {file_id}')
+                print(metadata_file['errors'][0]['source'])
+                error['error_type'] = 'null'
+                error['error_message'] = 'null'
+            else:
+                error['error_type'] = repair['information']['errors'][0]['source']
+                error['error_message'] = repair['information']['errors'][0]['message']
+                if repair['information']['errors'][0]['source'] != metadata_file['errors'][0]['source']:
+                    print(f'file {file_id} Expected:')
+                    print(metadata_file['errors'][0]['source'])
+                    print('Got:')
+                    print(repair['information']['errors'][0]['source'])
+            error['repaired_by'] = repaired_by
+            error['not_repaired_by'] = not_repaired_by
+            json_file.append(error)
+            save_json(website_data_dir, 'all.json', json_file)
+
+            save_json(website_data_dir, f'{project_name}-{file_id}.json', repair)
+
+        report.append(repair)
 
     save_json(experiment_dir, 'report.json', report)
 
@@ -334,11 +429,12 @@ def merge_reports(experiments):
             all_reports[experiment] = report
     experiment_results = list(all_reports.keys())
     logger.debug(f'Merging the results from {len(experiment_results)} reports ({", ".join(experiment_results)})')
-    merged_report = {}
+    merged_report = []
     file_count = 0
-    for experiment, report in all_reports.items():
-        for file_id, res in report.items():
-            merged_report[file_count] = res
+    for project, report in all_reports.items():
+        for error in report:
+            error['project_name'] = project
+            merged_report.append(error)
             file_count += 1
     save_json(get_experiment_dir(), 'report.json', merged_report)
 
@@ -351,17 +447,33 @@ def compare_protocols(experiment_name):
     return res
 
 def main(args):
+    if args[1] == 'experiment_for_calibration':
+        project = args[2]
+        results_dir = os.path.join(get_project_dir(project), 'results')
+        exp(project, results_dir, calibration=True)
+        models = list_folders(results_dir)
+        l = []
+        for model in models:
+            for protocol in protocols:
+                model_protocol = protocol + '-' + model
+                l.append(model_protocol)
+        l = sorted(l)
+        print(l)
+        json_report(project, l, report_for_website=False)
+        exp_stats([project], l)
     if len(args) >= 2 and args[1] == 'exp':
         exp(args[2:])
     elif len(args) >= 2 and args[1] == 'report':
         for project_name in args[2:]:
-            json_report(project_name)
+            json_report(project_name, tools_plus_styler_protocols, report_for_website=True)
     elif len(args) >= 2 and args[1] == 'merge-reports':
-        experiments = list_folders(get_experiment_dir())
+        #experiments = list_folders(get_experiment_dir())
+        experiments = args[2:]
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
         merge_reports(experiments)
     elif len(args) >= 2 and args[1] == 'styler-protocols':
-        experiments = list_folders(get_experiment_dir())
+        #experiments = list_folders(get_experiment_dir())
+        experiments = args[2:]
         logger.debug(f'Found {len(experiments)} experiments ({", ".join(experiments)})')
         results = {}
         for experiment_name in experiments:
@@ -374,7 +486,7 @@ def main(args):
         json_pp(dict_sum)
     elif len(args) >= 2 and args[1] == 'exp-stats':
         projects = args[2:]
-        exp_stats(projects)
+        exp_stats(projects, tools_plus_styler_protocols_and_all)
         exp_venn(projects)
         
         result = {}
@@ -386,6 +498,7 @@ def main(args):
             for project in projects:
                 result_per_tool[tool] += result[project][tool]
         json_pp(result_per_tool)
+        save_json(get_experiment_dir(), 'diffs.json', result_per_tool)
         for tool in tools:
             print(f'{tool}: {len(result_per_tool[tool])}')
 

@@ -47,7 +47,7 @@ def run_preprocess(project, protocol):
 
     return output
 
-def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, gpu=True):
+def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, save_checkpoint_steps=20000, gpu=True):
     preprocessed_dir = get_preprocessed_dir_by_protocol(project, protocol)
     model_dir = get_model_dir(project)
 
@@ -68,7 +68,7 @@ def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_si
         '-adagrad_accumulator_init 0.1',
         '-bridge',
         '-train_steps 20000',
-        '-save_checkpoint_steps 20000',
+        f'-save_checkpoint_steps {save_checkpoint_steps}',
         f'-save_model {model_dir}/{protocol}-{global_attention}-{layers}-{rnn_size}-{word_vec_size}-model'
     ]
     if gpu:
@@ -84,12 +84,13 @@ def gen_translator(model_name, protocol, batch_size=5):
     tmp_dir = get_tmp_dir(model_name)
     model = get_model(model_name, protocol)
     ml.create_dir(tmp_dir)
-    tmp_input_file_name = 'input.txt'
-    tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
-    tmp_output_file_name = 'output.txt'
-    tmp_output_file_path = os.path.join(tmp_dir, tmp_output_file_name)
-    def translator(input):
-        save_file(tmp_dir, tmp_input_file_name, input)
+    def translator(input, output_dir, error_id):
+        output_dir = f'{output_dir}/{error_id}'
+        tmp_input_file_name = f'input-{error_id}.txt'
+        tmp_input_file_path = os.path.join(output_dir, tmp_input_file_name)
+        tmp_output_file_name = f'output-{error_id}.txt'
+        tmp_output_file_path = os.path.join(output_dir, tmp_output_file_name)
+        save_file(output_dir, tmp_input_file_name, input)
         run_translate(model, tmp_input_file_path, tmp_output_file_path, batch_size=batch_size)
         return list(filter(lambda a: a!='', open_file(tmp_output_file_path).split('\n')))
     return translator
@@ -119,7 +120,7 @@ def print_translations(file_path, metadata_path, translate):
 
 def de_tokenize(file_path, info, new_tokens, only_formatting=False):
     source_code = open_file(file_path)
-    result = tokenizer.de_tokenize(source_code, info, new_tokens.split(' '), tabulations=False, only_formatting=only_formatting)
+    result = tokenizer.de_tokenize(source_code, info, new_tokens.split(' '), only_formatting=only_formatting)
     return result
 
 def get_files_without_errors(checkstyle_result):
@@ -173,9 +174,9 @@ def create_corpus(dir, name, checkstyle_dir, checkstyle_jar):
 def get_batch_results(checkstyle_results, n_batch=5):
     return {
         batch:{
-            file.split('/')[-2]:len(result['errors'])
+            file.split('/')[-3]:len(result['errors'])
             for file, result in checkstyle_results.items()
-            if f'batch_{batch}' == file.split('/')[-3]
+            if f'batch_{batch}' == file.split('/')[-2]
         }
         for batch in range(n_batch)
     }
@@ -218,17 +219,28 @@ def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name
             metadata_path = f'{dir_files_to_repair}/{folder_id}/metadata.json'
             for error_id, error in enumerate(tokenize_errors(file_path, open_json(metadata_path)['errors'])):
                 tokenized_errors, info = error
-                for proposal_id, translation in enumerate(translate(tokenized_errors)):
+                create_dir(f'{target}/{int(folder_id) + error_id * number_of_files}')
+                for proposal_id, translation in enumerate(translate(tokenized_errors, target, folder_id)):
+                    if '<' in translation:
+                        continue
                     de_tokenized_translation = de_tokenize(file_path, info, translation, only_formatting=only_formatting)
-                    folder = f'{target}/batch_{proposal_id}/{int(folder_id) + error_id * number_of_files}'
+                    if de_tokenized_translation is None:
+                        continue
+                    folder = f'{target}/{int(folder_id) + error_id * number_of_files}/batch_{proposal_id}'
                     create_dir(folder)
+
+                    if is_crlf(file_path):
+                        de_tokenized_translation = de_tokenized_translation.replace('\n','\r\n')
+
                     save_file(folder, file_path.split('/')[-1], de_tokenized_translation)
+                tmp_dir = get_tmp_dir(model_name)
 
         move_parse_exception_files(target, waste)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     if checkstyle_result is None:
         return None
     res = reverse_collection(get_batch_results(checkstyle_result))
+    print(res)
     
     def select_best_proposal(file_id, proposals):
         file_path = glob.glob(f'{dir_files_to_repair}/{int(file_id) % number_of_files}/*.java')[0]
@@ -239,7 +251,7 @@ def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name
             if n_errors == min_errors
         ]
         return select_the_smallest_repair(
-            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
+            [ glob.glob(f'{target}/{file_id}/batch_{batch}/*.java')[0] for batch in good_proposals ],
             glob.glob(f'{dir_files_to_repair}/{int(file_id) % number_of_files}/*.java')[0]
         )
 
@@ -262,14 +274,15 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
     create_dir(target)
     create_dir(target_final)
     checkstyle_rules = os.path.join(get_real_dataset_dir(name), 'checkstyle.xml')
-    dir_files_to_repair = os.path.join(get_real_dataset_dir(name), './1')
-    
+    dir_files_to_repair = os.path.join(get_real_dataset_dir(name), '1')
     for (protocol_id, (protocol, path)) in enumerate(protocols_repairs.items()):
-        protocol_target = os.path.join(target, f'./batch_{protocol_id}')
-        if os.path.exists(protocol_target):
-            shutil.rmtree(protocol_target)
-        if path is not None and os.path.exists(path):
-            shutil.copytree(path, protocol_target)
+        if os.path.exists(path):
+            for file_id in os.listdir(path):
+                protocol_target = os.path.join(target, file_id, f'batch_{protocol_id}')
+                if os.path.exists(protocol_target):
+                    shutil.rmtree(protocol_target)
+                if path is not None and os.path.exists(path):
+                    shutil.copytree(os.path.join(path, file_id), protocol_target)
     checkstyle_result, number_of_errors = checkstyle.check(checkstyle_rules, target, checkstyle_jar, only_targeted=True)
     if checkstyle_result is None:
         return {}
@@ -284,10 +297,10 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
             if n_errors == min_errors
         ]
         return select_the_smallest_repair(
-            [ glob.glob(f'{target}/batch_{batch}/{file_id}/*.java')[0] for batch in good_proposals ],
+            [ glob.glob(f'{target}/{file_id}/batch_{batch}/*.java')[0] for batch in good_proposals ],
             glob.glob(f'{dir_files_to_repair}/{int(file_id)}/*.java')[0]
         )
-
+    
     best_proposals = {
         file_id:select_best_proposal(file_id, proposals)
         for file_id, proposals in res.items()
@@ -301,7 +314,7 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
 def gen_training_data(project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
     try:
-        if corpus_dir is None:
+        if corpus_dir is None and project_path is None:
             corpus_dir = create_corpus(
                 project_path,
                 project_name,
@@ -374,10 +387,14 @@ def main(args):
 
         checkstyle_jar = dataset_info["checkstyle_jar"]
 
-        (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
+        if os.path.exists(get_corpus_dir(errors_dataset_name)):
+            corpus_dir = get_corpus_dir(errors_dataset_name)
+            repo_dir = None
+        else:
+            (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
 
-        repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
-        repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
+            repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
+            repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
 
         checkstyle_file_path = os.path.join(errors_dataset_dir, 'checkstyle.xml')
 
@@ -422,8 +439,9 @@ def main(args):
         layers = args[5]
         rnn_size = args[6]
         word_vec_size = args[7]
+        save_checkpoint_steps = 20000
         gpu = args[8]
-        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, gpu)
+        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, save_checkpoint_steps, gpu)
 
         time_elapsed = datetime.now() - start_time
         logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))

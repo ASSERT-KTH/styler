@@ -64,26 +64,32 @@ def violin_plot(plot_data):
                           bw_method='silverman')
     for pc, label in zip(parts['bodies'], order) :
         # print(pc)
-        pc.set_facecolor(colors[label])
-        pc.set_alpha(0.8)
+        pc.set_facecolor('#000000')
+        pc.set_alpha(0.5)
     medianprops = dict(linestyle='-.', linewidth=3.5, color='#000000')
-    axes.boxplot(dict_to_list(data, order), whis=[5, 95], positions=range(len(data)), vert=False, medianprops=medianprops)
+    axes.boxplot(dict_to_list(data, order), vert=False, whis=[5, 95], positions=range(len(data)), labels=['CodeBuff', 'Naturalize', 'Checkstyle-IDEA', 'Styler'], medianprops=medianprops)
 
-    patches = [ mpatches.Patch(color=c, label=tool_names[l]) for l, c in list(colors.items())[::-1]]
-    plt.legend(handles = patches, loc='upper right', ncol=2, fancybox=True, fontsize=15)
-    # plt.yticks( range(len(order)), order, fontsize=15)
-    plt.yticks( [1], ('',), fontsize=15)
-    plt.xlabel(plot_data.get('x_label', ''), fontsize=15)
-    plt.ylabel(plot_data.get('y_label', ''), fontsize=15)
+    labels = {
+        'codebuff': 'CodeBuff',
+        'naturalize': 'Naturalize',
+        'styler': 'Styler',
+        'intellij': 'Checkstyle-IDEA',
+    }
+
+    plt.yticks(range(len(order)), ['CodeBuff', 'Naturalize', 'Checkstyle-IDEA', 'Styler'], fontsize=12)
+    plt.xlabel(plot_data.get('x_label', ''), fontsize=12)
+    plt.ylabel(plot_data.get('y_label', ''), fontsize=12)
     plt.xlim(0,200)
-    plt.subplots_adjust(bottom=0.15, left=0.01, right=0.99, top=0.99)
+    plt.subplots_adjust(bottom=0.13, left=0.21, right=0.98, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/repair_diffs.pdf', format='pdf')
     plt.savefig(f'{get_experiment_dir()}/repair_diffs.png', format='png')
 
 def repair_heatmap(data):
     sns.set_context("paper", font_scale=1)                                                  
     fig, axes = plt.subplots(figsize=(6.2,7))
-    ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5)#, cmap='RdYlGn')
+    color_map = plt.cm.get_cmap('Greys') #https://matplotlib.org/3.3.1/tutorials/colors/colormaps.html
+    reversed_color_map = color_map.reversed()
+    ax = sns.heatmap(data, annot=True, fmt=".1f", cbar=False, linewidths=.5, cmap=reversed_color_map)
     for t in ax.texts: t.set_text(t.get_text() + " %")
     plt.subplots_adjust(bottom=0.05, left=0.30, right=0.99, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/repair_heatmap.pdf', format='pdf')

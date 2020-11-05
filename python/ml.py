@@ -77,7 +77,10 @@ def gen_IO(dir, target, only_formatting=False):
         synthesis_error_ids = list_folders(sub_set_dir)
         synthesis_error_ids = sorted(synthesis_error_ids, key=int)
         for id in tqdm(synthesis_error_ids, desc=f'{dir.split("/")[-1]}/{sub_set}'):
-            tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dir, sub_set, id)
+            try:
+                tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dir, sub_set, id)
+            except:
+                continue
             if only_formatting:
                 tokens_correct = tokens_correct[1::2]
                 tokens_errored_in_tag = tokens_errored_in_tag[1::2]

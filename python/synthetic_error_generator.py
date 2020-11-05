@@ -9,6 +9,8 @@ import checkstyle
 import random
 import intervals as I
 import pandas as pd
+from collections import Counter
+import csv
 
 BATCH_SIZE = 500
 
@@ -74,7 +76,6 @@ def list_alternatives_with_probability(token_a, ws, token_b):
 
 
 tokenizer_relative = tokenizer.Tokenizer()
-tokenizer_absolute = tokenizer.Tokenizer(relative=False)
 
 def pick_random(alternatives):
     random_number = random.random()
@@ -87,56 +88,48 @@ def pick_random(alternatives):
 
 
 def modify_source_three_grams(source, n_insertion=1):
-    lines = source.split("\n")
-    nb_tab = 0
-    nb_space = 0
-    for line in lines:
-        if len(line) == 0:
-            continue
-        if line[0] == "\t":
-            nb_tab += 1
-        elif line[0] == " ":
-            nb_space += 1
-
-    tokenizer_relative.tabulation = nb_tab >= nb_space
-    tokenizer_absolute.tabulation = nb_tab >= nb_space
-
     tokenized_source = tokenizer_relative.tokenize(source)
-    tokenized_source_absolute = tokenizer_absolute.tokenize(source)
+    
+    indentation_size = -1
+    for line_break, nb_spaces, space_type in tokenized_source.white_spaces:
+        if line_break > 0 and nb_spaces > 0:
+            indentation_size = nb_spaces
+            break
+
     insertion_spots = list(range(len(tokenized_source.tokens)-1))
     random.shuffle(insertion_spots)
     modification = None
     for spot in insertion_spots:
         token_a = tokenized_source.tokens[spot]
         token_b = tokenized_source.tokens[spot+1]
-        ws = tokenized_source.white_spaces[spot]
+        old_ws_relative = tokenized_source.white_spaces[spot]
         if is_good_for_insertion(get_token_value(token_a), get_token_value(token_b)):
             alternatives = list_alternatives_with_probability(
                 get_token_value(token_a),
-                get_space_value(ws),
+                get_space_value(old_ws_relative),
                 get_token_value(token_b)
             )
             alternative_selected = pick_random(alternatives)
             alternative_selected_tuple = whitespace_token_to_tuple(alternative_selected)
-            new_ws = tokenized_source_absolute.white_spaces[spot]
-            if alternative_selected_tuple[0] == 0:
-                new_ws = alternative_selected_tuple
-            elif alternative_selected_tuple[0] != 0 and new_ws[0] == 0:
-                line = token_a.position[0]
-                indent = get_line_indent(source.split('\n')[line-1])
-                new_ws = (alternative_selected_tuple[0], indent + alternative_selected_tuple[1])
-            else:
-                new_ws = (alternative_selected_tuple[0], new_ws[1] + (alternative_selected_tuple[1] - ws[1]))
+            
+            new_ws = alternative_selected_tuple
             if new_ws[1]>=0:
-                tokenized_source_absolute.white_spaces[spot] = new_ws
+                tokenized_source.white_spaces[spot] = new_ws
                 modification = {
                     'token_a': get_token_value(token_a),
                     'token_b': get_token_value(token_b),
-                    'modification': (get_space_value(ws), alternative_selected),
-                    'position': spot
+                    'modification': (get_space_value(old_ws_relative), alternative_selected),
+                    'position': spot,
+                    'old_ws': old_ws_relative,
+                    'new_ws': new_ws,
+                    'line': token_a.position[0]
                 }
+                reformatted = tokenized_source.reformat()
+                if not check_source_well_formed(reformatted):
+                    continue
                 break
-    return tokenized_source_absolute.reformat(), modification
+
+    return reformatted, modification
 
 
 injection_operator_types={
@@ -210,9 +203,9 @@ def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
     # Take a sample of locations suitable for insertions
     insertions_sample = random.sample( tokens, min(insertions_sample_size, len(tokens)) )
 
-    insertions = dict();
+    insertions = dict()
 
-    insertions_chars = ([' '] * insertions_sample_size_space);
+    insertions_chars = ([' '] * insertions_sample_size_space)
     insertions_chars.extend(['\t'] * insertions_sample_size_tab)
     insertions_chars.extend(['\n'] * insertions_sample_size_newline)
     random.shuffle(insertions_chars)
@@ -225,9 +218,9 @@ def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
     suitable_for_deletions = [javalang_tokenizer.Separator, javalang_tokenizer.Operator]
     for index in range(0, len(tokens)-1):
         if ( type(tokens[index]) in suitable_for_deletions):
-            prev_token_position = tokens[index-1].position;
-            tokens_position = tokens[index].position;
-            next_token_position = tokens[index+1].position;
+            prev_token_position = tokens[index-1].position
+            tokens_position = tokens[index].position
+            next_token_position = tokens[index+1].position
             end_of_prev_token = (prev_token_position[0], prev_token_position[1] + len(tokens[index-1].value))
             end_of_token = (tokens_position[0], tokens_position[1] + len(tokens[index].value))
             if (end_of_prev_token != tokens_position):
@@ -388,6 +381,9 @@ class Batch:
 def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_errors, protocol='random'):
     valid_errors = []
     batches = []
+    MAX_EXEC = timedelta(hours=3)
+    max_time = datetime.now() + MAX_EXEC
+
     with tqdm(total=number_of_errors) as pbar:
         while len(valid_errors) < number_of_errors:
             batch = Batch(files_dir, checkstyle_dir, checkstyle_jar, protocol=protocol)
@@ -410,6 +406,11 @@ def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_erro
             ]
             valid_errors += batch_valid_errors
             pbar.update(len(batch_valid_errors))
+
+            if datetime.now() >= max_time:
+                number_of_errors = len(valid_errors)
+                break
+
     selected_errors = random.sample(valid_errors, number_of_errors)
     for error_id, error_metadata in enumerate(selected_errors):
         new_error_dir = os.path.join(target, str(error_id))
@@ -473,21 +474,22 @@ def gen_dataset(corpus, share, number_of_synthetic_errors, synthetic_dataset_dir
 
 
 if __name__ == '__main__':
-    if sys.argv[2] == 'all':
-        dataset_list = core_config['CORPUS']['corpus_names'].split(',')
-    else:
-        dataset_list = sys.argv[2:]
+    dataset_list = sys.argv[2:]
 
     if len(sys.argv) >= 2 and sys.argv[1] == 'run':
         corpora = map(
-            lambda corpus: Corpus(core_config['CORPUS']['corpus_dir'] % corpus, corpus),
+            lambda corpus: os.path.join(get_real_dataset_dir(corpus), '1'),
             dataset_list
         )
         c = Counter()
         for corpus in tqdm(corpora, total=len(dataset_list)):
-            files_path = [file[2] for file in corpus.get_files().values()]
-            for file_path in tqdm(files_path):
-                c += tokenize_and_count(file_path)
+            for folder in os.walk(corpus):
+                files = folder[2]
+                for f in tqdm(files):
+                    file_path = os.path.join(folder[0], f)
+                    if file_path.endswith('.java'):
+                        print(f'file_path: {file_path}')
+                        c += tokenize_and_count(file_path)
         word_counter_to_csv(c)
     elif sys.argv[1] == 'gen':
         protocol = sys.argv[2]
@@ -496,15 +498,7 @@ if __name__ == '__main__':
             raise Exception('Unkown protocol')
         corpus = Corpus(core_config['CORPUS']['corpus_dir'] % corpus_name, corpus_name)
         gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{corpus_name}', protocol=protocol)
-
-    elif (sys.argv[1] == "ugly"):
-        print(gen_ugly( sys.argv[2], sys.argv[3] ))
-    elif sys.argv[1] == "check":
-        folder_dir = sys.argv[2]
-        for file_path in glob.glob(f'{folder_dir}/*/*.java'):
-            logger.debug(file_path)
-            gen_ugly_from_source(open_file(file_path), modification_number = (1,0,0,0,0))
-            gen_ugly_from_source(open_file(file_path), modification_number = (0,1,0,0,0))
-            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,1,0,0))
-            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,1,0))
-            gen_ugly_from_source(open_file(file_path), modification_number = (0,0,0,0,1))
+    elif sys.argv[1] == 'test-threegrams':
+        reformatted, modification = modify_source_three_grams(open_file('./experiments/projects/findbugsproject-findbugs/corpus/data/1/TestTestFields.java'))
+        print(reformatted)
+        print(modification)

@@ -8,6 +8,7 @@ import shutil
 import glob
 import uuid
 from datetime import datetime
+from datetime import timedelta
 from tqdm import tqdm
 import configparser
 from loguru import logger
@@ -39,7 +40,7 @@ targeted_errors = (
     'LeftCurly',
     'LineLength',
     'MethodParamPad',
-    'NewlineAtEndOfFile',
+    #'NewlineAtEndOfFile',
     'NoLineWrap',
     'NoWhitespaceAfter',
     'NoWhitespaceBefore',
@@ -112,12 +113,14 @@ def get_model_dir(project_name):
     return os.path.join(get_project_dir(project_name), __models_dir)
 
 def get_model(name, protocol):
-    if protocol == 'random':
-        model_path = 'random-general-2-512-512-model_step_20000.pt'
+    if protocol == 'random' and 'MODEL_PATH_RANDOM' in os.environ:
+        model_path = os.environ['MODEL_PATH_RANDOM']
+    elif protocol == 'three_grams' and 'MODEL_PATH_THREE_GRAMS' in os.environ:
+        model_path = os.environ['MODEL_PATH_THREE_GRAMS']
+    elif protocol == 'random':
+        model_path = 'random-mlp-1-512-512-model_step_20000.pt'
     else:
-        model_path = 'three_grams-general-1-512-256-model_step_20000.pt'
-    if 'MODEL_PATH' in os.environ:
-        model_path = os.environ['MODEL_PATH']
+        model_path = 'three_grams-general-2-512-256-model_step_20000.pt'
     return os.path.join(get_project_dir(name), __models_dir, model_path)
 
 def get_real_dataset_dir(name):
@@ -431,6 +434,8 @@ def check_source_well_formed(file_content):
         return False
     except StopIteration as error:
         return False
+    except:
+        return False
 
 
 def get_bad_formated(dir):
@@ -448,6 +453,12 @@ def get_bad_formated(dir):
                     bad_formated_files.append(file_path)
     return bad_formated_files
 
+def is_crlf(file_name):
+    with open(file_name, 'rb') as infile:
+        for index, line in enumerate(infile.readlines()):
+            return line[-2:] == b'\r\n'
+
+
 def diff(file_A, file_B, unified=True):
     if unified:
         cmd = 'diff -u {} {}'.format(file_A, file_B)
@@ -457,12 +468,53 @@ def diff(file_A, file_B, unified=True):
     output = process.communicate()[0]
     return output.decode("utf-8")
 
+def compute_diff(file_A, file_B):
+    """
+    Check the diff size between file A and B
+    :return: the size of the diff
+    """
+    cmd = 'git diff --no-index {} {}'.format(file_A, file_B)
+    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    return output.decode('utf-8')
+
 def compute_diff_size(file_A, file_B):
     """
     Check the diff size between file A and B
     :return: the size of the diff
     """
-    cmd = 'diff {} {}'.format(file_A, file_B)
+    cmd = 'git diff --no-index {} {}'.format(file_A, file_B)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output.count(b'\n>') + output.count(b'\n<')
+    diff = output.decode('utf-8')
+    ans = []
+    diff_lines = diff.split("\n")
+    # remove the header of the diff
+    diff_lines = diff_lines[5:]
+    removed_lines = 0
+    added_lines = 0
+    changed_lines = 0
+    for line in diff_lines:
+        
+        if line.startswith('-'):
+            removed_lines += 1
+            continue
+
+        if line.startswith('+'):
+            added_lines += 1
+            continue
+
+        if removed_lines == added_lines:
+            changed_lines += removed_lines
+        else:
+            cl = abs(removed_lines - added_lines)
+            if removed_lines > added_lines:
+                changed_lines += cl + (removed_lines - cl)
+            else:
+                changed_lines += cl + (added_lines - cl)
+
+        removed_lines = 0
+        added_lines = 0
+
+    return changed_lines
+    
