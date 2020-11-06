@@ -462,7 +462,28 @@ def compute_diff_size(file_A, file_B):
     Check the diff size between file A and B
     :return: the size of the diff
     """
-    cmd = 'diff {} {}'.format(file_A, file_B)
+    cmd = 'git diff --no-index {} {}'.format(file_A, file_B)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output.count(b'\n>') + output.count(b'\n<')
+    diff = output.decode('utf-8')
+    diff_lines = diff.split("\n")
+    # remove the header of the diff
+    diff_lines = diff_lines[5:]
+    removed_lines = 0
+    added_lines = 0
+    changed_lines = 0
+    for line in diff_lines:
+        if line.startswith('-'):
+            removed_lines += 1
+            continue
+
+        if line.startswith('+'):
+            added_lines += 1
+            continue
+
+        changed_lines += max(removed_lines, added_lines)
+
+        removed_lines = 0
+        added_lines = 0
+
+    return changed_lines
