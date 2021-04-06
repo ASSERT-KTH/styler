@@ -708,7 +708,8 @@ if __name__ == '__main__':
             search_repos_in_dates(query_detailed_search, from_date, to_date, firstCall=True)
         else:
             my_print('Provide a query for detailed search (query_detailed_search) in the config.ini file.')
-            sys.exit()
+        my_print(f'End.')
+        sys.exit()
 
     os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
     if sys.argv[1] == 'get-repos-info':        
@@ -738,6 +739,8 @@ if __name__ == '__main__':
                 except Exception as e:
                     my_print(e)
                     done = True
+        my_print(f'End.')
+        sys.exit()
 
     # get repos using checkstyle
     repos = load_folders(download_file)
