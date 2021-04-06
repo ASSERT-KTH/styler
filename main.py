@@ -381,7 +381,8 @@ def get_information(repo_id, repo_name):
         my_print(f'[Exception] {e}')
         return 'Not found'
 
-    repo_folder_name = f'{repo_id},{repo_name.replace('/',',')}'
+    repo_aux = repo_name.replace('/',',')
+    repo_folder_name = f'{repo_id},{repo_aux}'
     repo_dir = f'{repos_folder_path}/{repo_folder_name}'
     if not os.path.exists(repo_dir):
         os.makedirs(repo_dir)
