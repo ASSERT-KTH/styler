@@ -308,12 +308,14 @@ def iterate_repos(repositories, gh):
     while run:
         try:
             repo = _iter.__next__()
-            count += 1            
+            count += 1
+            repo_id = repo.id
             repo_name = repo.full_name
-            repos.add(repo_name)
+            repo_line = f'{repo_id},{repo_name}'
+            repos.add(repo_line)
             
             with open(repos_raw_file,'a') as f:
-                f.write(repo_name + '\n')
+                f.write(repo_line + '\n')
         except RateLimitExceededException as e:
             RateLimitExceededException_handler(e, gh)
         except StopIteration:
@@ -368,10 +370,10 @@ def download_and_save_file(repo, file, repo_dir):
     with open(path_to_save, 'wb') as f:
         f.write(request.content)
 
-def get_information(repo_name):
+def get_information(repo_id, repo_name):
     my_print(f'Open {repo_name}')
     try:
-        repo = g().get_repo(repo_name)
+        repo = g().get_repo(repo_id)
     except UnknownObjectException as e:
         my_print(f'[UnknownObjectException] {e}')
         return 'Not found'
@@ -379,14 +381,15 @@ def get_information(repo_name):
         my_print(f'[Exception] {e}')
         return 'Not found'
 
-    repo_dir = f'{repos_folder_path}/{repo_name}'
+    repo_line = f'{repo_id},{repo_name}'
+    repo_dir = f'{repos_folder_path}/{repo_line}'
     if not os.path.exists(repo_dir):
         os.makedirs(repo_dir)
     repo_info = dict()
 
     # Gather some information
     repo_info['name'] = repo_name
-    repo_info['id'] = repo.id
+    repo_info['id'] = repo_id
     repo_info['created_at'] = repo.created_at.strftime("%Y-%m-%d %H:%M:%S")
     repo_info['watchers_count'] = repo.watchers_count
     repo_info['stargazers_count'] = repo.stargazers_count
@@ -718,10 +721,12 @@ if __name__ == '__main__':
         repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
         my_print(f'{len(repo_list)} repos to download...')
         for repo in tqdm(repo_list, desc='Download the repos'):
+            repo_id = int(repo.split(',')[0])
+            repo_name = repo.split(',')[1]
             done = False
             while not done:
                 try:
-                    get_information(repo)
+                    get_information(repo_id, repo_name)
                     done = True
                 except RateLimitExceededException as e:
                     RateLimitExceededException_handler(e, tokens[tokenIndex])
