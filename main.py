@@ -710,17 +710,16 @@ if __name__ == '__main__':
             my_print('Provide a query for detailed search (query_detailed_search) in the config.ini file.')
             sys.exit()
 
-    if sys.argv[1] == 'download':
-        os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
-        
+    os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
+    if sys.argv[1] == 'get-repos-info':        
         load_tokens()
 
         if len(sys.argv) == 3:
             repos_file = sys.argv[2]
 
         repo_list = set(load_repo_list(repos_file)) - set(load_downloaded_repo_list(download_file))
-        my_print(f'{len(repo_list)} repos to download...')
-        for repo in tqdm(repo_list, desc='Download the repos'):
+        my_print(f'{len(repo_list)} repos to fetch...')
+        for repo in tqdm(repo_list, desc='Fetch repos'):
             repo_id = int(repo.split(',')[0])
             repo_name = repo.split(',')[1]
             done = False
@@ -741,7 +740,6 @@ if __name__ == '__main__':
                     done = True
 
     # get repos using checkstyle
-    os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
     repos = load_folders(download_file)
     filtered_repos = map(lambda folder: re.sub(".*/repos/", "", folder), filters([has_checkstyle], repos))
     save_repos(repos_with_checkstyle_file_file, sorted(filtered_repos, key=str.lower))
