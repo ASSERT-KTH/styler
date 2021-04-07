@@ -556,6 +556,8 @@ def checkstyle_modules_usage(folders):
     map_modules_to_count = dict()
     for folder in tqdm(folders):
         repo_info = load_info(folder)
+        if len(folder.split('/')) == 2:
+            folder = os.path.join(repos_folder_path, folder.replace('/',','))
         try:
             checkstyle_file = get_checkstyle_file(repo_info, folder)
             if checkstyle_file:
