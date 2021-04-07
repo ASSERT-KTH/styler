@@ -435,6 +435,7 @@ def load_downloaded_repo_list(path):
     with open(path, 'r') as file:
         repo_list = file.read().split('\n')
     repo_list = [ re.sub('/info.json', '', re.sub('.*/repos/', '', line)) for line in repo_list ]
+    repo_list = [ line.split(',')[0] + ',' + line.split(',')[1] + '/' + line.split(',')[2] for line in repo_list if line != '' ]
     return repo_list
 
 def get_checkstyle_file(repo_info, folder):
@@ -463,7 +464,7 @@ def get_checkstyle_modules(cs):
     return flatten([ keep_n_join(n.attrib['name'], get_checkstyle_modules(n)) for n in cs if n.tag == 'module' ])
 
 def load_info(folder):
-    if len(folder.split('/')) == 2:
+    if len(folder.split('/')) == 1:
         folder = os.path.join(repos_folder_path, folder)
     with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
@@ -471,7 +472,7 @@ def load_info(folder):
 
 def load_file_list(folder):
     file_list = []
-    if len(folder.split('/')) == 2:
+    if len(folder.split('/')) == 1:
         folder = os.path.join(repos_folder_path, folder)
     with open(os.path.join(folder, 'file_paths.json')) as f:
         file_list = json.load(f)
@@ -481,7 +482,7 @@ def has_checkstyle(folder):
     repo_info = load_info(folder)
     for file_path in repo_info['checkstyle']:
         file_name = file_path.split('/')[-1]
-        if file_name in checkstyle_file_names:        
+        if file_name in checkstyle_file_names:
             return True
     return False
 
@@ -554,8 +555,6 @@ def has_circleci(folder):
 def checkstyle_modules_usage(folders):
     map_modules_to_count = dict()
     for folder in tqdm(folders):
-        if len(folder.split('/')) == 2:
-            folder = os.path.join(repos_folder_path, folder)
         repo_info = load_info(folder)
         try:
             checkstyle_file = get_checkstyle_file(repo_info, folder)
@@ -681,7 +680,7 @@ if __name__ == '__main__':
     if sys.argv[1] == 'search-repos':
         load_tokens()
 
-        try:        
+        try:
             from_date = datetime.strptime(config['DEFAULT']['from_date'],"%Y/%m/%d").date()
             to_date = datetime.strptime(config['DEFAULT']['to_date'],"%Y/%m/%d").date()
         except:
@@ -713,7 +712,7 @@ if __name__ == '__main__':
         sys.exit()
 
     os.popen(f'find {repos_folder_path} -name \'{info_file_name}\' > {download_file}').read()
-    if sys.argv[1] == 'get-repos-info':        
+    if sys.argv[1] == 'get-repos-info':
         load_tokens()
 
         if len(sys.argv) == 3:
