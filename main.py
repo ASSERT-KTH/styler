@@ -464,7 +464,7 @@ def get_checkstyle_modules(cs):
     return flatten([ keep_n_join(n.attrib['name'], get_checkstyle_modules(n)) for n in cs if n.tag == 'module' ])
 
 def load_info(folder):
-    if len(folder.split('/')) == 1:
+    if len(folder.split('/')) == 2:
         folder = os.path.join(repos_folder_path, folder.replace('/',','))
     with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
@@ -472,7 +472,7 @@ def load_info(folder):
 
 def load_file_list(folder):
     file_list = []
-    if len(folder.split('/')) == 1:
+    if len(folder.split('/')) == 2:
         folder = os.path.join(repos_folder_path, folder.replace('/',','))
     with open(os.path.join(folder, 'file_paths.json')) as f:
         file_list = json.load(f)
