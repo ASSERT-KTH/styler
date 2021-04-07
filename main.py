@@ -465,7 +465,7 @@ def get_checkstyle_modules(cs):
 
 def load_info(folder):
     if len(folder.split('/')) == 1:
-        folder = os.path.join(repos_folder_path, folder)
+        folder = os.path.join(repos_folder_path, folder.replace('/',','))
     with open(os.path.join(folder, info_file_name)) as f:
         data = json.load(f)
     return data
@@ -473,7 +473,7 @@ def load_info(folder):
 def load_file_list(folder):
     file_list = []
     if len(folder.split('/')) == 1:
-        folder = os.path.join(repos_folder_path, folder)
+        folder = os.path.join(repos_folder_path, folder.replace('/',','))
     with open(os.path.join(folder, 'file_paths.json')) as f:
         file_list = json.load(f)
     return file_list
@@ -745,6 +745,7 @@ if __name__ == '__main__':
     # get repos using checkstyle
     repos = load_folders(download_file)
     filtered_repos = map(lambda folder: re.sub(".*/repos/", "", folder), filters([has_checkstyle], repos))
+    filtered_repos = [ repo.split(',')[0] + ',' + repo.split(',')[1] + '/' + repo.split(',')[2] for repo in filtered_repos ]
     save_repos(repos_with_checkstyle_file_file, sorted(filtered_repos, key=str.lower))
 
     if sys.argv[1] == 'checkstyle-modules-usage':
