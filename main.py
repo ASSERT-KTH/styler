@@ -32,8 +32,8 @@ for checkstyle_file_name in checkstyle_file_names:
     checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
 checkstyle_file_names_search.strip()
 
-# checkers that are in Release 8.33 (31.05.2020)
-formatting_checkers_release_8_33 = (
+# checkers that are in Release 8.41.1 (28.03.2021)
+formatting_checkers_release_8_41_1 = (
     'AnnotationLocation',
     'AnnotationOnSameLine',
     'CommentsIndentation',
@@ -66,8 +66,8 @@ formatting_checkers_release_8_33 = (
     'WhitespaceAround'
 )
 
-# checkers that are in Release 8.33 (31.05.2020)
-non_formatting_checkers_release_8_33 = (
+# checkers that are in Release 8.41.1 (28.03.2021)
+non_formatting_checkers_release_8_41_1 = (
     'AbbreviationAsWordInName',
     'AbstractClassName',
     'AnnotationUseStyle',
@@ -112,6 +112,7 @@ non_formatting_checkers_release_8_33 = (
     'HiddenField',
     'HideUtilityClassConstructor',
     'IllegalCatch',
+    'IllegalIdentifierName',
     'IllegalImport',
     'IllegalInstantiation',
     'IllegalThrows',
@@ -129,6 +130,7 @@ non_formatting_checkers_release_8_33 = (
     'JavadocBlockTagLocation',
     'JavadocContentLocation',
     'JavadocMethod',
+    'JavadocMissingLeadingAsterisk',
     'JavadocMissingWhitespaceAfterAsterisk',
     'JavadocPackage',
     'JavadocParagraph',
@@ -137,10 +139,12 @@ non_formatting_checkers_release_8_33 = (
     'JavadocType',
     'JavadocVariable',
     'JavaNCSS',
+    'LambdaBodyLength',
     'LambdaParameterName',
     'LocalFinalVariableName',
     'LocalVariableName',
     'MagicNumber',
+    'MatchXpath',
     'MemberName',
     'MethodCount',
     'MethodLength',
@@ -180,10 +184,15 @@ non_formatting_checkers_release_8_33 = (
     'ParameterAssignment',
     'ParameterName',
     'ParameterNumber',
+    'PatternVariableName',
+    'RecordComponentName',
+    'RecordComponentNumber',
+    'RecordTypeParameterName',
     'RedundantImport',
     'RedundantModifier',
     'RegexpHeader',
     'RegexpOnFilename',
+    'RequireEmptyLineBeforeBlockTagGroup',
     'RequireThis',
     'ReturnCount',
     'SimplifyBooleanExpression',
@@ -214,33 +223,8 @@ non_formatting_checkers_release_8_33 = (
     'WriteTag'
 )
 
-# checkers that are *not* in Release 8.33 (31.05.2020)
-checkers_before_release_8_33 = (
-    'RedundantThrows', # removed in Release 6.2
-    'FileContentsHolder', # removed in Release 8.2
-    'DoubleCheckedLocking', # removed in Release 5.6
-    'GenericIllegalRegexp', # removed in release 4.4 (replaced with RegexpMultiline and RegexpSingleline and RegexpSinglelineJava)
-    'TabCharacter', # removed in Release 5.0 Beta 2 (replaced by FileTabCharacter)
-    'PackageHtml', # removed in release 4.4 (replaced with JavadocPackage)
-    'JUnitTestCase', # removed in Release 6.2
-    'StrictDuplicateCode', # removed in Release 6.2
-    'FinalStatic', # removed in release 4.4
-    'LocalHomeInterface', # removed in release 4.4
-    'LocalInterface', # removed in release 4.4
-    'MessageBean', # removed in release 4.4
-    'RemoteHomeInterface', # removed in release 4.4
-    'RemoteInterface', # removed in release 4.4
-    'SessionBean', # removed in release 4.4
-    'ThisParameter', # removed in release 4.4
-    'ThisReturn', # removed in release 4.4
-    'EntityBean', # removed in release 4.4
-    'RequiredRegexp', # removed in release 4.4 (replaced with RegexpMultiline and RegexpSingleline and RegexpSinglelineJava)
-    'NewLineAtEndOfFile', # this word appears in the release notes, it was probably renamed to NewlineAtEndOfFile
-    'UnusedLocalVariable' # retired in Release 4.0 Beta 5
-)
-
-# filters that are in Release 8.33 (31.05.2020)
-filters_release_8_33 = (
+# filters that are in Release 8.41.1 (28.03.2021)
+filters_release_8_41_1 = (
     'SeverityMatchFilter',
     'SuppressionCommentFilter',
     'SuppressionFilter',
@@ -252,8 +236,8 @@ filters_release_8_33 = (
     'SuppressWithPlainTextCommentFilter'
 )
 
-# file filters that are in Release 8.33 (31.05.2020)
-file_filters_release_8_33 = (
+# file filters that are in Release 8.41.1 (28.03.2021)
+file_filters_release_8_41_1 = (
     'BeforeExecutionExclusionFileFilter'
 )
 
@@ -497,13 +481,13 @@ def has_only_one_checkstyle_file(folder):
 
 def has_formatting_rule_checker(folder):
     modules_raw, modules_organized = checkstyle_modules_usage([folder])
-    if len(modules_organized['formatting_checkers_release_8_33']) > 0:
+    if len(modules_organized['formatting_checkers_release_8_41_1']) > 0:
         return True
     return False
 
 def has_non_formatting_rule_checker(folder):
     modules_raw, modules_organized = checkstyle_modules_usage([folder])
-    if len(modules_organized['non_formatting_checkers_release_8_33']) > 0:
+    if len(modules_organized['non_formatting_checkers_release_8_41_1']) > 0:
         return True
     return False
     
@@ -570,11 +554,10 @@ def checkstyle_modules_usage(folders):
 
     modules_raw = {}
     modules_organized = {}
-    modules_organized['formatting_checkers_release_8_33'] = {}
-    modules_organized['non_formatting_checkers_release_8_33'] = {}
-    modules_organized['checkers_before_release_8_33'] = {}
-    modules_organized['filters_release_8_33'] = {}
-    modules_organized['file_filters_release_8_33'] = {}
+    modules_organized['formatting_checkers_release_8_41_1'] = {}
+    modules_organized['non_formatting_checkers_release_8_41_1'] = {}
+    modules_organized['filters_release_8_41_1'] = {}
+    modules_organized['file_filters_release_8_41_1'] = {}
     modules_organized['others'] = {}
     
     remove_check = lambda x: x if not x.endswith('Check') else x[:-len('Check')]
@@ -586,32 +569,27 @@ def checkstyle_modules_usage(folders):
         sanitized_module = '/'.join([ remove_check(e.split('.')[-1]) for e in module.split('/') ])
         simple_name = sanitized_module.split('/')[-1].strip()
         
-        if simple_name in formatting_checkers_release_8_33:
-            if simple_name not in modules_organized['formatting_checkers_release_8_33']:
-                modules_organized['formatting_checkers_release_8_33'][simple_name] = 0
-            modules_organized['formatting_checkers_release_8_33'][simple_name] += count
+        if simple_name in formatting_checkers_release_8_41_1:
+            if simple_name not in modules_organized['formatting_checkers_release_8_41_1']:
+                modules_organized['formatting_checkers_release_8_41_1'][simple_name] = 0
+            modules_organized['formatting_checkers_release_8_41_1'][simple_name] += count
         
-        if simple_name in non_formatting_checkers_release_8_33:
-            if simple_name not in modules_organized['non_formatting_checkers_release_8_33']:
-                modules_organized['non_formatting_checkers_release_8_33'][simple_name] = 0
-            modules_organized['non_formatting_checkers_release_8_33'][simple_name] += count
+        if simple_name in non_formatting_checkers_release_8_41_1:
+            if simple_name not in modules_organized['non_formatting_checkers_release_8_41_1']:
+                modules_organized['non_formatting_checkers_release_8_41_1'][simple_name] = 0
+            modules_organized['non_formatting_checkers_release_8_41_1'][simple_name] += count
 
-        if simple_name in checkers_before_release_8_33:
-            if simple_name not in modules_organized['checkers_before_release_8_33']:
-                modules_organized['checkers_before_release_8_33'][simple_name] = 0
-            modules_organized['checkers_before_release_8_33'][simple_name] += count
+        if simple_name in filters_release_8_41_1:
+            if simple_name not in modules_organized['filters_release_8_41_1']:
+                modules_organized['filters_release_8_41_1'][simple_name] = 0
+            modules_organized['filters_release_8_41_1'][simple_name] += count
 
-        if simple_name in filters_release_8_33:
-            if simple_name not in modules_organized['filters_release_8_33']:
-                modules_organized['filters_release_8_33'][simple_name] = 0
-            modules_organized['filters_release_8_33'][simple_name] += count
-
-        if simple_name in file_filters_release_8_33:
-            if simple_name not in modules_organized['file_filters_release_8_33']:
-                modules_organized['file_filters_release_8_33'][simple_name] = 0
-            modules_organized['file_filters_release_8_33'][simple_name] += count
+        if simple_name in file_filters_release_8_41_1:
+            if simple_name not in modules_organized['file_filters_release_8_41_1']:
+                modules_organized['file_filters_release_8_41_1'][simple_name] = 0
+            modules_organized['file_filters_release_8_41_1'][simple_name] += count
         
-        if (simple_name not in formatting_checkers_release_8_33) and (simple_name not in non_formatting_checkers_release_8_33) and (simple_name not in checkers_before_release_8_33) and (simple_name not in filters_release_8_33) and (simple_name not in file_filters_release_8_33):
+        if (simple_name not in formatting_checkers_release_8_41_1) and (simple_name not in non_formatting_checkers_release_8_41_1) and (simple_name not in filters_release_8_41_1) and (simple_name not in file_filters_release_8_41_1):
             if simple_name not in modules_organized['others']:
                 modules_organized['others'][simple_name] = 0
             modules_organized['others'][simple_name] += count
@@ -755,11 +733,10 @@ if __name__ == '__main__':
         modules_raw, modules_organized = checkstyle_modules_usage(repos)
         save_json(modules_raw_file, OrderedDict(sorted(modules_raw.items(), key=lambda k: k[1], reverse=True)))
         sorted_modules_organized = {}
-        sorted_modules_organized['formatting_checkers_release_8_33'] = OrderedDict(sorted(modules_organized['formatting_checkers_release_8_33'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['non_formatting_checkers_release_8_33'] = OrderedDict(sorted(modules_organized['non_formatting_checkers_release_8_33'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['checkers_before_release_8_33'] = OrderedDict(sorted(modules_organized['checkers_before_release_8_33'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['checkstyle_filters_release_8_33'] = OrderedDict(sorted(modules_organized['filters_release_8_33'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['checkstyle_file_filters_release_8_33'] = OrderedDict(sorted(modules_organized['file_filters_release_8_33'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['formatting_checkers_release_8_41_1'] = OrderedDict(sorted(modules_organized['formatting_checkers_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['non_formatting_checkers_release_8_41_1'] = OrderedDict(sorted(modules_organized['non_formatting_checkers_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['checkstyle_filters_release_8_41_1'] = OrderedDict(sorted(modules_organized['filters_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['checkstyle_file_filters_release_8_41_1'] = OrderedDict(sorted(modules_organized['file_filters_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
         sorted_modules_organized['others'] = OrderedDict(sorted(modules_organized['others'].items(), key=lambda k: k[1], reverse=True))
         save_json(modules_organized_file, sorted_modules_organized)
 
