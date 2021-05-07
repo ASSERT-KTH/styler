@@ -8,6 +8,7 @@ import tokenizer
 import ml
 import checkstyle
 import gotify
+import model_store
 
 open_nmt_dir = os.path.join(os.path.dirname(__file__), 'OpenNMT-py')
 
@@ -47,10 +48,11 @@ def run_preprocess(project, protocol):
 
     return output
 
-def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, gpu=True):
+def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, gpu=True, upload=False):
     preprocessed_dir = get_preprocessed_dir_by_protocol(project, protocol)
     model_dir = get_model_dir(project)
 
+    path = f'{model_dir}/{protocol}-{global_attention}-{layers}-{rnn_size}-{word_vec_size}-model'
     train_script = os.path.join(open_nmt_dir, 'train.py')
     options = [
         f'-data {preprocessed_dir}/preprocessing',
@@ -69,7 +71,7 @@ def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_si
         '-bridge',
         '-train_steps 20000',
         '-save_checkpoint_steps 20000',
-        f'-save_model {model_dir}/{protocol}-{global_attention}-{layers}-{rnn_size}-{word_vec_size}-model'
+        f'-save_model {path}'
     ]
     if gpu:
         options.append('-gpu_ranks 0')
@@ -78,11 +80,18 @@ def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_si
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
 
+    if upload:
+        model_path = path + "_step_20000.pt"
+        if os.path.exists(model_path):
+            model_store.upload_model(model_path, os.path.join(get_real_dataset_dir(project), 'checkstyle.xml'), project)
+        else:
+            logger.info("Model upload failed. Path {model_path} does not contain a model.")
+
     return output
 
-def gen_translator(model_name, protocol, batch_size=5):
+def gen_translator(model_name, protocol, checkstyle_xml, download=False, batch_size=5):
     tmp_dir = get_tmp_dir(model_name)
-    model = get_model(model_name, protocol)
+    model = get_model(model_name, protocol) if not download else model_store.get_model(model_name, protocol, checkstyle_xml)
     ml.create_dir(tmp_dir)
     tmp_input_file_name = 'input.txt'
     tmp_input_file_path = os.path.join(tmp_dir, tmp_input_file_name)
@@ -190,7 +199,7 @@ def select_the_smallest_repair(correct_repairs, original):
             min_diff = diff_size
     return file
 
-def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name, protocol, checkstyle_jar, only_formatting=False):
+def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name, protocol, checkstyle_jar, only_formatting=False, download=False):
     # set the dirs
     target = os.path.join(dir_repaired_files_by_protocol, 'repair-attempt')
     target_final = os.path.join(dir_repaired_files_by_protocol, 'files-repaired')
@@ -209,7 +218,7 @@ def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name
         create_dir(waste)
 
         # Init of the translator
-        translate = gen_translator(model_name, protocol, batch_size=5)
+        translate = gen_translator(model_name, protocol, checkstyle_rules, download=download, batch_size=5)
 
         #list_of_fileids = []
         for folder_id in tqdm(list_of_fileids):
@@ -331,7 +340,9 @@ def main(args):
     if args[1] == 'repair':
         start_time = datetime.now()
         
-        datasets = args[2:]
+        download = bool(args[2])
+
+        datasets = args[3:]
         protocol_choice_count = {
             'random': 0,
             'three_grams': 0
@@ -346,7 +357,7 @@ def main(args):
                 dir_repaired_files_by_protocol = get_styler_repairs_by_protocol(dataset, protocol)
                 create_dir(dir_repaired_files_by_protocol)
                 dir_files_to_repair = get_real_dataset_dir(dataset)
-                results[protocol] = repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, dataset, protocol, checkstyle_jar, only_formatting=True)
+                results[protocol] = repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, dataset, protocol, checkstyle_jar, only_formatting=True, download=download)
 
             ## join protcols 
             choices = join_protocols(dataset, results, checkstyle_jar)
@@ -422,8 +433,9 @@ def main(args):
         layers = args[5]
         rnn_size = args[6]
         word_vec_size = args[7]
-        gpu = args[8]
-        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, gpu)
+        gpu = bool(args[8])
+        upload = bool(args[9])
+        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, gpu, upload)
 
         time_elapsed = datetime.now() - start_time
         logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
