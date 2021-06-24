@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+    <!-- There are non-ascii test cases -->
+    <property name="charset" value="UTF-8"/>
+    <!-- Files to ignore -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
+    </module>
+
+    <module name="NewlineAtEndOfFile">
+        <property name="lineSeparator" value="lf"/>
+    </module>
+
+    <module name="FileLength">
+        <property name="id" value="checkstyle:filelength"/>
+    </module>
+
+    <module name="FileTabCharacter"/>
+
+    <!-- Trailing spaces -->
+
+    <!-- Space after 'for', 'if', 'while', 'try' -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^\s*(for|if|while|try)\b[^ ]"/>
+        <property name="message" value="Space needed before opening parenthesis."/>
+    </module>
+
+    <!-- For each spacing -->
+    <module name="RegexpSingleline">
+        <property name="format" value="^\s*for \(.*?([^ ]:|:[^ ])"/>
+        <property name="message" value="Space needed around ':' character."/>
+    </module>
+
+    <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
+    <module name="SuppressWarningsFilter" />
+
+    <module name="TreeWalker">
+        <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+        <module name="SuppressWarningsHolder" />
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="WhitespaceAround">
+            <property name="tokens" value="LITERAL_DO"/>
+        </module>
+
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- Coding Checks                                   -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected|ignore"/>
+        </module>
+
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <module name="CovariantEquals"/>
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="MutableException"/>
+        <module name="VisibilityModifier">
+            <property name="allowPublicImmutableFields" value="true"/>
+        </module>
+
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+    </module>
+</module>

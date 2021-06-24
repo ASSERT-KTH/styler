@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2017 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+  <!-- http://checkstyle.sourceforge.net/config_filters.html -->
+  <module name="SuppressWarningsFilter" />
+
+  <!-- https://github.com/atlasmap/atlasmap/issues/2195 -->
+  <!--  Inlined, since external file prevents running from sub module -->
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value=".*"/>
+    <property name="files" value="[\\/]generated-sources[\\/]"/>
+  </module>
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value=".*"/>
+    <property name="files" value="[\\/]licenses[\\/]"/>
+  </module>
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value=".*"/>
+    <property name="files" value="com[\\/]sun[\\/]"/>
+  </module>
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value=".*"/>
+    <property name="files" value=".+\.(?:html|class|adm|txt|MF|rng)$"/>
+  </module>
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value=".*"/>
+    <property name="files" value="fhir-single.xsd"/>
+  </module>
+
+  <!-- http://checkstyle.sourceforge.net/config_misc.html -->
+  <module name="NewlineAtEndOfFile">
+    <property name="lineSeparator" value="lf"/>
+  </module>
+
+  <!-- http://checkstyle.sourceforge.net/config_whitespace.html -->
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="true"/>
+  </module>
+
+  <!-- http://checkstyle.sourceforge.net/config_regexp.html -->
+  <module name="RegexpSingleline">
+    <!-- \s matches whitespace character, $ matches end of line. -->
+    <property name="format" value="(?![\*\s*])[^$]\s+$"/>
+    <property name="message" value="Line has trailing spaces."/>
+  </module>
+
+  <!-- =========================================================== -->
+  <!--                                                             -->
+  <!-- TreeWalker config                                           -->
+  <!--                                                             -->
+  <!-- =========================================================== -->
+
+  <module name="TreeWalker">
+
+    <!-- http://checkstyle.sourceforge.net/config_annotation.html -->
+    <module name="SuppressWarningsHolder" />
+
+    <module name="SuppressWithNearbyCommentFilter"/>
+
+    <!-- Checks for blocks. You know, those {}'s         -->
+    <!-- See http://checkstyle.sf.net/config_blocks.html -->
+    <module name="NeedBraces"/>
+
+    <!-- Checks for imports                              -->
+    <!-- See http://checkstyle.sf.net/config_import.html -->
+    <module name="AvoidStarImport"/>
+    <module name="ImportOrder">
+      <property name="groups" value="/^java\./,javax,org,com"/>
+      <property name="ordered" value="true"/>
+      <property name="separated" value="true"/>
+      <property name="option" value="top"/>
+      <property name="sortStaticImportsAlphabetically" value="true"/>
+    </module>
+    <module name="RedundantImport"/>
+    <module name="UnusedImports" />
+
+    <!-- Modifier Checks                                    -->
+    <module name="DeclarationOrder"/>
+    <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+    <module name="ModifierOrder"/>
+
+    <!-- UnusedModifier in PMD is also only warning -->
+    <module name="RedundantModifier">
+      <property name="severity" value="warning"/>
+    </module>
+
+    <!-- http://checkstyle.sourceforge.net/config_misc.html -->
+    <module name="UpperEll"/>
+
+    <!-- Name Checks -->
+    <module name="ConstantName" />
+    <module name="LocalFinalVariableName" />
+    <module name="LocalVariableName" />
+    <module name="MemberName" />
+    <module name="MethodName" />
+    <module name="PackageName" />
+    <module name="ParameterName" />
+    <module name="StaticVariableName" />
+
+    <!-- Javadoc -->
+    <module name="JavadocStyle">
+      <property name="scope" value="public"/>
+    </module>
+    <module name="JavadocType">
+      <property name="scope" value="public"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="scope" value="public"/>
+    </module>
+    <module name="JavadocVariable">
+      <property name="scope" value="nothing"/>
+    </module>
+  </module>
+</module>
+
