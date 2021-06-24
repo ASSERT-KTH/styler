@@ -32,8 +32,8 @@ for checkstyle_file_name in checkstyle_file_names:
     checkstyle_file_names_search += f'filename:{checkstyle_file_name} '
 checkstyle_file_names_search.strip()
 
-# checkers that are in Release 8.41.1 (28.03.2021)
-formatting_checkers_release_8_41_1 = (
+# checkers that are in Release 8.43 (30.05.2021)
+formatting_checkers_release_8_43 = (
     'AnnotationLocation',
     'AnnotationOnSameLine',
     'CommentsIndentation',
@@ -66,8 +66,8 @@ formatting_checkers_release_8_41_1 = (
     'WhitespaceAround'
 )
 
-# checkers that are in Release 8.41.1 (28.03.2021)
-non_formatting_checkers_release_8_41_1 = (
+# checkers that are in Release 8.43 (30.05.2021)
+non_formatting_checkers_release_8_43 = (
     'AbbreviationAsWordInName',
     'AbstractClassName',
     'AnnotationUseStyle',
@@ -223,8 +223,8 @@ non_formatting_checkers_release_8_41_1 = (
     'WriteTag'
 )
 
-# filters that are in Release 8.41.1 (28.03.2021)
-filters_release_8_41_1 = (
+# filters that are in Release 8.43 (30.05.2021)
+filters_release_8_43 = (
     'SeverityMatchFilter',
     'SuppressionCommentFilter',
     'SuppressionFilter',
@@ -236,8 +236,8 @@ filters_release_8_41_1 = (
     'SuppressWithPlainTextCommentFilter'
 )
 
-# file filters that are in Release 8.41.1 (28.03.2021)
-file_filters_release_8_41_1 = (
+# file filters that are in Release 8.43 (30.05.2021)
+file_filters_release_8_43 = (
     'BeforeExecutionExclusionFileFilter'
 )
 
@@ -481,13 +481,13 @@ def has_only_one_checkstyle_file(folder):
 
 def has_formatting_rule_checker(folder):
     modules_raw, modules_organized = checkstyle_modules_usage([folder])
-    if len(modules_organized['formatting_checkers_release_8_41_1']) > 0:
+    if len(modules_organized['formatting_checkers_release_8_43']) > 0:
         return True
     return False
 
 def has_non_formatting_rule_checker(folder):
     modules_raw, modules_organized = checkstyle_modules_usage([folder])
-    if len(modules_organized['non_formatting_checkers_release_8_41_1']) > 0:
+    if len(modules_organized['non_formatting_checkers_release_8_43']) > 0:
         return True
     return False
     
@@ -554,10 +554,10 @@ def checkstyle_modules_usage(folders):
 
     modules_raw = {}
     modules_organized = {}
-    modules_organized['formatting_checkers_release_8_41_1'] = {}
-    modules_organized['non_formatting_checkers_release_8_41_1'] = {}
-    modules_organized['filters_release_8_41_1'] = {}
-    modules_organized['file_filters_release_8_41_1'] = {}
+    modules_organized['formatting_checkers_release_8_43'] = {}
+    modules_organized['non_formatting_checkers_release_8_43'] = {}
+    modules_organized['filters_release_8_43'] = {}
+    modules_organized['file_filters_release_8_43'] = {}
     modules_organized['others'] = {}
     
     remove_check = lambda x: x if not x.endswith('Check') else x[:-len('Check')]
@@ -569,27 +569,27 @@ def checkstyle_modules_usage(folders):
         sanitized_module = '/'.join([ remove_check(e.split('.')[-1]) for e in module.split('/') ])
         simple_name = sanitized_module.split('/')[-1].strip()
         
-        if simple_name in formatting_checkers_release_8_41_1:
-            if simple_name not in modules_organized['formatting_checkers_release_8_41_1']:
-                modules_organized['formatting_checkers_release_8_41_1'][simple_name] = 0
-            modules_organized['formatting_checkers_release_8_41_1'][simple_name] += count
+        if simple_name in formatting_checkers_release_8_43:
+            if simple_name not in modules_organized['formatting_checkers_release_8_43']:
+                modules_organized['formatting_checkers_release_8_43'][simple_name] = 0
+            modules_organized['formatting_checkers_release_8_43'][simple_name] += count
         
-        if simple_name in non_formatting_checkers_release_8_41_1:
-            if simple_name not in modules_organized['non_formatting_checkers_release_8_41_1']:
-                modules_organized['non_formatting_checkers_release_8_41_1'][simple_name] = 0
-            modules_organized['non_formatting_checkers_release_8_41_1'][simple_name] += count
+        if simple_name in non_formatting_checkers_release_8_43:
+            if simple_name not in modules_organized['non_formatting_checkers_release_8_43']:
+                modules_organized['non_formatting_checkers_release_8_43'][simple_name] = 0
+            modules_organized['non_formatting_checkers_release_8_43'][simple_name] += count
 
-        if simple_name in filters_release_8_41_1:
-            if simple_name not in modules_organized['filters_release_8_41_1']:
-                modules_organized['filters_release_8_41_1'][simple_name] = 0
-            modules_organized['filters_release_8_41_1'][simple_name] += count
+        if simple_name in filters_release_8_43:
+            if simple_name not in modules_organized['filters_release_8_43']:
+                modules_organized['filters_release_8_43'][simple_name] = 0
+            modules_organized['filters_release_8_43'][simple_name] += count
 
-        if simple_name in file_filters_release_8_41_1:
-            if simple_name not in modules_organized['file_filters_release_8_41_1']:
-                modules_organized['file_filters_release_8_41_1'][simple_name] = 0
-            modules_organized['file_filters_release_8_41_1'][simple_name] += count
+        if simple_name in file_filters_release_8_43:
+            if simple_name not in modules_organized['file_filters_release_8_43']:
+                modules_organized['file_filters_release_8_43'][simple_name] = 0
+            modules_organized['file_filters_release_8_43'][simple_name] += count
         
-        if (simple_name not in formatting_checkers_release_8_41_1) and (simple_name not in non_formatting_checkers_release_8_41_1) and (simple_name not in filters_release_8_41_1) and (simple_name not in file_filters_release_8_41_1):
+        if (simple_name not in formatting_checkers_release_8_43) and (simple_name not in non_formatting_checkers_release_8_43) and (simple_name not in filters_release_8_43) and (simple_name not in file_filters_release_8_43):
             if simple_name not in modules_organized['others']:
                 modules_organized['others'][simple_name] = 0
             modules_organized['others'][simple_name] += count
@@ -733,10 +733,10 @@ if __name__ == '__main__':
         modules_raw, modules_organized = checkstyle_modules_usage(repos)
         save_json(modules_raw_file, OrderedDict(sorted(modules_raw.items(), key=lambda k: k[1], reverse=True)))
         sorted_modules_organized = {}
-        sorted_modules_organized['formatting_checkers_release_8_41_1'] = OrderedDict(sorted(modules_organized['formatting_checkers_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['non_formatting_checkers_release_8_41_1'] = OrderedDict(sorted(modules_organized['non_formatting_checkers_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['checkstyle_filters_release_8_41_1'] = OrderedDict(sorted(modules_organized['filters_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
-        sorted_modules_organized['checkstyle_file_filters_release_8_41_1'] = OrderedDict(sorted(modules_organized['file_filters_release_8_41_1'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['formatting_checkers_release_8_43'] = OrderedDict(sorted(modules_organized['formatting_checkers_release_8_43'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['non_formatting_checkers_release_8_43'] = OrderedDict(sorted(modules_organized['non_formatting_checkers_release_8_43'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['checkstyle_filters_release_8_43'] = OrderedDict(sorted(modules_organized['filters_release_8_43'].items(), key=lambda k: k[1], reverse=True))
+        sorted_modules_organized['checkstyle_file_filters_release_8_43'] = OrderedDict(sorted(modules_organized['file_filters_release_8_43'].items(), key=lambda k: k[1], reverse=True))
         sorted_modules_organized['others'] = OrderedDict(sorted(modules_organized['others'].items(), key=lambda k: k[1], reverse=True))
         save_json(modules_organized_file, sorted_modules_organized)
 
