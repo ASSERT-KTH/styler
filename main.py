@@ -650,6 +650,7 @@ if not os.path.exists(repos_folder_path):
 download_file = os.path.join(result_folder_path, 'downloaded.txt')
 info_file_name = 'info.json'
 repos_with_checkstyle_file_file = os.path.join(result_folder_path, 'repos_with_checkstyle_file.txt')
+repos_with_only_one_checkstyle_file_and_maven_file = os.path.join(result_folder_path, 'repos_with_only_one_checkstyle_file_and_maven.txt')
 repos_with_only_one_checkstyle_file_formatting_rule_checker_and_maven_file = os.path.join(result_folder_path, 'repos_with_only_one_checkstyle_file_formatting_rule_checker_and_maven.txt')
 modules_raw_file = os.path.join(result_folder_path, 'modules_raw.json')
 modules_organized_file = os.path.join(result_folder_path, 'modules_organized.json')
@@ -785,6 +786,11 @@ if __name__ == '__main__':
         venn3(subsets = sets_values, set_labels = sets_labels)
         #plt.show()
         plt.savefig(os.path.join(result_folder_path, 'venn_rules.pdf'))
+
+    if sys.argv[1] == 'list-repos-with-only-one-checkstyle-file-and-maven':
+        repos = load_repo_list(repos_with_checkstyle_file_file)
+        filtered_repos = map(lambda folder: re.sub(".*/repos/", "", folder), filters([has_only_one_checkstyle_file, has_maven], repos))
+        save_repos(repos_with_only_one_checkstyle_file_and_maven_file, sorted(filtered_repos, key=str.lower))
 
     if sys.argv[1] == 'list-repos-with-only-one-checkstyle-file-formatting-rule-checker-and-maven':
         repos = load_repo_list(repos_with_checkstyle_file_file)
