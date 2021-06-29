@@ -136,7 +136,7 @@ def open_file(file):
         with open(file, 'r+', encoding="utf-8") as f:
             content = f.read()
     except Exception as err:
-        print('Something wrong happened while trying to open the file ' + file)
+        logger.debug('Something wrong happened while trying to open the file ' + file)
     return content
 
 
@@ -153,7 +153,7 @@ def save_file_in_path(file_path, content):
         with open(file_path, 'w', encoding="utf-8") as f:
             f.write(content)
     except Exception as err:
-        print(err)
+        logger.debug(err)
         return None
     return file_path
 
@@ -164,7 +164,7 @@ def open_json(file):
         with open(file) as f:
             data = json.load(f)
             return data
-    print('File not found:' + file)
+    logger.debug('File not found:' + file)
     return None
 
 
@@ -250,7 +250,6 @@ def move_parse_exception_files(from_dir, to_dir):
         for file in files:
             shutil.move(file, f'{to_dir}/{uuid.uuid4().hex}_{"_".join(file.split("/")[-3:-1])}.java')
     else:
-        # print(files)
         for file in files:
             os.remove(file)
     return files
@@ -259,7 +258,7 @@ def move_parse_exception_files(from_dir, to_dir):
 def json_pp(obj):
     """Pretty print a collection
     """
-    print(json.dumps(obj, indent=4))
+    logger.debug(json.dumps(obj, indent=4))
 
 
 def shuffled(array):
@@ -384,7 +383,6 @@ def start_pool(queue, batch_size, function):
     def process():
         job = get_job()
         while job:
-            # print(f'Get {job}')
             function(job)
             pbar.update(1)
             job = get_job()

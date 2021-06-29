@@ -197,9 +197,7 @@ def gen_ugly_from_source(file_content, modification_number = (1,0,0,0,0)):
 
     tokens = javalang_tokenizer.tokenize(file_content)
     tokens = [ t for t in tokens]
-    # print("\n".join([ str(t) for t in tokens]))
-
-
+    
     # Take a sample of locations suitable for insertions
     insertions_sample = random.sample( tokens, min(insertions_sample_size, len(tokens)) )
 
@@ -351,7 +349,7 @@ class Batch:
                 logger.debug(InsertionException)
                 continue
             except Exception as err:
-                print(err)
+                logger.debug(err)
                 continue
         self.checkstyle_result, _ = checkstyle.check(
             self.checkstyle_dir,
@@ -488,7 +486,7 @@ if __name__ == '__main__':
                 for f in tqdm(files):
                     file_path = os.path.join(folder[0], f)
                     if file_path.endswith('.java'):
-                        print(f'file_path: {file_path}')
+                        logger.debug(f'file_path: {file_path}')
                         c += tokenize_and_count(file_path)
         word_counter_to_csv(c)
     elif sys.argv[1] == 'gen':
@@ -500,5 +498,5 @@ if __name__ == '__main__':
         gen_dataset(corpus, share, 500, f'./tmp/dataset/{protocol}/{corpus_name}', protocol=protocol)
     elif sys.argv[1] == 'test-threegrams':
         reformatted, modification = modify_source_three_grams(open_file('./experiments/projects/findbugsproject-findbugs/corpus/data/1/TestTestFields.java'))
-        print(reformatted)
-        print(modification)
+        logger.debug(reformatted)
+        logger.debug(modification)

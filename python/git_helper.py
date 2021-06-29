@@ -31,7 +31,7 @@ def open_repo(user, repo_name):
         try:        
             return Repo(dir)
         except InvalidGitRepositoryError:
-            print("Repo %s not found." % dir)
+            logger.debug("Repo %s not found." % dir)
             return None
     else:
         return clone_repo(user, repo_name)

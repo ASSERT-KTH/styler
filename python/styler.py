@@ -113,7 +113,6 @@ def run_translate(model, input_file, output_file, batch_size=5):
 def print_translations(file_path, metadata_path, translate):
     metadata = open_json(metadata_path)
     for tokenized_errors, info in tokenize_errors(file_path, metadata['errors']):
-        print(info)
         for translation in translate(tokenized_errors):
             ml.print_diff(' '.join(info['tokens_errored_in_tag']) + '\n', translation)
             print()
@@ -145,8 +144,8 @@ def create_corpus(dir, name, checkstyle_dir, checkstyle_jar):
     files_without_errors = get_files_without_errors(output)
     files_with_errors = get_files_with_errors(output)
 
-    print(f'Found {len(files_without_errors)} files with no errors.')
-    print(f'Found {len(files_with_errors)} files with errors.')
+    logger.debug(f'Found {len(files_without_errors)} files with no errors.')
+    logger.debug(f'Found {len(files_with_errors)} files with errors.')
 
     def is_good_candidate(file_path):
         if not file_path.endswith('.java'):
@@ -240,7 +239,6 @@ def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name
     if checkstyle_result is None:
         return None
     res = reverse_collection(get_batch_results(checkstyle_result))
-    print(res)
     
     def select_best_proposal(file_id, proposals):
         file_path = glob.glob(f'{dir_files_to_repair}/{int(file_id) % number_of_files}/*.java')[0]

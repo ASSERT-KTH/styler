@@ -112,7 +112,7 @@ def parse_output(output, only_targeted=False, only_java=False):
                         else:
                             output_parsed[elem_file.attrib['name']]['errors'].append(elem_error.attrib)
     except Exception as err:
-        print(err)
+        logger.debug(err)
         return None
     return output_parsed
 
@@ -130,7 +130,7 @@ if __name__ == "__main__":
             file_path = sys.argv[3]
 
         (output_raw, errorcode) = check(checkstyle_path, file_path)
-        print(output_raw, errorcode)
+        logger.debug(output_raw, errorcode)
     elif sys.argv[1] == "check":
         out, n = check(sys.argv[2], sys.argv[3], only_targeted=True, only_java=True)
         json_pp(out)
