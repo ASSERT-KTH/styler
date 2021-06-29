@@ -85,32 +85,32 @@ def tokenize_file_to_repair(file_path, error):
 
     tokens_errored = []
 
-    start = len(tokens)
-    end = 0
+    context_beginning_token = len(tokens)
+    context_end_token = 0
 
-    from_token = 0
-    to_token = 0
+    violation_beginning_token = 0
+    violation_end_token = 0
 
     for token, space in zip(tokens, spaces):
-        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines :
-            start = min(count, start)
-            end = max(count, end)
+        if token.position[0] >= int(error['line']) - n_lines and token.position[0] <= int(error['line']) + n_lines:
+            context_beginning_token = min(count, context_beginning_token)
+            context_end_token = max(count, context_end_token)
         if not token_started and int(error['line']) == token.position[0]:
             token_started = True
             token_line_start = count
-        if token_started and  int(error['line']) < token.position[0]:
+        if token_started and int(error['line']) < token.position[0]:
             token_started = False
             token_line_end = count
         count += 1
-    start = max(0, start - 2)
-    end = min(len(tokens), end + 2)
+    context_beginning_token = max(0, context_beginning_token - 1)
+    context_end_token = min(len(tokens), context_end_token + 1)
     if token_line_end == -1:
         token_line_end = token_line_start
 
     # print(error)
 
+    errored_token_index = -1
     if 'column' in error:
-        errored_token_index = -1
         around = 1
         column = int(error['column'])
 
@@ -125,80 +125,55 @@ def tokenize_file_to_repair(file_path, error):
                     errored_token_index = index
                 index += 1
 
-        from_token = max(0, errored_token_index - around)
-        to_token = min(len(tokens), errored_token_index + around)
+        violation_beginning_token = max(0, errored_token_index - around)
+        violation_end_token = min(len(tokens), errored_token_index + around)
     else:
         around = 1
         around_after = 1
-        errored_token_index = -1
         if token_line_start != -1:
-            from_token = max(start, token_line_start - around)
-            to_token = min(end, token_line_end + around_after + 1)
+            violation_beginning_token = max(context_beginning_token, token_line_start - around)
+            violation_end_token = min(context_end_token, token_line_end + around_after)
         else:
-            errored_token_index = -1
-            around = 1
-            around_after = 1
             for token, index in zip(tokens,range(len(tokens))):
                 if token.position[0] < int(error['line']):
                     errored_token_index = index
-            from_token = max(0, errored_token_index - around)
-            to_token = min(len(tokens), errored_token_index + 1 + around_after)
+            violation_beginning_token = max(0, errored_token_index - around)
+            violation_end_token = min(len(tokens), errored_token_index + around_after)
     
+
     tokens_errored_in_tag = []
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+    for token, space in zip(tokens[violation_beginning_token:violation_end_token], spaces[violation_beginning_token:violation_end_token]):
         tokens_errored_in_tag.append(get_token_value(token))
         tokens_errored_in_tag.append(get_space_value(space))
 
 
-    for token, space in zip(tokens[start:from_token], spaces[start:from_token]):
+    for token, space in zip(tokens[context_beginning_token:violation_beginning_token], spaces[context_beginning_token:violation_beginning_token]):
         tokens_errored.append(get_token_value(token))
         tokens_errored.append(get_space_value(space))
     tokens_errored.append(f'<{error["type"]}>')
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
+    for token, space in zip(tokens[violation_beginning_token:violation_end_token], spaces[violation_beginning_token:violation_end_token]):
         tokens_errored.append(get_token_value(token))
         tokens_errored.append(get_space_value(space))
     tokens_errored.append(f'</{error["type"]}>')
-    for token, space in zip(tokens[to_token:end], spaces[to_token:end]):
+    for token, space in zip(tokens[violation_end_token:context_end_token], spaces[violation_end_token:context_end_token]):
         tokens_errored.append(get_token_value(token))
         tokens_errored.append(get_space_value(space))
 
-    info['from_token'] = from_token
-    info['to_token'] = to_token
-    info['start'] = start
-    info['end'] = end
+
+    info['violation_beginning_token'] = violation_beginning_token
+    info['violation_end_token'] = violation_end_token
+    info['context_beginning_token'] = context_beginning_token
+    info['context_end_token'] = context_end_token
     info['error'] = error
     info['tokens_errored_in_tag'] = tokens_errored_in_tag
 
     return tokens_errored, info
 
-def tokenize_errored_file_model2(file, file_orig, error):
-    tokens_errored, info = tokenize_file_to_repair(file, error)
-
-    tokens_errored_in_tag = info['tokens_errored_in_tag']
-    from_token = info['from_token']
-    to_token = info['to_token']
-
-    spaces, tokens = tokenize_with_white_space(open_file(file_orig))
-    tokens_correct = []
-
-    for token, space in zip(tokens[from_token:to_token], spaces[from_token:to_token]):
-        tokens_correct.append(get_token_value(token))
-        tokens_correct.append(get_space_value(space))
-
-    if len(tokens_errored_in_tag) != len(tokens_correct):
-        print("WHAAAAATT")
-    info['count_diff'] = 0
-    for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
-        if t_A != t_B:
-            info['count_diff'] += 1
-
-    return tokens_errored, tokens_correct, tokens_errored_in_tag, info
-
 def de_tokenize(errored_source, error_info, new_tokens, only_formatting=False):
     errored_whitespace, tokens = tokenize_with_white_space(errored_source)
     whitespace = copy.deepcopy(errored_whitespace)
-    from_token = error_info['from_token']
-    to_token = error_info['to_token']
+    violation_beginning_token = error_info['violation_beginning_token']
+    violation_end_token = error_info['violation_end_token']
 
     if only_formatting:
         new_white_space_tokens = new_tokens
@@ -206,10 +181,8 @@ def de_tokenize(errored_source, error_info, new_tokens, only_formatting=False):
         new_white_space_tokens = new_tokens[1::2]
     new_white_space = [ whitespace_token_to_tuple(token) for token in new_white_space_tokens ]
 
-    # whitespace[from_token:to_token] = new_white_space
-    # whitespace[from_token:min(from_token + len(new_white_space),to_token)] = new_white_space[:min(to_token - from_token, len(new_white_space))]
-    for index in range(min(to_token - from_token, len(new_white_space))):
-        whitespace[from_token + index] = new_white_space[index]
+    for index in range(min(violation_end_token - violation_beginning_token, len(new_white_space))):
+        whitespace[violation_beginning_token + index] = new_white_space[index]
 
     fixed_source_code = reformat(whitespace, errored_whitespace, tokens)
     #return fixed_source_code
@@ -218,56 +191,56 @@ def de_tokenize(errored_source, error_info, new_tokens, only_formatting=False):
     if fixed_tokens is None:
         return None
 
-    return mix_sources3(errored_source, fixed_source_code, tokens, fixed_tokens, error_info)
+    return mix_sources(errored_source, fixed_source_code, tokens, fixed_tokens, error_info)
 
 def compute_abs_char_position(source, tokens, error_info):
     output_source = ""
 
     file_lines = [ line + '\n' for line in source.split('\n') ]
 
-    from_token = tokens[error_info['from_token']]
-    from_token_position = from_token.position
+    violation_beginning_token = tokens[error_info['violation_beginning_token']]
+    violation_beginning_token_position = violation_beginning_token.position
 
-    to_token = tokens[min(error_info['to_token'], len(tokens) - 1)]
-    to_token_position = to_token.position
+    violation_end_token = tokens[min(error_info['violation_end_token'], len(tokens) - 1)]
+    violation_end_token_position = violation_end_token.position
 
-    output_source += ''.join(file_lines[:from_token_position[0] -1] )
+    output_source += ''.join(file_lines[:violation_beginning_token_position[0] -1] )
 
     # copy all code before the changes
-    partial_start_line = file_lines[from_token_position[0] -1]
-    partial_start_line = partial_start_line[0: from_token_position[1] + len(from_token.value) - 1]
+    partial_start_line = file_lines[violation_beginning_token_position[0] -1]
+    partial_start_line = partial_start_line[0: violation_beginning_token_position[1] + len(violation_beginning_token.value) - 1]
     output_source += partial_start_line
 
     index_start_changes = len(output_source)
 
     # where the change starts
-    change_start_line = file_lines[from_token_position[0] - 1]
-    change_start_line = change_start_line[from_token_position[1] + len(from_token.value) - 1:]
+    change_start_line = file_lines[violation_beginning_token_position[0] - 1]
+    change_start_line = change_start_line[violation_beginning_token_position[1] + len(violation_beginning_token.value) - 1:]
     output_source += change_start_line
 
     # copy all full line changes in the line before the change
-    output_source += ''.join(file_lines[from_token_position[0]:to_token_position[0] - 1])
+    output_source += ''.join(file_lines[violation_beginning_token_position[0]:violation_end_token_position[0] - 1])
 
     # copy the partial line where the chyange stops
-    change_end_line = file_lines[to_token_position[0] - 1]
-    change_end_line = change_end_line[0:to_token_position[1] + len(to_token.value) - 1]
+    change_end_line = file_lines[violation_end_token_position[0] - 1]
+    change_end_line = change_end_line[0:violation_end_token_position[1] + len(violation_end_token.value) - 1]
     output_source += change_end_line
 
     index_end_changes = len(output_source)
 
     # where the change starts
-    change_end_line = file_lines[to_token_position[0] - 1]
-    change_end_line = change_end_line[to_token_position[1] + len(to_token.value) - 1:]
+    change_end_line = file_lines[violation_end_token_position[0] - 1]
+    change_end_line = change_end_line[violation_end_token_position[1] + len(violation_end_token.value) - 1:]
     output_source += change_end_line
 
     # copy all full line changes in the line before the change
-    output_source += ''.join(file_lines[to_token_position[0]:])[:-1]
+    output_source += ''.join(file_lines[violation_end_token_position[0]:])[:-1]
 
 
     return (index_start_changes,index_end_changes)
     pass
 
-def mix_sources3(errored_source, fixed_source_code, tokens, fixed_tokens, error_info):
+def mix_sources(errored_source, fixed_source_code, tokens, fixed_tokens, error_info):
     """Put a little bit of B into A
     """
 
@@ -281,159 +254,6 @@ def mix_sources3(errored_source, fixed_source_code, tokens, fixed_tokens, error_
     output_source += errored_source[error_position[1]:]
     
     return output_source
-
-def mix_files_v2(file_A_path, file_B_path, output_file, from_line, to_line=-1):
-    java_source_A = open_file(file_A_path)
-    whitespace_A, tokens_A = tokenize_with_white_space(java_source_A, relative=True)
-
-    java_source_B = open_file(file_B_path)
-    whitespace_B, tokens_B = tokenize_with_white_space(java_source_B, relative=True)
-
-    if to_line == -1:
-        to_line = from_line
-
-    from_token = len(tokens_A)
-    to_token = 0
-
-    for pos, token in enumerate(tokens_A):
-        if token.line < from_line:
-            from_token = pos
-        if token.line <= to_line:
-            to_token = pos
-    from_token += 1
-
-    tokens = tokens_A
-    whitespace = whitespace_A[:from_token] + whitespace_B[from_token:to_token+1] + whitespace_A[to_token+1:]
-
-    new_java_source = reformat(whitespace, tokens, relative = True)
-
-    output_dir = output_file.split('/')[:-1]
-    file_name = output_file.split('/')[-1]
-
-    return save_file(output_dir, file_name, new_java_source)
-
-
-def mix_sources(source_A, source_B, from_line, to_line=-1):
-    """Put a little bit of B into A
-    """
-    
-
-    if to_line == -1:
-        to_line = from_line
-
-    file_A_lines = [ line + '\n' for line in source_A.split('\n') ]
-    file_B_lines = [ line + '\n' for line in source_B.split('\n') ]
-
-    tokens_A = javalang_tokenizer.tokenize(source_A, parse_comments=True)
-    tokens_B = javalang_tokenizer.tokenize(source_B, parse_comments=True)
-
-    tokens = zip(tokens_A, tokens_B)
-    lines = range(from_line, to_line)
-
-    # copy everything before from from
-    output_source = ''.join(file_A_lines[:(from_line-1)])
-
-    # find first and last tokens from the context
-    from_token = None
-    first_token_of_A = None
-    to_token = None
-    last_token_of_A = None
-    for token_A, token_B in tokens:
-        if ((token_A.position[0] >= from_line) 
-            and (token_A.position[0] <= to_line )):
-            if 'form_token' not in locals():
-                form_token = token_B
-                first_token_of_A = token_A
-            to_token = token_B
-            last_token_of_A = token_A
-
-    if last_token_of_A:
-
-        # copy the statement that was potentially before the context
-        if first_token_of_A.position[0] > from_line and form_token.position[0] > from_line:
-            output_source += ''.join(file_A_lines[from_line-1: first_token_of_A.position[0]-1])
-        # if the transformation added a line before the context
-        if first_token_of_A.position[0] != form_token.position[0]:
-            output_source += ''.join(file_B_lines[first_token_of_A.position[0]-1:form_token.position[0]-1])
-        # add the original indentation TODO: handle \t
-        #output_source += " " * (first_token_of_A.position[1] - 1)
-        
-        # copy the transformation
-        output_source += ''.join(file_B_lines[(form_token.position[0]-1):(to_token.position[0])])
-        for line in file_B_lines[to_token.position[0]+1:]:
-            if len(line.strip()) != 0:
-                break
-            output_source += line
-
-        #start_transormation = len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1
-        #end_transormation = len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1
-        #output_source += source_B[start_transormation:end_transormation]
-        #output_source += '\n'
-        
-
-        # copy the otkens between the last token and to_line
-        if last_token_of_A.position[0] < to_line  and to_token.position[0] < to_line:
-            output_source += ''.join(file_A_lines[last_token_of_A.position[0]:to_line])
-        
-        for line in file_A_lines[to_line -1:]:
-            if len(line.strip()) == 0:
-                continue
-            output_source += line
-        
-        # copy the rest of the file (everything after to_line)
-        #output_source += ''.join(file_A_lines[(to_line):])[:-1] # we remove the final \n that we added
-
-        """
-        output_source += " "*(first_token_of_A.position[1]-1)
-        print(f'output_source space {output_source.replace(" ","_")}')
-        #output_source += source_B[(len(''.join(file_B_lines[:(form_token.position[0]-1)])) + form_token.position[1] - 1):(len(''.join(file_B_lines[:(to_token.position[0]-1)])) + to_token.position[1] + len(to_token.value) - 1)]
-        print((first_token_of_A.position[0]-1),(to_token.position[0]))
-        output_source += ''.join(file_B_lines[(first_token_of_A.position[0]-1):(to_token.position[0])])
-        print(f'output_source source_B {output_source.replace(" ","_")}')
-        #output_source += '\n'
-        if last_token_of_A.position[0] != to_line:
-            output_source += ''.join(file_A_lines[(last_token_of_A.position[0]):(to_line)])
-            print(f'output_source if {output_source.replace(" ","_")}')
-        output_source += ''.join(file_A_lines[(to_line):])[:-1] # we remove the final \n that we added
-        print(f'output_source final {output_source.replace(" ","_")}')"""
-    else:
-        output_source += ''.join(file_A_lines[(from_line-1):])[:-1] # we remove the final \n that we added
-
-    return output_source
-
-# The tokens should be the same
-# Patch parts of B into A,
-def mix_files(file_A_path, file_B_path, output_file, from_line, to_line=-1):
-    """Put a little bit of B into A
-    """
-    if to_line == -1:
-        to_line = from_line
-
-    with open(file_A_path) as f:
-        file_A_lines = f.readlines()
-
-    try:
-        with open(file_B_path) as f:
-            file_B_lines = f.readlines()
-    except FileNotFoundError:
-        with open(output_file, "w") as output_file_object:
-            output_file_object.write("".join(file_A_lines))
-            return output_file
-
-    file_A_content = "".join(file_A_lines)
-    file_B_content = "".join(file_B_lines)
-
-    output_source = mix_sources(file_A_content, file_B_content, from_line, to_line=to_line)
-
-    output_dir = "/".join(output_file.split("/")[:-1])
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    with open(output_file, "w") as output_file_object:
-        output_file_object.write(output_source)
-
-    return output_file
-
 
 def reformat(whitespace, errored_whitespace, tokens, relative=True):
     """
@@ -468,26 +288,6 @@ def reformat(whitespace, errored_whitespace, tokens, relative=True):
             result += str(t.value) + " " * ws[1]
     return result
 
-
-def get_char_pos_from_lines(file_path, from_line, to_line=-1):
-    """
-    Tokenize the java source code
-    :param file_content: the java source code
-    :return: (whitespace, tokens)
-    """
-    if to_line == -1:
-        to_line = from_line
-    file_lines = None
-    with open(file_path) as f:
-        file_lines = f.readlines()
-    if file_lines:
-        from_char = len(''.join(file_lines[:(from_line-1)]))
-        to_char = from_char + len(''.join(file_lines[(from_line-1):to_line]))
-        return (from_char, to_char)
-    else:
-        return (-1, -1)
-
-
 if __name__ == "__main__":
     if sys.argv[1] == 'tokenize_file_to_repair':
         path = sys.argv[2]
@@ -496,14 +296,10 @@ if __name__ == "__main__":
         error['type'] = checkstyle_source_to_error_type(error['source'])
         tokens_errored, info = tokenize_file_to_repair(path, error)
         print(tokens_errored)
-    if (sys.argv[1] == "char_pos"):
-        print(get_char_pos_from_lines(sys.argv[2], int(sys.argv[3])))
-    elif (sys.argv[1] == "tokenize_ws"):
+    if (sys.argv[1] == "tokenize_ws"):
         whitespace, tokens = tokenize_with_white_space(open_file(sys.argv[2]))
         #print(reformat(whitespace, tokens))
         print("\n".join([str(e) for e in zip(whitespace, tokens)]))
-    elif (sys.argv[1] == "mix"):
-        mix_files(sys.argv[2], sys.argv[3], sys.argv[4], 62, 64)
 
 
 class TokenizedSource:
