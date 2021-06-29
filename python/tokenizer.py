@@ -15,8 +15,6 @@ def tokenize_with_white_space(file_content, relative=True):
     javalang_tokens = javalang_tokenizer.tokenize(file_content, parse_comments=True)
     tokens = []
     count = 0
-    print(file_content)
-    print(javalang_tokens)
     try:
         for t in javalang_tokens:
             count += 1

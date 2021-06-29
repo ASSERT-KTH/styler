@@ -476,16 +476,6 @@ def compute_diff(file_A, file_B):
     cmd = 'git diff --no-index {} {}'.format(file_A, file_B)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output.decode('utf-8')
-
-def compute_diff_size(file_A, file_B):
-    """
-    Check the diff size between file A and B
-    :return: the size of the diff
-    """
-    cmd = 'git diff --no-index {} {}'.format(file_A, file_B)
-    process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
     diff = output.decode('utf-8')
     ans = []
     diff_lines = diff.split("\n")
@@ -516,5 +506,5 @@ def compute_diff_size(file_A, file_B):
         removed_lines = 0
         added_lines = 0
 
-    return changed_lines
+    return (diff, changed_lines)
     

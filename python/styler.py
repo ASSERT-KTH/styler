@@ -185,7 +185,7 @@ def select_the_smallest_repair(correct_repairs, original):
     min_diff = 10000000
     file = ''
     for correct_repair in correct_repairs:
-        diff_size = compute_diff_size(original, correct_repair)
+        diff, diff_size = compute_diff(original, correct_repair)
         if diff_size < min_diff:
             file = correct_repair
             min_diff = diff_size
@@ -213,7 +213,7 @@ def repair_files(dir_repaired_files_by_protocol, dir_files_to_repair, model_name
         translate = gen_translator(model_name, protocol, batch_size=5)
 
         #list_of_fileids = []
-        for folder_id in tqdm(list_of_fileids):
+        for folder_id in tqdm(sorted(list_of_fileids)):
             file_path = glob.glob(f'{dir_files_to_repair}/{folder_id}/*.java')[0]
             logger.debug(file_path)
             metadata_path = f'{dir_files_to_repair}/{folder_id}/metadata.json'

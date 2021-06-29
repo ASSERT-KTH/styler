@@ -58,13 +58,11 @@ def check(checkstyle_file_path, file_to_checkstyle_path, checkstyle_jar=_CHECKST
     """
     Runs Checkstyle on the file_to_checkstyle_path
     """
-    print(os.path.abspath(file_to_checkstyle_path))
     insert_property_haltOnException_set_to_false_in_checkstyle_file(checkstyle_file_path)
     remove_property_cacheFile_from_checkstyle_file(checkstyle_file_path)
     checkstyle_jar = os.path.join(_CHECKSTYLE_JARS_DIR, checkstyle_jar)
     cmd = "java -jar {} -f xml -c {} {} --exclude-regexp .*/test/.* --exclude-regexp .*/resources/.*".format(
         checkstyle_jar, os.path.abspath(checkstyle_file_path), os.path.abspath(file_to_checkstyle_path))
-    print(cmd)
     process = subprocess.Popen(cmd.split(" "), stdout=subprocess.PIPE)
     output = process.communicate()[0]
     # deletion of non xml strings
@@ -72,7 +70,6 @@ def check(checkstyle_file_path, file_to_checkstyle_path, checkstyle_jar=_CHECKST
         output = b''.join(output.split(b'</checkstyle>')[0:-1]) + b'</checkstyle>'
     # parsing
     output = parse_output(output, only_targeted=only_targeted, only_java=only_java)
-    print(output)
     return (output, process.returncode)
 
 def insert_property_haltOnException_set_to_false_in_checkstyle_file(checkstyle_file_path):

@@ -316,27 +316,24 @@ def json_report(project_name, tools_to_be_used, report_for_website=False):
         original_file_path = glob.glob(f'{errored_dir}/{file_id}/*.java')[0]
         metadata_file_path = f'{errored_dir}/{file_id}/metadata.json'
 
+        if len(information['errors']) == 0:
+            continue
+        metadata_file = open_json(metadata_file_path)
+        if not is_error_targeted(metadata_file['errors'][0]):
+            continue
+        #if information['errors'][0]['source'] != metadata_file['errors'][0]['source']:
+        #    continue
+
         repair = {}
         repair['error_id'] = file_id
         repair['information'] = information
 
         errored_file = open_file(original_file_path)
         errored_file_lines = errored_file.split('\n')
-
-        metadata_file = open_json(metadata_file_path)
         errored_line_number = int(metadata_file['errors'][0]['line'])
-
-        if not is_error_targeted(metadata_file['errors'][0]):
-            continue
-        if len(information['errors']) == 0:
-            continue
-        #if information['errors'][0]['source'] != metadata_file['errors'][0]['source']:
-        #    continue
-
         from_line = max(errored_line_number - 3, 0)
         to_line = min(errored_line_number + 3, len(errored_file_lines) - 1)
         errored_source_code = '\n'.join(errored_file_lines[from_line:to_line])
-
         repair['source_code'] = errored_source_code
 
         tools = []
@@ -348,20 +345,20 @@ def json_report(project_name, tools_to_be_used, report_for_website=False):
             tool_['errors'] = None
             tool_['diff'] = None
 
-            for tool2, result in tools_results.items():
-                if tool2 == tool:
-                    if result is not None and result['checkstyle_results'] is not None:
-                        for file_path2, information2 in result['checkstyle_results'].items():
-                            file_id2 = get_file_id(file_path2)
-                            if file_id2 == file_id:
-                                tool_['errors'] = information2['errors']
-                                tool_path = glob.glob(f'{experiment_dir}/{tool}/{file_id}/*.java')[0]
-                                diff = compute_diff(original_file_path, tool_path)
-                                tool_['diff'] = diff
-                                tool_['diff_size'] = compute_diff_size(original_file_path, tool_path)
-                                if len(information2['errors']) == 0:
-                                    not_repaired_by.remove(tool)
-                                    repaired_by.append(tool)
+            result = tools_results[tool]
+            if result is not None and result['checkstyle_results'] is not None:
+                for fixed_file_path, fixed_information in result['checkstyle_results'].items():
+                    fixed_file_id = get_file_id(fixed_file_path)
+                    if fixed_file_id == file_id:
+                        tool_['errors'] = fixed_information['errors']
+                        tool_path = glob.glob(f'{experiment_dir}/{tool}/{file_id}/*.java')[0]
+                        diff, size = compute_diff(original_file_path, tool_path)
+                        tool_['diff'] = diff
+                        tool_['diff_size'] = size
+                        if len(fixed_information['errors']) == 0:
+                            not_repaired_by.remove(tool)
+                            repaired_by.append(tool)
+                        break
 
             tools.append(tool_)
         repair['results'] = tools
