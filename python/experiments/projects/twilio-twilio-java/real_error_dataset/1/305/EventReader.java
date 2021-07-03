@@ -5,7 +5,7 @@
  *       /       /
  */
 
-package com.twilio.rest.taskrouter.v1.workspace;
+package com.twilio.rest.monitor.v1;
 
 import com.twilio.base.Page;
 import com.twilio.base.Reader;
@@ -22,44 +22,31 @@ import com.twilio.rest.Domains;
 import org.joda.time.DateTime;
 
 public class EventReader extends Reader<Event> {
-    private final String pathWorkspaceSid;
-    private DateTime endDate;
+    private String actorSid;
     private String eventType;
-    private Integer minutes;
-    private String reservationSid;
+    private String resourceSid;
+    private String sourceIpAddress;
     private DateTime startDate;
-    private String taskQueueSid;
-    private String taskSid;
-    private String workerSid;
-    private String workflowSid;
-    private String taskChannel;
-    private String sid;
+    private DateTime endDate;
 
     /**
-     * Construct a new EventReader.
+     * Only include events initiated by this Actor. Useful for auditing actions
+     * taken by specific users or API credentials..
      *
-     * @param pathWorkspaceSid The SID of the Workspace with the Events to read
-     */
-    public EventReader(final String pathWorkspaceSid) {
-        this.pathWorkspaceSid = pathWorkspaceSid;
-    }
-
-    /**
-     * Only include Events that occurred on or before this date, specified in GMT as
-     * an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time..
-     *
-     * @param endDate Only include usage that occurred on or before this date
+     * @param actorSid Only include events initiated by this Actor
      * @return this
      */
-    public EventReader setEndDate(final DateTime endDate) {
-        this.endDate = endDate;
+    public EventReader setActorSid(final String actorSid) {
+        this.actorSid = actorSid;
         return this;
     }
 
     /**
-     * The type of Events to read. Returns only Events of the type specified..
+     * Only include events of this <a
+     * href="https://www.twilio.com/docs/usage/monitor-events#event-types">Event
+     * Type</a>..
      *
-     * @param eventType The type of Events to read
+     * @param eventType Only include events of this Event Type
      * @return this
      */
     public EventReader setEventType(final String eventType) {
@@ -68,34 +55,36 @@ public class EventReader extends Reader<Event> {
     }
 
     /**
-     * The period of events to read in minutes. Returns only Events that occurred
-     * since this many minutes in the past. The default is `15` minutes..
+     * Only include events that refer to this resource. Useful for discovering the
+     * history of a specific resource..
      *
-     * @param minutes The period of events to read in minutes
+     * @param resourceSid Only include events that refer to this resource
      * @return this
      */
-    public EventReader setMinutes(final Integer minutes) {
-        this.minutes = minutes;
+    public EventReader setResourceSid(final String resourceSid) {
+        this.resourceSid = resourceSid;
         return this;
     }
 
     /**
-     * The SID of the Reservation with the Events to read. Returns only Events that
-     * pertain to the specified Reservation..
+     * Only include events that originated from this IP address. Useful for tracking
+     * suspicious activity originating from the API or the Twilio Console..
      *
-     * @param reservationSid The SID of the Reservation with the Events to read
+     * @param sourceIpAddress Only include events that originated from this IP
+     *                        address
      * @return this
      */
-    public EventReader setReservationSid(final String reservationSid) {
-        this.reservationSid = reservationSid;
+    public EventReader setSourceIpAddress(final String sourceIpAddress) {
+        this.sourceIpAddress = sourceIpAddress;
         return this;
     }
 
     /**
-     * Only include Events from on or after this date and time, specified in [ISO
-     * 8601](https://en.wikipedia.org/wiki/ISO_8601) format..
+     * Only include events that occurred on or after this date. Specify the date in
+     * GMT and <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
+     * format..
      *
-     * @param startDate Only include Events from on or after this date
+     * @param startDate Only include events that occurred on or after this date
      * @return this
      */
     public EventReader setStartDate(final DateTime startDate) {
@@ -104,73 +93,15 @@ public class EventReader extends Reader<Event> {
     }
 
     /**
-     * The SID of the TaskQueue with the Events to read. Returns only the Events
-     * that pertain to the specified TaskQueue..
+     * Only include events that occurred on or before this date. Specify the date in
+     * GMT and <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
+     * format..
      *
-     * @param taskQueueSid The SID of the TaskQueue with the Events to read
+     * @param endDate Only include events that occurred on or before this date
      * @return this
      */
-    public EventReader setTaskQueueSid(final String taskQueueSid) {
-        this.taskQueueSid = taskQueueSid;
-        return this;
-    }
-
-    /**
-     * The SID of the Task with the Events to read. Returns only the Events that
-     * pertain to the specified Task..
-     *
-     * @param taskSid The SID of the Task with the Events to read
-     * @return this
-     */
-    public EventReader setTaskSid(final String taskSid) {
-        this.taskSid = taskSid;
-        return this;
-    }
-
-    /**
-     * The SID of the Worker with the Events to read. Returns only the Events that
-     * pertain to the specified Worker..
-     *
-     * @param workerSid The SID of the Worker with the Events to read
-     * @return this
-     */
-    public EventReader setWorkerSid(final String workerSid) {
-        this.workerSid = workerSid;
-        return this;
-    }
-
-    /**
-     * The SID of the Workflow with the Events to read. Returns only the Events that
-     * pertain to the specified Workflow..
-     *
-     * @param workflowSid The SID of the Worker with the Events to read
-     * @return this
-     */
-    public EventReader setWorkflowSid(final String workflowSid) {
-        this.workflowSid = workflowSid;
-        return this;
-    }
-
-    /**
-     * The TaskChannel with the Events to read. Returns only the Events that pertain
-     * to the specified TaskChannel..
-     *
-     * @param taskChannel The TaskChannel with the Events to read
-     * @return this
-     */
-    public EventReader setTaskChannel(final String taskChannel) {
-        this.taskChannel = taskChannel;
-        return this;
-    }
-
-    /**
-     * The SID of the Event resource to read..
-     *
-     * @param sid The unique string that identifies the resource
-     * @return this
-     */
-    public EventReader setSid(final String sid) {
-        this.sid = sid;
+    public EventReader setEndDate(final DateTime endDate) {
+        this.endDate = endDate;
         return this;
     }
 
@@ -196,9 +127,8 @@ public class EventReader extends Reader<Event> {
     public Page<Event> firstPage(final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            Domains.TASKROUTER.toString(),
-            "/v1/Workspaces/" + this.pathWorkspaceSid + "/Events",
-            client.getRegion()
+            Domains.MONITOR.toString(),
+            "/v1/Events"
         );
 
         addQueryParams(request);
@@ -235,10 +165,7 @@ public class EventReader extends Reader<Event> {
                                 final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getNextPageUrl(
-                Domains.TASKROUTER.toString(),
-                client.getRegion()
-            )
+            page.getNextPageUrl(Domains.MONITOR.toString())
         );
         return pageForRequest(client, request);
     }
@@ -255,10 +182,7 @@ public class EventReader extends Reader<Event> {
                                     final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getPreviousPageUrl(
-                Domains.TASKROUTER.toString(),
-                client.getRegion()
-            )
+            page.getPreviousPageUrl(Domains.MONITOR.toString())
         );
         return pageForRequest(client, request);
     }
@@ -275,7 +199,7 @@ public class EventReader extends Reader<Event> {
 
         if (response == null) {
             throw new ApiConnectionException("Event read failed: Unable to connect to server");
-        } else if (!TwilioRestClient.SUCCESS.apply(response.getStatusCode())) {
+        } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             RestException restException = RestException.fromJson(response.getStream(), client.getObjectMapper());
             if (restException == null) {
                 throw new ApiException("Server Error, no content");
@@ -297,48 +221,28 @@ public class EventReader extends Reader<Event> {
      * @param request Request to add query string arguments to
      */
     private void addQueryParams(final Request request) {
-        if (endDate != null) {
-            request.addQueryParam("EndDate", endDate.toString());
+        if (actorSid != null) {
+            request.addQueryParam("ActorSid", actorSid);
         }
 
         if (eventType != null) {
             request.addQueryParam("EventType", eventType);
         }
 
-        if (minutes != null) {
-            request.addQueryParam("Minutes", minutes.toString());
+        if (resourceSid != null) {
+            request.addQueryParam("ResourceSid", resourceSid);
         }
 
-        if (reservationSid != null) {
-            request.addQueryParam("ReservationSid", reservationSid);
+        if (sourceIpAddress != null) {
+            request.addQueryParam("SourceIpAddress", sourceIpAddress);
         }
 
         if (startDate != null) {
             request.addQueryParam("StartDate", startDate.toString());
         }
 
-        if (taskQueueSid != null) {
-            request.addQueryParam("TaskQueueSid", taskQueueSid);
-        }
-
-        if (taskSid != null) {
-            request.addQueryParam("TaskSid", taskSid);
-        }
-
-        if (workerSid != null) {
-            request.addQueryParam("WorkerSid", workerSid);
-        }
-
-        if (workflowSid != null) {
-            request.addQueryParam("WorkflowSid", workflowSid);
-        }
-
-        if (taskChannel != null) {
-            request.addQueryParam("TaskChannel", taskChannel);
-        }
-
-        if (sid != null) {
-            request.addQueryParam("Sid", sid);
+        if (endDate != null) {
+            request.addQueryParam("EndDate", endDate.toString());
         }
 
         if (getPageSize() != null) {

@@ -2,6 +2,7 @@ package dfa.framework;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,12 @@ import java.util.Set;
 import soot.toolkits.graph.Block;
 
 /**
- * @author Sebastian Rauch
- * 
- *         A {@code DFAExecution} precalculates a {@code DataFlowAnalysis} and provides the intermediate analysis-steps.
+ * A {@code DFAExecution} precalculates a {@code DataFlowAnalysis} and provides the intermediate analysis-steps.
  *
  * @param <E>
  *        the type of {@code LatticeElement} used in this {@code DFAExecution}
+ * 
+ * @author Sebastian Rauch
  */
 public class DFAExecution<E extends LatticeElement> {
 
@@ -30,8 +31,8 @@ public class DFAExecution<E extends LatticeElement> {
     private List<AnalysisState<E>> analysisStates = new ArrayList<>();
     private List<Integer> blockSteps = new ArrayList<>();
 
-    private int currentElementaryStep = -1;
-    private int currentBlockStep = -1;
+    private int currentElementaryStep = 0;
+    private int currentBlockStep = 0;
 
     /**
      * Creates a {@code DFAExecution} from a given {@code DFAFactory}, an initial {@code Worklist} and a
@@ -43,6 +44,8 @@ public class DFAExecution<E extends LatticeElement> {
      *        an (empty) worklist to use in this {@code DFAExecution}
      * @param blockGraph
      *        the {@code SimpleBlockGraph} the analysis is based on
+     * @param precalcController
+     *        a {@code DFAPrecalcController} to control the precalculation of this {@code DFAExecution}
      * 
      * @throws IllegalArgumentException
      *         if any of {@code initialWorklist} or {@code blockGraph} is {@code null}
@@ -50,7 +53,8 @@ public class DFAExecution<E extends LatticeElement> {
      * @throws NullPointerException
      *         if {@code dfaFactory} is {@code null}
      */
-    public DFAExecution(DFAFactory<E> dfaFactory, Worklist initialWorklist, SimpleBlockGraph blockGraph) {
+    public DFAExecution(DFAFactory<E> dfaFactory, Worklist initialWorklist, SimpleBlockGraph blockGraph,
+            DFAPrecalcController precalcController) {
         if (initialWorklist == null) {
             throw new IllegalArgumentException("initialWorklist must not be null");
         }
@@ -66,9 +70,7 @@ public class DFAExecution<E extends LatticeElement> {
 
         this.cfg = new ControlFlowGraph(blockGraph);
 
-        // TODO use DFAPrecalcController (changes signature of constructor)
-        DFAPrecalcController dummyCtrl = new DFAPrecalcController();
-        precalc(dummyCtrl);
+        precalc(precalcController);
     }
 
     private DFAExecution(DFAExecution<E> copyFrom) {
@@ -148,7 +150,7 @@ public class DFAExecution<E extends LatticeElement> {
         int idx = Collections.binarySearch(blockSteps, currentElementaryStep);
 
         if (idx < 0) { // currentElementaryStep has not been found
-            idx = -(idx + 1); // this gives the correct index of the corresponding block-step
+            idx = -(idx + 1) - 1; // this gives the correct index of the corresponding block-step
         }
         currentBlockStep = idx;
     }
@@ -250,11 +252,11 @@ public class DFAExecution<E extends LatticeElement> {
         AnalysisState<? extends LatticeElement> currentState = getCurrentAnalysisState();
         BasicBlock bBlock = currentState.getCurrentBasicBlock();
 
-        if (bBlock == null) {
+        int eBlockIdx = currentState.getCurrentElementaryBlockIndex();
+        if (bBlock == null || eBlockIdx < 0 || eBlockIdx >= bBlock.getElementaryBlockCount()) {
             return false;
         }
 
-        int eBlockIdx = currentState.getCurrentElementaryBlockIndex();
         return bBlock.getElementaryBlock(eBlockIdx).hasBreakpoint();
     }
 
@@ -263,7 +265,7 @@ public class DFAExecution<E extends LatticeElement> {
      * 
      * @return the current {@code AnalysisState}
      */
-    public AnalysisState<? extends LatticeElement> getCurrentAnalysisState() {
+    public AnalysisState<E> getCurrentAnalysisState() {
         return analysisStates.get(currentElementaryStep);
     }
 
@@ -361,21 +363,25 @@ public class DFAExecution<E extends LatticeElement> {
                 // join predecessors out-states
                 List<BasicBlock> preds = getPredecessors(newBasicBlock);
                 Set<E> predOutStates = new HashSet<E>();
+
                 for (BasicBlock p : preds) {
-                    predOutStates.add(prevAnalysisState.getBlockState(p).getOutState());
+                    E predOutState = prevAnalysisState.getBlockState(p).getOutState();
+                    predOutStates.add(predOutState);
                 }
+
                 E outStatesJoin = dfa.join(predOutStates);
 
-                BlockState<E> prevBlockState = prevAnalysisState.getBlockState(prevBasicBlock);
+                BlockState<E> prevBlockState = prevAnalysisState.getBlockState(newBasicBlock);
                 BlockState<E> newBlockState = new BlockState<E>(outStatesJoin, prevBlockState.getOutState());
                 newAnalysisState.setBlockState(newBasicBlock, newBlockState);
 
                 updateColors(prevAnalysisState, newAnalysisState, visitedBasicBlocks);
 
                 analysisStates.add(newAnalysisState);
-                
+
                 // this begins a new block step
                 blockSteps.add(elementaryStep++);
+                prevAnalysisState = newAnalysisState;
                 continue;
             }
 
@@ -405,20 +411,19 @@ public class DFAExecution<E extends LatticeElement> {
                 }
 
                 if (nextElementaryBlock == null) {
-                    E basicBlockInState = prevAnalysisState.getBlockState(prevBasicBlock).getInState();
                     newAnalysisState =
-                            finishBasicBlock(prevBasicBlock, basicBlockInState, prevAnalysisState, visitedBasicBlocks);
+                            finishBasicBlock(prevBasicBlock, prevOutState, prevAnalysisState, visitedBasicBlocks);
                 } else {
                     E nextOutState = dfa.transition(prevOutState, nextElementaryBlock.getUnit());
                     BlockState<E> nextBlockState = new BlockState<E>(prevOutState, nextOutState);
                     newAnalysisState = newState(prevAnalysisState, prevWorklist.clone(), prevBasicBlock, ++eBlockIdx);
-                    newAnalysisState.setBlockState(prevBasicBlock, nextBlockState);
+                    newAnalysisState.setBlockState(nextElementaryBlock, nextBlockState);
                 }
-                
-                analysisStates.add(newAnalysisState);
-                prevAnalysisState = newAnalysisState;
-                ++elementaryStep;
             }
+
+            analysisStates.add(newAnalysisState);
+            prevAnalysisState = newAnalysisState;
+            ++elementaryStep;
         }
     }
 
@@ -457,7 +462,11 @@ public class DFAExecution<E extends LatticeElement> {
 
     private AnalysisState<E> newState(AnalysisState<E> state, Worklist newWorklist, BasicBlock currentBBlock,
             int eBlockIdx) {
-        AnalysisState<E> newState = new AnalysisState<E>(newWorklist, currentBBlock, eBlockIdx);
+        Map<AbstractBlock, BlockState<E>> stateMap = new HashMap<AbstractBlock, BlockState<E>>(state.getStateMap());
+        Map<BasicBlock, LogicalColor> colorMap = new HashMap<BasicBlock, LogicalColor>(state.getColorMap());
+
+        AnalysisState<E> newState = new AnalysisState<E>(newWorklist, currentBBlock, eBlockIdx, stateMap, colorMap);
+        newState.setCurrentElementaryBlockIndex(eBlockIdx);
         return newState;
     }
 
@@ -491,8 +500,11 @@ public class DFAExecution<E extends LatticeElement> {
         BlockState<E> prevBlockState = prevAnalysisState.getBlockState(currentBBlock);
 
         List<BasicBlock> successors = getSuccessors(currentBBlock);
-        if (!outState.equals(prevBlockState.getOutState())) {
-            for (BasicBlock bSucc : successors) {
+        E prevOutState = prevBlockState.getOutState();
+
+        boolean outStateChanged = !outState.equals(prevOutState);
+        for (BasicBlock bSucc : successors) {
+            if (outStateChanged || !visited.contains(bSucc)) {
                 newWorklist.add(bSucc);
             }
         }

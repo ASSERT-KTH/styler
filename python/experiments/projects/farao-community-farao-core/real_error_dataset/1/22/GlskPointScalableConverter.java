@@ -64,7 +64,7 @@ public final class GlskPointScalableConverter {
                     throw new FaraoException("In convert glskShiftKey business type not supported");
                 }
             }
-            return Scalable.proportional(percentages, scalables, true);
+            return Scalable.proportional(percentages, scalables);
         } else {
             //B45 merit order
             return convertMeritOrder(network, glskPoint, typeGlskFile);
@@ -120,25 +120,23 @@ public final class GlskPointScalableConverter {
 
         if (glskShiftKey.getPsrType().equals("A04")) {
             LOGGER.debug("GLSK Type B42, empty registered resources list --> country (proportional) GSK");
-            List<Generator> generators = network.getGeneratorStream()
-                    .filter(generator -> country.equals(generator.getTerminal().getVoltageLevel().getSubstation().getNullableCountry()))
-                    .filter(NetworkUtil::isCorrectGenerator)
-                    .collect(Collectors.toList());
             //calculate sum P of country's generators
-            double totalCountryP = generators.stream().mapToDouble(NetworkUtil::pseudoTargetP).sum();
+            double totalCountryP = network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .mapToDouble(Generator::getTargetP).sum();
             //calculate factor of each generator
-            generators.forEach(generator -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) NetworkUtil.pseudoTargetP(generator) / (float) totalCountryP));
-            generators.forEach(generator -> scalables.add(Scalable.onGenerator(generator.getId())));
+            network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .forEach(generator -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));
+            network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .forEach(generator -> scalables.add(Scalable.onGenerator(generator.getId())));
         } else if (glskShiftKey.getPsrType().equals("A05")) {
             LOGGER.debug("GLSK Type B42, empty registered resources list --> country (proportional) LSK");
-            List<Load> loads = network.getLoadStream()
-                    .filter(load -> country.equals(load.getTerminal().getVoltageLevel().getSubstation().getNullableCountry()))
-                    .filter(NetworkUtil::isCorrectLoad)
-                    .collect(Collectors.toList());
             //calculate sum P of country's loads
-            double totalCountryP = loads.stream().mapToDouble(NetworkUtil::pseudoP0).sum();
-            loads.forEach(load -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) NetworkUtil.pseudoP0(load) / (float) totalCountryP));
-            loads.forEach(load -> scalables.add(Scalable.onLoad(load.getId(), -Double.MAX_VALUE, Double.MAX_VALUE)));
+            double totalCountryP = network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .mapToDouble(Load::getP0).sum();
+            network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .forEach(load -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalCountryP));
+            network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))
+                    .forEach(load -> scalables.add(Scalable.onLoad(load.getId())));
         }
     }
 
@@ -148,36 +146,25 @@ public final class GlskPointScalableConverter {
      * @param glskShiftKey shift key
      * @param percentages list of percentage factor of scalable
      * @param scalables list of scalable
-     * @param typeGlskFile type of GLSK file (UCTE / CGMES) for ID generation strategy
      */
     private static void convertExplicitProportional(Network network, GlskShiftKey glskShiftKey, List<Float> percentages, List<Scalable> scalables, TypeGlskFile typeGlskFile) {
         if (glskShiftKey.getPsrType().equals("A04")) {
             LOGGER.debug("GLSK Type B42, not empty registered resources list --> (explicit/manual) proportional GSK");
-
-            List<Generator> generators = glskShiftKey.getRegisteredResourceArrayList().stream()
-                    .map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile))
-                    .filter(generatorId -> network.getGenerator(generatorId) != null)
-                    .map(network::getGenerator)
-                    .filter(NetworkUtil::isCorrectGenerator)
-                    .collect(Collectors.toList());
-
-            double totalP = generators.stream().mapToDouble(NetworkUtil::pseudoTargetP).sum();
-
+            List<String> genenratorsList = glskShiftKey.getRegisteredResourceArrayList().stream().map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile)).collect(Collectors.toList());
+            double totalP = network.getGeneratorStream().filter(generator -> genenratorsList.contains(generator.getId())).mapToDouble(Generator::getTargetP).sum();
             //calculate factor of each generator
-            generators.forEach(generator -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) NetworkUtil.pseudoTargetP(generator) / (float) totalP));
-            generators.forEach(generator -> scalables.add(Scalable.onGenerator(generator.getId())));
+            network.getGeneratorStream().filter(generator -> genenratorsList.contains(generator.getId()))
+                    .forEach(generator -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalP));
+            network.getGeneratorStream().filter(generator -> genenratorsList.contains(generator.getId()))
+                    .forEach(generator -> scalables.add(Scalable.onGenerator(generator.getId())));
         } else if (glskShiftKey.getPsrType().equals("A05")) {
             LOGGER.debug("GLSK Type B42, not empty registered resources list --> (explicit/manual) proportional LSK");
-            List<Load> loads = glskShiftKey.getRegisteredResourceArrayList().stream()
-                    .map(loadResource -> loadResource.getLoadId(typeGlskFile))
-                    .filter(loadId -> network.getLoad(loadId) != null)
-                    .map(network::getLoad)
-                    .filter(NetworkUtil::isCorrectLoad)
-                    .collect(Collectors.toList());
-
-            double totalP = loads.stream().mapToDouble(NetworkUtil::pseudoP0).sum();
-            loads.forEach(load -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) NetworkUtil.pseudoP0(load) / (float) totalP));
-            loads.forEach(load -> scalables.add(Scalable.onLoad(load.getId(), -Double.MAX_VALUE, Double.MAX_VALUE)));
+            List<String> loadsList = glskShiftKey.getRegisteredResourceArrayList().stream().map(loadResource -> loadResource.getLoadId(typeGlskFile)).collect(Collectors.toList());
+            double totalP = network.getLoadStream().filter(load -> loadsList.contains(load.getId())).mapToDouble(Load::getP0).sum();
+            network.getLoadStream().filter(load -> loadsList.contains(load.getId()))
+                    .forEach(load -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalP));
+            network.getLoadStream().filter(load -> loadsList.contains(load.getId()))
+                    .forEach(load -> scalables.add(Scalable.onLoad(load.getId())));
         }
     }
 
@@ -187,32 +174,30 @@ public final class GlskPointScalableConverter {
      * @param glskShiftKey shift key
      * @param percentages list of percentage factor of scalable
      * @param scalables list of scalable
-     * @param typeGlskFile type of GLSK file (UCTE / CGMES) for ID generation strategy
      */
     private static void convertParticipationFactor(Network network, GlskShiftKey glskShiftKey, List<Float> percentages, List<Scalable> scalables, TypeGlskFile typeGlskFile) {
+        List<GlskRegisteredResource> resourceList = glskShiftKey.getRegisteredResourceArrayList();
+
         if (glskShiftKey.getPsrType().equals("A04")) {
             LOGGER.debug("GLSK Type B43 GSK");
-
-            List<GlskRegisteredResource> generatorResources = glskShiftKey.getRegisteredResourceArrayList().stream()
+            double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()
                     .filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)
-                    .filter(generatorResource -> NetworkUtil.isCorrectGenerator(network.getGenerator(generatorResource.getGeneratorId(typeGlskFile))))
-                    .collect(Collectors.toList());
+                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();
 
-            double totalFactor = generatorResources.stream().mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();
-
-            generatorResources.forEach(generatorResource -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));
-            generatorResources.forEach(generatorResource -> scalables.add(Scalable.onGenerator(generatorResource.getGeneratorId(typeGlskFile))));
+            resourceList.stream().filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)
+                    .forEach(generatorResource -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));
+            resourceList.stream().filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)
+                    .forEach(generatorResource -> scalables.add(Scalable.onGenerator(generatorResource.getGeneratorId(typeGlskFile))));
         } else if (glskShiftKey.getPsrType().equals("A05")) {
             LOGGER.debug("GLSK Type B43 LSK");
-            List<GlskRegisteredResource> loadResources = glskShiftKey.getRegisteredResourceArrayList().stream()
+            double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()
                     .filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)
-                    .filter(loadResource -> NetworkUtil.isCorrectLoad(network.getLoad(loadResource.getLoadId(typeGlskFile))))
-                    .collect(Collectors.toList());
+                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();
 
-            double totalFactor = loadResources.stream().mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();
-
-            loadResources.forEach(loadResource -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));
-            loadResources.forEach(loadResource -> scalables.add(Scalable.onLoad(loadResource.getLoadId(typeGlskFile), -Double.MAX_VALUE, Double.MAX_VALUE)));
+            resourceList.stream().filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)
+                    .forEach(loadResource -> percentages.add(100 * glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));
+            resourceList.stream().filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)
+                    .forEach(loadResource -> scalables.add(Scalable.onLoad(loadResource.getLoadId(typeGlskFile))));
         }
     }
 }

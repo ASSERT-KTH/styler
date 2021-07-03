@@ -1,9 +1,6 @@
 package com.artemis;
 
 import com.artemis.utils.Bag;
-import com.artemis.utils.ImmutableBag;
-
-import com.artemis.utils.BitVector;
 
 /** Delegate for system invocation.
  *
@@ -21,19 +18,10 @@ public abstract class SystemInvocationStrategy {
 
 	/** World to operate on. */
 	protected World world;
-	protected final BitVector disabled = new BitVector();
-	protected Bag<BaseSystem> systems;
 
 	/** World to operate on. */
 	protected final void setWorld(World world) {
 		this.world = world;
-	}
-
-	/**
-	 * Called prior to {@link #initialize()}
-	 */
-	protected void setSystems(Bag<BaseSystem> systems) {
-		this.systems = systems;
 	}
 
 	/** Called during world initialization phase. */
@@ -44,35 +32,6 @@ public abstract class SystemInvocationStrategy {
 		world.batchProcessor.update();
 	}
 
-	/**
-	 * Process all systems.
-	 *
-	 * @deprecated superseded by {@link #process()}
-	 */
-	@Deprecated
-	protected final void process(Bag<BaseSystem> systems) {
-		throw new RuntimeException("wrong process method");
-	}
-
-	protected abstract void process();
-
-	public boolean isEnabled(BaseSystem system) {
-		Class<? extends BaseSystem> target = system.getClass();
-		ImmutableBag<BaseSystem> systems = world.getSystems();
-		for (int i = 0; i < systems.size(); i++) {
-			if (target == systems.get(i).getClass())
-				return !disabled.get(i);
-		}
-
-		throw new RuntimeException("huh?");
-	}
-
-	public void setEnabled(BaseSystem system, boolean value) {
-		Class<? extends BaseSystem> target = system.getClass();
-		ImmutableBag<BaseSystem> systems = world.getSystems();
-		for (int i = 0; i < systems.size(); i++) {
-			if (target == systems.get(i).getClass())
-				disabled.set(i, !value);
-		}
-	}
+	/** Process all systems. */
+	protected abstract void process(Bag<BaseSystem> systems);
 }

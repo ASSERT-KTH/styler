@@ -1,5 +1,5 @@
 /*
-QName * Copyright (c) 2009-2010 TIBCO Software Inc.
+ * Copyright (c) 2009-2010 TIBCO Software Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ QName * Copyright (c) 2009-2010 TIBCO Software Inc.
 package org.genxdm.processor.w3c.xs.impl;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -26,13 +25,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.genxdm.bridgekit.atoms.XmlAtom;
-import org.genxdm.bridgekit.misc.Pair;
 import org.genxdm.bridgekit.xs.ComponentBagImpl;
 import org.genxdm.bridgekit.xs.ForeignAttributesSink;
 import org.genxdm.bridgekit.xs.complex.AttributeDeclTypeImpl;
@@ -160,7 +157,7 @@ import org.genxdm.xs.types.UnionSimpleType;
  */
 public final class XMLSchemaConverter
 {
-    private XMLSchemaConverter(final SchemaRegExCompiler regexc, final ComponentProvider outCache, final XMLSchemaCache inCache, final ComponentBagImpl schema, final XMLComponentLocator locations, final SchemaExceptionHandler errors, final boolean lastInWins)
+    private XMLSchemaConverter(final SchemaRegExCompiler regexc, final ComponentProvider outCache, final XMLSchemaCache inCache, final ComponentBagImpl schema, final XMLComponentLocator locations, final SchemaExceptionHandler errors)
     {
         this.regexc = regexc;
         this.m_existingCache = outCache;
@@ -170,7 +167,6 @@ public final class XMLSchemaConverter
         this.m_locations = locations;
         this.m_errors = errors;
         this.m_cycles = new XMLCycles();
-        this.m_lastInWins = lastInWins;
     }
 
     private SchemaWildcard attributeWildcard(final Type baseType)
@@ -310,8 +306,10 @@ public final class XMLSchemaConverter
     /**
      * Expand temporary variables used to hold syntactic constructs for attribute uses and wildcards.
      */
-    private Map<QName, AttributeUse> computeAttributeUses(final XMLType complexType, final Map<QName, AttributeUse> attributeUses) throws AbortException, SchemaException
+    private Map<QName, AttributeUse> computeAttributeUses(final XMLType complexType) throws AbortException, SchemaException
     {
+        final HashMap<QName, AttributeUse> attributeUses = new HashMap<QName, AttributeUse>();
+
         for (final XMLAttributeUse attributeUse : complexType.getAttributeUses())
         {
             final QName attributeName = attributeUse.getDeclaration().getName();
@@ -571,25 +569,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getAttribute(name);
             }
-            if(m_existingCache.hasAttribute(name))
+            if (m_existingCache.hasAttribute(name))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_attributesUnresolved.remove(name);
-                    return m_existingCache.getAttributeDeclaration(name);
-            	}
-            	else if(m_inCache.m_attributesUnresolved.containsKey(name) || m_attributesResolvedFromExistingCache.containsKey(name))
-            	{
-            		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-            		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-            		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-            		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                    m_inCache.m_attributesUnresolved.remove(name);
-            		AttributeDefinition existing = m_existingCache.getAttributeDeclaration(name);
-            		m_attributesResolvedFromExistingCache.put(name, existing);
-                    return existing;
-            	}
+                m_inCache.m_attributesUnresolved.remove(name);
+                return m_existingCache.getAttributeDeclaration(name);
             }
             if (m_cycles.attributes.contains(xmlAttribute))
             {
@@ -651,25 +634,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getAttributeGroup(agName);
             }
-            if(m_existingCache.hasAttributeGroup(agName))
+            if (m_existingCache.hasAttributeGroup(agName))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_attributeGroupsUnresolved.remove(agName);
-                    return m_existingCache.getAttributeGroup(agName);
-            	}
-            	else if(m_inCache.m_attributeGroupsUnresolved.containsKey(agName) || m_attributeGroupsResolvedFromExistingCache.containsKey(agName))
-            	{
-            		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-            		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-            		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-            		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                    m_inCache.m_attributeGroupsUnresolved.remove(agName);
-            		AttributeGroupDefinition existing = m_existingCache.getAttributeGroup(agName);
-            		m_attributeGroupsResolvedFromExistingCache.put(agName, existing);
-                    return existing;
-            	}
+                m_inCache.m_attributeGroupsUnresolved.remove(agName);
+                return m_existingCache.getAttributeGroup(agName);
             }
             if (m_cycles.attributeGroups.contains(xmlAttributeGroup))
             {
@@ -734,7 +702,7 @@ public final class XMLSchemaConverter
             try
             {
                 QName name = source.getName();
-                if(!m_lastInWins && m_existingCache.getAttributeGroup(name) != null)
+                if(m_existingCache.getAttributeGroup(name) != null)
                 {
                     m_inCache.m_attributeGroupsUnresolved.remove(name);
                 }
@@ -754,8 +722,7 @@ public final class XMLSchemaConverter
             try
             {
                 QName name = source.getName();
-                
-                if(!m_lastInWins && m_existingCache.hasAttribute(name))
+                if(m_existingCache.getAttributeDeclaration(name) != null)
                 {
                     m_inCache.m_attributesUnresolved.remove(name);
                 }
@@ -808,25 +775,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getComplexType(outName);
             }
-            if(m_existingCache.hasComplexType(outName))
+            if (m_existingCache.hasComplexType(outName))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_typesUnresolved.remove(outName);
-                    return m_existingCache.getComplexType(outName);
-            	}
-            	else if(m_inCache.m_typesUnresolved.containsKey(outName) || m_typesResolvedFromExistingCache.containsKey(outName))
-            	{
-            		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-            		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-            		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-            		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                    m_inCache.m_typesUnresolved.remove(outName);
-            		ComplexType existing = m_existingCache.getComplexType(outName);
-            		m_typesResolvedFromExistingCache.put(outName, existing);
-                    return existing;
-            	}
+                m_inCache.m_typesUnresolved.remove(outName);
+                return m_existingCache.getComplexType(outName);
             }
             if (m_cycles.types.contains(xmlComplexType))
             {
@@ -834,25 +786,27 @@ public final class XMLSchemaConverter
             }
 
             m_cycles.types.push(xmlComplexType);
-            m_complexTypeNameCycles.push(xmlComplexType.getName());
         }
         try
         {
 
-            final Map<QName, AttributeUse> attributeUses = new HashMap<QName,AttributeUse>();
+            final Map<QName, AttributeUse> attributeUses = computeAttributeUses(xmlComplexType);
+            final Type baseType = convertType(xmlComplexType.getBaseRef());
 
             // Constructing and registering the complex type allows it to be
             // referenced in the {content type} property.
             final ComplexTypeImpl complexType;
-            complexType = new ComplexTypeImpl(outName, false, isAnonymous, scope, null, xmlComplexType.getDerivationMethod(), attributeUses, EMPTY_CONTENT, xmlComplexType.getBlock(), m_existingCache.getAtomicType(NativeType.UNTYPED_ATOMIC));
-            
+            if (null != attributeUses)
+            {
+                complexType = new ComplexTypeImpl(outName, false, isAnonymous, scope, baseType, xmlComplexType.getDerivationMethod(), attributeUses, EMPTY_CONTENT, xmlComplexType.getBlock(), m_existingCache.getAtomicType(NativeType.UNTYPED_ATOMIC));
+            }
+            else
+            {
+                complexType = new ComplexTypeImpl(outName, false, isAnonymous, scope, baseType, xmlComplexType.getDerivationMethod(), null, EMPTY_CONTENT, xmlComplexType.getBlock(), m_existingCache.getAtomicType(NativeType.UNTYPED_ATOMIC));
+            }
             m_outBag.add(complexType);
             m_locations.m_complexTypeLocations.put(complexType, xmlComplexType.getLocation());
-            
-            final Type baseType = convertType(xmlComplexType.getBaseRef());
-            complexType.setBaseType(baseType);
-            
-            computeAttributeUses(xmlComplexType, attributeUses);
+
             complexType.setContentType(convertContentType(xmlComplexType));
 
             complexType.setAbstract(xmlComplexType.isAbstract());
@@ -882,65 +836,8 @@ public final class XMLSchemaConverter
             if (scope == ScopeExtent.Global)
             {
                 m_cycles.types.pop();
-                final QName name = m_complexTypeNameCycles.pop();
-
-                // If we have any late resolutions to do, make sure we're back at the point of the
-                // stack where the late resolutions needs to begin; that ensures that the necessary base 
-                // type(s) have been resolved.  (See GXML-45 for relevant use cases.)
-                if(!m_lateTypeResolutionNameList.isEmpty() &&  name.equals(m_lateTypeResolutionNameList.get(0)))
-                {
-                	while(!m_lateTypeResolutionNameList.isEmpty())
-                	{
-                		lateResolveType(m_lateTypeResolutionNameList.get(0));
-                	}
-                	if(!m_lateTypeResolutionMap.isEmpty())
-                	{
-                		throw new IllegalStateException("Late type resolution map should be empty, but it is not.");
-                	}
-                	// Element type resolution was delayed for all types whose resolution was delayed.
-                	// Those types have been resolved, so now we can resolve the elements.
-                	ArrayList<LateResolveElement> list = m_lateElementResolutionMap.get(name);
-                	if(list != null && !list.isEmpty())
-                	{
-                    	for(LateResolveElement lre : list) {
-                    		convertElementTypeRef(lre.mi_xmlElement, lre.mi_elementDecl, lre.mi_subHead);
-                    	}
-                	}
-                }
             }
         }
-    }
-    /**
-     * Retrieves a list of the names of complex types needing late resolution; then, retrieves the 
-     * corresponding ComplexType object & builds it content model.
-     * 
-     * (See GXML-45 for use case.)
-     *    
-     * @param typeName name of the now-resolved type which has dependent types which were awaiting its
-     * resolution
-     * @throws SchemaException 
-     * @throws AbortException 
-     * @throws SmAbortException
-     * @throws SmException
-     */
-    private void lateResolveType(final QName typeName) throws AbortException, SchemaException
-    {
-    	// Get the list of type names which were depending on the incoming type name's resolution.
-    	final List<XMLType> list = m_lateTypeResolutionMap.get(typeName);
-    	m_lateTypeResolutionMap.remove(typeName);
-    	m_lateTypeResolutionNameList.remove(typeName);
-    	if(list != null)
-    	{
-    		// Iterate of the list of XMLType objects
-    		for(final XMLType xmlType : list)
-    		{
-    			final QName lateResolveTypeName = xmlType.getName();
-//System.out.println("   late resolution: " + lateResolveTypeName + " because of " + typeName);
-    			final ComplexTypeImpl complexType = (ComplexTypeImpl)m_outBag.getComplexType(lateResolveTypeName);
-    			complexType.setContentType(convertContentType(xmlType));
-    			lateResolveType(lateResolveTypeName);
-    		}
-    	}
     }
 
     private ContentType convertContentType(final XMLType xmlComplexType) throws AbortException, SchemaException
@@ -978,30 +875,6 @@ public final class XMLSchemaConverter
             }
             else if (derivation.isExtension())
             {
-            	// Is the typeRef resolved, yet?  If not, postpone resolution of this type's content.				
-            	final QName typeRefName =  xmlComplexType.getBaseRef().getName();
-            	if(m_complexTypeNameCycles.contains(typeRefName) || m_lateTypeResolutionMap.containsKey(typeRefName))
-            	{
-            		//System.out.println("      cycle detected for " + xmlComplexType.getName().getC14NForm());
-            		ArrayList<XMLType> list = m_lateTypeResolutionMap.get(typeRefName);
-            		if(list == null)
-            		{
-            			list = new ArrayList<XMLType>();
-            			m_lateTypeResolutionMap.put(typeRefName, list);
-//System.out.println("Add "+typeRefName+" to lateTypeResolutionNameList");
-            			m_lateTypeResolutionNameList.add(typeRefName);
-            		}
-            		list.add(xmlComplexType);
-            		// Also, add the type to be late resolved as key to late resolution map.  Any components
-            		// depending on its content model must also wait for resolution.
-            		if(false == m_lateTypeResolutionMap.containsKey(xmlComplexType.getName()))
-            		{
-            			m_lateTypeResolutionMap.put(xmlComplexType.getName(), null);
-//System.out.println("Add "+xmlComplexType.getName()+" to lateTypeResolutionNameList");
-            			m_lateTypeResolutionNameList.add(xmlComplexType.getName());
-            		}
-            		return EMPTY_CONTENT; // actual content to be determined later
-            	}
                 final Type typeB = convertType(xmlComplexType.getBaseRef());
                 if (typeB instanceof ComplexType)
                 {
@@ -1142,25 +1015,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getElement(name);
             }
-            if(m_existingCache.hasElement(name))
+            if (m_existingCache.hasElement(name))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_elementsUnresolved.remove(name);
-                    return m_existingCache.getElementDeclaration(name);
-            	}
-            	else if(m_inCache.m_elementsUnresolved.containsKey(name) || m_elementsResolvedFromExistingCache.containsKey(name))
-            	{
-            		// This element is a reference which refers to an imported element; otherwise, its name would not be 
-            		// in the m_inCache.m_elementsUnresolved.  When XMLSchemaCache.registerELement is called, it removes name from m_elementsUnresolved,
-            		// and registerElement is called when XMLSchemaParser encounters a global element, the only elements that can be referenced.
-            		// So, we're going to remove its name from the list and NOT convert it -- it's just a reference
-                    m_inCache.m_elementsUnresolved.remove(name);
-            		ElementDefinition existing = m_existingCache.getElementDeclaration(name);
-            		m_elementsResolvedFromExistingCache.put(name, existing);
-                    return existing;
-            	}
+                m_inCache.m_elementsUnresolved.remove(name);
+                return m_existingCache.getElementDeclaration(name);
             }
             if (m_cycles.elements.contains(xmlElement))
             {
@@ -1172,7 +1030,6 @@ public final class XMLSchemaConverter
             }
         }
         final ElementDeclTypeImpl element;
-        ElementDeclTypeImpl substitutionGroupHead = null;            
         try
         {
             PreCondition.assertArgumentNotNull(xmlElement.typeRef, "{type definition} of " + name);
@@ -1189,7 +1046,7 @@ public final class XMLSchemaConverter
             if (null != xmlElement.substitutionGroup)
             {
                 // TODO: Would be nice to avoid this downcast. Maybe by using name for group head?
-                substitutionGroupHead = (ElementDeclTypeImpl)convertElement(xmlElement.substitutionGroup);
+                final ElementDeclTypeImpl substitutionGroupHead = (ElementDeclTypeImpl)convertElement(xmlElement.substitutionGroup);
                 element.setSubstitutionGroup(substitutionGroupHead);
                 substitutionGroupHead.addSubstitutionGroupMember(element);
             }
@@ -1214,70 +1071,15 @@ public final class XMLSchemaConverter
         }
         m_locations.m_elementLocations.put(element, xmlElement.getLocation());
 
-		// {type definition}
-		convertElementTypeRef(xmlElement, element, substitutionGroupHead);
+        // {type definition}
+        element.setType(convertType(xmlElement.typeRef));
 
-		// {nillable}
-		element.setNillable(xmlElement.isNillable());
+        // {nillable}
+        element.setNillable(xmlElement.isNillable());
 
-		// {disallowed substitutions}
-		for (final DerivationMethod derivation : xmlElement.getBlock())
-		{
-			element.setBlock(derivation, true);
-		}
-
-		// {substitution group exclusions}
-		for (final DerivationMethod derivation : xmlElement.getFinal())
-		{
-			element.setFinal(derivation, true);
-		}
-
-		// {abstract}
-		element.setAbstract(xmlElement.isAbstract());
-
-		// {annotation} we don't care about.
-
-		// foreign attributes
-		copyForeignAttributes(xmlElement.foreignAttributes, element);
-		// We're done!
-		return element;
-    }
-    private void convertElementTypeRef(final XMLElement xmlElement, final ElementDeclTypeImpl element, ElementDeclTypeImpl substitutionGroupHead) throws AbortException, SchemaException
-    {
-    	// {type definition}
-    	// Is the typeRef resolved, yet?  If not, postpone resolution of this type's content.				
-    	if(xmlElement.typeRef.isGlobal())
-    	{
-    		final QName typeRefName = xmlElement.typeRef.getName();
-    		if(m_complexTypeNameCycles.contains(typeRefName))
-    		{
-    			//System.out.println("      cycle detected for element type ref " + xmlElement.getName().getC14NForm());
-    			ArrayList<LateResolveElement> list = m_lateElementResolutionMap.get(typeRefName);
-    			if(list == null) {
-    				list = new ArrayList<LateResolveElement>();
-    				m_lateElementResolutionMap.put(typeRefName, list);
-    			}
-    			list.add(new LateResolveElement(xmlElement, element, substitutionGroupHead));
-    			return;
-    		}
-    		else
-    		{
-    			//System.out.println("      NO cycle detected for element type ref " + xmlElement.getName().getC14NForm());
-    		}
-    	}
-
-    	Type typeFromTypeRef = convertType(xmlElement.typeRef);
-    	// If the typeFromTypeRef is complexUrType, then it was not set, probably because
-    	// the element did not have a type attribute.  So, use the type from the substitutionGroup
-    	// head, if possible.
-    	if(substitutionGroupHead != null && typeFromTypeRef.isComplexUrType()) {
-    		typeFromTypeRef = substitutionGroupHead.getType();
-    	}
-    	element.setType(typeFromTypeRef);
-
-    	// {value constraint}
-    	if (null != xmlElement.m_valueConstraint)
-    	{
+        // {value constraint}
+        if (null != xmlElement.m_valueConstraint)
+        {
             if (element.getType() instanceof SimpleType)
             {
                 final SimpleType elementType = (SimpleType)element.getType();
@@ -1317,8 +1119,30 @@ public final class XMLSchemaConverter
             {
                 throw new AssertionError(element.getType());
             }
-		}
-	}
+        }
+
+        // {disallowed substitutions}
+        for (final DerivationMethod derivation : xmlElement.getBlock())
+        {
+            element.setBlock(derivation, true);
+        }
+
+        // {substitution group exclusions}
+        for (final DerivationMethod derivation : xmlElement.getFinal())
+        {
+            element.setFinal(derivation, true);
+        }
+
+        // {abstract}
+        element.setAbstract(xmlElement.isAbstract());
+
+        // {annotation} we don't care about.
+
+        // foreign attributes
+        copyForeignAttributes(xmlElement.foreignAttributes, element);
+        // We're done!
+        return element;
+    }
 
     private void convertElements() throws AbortException
     {
@@ -1327,7 +1151,7 @@ public final class XMLSchemaConverter
             try
             {
                 QName name = source.getName();
-                if(!m_lastInWins && m_existingCache.getElementDeclaration(name) != null)
+                if(m_existingCache.getElementDeclaration(name) != null)
                 {
                     m_inCache.m_elementsUnresolved.remove(name);
                 }
@@ -1338,20 +1162,6 @@ public final class XMLSchemaConverter
                 m_errors.error(e);
             }
         }
-        // Ensure that all elements have their type refs resolved.
-        // Element type resolution was delayed for all types whose resolution was delayed.
-        // Those types have been resolved, so now we can resolve the elements.
-        for(QName typeName : m_lateElementResolutionMap.keySet()) {
-        	ArrayList<LateResolveElement> list = m_lateElementResolutionMap.get(typeName);
-        	for(LateResolveElement lre : list) {
-                try {
-                	convertElementTypeRef(lre.mi_xmlElement, lre.mi_elementDecl, lre.mi_subHead);
-                } catch (SchemaException e) {
-                	m_errors.error(e);
-                }
-        	}
-        }
-        m_lateElementResolutionMap.clear();
     }
 
     private SchemaParticle convertElementUse(final XMLParticleWithElementTerm particle) throws SchemaException, AbortException
@@ -1413,25 +1223,10 @@ public final class XMLSchemaConverter
         {
             return m_outBag.getIdentityConstraint(name);
         }
-        if(m_existingCache.hasIdentityConstraint(name))
+        if (m_existingCache.hasIdentityConstraint(name))
         {
-        	if(!m_lastInWins)
-        	{
-        		// We are not allowing this schema parse to create new elements.  
-                m_inCache.m_constraintsUnresolved.remove(name);
-                return m_existingCache.getIdentityConstraint(name);
-        	}
-        	else if(m_inCache.m_constraintsUnresolved.containsKey(name) || m_constraintsResolvedFromExistingCache.containsKey(name))
-        	{
-        		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-        		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-        		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-        		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                m_inCache.m_constraintsUnresolved.remove(name);
-        		IdentityConstraint existing = m_existingCache.getIdentityConstraint(name);
-        		m_constraintsResolvedFromExistingCache.put(name, existing);
-                return existing;
-        	}
+            m_inCache.m_constraintsUnresolved.remove(name);
+            return m_existingCache.getIdentityConstraint(name);
         }
         if (m_cycles.constraints.contains(xmlConstraint))
         {
@@ -1469,7 +1264,7 @@ public final class XMLSchemaConverter
             try
             {
                 QName name = source.getName();
-                if(!m_lastInWins && m_existingCache.getIdentityConstraint(name) != null)
+                if(m_existingCache.getIdentityConstraint(name) != null)
                 {
                     m_inCache.m_constraintsUnresolved.remove(name);
                 }
@@ -1529,7 +1324,6 @@ public final class XMLSchemaConverter
         final ScopeExtent scope = convertScope(xmlModelGroup.getScope());
         final QName name;
         final boolean isAnonymous;
-        
         if (scope == ScopeExtent.Global)
         {
             name = xmlModelGroup.getName();
@@ -1538,25 +1332,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getModelGroup(name);
             }
-            if(m_existingCache.hasModelGroup(name))
+            if (m_existingCache.hasModelGroup(name))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_modelGroupsUnresolved.remove(name);
-                    return m_existingCache.getModelGroup(name);
-            	}
-            	else if(m_inCache.m_modelGroupsUnresolved.containsKey(name) || m_modelGroupsResolvedFromExistingCache.containsKey(name))
-            	{
-            		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-            		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-            		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-            		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                    m_inCache.m_modelGroupsUnresolved.remove(name);
-            		ModelGroup existing = m_existingCache.getModelGroup(name);
-            		m_modelGroupsResolvedFromExistingCache.put(name, existing);
-                    return existing;
-            	}
+                m_inCache.m_modelGroupsUnresolved.remove(name);
+                return m_existingCache.getModelGroup(name);
             }
             if (m_cycles.groups.contains(xmlModelGroup))
             {
@@ -1572,21 +1351,11 @@ public final class XMLSchemaConverter
             name = null;
             isAnonymous = true;
         }
-        // Create the model group and add it to m_outBag <em>prior</em> to processing the particles.  This way,
-        // we can exclude the contents of element particles from our modelGroup cycle check.
-        final ModelGroup.SmCompositor compositor = xmlModelGroup.getCompositor();
-        final LinkedList<SchemaParticle> particles = new LinkedList<SchemaParticle>();
-        ModelGroup modelGroup = new ModelGroupImpl(compositor, particles, name, isAnonymous, scope);
-        copyForeignAttributes(xmlModelGroup.foreignAttributes, (ModelGroupImpl)modelGroup);
-        if (modelGroup.getScopeExtent() == ScopeExtent.Global)
-        {
-            m_outBag.add(modelGroup);
-        }
-        m_locations.m_modelGroupLocations.put(modelGroup, xmlModelGroup.getLocation());
 
         try
         {
-            
+            final ModelGroup.SmCompositor compositor = xmlModelGroup.getCompositor();
+            final LinkedList<SchemaParticle> particles = new LinkedList<SchemaParticle>();
             for (final XMLParticle xmlParticle : xmlModelGroup.getParticles())
             {
                 try
@@ -1597,28 +1366,7 @@ public final class XMLSchemaConverter
                     }
                     else if (xmlParticle instanceof XMLParticleWithElementTerm)
                     {
-                    	// We must prevent the contents of element particle from becoming part of our invalid cycles check.
-                    	// So, we're going to clear the cycles for groups, and then restore it after we finish processing the 
-                    	// element.  
-                        Stack<XMLModelGroup> tempGroups = null;
-                        if(!m_cycles.groups.isEmpty())
-                        {
-                        	tempGroups = new Stack<XMLModelGroup>();
-                        	for(XMLModelGroup group : m_cycles.groups)
-                        	{
-                        		tempGroups.add(group);
-                        	}
-                            m_cycles.groups.clear();
-                        }
                         particles.add(convertElementUse((XMLParticleWithElementTerm)xmlParticle));
-                        if(tempGroups != null)
-                        {
-                        	m_cycles.groups.clear(); // should be clear, already; so, this line is probably unnecessary
-                        	for(XMLModelGroup group : tempGroups)
-                        	{
-                        		m_cycles.groups.add(group);
-                        	}
-                        }
                     }
                     else if (xmlParticle instanceof XMLParticleWithWildcardTerm)
                     {
@@ -1635,6 +1383,13 @@ public final class XMLSchemaConverter
                     m_errors.error(e);
                 }
             }
+            final ModelGroup modelGroup = new ModelGroupImpl(compositor, particles, name, isAnonymous, scope);
+            copyForeignAttributes(xmlModelGroup.foreignAttributes, (ModelGroupImpl)modelGroup);
+            if (modelGroup.getScopeExtent() == ScopeExtent.Global)
+            {
+                m_outBag.add(modelGroup);
+            }
+            m_locations.m_modelGroupLocations.put(modelGroup, xmlModelGroup.getLocation());
             return modelGroup;
         }
         finally
@@ -1653,7 +1408,7 @@ public final class XMLSchemaConverter
             try
             {
                 QName name = source.getName();
-                if(!m_lastInWins && m_existingCache.getModelGroup(name) != null)
+                if(m_existingCache.getModelGroup(name) != null)
                 {
                     m_inCache.m_modelGroupsUnresolved.remove(name);
                 }
@@ -1700,7 +1455,7 @@ public final class XMLSchemaConverter
         for (final XMLNotation source : m_inCache.m_notations.values())
         {
             QName name = source.getName();
-            if(!m_lastInWins && m_existingCache.getNotationDeclaration(name) != null)
+            if(m_existingCache.getNotationDeclaration(name) != null)
             {
                 m_inCache.m_notationsUnresolved.remove(name);
             }
@@ -1729,25 +1484,10 @@ public final class XMLSchemaConverter
             {
                 return m_outBag.getSimpleType(name);
             }
-            if(m_existingCache.hasSimpleType(name))
+            if (m_existingCache.hasSimpleType(name))
             {
-            	if(!m_lastInWins)
-            	{
-            		// We are not allowing this schema parse to create new elements.  
-                    m_inCache.m_typesUnresolved.remove(name);
-                    return m_existingCache.getSimpleType(name);
-            	}
-            	else if(m_inCache.m_typesUnresolved.containsKey(name) || m_typesResolvedFromExistingCache.containsKey(name))
-            	{
-            		// This component is a reference which refers to an imported component; otherwise, its name would not be 
-            		// in the m_inCache.m_XxxUnresolved.  When XMLSchemaCache.registerXxx is called, it removes name from m_XxxUnresolved,
-            		// and registerXxxt is called when XMLSchemaParser encounters a global component, the only components that can be referenced.
-            		// So, we're going to remove its name from the list, NOT convert it, and return the existing component.
-                    m_inCache.m_typesUnresolved.remove(name);
-            		SimpleType existing = m_existingCache.getSimpleType(name);
-            		m_typesResolvedFromExistingCache.put(name, existing);
-                    return existing;
-            	}
+                m_inCache.m_typesUnresolved.remove(name);
+                return m_existingCache.getSimpleType(name);
             }
             if (m_cycles.types.contains(xmlSimpleType))
             {
@@ -1828,69 +1568,61 @@ public final class XMLSchemaConverter
 
     private Type convertType(final QName name, final boolean isAnonymous) throws SchemaException, AbortException
     {
-        // note: as of 2014-2-18, only ever called from convertType(XMLTypeRef) (q.v.)
-        // first, check our incrementally collected results, in m_outBag.
-        // if we have something there, return it.
-        // should we insure that it's not in the unresolved list, in that case?
         if (m_outBag.hasSimpleType(name))
+        {
             return m_outBag.getSimpleType(name);
+        }
         else if (m_outBag.hasComplexType(name))
+        {
             return m_outBag.getComplexType(name);
+        }
         else
         {
-            // now, we look in the collection of xmlrep components. is it there?
             if (m_inCache.m_globalTypes.containsKey(name))
             {
-                // okay. if it's simple or complex, convert it and return
                 final XMLType type = m_inCache.m_globalTypes.get(name);
                 if (type.isSimple())
-                    return convertSimpleType(name, isAnonymous, type);
-                else if (type.isComplex())
-                    return convertComplexType(name, isAnonymous, type);
-                // if not, then it's an unresolved reference. so ... don't ever
-                // call this method if there's more parsing to be done, eh?
-                if(m_lastInWins) 
                 {
-                    // if operating w/lastInWins true, reference could still be in existing cache
-                    // and we wouldn't have resolved it, yet.  check now.)
-                    if (m_existingCache.hasSimpleType(name))
-                    {
-                        m_inCache.m_typesUnresolved.remove(name);
-                        return m_existingCache.getSimpleType(name);
-                    }
-                    else if (m_existingCache.hasComplexType(name))
-                    {
-                        m_inCache.m_typesUnresolved.remove(name);
-                        return m_existingCache.getComplexType(name);
-                    }
+                    return convertSimpleType(name, isAnonymous, type);
                 }
-                throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+                else if (type.isComplex())
+                {
+                    return convertComplexType(name, isAnonymous, type);
+                }
+                else
+                {
+                    throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+                }
             }
-            // it's not in the collection of unresolved components
-            // is it already in our component provider?
             else if (m_existingCache.hasSimpleType(name))
             {
-                m_inCache.m_typesUnresolved.remove(name);
                 return m_existingCache.getSimpleType(name);
             }
             else if (m_existingCache.hasComplexType(name))
             {
-                m_inCache.m_typesUnresolved.remove(name);
                 return m_existingCache.getComplexType(name);
             }
-            // not there, either. oops. die in flames.
-            throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+            else
+            {
+                throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+            }
         }
     }
 
     private Type convertType(final QName name, final boolean isAnonymous, final XMLType type) throws AbortException, SchemaException
     {
         if (type.isSimple())
+        {
             return convertSimpleType(name, isAnonymous, type);
+        }
         else if (type.isComplex())
+        {
             return convertComplexType(name, isAnonymous, type);
-        // if it's neither simple nor complex, it's a type reference without a referent
-        throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+        }
+        else
+        {
+            throw new SmUndeclaredReferenceException(name, m_inCache.m_typesUnresolved.get(name));
+        }
     }
 
     private Type convertType(final XMLTypeRef typeRef) throws AbortException, SchemaException
@@ -1898,26 +1630,17 @@ public final class XMLSchemaConverter
         if (typeRef.isGlobal())
         {
             QName name = typeRef.getName();
-            // normal case: lastInWins is not true.
-            // check the cache.
-            if (!m_lastInWins)
+            if(m_existingCache.hasComplexType(name))
             {
-                if (m_existingCache.hasComplexType(name))
-                {
-                    m_inCache.m_typesUnresolved.remove(name);
-                    return m_existingCache.getComplexType(name);
-                }
-                if (m_existingCache.hasSimpleType(name))
-                {
-                    m_inCache.m_typesUnresolved.remove(name);
-                    return m_existingCache.getSimpleType(name);
-                }
+                m_inCache.m_typesUnresolved.remove(name);
+                return m_existingCache.getComplexType(name);
+            }
+            if(m_existingCache.hasSimpleType(name))
+            {
+                m_inCache.m_typesUnresolved.remove(name);
+                return m_existingCache.getSimpleType(name);
             }
             
-            // either it wasn't in the cache (an error), or
-            // we're doing lastInWins (it may be in the outbag)
-            // so call convertType, so that we check outbag
-            // before checking cache--inverting the order, in effect.
             return convertType(typeRef.getName(), false);
         }
         else
@@ -1928,41 +1651,30 @@ public final class XMLSchemaConverter
 
     private void convertTypes() throws AbortException
     {
-        // we're iterating over all of the global types that haven't been
-        // converted yet. local types can't ever be unresolved, of course,
-        // and should be handled in the context of whatever contains them.
         for (final XMLType sourceType : m_inCache.m_globalTypes.values())
         {
             // {name} is known because the type is global.
             final QName name = sourceType.getName();
-            // and therefore not anonymous
             final boolean isAnonymous = false;
             try
             {
-                // if this one exists already, do special processing in case lastInWins
-            	if (m_existingCache.getComplexType(name) != null || m_existingCache.getSimpleType(name) != null)
-            	{
-            	    if (!m_lastInWins)
-            	        m_inCache.m_typesUnresolved.remove(name);
-            	    else
-            	    {
-            	        // if it's a real type to replace the existing, replace.
-            	        if (sourceType.isComplex())
-            	            convertComplexType(name, isAnonymous, sourceType);
-                        else if (sourceType.isSimple())
-                            convertSimpleType(name, isAnonymous, sourceType);
-            	        // if neither complex nor simple, then it's a ref; remove from unresolved
-                        else
-                            m_inCache.m_typesUnresolved.remove(name);
-            	    }
-            	}
-            	// otherwise, it's not in the existing cache, so convert
+                if(m_existingCache.getComplexType(name) != null || m_existingCache.getSimpleType(name) != null)
+                {
+                    m_inCache.m_typesUnresolved.remove(name);
+                }
                 else if (sourceType.isComplex())
+                {
                     convertComplexType(name, isAnonymous, sourceType);
+                }
                 else if (sourceType.isSimple())
+                {
                     convertSimpleType(name, isAnonymous, sourceType);
-                else // this isn't going to work--it's an incomplete type/type reference without a referent
-                    convertType(name, isAnonymous, sourceType); // let this method throw.
+                }
+                else
+                {
+                    convertType(name, isAnonymous);
+                    //throw new AssertionError(sourceType);
+                }
             }
             catch (final SchemaException e)
             {
@@ -2343,14 +2055,10 @@ public final class XMLSchemaConverter
 
     public static  Pair<ComponentBagImpl, XMLComponentLocator> convert(final SchemaRegExCompiler regexc, final ComponentProvider rtmCache, final XMLSchemaCache xmlCache, final SchemaExceptionHandler errors) throws AbortException
     {
-    	return convert(regexc, rtmCache, xmlCache, errors, false);
-    }
-    public static  Pair<ComponentBagImpl, XMLComponentLocator> convert(final SchemaRegExCompiler regexc, final ComponentProvider rtmCache, final XMLSchemaCache xmlCache, final SchemaExceptionHandler errors, boolean lastInWins) throws AbortException
-    {
         final ComponentBagImpl schema = new ComponentBagImpl();
         final XMLComponentLocator locations = new XMLComponentLocator();
 
-        final XMLSchemaConverter converter = new XMLSchemaConverter(regexc, rtmCache, xmlCache, schema, locations, errors, lastInWins);
+        final XMLSchemaConverter converter = new XMLSchemaConverter(regexc, rtmCache, xmlCache, schema, locations, errors);
 
         xmlCache.computeSubstitutionGroups();
 
@@ -2463,53 +2171,19 @@ public final class XMLSchemaConverter
 
     private final ContentType EMPTY_CONTENT = new ContentTypeImpl();
     private final XMLCycles m_cycles;
-    
-	private final Stack<QName> m_complexTypeNameCycles = new Stack<QName>();
-	private final HashMap<QName,ArrayList<XMLType>> m_lateTypeResolutionMap = new HashMap<QName,ArrayList<XMLType>>();
-	private final ArrayList<QName> m_lateTypeResolutionNameList = new ArrayList<QName>();
-	
-	// key = QName of type, value = list of elements to resolve
-	private final HashMap<QName, ArrayList<LateResolveElement>> m_lateElementResolutionMap = new HashMap<QName, ArrayList<LateResolveElement>>();
-    
 
     private final SchemaExceptionHandler m_errors;
 
-    // things that have already been pushed into the component provider in this parse group
     private final ComponentProvider m_existingCache;
     
     private final CanonicalAtomBridge m_atoms;
 
-    // this is the collection of components from the xmlrep package.
-    // it needs to be empty when we're done.
     private final XMLSchemaCache m_inCache;
 
     private final XMLComponentLocator m_locations;
 
-    // this is what we'll return
     private final ComponentBagImpl m_outBag;
 
     private final SchemaRegExCompiler regexc;
-    
-    private final boolean m_lastInWins;
-    
-    // Used only when m_lastInWins is true
-    public final Map<QName, ElementDefinition> m_elementsResolvedFromExistingCache = new HashMap<QName, ElementDefinition>();
-    public final Map<QName, AttributeDefinition> m_attributesResolvedFromExistingCache = new HashMap<QName, AttributeDefinition>();
-    public final Map<QName, Type> m_typesResolvedFromExistingCache = new HashMap<QName, Type>();
-    public final Map<QName, ModelGroup> m_modelGroupsResolvedFromExistingCache = new HashMap<QName, ModelGroup>();
-    public final Map<QName, AttributeGroupDefinition> m_attributeGroupsResolvedFromExistingCache = new HashMap<QName, AttributeGroupDefinition>();
-    public final Map<QName, IdentityConstraint> m_constraintsResolvedFromExistingCache = new HashMap<QName, IdentityConstraint>();
-    public final Map<QName, NotationDefinition> m_notationsResolvedFromExistingCache = new HashMap<QName, NotationDefinition>();
-    
-    final class LateResolveElement {
-    	public LateResolveElement(final XMLElement xmlElement, final ElementDeclTypeImpl elementDecl, final ElementDeclTypeImpl subHead)
-    	{
-    		mi_xmlElement = xmlElement;
-    		mi_elementDecl = elementDecl;
-    		mi_subHead = subHead;
-    	}
-    	final XMLElement mi_xmlElement;
-    	final ElementDeclTypeImpl mi_elementDecl;
-    	final ElementDeclTypeImpl mi_subHead;
-    }
+
 }

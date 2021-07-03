@@ -1,70 +1,17 @@
-package com.artemis.generator.model.type;
+package com.artemis.meta;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Describes method.
- *
- * @author Daan van Yperen
- */
 public class MethodDescriptor {
+	public final int access;
+	public final String name;
+	public final String desc;
+	public final String signature;
+	public final String[] exceptions;
 
-    public String name;
-    /** optional */
-    public Type returnType;
-    public List<String> statements = new ArrayList<String>();
-    public List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
-    private boolean isStatic;
-    private AccessLevel accessLevel = AccessLevel.PUBLIC;
-
-
-    public MethodDescriptor(Type returnType, String name) {
-        this.returnType = returnType
-        ;
-        this.name = name;
-    }
-
-    public void addStatement(String statement) {
-        statements.add(statement);
-    }
-
-    @Override
-    public String toString() {
-        return signature();
-    }
-
-    public String signature() {
-        if ( returnType instanceof Class) return ((Class)returnType).getCanonicalName() + " " + name + "()";
-        return returnType.toString() + " " + name + "("+parameterSignature()+")";
-    }
-
-    private String parameterSignature() {
-        String s = "";
-        for (ParameterDescriptor parameter : parameters) {
-            s = s + ( !s.isEmpty() ? "," : "" ) + parameter.signature();
-        }
-        return s;
-    }
-
-    public void addParameter(ParameterDescriptor parameter) {
-        parameters.add(parameter);
-    }
-
-    public void setStatic(boolean value) {
-        this.isStatic = value;
-    }
-
-    public boolean isStatic() {
-        return isStatic;
-    }
-
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-    }
-
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
+	public MethodDescriptor(int access, String name, String desc, String signature, String[] exceptions) {
+		this.access = access;
+		this.name = name;
+		this.desc = desc;
+		this.signature = signature;
+		this.exceptions = exceptions;
+	}
 }

@@ -17,7 +17,7 @@
 
 package io.openmessaging.samples.routing;
 
-import io.openmessaging.message.Message;
+import io.openmessaging.Message;
 import io.openmessaging.MessagingAccessPoint;
 import io.openmessaging.OMS;
 import io.openmessaging.consumer.Consumer;
@@ -26,7 +26,7 @@ import io.openmessaging.manager.ResourceManager;
 import io.openmessaging.producer.Producer;
 
 public class RoutingApp {
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         //Load and start the vendor implementation from a specific OMS driver URL.
         final MessagingAccessPoint messagingAccessPoint =
             OMS.getMessagingAccessPoint("oms:rocketmq://alice@rocketmq.apache.org/us-east");
@@ -41,21 +41,20 @@ public class RoutingApp {
         //Create the source queue.
         resourceManager.createQueue(sourceQueue);
 
-        resourceManager.routing(sourceQueue, destinationQueue);
-        resourceManager.filter(destinationQueue, "name = 'kaka'");
+        resourceManager.deDuplicate(sourceQueue, destinationQueue);
 
         //Send messages to the source queue ahead of the routing
         final Producer producer = messagingAccessPoint.createProducer();
-        producer.start();
+        producer.startup();
 
         Message message = producer.createMessage(sourceQueue, "RED_COLOR".getBytes());
-        message.properties().put("color", "green").put("shape", "round");
+        message.properties().put("color", "freen").put("shape", "round");
 
         producer.send(message);
 
         //Consume messages from the queue behind the routing.
         final Consumer consumer = messagingAccessPoint.createConsumer();
-        consumer.start();
+        consumer.startup();
 
         consumer.bindQueue(destinationQueue, new MessageListener() {
             @Override
@@ -72,10 +71,9 @@ public class RoutingApp {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                producer.stop();
-                consumer.stop();
+                producer.shutdown();
+                consumer.shutdown();
             }
         }));
-
     }
 }

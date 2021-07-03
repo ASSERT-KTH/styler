@@ -2,7 +2,7 @@
  * Handles low-level loading C-struct type things and (optionally compressed)
  * byte ranges from low level I/O
  */
-package edu.vanderbilt.accre.laurelin.root_proxy.io;
+package edu.vanderbilt.accre.laurelin.root_proxy;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -15,10 +15,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import edu.vanderbilt.accre.laurelin.root_proxy.io.IOProfile.Event;
-import edu.vanderbilt.accre.laurelin.root_proxy.io.IOProfile.FileProfiler;
+import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.Event;
+import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.FileProfiler;
 
-public class ROOTFile implements AutoCloseable {
+public class ROOTFile {
     private static final Logger logger = LogManager.getLogger();
 
     public static class FileBackedBuf implements BackingBuf {
@@ -151,23 +151,16 @@ public class ROOTFile implements AutoCloseable {
     }
 
     private FileInterface fh;
-    private String path;
     protected FileProfiler profile;
 
     /* Hide constructor */
     private ROOTFile(String path) {
         profile = IOProfile.getInstance().beginProfile(path);
-        this.path = path;
     }
 
     public static ROOTFile getInputFile(String path) throws IOException {
-        FileInterface fh = IOFactory.openForRead(path);
-        return ROOTFile.getInputFile(path, fh);
-    }
-
-    public static ROOTFile getInputFile(String path, FileInterface fh) throws IOException {
         ROOTFile rf = new ROOTFile(path);
-        rf.fh = fh;
+        rf.fh = IOFactory.openForRead(path);
         return rf;
     }
 
@@ -208,19 +201,5 @@ public class ROOTFile implements AutoCloseable {
 
     public Cursor getCursor(long off) {
         return new Cursor(new FileBackedBuf(this), off);
-    }
-
-    @Override
-    public void close() throws Exception {
-        fh.close();
-
-    }
-
-    public FileInterface getFileInterface() {
-        return fh;
-    }
-
-    public String getPath() {
-        return path;
     }
 }

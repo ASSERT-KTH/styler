@@ -4,15 +4,15 @@
  * Copyright (c) 2014, Gluu
  */
 
-package org.xdi.config.oxtrust;
+package org.gluu.config.oxtrust;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.enterprise.inject.Vetoed;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.inject.Vetoed;
-
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * oxTrust configuration
@@ -28,12 +28,9 @@ public class AppConfiguration implements Configuration, Serializable {
 
     private String baseDN;
 
-    private String orgInum;
-    private String orgIname;
     private String orgSupportEmail;
 
-    private String applianceInum;
-    private String applianceUrl;
+    private String applicationUrl;
 
     private String baseEndpoint;
 
@@ -45,18 +42,9 @@ public class AppConfiguration implements Configuration, Serializable {
     private String[] contactObjectClassTypes;
     private String[] contactObjectClassDisplayNames;
 
-    private String photoRepositoryRootDir;
-    private int photoRepositoryThumbWidth;
-    private int photoRepositoryThumbHeight;
-    private int photoRepositoryCountLeveles;
-    private int photoRepositoryCountFoldersPerLevel;
-
     private String ldifStore;
 
-    private boolean updateApplianceStatus;
-
-    private String svnConfigurationStoreRoot;
-    private String svnConfigurationStorePassword;
+    private boolean updateStatus;
 
     private String keystorePath;
     private String keystorePassword;
@@ -65,11 +53,7 @@ public class AppConfiguration implements Configuration, Serializable {
 
     private String idpUrl;
 
-    private String velocityLog;
-
     private String spMetadataPath;
-
-    private String logoLocation;
 
     private String idpSecurityKey;
     private String idpSecurityKeyPassword;
@@ -96,8 +80,6 @@ public class AppConfiguration implements Configuration, Serializable {
 
     private String servicesRestartTrigger;
 
-    private boolean persistSVN;
-
     private String oxAuthSectorIdentifierUrl;
 
     private String oxAuthClientId;
@@ -106,8 +88,6 @@ public class AppConfiguration implements Configuration, Serializable {
 
     private String loginRedirectUrl;
     private String logoutRedirectUrl;
-
-    private String[] clusteredInums;
 
     private String clientAssociationAttribute;
 
@@ -134,7 +114,7 @@ public class AppConfiguration implements Configuration, Serializable {
     private String apiUmaClientId;
     private String apiUmaClientKeyId;
     private String apiUmaResourceId;
-    private String apiUmaScope;
+    private String[] apiUmaScopes;
     private String apiUmaClientKeyStoreFile;
     private String apiUmaClientKeyStorePassword;
 
@@ -146,6 +126,8 @@ public class AppConfiguration implements Configuration, Serializable {
     private boolean authenticationRecaptchaEnabled;
 
     private boolean scimTestMode;
+    private boolean oxTrustApiTestMode;
+    private boolean enableUpdateNotification;
 
     private boolean rptConnectionPoolUseConnectionPooling;
     private int rptConnectionPoolMaxTotal;
@@ -159,6 +141,7 @@ public class AppConfiguration implements Configuration, Serializable {
     private List<String> clientBlackList;
 
     private String loggingLevel;
+    private String loggingLayout;
 
     private String shibbolethVersion;
     private String shibboleth3IdpRootDir;
@@ -177,6 +160,9 @@ public class AppConfiguration implements Configuration, Serializable {
 
     private int passwordResetRequestExpirationTime; // in seconds
     private int cleanServiceInterval;
+    private Boolean enforceEmailUniqueness = true;
+
+    private Boolean useLocalCache = false;
 
     public ScimProperties getScimProperties() {
         return scimProperties;
@@ -202,22 +188,6 @@ public class AppConfiguration implements Configuration, Serializable {
         this.baseDN = baseDN;
     }
 
-    public String getOrgInum() {
-        return orgInum;
-    }
-
-    public void setOrgInum(String orgInum) {
-        this.orgInum = orgInum;
-    }
-
-    public String getOrgIname() {
-        return orgIname;
-    }
-
-    public void setOrgIname(String orgIname) {
-        this.orgIname = orgIname;
-    }
-
     public String getOrgSupportEmail() {
         return orgSupportEmail;
     }
@@ -226,20 +196,12 @@ public class AppConfiguration implements Configuration, Serializable {
         this.orgSupportEmail = orgSupportEmail;
     }
 
-    public String getApplianceInum() {
-        return applianceInum;
+    public String getApplicationUrl() {
+        return applicationUrl;
     }
 
-    public void setApplianceInum(String applianceInum) {
-        this.applianceInum = applianceInum;
-    }
-
-    public String getApplianceUrl() {
-        return applianceUrl;
-    }
-
-    public void setApplianceUrl(String applianceUrl) {
-        this.applianceUrl = applianceUrl;
+    public void setApplicationUrl(String applicationUrl) {
+        this.applicationUrl = applicationUrl;
     }
 
     public String getBaseEndpoint() {
@@ -290,45 +252,7 @@ public class AppConfiguration implements Configuration, Serializable {
         this.contactObjectClassDisplayNames = contactObjectClassDisplayNames;
     }
 
-    public String getPhotoRepositoryRootDir() {
-        return photoRepositoryRootDir;
-    }
 
-    public void setPhotoRepositoryRootDir(String photoRepositoryRootDir) {
-        this.photoRepositoryRootDir = photoRepositoryRootDir;
-    }
-
-    public int getPhotoRepositoryThumbWidth() {
-        return photoRepositoryThumbWidth;
-    }
-
-    public void setPhotoRepositoryThumbWidth(int photoRepositoryThumbWidth) {
-        this.photoRepositoryThumbWidth = photoRepositoryThumbWidth;
-    }
-
-    public int getPhotoRepositoryThumbHeight() {
-        return photoRepositoryThumbHeight;
-    }
-
-    public void setPhotoRepositoryThumbHeight(int photoRepositoryThumbHeight) {
-        this.photoRepositoryThumbHeight = photoRepositoryThumbHeight;
-    }
-
-    public int getPhotoRepositoryCountLeveles() {
-        return photoRepositoryCountLeveles;
-    }
-
-    public void setPhotoRepositoryCountLeveles(int photoRepositoryCountLeveles) {
-        this.photoRepositoryCountLeveles = photoRepositoryCountLeveles;
-    }
-
-    public int getPhotoRepositoryCountFoldersPerLevel() {
-        return photoRepositoryCountFoldersPerLevel;
-    }
-
-    public void setPhotoRepositoryCountFoldersPerLevel(int photoRepositoryCountFoldersPerLevel) {
-        this.photoRepositoryCountFoldersPerLevel = photoRepositoryCountFoldersPerLevel;
-    }
 
     public String getLdifStore() {
         return ldifStore;
@@ -338,29 +262,14 @@ public class AppConfiguration implements Configuration, Serializable {
         this.ldifStore = ldifStore;
     }
 
-    public boolean isUpdateApplianceStatus() {
-        return updateApplianceStatus;
+    public boolean isUpdateStatus() {
+        return updateStatus;
     }
 
-    public void setUpdateApplianceStatus(boolean updateApplianceStatus) {
-        this.updateApplianceStatus = updateApplianceStatus;
+    public void setUpdateStatus(boolean updateStatus) {
+        this.updateStatus = updateStatus;
     }
 
-    public String getSvnConfigurationStoreRoot() {
-        return svnConfigurationStoreRoot;
-    }
-
-    public void setSvnConfigurationStoreRoot(String svnConfigurationStoreRoot) {
-        this.svnConfigurationStoreRoot = svnConfigurationStoreRoot;
-    }
-
-    public String getSvnConfigurationStorePassword() {
-        return svnConfigurationStorePassword;
-    }
-
-    public void setSvnConfigurationStorePassword(String svnConfigurationStorePassword) {
-        this.svnConfigurationStorePassword = svnConfigurationStorePassword;
-    }
 
     public String getKeystorePath() {
         return keystorePath;
@@ -394,14 +303,6 @@ public class AppConfiguration implements Configuration, Serializable {
         this.idpUrl = idpUrl;
     }
 
-    public String getVelocityLog() {
-        return velocityLog;
-    }
-
-    public void setVelocityLog(String velocityLog) {
-        this.velocityLog = velocityLog;
-    }
-
     public String getSpMetadataPath() {
         return spMetadataPath;
     }
@@ -409,15 +310,6 @@ public class AppConfiguration implements Configuration, Serializable {
     public void setSpMetadataPath(String spMetadataPath) {
         this.spMetadataPath = spMetadataPath;
     }
-
-    public String getLogoLocation() {
-        return logoLocation;
-    }
-
-    public void setLogoLocation(String logoLocation) {
-        this.logoLocation = logoLocation;
-    }
-
     public String getIdpSecurityKey() {
         return idpSecurityKey;
     }
@@ -554,14 +446,6 @@ public class AppConfiguration implements Configuration, Serializable {
         this.servicesRestartTrigger = servicesRestartTrigger;
     }
 
-    public boolean isPersistSVN() {
-        return persistSVN;
-    }
-
-    public void setPersistSVN(boolean persistSVN) {
-        this.persistSVN = persistSVN;
-    }
-
     public String getOxAuthSectorIdentifierUrl() {
         return oxAuthSectorIdentifierUrl;
     }
@@ -608,14 +492,6 @@ public class AppConfiguration implements Configuration, Serializable {
 
     public void setLogoutRedirectUrl(String logoutRedirectUrl) {
         this.logoutRedirectUrl = logoutRedirectUrl;
-    }
-
-    public String[] getClusteredInums() {
-        return clusteredInums;
-    }
-
-    public void setClusteredInums(String[] clusteredInums) {
-        this.clusteredInums = clusteredInums;
     }
 
     public String getClientAssociationAttribute() {
@@ -786,6 +662,14 @@ public class AppConfiguration implements Configuration, Serializable {
         this.scimTestMode = scimTestMode;
     }
 
+    public boolean isOxTrustApiTestMode() {
+        return oxTrustApiTestMode;
+    }
+
+    public void setOxTrustApiTestMode(boolean oxTrustApiTestMode) {
+        this.oxTrustApiTestMode = oxTrustApiTestMode;
+    }
+
     public boolean isRptConnectionPoolUseConnectionPooling() {
         return rptConnectionPoolUseConnectionPooling;
     }
@@ -898,6 +782,14 @@ public class AppConfiguration implements Configuration, Serializable {
         this.loggingLevel = loggingLevel;
     }
 
+    public String getLoggingLayout() {
+        return loggingLayout;
+    }
+
+    public void setLoggingLayout(String loggingLayout) {
+        this.loggingLayout = loggingLayout;
+    }
+
     public int getMetricReporterInterval() {
         return metricReporterInterval;
     }
@@ -951,19 +843,12 @@ public class AppConfiguration implements Configuration, Serializable {
         this.apiUmaResourceId = apiUmaResourceId;
     }
 
-    /**
-     * @return the apiUmaScope
-     */
-    public String getApiUmaScope() {
-        return apiUmaScope;
+    public String[] getApiUmaScopes() {
+        return apiUmaScopes;
     }
 
-    /**
-     * @param apiUmaScope
-     *            the apiUmaScope to set
-     */
-    public void setApiUmaScope(String apiUmaScope) {
-        this.apiUmaScope = apiUmaScope;
+    public void setApiUmaScopes(String[] apiUmaScopes) {
+        this.apiUmaScopes = apiUmaScopes;
     }
 
     /**
@@ -1042,6 +927,30 @@ public class AppConfiguration implements Configuration, Serializable {
 
     public void setCleanServiceInterval(int cleanServiceInterval) {
         this.cleanServiceInterval = cleanServiceInterval;
+    }
+
+	public Boolean getEnforceEmailUniqueness() {
+		return enforceEmailUniqueness;
+	}
+
+	public void setEnforceEmailUniqueness(Boolean enforceEmailUniqueness) {
+		this.enforceEmailUniqueness = enforceEmailUniqueness;
+	}
+
+	public Boolean getUseLocalCache() {
+		return useLocalCache;
+	}
+
+	public void setUseLocalCache(Boolean useLocalCache) {
+		this.useLocalCache = useLocalCache;
+	}
+
+    public boolean isEnableUpdateNotification() {
+        return enableUpdateNotification;
+    }
+
+    public void setEnableUpdateNotification(boolean enableUpdateNotification) {
+        this.enableUpdateNotification = enableUpdateNotification;
     }
 
 }

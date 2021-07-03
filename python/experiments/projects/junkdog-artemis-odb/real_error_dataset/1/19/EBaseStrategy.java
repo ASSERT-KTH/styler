@@ -1,6 +1,7 @@
-package com.artemis.generator.strategy.e;
+package com.artemis.generator.strategy;
 
-import com.artemis.generator.model.FluidTypes;
+import com.artemis.E;
+import com.artemis.SuperMapper;
 import com.artemis.generator.common.BuilderModelStrategy;
 import com.artemis.generator.model.artemis.ArtemisModel;
 import com.artemis.generator.model.type.*;
@@ -9,10 +10,8 @@ import com.artemis.generator.util.MethodBuilder;
 import com.artemis.utils.Bag;
 
 /**
- * Generate basic scaffold of E class.
- *
- * - basic class setup (fields, initialization).
- * - static method to obtain instances of E.
+ * Create static method to obtain instances of E.
+ * <p>
  *
  * @author Daan van Yperen
  */
@@ -29,10 +28,14 @@ public class EBaseStrategy implements BuilderModelStrategy {
         model.add(createStaticInstancerMethod());
     }
 
+    private FieldDescriptor createInstancePoolField() {
+        return new FieldDescriptor(new ParameterizedTypeImpl(Bag.class, E.class), "instances");
+    }
+
     private MethodDescriptor createInitMethod() {
         return
-                new MethodBuilder(FluidTypes.E_TYPE, "init")
-                        .parameter(FluidTypes.SUPERMAPPER_TYPE, "mappers")
+                new MethodBuilder(E.class, "init")
+                        .parameter(SuperMapper.class, "mappers")
                         .parameter(int.class, "entityId")
                         .statement("this.mappers = mappers")
                         .statement("this.entityId = entityId")
@@ -41,21 +44,15 @@ public class EBaseStrategy implements BuilderModelStrategy {
     }
 
     private FieldDescriptor createEntityIdField() {
-        return new FieldBuilder(int.class,"entityId")
-                .debugNotes("Default entityId field.")
-                .build();
+        return new FieldBuilder(int.class,"entityId").build();
     }
 
     private FieldDescriptor createMapperField() {
-        return new FieldBuilder(FluidTypes.SUPERMAPPER_TYPE,"mappers")
-                .debugNotes("Default mappers field.")
-                .build();
+        return new FieldBuilder(SuperMapper.class,"mappers").build();
     }
 
     private FieldDescriptor createStaticMapperField() {
-        return new FieldBuilder(FluidTypes.SUPERMAPPER_TYPE,"_processingMapper")
-                .debugNotes("Default _processingMapper field.")
-                .setStatic(true).build();
+        return new FieldBuilder(SuperMapper.class,"_processingMapper").setStatic(true).build();
     }
 
     /**
@@ -63,7 +60,7 @@ public class EBaseStrategy implements BuilderModelStrategy {
      */
     private MethodDescriptor createStaticInstancerMethod() {
         return
-                new MethodBuilder(FluidTypes.E_TYPE, "E")
+                new MethodBuilder(E.class, "E")
                         .setStatic(true)
                         .parameter(int.class, "entityId")
                         .statement("if(_processingMapper==null) throw new RuntimeException(\"SuperMapper system must be registered before any systems using E().\");")

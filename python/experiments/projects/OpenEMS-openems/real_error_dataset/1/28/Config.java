@@ -1,15 +1,15 @@
-package io.openems.edge.controller.symmetric.fixactivepower;
+package io.openems.edge.controller.ess.onefullcycle;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition( //
-		name = "Controller Fix Active Power Symmetric", //
-		description = "Defines a fixed charge/discharge power to a symmetric energy storage system.")
+		name = "Controller Ess One Full Cycle", //
+		description = "Completes one full cycle for an Ess.")
 @interface Config {
 
 	@AttributeDefinition(name = "Component-ID", description = "Unique ID of this Component")
-	String id() default "ctrlFixActivePower0";
+	String id() default "ctrlOneFullCycle0";
 
 	@AttributeDefinition(name = "Alias", description = "Human-readable name of this Component; defaults to Component-ID")
 	String alias() default "";
@@ -20,8 +20,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Ess-ID", description = "ID of Ess device.")
 	String ess_id();
 
-	@AttributeDefinition(name = "Charge/Discharge power [W]", description = "Negative values for Charge; positive for Discharge")
+	@AttributeDefinition(name = "Power [W]", description = "Charge/discharge power")
 	int power();
 
-	String webconsole_configurationFactory_nameHint() default "Controller Fix Active Power Symmetric [{id}]";
+	String webconsole_configurationFactory_nameHint() default "Controller Ess One Full Cycle [{id}]";
 }

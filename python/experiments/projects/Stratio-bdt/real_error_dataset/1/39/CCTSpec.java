@@ -276,20 +276,17 @@ public class CCTSpec extends BaseGSpec {
         RestSpec restSpec = new RestSpec(commonspec);
 
         String endPointStatus;
-        String key;
         if (ThreadProperty.get("cct-marathon-services_id") == null) {
             endPointStatus = "/service/" + ThreadProperty.get("deploy_api_id") + "/deploy/status/all";
-            key = "\"serviceName\"";
         } else {
             endPointStatus = "/service/" + ThreadProperty.get("cct-marathon-services_id") + "/v1/services?tenant=" + tenant;
-            key = "\"key\"";
         }
 
         String serviceName = "/" + service;
         if (!"NONE".equals(tenant)) {
             serviceName = "/" + tenant + "/" + tenant + "-" + service;
         }
-        restSpec.sendRequestTimeout(200, 20, "GET", endPointStatus, "does not", key + ":" + "\"" + serviceName + "\"");
+        restSpec.sendRequestTimeout(200, 20, "GET", endPointStatus, "does not", serviceName);
 
         // Check all resources have been freed
         DcosSpec dcosSpec = new DcosSpec(commonspec);
@@ -312,7 +309,7 @@ public class CCTSpec extends BaseGSpec {
         response = commonspec.generateRequest("PUT", false, null, null, endPoint, "", null, "");
         commonspec.setResponse("PUT", response.get());
 
-        if (commonspec.getResponse().getStatusCode() != 200 && commonspec.getResponse().getStatusCode() != 201) {
+        if (commonspec.getResponse().getStatusCode() != 200 || commonspec.getResponse().getStatusCode() != 201) {
             logger.error("Request failed to endpoint: " + endPoint + " with status code: " + commonspec.getResponse().getStatusCode() + " and response: " + commonspec.getResponse().getResponse());
             throw new Exception("Request failed to endpoint: " + endPoint + " with status code: " + commonspec.getResponse().getStatusCode() + " and response: " + commonspec.getResponse().getResponse());
         }
@@ -1017,27 +1014,16 @@ public class CCTSpec extends BaseGSpec {
      * @param tenant    tenant where service is installed
      * @throws Exception
      */
-    @Given("^I uninstall service '(.+?)'( in folder '(.+?)')? from tenant '(.+?)'$")
-    public void uninstallService(String service, String folder, String tenant) throws Exception {
-        if (folder != null && folder.startsWith("/")) {
-            folder = folder.substring(1);
-        }
-        if (folder != null && folder.endsWith("/")) {
-            folder = folder.substring(folder.length() - 1);
-        }
+    @Given("^I uninstall service '(.+?)' from tenant '(.+?)'$")
+    public void uninstallService(String service, String tenant) throws Exception {
+        String tenant_prefix = "";
 
-        String serviceName = service;
-        if (folder != null) {
-            serviceName = folder + "/" + service;
-        }
         if (!"NONE".equals(tenant)) {
-            serviceName = tenant + "/" + tenant + "-" + service;
-            if (folder != null) {
-                serviceName =  tenant + "/" + folder + "/" + tenant + "-" + service;
-            }
+            tenant_prefix = tenant + "/" + tenant + "-";
         }
 
-        String endPoint = "/service/" + ThreadProperty.get("deploy_api_id") + "/deploy/uninstall?app=" + serviceName;
+        String endPoint = "/service/" + ThreadProperty.get("deploy_api_id") + "/deploy/uninstall?app=" + tenant_prefix + service;
+
         Future<Response> response = commonspec.generateRequest("DELETE", true, null, null, endPoint, "", "json");
         commonspec.setResponse("DELETE", response.get());
 
@@ -1050,16 +1036,18 @@ public class CCTSpec extends BaseGSpec {
         RestSpec restSpec = new RestSpec(commonspec);
 
         String endPointStatus;
-        String key;
         if (ThreadProperty.get("cct-marathon-services_id") == null) {
             endPointStatus = "/service/" + ThreadProperty.get("deploy_api_id") + "/deploy/status/all";
-            key = "\"serviceName\"";
         } else {
             endPointStatus = "/service/" + ThreadProperty.get("cct-marathon-services_id") + "/v1/services?tenant=" + tenant;
-            key = "\"id\"";
         }
 
-        restSpec.sendRequestTimeout(200, 20, "GET", endPointStatus, "does not", key + ":" + "\"" + serviceName + "\"");
+        String serviceName = "/" + service;
+        if (!"NONE".equals(tenant)) {
+            serviceName = "/" + tenant + "/" + tenant + "-" + service;
+        }
+        restSpec.sendRequestTimeout(200, 20, "GET", endPointStatus, "does not", serviceName);
+
         // Check all resources have been freed
         DcosSpec dcosSpec = new DcosSpec(commonspec);
         dcosSpec.checkResources(serviceName);

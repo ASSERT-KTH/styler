@@ -1,54 +1,19 @@
 package cz.metacentrum.perun.core.blImpl;
 
 import cz.metacentrum.perun.auditparser.AuditParser;
-import cz.metacentrum.perun.core.api.ActionType;
-import cz.metacentrum.perun.core.api.Attribute;
-import cz.metacentrum.perun.core.api.AttributeDefinition;
-import cz.metacentrum.perun.core.api.AttributesManager;
-import cz.metacentrum.perun.core.api.AuthzResolver;
-import cz.metacentrum.perun.core.api.BeansUtils;
-import cz.metacentrum.perun.core.api.Facility;
-import cz.metacentrum.perun.core.api.Group;
-import cz.metacentrum.perun.core.api.Member;
-import cz.metacentrum.perun.core.api.Pair;
-import cz.metacentrum.perun.core.api.PerunBean;
-import cz.metacentrum.perun.core.api.Resource;
-import cz.metacentrum.perun.core.api.User;
-import cz.metacentrum.perun.core.api.UserExtSource;
-import cz.metacentrum.perun.core.api.exceptions.AttributeNotExistsException;
-import cz.metacentrum.perun.core.api.exceptions.ConsistencyErrorException;
-import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
-import cz.metacentrum.perun.core.api.exceptions.InvalidLoginException;
-import cz.metacentrum.perun.core.api.exceptions.QuotaNotInAllowedLimitException;
-import cz.metacentrum.perun.core.api.exceptions.UserNotExistsException;
-import cz.metacentrum.perun.core.api.exceptions.WrongAttributeAssignmentException;
-import cz.metacentrum.perun.core.api.exceptions.WrongAttributeValueException;
-import cz.metacentrum.perun.core.api.exceptions.WrongReferenceAttributeValueException;
+import cz.metacentrum.perun.core.api.*;
+import cz.metacentrum.perun.core.api.exceptions.*;
 import cz.metacentrum.perun.core.bl.ModulesUtilsBl;
 import cz.metacentrum.perun.core.bl.PerunBl;
 import cz.metacentrum.perun.core.impl.PerunSessionImpl;
 import cz.metacentrum.perun.core.impl.Utils;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -80,16 +45,13 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	public static final Pattern letterPattern = Pattern.compile("[A-Z]");
 	public static final Pattern fqdnPattern = Pattern.compile("^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\\.)+[a-zA-Z]{2,63}\\.?$");
 
-	//previous regex ^/[-a-zA-Z0-9_/]*$"
-	public static final Pattern shellPattern = Pattern.compile("^(/[-_a-zA-Z0-9]+)+$");
-
 	public final static List<String> reservedNamesForUnixGroups = Arrays.asList("root", "daemon", "tty", "bin", "sys", "sudo", "nogroup",
 	          "hadoop", "hdfs", "mapred", "yarn", "hsqldb", "derby", "jetty", "hbase", "zookeeper", "users", "oozie", "hive");
 	public final static List<String> unpermittedNamesForUserLogins = Arrays.asList("arraysvcs", "at", "backup", "bin", "daemon", "Debian-exim", "flexlm", "ftp", "games",
 		        "gdm", "glite", "gnats", "haldaemon", "identd", "irc", "libuuid", "list", "lp", "mail", "man",
 		        "messagebus", "news", "nobody", "ntp", "openslp", "pcp", "polkituser", "postfix", "proxy",
 		        "pulse", "puppet", "root", "saned", "smmsp", "smmta", "sshd", "statd", "suse-ncc", "sync",
-		        "sys", "uucp", "uuidd", "www-data", "wwwrun", "zenssh", "tomcat6", "tomcat7", "tomcat8", "tomcat",
+		        "sys", "uucp", "uuidd", "www-data", "wwwrun", "zenssh", "tomcat6", "tomcat7", "tomcat8",
 		        "nn", "dn", "rm", "nm", "sn", "jn", "jhs", "http", "yarn", "hdfs", "mapred", "hadoop", "hsqldb", "derby",
 		        "jetty", "hbase", "zookeeper", "hive", "hue", "oozie", "httpfs");
 
@@ -104,7 +66,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public boolean isNamespaceEqualsToFacilityUnixGroupNameNamespace(PerunSessionImpl sess, Facility facility, String namespace) throws AttributeNotExistsException, WrongAttributeAssignmentException{
+	public boolean isNamespaceEqualsToFacilityUnixGroupNameNamespace(PerunSessionImpl sess, Facility facility, String namespace) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException{
 		Utils.notNull(facility, "facility");
 		Utils.notNull(namespace, "namespace");
 		Utils.notNull(sess, "perunSessionImpl");
@@ -116,7 +78,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return true;
 	}
 
-	public List<Resource> findCollisionResourcesWithSameGroupName(PerunSessionImpl sess, Resource resource, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Resource> findCollisionResourcesWithSameGroupName(PerunSessionImpl sess, Resource resource, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(resource, "resource");
 		Attribute resourceUnixGroupName = getPerunBl().getAttributesManagerBl().getAttribute(sess, resource, A_R_unixGroupName_namespace + ":" + namespace);
@@ -125,7 +87,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return resourcesWithSameUnixGroupName;
 	}
 
-	public List<Resource> findCollisionResourcesWithSameGroupName(PerunSessionImpl sess, Group group, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Resource> findCollisionResourcesWithSameGroupName(PerunSessionImpl sess, Group group, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(group, "group");
 		Utils.notNull(namespace, "namespace");
@@ -135,7 +97,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return getPerunBl().getResourcesManagerBl().getResourcesByAttribute(sess, copyResourceUnixGroupName);
 	}
 
-	public List<Group> findCollisionGroupsWithSamgeGroupName(PerunSessionImpl sess, Resource resource, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Group> findCollisionGroupsWithSamgeGroupName(PerunSessionImpl sess, Resource resource, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(resource, "resource");
 		Utils.notNull(namespace, "namespace");
@@ -146,7 +108,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 
 	}
 
-	public List<Group> findCollisionGroupsWithSamgeGroupName(PerunSessionImpl sess, Group group, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Group> findCollisionGroupsWithSamgeGroupName(PerunSessionImpl sess, Group group, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(group, "group");
 		Utils.notNull(namespace, "namespace");
@@ -156,7 +118,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return groupsWithsameGroupName;
 	}
 
-	public List<Resource> findCollisionResourcesWithSameGid(PerunSessionImpl sess, Resource resource, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Resource> findCollisionResourcesWithSameGid(PerunSessionImpl sess, Resource resource, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(resource, "resource");
 		Utils.notNull(namespace, "namespace");
@@ -166,7 +128,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return resourcesWithSameGid;
 	}
 
-	public List<Resource> findCollisionResourcesWithSameGid(PerunSessionImpl sess, Group group, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Resource> findCollisionResourcesWithSameGid(PerunSessionImpl sess, Group group, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(group, "group");
 		Utils.notNull(namespace, "namespace");
@@ -176,7 +138,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return getPerunBl().getResourcesManagerBl().getResourcesByAttribute(sess, copyResourceUnixGid);
 	}
 
-	public List<Group> findCollisionGroupsWithSamgeGroupGid(PerunSessionImpl sess, Resource resource, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Group> findCollisionGroupsWithSamgeGroupGid(PerunSessionImpl sess, Resource resource, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(resource, "resource");
 		Utils.notNull(namespace, "namespace");
@@ -186,7 +148,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return getPerunBl().getGroupsManagerBl().getGroupsByAttribute(sess, copyGroupUnixGid);
 	}
 
-	public List<Group> findCollisionGroupsWithSamgeGroupGid(PerunSessionImpl sess, Group group, String namespace) throws WrongAttributeAssignmentException, AttributeNotExistsException {
+	public List<Group> findCollisionGroupsWithSamgeGroupGid(PerunSessionImpl sess, Group group, String namespace) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(group, "group");
 		Utils.notNull(namespace, "namespace");
@@ -196,7 +158,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return groupsWithSameUnixGid;
 	}
 
-	public boolean hasAccessToWriteToAttributeForAnyResource(PerunSessionImpl sess, AttributeDefinition attrDef, List<Resource> resources) {
+	public boolean hasAccessToWriteToAttributeForAnyResource(PerunSessionImpl sess, AttributeDefinition attrDef, List<Resource> resources) throws InternalErrorException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(attrDef, "attributeDefinition");
 		if(resources == null || resources.isEmpty()) return false;
@@ -206,7 +168,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return false;
 	}
 
-	public boolean hasAccessToWriteToAttributeForAnyGroup(PerunSessionImpl sess, AttributeDefinition attrDef, List<Group> groups) {
+	public boolean hasAccessToWriteToAttributeForAnyGroup(PerunSessionImpl sess, AttributeDefinition attrDef, List<Group> groups) throws InternalErrorException {
 		Utils.notNull(sess, "perunSessionImpl");
 		Utils.notNull(attrDef, "attributeDefinition");
 		if(groups == null || groups.isEmpty()) return false;
@@ -227,7 +189,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	 */
 	private boolean isGIDWithinRanges(Map<Integer,Integer> gidRanges, Integer gid) {
 		if(gid == null) return false;
-		if(gidRanges == null || gidRanges.isEmpty()) return false;
+		if(gidRanges == null | gidRanges.isEmpty()) return false;
 
 		//Test all valid ranges
 		for(Integer minimum: gidRanges.keySet()) {
@@ -240,7 +202,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public void checkIfGIDIsWithinRange(PerunSessionImpl sess, Attribute attribute) throws WrongAttributeAssignmentException, AttributeNotExistsException, WrongAttributeValueException, WrongReferenceAttributeValueException {
+	public void checkIfGIDIsWithinRange(PerunSessionImpl sess, Attribute attribute) throws InternalErrorException, WrongReferenceAttributeValueException, WrongAttributeAssignmentException, AttributeNotExistsException, WrongAttributeValueException {
 		Utils.notNull(attribute, "attribute");
 		Integer gid = null;
 		if(attribute.getValue() != null) gid = (Integer) attribute.getValue();
@@ -254,14 +216,14 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 
 		//Gid is not in range, throw exception
 		if(!isGIDWithinRanges(gidRanges, gid)) {
-			throw new WrongReferenceAttributeValueException(attribute, gidRangesAttribute, null, null, gidNamespace, null, "GID number is not in allowed ranges " + gidRanges + " for namespace " + gidNamespace);
+			throw new WrongAttributeValueException(attribute, "GID number is not in allowed ranges " + gidRanges + " for namespace " + gidNamespace);
 		}
 	}
 
 	@Override
-	public void checkIfListOfGIDIsWithinRange(PerunSessionImpl sess, User user, Attribute attribute) throws WrongAttributeAssignmentException, AttributeNotExistsException, WrongAttributeValueException {
+	public void checkIfListOfGIDIsWithinRange(PerunSessionImpl sess, User user, Attribute attribute) throws InternalErrorException, WrongAttributeAssignmentException, AttributeNotExistsException, WrongAttributeValueException {
 		Utils.notNull(attribute, "attribute");
-		List<String> gidsToCheck = attribute.valueAsList();
+		List<String> gidsToCheck = (List<String>)attribute.getValue();
 		if (gidsToCheck != null){
 			String gidNamespace = attribute.getFriendlyNameParameter();
 			Attribute gidRangesAttribute = sess.getPerunBl().getAttributesManagerBl().getAttribute(sess, gidNamespace, A_E_namespace_GIDRanges);
@@ -282,7 +244,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Integer getFreeGID(PerunSessionImpl sess, Attribute attribute) throws AttributeNotExistsException, WrongAttributeAssignmentException {
+	public Integer getFreeGID(PerunSessionImpl sess, Attribute attribute) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException {
 		Utils.notNull(attribute, "attribute");
 		String gidNamespace = attribute.getFriendlyNameParameter();
 
@@ -303,7 +265,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		//return the minimum from all ranges
 		if(usedGids.getValue() == null) return allMinimums.get(0);
 		else {
-			Map<String,String> usedGidsValue = usedGids.valueAsMap();
+			Map<String,String> usedGidsValue = (Map<String, String>) usedGids.getValue();
 			Set<String> keys = usedGidsValue.keySet();
 
 			for(String key: keys) {
@@ -324,7 +286,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Integer getCommonGIDOfGroupsWithSameNameInSameNamespace(PerunSessionImpl sess, List<Group> groupsWithSameGroupNameInSameNamespace, String gidNamespace, Integer commonGID) throws WrongAttributeAssignmentException {
+	public Integer getCommonGIDOfGroupsWithSameNameInSameNamespace(PerunSessionImpl sess, List<Group> groupsWithSameGroupNameInSameNamespace, String gidNamespace, Integer commonGID) throws InternalErrorException, WrongAttributeAssignmentException {
 		//If there are no groups, return commonGID from param (it can be null)
 		if(groupsWithSameGroupNameInSameNamespace == null || groupsWithSameGroupNameInSameNamespace.isEmpty()) return commonGID;
 		Utils.notNull(gidNamespace, "gidNamespace");
@@ -350,7 +312,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Integer getCommonGIDOfResourcesWithSameNameInSameNamespace(PerunSessionImpl sess, List<Resource> resourcesWithSameGroupNameInSameNamespace, String gidNamespace, Integer commonGID) throws WrongAttributeAssignmentException {
+	public Integer getCommonGIDOfResourcesWithSameNameInSameNamespace(PerunSessionImpl sess, List<Resource> resourcesWithSameGroupNameInSameNamespace, String gidNamespace, Integer commonGID) throws InternalErrorException, WrongAttributeAssignmentException {
 		//If there are no resources, return commonGID from param (it can be null)
 		if(resourcesWithSameGroupNameInSameNamespace == null || resourcesWithSameGroupNameInSameNamespace.isEmpty()) return commonGID;
 		Utils.notNull(gidNamespace,"gidNamespace");
@@ -376,7 +338,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public int haveTheSameAttributeWithTheSameNamespace(PerunSessionImpl sess, Group group, Attribute attr) throws WrongAttributeAssignmentException {
+	public int haveTheSameAttributeWithTheSameNamespace(PerunSessionImpl sess, Group group, Attribute attr) throws InternalErrorException, WrongAttributeAssignmentException {
 		Utils.notNull(group, "group");
 		Utils.notNull(attr, "attr");
 
@@ -396,7 +358,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public int haveTheSameAttributeWithTheSameNamespace(PerunSessionImpl sess, Resource resource, Attribute attr) throws WrongAttributeAssignmentException{
+	public int haveTheSameAttributeWithTheSameNamespace(PerunSessionImpl sess, Resource resource, Attribute attr) throws InternalErrorException, WrongAttributeAssignmentException{
 		Utils.notNull(resource, "resource");
 		Utils.notNull(attr, "attr");
 
@@ -416,7 +378,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public boolean haveRightToWriteAttributeInAnyGroupOrResource(PerunSessionImpl sess, List<Group> groups, List<Resource> resources, AttributeDefinition groupAttribute, AttributeDefinition resourceAttribute) {
+	public boolean haveRightToWriteAttributeInAnyGroupOrResource(PerunSessionImpl sess, List<Group> groups, List<Resource> resources, AttributeDefinition groupAttribute, AttributeDefinition resourceAttribute) throws InternalErrorException {
 		if(groups != null && !groups.isEmpty() && groupAttribute != null) {
 			for(Group g: groups) {
 				if(AuthzResolver.isAuthorizedForAttribute(sess, ActionType.WRITE, groupAttribute, g)) return true;
@@ -433,7 +395,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public List<Attribute> getListOfResourceGIDsFromListOfGroupGIDs(PerunSessionImpl sess, List<Attribute> groupGIDs) throws AttributeNotExistsException {
+	public List<Attribute> getListOfResourceGIDsFromListOfGroupGIDs(PerunSessionImpl sess, List<Attribute> groupGIDs) throws InternalErrorException, AttributeNotExistsException {
 		List<Attribute> resourceGIDs = new ArrayList<>();
 		if(groupGIDs == null || groupGIDs.isEmpty()) {
 			return resourceGIDs;
@@ -449,7 +411,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public List<Attribute> getListOfGroupGIDsFromListOfResourceGIDs(PerunSessionImpl sess, List<Attribute> resourceGIDs) throws AttributeNotExistsException {
+	public List<Attribute> getListOfGroupGIDsFromListOfResourceGIDs(PerunSessionImpl sess, List<Attribute> resourceGIDs) throws InternalErrorException, AttributeNotExistsException {
 		List<Attribute> groupGIDs = new ArrayList<>();
 		if(resourceGIDs == null || resourceGIDs.isEmpty()) {
 			return groupGIDs;
@@ -465,7 +427,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Set<String> getSetOfGIDNamespacesWhereFacilitiesHasTheSameGroupNameNamespace(PerunSessionImpl sess, List<Facility> facilities, Attribute unixGroupNameNamespace) throws WrongAttributeAssignmentException {
+	public Set<String> getSetOfGIDNamespacesWhereFacilitiesHasTheSameGroupNameNamespace(PerunSessionImpl sess, List<Facility> facilities, Attribute unixGroupNameNamespace) throws InternalErrorException, WrongAttributeAssignmentException, WrongReferenceAttributeValueException {
 		Set<String> gidNamespaces = new HashSet<>();
 		if(facilities == null || facilities.isEmpty()) return gidNamespaces;
 		Utils.notNull(facilities, "facilities");
@@ -493,7 +455,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Set<String> getSetOfGroupNameNamespacesWhereFacilitiesHasTheSameGIDNamespace(PerunSessionImpl sess, List<Facility> facilities, Attribute unixGIDNamespace) throws WrongAttributeAssignmentException, WrongReferenceAttributeValueException {
+	public Set<String> getSetOfGroupNameNamespacesWhereFacilitiesHasTheSameGIDNamespace(PerunSessionImpl sess, List<Facility> facilities, Attribute unixGIDNamespace) throws InternalErrorException, WrongAttributeAssignmentException, WrongReferenceAttributeValueException {
 		Set<String> groupNameNamespaces = new HashSet<>();
 		if(facilities == null || facilities.isEmpty()) return groupNameNamespaces;
 		Utils.notNull(unixGIDNamespace, "unixGIDNamespace");
@@ -523,87 +485,41 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public void checkReservedUnixGroupNames(Attribute groupNameAttribute) throws WrongAttributeValueException {
+	public void checkReservedUnixGroupNames(Attribute groupNameAttribute) throws InternalErrorException, WrongAttributeValueException {
 		if(groupNameAttribute == null) return;
 		checkPerunNamespacesMap();
 
 		String reservedNames = perunNamespaces.get(groupNameAttribute.getFriendlyName() + ":reservedNames");
 		if (reservedNames != null) {
 			List<String> reservedNamesList = Arrays.asList(reservedNames.split("\\s*,\\s*"));
-			if (reservedNamesList.contains(groupNameAttribute.valueAsString()))
+			if (reservedNamesList.contains(groupNameAttribute.getValue()))
 				throw new WrongAttributeValueException(groupNameAttribute, "This groupName is reserved.");
 		} else {
 			//Property not found in our attribute map, so we will use the default hardcoded values instead
-			if (reservedNamesForUnixGroups.contains(groupNameAttribute.valueAsString()))
+			if (reservedNamesForUnixGroups.contains(groupNameAttribute.getValue()))
 				throw new WrongAttributeValueException(groupNameAttribute, "This groupName is reserved.");
 		}
 	}
 
 	@Override
-	public void checkLoginNamespaceRegex(String namespace, String login, Pattern defaultRegex) throws InvalidLoginException {
-		Utils.notNull(namespace, "namespace to check login syntax");
-		Utils.notNull(login, "login to check syntax for");
-
+	public void checkUnpermittedUserLogins(Attribute loginAttribute) throws InternalErrorException, WrongAttributeValueException {
+		if(loginAttribute == null) return;
 		checkPerunNamespacesMap();
 
-		String regex = perunNamespaces.get("login-namespace:"+namespace+":regex");
-		if (regex != null) {
-			//Check if regex is valid
-			try {
-				Pattern.compile(regex);
-			} catch (PatternSyntaxException e) {
-				log.error("Regex pattern \"{}\" from \"login-namespace:{}:regex\" property of perun-namespaces.properties file is invalid.", regex, namespace);
-				throw new InternalErrorException("Regex pattern \""+regex+"\" from \"login-namespace:"+namespace+":regex\" property of perun-namespaces.properties file is invalid.");
-			}
-			// check syntax or if its between exceptions
-			if(!login.matches(regex) && !isLoginExceptionallyAllowed(namespace, login)) {
-				log.warn("Login '{}' in {} namespace doesn't match regex: {}", login, namespace, regex);
-				throw new InvalidLoginException("Login doesn't matches expected regex: \"" + regex +"\"");
-			}
-		} else {
-			// Regex property not found in our attribute map, so use the default hardcoded regex
-			// check syntax or if its between exceptions
-			if (!defaultRegex.matcher(login).matches() && !isLoginExceptionallyAllowed(namespace, login)) {
-				log.warn("Login '{}' in {} namespace doesn't match regex: {}", login, namespace, regex);
-				throw new InvalidLoginException("Login doesn't matches expected regex: \"" + defaultRegex +"\"");
-			}
-		}
-	}
-
-	@Override
-	public boolean isUserLoginPermitted(String namespace, String login) {
-		Utils.notNull(namespace, "namespace to check unpermited logins in");
-		if(login == null) return true;
-
-		checkPerunNamespacesMap();
-
-		String prohibitedNames = perunNamespaces.get("login-namespace:" + namespace + ":reservedNames");
-		if (prohibitedNames != null) {
-			List<String> prohibitedNamesList = Arrays.asList(prohibitedNames.split("\\s*,\\s*"));
-			return !prohibitedNamesList.contains(login) || isLoginExceptionallyAllowed(namespace, login);
+		String unpermittedNames = perunNamespaces.get(loginAttribute.getFriendlyName() + ":reservedNames");
+		if (unpermittedNames != null) {
+			List<String> unpermittedNamesList = Arrays.asList(unpermittedNames.split("\\s*,\\s*"));
+			if (unpermittedNamesList.contains(loginAttribute.getValue()))
+				throw new WrongAttributeValueException(loginAttribute, "This login is not permitted.");
 		} else {
 			//Property not found in our attribute map, so we will use the default hardcoded values instead
-			return !unpermittedNamesForUserLogins.contains(login) || isLoginExceptionallyAllowed(namespace, login);
+			if (unpermittedNamesForUserLogins.contains(loginAttribute.getValue()))
+				throw new WrongAttributeValueException(loginAttribute, "This login is not permitted.");
 		}
 	}
 
 	@Override
-	public boolean isLoginExceptionallyAllowed(String namespace, String login) {
-		Utils.notNull(namespace, "namespace to check allowed exceptions for login in");
-		if(login == null) return false;
-
-		checkPerunNamespacesMap();
-
-		String exceptionNames = perunNamespaces.get("login-namespace:" + namespace + ":allowedExceptions");
-		if (exceptionNames != null) {
-			List<String> exceptionNamesList = Arrays.asList(exceptionNames.split("\\s*,\\s*"));
-			return exceptionNamesList.contains(login);
-		}
-		return false;
-	}
-
-	@Override
-	public Attribute getGoogleGroupNameNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws WrongReferenceAttributeValueException {
+	public Attribute getGoogleGroupNameNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws InternalErrorException, WrongReferenceAttributeValueException {
 		Facility facility = sess.getPerunBl().getResourcesManagerBl().getFacility(sess, resource);
 		try {
 			Attribute googleGroupNameNamespaceAttribute = sess.getPerunBl().getAttributesManagerBl().getAttribute(sess, facility, A_F_googleGroupsDomain);
@@ -617,7 +533,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Attribute getUnixGroupNameNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws WrongReferenceAttributeValueException {
+	public Attribute getUnixGroupNameNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws InternalErrorException, WrongReferenceAttributeValueException {
 		Facility facility = sess.getPerunBl().getResourcesManagerBl().getFacility(sess, resource);
 		try {
 			Attribute unixGroupNameNamespaceAttribute = sess.getPerunBl().getAttributesManagerBl().getAttribute(sess, facility, A_F_unixGroupName_namespace);
@@ -631,7 +547,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Attribute getUnixGIDNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws WrongReferenceAttributeValueException {
+	public Attribute getUnixGIDNamespaceAttributeWithNotNullValue(PerunSessionImpl sess, Resource resource) throws InternalErrorException, WrongReferenceAttributeValueException {
 		Facility facility = sess.getPerunBl().getResourcesManagerBl().getFacility(sess, resource);
 		try {
 			Attribute unixGIDNamespaceAttribute = sess.getPerunBl().getAttributesManagerBl().getAttribute(sess, facility, A_F_unixGID_namespace);
@@ -645,7 +561,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public boolean isGroupUnixGIDNamespaceFillable(PerunSessionImpl sess, Group group, Attribute groupUnixGIDNamespace) throws WrongReferenceAttributeValueException, WrongAttributeAssignmentException {
+	public boolean isGroupUnixGIDNamespaceFillable(PerunSessionImpl sess, Group group, Attribute groupUnixGIDNamespace) throws InternalErrorException, WrongReferenceAttributeValueException, WrongAttributeAssignmentException {
 		Utils.notNull(group, "group");
 		Utils.notNull(groupUnixGIDNamespace, "groupUnixGIDNamespace");
 
@@ -679,19 +595,25 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		if (email == null) return false;
 
 		Matcher emailMatcher = Utils.emailPattern.matcher(email);
-		return emailMatcher.find();
+		if (emailMatcher.find()) return true;
+
+		return false;
 	}
 
 	@Override
 	public void checkFormatOfShell(String shell, Attribute attribute) throws WrongAttributeValueException {
-		Matcher match = shellPattern.matcher(shell);
+		//previous regex ^/[-a-zA-Z0-9_/]*$"
+		Pattern pattern = Pattern.compile("^(/[-_a-zA-Z0-9]+)+$");
+
+		Matcher match = pattern.matcher(shell);
+
 		if (!match.matches()) {
 			throw new WrongAttributeValueException(attribute, "Bad shell attribute format " + shell);
 		}
 	}
 
 	@Override
-	public void checkAttributeRegex(Attribute attribute, Pattern defaultRegex) throws WrongAttributeValueException {
+	public void checkAttributeRegex(Attribute attribute, String defaultRegex) throws InternalErrorException, WrongAttributeValueException {
 		if (attribute == null || attribute.getValue() == null) throw new InternalErrorException("Attribute or it's value is null.");
 		String attributeValue = (String) attribute.getValue();
 		checkPerunNamespacesMap();
@@ -710,7 +632,8 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 			}
 		} else {
 			//Regex property not found in our attribute map, so use the default hardcoded regex
-			if (!defaultRegex.matcher(attributeValue).matches()) {
+			if (defaultRegex == null) return;
+			if (!attributeValue.matches(defaultRegex)) {
 				throw new WrongAttributeValueException(attribute, "Wrong format. Regex: \"" + defaultRegex +"\" expected for this attribute:");
 			}
 		}
@@ -733,7 +656,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public void checkIfQuotasIsInLimit(Map<String, Pair<BigDecimal, BigDecimal>> quotaToCheck, Map<String, Pair<BigDecimal, BigDecimal>> limitQuota) {
+	public void checkIfQuotasIsInLimit(Map<String, Pair<BigDecimal, BigDecimal>> quotaToCheck, Map<String, Pair<BigDecimal, BigDecimal>> limitQuota) throws QuotaNotInAllowedLimitException, InternalErrorException {
 		if(quotaToCheck == null) throw new InternalErrorException("Quota to check can't be null.");
 		if(limitQuota == null) throw new InternalErrorException("Limit quota can't be null.");
 
@@ -766,15 +689,15 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Map<String, Pair<BigDecimal, BigDecimal>> checkAndTransferQuotas(Attribute quotasAttribute, PerunBean firstPlaceholder, PerunBean secondPlaceholder, boolean withMetrics) throws WrongAttributeValueException {
+	public Map<String, Pair<BigDecimal, BigDecimal>> checkAndTransferQuotas(Attribute quotasAttribute, PerunBean firstPlaceholder, PerunBean secondPlaceholder, boolean withMetrics) throws InternalErrorException, WrongAttributeValueException {
 		//firstPlaceholder can't be null
 		if(firstPlaceholder == null) throw new InternalErrorException("Missing first mandatory placeHolder (PerunBean).");
 		//If quotas attribute is null or it's value is empty, return empty hash map
-		if(quotasAttribute == null || quotasAttribute.getValue() == null) return new LinkedHashMap<>();
+		if(quotasAttribute == null || quotasAttribute.getValue() == null) return new HashMap<>();
 
 		//Prepare result container and value of attribute
-		Map<String, Pair<BigDecimal, BigDecimal>> transferedQuotas = new LinkedHashMap<>();
-		Map<String, String> defaultQuotasMap = quotasAttribute.valueAsMap();
+		Map<String, Pair<BigDecimal, BigDecimal>> transferedQuotas = new HashMap<>();
+		Map<String, String> defaultQuotasMap = (Map<String, String>) quotasAttribute.getValue();
 
 		//List to test if all paths are unique (/var/log and /var/log/ are the same so these two paths are not unique)
 		List<String> uniquePaths = new ArrayList<>();
@@ -786,8 +709,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 			String canonicalPath;
 			try {
 				canonicalPath = new URI(path).normalize().getPath();
-				//path should not end on '/' (problem with some systems as GPFS)
-				if(!canonicalPath.equals("/") && canonicalPath.endsWith("/")) canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
+				if(!canonicalPath.endsWith("/")) canonicalPath = canonicalPath.concat("/");
 			} catch (URISyntaxException ex) {
 				throw new WrongAttributeValueException(quotasAttribute, firstPlaceholder, secondPlaceholder, "Path '" + path + "' is not correct form.");
 			}
@@ -820,21 +742,23 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 			BigDecimal hardQuotaAfterTransfer;
 			//special behavior with metrics
 			if(withMetrics) {
+				String softQuotaNumber = null;
 				Matcher numberMatcher = numberPattern.matcher(softQuota);
 				if(!numberMatcher.find()) throw new ConsistencyErrorException("Matcher can't find number in softQuota '" + softQuota + "' in attribute " + quotasAttribute);
-				String softQuotaNumber = numberMatcher.group();
+				softQuotaNumber = numberMatcher.group();
 
 				//SoftQuotaLetter
-				String softQuotaLetter;
+				String softQuotaLetter = null;
 				Matcher letterMatcher = letterPattern.matcher(softQuota);
 				//in this case no letter means default and default is G
 				if(!letterMatcher.find()) softQuotaLetter = "G";
 				else softQuotaLetter = letterMatcher.group();
 
 				//HardQuotaNumber
+				String hardQuotaNumber = null;
 				numberMatcher = numberPattern.matcher(hardQuota);
 				if(!numberMatcher.find()) throw new ConsistencyErrorException("Matcher can't find number in hardQuota '" + hardQuota + "' in attribute " + quotasAttribute);
-				String hardQuotaNumber = numberMatcher.group();
+				hardQuotaNumber = numberMatcher.group();
 
 				//HardQuotaLetter
 				String hardQuotaLetter;
@@ -908,15 +832,15 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 			}
 			//other cases are ok
 
-			transferedQuotas.put(canonicalPath, new Pair<>(softQuotaAfterTransfer, hardQuotaAfterTransfer));
+			transferedQuotas.put(canonicalPath, new Pair(softQuotaAfterTransfer, hardQuotaAfterTransfer));
 		}
 
 		return transferedQuotas;
 	}
 
 	@Override
-	public Map<String, String> transferQuotasBackToAttributeValue(Map<String, Pair<BigDecimal, BigDecimal>> transferedQuotasMap, boolean withMetrics) {
-		Map<String, String> attributeQuotasValue = new LinkedHashMap<>();
+	public Map<String, String> transferQuotasBackToAttributeValue(Map<String, Pair<BigDecimal, BigDecimal>> transferedQuotasMap, boolean withMetrics) throws InternalErrorException {
+		Map<String, String> attributeQuotasValue = new HashMap<>();
 		//if null or empty, return empty attribute value map for quotas
 		if(transferedQuotasMap == null || transferedQuotasMap.isEmpty()) return attributeQuotasValue;
 
@@ -950,7 +874,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 
 	@Override
 	public Map<String,Pair<BigDecimal, BigDecimal>> mergeMemberAndResourceTransferredQuotas(Map<String, Pair<BigDecimal, BigDecimal>> resourceQuotas, Map<String, Pair<BigDecimal, BigDecimal>> memberResourceQuotas, Map<String, Pair<BigDecimal, BigDecimal>> quotasOverride) {
-		Map<String,Pair<BigDecimal, BigDecimal>> mergedTransferedQuotas = new LinkedHashMap<>();
+		Map<String,Pair<BigDecimal, BigDecimal>> mergedTransferedQuotas = new HashMap<>();
 
 		//first go through member-resource quotas values
 		for(String path: memberResourceQuotas.keySet()) {
@@ -981,7 +905,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 
 	@Override
 	public Map<String, Pair<BigDecimal, BigDecimal>> countUserFacilityQuotas(List<Map<String, Pair<BigDecimal, BigDecimal>>> allUserQuotas) {
-		Map<String, Pair<BigDecimal, BigDecimal>> resultTransferredQuotas = new LinkedHashMap<>();
+		Map<String, Pair<BigDecimal, BigDecimal>> resultTransferredQuotas = new HashMap<>();
 		//for every transfered map of merged quotas count one result transfered map
 		for(Map<String, Pair<BigDecimal, BigDecimal>> mapValue : allUserQuotas) {
 			//for every path in one transfered map
@@ -1004,7 +928,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 						hardQuota = quotasValue1.getRight().add(quotasValue2.getRight());
 					}
 					//create new pair of summed numbers
-					Pair<BigDecimal, BigDecimal> finalQuotasValue = new Pair<>(softQuota, hardQuota);
+					Pair<BigDecimal, BigDecimal> finalQuotasValue = new Pair(softQuota, hardQuota);
 					//add new summed pair to the result map
 					resultTransferredQuotas.put(pathKey, finalQuotasValue);
 				}
@@ -1035,7 +959,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		toBeNormalized = toBeNormalized.replaceAll("[^a-zA-Z]+", "");
 
 		// unable to fill login for users without name or with partial name
-		if (toBeNormalized.isEmpty()) {
+		if (toBeNormalized == null || toBeNormalized.isEmpty()) {
 			return null;
 		}
 
@@ -1061,7 +985,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 			 * @param lastName
 			 * @return generated login
 			 */
-			String generateLogin(String firstName, String lastName);
+			public String generateLogin(String firstName, String lastName);
 
 		}
 
@@ -1096,7 +1020,7 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public User getUserFromMessage(PerunSessionImpl sess, String message) {
+	public User getUserFromMessage(PerunSessionImpl sess, String message) throws InternalErrorException {
 		List<PerunBean> perunBeans = AuditParser.parseLog(message);
 
 		User user = null;
@@ -1135,14 +1059,14 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 	}
 
 	@Override
-	public Map<Integer, Integer> checkAndConvertGIDRanges(Attribute gidRangesAttribute) throws WrongAttributeValueException {
+	public Map<Integer, Integer> checkAndConvertGIDRanges(Attribute gidRangesAttribute) throws InternalErrorException, WrongAttributeValueException {
 		//Prepare structure for better working with GID Ranges
 		Map<Integer, Integer> convertedRanges = new HashMap<>();
 
 		//For null attribute throw an exception
 		if(gidRangesAttribute == null) throw new InternalErrorException("Can't get value from null attribute!");
 
-		Map<String, String> gidRanges = gidRangesAttribute.valueAsMap();
+		Map<String, String> gidRanges = (LinkedHashMap) gidRangesAttribute.getValue();
 
 		//Return empty map if there is empty input of gidRanges in method parameters
 		if(gidRanges == null || gidRanges.isEmpty()) return convertedRanges;
@@ -1185,81 +1109,11 @@ public class ModulesUtilsBlImpl implements ModulesUtilsBl {
 		return convertedRanges;
 	}
 
-	/**
-	 * Returns pair of number (BigDecimal) and unit (String) from given string. Returns default value Pair<0, "G"> if parsing fails.
-	 * E.g.: "5T" -> Pair<5, "T">
-	 *
-	 * @param attributeValue string to parse
-	 * @return pair of number and unit
-	 */
-	public static Pair<BigDecimal, String> getNumberAndUnitFromString(String attributeValue) {
-		String numberString = "0";
-		String unit = "G";
-
-		if (attributeValue != null) {
-			Matcher numberMatcher = numberPattern.matcher(attributeValue);
-			Matcher letterMatcher = letterPattern.matcher(attributeValue);
-			numberMatcher.find();
-			letterMatcher.find();
-			try {
-				numberString = attributeValue.substring(numberMatcher.start(), numberMatcher.end());
-			} catch (IllegalStateException ex) {
-				log.debug("No number could be parsed from given string.", ex);
-			}
-			try {
-				unit = attributeValue.substring(letterMatcher.start(), letterMatcher.end());
-			} catch (IllegalStateException ex) {
-				log.debug("No unit could be parsed from given string.", ex);
-			}
-		}
-
-		BigDecimal number = new BigDecimal(numberString.replace(',', '.'));
-
-		return new Pair<>(number, unit);
-	}
-
-	/**
-	 * Extracts expiration of the given certificates.
-	 *
-	 * @param certificates as a map where the key is a DN and the value is a certificate
-	 * @return map where the key is certificate DN and the value is a certificate expiration
-	 */
-	public static Map<String, String> retrieveCertificatesExpiration(Map<String, String> certificates) {
-		Utils.notNull(certificates, "certificates");
-		Map<String, String> resultMap = new LinkedHashMap<>();
-		certificates.forEach((key, value) -> resultMap.put(key, getCertificateExpiration(value)));
-		return resultMap;
-	}
-
 	public PerunBl getPerunBl() {
 		return this.perunBl;
 	}
 
 	public void setPerunBl(PerunBl perunBl) {
 		this.perunBl = perunBl;
-	}
-
-	/**
-	 * Retrieve expiration of the given certificate
-	 *
-	 * @param certificate in PEM format from which the expiration will be retrieved
-	 * @return Certificate expiration as String
-	 */
-	private static String getCertificateExpiration(String certificate) {
-		Utils.notNull(certificate, "certificate");
-
-		String certWithoutBegin = certificate.replaceFirst("-----BEGIN CERTIFICATE-----", "");
-		String rawCert = certWithoutBegin.replaceFirst("-----END CERTIFICATE-----", "");
-
-		try (ByteArrayInputStream bis = new ByteArrayInputStream(Base64.decodeBase64(rawCert.getBytes()))) {
-			CertificateFactory certFact = CertificateFactory.getInstance("X.509");
-			X509Certificate cert = (X509Certificate)certFact.generateCertificate(bis);
-			DateFormat dateFormat = DateFormat.getDateInstance();
-			return dateFormat.format(cert.getNotAfter());
-		} catch (IllegalArgumentException e) {
-			throw new ConsistencyErrorException("Certificate is not in base64 format!", e);
-		} catch (IOException | CertificateException e) {
-			throw new InternalError(e);
-		}
 	}
 }

@@ -16,7 +16,7 @@
 
 // Note: This file is auto generated. Do not edit manually.
 
-package com.cloudera.director.client.v2.model;
+package com.cloudera.director.client.v3.model;
 
 
 public class Health {

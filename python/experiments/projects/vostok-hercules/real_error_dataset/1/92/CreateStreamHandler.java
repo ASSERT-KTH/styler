@@ -8,17 +8,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.kontur.vostok.hercules.auth.AuthManager;
 import ru.kontur.vostok.hercules.auth.AuthResult;
-import ru.kontur.vostok.hercules.management.api.task.KafkaTaskQueue;
-import ru.kontur.vostok.hercules.meta.curator.CreationResult;
+import ru.kontur.vostok.hercules.meta.stream.DerivedStream;
 import ru.kontur.vostok.hercules.meta.stream.Stream;
 import ru.kontur.vostok.hercules.meta.stream.StreamRepository;
-import ru.kontur.vostok.hercules.meta.stream.validation.Validation;
+import ru.kontur.vostok.hercules.meta.stream.validation.StreamValidators;
+import ru.kontur.vostok.hercules.meta.task.TaskFuture;
+import ru.kontur.vostok.hercules.meta.task.TaskQueue;
+import ru.kontur.vostok.hercules.meta.task.stream.StreamTask;
+import ru.kontur.vostok.hercules.meta.task.stream.StreamTaskType;
 import ru.kontur.vostok.hercules.undertow.util.ExchangeUtil;
 import ru.kontur.vostok.hercules.undertow.util.ResponseUtil;
-import ru.kontur.vostok.hercules.util.functional.Result;
+import ru.kontur.vostok.hercules.util.validation.Validator;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Gregory Koshelev
@@ -26,17 +30,18 @@ import java.util.Optional;
 public class CreateStreamHandler implements HttpHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateStreamHandler.class);
+    private static final Validator<Stream> STREAM_VALIDATOR = StreamValidators.streamValidatorForHandler();
 
     private final AuthManager authManager;
-    private final StreamRepository repository;
-    private final KafkaTaskQueue kafkaTaskQueue;
+    private final TaskQueue<StreamTask> taskQueue;
+    private final StreamRepository streamRepository;
 
     private final ObjectReader deserializer;
 
-    public CreateStreamHandler(AuthManager authManager, StreamRepository repository, KafkaTaskQueue kafkaTaskQueue) {
+    public CreateStreamHandler(AuthManager authManager, TaskQueue<StreamTask> taskQueue, StreamRepository streamRepository) {
         this.authManager = authManager;
-        this.repository = repository;
-        this.kafkaTaskQueue = kafkaTaskQueue;
+        this.taskQueue = taskQueue;
+        this.streamRepository = streamRepository;
 
         ObjectMapper objectMapper = new ObjectMapper();
         this.deserializer = objectMapper.readerFor(Stream.class);
@@ -54,8 +59,9 @@ public class CreateStreamHandler implements HttpHandler {
         exchange.getRequestReceiver().receiveFullBytes((exch, bytes) -> {
             try {
                 Stream stream = deserializer.readValue(bytes);
-                Result result = Validation.check(stream);
-                if(!result.isOk()) {
+
+                Optional<String> streamError = STREAM_VALIDATOR.validate(stream);
+                if (streamError.isPresent()) {
                     ResponseUtil.badRequest(exch);
                     return;
                 }
@@ -69,20 +75,48 @@ public class CreateStreamHandler implements HttpHandler {
                     ResponseUtil.forbidden(exch);
                     return;
                 }
-                //TODO: Auth sources if needed
 
-                CreationResult creationResult = repository.create(stream);
-                if (!creationResult.isSuccess()) {
-                    if (creationResult.getStatus() == CreationResult.Status.ALREADY_EXIST) {
-                        ResponseUtil.conflict(exch);
-                    } else {
-                        ResponseUtil.internalServerError(exch);
+                if (stream instanceof DerivedStream) {// Auth source streams for DerivedStream
+                    String[] streams = ((DerivedStream) stream).getStreams();
+                    if (streams == null || streams.length == 0) {
+                        ResponseUtil.badRequest(exch);
+                        return;
                     }
+                    for (String sourceStream : streams) {
+                        authResult = authManager.authRead(apiKey, sourceStream);
+                        if (!authResult.isSuccess()) {
+                            ResponseUtil.forbidden(exch);
+                            return;
+                        }
+                    }
+                }
+
+                if (streamRepository.exists(stream.getName())) {
+                    ResponseUtil.conflict(exch);
                     return;
                 }
 
-                //TODO: Topic creation may fail after successful meta creation (no atomicity at all).
-                kafkaTaskQueue.createTopic(stream.getName(), stream.getPartitions(), stream.getTtl());
+                TaskFuture taskFuture =
+                        taskQueue.submit(
+                                new StreamTask(stream, StreamTaskType.CREATE),
+                                stream.getName(),
+                                10_000L,//TODO: Move to properties
+                                TimeUnit.MILLISECONDS);
+                if (taskFuture.isFailed()) {
+                    ResponseUtil.internalServerError(exch);
+                    return;
+                }
+
+                if (!ExchangeUtil.extractQueryParam(exch, "async").isPresent()) {
+                    taskFuture.await();
+                    if (taskFuture.isDone()) {
+                        ResponseUtil.ok(exch);
+                        return;
+                    }
+                    ResponseUtil.requestTimeout(exch);
+                    return;
+                }
+                ResponseUtil.ok(exch);
             } catch (IOException e) {
                 LOGGER.error("Error on processing request", e);
                 ResponseUtil.badRequest(exch);

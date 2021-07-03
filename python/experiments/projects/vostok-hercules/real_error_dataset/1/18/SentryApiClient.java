@@ -149,12 +149,12 @@ public class SentryApiClient {
         try {
             body = objectMapper.writeValueAsBytes(organizationModel);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Cannot create JSON from model for creation of organization '{}'", organization, e);
+            LOGGER.error(String.format("Cannot create JSON from model for organization creation: %s", e.getMessage()));
             return Result.error(new ErrorInfo(CANNOT_CREATE_JSON, false));
         }
         HttpPost post = new HttpPost(ORGANIZATIONS_URL);
         post.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_JSON));
-        LOGGER.info("Creating of new organization '{}' in Sentry", organization);
+        LOGGER.info(String.format("Creating of new organization '%s' in Sentry", organization));
         return request(post, new TypeReference<OrganizationInfo>() {});
     }
 
@@ -172,12 +172,12 @@ public class SentryApiClient {
         try {
             body = objectMapper.writeValueAsBytes(teamModel);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Cannot create JSON from model for creation team '{}'", team, e);
+            LOGGER.error(String.format("Cannot create JSON from model for team creation: %s", e.getMessage()));
             return Result.error(new ErrorInfo(CANNOT_CREATE_JSON, false));
         }
         HttpPost post = new HttpPost(String.format(CREATE_TEAM_URL, organization));
         post.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_JSON));
-        LOGGER.info("Creating of new team '{}' in Sentry", team);
+        LOGGER.info(String.format("Creating of new team '%s' in Sentry", team));
         return request(post, new TypeReference<TeamInfo>() {});
     }
 
@@ -196,12 +196,12 @@ public class SentryApiClient {
         try {
             body = objectMapper.writeValueAsBytes(projectModel);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Cannot create JSON from model for creation project '{}'", project, e);
+            LOGGER.error(String.format("Cannot create JSON from model for project creation: %s", e.getMessage()));
             return Result.error(new ErrorInfo(CANNOT_CREATE_JSON, false));
         }
         HttpPost post = new HttpPost(String.format(CREATE_PROJECT_URL, organization, team));
         post.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_JSON));
-        LOGGER.info("Creating of new project '{}' in Sentry", project);
+        LOGGER.info(String.format("Creating of new project '%s' in Sentry", project));
         return request(post, new TypeReference<ProjectInfo>() {});
     }
 

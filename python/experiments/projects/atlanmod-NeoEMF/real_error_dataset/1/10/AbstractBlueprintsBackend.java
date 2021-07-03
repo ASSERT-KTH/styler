@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -25,8 +25,8 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,17 +48,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
-
-    /**
-     * The {@link Converter} to use a long representation instead of {@link Id}.
-     * <p>
-     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
-     */
-    @Nonnull
-    protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
-            IdProvider.AS_LONG::convert,
-            o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
+abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
 
     /**
      * The property key used to define the index of an edge.
@@ -82,17 +73,34 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     /**
      * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
      */
-    private static final String PROPERTY_FEATURE_NAME = "_cn";
+    private static final String PROPERTY_CONTAINER_NAME = "_cn";
 
     /**
      * The property key used to define the name of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_NAME = "_in";
+    private static final String PROPERTY_INSTANCE_NAME = "_in";
 
     /**
      * The property key used to define the URI of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_URI = "_iu";
+    private static final String PROPERTY_INSTANCE_URI = "_iu";
+
+    /**
+     * The delimiter used to separate the property name and its value in a composed property.
+     *
+     * @see #formatProperty(FeatureBean, Object)
+     */
+    private static final String DELIMITER = "_";
+
+    /**
+     * The {@link Converter} to use a long representation instead of {@link Id}.
+     * <p>
+     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
+     */
+    @Nonnull
+    protected final Converter<Id, Object> idConverter = Converter.from(
+            IdConverters.withLong()::convert,
+            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -140,7 +148,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @see BlueprintsBackendFactory
      */
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
-        checkNotNull(baseGraph);
+        checkNotNull(baseGraph, "baseGraph");
 
         graph = new SmartIdGraph(baseGraph);
 
@@ -189,7 +197,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected String formatProperty(FeatureBean feature, Object suffix) {
-        return formatLabel(feature) + ':' + String.valueOf(suffix);
+        return formatLabel(feature) + DELIMITER + String.valueOf(suffix);
     }
 
     /**
@@ -200,10 +208,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the formatted label
      */
     @Nonnull
-    // TODO Can cause a massive overhead (metaClassNameOf)
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
+                // TODO Can cause a massive overhead (metaClassNameOf)
+                ? metaClassNameOf(feature.owner()) + DELIMITER + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
 
@@ -218,6 +226,35 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     private Index<Vertex> getOrCreateIndex(String name) {
         return Optional.ofNullable(graph.getIndex(name, Vertex.class))
                 .orElseGet(() -> graph.createIndex(name, Vertex.class));
+    }
+
+    /**
+     * Returns the size of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     *
+     * @return the size
+     */
+    @Nonnegative
+    protected int sizeOf(SingleFeatureBean key, Vertex vertex) {
+        return Optional.<Integer>ofNullable(vertex.getProperty(formatProperty(key, PROPERTY_SIZE))).orElse(0);
+    }
+
+    /**
+     * Defines the {@code size} of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     * @param size   the new size
+     */
+    protected void sizeFor(SingleFeatureBean key, Vertex vertex, @Nonnegative int size) {
+        if (size > 0) {
+            vertex.setProperty(formatProperty(key, PROPERTY_SIZE), size);
+        }
+        else {
+            vertex.removeProperty(formatProperty(key, PROPERTY_SIZE));
+        }
     }
 
     @Override
@@ -244,122 +281,92 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
         metaClassSet.forEach(m -> {
             Id id = generateClassId(m);
             Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(PROPERTY_CLASS_NAME, m.name(), vertex);
+            to.metaClassIndex.put(PROPERTY_INSTANCE_NAME, m.name(), vertex);
         });
     }
 
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
-        Optional<Vertex> containmentVertex = get(id);
-
-        if (!containmentVertex.isPresent()) {
+        Optional<Vertex> optContainmentVertex = get(id);
+        if (!optContainmentVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        final Vertex containmentVertex = optContainmentVertex.get();
 
-        return MoreIterables.onlyElement(edges)
+        return MoreIterables.onlyElement(containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER))
                 .map(e -> SingleFeatureBean.of(
-                        AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(PROPERTY_FEATURE_NAME)));
+                        idConverter.revert(e.getVertex(Direction.IN).getId()),
+                        e.getProperty(PROPERTY_CONTAINER_NAME)));
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         Vertex containmentVertex = getOrCreate(id);
-        Vertex containerVertex = getOrCreate(container.owner());
 
-        Iterable<Edge> containmentEdges = containmentVertex.query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        containmentEdges.forEach(Edge::remove);
-
-        Edge edge = containmentVertex.addEdge(EDGE_CONTAINER, containerVertex);
-        edge.setProperty(PROPERTY_FEATURE_NAME, container.id());
+        containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER).forEach(Edge::remove);
+        containmentVertex.addEdge(EDGE_CONTAINER, getOrCreate(container.owner())).setProperty(PROPERTY_CONTAINER_NAME, container.id());
     }
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
-        Optional<Vertex> containmentVertex = get(id);
-
-        if (!containmentVertex.isPresent()) {
+        Optional<Vertex> optContainmentVertex = get(id);
+        if (!optContainmentVertex.isPresent()) {
             return;
         }
 
-        Iterable<Edge> containmentEdges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        final Vertex containmentVertex = optContainmentVertex.get();
 
-        containmentEdges.forEach(Edge::remove);
+        containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER).forEach(Edge::remove);
     }
 
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
-        Optional<Vertex> vertex = get(id);
-
-        if (!vertex.isPresent()) {
+        Optional<Vertex> optVertex = get(id);
+        if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Vertex> metaClassVertices = vertex.get().query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .vertices();
+        final Vertex vertex = optVertex.get();
 
-        return MoreIterables.onlyElement(metaClassVertices)
+        return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, EDGE_INSTANCE_OF))
                 .map(v -> ClassBean.of(
-                        v.getProperty(PROPERTY_CLASS_NAME),
-                        v.getProperty(PROPERTY_CLASS_URI)));
+                        v.getProperty(PROPERTY_INSTANCE_NAME),
+                        v.getProperty(PROPERTY_INSTANCE_URI)));
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         Vertex vertex = getOrCreate(id);
 
         // Check the presence of a meta-class
-        Iterable<Edge> instanceEdges = vertex.query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        if (MoreIterables.onlyElement(instanceEdges).isPresent()) {
+        if (MoreIterables.onlyElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF)).isPresent()) {
             return false;
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(AS_LONG_OBJECT.convert(generateClassId(metaClass)));
-            mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
-            mcv.setProperty(PROPERTY_CLASS_URI, metaClass.uri());
+            Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
+            mcv.setProperty(PROPERTY_INSTANCE_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_INSTANCE_URI, metaClass.uri());
 
-            metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), mcv);
+            metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
             metaClassSet.add(metaClass);
 
             return mcv;
@@ -375,11 +382,11 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return metaClasses.stream()
-                .map(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
+                .map(mc -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, mc.name()))
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> AS_LONG_OBJECT.revert(v.getId()))
+                .map(v -> idConverter.revert(v.getId()))
                 .collect(Collectors.toSet());
     }
 
@@ -393,7 +400,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     private String metaClassNameOf(Id id) {
         // If the meta-class is not defined, the identifier represents the 'ROOT' element
-        return metaClassOf(id).map(ClassBean::name).orElse(":");
+        return metaClassOf(id).map(ClassBean::name).orElse(DELIMITER);
     }
 
     /**
@@ -405,7 +412,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(AS_LONG_OBJECT.convert(i))));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
     }
 
     /**
@@ -419,8 +426,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(AS_LONG_OBJECT.convert(i)))
-                        .orElseGet(() -> graph.addVertex(AS_LONG_OBJECT.convert(i))));
+                Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
+                        .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
     }
 
     /**
@@ -502,12 +509,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
 
-                Iterable<Edge> edges = referencedVertex.query()
-                        .direction(Direction.IN)
-                        .limit(1)
-                        .edges();
-
-                if (MoreIterables.isEmpty(edges)) {
+                if (MoreIterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
                     // If the Vertex has no more incoming edges remove it from the DB
                     referencedVertex.remove();
                 }

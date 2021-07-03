@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2019 H2 Group. Multiple-Licensed under the MPL 2.0,
+ * Copyright 2004-2020 H2 Group. Multiple-Licensed under the MPL 2.0,
  * and the EPL 1.0 (https://h2database.com/html/license.html).
  * Initial Developer: H2 Group
  */
@@ -108,8 +108,8 @@ public class Schema extends DbObjectBase {
             return null;
         }
         StringBuilder builder = new StringBuilder("CREATE SCHEMA IF NOT EXISTS ");
-        getSQL(builder, true).append(" AUTHORIZATION ");
-        owner.getSQL(builder, true);
+        getSQL(builder, DEFAULT_SQL_FLAGS).append(" AUTHORIZATION ");
+        owner.getSQL(builder, DEFAULT_SQL_FLAGS);
         return builder.toString();
     }
 
@@ -160,7 +160,7 @@ public class Schema extends DbObjectBase {
                         newModified = true;
                     } else if (dependentTable.getSchema() != this) {
                         throw DbException.get(ErrorCode.CANNOT_DROP_2, //
-                                obj.getSQL(false), dependentTable.getSQL(false));
+                                obj.getTraceSQL(), dependentTable.getTraceSQL());
                     } else if (!modified) {
                         dependentTable.removeColumnExpressionsDependencies(session);
                         dependentTable.setModified();
@@ -271,10 +271,9 @@ public class Schema extends DbObjectBase {
         }
         String name = obj.getName();
         Map<String, SchemaObject> map = getMap(obj.getType());
-        if (SysProperties.CHECK && map.get(name) != null) {
+        if (map.putIfAbsent(name, obj) != null) {
             DbException.throwInternalError("object already exists: " + name);
         }
-        map.put(name, obj);
         freeUniqueName(name);
     }
 
@@ -678,6 +677,10 @@ public class Schema extends DbObjectBase {
 
     public Collection<TableSynonym> getAllSynonyms() {
         return synonyms.values();
+    }
+
+    public Collection<FunctionAlias> getAllFunctionAliases() {
+        return functions.values();
     }
 
     /**

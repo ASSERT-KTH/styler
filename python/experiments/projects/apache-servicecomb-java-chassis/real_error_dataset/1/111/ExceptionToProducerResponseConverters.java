@@ -22,12 +22,8 @@ import java.util.Map;
 import org.apache.servicecomb.foundation.common.utils.SPIServiceUtils;
 import org.apache.servicecomb.swagger.invocation.Response;
 import org.apache.servicecomb.swagger.invocation.SwaggerInvocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExceptionToProducerResponseConverters {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionToProducerResponseConverters.class);
-
   private Map<Class<?>, ExceptionToProducerResponseConverter<Throwable>> exceptionToProducerResponseConverters =
       new HashMap<>();
 
@@ -64,14 +60,6 @@ public class ExceptionToProducerResponseConverters {
     if (converter == null) {
       converter = defaultConverter;
     }
-    try {
-      return converter.convert(swaggerInvocation, e);
-    } catch (Throwable throwable) {
-      // In case users do not implement correctly and maybe discovered at runtime to cause asycResponse callback hang.
-      LOGGER
-          .error("ExceptionToProducerResponseConverter {} cannot throw exception, please fix it.", converter.getClass(),
-              throwable);
-      return Response.failResp(swaggerInvocation.getInvocationType(), e);
-    }
+    return converter.convert(swaggerInvocation, e);
   }
 }

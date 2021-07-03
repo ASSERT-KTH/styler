@@ -24,7 +24,7 @@ import org.genxdm.Model;
 import org.genxdm.nodes.TraversingInformer;
 import org.genxdm.xpath.v10.BooleanExpr;
 import org.genxdm.xpath.v10.TraverserDynamicContext;
-import org.genxdm.xpath.v10.NodeDynamicContext;
+import org.genxdm.xpath.v10.ExprContextDynamic;
 
 final class OrExpr
     extends ConvertibleBooleanExpr
@@ -40,7 +40,7 @@ final class OrExpr
 	}
 
     @Override
-	public <N> boolean booleanFunction(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv) {
+	public <N> boolean booleanFunction(Model<N> model, final N node, final ExprContextDynamic<N> dynEnv) {
 		return expr1.booleanFunction(model, node, dynEnv) || expr2.booleanFunction(model, node, dynEnv);
 	}
 

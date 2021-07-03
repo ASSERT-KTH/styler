@@ -37,7 +37,7 @@ import javax.json.JsonValue;
 /**
  * Mock VersionEye for unit testing.
  * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id: 14fd126ed1d0b984ec78221ff130f79fe09d25ba $
+ * @version $Id: 0ab0e31cf5553cc0bcc09eb8c8b9be1c72c74612 $
  * @since 1.0.0
  * @todo #72:30min/DEV Continue implementing the mock API.
  *  Mocks for Organizations, Teams etc are needed.
@@ -134,7 +134,7 @@ public final class MkVersionEye implements VersionEye {
     }
     
     @Override
-    public Security security() {
+    public Security security(final String language) {
         throw new UnsupportedOperationException(
             "Mock Security API is not yet implemented."
         );

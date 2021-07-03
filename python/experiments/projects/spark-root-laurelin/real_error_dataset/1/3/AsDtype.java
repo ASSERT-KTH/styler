@@ -181,11 +181,11 @@ public class AsDtype implements Interpretation {
             case UINT1:
                 return new PrimitiveArray.Int2(this, sliced);
             case UINT2:
-                throw new UnsupportedOperationException("not implemented yet");
+                return new PrimitiveArray.Int4(this, sliced);
             case UINT4:
-                throw new UnsupportedOperationException("not implemented yet");
+                return new PrimitiveArray.Int8(this, sliced);
             case UINT8:
-                throw new UnsupportedOperationException("not implemented yet");
+                return new PrimitiveArray.Int8(this, sliced);
             case FLOAT4:
                 return new PrimitiveArray.Float4(this, sliced);
             case FLOAT8:
@@ -220,7 +220,7 @@ public class AsDtype implements Interpretation {
             case UINT4:
                 return new PrimitiveArray.Int8(this, length);
             case UINT8:
-                return new PrimitiveArray.Float8(this, length);
+                return new PrimitiveArray.Int8(this, length);
             case FLOAT4:
                 return new PrimitiveArray.Float4(this, length);
             case FLOAT8:
@@ -232,6 +232,7 @@ public class AsDtype implements Interpretation {
 
     @Override
     public RawArray convertBufferDiskToMemory(RawArray source) {
+        ByteBuffer converted;
         switch (this.dtype) {
             case UINT1:
                 /*
@@ -245,11 +246,70 @@ public class AsDtype implements Interpretation {
                  *
                  * ByteBuffers are always initialized to zero
                  */
-                ByteBuffer converted = ByteBuffer.allocate(source.length() * 2);
+                converted = ByteBuffer.allocate(source.length() * 2);
                 for (int i = 0; i < source.length(); i += 1) {
                     converted.put((i * 2) + 1, source.getByte(i));
                 }
                 return new RawArray(converted);
+            case UINT2:
+                /*
+                 * index:  0  1  2  3  4  5  6  7  8  9
+                 * src:   11 22 33 44
+                 * dest:  00 00 11 22 00 00 33 44
+                 */
+                converted = ByteBuffer.allocate(source.length() * 2);
+                for (int i = 0; i < source.length(); i += 2) {
+                    converted.put((i * 2) + 2, source.getByte(i));
+                    converted.put((i * 2) + 3, source.getByte(i + 1));
+                }
+                return new RawArray(converted);
+            case UINT4:
+                /*
+                 * index:  0  1  2  3  4  5  6  7  8  9
+                 * src:   11 22 33 44
+                 * dest:  00 00 00 00 11 22 33 44
+                 */
+                converted = ByteBuffer.allocate(source.length() * 2);
+                for (int i = 0; i < source.length(); i += 4) {
+                    converted.put((i * 2) + 4, source.getByte(i));
+                    converted.put((i * 2) + 5, source.getByte(i + 1));
+                    converted.put((i * 2) + 6, source.getByte(i + 2));
+                    converted.put((i * 2) + 7, source.getByte(i + 3));
+                }
+                return new RawArray(converted);
+            case UINT8:
+                /*
+                 * There is no type in Spark that can represent the full range
+                 * of 8-byte unsigned integers, so we need to cast it to a
+                 * long
+                 */
+                converted = ByteBuffer.allocate(source.length());
+                for (int i = 0; i < source.length(); i += 1) {
+                    converted.put(source.getByte(i));
+                }
+                return new RawArray(converted);
+            default:
+                break;
+        }
+        return source;
+    }
+
+    @Override
+    public PrimitiveArray.Int4 convertOffsetDiskToMemory(PrimitiveArray.Int4 source) {
+        PrimitiveArray.Int4 converted;
+        switch (this.dtype) {
+            case UINT1:
+            case UINT2:
+            case UINT4:
+                /*
+                 * The offsets are byte-indexed so if we make the type larger,
+                 * we need to also re-point the offsets
+                 */
+                converted = new PrimitiveArray.Int4(source.length());
+                for (int i = 0; i < source.length(); i += 1) {
+                    converted.put(i, source.get(i) * 2);
+                }
+                return converted;
             default:
                 break;
         }

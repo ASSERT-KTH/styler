@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Atlanmod.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.bean;
 
+import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
-import org.atlanmod.commons.LazyReference;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
@@ -36,6 +36,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 public class ClassBean implements Serializable {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
 
     /**
@@ -73,7 +74,7 @@ public class ClassBean implements Serializable {
             checkNotNull(p, "Unable to find EPackage associated with URI: %s. " +
                     "Make sure it is registered in EPackage.Registry", uri);
 
-            EClass c = (EClass) p.getEClassifier(name);
+            EClass c = EClass.class.cast(p.getEClassifier(name));
             checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, uri);
 
             return c;
@@ -239,11 +240,11 @@ public class ClassBean implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!ClassBean.class.isInstance(o)) {
             return false;
         }
 
-        ClassBean that = (ClassBean) o;
+        ClassBean that = ClassBean.class.cast(o);
         return Objects.equals(name, that.name)
                 && Objects.equals(uri, that.uri);
     }

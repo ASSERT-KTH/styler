@@ -1,15 +1,15 @@
-package io.openems.edge.evcs.keba.kecontact;
+package io.openems.edge.kostal.piko.core.impl;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition( //
-		name = "EVCS KEBA KeContact", //
-		description = "Implements the KEBA KeContact P20/P30 electric vehicle charging station.")
+		name = "KOSTAL PIKO Core", //
+		description = "Implements a KOSTAL PIKO.")
 @interface Config {
 
 	@AttributeDefinition(name = "Component-ID", description = "Unique ID of this Component")
-	String id() default "evcs0";
+	String id() default "kostalPiko0";
 
 	@AttributeDefinition(name = "Alias", description = "Human-readable name of this Component; defaults to Component-ID")
 	String alias() default "";
@@ -17,8 +17,14 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Is enabled?", description = "Is this Component enabled?")
 	boolean enabled() default true;
 
-	@AttributeDefinition(name = "IP-Address", description = "The IP address of the charging station.")
-	String ip() default "192.168.25.11";
+	@AttributeDefinition(name = "IP-Address", description = "The IP address")
+	String ip();
 
-	String webconsole_configurationFactory_nameHint() default "EVCS KEBA KeContact [{id}]";
+	@AttributeDefinition(name = "Unit ID", description = "The Unit ID")
+	int unitID() default 0xff;
+
+	@AttributeDefinition(name = "Port", description = "The Port")
+	int port() default 81;
+
+	String webconsole_configurationFactory_nameHint() default "KOSTAL PIKO CORE[{id}]";
 }

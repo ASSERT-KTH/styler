@@ -1,20 +1,20 @@
 package nl.knaw.huygens.timbuctoo.v5.dataset;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.IllegalDataSetNameException;
+import nl.knaw.huygens.timbuctoo.v5.security.dto.User;
+import nl.knaw.huygens.timbuctoo.v5.security.exceptions.AuthorizationCreationException;
 import nl.knaw.huygens.timbuctoo.util.Tuple;
 import nl.knaw.huygens.timbuctoo.v5.berkeleydb.BdbEnvironmentCreator;
 import nl.knaw.huygens.timbuctoo.v5.dataset.dto.DataSet;
 import nl.knaw.huygens.timbuctoo.v5.dataset.dto.PromotedDataSet;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.DataStoreCreationException;
-import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.IllegalDataSetNameException;
 import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSync;
 import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSyncException;
-import nl.knaw.huygens.timbuctoo.v5.filehelper.FileHelper;
+import nl.knaw.huygens.timbuctoo.v5.filestorage.implementations.filesystem.FileHelper;
 import nl.knaw.huygens.timbuctoo.v5.jsonfilebackeddata.JsonFileBackedData;
 import nl.knaw.huygens.timbuctoo.v5.security.PermissionFetcher;
 import nl.knaw.huygens.timbuctoo.v5.security.dto.Permission;
-import nl.knaw.huygens.timbuctoo.v5.security.dto.User;
-import nl.knaw.huygens.timbuctoo.v5.security.exceptions.AuthorizationCreationException;
 import nl.knaw.huygens.timbuctoo.v5.security.exceptions.PermissionFetchingException;
 import nl.knaw.huygens.timbuctoo.v5.util.TimbuctooRdfIdHelper;
 import org.apache.commons.io.FileUtils;
@@ -57,7 +57,6 @@ public class DataSetRepository {
   private final JsonFileBackedData<Map<String, Set<PromotedDataSet>>> storedDataSets;
   private final TimbuctooRdfIdHelper rdfIdHelper;
   private final String rdfBaseUri;
-  private final boolean publicByDefault;
   private final HashMap<UUID, StringBuffer> statusMap;
   private final FileHelper fileHelper;
   private final ResourceSync resourceSync;
@@ -66,8 +65,7 @@ public class DataSetRepository {
 
   public DataSetRepository(ExecutorService executorService, PermissionFetcher permissionFetcher,
                            DataSetConfiguration configuration, BdbEnvironmentCreator dataStoreFactory,
-                           TimbuctooRdfIdHelper rdfIdHelper, Consumer<String> onUpdated,
-                           boolean publicByDefault) throws IOException {
+                           TimbuctooRdfIdHelper rdfIdHelper, Consumer<String> onUpdated) throws IOException {
     this.executorService = executorService;
     this.permissionFetcher = permissionFetcher;
     this.configuration = configuration;
@@ -82,7 +80,6 @@ public class DataSetRepository {
     );
     this.rdfIdHelper = rdfIdHelper;
     this.rdfBaseUri = rdfIdHelper.instanceBaseUri();
-    this.publicByDefault = publicByDefault;
     statusMap = new HashMap<>();
     resourceSync = configuration.getResourceSync();
 
@@ -120,36 +117,7 @@ public class DataSetRepository {
     }
   }
 
-  public Optional<DataSet> getDataSet(String userId, String ownerId, String dataSetId) {
-    synchronized (dataSetMap) {
-      if (dataSetMap.containsKey(ownerId) && dataSetMap.get(ownerId).containsKey(dataSetId)) {
-        try {
-          if (permissionFetcher.getPermissions(userId, dataSetMap.get(ownerId).get(dataSetId).getMetadata()
-          ).contains(Permission.READ)) {
-            return Optional.ofNullable(dataSetMap.get(ownerId).get(dataSetId));
-          }
-        } catch (PermissionFetchingException e) {
-          return Optional.empty();
-        }
-      }
-      return Optional.empty();
-    }
-  }
-
-  public Optional<DataSet> getDataSet(String userId, String combinedId) {
-    final Tuple<String, String> splitId = PromotedDataSet.splitCombinedId(combinedId);
-    try {
-      if (permissionFetcher.getOldPermissions(userId, combinedId).contains(Permission.READ)) {
-        return Optional.ofNullable(dataSetMap.get(splitId.getLeft()))
-          .map(userDataSets -> userDataSets.get(splitId.getRight()));
-      }
-    } catch (PermissionFetchingException e) {
-      return Optional.empty();
-    }
-    return Optional.empty();
-  }
-
-  public Optional<DataSet> unsafeGetDataSetWithoutCheckingPermissions(String ownerId, String dataSetId) {
+  public Optional<DataSet> getDataSet(String ownerId, String dataSetId) {
     synchronized (dataSetMap) {
       if (dataSetMap.containsKey(ownerId) && dataSetMap.get(ownerId).containsKey(dataSetId)) {
         return Optional.ofNullable(dataSetMap.get(ownerId).get(dataSetId));
@@ -159,13 +127,18 @@ public class DataSetRepository {
     }
   }
 
+  public Optional<DataSet> getDataSet(String combinedId) {
+    final Tuple<String, String> splitId = PromotedDataSet.splitCombinedId(combinedId);
+    return Optional.ofNullable(dataSetMap.get(splitId.getLeft()))
+      .map(userDataSets -> userDataSets.get(splitId.getRight()));
+  }
+
   public boolean userMatchesPrefix(User user, String prefix) {
     return user != null && user.getPersistentId() != null && ("u" + user.getPersistentId()).equals(prefix);
   }
 
-
-  public DataSet createDataSet(User user, String dataSetId) throws DataStoreCreationException,
-    IllegalDataSetNameException {
+  public DataSet createDataSet(User user, String dataSetId)
+    throws DataStoreCreationException, IllegalDataSetNameException {
     //The ownerId might not be valid (i.e. a safe string). We make it safe here:
     //dataSetId is under the control of the user so we simply throw if it's not valid
     String ownerPrefix = "u" + user.getPersistentId();
@@ -200,8 +173,7 @@ public class DataSetRepository {
       dataSetId,
       baseUri,
       uriPrefix,
-      false,
-      publicByDefault
+      false
     );
     synchronized (dataSetMap) {
       Map<String, DataSet> userDataSets = dataSetMap.computeIfAbsent(ownerPrefix, key -> new HashMap<>());
@@ -238,13 +210,12 @@ public class DataSetRepository {
     }
   }
 
-  boolean dataSetExists(String ownerId, String dataSet) {
-    return unsafeGetDataSetWithoutCheckingPermissions(ownerId, dataSet).isPresent();
+  public boolean dataSetExists(String ownerId, String dataSet) {
+    return getDataSet(ownerId, dataSet).isPresent();
   }
 
   public Collection<DataSet> getDataSets() {
-    return dataSetMap.values().stream().flatMap(x -> x.values().stream())
-      .collect(Collectors.toList());
+    return dataSetMap.values().stream().flatMap(x -> x.values().stream()).collect(Collectors.toList());
   }
 
   public Collection<DataSet> getPromotedDataSets() {
@@ -259,7 +230,7 @@ public class DataSetRepository {
     for (Map<String, DataSet> userDataSets : dataSetMap.values()) {
       for (DataSet dataSet : userDataSets.values()) {
         try {
-          boolean isAllowedToWrite = permissionFetcher.getOldPermissions(userId, dataSet.getMetadata().getCombinedId())
+          boolean isAllowedToWrite = permissionFetcher.getPermissions(userId, dataSet.getMetadata().getCombinedId())
             .contains(Permission.WRITE);
           if (isAllowedToWrite) {
             dataSetsWithWriteAccess.add(dataSet);
@@ -290,12 +261,6 @@ public class DataSetRepository {
     return Tuple.tuple(uuid, rdfCreator);
   }
 
-  public void removeDataSet(String combinedId) throws IOException {
-    Tuple<String, String> ownerIdDataSetName = PromotedDataSet.splitCombinedId(combinedId);
-
-    this.removeDataSet(ownerIdDataSetName.getLeft(), ownerIdDataSetName.getRight());
-  }
-
   public void removeDataSet(String ownerId, String dataSetName) throws IOException {
     dataStoreFactory.removeDatabasesFor(ownerId, dataSetName);
     // remove from datasets.json
@@ -319,10 +284,6 @@ public class DataSetRepository {
   }
 
   public void stop() {
-    for (DataSet dataSet : getDataSets()) {
-      dataSet.stop();
-    }
-
     dataStoreFactory.stop();
   }
 

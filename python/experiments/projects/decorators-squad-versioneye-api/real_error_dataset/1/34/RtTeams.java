@@ -39,15 +39,15 @@ import com.jcabi.http.response.RestResponse;
 /**
  * Real implementation for {@link Teams}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id: 978f51513802a8798c6797c56c94eaf7d9b86ce0 $
+ * @version $Id: cbb2f207db13b32eed44dbca98451b6815b2cbd5 $
  * @since 1.0.0
  */
 final class RtTeams implements Teams {
 
     /**
-     * Original RtVersionEye.
+     * Initial HTTP request, entry point of the API.
      */
-    private RtVersionEye versionEye;
+    private Request entry;
     
     /**
      * HTTP request for Teams endpoint.
@@ -62,18 +62,13 @@ final class RtTeams implements Teams {
     /**
      * Ctor.
      * @param req HTTP request for Teams.
-     * @param versionEye The original RtVersionEye.
+     * @param entry Original API entry point.
      * @param orga The parent organization.
      */
-    RtTeams(
-        final RtVersionEye versionEye,
-        final Request req,
-        final Organization orga
-    ) {
-        this.versionEye = versionEye;
+    RtTeams(final Request entry, final Request req, final Organization orga) {
+        this.entry = entry;
         this.req = req.uri().path("/teams")
             .queryParam("api_key", orga.apiKey()).back();
-        this.orga = orga;
     }
     
     @Override
@@ -87,11 +82,7 @@ final class RtTeams implements Teams {
         final List<Team> teams = new ArrayList<>();
         for(int idx=0; idx<array.size(); idx++) {
             teams.add(
-                new RtTeam(
-                    array.getJsonObject(idx),
-                    this.orga,
-                    this.versionEye
-                )
+                new RtTeam(array.getJsonObject(idx), this.orga, this.entry)
             );
         }
         return teams;
@@ -100,11 +91,6 @@ final class RtTeams implements Teams {
     @Override
     public Organization organization() {
         return this.orga;
-    }
-
-    @Override
-    public VersionEye versionEye() {
-        return this.versionEye;
     }
 
 }

@@ -7,11 +7,14 @@ import com.artemis.utils.IntBag;
 import com.artemis.utils.reflect.ClassReflection;
 import com.artemis.utils.reflect.Constructor;
 import com.artemis.utils.reflect.ReflectionException;
-import com.esotericsoftware.jsonbeans.*;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 
 import java.io.*;
 
-public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSerializer<JsonSerializer> {
+public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSerializer<Json.Serializer> {
 	private final Json json;
 	private final ComponentLookupSerializer lookup;
 	private final IntBagEntitySerializer intBagEntitySerializer;
@@ -33,7 +36,7 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 		entitySerializer = new EntitySerializer(world, referenceTracker);
 		transmuterEntrySerializer = new TransmuterEntrySerializer();
 
-		json = new Json(OutputType.json);
+		json = new Json(JsonWriter.OutputType.json);
 		json.setIgnoreUnknownFields(true);
 		json.setSerializer(SaveFileFormat.ComponentIdentifiers.class, lookup);
 		json.setSerializer(Bag.class, new EntityBagSerializer(world));
@@ -55,12 +58,13 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 	}
 
 	@Override
-	public WorldSerializationManager.ArtemisSerializer register(Class<?> type, JsonSerializer serializer) {
+	public WorldSerializationManager.ArtemisSerializer register(Class<?> type, Json.Serializer serializer) {
 		json.setSerializer(type, serializer);
 		return this;
 	}
 
-	public void save(Writer writer, SaveFileFormat save) {
+	@Override
+	protected void save(Writer writer, SaveFileFormat save) {
 		try {
 			referenceTracker.inspectTypes(world);
 			referenceTracker.preWrite(save);
@@ -75,7 +79,6 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 			save.componentIdentifiers.build();
 			if (prettyPrint) {
 				writer.append(json.prettyPrint(save));
-				writer.flush();
 			} else {
 				json.toJson(save, writer);
 			}
@@ -86,7 +89,13 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 
 	@Override
 	protected void save(OutputStream out, SaveFileFormat save) throws SerializationException {
-		save(new OutputStreamWriter(out), save);
+		try {
+			OutputStreamWriter osw = new OutputStreamWriter(out);
+			save(osw, save);
+			osw.flush();
+		} catch (IOException e) {
+			throw new SerializationException(e);
+		}
 	}
 
 	@Override
@@ -109,9 +118,6 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 	}
 
 	private <T extends SaveFileFormat> T newInstance(Class<T> format) {
-		if (format.getClass().equals(SaveFileFormat.class))
-			return (T) new SaveFileFormat();
-
 		try {
 			Constructor ctor = ClassReflection.getDeclaredConstructor(format);
 			ctor.setAccessible(true);

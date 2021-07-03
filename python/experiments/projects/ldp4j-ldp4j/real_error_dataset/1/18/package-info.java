@@ -20,8 +20,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  * #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
- *   Artifact    : org.ldp4j.commons.rmf:rmf-core:0.2.2
- *   Bundle      : rmf-core-0.2.2.jar
+ *   Artifact    : org.ldp4j.commons.rmf:rmf-api:0.2.2
+ *   Bundle      : rmf-api-0.2.2.jar
  * #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
  */
 /**
@@ -32,4 +32,4 @@
  *  of the <i>CBLA</i>- provides the means for creating third party 
  *  implementations or extensions of the <i>CBLA</i>.
  */
-package org.ldp4j.rdf.impl;
+package org.ldp4j.rdf.util;

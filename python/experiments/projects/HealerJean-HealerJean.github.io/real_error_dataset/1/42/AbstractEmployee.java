@@ -1,0 +1,66 @@
+package com.hlj.domain;
+
+import java.util.Date;
+
+/**
+ * AbstractEmployee entity provides the base persistence definition of the
+ * Employee entity. @author MyEclipse Persistence Tools
+ */
+
+public abstract class AbstractEmployee implements java.io.Serializable {
+
+	// Fields
+
+	private Integer id;
+	private String name;
+	private String email;
+	private Date hiredate;
+
+	// Constructors
+
+	/** default constructor */
+	public AbstractEmployee() {
+	}
+
+	/** full constructor */
+	public AbstractEmployee(String name, String email, Date hiredate) {
+		this.name = name;
+		this.email = email;
+		this.hiredate = hiredate;
+	}
+
+	// Property accessors
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getHiredate() {
+		return this.hiredate;
+	}
+
+	public void setHiredate(Date hiredate) {
+		this.hiredate = hiredate;
+	}
+
+}

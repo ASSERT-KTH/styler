@@ -16,7 +16,7 @@
 
 // Note: This file is auto generated. Do not edit manually.
 
-package com.cloudera.director.client.latest.model;
+package com.cloudera.director.client.v5.model;
 
 
 public class Login {

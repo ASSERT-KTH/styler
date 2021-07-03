@@ -10,7 +10,7 @@
 
 package org.digidoc4j.impl.asic.asice;
 
-import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.DSSDocument;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.digidoc4j.Configuration;
@@ -34,6 +34,7 @@ import org.digidoc4j.impl.asic.xades.validation.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ import java.util.concurrent.Future;
 /**
  * ASIC-E container validator
  */
-public class AsicEContainerValidator {
+public class AsicEContainerValidator implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(AsicEContainerValidator.class);
 

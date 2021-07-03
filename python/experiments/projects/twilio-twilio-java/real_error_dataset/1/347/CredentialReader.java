@@ -5,7 +5,7 @@
  *       /       /
  */
 
-package com.twilio.rest.api.v2010.account.sip.credentiallist;
+package com.twilio.rest.conversations.v1;
 
 import com.twilio.base.Page;
 import com.twilio.base.Reader;
@@ -19,34 +19,11 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+/**
+ * PLEASE NOTE that this class contains beta products that are subject to
+ * change. Use them with caution.
+ */
 public class CredentialReader extends Reader<Credential> {
-    private String pathAccountSid;
-    private final String pathCredentialListSid;
-
-    /**
-     * Construct a new CredentialReader.
-     *
-     * @param pathCredentialListSid The unique id that identifies the credential
-     *                              list that contains the desired credentials
-     */
-    public CredentialReader(final String pathCredentialListSid) {
-        this.pathCredentialListSid = pathCredentialListSid;
-    }
-
-    /**
-     * Construct a new CredentialReader.
-     *
-     * @param pathAccountSid The unique id of the Account that is responsible for
-     *                       this resource.
-     * @param pathCredentialListSid The unique id that identifies the credential
-     *                              list that contains the desired credentials
-     */
-    public CredentialReader(final String pathAccountSid,
-                            final String pathCredentialListSid) {
-        this.pathAccountSid = pathAccountSid;
-        this.pathCredentialListSid = pathCredentialListSid;
-    }
-
     /**
      * Make the request to the Twilio API to perform the read.
      *
@@ -67,12 +44,10 @@ public class CredentialReader extends Reader<Credential> {
     @Override
     @SuppressWarnings("checkstyle:linelength")
     public Page<Credential> firstPage(final TwilioRestClient client) {
-        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
         Request request = new Request(
             HttpMethod.GET,
-            Domains.API.toString(),
-            "/2010-04-01/Accounts/" + this.pathAccountSid + "/SIP/CredentialLists/" + this.pathCredentialListSid + "/Credentials.json",
-            client.getRegion()
+            Domains.CONVERSATIONS.toString(),
+            "/v1/Credentials"
         );
 
         addQueryParams(request);
@@ -89,7 +64,6 @@ public class CredentialReader extends Reader<Credential> {
     @Override
     @SuppressWarnings("checkstyle:linelength")
     public Page<Credential> getPage(final String targetUrl, final TwilioRestClient client) {
-        this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
         Request request = new Request(
             HttpMethod.GET,
             targetUrl
@@ -110,10 +84,7 @@ public class CredentialReader extends Reader<Credential> {
                                      final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getNextPageUrl(
-                Domains.API.toString(),
-                client.getRegion()
-            )
+            page.getNextPageUrl(Domains.CONVERSATIONS.toString())
         );
         return pageForRequest(client, request);
     }
@@ -130,10 +101,7 @@ public class CredentialReader extends Reader<Credential> {
                                          final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getPreviousPageUrl(
-                Domains.API.toString(),
-                client.getRegion()
-            )
+            page.getPreviousPageUrl(Domains.CONVERSATIONS.toString())
         );
         return pageForRequest(client, request);
     }

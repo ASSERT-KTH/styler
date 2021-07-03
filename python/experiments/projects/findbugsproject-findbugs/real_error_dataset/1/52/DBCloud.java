@@ -73,6 +73,7 @@ import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.Version;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.cloud.AbstractCloud;
+import edu.umd.cs.findbugs.cloud.OnlineCloud;
 import edu.umd.cs.findbugs.cloud.BugFilingCommentHelper;
 import edu.umd.cs.findbugs.cloud.CloudFactory;
 import edu.umd.cs.findbugs.cloud.CloudPlugin;
@@ -82,7 +83,7 @@ import edu.umd.cs.findbugs.util.Util;
 /**
  * @author pwilliam
  */
-public class DBCloud extends AbstractCloud {
+public class DBCloud extends AbstractCloud implements OnlineCloud {
 
     public static final String FINDBUGS_USER_PROPERTY = "findbugsUser";
 
@@ -335,8 +336,8 @@ public class DBCloud extends AbstractCloud {
      * 
      */
     @Override
-	public boolean communicationInitiated() {
-    		return bugsPopulated.getCount() == 0 && communicationInitiated.get();
+    public boolean communicationInitiated() {
+            return bugsPopulated.getCount() == 0 && communicationInitiated.get();
     }
 
     private static final long LAST_SEEN_UPDATE_WINDOW = TimeUnit.MILLISECONDS.convert(7 * 24 * 3600, TimeUnit.SECONDS);
@@ -553,14 +554,14 @@ public class DBCloud extends AbstractCloud {
                         if (!bd.inDatabase) {
                             storeNewBug(b, stillPresentAt);
                             if (LOG_BUG_UPLOADS) 
-                            	System.out.printf("NEW %tD: %s%n", new Date(getLocalFirstSeen(b)), b.getMessage());
+                                System.out.printf("NEW %tD: %s%n", new Date(getLocalFirstSeen(b)), b.getMessage());
                         } else {
                             long firstSeenLocally = getLocalFirstSeen(b);
 
                             if (FindBugs.validTimestamp(firstSeenLocally)
                                     && (firstSeenLocally < bd.firstSeen || !FindBugs.validTimestamp(bd.firstSeen))) {
                                 if (LOG_BUG_UPLOADS) 
-                                	System.out.printf("BACKDATED %tD -> %tD: %s%n", new Date(bd.firstSeen), new Date(firstSeenLocally), b.getMessage());
+                                    System.out.printf("BACKDATED %tD -> %tD: %s%n", new Date(bd.firstSeen), new Date(firstSeenLocally), b.getMessage());
                
                                 bd.firstSeen = firstSeenLocally;
                                 storeFirstSeen(bd);
@@ -615,11 +616,11 @@ public class DBCloud extends AbstractCloud {
     }
 
     private String getJDBCProperty(String propertyName) {
-    	String override = System.getProperty("findbugs.override-jdbc." + propertyName);
-    	if (override != null) {
-    		System.out.println("Using override value for " + propertyName + ":" + override);
-    		return override;
-    	}
+        String override = System.getProperty("findbugs.override-jdbc." + propertyName);
+        if (override != null) {
+            System.out.println("Using override value for " + propertyName + ":" + override);
+            return override;
+        }
         return properties.getProperty("findbugs.jdbc." + propertyName);
     }
 
@@ -641,8 +642,8 @@ public class DBCloud extends AbstractCloud {
 
     @Override
     public boolean initialize() throws IOException {
-    	if (CloudFactory.DEBUG) 
-    		System.out.println("Starting DBCloud initialization");
+        if (CloudFactory.DEBUG)
+            System.out.println("Starting DBCloud initialization");
         if (initializationIsDoomed()) {
             signinState = SigninState.SIGNIN_FAILED;
             return false;
@@ -650,7 +651,7 @@ public class DBCloud extends AbstractCloud {
 
         signinState = SigninState.SIGNED_IN;
         if (CloudFactory.DEBUG) 
-    		System.out.println("DBCloud initialization preflight checks completed");
+            System.out.println("DBCloud initialization preflight checks completed");
        
         loadBugComponents();
         Connection c = null;
@@ -687,9 +688,9 @@ public class DBCloud extends AbstractCloud {
                 throw new RuntimeException("Unable to get database results");
 
             } else {
-            	if (CloudFactory.DEBUG) 
-            		System.out.println("Unable to connect to database");
-            	signinState = SigninState.SIGNIN_FAILED;
+                if (CloudFactory.DEBUG)
+                    System.out.println("Unable to connect to database");
+                signinState = SigninState.SIGNIN_FAILED;
                 return false;
             }
 
@@ -1279,7 +1280,7 @@ public class DBCloud extends AbstractCloud {
 
     public void signIn() {
         if (getSigninState() != SigninState.SIGNED_IN)
-        	throw new UnsupportedOperationException("Unable to sign in");
+            throw new UnsupportedOperationException("Unable to sign in");
     }
 
     public void signOut() {
@@ -1753,9 +1754,14 @@ public class DBCloud extends AbstractCloud {
             return String.format("%d remain to be synchronized", numToSync);
         else if (resync != null && resync.after(lastUpdate))
             return String.format("%d updates received from db at %s", resyncCount, format.format(resync));
-        else if (updatesSentToDatabase == 0)
-            return String.format("%d issues synchronized with database", idMap.size());
-        else
+        else if (updatesSentToDatabase == 0) {
+            int skipped = bugCollection.getCollection().size() - idMap.size();
+            if (skipped == 0)
+            		return String.format("%d issues synchronized with database", idMap.size());
+            else
+                    return String.format("%d issues synchronized with database, %d low rank issues not synchronized", 
+                            idMap.size(), skipped);
+        } else
             return String.format("%d classifications/bug filings sent to db, last updated at %s", updatesSentToDatabase,
                     format.format(lastUpdate));
 

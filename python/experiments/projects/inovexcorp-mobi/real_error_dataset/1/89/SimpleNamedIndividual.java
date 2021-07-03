@@ -1,8 +1,8 @@
-package com.mobi.ontology.core.impl.owlapi;
+package org.matonto.ontology.core.impl.owlapi;
 
 /*-
  * #%L
- * com.mobi.ontology.core.impl.owlapi
+ * org.matonto.ontology.core.impl.owlapi
  * $Id:$
  * $HeadURL:$
  * %%
@@ -23,9 +23,9 @@ package com.mobi.ontology.core.impl.owlapi;
  * #L%
  */
 
-import com.mobi.ontology.core.api.NamedIndividual;
-import com.mobi.ontology.core.api.types.EntityType;
-import com.mobi.rdf.api.IRI;
+import org.matonto.ontology.core.api.NamedIndividual;
+import org.matonto.ontology.core.api.types.EntityType;
+import org.matonto.rdf.api.IRI;
 
 import javax.annotation.Nonnull;
 

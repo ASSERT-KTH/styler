@@ -41,7 +41,7 @@ import com.jcabi.http.response.RestResponse;
 /**
  * Favorites on VersionEye.
  * @author Sherif Waly (sherifwaly95@gmail.com)
- * @version $Id: 75099a8fcb075b5b72dc392ddc74c723ba73185a $
+ * @version $Id: cb1471bd0bc320cc60e5c036a27c4fa999cba5cd $
  * @since 1.0.0
  *
  */
@@ -89,19 +89,6 @@ final class RtFavorites implements Favorites {
                 .json()
                 .readObject()
                 .getJsonObject("user")
-        );
-    }
-
-    @Override
-    public Paging paging() throws IOException {
-        return new JsonPaging(
-            this.req.fetch()
-                .as(RestResponse.class)
-                .assertStatus(HttpURLConnection.HTTP_OK)
-                .as(JsonResponse.class)
-                .json()
-                .readObject()
-                .getJsonObject("paging")
         );
     }
 

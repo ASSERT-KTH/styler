@@ -16,7 +16,7 @@
 
 // Note: This file is auto generated. Do not edit manually.
 
-package com.cloudera.director.client.v6.model;
+package com.cloudera.director.client.v8.model;
 
 import java.util.HashMap;
 import java.util.List;

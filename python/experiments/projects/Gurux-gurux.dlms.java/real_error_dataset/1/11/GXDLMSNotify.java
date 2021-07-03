@@ -26,7 +26,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 // See the GNU General Public License for more details.
 //
-// More information of Gurux products: https://www.gurux.org
+// More information of Gurux products: http://www.gurux.org
 //
 // This code is licensed under the GNU General Public License v2. 
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -223,7 +223,7 @@ public class GXDLMSNotify {
      */
     public final boolean getData(final GXByteBuffer reply,
             final GXReplyData data) {
-        return GXDLMS.getData(settings, reply, data, null);
+        return GXDLMS.getData(settings, reply, data);
     }
 
     /**
@@ -248,7 +248,7 @@ public class GXDLMSNotify {
         if (dt == DataType.NONE && value != null) {
             dt = GXDLMSConverter.getDLMSDataType(value);
         }
-        GXCommon.setData(settings, buff, dt, value);
+        GXCommon.setData(buff, dt, value);
     }
 
     /**
@@ -266,7 +266,7 @@ public class GXDLMSNotify {
      */
     public final void addData(final Object value, final DataType type,
             final GXByteBuffer buff) {
-        GXCommon.setData(settings, buff, type, value);
+        GXCommon.setData(buff, type, value);
     }
 
     /**
@@ -297,8 +297,7 @@ public class GXDLMSNotify {
         List<byte[]> reply;
         if (getUseLogicalNameReferencing()) {
             GXDLMSLNParameters p = new GXDLMSLNParameters(settings, 0,
-                    Command.DATA_NOTIFICATION, 0, null, data, 0xff,
-                    Command.NONE);
+                    Command.DATA_NOTIFICATION, 0, null, data, 0xff);
             if (time == null) {
                 p.setTime(null);
             } else {
@@ -501,8 +500,7 @@ public class GXDLMSNotify {
                 addData(it.getKey(), it.getValue(), buff);
             }
             GXDLMSLNParameters p = new GXDLMSLNParameters(settings, 0,
-                    Command.EVENT_NOTIFICATION, 0, null, buff, 0xff,
-                    Command.NONE);
+                    Command.EVENT_NOTIFICATION, 0, null, buff, 0xff);
             p.setTime(time);
             reply = GXDLMS.getLnMessages(p);
         } else {

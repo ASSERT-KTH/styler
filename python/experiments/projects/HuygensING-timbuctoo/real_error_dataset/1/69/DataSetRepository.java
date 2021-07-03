@@ -14,6 +14,8 @@ import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.DataSetPublishException;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.DataStoreCreationException;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.IllegalDataSetNameException;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.NotEnoughPermissionsException;
+import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSync;
+import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSyncException;
 import nl.knaw.huygens.timbuctoo.v5.filehelper.FileHelper;
 import nl.knaw.huygens.timbuctoo.v5.jacksonserializers.TimbuctooCustomSerializers;
 import nl.knaw.huygens.timbuctoo.v5.jsonfilebackeddata.JsonFileBackedData;
@@ -27,7 +29,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,6 +67,7 @@ public class DataSetRepository {
   private final String rdfBaseUri;
   private final boolean publicByDefault;
   private final FileHelper fileHelper;
+  private final ResourceSync resourceSync;
   private Consumer<String> onUpdated;
 
 
@@ -111,6 +113,8 @@ public class DataSetRepository {
     this.rdfIdHelper = rdfIdHelper;
     this.rdfBaseUri = rdfIdHelper.instanceBaseUri();
     this.publicByDefault = publicByDefault;
+    resourceSync = configuration.getResourceSync();
+
     dataSetMap = new HashMap<>();
     this.onUpdated = onUpdated;
   }
@@ -134,10 +138,11 @@ public class DataSetRepository {
                 executorService,
                 rdfBaseUri,
                 dataStoreFactory,
+                resourceSync,
                 () -> onUpdated.accept(dataSetMetaData.getCombinedId())
               )
             );
-          } catch (DataStoreCreationException e) {
+          } catch (DataStoreCreationException | ResourceSyncException e) {
             throw new IOException(e);
           }
         }
@@ -145,14 +150,6 @@ public class DataSetRepository {
     }
   }
 
-  /**
-   * Gets the dataSet designated by <code>ownerId</code> and <code>dataSetId</code> but only if the given
-   * <code>user</code> has read-access to the dataSet.
-   * @param user the user that wants read-access, may be <code>null</code>
-   * @param ownerId ownerId
-   * @param dataSetId dataSetId
-   * @return the dataSet designated by <code>ownerId</code> and <code>dataSetId</code>
-   */
   public Optional<DataSet> getDataSet(User user, String ownerId, String dataSetId) {
     synchronized (dataSetMap) {
       if (dataSetMap.containsKey(ownerId) && dataSetMap.get(ownerId).containsKey(dataSetId)) {
@@ -160,31 +157,6 @@ public class DataSetRepository {
           if (permissionFetcher.getPermissions(user, dataSetMap.get(ownerId).get(dataSetId).getMetadata()
           ).contains(Permission.READ)) {
             return Optional.ofNullable(dataSetMap.get(ownerId).get(dataSetId));
-          }
-        } catch (PermissionFetchingException e) {
-          return Optional.empty();
-        }
-      }
-      return Optional.empty();
-    }
-  }
-
-  /**
-   * Gets the description of the dataSet designated by <code>ownerId</code> and <code>dataSetId</code>
-   * but only if the given <code>user</code> has read-access to the dataSet.
-   * @param user the user that wants read-access, may be <code>null</code>
-   * @param ownerId ownerId
-   * @param dataSetId dataSetId
-   * @return the description of the dataSet designated by <code>ownerId</code> and <code>dataSetId</code>
-   */
-  public Optional<File> getDataSetDescription(User user, String ownerId, String dataSetId) {
-    synchronized (dataSetMap) {
-      if (dataSetMap.containsKey(ownerId) && dataSetMap.get(ownerId).containsKey(dataSetId)) {
-        try {
-          if (permissionFetcher.getPermissions(user, dataSetMap.get(ownerId).get(dataSetId).getMetadata()
-          ).contains(Permission.READ)) {
-            File file = fileHelper.fileInDataSet(ownerId, dataSetId, "description.xml");
-            return Optional.of(file);
           }
         } catch (PermissionFetchingException e) {
           return Optional.empty();
@@ -279,11 +251,12 @@ public class DataSetRepository {
               executorService,
               rdfBaseUri,
               dataStoreFactory,
+              resourceSync,
               () -> onUpdated.accept(dataSet.getCombinedId())
             )
           );
         } catch (
-          PermissionFetchingException | AuthorizationCreationException | IOException e) {
+          PermissionFetchingException | AuthorizationCreationException | IOException | ResourceSyncException e) {
           throw new DataStoreCreationException(e);
         }
       }
@@ -342,7 +315,7 @@ public class DataSetRepository {
     for (Map<String, DataSet> userDataSets : dataSetMap.values()) {
       for (DataSet dataSet : userDataSets.values()) {
         try {
-          boolean isAllowedToWrite = permissionFetcher.getPermissions(user, dataSet.getMetadata())
+          boolean isAllowedToWrite = permissionFetcher.getOldPermissions(user, dataSet.getMetadata().getCombinedId())
             .contains(Permission.WRITE);
           if (isAllowedToWrite) {
             dataSetsWithWriteAccess.add(dataSet);
@@ -353,27 +326,6 @@ public class DataSetRepository {
       }
     }
     return dataSetsWithWriteAccess;
-  }
-
-  /**
-   * Gets all published dataSets and all dataSets the given <code>user</code> has read-access to.
-   * @param user the user that wants read-access, may be <code>null</code>
-   * @return all published dataSets + all dataSets the given <code>user</code> has read-access to
-   */
-  public Collection<DataSet> getDataSetsWithReadAccess(@Nullable User user) {
-    List<DataSet> dataSetsWithReadAccess = new ArrayList<>();
-    for (Map<String, DataSet> userDataSets : dataSetMap.values()) {
-      for (DataSet dataSet : userDataSets.values()) {
-        try {
-          if (permissionFetcher.getPermissions(user, dataSet.getMetadata()).contains(Permission.READ)) {
-            dataSetsWithReadAccess.add(dataSet);
-          }
-        } catch (PermissionFetchingException e) {
-          LOG.error("Could not fetch read permission", e);
-        }
-      }
-    }
-    return dataSetsWithReadAccess;
   }
 
   public void removeDataSet(String ownerId, String dataSetName, User user)
@@ -392,9 +344,9 @@ public class DataSetRepository {
       }
       dataSet.stop();
       dataSetMap.get(ownerId).remove(dataSetName);
-      //resourceSync.removeDataSet(ownerId, dataSetName);
+      resourceSync.removeDataSet(ownerId, dataSetName);
       permissionFetcher.removeAuthorizations(combinedId);
-    } catch (PermissionFetchingException e) {
+    } catch (ResourceSyncException | PermissionFetchingException e) {
       throw new IOException(e);
     }
 

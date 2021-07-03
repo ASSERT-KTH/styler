@@ -1,12 +1,16 @@
 package com.jn.easyjson.tests.cases;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import com.gitee.qdbp.tools.files.PathTools;
 import com.jn.easyjson.core.JSON;
 import com.jn.easyjson.core.JSONBuilder;
 import com.jn.easyjson.core.JSONBuilderProvider;
@@ -17,6 +21,7 @@ import com.jn.easyjson.tests.entity.struct.PagingResult;
 import com.jn.easyjson.tests.entity.struct.Person;
 import com.jn.easyjson.tests.entity.user.Gender;
 import com.jn.easyjson.tests.utils.CompareTools;
+import com.jn.langx.util.reflect.type.Types;
 
 /**
  * PagingRequest复杂对象测试
@@ -33,9 +38,16 @@ public abstract class EasyJsonPagingRequestTest {
     private Map<Integer, Person> idToPersonMap = new HashMap<Integer, Person>();
     private PagingRequest<Map<String, Object>, Person> pagingRequest;
 
+    @BeforeMethod
+    public void testStart(Method method) {
+        System.out.println("/************************************************************\\");
+        System.out.println("| " + method.getDeclaringClass().getSimpleName() + '.' + method.getName());
+        System.out.println("\\************************************************************/");
+    }
+
     public EasyJsonPagingRequestTest() {
         JSONBuilder jsonBuilder = JSONBuilderProvider.create();
-        jsonBuilder.serializeNulls(false).serializeNumberAsString(true).serializeEnumUsingValue(true);
+        jsonBuilder.serializeNulls(true).serializeNumberAsString(false);
         // IgnoreAnnotationExclusion不在这里测试, 单独写用例
         // jsonBuilder.addDeserializationExclusion(new IgnoreAnnotationExclusion());
         this.json = jsonBuilder.build();
@@ -88,7 +100,7 @@ public abstract class EasyJsonPagingRequestTest {
     }
 
     protected String getPersonString() {
-        return "{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false}";
+        return "{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"}";
     }
 
     protected List<Person> getPersonsObject() {
@@ -96,7 +108,7 @@ public abstract class EasyJsonPagingRequestTest {
     }
 
     protected String getPersonsString() {
-        return "[{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false},{\"id\":\"1\",\"name\":\"name_1\",\"birthday\":1592178944534,\"contact\":{\"email\":\"name_1@gmail.com\",\"phone\":\"phone1\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"authCode\":\"12312425353464565\",\"married\":false}]";
+        return "[{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"},{\"authCode\":12312425353464565,\"birthday\":1592179316459,\"contact\":{\"email\":\"name_1@gmail.com\",\"mobilePhone\":\"mphone1\",\"msn\":\"msn1\",\"phone\":\"phone1\",\"qq\":null,\"webchat\":\"webchat1\"},\"gender\":\"FEMALE\",\"id\":1,\"married\":false,\"name\":\"name_1\"}]";
     }
 
     protected Person getPersonById(int id) {
@@ -111,14 +123,51 @@ public abstract class EasyJsonPagingRequestTest {
         return pagingRequest;
     }
 
-    protected abstract String getPagingRequestString();
+    protected String readClassResourceText(String path) throws IOException {
+        URL url = PathTools.findClassResource(EasyJsonPagingRequestTest.class, path);
+        return PathTools.downloadString(url);
+    }
+
+    protected String getPagingRequestStringIncludeNulls() throws IOException {
+        return readClassResourceText("json/PagingRequestIncludeNulls.json");
+    }
+
+    protected String getPagingRequestStringExcludeNulls() throws IOException {
+        return readClassResourceText("json/PagingRequestExcludeNulls.json");
+    }
+
+    protected String getPagingRequestStringNumberAsString() throws IOException {
+        return readClassResourceText("json/PagingRequestNumberAsString.json");
+    }
 
     @Test(priority = 10001)
-    public void testPagingRequestSerialize10001() {
+    public void testPagingRequestSerializeIncludeNulls10001() throws Exception {
         PagingRequest<Map<String, Object>, Person> object = getPagingRequestObject();
         String jsonString = json.toJson(object);
         System.out.println(jsonString);
-        Assert.assertEquals(jsonString, getPagingRequestString());
+        CompareTools.assertJsonEquals(jsonString, getPagingRequestStringIncludeNulls());
+    }
+
+    @Test(priority = 10002)
+    public void testPagingRequestSerializeExcludeNulls10002() throws Exception {
+        JSONBuilder jsonBuilder = JSONBuilderProvider.create();
+        jsonBuilder.serializeNulls(false).serializeNumberAsString(false);
+        JSON json = jsonBuilder.build();
+        PagingRequest<Map<String, Object>, Person> object = getPagingRequestObject();
+        String jsonString = json.toJson(object);
+        System.out.println(jsonString);
+        CompareTools.assertJsonEquals(jsonString, getPagingRequestStringExcludeNulls());
+    }
+
+    @Test(priority = 10003)
+    public void testPagingRequestSerializeNumberAsString10003() throws Exception {
+        JSONBuilder jsonBuilder = JSONBuilderProvider.create();
+        jsonBuilder.serializeNulls(true).serializeNumberAsString(true);
+        JSON json = jsonBuilder.build();
+        PagingRequest<Map<String, Object>, Person> object = getPagingRequestObject();
+        String jsonString = json.toJson(object);
+        System.out.println(jsonString);
+        CompareTools.assertJsonEquals(jsonString, getPagingRequestStringNumberAsString());
     }
 
     @Test(priority = 10101)
@@ -126,7 +175,7 @@ public abstract class EasyJsonPagingRequestTest {
         Person object = getPersonObject();
         String jsonString = json.toJson(object);
         System.out.println(jsonString);
-        Assert.assertEquals(jsonString, getPersonString());
+        CompareTools.assertJsonEquals(jsonString, getPersonString());
     }
 
     @Test(priority = 10102)
@@ -142,15 +191,14 @@ public abstract class EasyJsonPagingRequestTest {
         List<Person> object = getPersonsObject();
         String jsonString = json.toJson(object);
         System.out.println(jsonString);
-        Assert.assertEquals(jsonString, getPersonsString());
+        CompareTools.assertJsonEquals(jsonString, getPersonsString());
     }
 
     @Test(priority = 10202)
     public void testPersonsDeserialize10202() {
-        // TODO JSON对象缺少解析数组字符串的方法
-        // String jsonString = getPersonString();
-        // List<Person> actual = json.parseArray(jsonString, Person.class);
-        // List<Person> expected = getPersonsObject();
-        // CompareTools.assertDeepEquals(actual, expected);
+        String jsonString = getPersonsString();
+        List<Person> actual = json.fromJson(jsonString, Types.getListParameterizedType(Person.class));
+        List<Person> expected = getPersonsObject();
+        CompareTools.assertDeepEquals(actual, expected);
     }
 }

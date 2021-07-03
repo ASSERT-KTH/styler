@@ -38,12 +38,7 @@ import static jooq.steve.db.tables.Transaction.TRANSACTION;
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-    private final DSLContext ctx;
-
-    @Autowired
-    public TransactionRepositoryImpl(DSLContext ctx) {
-        this.ctx = ctx;
-    }
+    @Autowired private DSLContext ctx;
 
     @Override
     @SuppressWarnings("unchecked")

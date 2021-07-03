@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class SetUtils {
+public class SetUtils {
 
   private SetUtils() {/* util class */}
 

@@ -5,7 +5,7 @@
  *       /       /
  */
 
-package com.twilio.rest.autopilot.v1.assistant;
+package com.twilio.rest.verify.v2.service;
 
 import com.twilio.base.Page;
 import com.twilio.base.Reader;
@@ -25,16 +25,15 @@ import com.twilio.rest.Domains;
  * access, please contact help@twilio.com.
  */
 public class WebhookReader extends Reader<Webhook> {
-    private final String pathAssistantSid;
+    private final String pathServiceSid;
 
     /**
      * Construct a new WebhookReader.
      *
-     * @param pathAssistantSid The SID of the Assistant that is the parent of the
-     *                         resources to read
+     * @param pathServiceSid Service Sid.
      */
-    public WebhookReader(final String pathAssistantSid) {
-        this.pathAssistantSid = pathAssistantSid;
+    public WebhookReader(final String pathServiceSid) {
+        this.pathServiceSid = pathServiceSid;
     }
 
     /**
@@ -59,9 +58,8 @@ public class WebhookReader extends Reader<Webhook> {
     public Page<Webhook> firstPage(final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            Domains.AUTOPILOT.toString(),
-            "/v1/Assistants/" + this.pathAssistantSid + "/Webhooks",
-            client.getRegion()
+            Domains.VERIFY.toString(),
+            "/v2/Services/" + this.pathServiceSid + "/Webhooks"
         );
 
         addQueryParams(request);
@@ -98,10 +96,7 @@ public class WebhookReader extends Reader<Webhook> {
                                   final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getNextPageUrl(
-                Domains.AUTOPILOT.toString(),
-                client.getRegion()
-            )
+            page.getNextPageUrl(Domains.VERIFY.toString())
         );
         return pageForRequest(client, request);
     }
@@ -118,10 +113,7 @@ public class WebhookReader extends Reader<Webhook> {
                                       final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getPreviousPageUrl(
-                Domains.AUTOPILOT.toString(),
-                client.getRegion()
-            )
+            page.getPreviousPageUrl(Domains.VERIFY.toString())
         );
         return pageForRequest(client, request);
     }

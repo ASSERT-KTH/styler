@@ -105,8 +105,6 @@ public class AppConfiguration implements Configuration, Serializable {
     private String loginRedirectUrl;
     private String logoutRedirectUrl;
 
-    private String[] clusteredInums;
-
     private String clientAssociationAttribute;
 
     private String oxAuthIssuer;
@@ -144,6 +142,7 @@ public class AppConfiguration implements Configuration, Serializable {
     private boolean authenticationRecaptchaEnabled;
 
     private boolean scimTestMode;
+    private boolean oxTrustApiTestMode;
 
     private boolean rptConnectionPoolUseConnectionPooling;
     private int rptConnectionPoolMaxTotal;
@@ -593,14 +592,6 @@ public class AppConfiguration implements Configuration, Serializable {
         this.logoutRedirectUrl = logoutRedirectUrl;
     }
 
-    public String[] getClusteredInums() {
-        return clusteredInums;
-    }
-
-    public void setClusteredInums(String[] clusteredInums) {
-        this.clusteredInums = clusteredInums;
-    }
-
     public String getClientAssociationAttribute() {
         return clientAssociationAttribute;
     }
@@ -767,6 +758,14 @@ public class AppConfiguration implements Configuration, Serializable {
 
     public void setScimTestMode(boolean scimTestMode) {
         this.scimTestMode = scimTestMode;
+    }
+
+    public boolean isOxTrustApiTestMode() {
+        return oxTrustApiTestMode;
+    }
+
+    public void setOxTrustApiTestMode(boolean oxTrustApiTestMode) {
+        this.oxTrustApiTestMode = oxTrustApiTestMode;
     }
 
     public boolean isRptConnectionPoolUseConnectionPooling() {

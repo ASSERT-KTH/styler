@@ -17,8 +17,10 @@ package org.genxdm.processor.w3c.xs.validation.impl;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -29,6 +31,7 @@ import org.genxdm.processor.w3c.xs.exception.cvc.CvcElementUnexpectedChildInNill
 import org.genxdm.processor.w3c.xs.exception.cvc.CvcUnexpectedNonWhiteSpaceTextInElementOnlyContentException;
 import org.genxdm.processor.w3c.xs.exception.cvc.CvcUnexpectedTextInEmptyContentException;
 import org.genxdm.processor.w3c.xs.exception.sm.SmExceptionSupplier;
+import org.genxdm.processor.w3c.xs.exception.sm.SmUndeclaredReferenceException;
 import org.genxdm.processor.w3c.xs.validation.api.VxMapping;
 import org.genxdm.processor.w3c.xs.validation.api.VxOutputHandler;
 import org.genxdm.processor.w3c.xs.validation.api.VxPSVI;
@@ -95,6 +98,7 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		this.sdl = sdl;
 	}
 
+	@Override
 	public void characters(final char[] ch, final int start, final int length)
 	{
 		m_text.append(ch, start, length);
@@ -141,6 +145,7 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		}
 	}
 
+	@Override
 	public void endDocument() throws IOException, AbortException
 	{
 		m_mac.endDocument();
@@ -154,6 +159,7 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		}
 	}
 
+	@Override
 	public VxPSVI endElement() throws IOException, AbortException
 	{
 		if (m_text.length() > 0)
@@ -482,6 +488,7 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		}
 	}
 
+	@Override
 	public void reset()
 	{
 	    if (m_namespaces != null)
@@ -491,31 +498,47 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		m_nodeIndex = -1;
 		if (m_icm != null)
 		    m_icm.reset();
+		skipContents = null; // null is a better sentinel than empty
 	}
 	
+	@Override
 	public void setComponentProvider(ComponentProvider provider)
 	{
+	    m_provider = provider;
 	    ValidationCache cache = new ValidationCache();
-        m_attributes = new AttributeManager<A>(provider, m_atomBridge);
-        m_currentPSVI = m_documentPSVI = new ModelPSVI(ProcessContentsMode.Strict, provider, cache);
+        m_attributes = new AttributeManager<A>(m_provider, m_atomBridge);
+        m_currentPSVI = m_documentPSVI = new ModelPSVI(ProcessContentsMode.Strict, m_provider, cache);
 
-        m_mac = new ModelAnalyzerImpl(provider, cache);
+        m_mac = new ModelAnalyzerImpl(m_provider, cache);
         if (m_errors != null)
             m_mac.setExceptionHandler(m_errors);
 	}
 	
+	@Override
 	public void setExceptionHandler(final SchemaExceptionHandler handler)
 	{
 		m_errors = PreCondition.assertArgumentNotNull(handler, "handler");
 		if (m_mac != null)
 		    m_mac.setExceptionHandler(handler);
 	}
+	
+	@Override
+	public void setIgnoredElements(Iterable<QName> toSkip)
+	{
+	    if (skipContents == null)
+	        skipContents = new HashSet<QName>();
+	    skipContents.clear();
+	    for (QName name : toSkip)
+	        skipContents.add(name);
+	}
 
+	@Override
 	public void setOutputHandler(final VxOutputHandler<A> handler)
 	{
 		m_downstream = PreCondition.assertArgumentNotNull(handler, "handler");
 	}
 
+	@Override
 	public void startDocument(final URI documentURI) throws IOException
 	{
 		this.documentURI = documentURI;
@@ -534,12 +557,23 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 		}
 	}
 
-	public void startElement(final QName elementName, final LinkedList<VxMapping<String, String>> namespaces, final LinkedList<VxMapping<QName, String>> attributes) throws IOException, AbortException
+	@Override
+	public void startElement(final QName elementName, final LinkedList<VxMapping<String, String>> namespaces, final LinkedList<VxMapping<QName, String>> attributes, QName elementType) 
+	    throws IOException, AbortException
 	{
+	    Type localType = null;
+	    if (elementType != null)
+	    {
+	        localType = m_provider.getTypeDefinition(elementType);
+	        // if a specified type has been provided by the caller, but the provider cannot resolve
+	        // the type, we need to simply stop, because things are not going to work predictably.
+	        // a non-null elementType *requires* that we end up with non-null localType right here.
+	        if (localType == null)
+	            throw new AbortException(new SmUndeclaredReferenceException(elementType, null));
+	    }
 		m_text.setLength(0);
 
 		final ValidationItem parentItem = m_currentItem;
-		// TODO: Supply a location?
 		m_currentItem = parentItem.push(++m_nodeIndex);
 
 		// Maintain prefix mapping information.
@@ -552,12 +586,31 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 			}
 		}
 
+		// before dealing with attributes, which may make the localType non-null,
+		// tweak processContents in the 'parent' (which may be a phantom) of the
+		// current element's PSVI to lax. use null in savedPC as a sentinel when
+		// restoring, later.
+		ProcessContentsMode savedPC = null;
+		if (localType != null)
+		{
+		    savedPC = m_currentPSVI.getProcessContents();
+		    // set m_currentPSVI process contents to lax, because we have an element type override
+		    // which means that there probably is no element declaration for this element's name.
+		    // unless it's lax, this will cause an error.
+		    m_currentPSVI.setProcessContents(ProcessContentsMode.Lax);
+		}
+		
 		// Digest the attributes from the XMLSchema-instance namespace.
 		m_attributes.initialize(elementName, m_currentItem, attributes, m_namespaces, documentURI, m_errors, sdl);
-		final Type localType = m_attributes.getLocalType();
+		// if we're not operating in caller-overrides-type mode, get the xsi:type override
+		if (m_attributes.getLocalType() != null)
+		    localType = m_attributes.getLocalType();
 		final Boolean explicitNil = m_attributes.getLocalNil();
 
 		m_currentPSVI = m_mac.startElement(elementName, localType, explicitNil);
+		// reset processContents in the child, if we relaxed it above, signalled by non-null savedPC
+		if (savedPC != null)
+		    m_currentPSVI.setProcessContents(savedPC); // actually a different ModelPSVI than the one we set lax above
 
 		m_icm.startElement(m_currentPSVI, m_currentItem, m_errors);
 
@@ -570,12 +623,27 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 				m_downstream.namespace(mapping.getKey(), mapping.getValue());
 			}
 		}
-
-		// The attribute manager validates the attributes and sends them downstream, returning the index of the last
-		// attribute.
-		m_nodeIndex = m_attributes.attributes(m_currentPSVI, m_currentItem, attributes, m_downstream, m_errors, m_idm, m_icm);
+        // The attribute manager validates the attributes and sends them downstream, returning the index of the last
+        // attribute.
+		if ( (skipContents != null) && (skipContents.size() > 0) && skipContents.contains(elementName) ) // non-null, non-empty
+		{
+		    // set skip so that the children will be ignored.
+		    m_currentPSVI.setProcessContents(ProcessContentsMode.Skip);
+		    // this little bit is how we convince the attribute manager to ignore the attributes
+		    // in this type. they'll be passed through as untypedAtomic (potentially a problem if
+		    // there are attributes that shouldn't be ignored, but we have to do it this way or rewrite
+		    // attribute manager, which is currently out of scope).
+		    Type savedType = m_currentPSVI.getType();
+		    m_currentPSVI.m_type = null;
+		    m_nodeIndex = m_attributes.attributes(m_currentPSVI, m_currentItem, attributes, m_downstream, m_errors, m_idm, m_icm);
+		    // the reset may be unnecessary, since we've set skip contents. do it anyway.
+		    m_currentPSVI.m_type = savedType;
+		}
+		else // the common case:
+		    m_nodeIndex = m_attributes.attributes(m_currentPSVI, m_currentItem, attributes, m_downstream, m_errors, m_idm, m_icm);
 	}
 
+	@Override
 	public void text(final List<? extends A> initialValue) throws IOException, AbortException
 	{
 		m_nodeIndex++;
@@ -726,10 +794,13 @@ final class ValidationKernel<A> implements VxValidator<A>, SmExceptionSupplier
 			}
 		}
 	}
+	
     private final AtomBridge<A> m_atomBridge;
     private AttributeManager<A> m_attributes;
     private ValidationItem m_currentItem;
     private ModelPSVI m_currentPSVI;
+    private ComponentProvider m_provider;
+    private Set<QName> skipContents;
 
     private final ValidationItem m_documentItem;
     private ModelPSVI m_documentPSVI;

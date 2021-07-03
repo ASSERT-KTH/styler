@@ -19,6 +19,8 @@
 
 package org.apache.servicecomb.saga.alpha.core;
 
+import com.actionsky.txle.grpc.interfaces.eventaddition.ITxEventAdditionService;
+import com.actionsky.txle.grpc.interfaces.eventaddition.TxEventAddition;
 import org.apache.servicecomb.saga.alpha.core.cache.ITxleCache;
 import org.apache.servicecomb.saga.alpha.core.kafka.IKafkaMessageRepository;
 import org.apache.servicecomb.saga.alpha.core.kafka.KafkaMessage;
@@ -49,12 +51,12 @@ public class TxConsistentService {
   private IKafkaMessageRepository kafkaMessageRepository;
 
 	@Autowired
-    private TxleMetrics txleMetrics;
-
-	@Autowired
 	private ITxleCache txleCache;
 
-  private final List<String> types = Arrays.asList(TxEndedEvent.name(), TxAbortedEvent.name());
+	@Autowired
+	private ITxEventAdditionService eventAdditionService;
+
+	private final List<String> types = Arrays.asList(TxEndedEvent.name(), TxAbortedEvent.name());
 
   public TxConsistentService(TxEventRepository eventRepository, CommandRepository commandRepository, TxTimeoutRepository timeoutRepository) {
     this.eventRepository = eventRepository;
@@ -63,19 +65,13 @@ public class TxConsistentService {
   }
 
   public boolean handle(TxEvent event) {
-	  // start duration.
-	  txleMetrics.startMarkTxDuration(event);
 	  if (types.contains(event.type()) && isGlobalTxAborted(event)) {
 		  LOG.info("Transaction event {} rejected, because its parent with globalTxId {} was already aborted",
 				  event.type(), event.globalTxId());
-		  // end duration.
-		  txleMetrics.endMarkTxDuration(event);
 		  return false;
 	  }
 
 	  eventRepository.save(event);
-	  // end duration.
-	  txleMetrics.endMarkTxDuration(event);
 
 	  return true;
   }
@@ -88,11 +84,6 @@ public class TxConsistentService {
 	 * @author Gannalyo
 	 */
 	public int handleSupportTxPause(TxEvent event) {
-		// start duration.
-		txleMetrics.startMarkTxDuration(event);
-		// child transaction count
-		txleMetrics.countChildTxNumber(event);
-
 		String globalTxId = event.globalTxId(), localTxId = event.localTxId(), type = event.type();
 		if (!types.contains(type) && isGlobalTxAborted(event)) {
 			LOG.info("Transaction event {} rejected, because its parent with globalTxId {} was already aborted", type, globalTxId);
@@ -100,9 +91,6 @@ public class TxConsistentService {
 			if (SagaEndedEvent.name().equals(type)) {
 				eventRepository.save(event);
 			}
-			txleMetrics.countTxNumber(event, false, event.retries() > 0);
-			// end duration.
-			txleMetrics.endMarkTxDuration(event);
 			return -1;
 		}
 
@@ -175,17 +163,10 @@ public class TxConsistentService {
 				}
 			} catch (Exception e) {
 				LOG.error("Failed to save event globalTxId {} localTxId {} type {}", globalTxId, localTxId, type, e);
-			} finally {
-				txleMetrics.countTxNumber(event, false, event.retries() > 0);
-				// end duration.
-				txleMetrics.endMarkTxDuration(event);
 			}
 
 			return 1;
 		}
-
-		// end duration.
-		txleMetrics.endMarkTxDuration(event);
 
 		return 0;
 	}
@@ -302,4 +283,37 @@ public class TxConsistentService {
 				timeout.category(),
 				("Transaction timeout").getBytes());
 	}
+
+	public boolean registerGlobalTx(TxEvent event) {
+		try {
+			eventRepository.save(event);
+		} catch (Exception e) {
+			LOG.error("Failed to register global transaction [{}].", event, e);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean registerSubTx(TxEvent subTxEvent, TxEventAddition subTxEventAddition) {
+		try {
+			eventRepository.save(subTxEvent);
+
+			if (subTxEventAddition != null) {
+				eventAdditionService.save(subTxEventAddition);
+			}
+
+			if (TxCompensatedEvent.name().equals(subTxEvent.type())) {
+				eventAdditionService.updateCompensateStatus(subTxEvent.instanceId(), subTxEvent.globalTxId(), subTxEvent.localTxId());
+			}
+		} catch (Exception e) {
+			LOG.error("Failed to register global transaction [{}].", subTxEvent, e);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean checkIsExistsEventType(String globalTxId, String localTxId, String type) {
+		return eventRepository.checkIsExistsEventType(globalTxId, localTxId, type);
+	}
+
 }

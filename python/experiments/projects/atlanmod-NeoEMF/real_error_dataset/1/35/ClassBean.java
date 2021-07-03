@@ -36,6 +36,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 public class ClassBean implements Serializable {
 
+    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
 
     /**
@@ -73,7 +74,7 @@ public class ClassBean implements Serializable {
             checkNotNull(p, "Unable to find EPackage associated with URI: %s. " +
                     "Make sure it is registered in EPackage.Registry", uri);
 
-            EClass c = (EClass) p.getEClassifier(name);
+            EClass c = EClass.class.cast(p.getEClassifier(name));
             checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, uri);
 
             return c;
@@ -239,11 +240,11 @@ public class ClassBean implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!ClassBean.class.isInstance(o)) {
             return false;
         }
 
-        ClassBean that = (ClassBean) o;
+        ClassBean that = ClassBean.class.cast(o);
         return Objects.equals(name, that.name)
                 && Objects.equals(uri, that.uri);
     }

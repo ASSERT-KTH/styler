@@ -1,6 +1,5 @@
 package ru.kontur.vostok.hercules.sink;
 
-import com.codahale.metrics.Meter;
 import org.apache.kafka.clients.consumer.CommitFailedException;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -12,15 +11,18 @@ import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.kontur.vostok.hercules.configuration.Scopes;
-import ru.kontur.vostok.hercules.configuration.util.PropertiesUtil;
+import ru.kontur.vostok.hercules.health.Meter;
 import ru.kontur.vostok.hercules.health.MetricsCollector;
+import ru.kontur.vostok.hercules.kafka.util.KafkaConfigs;
 import ru.kontur.vostok.hercules.kafka.util.serialization.EventDeserializer;
 import ru.kontur.vostok.hercules.kafka.util.serialization.UuidDeserializer;
 import ru.kontur.vostok.hercules.protocol.Event;
+import ru.kontur.vostok.hercules.sink.filter.EventFilter;
 import ru.kontur.vostok.hercules.util.PatternMatcher;
-import ru.kontur.vostok.hercules.util.properties.PropertyDescription;
-import ru.kontur.vostok.hercules.util.properties.PropertyDescriptions;
-import ru.kontur.vostok.hercules.util.text.StringUtil;
+import ru.kontur.vostok.hercules.util.parameter.Parameter;
+import ru.kontur.vostok.hercules.util.properties.PropertiesUtil;
+import ru.kontur.vostok.hercules.util.time.TimeSource;
+import ru.kontur.vostok.hercules.util.time.Timer;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -41,19 +43,21 @@ public class Sink {
     private volatile boolean running = false;
 
     private final ExecutorService executor;
-    private final String applicationId;
-    private final Properties properties;
     private final Processor processor;
-    private final List<PatternMatcher> patternMatchers;
 
-    private final Duration pollTimeout;
+    private final List<EventFilter> filters;
+
+    private final long pollTimeoutMs;
     private final int batchSize;
     private final long availabilityTimeoutMs;
 
     private final Pattern pattern;
     private final KafkaConsumer<UUID, Event> consumer;
 
+    private final Timer timer;
+
     private final Meter droppedEventsMeter;
+    private final Meter filteredEventsMeter;
     private final Meter processedEventsMeter;
     private final Meter rejectedEventsMeter;
     private final Meter totalEventsMeter;
@@ -66,34 +70,47 @@ public class Sink {
             List<PatternMatcher> patternMatchers,
             EventDeserializer deserializer,
             MetricsCollector metricsCollector) {
+        this(executor, applicationId, properties, processor, patternMatchers, deserializer, metricsCollector, TimeSource.SYSTEM);
+    }
+
+    Sink(
+            ExecutorService executor,
+            String applicationId,
+            Properties properties,
+            Processor processor,
+            List<PatternMatcher> patternMatchers,
+            EventDeserializer deserializer,
+            MetricsCollector metricsCollector,
+            TimeSource time) {
         this.executor = executor;
-        this.applicationId = applicationId;
-        this.properties = properties;
         this.processor = processor;
-        this.patternMatchers = patternMatchers;
 
-        this.pollTimeout = Duration.ofMillis(Props.POLL_TIMEOUT_MS.extract(properties));
-        this.batchSize = Props.BATCH_SIZE.extract(properties);
-        this.availabilityTimeoutMs = Props.AVAILABILITY_TIMEOUT_MS.extract(properties);
+        this.filters = EventFilter.from(PropertiesUtil.ofScope(properties, "filter"));
 
-        String consumerGroupId = Props.GROUP_ID.extract(properties);
-        if (StringUtil.isNullOrEmpty(consumerGroupId)) {
-            consumerGroupId = ConsumerUtil.toGroupId(applicationId, patternMatchers);
-        }
+        this.pollTimeoutMs = PropertiesUtil.get(Props.POLL_TIMEOUT_MS, properties).get();
+        this.batchSize = PropertiesUtil.get(Props.BATCH_SIZE, properties).get();
+        this.availabilityTimeoutMs = PropertiesUtil.get(Props.AVAILABILITY_TIMEOUT_MS, properties).get();
+
+        String consumerGroupId =
+                PropertiesUtil.get(Props.GROUP_ID, properties).
+                        orEmpty(ConsumerUtil.toGroupId(applicationId, patternMatchers));
 
         this.pattern = PatternMatcher.matcherListToRegexp(patternMatchers);
 
         Properties consumerProperties = PropertiesUtil.ofScope(properties, Scopes.CONSUMER);
         consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         consumerProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-        consumerProperties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, batchSize);
+        consumerProperties.putIfAbsent(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, batchSize);
+        consumerProperties.put(KafkaConfigs.METRICS_COLLECTOR_INSTANCE_CONFIG, metricsCollector);
 
         UuidDeserializer keyDeserializer = new UuidDeserializer();
-        EventDeserializer valueDeserializer = deserializer;
 
-        this.consumer = new KafkaConsumer<>(consumerProperties, keyDeserializer, valueDeserializer);
+        this.consumer = new KafkaConsumer<>(consumerProperties, keyDeserializer, deserializer);
+
+        this.timer = time.timer(pollTimeoutMs);
 
         droppedEventsMeter = metricsCollector.meter("droppedEvents");
+        filteredEventsMeter = metricsCollector.meter("filteredEvents");
         processedEventsMeter = metricsCollector.meter("processedEvents");
         rejectedEventsMeter = metricsCollector.meter("rejectedEvents");
         totalEventsMeter = metricsCollector.meter("totalEvents");
@@ -145,47 +162,55 @@ public class Sink {
      */
     public final void run() {
         while (isRunning()) {
-            try {
-                if (processor.isAvailable()) {
+            if (processor.isAvailable()) {
+                try {
 
                     subscribe();
 
                     while (processor.isAvailable()) {
-                        ConsumerRecords<UUID, Event> pollResult;
-                        try {
-                            pollResult = poll();
-                        } catch (WakeupException ex) {
-                            /*
-                             * WakeupException is used to terminate polling
-                             */
-                            return;
-                        }
-
-                        Set<TopicPartition> partitions = pollResult.partitions();
-
-                        // ConsumerRecords::count works for O(n), where n is partition count
-                        int eventCount = pollResult.count();
-                        List<Event> events = new ArrayList<>(eventCount);
+                        List<Event> events = new ArrayList<>(batchSize * 2);
 
                         int droppedEvents = 0;
+                        int filteredEvents = 0;
 
-                        for (TopicPartition partition : partitions) {
-                            List<ConsumerRecord<UUID, Event>> records = pollResult.records(partition);
-                            for (ConsumerRecord<UUID, Event> record : records) {
-                                Event event = record.value();
-                                if (event == null) {// Received non-deserializable data, should be ignored
-                                    droppedEvents++;
-                                    continue;
-                                }
-                                events.add(event);
+                        timer.reset();
+
+                        do {
+                            ConsumerRecords<UUID, Event> pollResult;
+                            try {
+                                pollResult = poll(timer.toDuration());
+                            } catch (WakeupException ex) {
+                                /*
+                                 * WakeupException is used to terminate polling
+                                 */
+                                return;
                             }
-                        }
+
+                            Set<TopicPartition> partitions = pollResult.partitions();
+
+                            for (TopicPartition partition : partitions) {
+                                List<ConsumerRecord<UUID, Event>> records = pollResult.records(partition);
+                                for (ConsumerRecord<UUID, Event> record : records) {
+                                    Event event = record.value();
+                                    if (event == null) {// Received non-deserializable data, should be ignored
+                                        droppedEvents++;
+                                        continue;
+                                    }
+                                    if (!filter(event)) {
+                                        filteredEvents++;
+                                        continue;
+                                    }
+                                    events.add(event);
+                                }
+                            }
+                        } while (events.size() < batchSize && !timer.isExpired());
 
                         ProcessorResult result = processor.process(events);
                         if (result.isSuccess()) {
                             try {
                                 commit();
                                 droppedEventsMeter.mark(droppedEvents);
+                                filteredEventsMeter.mark(filteredEvents);
                                 processedEventsMeter.mark(result.getProcessedEvents());
                                 rejectedEventsMeter.mark(result.getRejectedEvents());
                                 totalEventsMeter.mark(events.size());
@@ -195,11 +220,11 @@ public class Sink {
                             }
                         }
                     }
+                } catch (Exception ex) {
+                    LOGGER.error("Unspecified exception has been acquired", ex);
+                } finally {
+                    unsubscribe();
                 }
-            } catch (Exception ex) {
-                LOGGER.error("Unspecified exception has been acquired", ex);
-            } finally {
-                unsubscribe();
             }
 
             processor.awaitAvailability(availabilityTimeoutMs);
@@ -238,8 +263,8 @@ public class Sink {
      * @return polled Events
      * @throws WakeupException if poll terminated due to shutdown
      */
-    protected final ConsumerRecords<UUID, Event> poll() throws WakeupException {
-        return consumer.poll(pollTimeout);
+    protected final ConsumerRecords<UUID, Event> poll(Duration timeout) throws WakeupException {
+        return consumer.poll(timeout);
     }
 
     protected final void commit() {
@@ -250,25 +275,33 @@ public class Sink {
         consumer.commitSync(offsets);
     }
 
+    private boolean filter(Event event) {
+        for (EventFilter filter : filters) {
+            if (!filter.test(event)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static class Props {
-        static final PropertyDescription<Long> POLL_TIMEOUT_MS =
-                PropertyDescriptions.longProperty("pollTimeoutMs").
-                        withDefaultValue(6_000L).
+        static final Parameter<Long> POLL_TIMEOUT_MS =
+                Parameter.longParameter("pollTimeoutMs").
+                        withDefault(6_000L).
                         build();
 
-        static final PropertyDescription<Integer> BATCH_SIZE =
-                PropertyDescriptions.integerProperty("batchSize").
-                        withDefaultValue(1000).
+        static final Parameter<Integer> BATCH_SIZE =
+                Parameter.integerParameter("batchSize").
+                        withDefault(1000).
                         build();
 
-        static final PropertyDescription<String> GROUP_ID =
-                PropertyDescriptions.stringProperty("groupId").
-                        withDefaultValue(null).
+        static final Parameter<String> GROUP_ID =
+                Parameter.stringParameter("groupId").
                         build();
 
-        static final PropertyDescription<Long> AVAILABILITY_TIMEOUT_MS =
-                PropertyDescriptions.longProperty("availabilityTimeoutMs").
-                        withDefaultValue(2_000L).
+        static final Parameter<Long> AVAILABILITY_TIMEOUT_MS =
+                Parameter.longParameter("availabilityTimeoutMs").
+                        withDefault(2_000L).
                         build();
     }
 }

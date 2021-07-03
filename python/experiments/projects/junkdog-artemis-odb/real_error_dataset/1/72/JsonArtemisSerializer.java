@@ -60,8 +60,7 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 		return this;
 	}
 
-	@Override
-	protected void save(Writer writer, SaveFileFormat save) {
+	public void save(Writer writer, SaveFileFormat save) {
 		try {
 			referenceTracker.inspectTypes(world);
 			referenceTracker.preWrite(save);
@@ -76,23 +75,18 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 			save.componentIdentifiers.build();
 			if (prettyPrint) {
 				writer.append(json.prettyPrint(save));
+				writer.flush();
 			} else {
 				json.toJson(save, writer);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new SerializationException(e);
 		}
 	}
 
 	@Override
 	protected void save(OutputStream out, SaveFileFormat save) throws SerializationException {
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-			save(osw, save);
-			osw.flush();
-		} catch (IOException e) {
-			throw new SerializationException(e);
-		}
+		save(new OutputStreamWriter(out), save);
 	}
 
 	@Override
@@ -104,7 +98,7 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 		entitySerializer.preLoad();
 
 		SaveFileFormat partial = partialLoad(jsonData);
-		referenceTracker.inspectTypes(partial.componentIdentifiers.nameToType.values());
+		referenceTracker.inspectTypes(partial.componentIdentifiers.getTypes());
 		entitySerializer.factory.configureWith(countChildren(jsonData.get("entities")));
 
 		T t = newInstance(format);
@@ -115,6 +109,9 @@ public class JsonArtemisSerializer extends WorldSerializationManager.ArtemisSeri
 	}
 
 	private <T extends SaveFileFormat> T newInstance(Class<T> format) {
+		if (format.getClass().equals(SaveFileFormat.class))
+			return (T) new SaveFileFormat();
+
 		try {
 			Constructor ctor = ClassReflection.getDeclaredConstructor(format);
 			ctor.setAccessible(true);

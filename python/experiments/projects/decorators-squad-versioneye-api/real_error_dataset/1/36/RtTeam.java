@@ -31,11 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import com.jcabi.http.Request;
 
 /**
  * VersionEye Team backed by a JsonObject.
  * @author Mihai Andronache (amihaiemil@gmail.com)
- * @version $Id: 49d063636151106ba0fe5772ef6348bd8a6de15e $
+ * @version $Id: 232af4a43a749a9e0948082a7598d08f391d8519 $
  * @since 1.0.0
  */
 final class RtTeam implements Team {
@@ -51,22 +52,22 @@ final class RtTeam implements Team {
     private Organization orga;
     
     /**
-     * Original RtVersionEye.
+     * Initial HTTP request, entry point of the API.
      */
-    private RtVersionEye versionEye;
+    private Request entry;
 
     /**
      * Ctor.
      * @param team Given team.
      * @param orga This team's organization.
-     * @param versionEye The original RtVersionEye.
+     * @param entry HTTP Request.
      */
     RtTeam(
         final JsonObject team, final Organization orga,
-        final RtVersionEye versionEye
+        final Request entry
     ) {
         this.team = team;
-        this.versionEye = versionEye;
+        this.entry = entry;
         this.orga = orga;
     }
     
@@ -157,17 +158,12 @@ final class RtTeam implements Team {
 
     @Override
     public Projects projects() {
-        return new RtProjects(this.versionEye, this);
+        return new RtProjects(this.entry, this);
     }
 
     @Override
     public Organization organization() {
         return this.orga;
-    }
-
-    @Override
-    public VersionEye versionEye() {
-        return this.versionEye;
     }
 
 }

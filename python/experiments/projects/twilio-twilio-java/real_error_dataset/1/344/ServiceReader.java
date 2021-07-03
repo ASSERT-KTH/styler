@@ -5,7 +5,7 @@
  *       /       /
  */
 
-package com.twilio.rest.ipmessaging.v1;
+package com.twilio.rest.conversations.v1;
 
 import com.twilio.base.Page;
 import com.twilio.base.Reader;
@@ -19,6 +19,10 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+/**
+ * PLEASE NOTE that this class contains beta products that are subject to
+ * change. Use them with caution.
+ */
 public class ServiceReader extends Reader<Service> {
     /**
      * Make the request to the Twilio API to perform the read.
@@ -42,9 +46,8 @@ public class ServiceReader extends Reader<Service> {
     public Page<Service> firstPage(final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            Domains.IPMESSAGING.toString(),
-            "/v1/Services",
-            client.getRegion()
+            Domains.CONVERSATIONS.toString(),
+            "/v1/Services"
         );
 
         addQueryParams(request);
@@ -81,10 +84,7 @@ public class ServiceReader extends Reader<Service> {
                                   final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getNextPageUrl(
-                Domains.IPMESSAGING.toString(),
-                client.getRegion()
-            )
+            page.getNextPageUrl(Domains.CONVERSATIONS.toString())
         );
         return pageForRequest(client, request);
     }
@@ -101,10 +101,7 @@ public class ServiceReader extends Reader<Service> {
                                       final TwilioRestClient client) {
         Request request = new Request(
             HttpMethod.GET,
-            page.getPreviousPageUrl(
-                Domains.IPMESSAGING.toString(),
-                client.getRegion()
-            )
+            page.getPreviousPageUrl(Domains.CONVERSATIONS.toString())
         );
         return pageForRequest(client, request);
     }

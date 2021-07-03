@@ -17,6 +17,7 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
+import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.commons.cache.Cache;
@@ -31,12 +32,14 @@ import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -108,6 +111,15 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
             .build();
 
     /**
+     * A set that holds indexed {@link ClassBean}.
+     *
+     * @see #metaClassIndex
+     * @see #innerCopyTo(DataMapper)
+     */
+    @Nonnull
+    private final Set<ClassBean> metaClassSet;
+
+    /**
      * Index containing meta-classes.
      */
     @Nonnull
@@ -140,9 +152,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         graph = new SmartIdGraph(baseGraph);
 
-        metaClassIndex = getOrCreateIndex("instances");
-
         requireUniqueLabels = TinkerGraph.class.isInstance(getOrigin(baseGraph));
+
+        metaClassSet = new HashSet<>();
+        metaClassIndex = getOrCreateIndex("instances");
     }
 
     /**
@@ -264,6 +277,12 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
 
         GraphHelper.copyGraph(graph, to.graph);
+
+        metaClassSet.forEach(m -> {
+            Id id = generateClassId(m);
+            Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
+            to.metaClassIndex.put(PROPERTY_INSTANCE_NAME, m.name(), vertex);
+        });
     }
 
     @Nonnull
@@ -279,7 +298,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         final Vertex containmentVertex = optContainmentVertex.get();
 
         return MoreIterables.onlyElement(containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER))
-                .map(this::createContainer);
+                .map(e -> SingleFeatureBean.of(
+                        idConverter.revert(e.getVertex(Direction.IN).getId()),
+                        e.getProperty(PROPERTY_CONTAINER_NAME)));
     }
 
     @Override
@@ -320,7 +341,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         final Vertex vertex = optVertex.get();
 
         return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, EDGE_INSTANCE_OF))
-                .map(this::createMetaClass);
+                .map(v -> ClassBean.of(
+                        v.getProperty(PROPERTY_INSTANCE_NAME),
+                        v.getProperty(PROPERTY_INSTANCE_URI)));
     }
 
     @Override
@@ -332,21 +355,22 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         // Check the presence of a meta-class
         if (MoreIterables.onlyElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF)).isPresent()) {
-            // TODO Update the index if necessary
-            // After a copy, indices are empty
-            // Using sets is not a good idea, because they are not consistent across several executions
             return false;
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> metaClassVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
 
-        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices)
-                .orElseGet(() -> {
-                    Vertex mcv = createMetaClass(metaClass);
-                    metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
-                    return mcv;
-                });
+        Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
+            Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
+            mcv.setProperty(PROPERTY_INSTANCE_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_INSTANCE_URI, metaClass.uri());
+
+            metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
+            metaClassSet.add(metaClass);
+
+            return mcv;
+        });
 
         // Defines the meta-class
         vertex.addEdge(EDGE_INSTANCE_OF, metaClassVertex);
@@ -362,8 +386,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(Vertex::getId)
-                .map(idConverter::revert)
+                .map(v -> idConverter.revert(v.getId()))
                 .collect(Collectors.toSet());
     }
 
@@ -389,10 +412,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> {
-            final Object objectId = idConverter.convert(i);
-            return graph.getVertex(objectId);
-        }));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
     }
 
     /**
@@ -405,60 +425,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Vertex getOrCreate(Id id) {
-        return verticesCache.get(id, i -> {
-            final Object objectId = idConverter.convert(i);
-            return Optional.ofNullable(graph.getVertex(objectId)).orElseGet(() -> graph.addVertex(objectId));
-        });
-    }
-
-    /**
-     * Creates a {@link SingleFeatureBean} from an {@link Edge}.
-     *
-     * @param edge the edge
-     *
-     * @return the container
-     */
-    @Nonnull
-    protected SingleFeatureBean createContainer(Edge edge) {
-        Vertex vertex = edge.getVertex(Direction.IN);
-
-        Id id = idConverter.revert(vertex.getId());
-        int name = edge.getProperty(PROPERTY_CONTAINER_NAME);
-
-        return SingleFeatureBean.of(id, name);
-    }
-
-    /**
-     * Creates a {@link ClassBean} from a {@link Vertex}.
-     *
-     * @param vertex the vertex
-     *
-     * @return the meta-class
-     */
-    @Nonnull
-    protected ClassBean createMetaClass(Vertex vertex) {
-        String name = vertex.getProperty(PROPERTY_INSTANCE_NAME);
-        String uri = vertex.getProperty(PROPERTY_INSTANCE_URI);
-
-        return ClassBean.of(name, uri);
-    }
-
-    /**
-     * Creates a {@link Vertex} from a {@link ClassBean}.
-     *
-     * @param classBean the meta-class
-     *
-     * @return a new vertex
-     */
-    @Nonnull
-    protected Vertex createMetaClass(ClassBean classBean) {
-        Id id = generateClassId(classBean);
-
-        Vertex vertex = graph.addVertex(idConverter.convert(id));
-        vertex.setProperty(PROPERTY_INSTANCE_NAME, classBean.name());
-        vertex.setProperty(PROPERTY_INSTANCE_URI, classBean.uri());
-
-        return vertex;
+        return verticesCache.get(id, i ->
+                Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
+                        .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
     }
 
     /**
@@ -472,5 +441,78 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     public Graph getGraph() {
         return graph;
+    }
+
+    /**
+     * An {@link IdGraph} that automatically removes unused {@link Vertex}.
+     */
+    @ParametersAreNonnullByDefault
+    private static class SmartIdGraph extends IdGraph<KeyIndexableGraph> {
+
+        /**
+         * Constructs a new {@code SmartIdGraph} on the specified {@code baseGraph}.
+         *
+         * @param baseGraph the base graph
+         */
+        public SmartIdGraph(KeyIndexableGraph baseGraph) {
+            super(baseGraph, true, false);
+            enforceUniqueIds(false);
+        }
+
+        @Override
+        public Edge addEdge(Object id, Vertex outVertex, Vertex inVertex, String label) {
+            return createFrom(super.addEdge(id, outVertex, inVertex, label));
+        }
+
+        @Override
+        public Edge getEdge(Object id) {
+            return createFrom(super.getEdge(id));
+        }
+
+        /**
+         * Creates a new {@link SmartIdEdge} from another {@link Edge}.
+         *
+         * @param edge the base edge
+         *
+         * @return an {@link SmartIdEdge}
+         */
+        private Edge createFrom(@Nullable Edge edge) {
+            return Optional.ofNullable(edge)
+                    .map(SmartIdEdge::new)
+                    .orElse(null);
+        }
+
+        /**
+         * An {@link IdEdge} that automatically removes {@link Vertex} that are no longer referenced.
+         */
+        @ParametersAreNonnullByDefault
+        private class SmartIdEdge extends IdEdge {
+
+            /**
+             * Constructs a new {@code SmartIdEdge} on the specified {@code edge}.
+             *
+             * @param edge the base edge
+             */
+            public SmartIdEdge(Edge edge) {
+                super(edge, SmartIdGraph.this);
+            }
+
+            /**
+             * {@inheritDoc}
+             * <p>
+             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced {@link
+             * Vertex} is removed as well.
+             */
+            @Override
+            public void remove() {
+                Vertex referencedVertex = getVertex(Direction.IN);
+                super.remove();
+
+                if (MoreIterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
+                    // If the Vertex has no more incoming edges remove it from the DB
+                    referencedVertex.remove();
+                }
+            }
+        }
     }
 }

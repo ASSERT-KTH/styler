@@ -2,7 +2,7 @@
  * Handles low-level loading C-struct type things and (optionally compressed)
  * byte ranges from low level I/O
  */
-package edu.vanderbilt.accre.laurelin.root_proxy;
+package edu.vanderbilt.accre.laurelin.root_proxy.io;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -15,10 +15,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.Event;
-import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.FileProfiler;
+import edu.vanderbilt.accre.laurelin.root_proxy.io.IOProfile.Event;
+import edu.vanderbilt.accre.laurelin.root_proxy.io.IOProfile.FileProfiler;
 
-public class ROOTFile {
+public class ROOTFile implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger();
 
     public static class FileBackedBuf implements BackingBuf {
@@ -95,34 +95,41 @@ public class ROOTFile {
 
         protected FileBackedBuf(ROOTFile fh) {
             this.fh = fh;
+
         }
 
+        /*
+         * All application-level reads enter the I/O subsystem here
+         */
         @Override
         public ByteBuffer read(long off, long len) throws IOException {
             ByteBuffer ret;
             long lowerPage = off / CACHE_PAGE_SIZE;
             long upperPage = (off + len) / CACHE_PAGE_SIZE;
-
-            if ((len > CACHE_READ_MAX)
-                    || (lowerPage != upperPage)) {
-                /*
-                 *  1) Don't cache very large reads, since they will end up
-                 *     being compressed baskets more often than not (and
-                 *     the decompressed versions are what's stored)
-                 *  2) Shortcut out if the read would otherwise straddle
-                 *     a cache to make the initial code simpler
-                 */
-                ret = fh.read(off, len);
-            } else {
-                try {
-                    ret = cache.get(new CacheKey(fh, lowerPage * CACHE_PAGE_SIZE)).duplicate();
-                    long newPos = (off - (CACHE_PAGE_SIZE * lowerPage));
-                    ret.position((int) newPos);
-                    ret.limit((int)(newPos + len));
-                    ret = ret.slice();
-                } catch (ExecutionException e) {
-                    throw new IOException(e);
+            try (Event ev = this.fh.profile.startUpperOp(off, (int)len)) {
+                if ((len > CACHE_READ_MAX)
+                        || (lowerPage != upperPage)) {
+                    /*
+                     *  1) Don't cache very large reads, since they will end up
+                     *     being compressed baskets more often than not (and
+                     *     the decompressed versions are what's stored)
+                     *  2) Shortcut out if the read would otherwise straddle
+                     *     a cache to make the initial code simpler
+                     */
+                    ret = fh.read(off, len);
+                } else {
+                    try {
+                        ret = cache.get(new CacheKey(fh, lowerPage * CACHE_PAGE_SIZE)).duplicate();
+                        long newPos = (off - (CACHE_PAGE_SIZE * lowerPage));
+                        ret.position((int) newPos);
+                        ret.limit((int)(newPos + len));
+                        ret = ret.slice();
+                    } catch (ExecutionException e) {
+                        throw new IOException(e);
+                    }
                 }
+            }  catch (Exception e) {
+                throw new IOException(e);
             }
             return ret;
         }
@@ -144,16 +151,23 @@ public class ROOTFile {
     }
 
     private FileInterface fh;
-    private FileProfiler profile;
+    private String path;
+    protected FileProfiler profile;
 
     /* Hide constructor */
     private ROOTFile(String path) {
         profile = IOProfile.getInstance().beginProfile(path);
+        this.path = path;
     }
 
     public static ROOTFile getInputFile(String path) throws IOException {
+        FileInterface fh = IOFactory.openForRead(path);
+        return ROOTFile.getInputFile(path, fh);
+    }
+
+    public static ROOTFile getInputFile(String path, FileInterface fh) throws IOException {
         ROOTFile rf = new ROOTFile(path);
-        rf.fh = IOFactory.openForRead(path);
+        rf.fh = fh;
         return rf;
     }
 
@@ -171,7 +185,7 @@ public class ROOTFile {
          * This bytebuffer can be a copy of the internal cache
          */
         ByteBuffer ret;
-        try (Event time = profile.startOp(offset, (int)l)) {
+        try (Event time = profile.startLowerOp(offset, (int)l)) {
             // This is a call to the actual filesystem
             ret = fh.read(offset, l);
             ret.position(0);
@@ -194,5 +208,19 @@ public class ROOTFile {
 
     public Cursor getCursor(long off) {
         return new Cursor(new FileBackedBuf(this), off);
+    }
+
+    @Override
+    public void close() throws Exception {
+        fh.close();
+
+    }
+
+    public FileInterface getFileInterface() {
+        return fh;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

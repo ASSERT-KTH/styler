@@ -47,8 +47,8 @@ import org.opencb.opencga.core.config.Configuration;
 import org.opencb.opencga.core.exception.VersionException;
 import org.opencb.opencga.core.models.acls.AclParams;
 import org.opencb.opencga.core.models.common.Enums;
-import org.opencb.opencga.core.response.RestResponse;
-import org.opencb.opencga.core.response.OpenCGAResult;
+import org.opencb.opencga.core.rest.RestResponse;
+import org.opencb.opencga.core.results.OpenCGAResult;
 import org.opencb.opencga.server.WebServiceException;
 import org.opencb.opencga.core.tools.ToolParams;
 import org.opencb.opencga.storage.core.StorageEngineFactory;
@@ -164,7 +164,6 @@ public class OpenCGAWSServer {
         this.apiVersion = version;
         this.uriInfo = uriInfo;
         this.httpServletRequest = httpServletRequest;
-        httpServletRequest.setAttribute(OpenCGAWSServer.class.getName(), this);
 
         this.params = new ObjectMap();
         for (String key : uriInfo.getQueryParameters().keySet()) {
@@ -463,7 +462,7 @@ public class OpenCGAWSServer {
         return new AclParams(permissions, action);
     }
 
-    protected Response createErrorResponse(Throwable e) {
+    protected Response createErrorResponse(Exception e) {
         // First we print the exception in Server logs
         logger.error("Catch error: " + e.getMessage(), e);
 
@@ -472,7 +471,11 @@ public class OpenCGAWSServer {
         queryResponse.setTime(new Long(System.currentTimeMillis() - startTime).intValue());
         queryResponse.setApiVersion(apiVersion);
         queryResponse.setParams(params);
-        addErrorEvent(queryResponse, e);
+        if (StringUtils.isEmpty(e.getMessage())) {
+            addErrorEvent(queryResponse, e.toString());
+        } else {
+            addErrorEvent(queryResponse, e.getMessage());
+        }
 
         OpenCGAResult<ObjectMap> result = OpenCGAResult.empty();
         queryResponse.setResponses(Arrays.asList(result));
@@ -518,15 +521,8 @@ public class OpenCGAWSServer {
         if (response.getEvents() == null) {
             response.setEvents(new ArrayList<>());
         }
-        response.getEvents().add(new Event(Event.Type.ERROR, message));
-    }
 
-    private <T> void addErrorEvent(RestResponse<T> response, Throwable e) {
-        if (response.getEvents() == null) {
-            response.setEvents(new ArrayList<>());
-        }
-        response.getEvents().add(
-                new Event(Event.Type.ERROR, 0, e.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+        response.getEvents().add(new Event(Event.Type.ERROR, message));
     }
 
     // TODO: Change signature

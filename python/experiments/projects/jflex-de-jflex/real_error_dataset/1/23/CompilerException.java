@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jflex.util.javac;
+package de.jflex.util.javac;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -59,7 +59,7 @@ public class CompilerException extends Exception {
   }
 
   @Override
-  public String toString() {
+  public String getMessage() {
     List<String> diagnosticMessages =
         diagnostics.stream()
             .map(
@@ -68,7 +68,7 @@ public class CompilerException extends Exception {
                         "javac error: %s, line %d in file %s",
                         d.getMessage(Locale.ENGLISH), d.getLineNumber(), d.getSource().getName()))
             .collect(Collectors.toList());
-    return super.toString() + "\n" + Joiner.on('\n').join(diagnosticMessages);
+    return Joiner.on('\n').join(diagnosticMessages);
   }
 
   private static String diagnosticCode(List<Diagnostic<? extends JavaFileObject>> diagnostics) {

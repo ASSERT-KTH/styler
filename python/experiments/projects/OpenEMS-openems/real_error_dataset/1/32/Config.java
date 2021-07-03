@@ -1,15 +1,15 @@
-package io.openems.edge.controller.symmetric.peakshaving;
+package io.openems.edge.controller.asymmetric.fixactivepower;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition( //
-		name = "Controller Peak-Shaving Symmetric", //
-		description = "Cuts power peaks and recharges the battery in low consumption periods.")
+		name = "Controller Fix Active Power Asymmetric", //
+		description = "Defines a fixed charge/discharge power to an asymmetric energy storage system.")
 @interface Config {
 
 	@AttributeDefinition(name = "Component-ID", description = "Unique ID of this Component")
-	String id() default "ctrlPeakShaving0";
+	String id() default "ctrlFixActivePower0";
 
 	@AttributeDefinition(name = "Alias", description = "Human-readable name of this Component; defaults to Component-ID")
 	String alias() default "";
@@ -20,14 +20,14 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Ess-ID", description = "ID of Ess device.")
 	String ess_id();
 
-	@AttributeDefinition(name = "Grid-Meter-ID", description = "ID of the Grid-Meter.")
-	String meter_id();
+	@AttributeDefinition(name = "Charge/Discharge power [W] on L1", description = "Negative values for Charge; positive for Discharge")
+	int powerL1();
 
-	@AttributeDefinition(name = "Peak-Shaving power", description = "Grid purchase power above this value is considered a peak and shaved to this value.")
-	int peakShavingPower();
+	@AttributeDefinition(name = "Charge/Discharge power [W] on L2", description = "Negative values for Charge; positive for Discharge")
+	int powerL2();
 
-	@AttributeDefinition(name = "Recharge power", description = "If grid purchase power is below this value battery is recharged.")
-	int rechargePower();
+	@AttributeDefinition(name = "Charge/Discharge power [W] on L3", description = "Negative values for Charge; positive for Discharge")
+	int powerL3();
 
-	String webconsole_configurationFactory_nameHint() default "Controller Peak-Shaving Symmetric [{id}]";
+	String webconsole_configurationFactory_nameHint() default "Controller Fix Active Power Asymmetric [{id}]";
 }

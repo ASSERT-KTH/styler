@@ -17,24 +17,20 @@ public class CouchbaseSampleEntryManager {
     private Properties getSampleConnectionProperties() {
         Properties connectionProperties = new Properties();
 
-        connectionProperties.put("couchbase.servers", "localhost");
-        connectionProperties.put("couchbase.auth.userName", "admin");
-        connectionProperties.put("couchbase.auth.userPassword", "secret");
-//        connectionProperties.put("couchbase.buckets", "gluu");
-        connectionProperties.put("couchbase.buckets", "gluu, gluu_user, gluu_token");
-
-        connectionProperties.put("couchbase.bucket.default", "gluu");
-        connectionProperties.put("couchbase.bucket.gluu_user.mapping", "people, groups");
-        connectionProperties.put("couchbase.bucket.gluu_token.mapping", "sessions");
-
-        connectionProperties.put("couchbase.password.encryption.method", "CRYPT-SHA-256");
+        connectionProperties.put("servers", "localhost");
+        connectionProperties.put("userName", "admin");
+        connectionProperties.put("userPassword", "secret");
+        connectionProperties.put("buckets", "gluu, travel-sample");
+        connectionProperties.put("bucket.gluu.mapping", "gluu");
+        connectionProperties.put("bucket.travel-sample.mapping", "travel-sample");
+        connectionProperties.put("encryption.method", "CRYPT-SHA-256");
+        
 
         return connectionProperties;
     }
 
     public CouchbaseEntryManager createCouchbaseEntryManager() {
         CouchbaseEntryManagerFactory couchbaseEntryManagerFactory = new CouchbaseEntryManagerFactory();
-        couchbaseEntryManagerFactory.create();
         Properties connectionProperties = getSampleConnectionProperties();
 
         CouchbaseEntryManager couchbaseEntryManager = couchbaseEntryManagerFactory.createEntryManager(connectionProperties);

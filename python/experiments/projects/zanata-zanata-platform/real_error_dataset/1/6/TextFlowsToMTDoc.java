@@ -40,6 +40,7 @@ import org.zanata.util.UrlUtil;
  */
 @Dependent
 public class TextFlowsToMTDoc {
+    private static final String BACKEND_ID = "source";
     private UrlUtil urlUtil;
 
     @Inject
@@ -71,7 +72,7 @@ public class TextFlowsToMTDoc {
     public MTDocument fromTextFlows(String projectSlug,
             String versionSlug, String docId, LocaleId fromLocale,
             List<HTextFlow> textFlows,
-            Function<HTextFlow, String> contentExtractor, String backendId) {
+            Function<HTextFlow, String> contentExtractor) {
         String url = buildDocUrl(projectSlug, versionSlug, docId);
         List<TypeString> contents =
                 textFlows.stream()
@@ -79,7 +80,7 @@ public class TextFlowsToMTDoc {
                         .map(TypeString::new)
                         .collect(Collectors.toList());
 
-        return new MTDocument(url, contents, fromLocale.getId(), backendId);
+        return new MTDocument(url, contents, fromLocale.getId(), BACKEND_ID);
     }
 
     /**
@@ -91,11 +92,11 @@ public class TextFlowsToMTDoc {
         return urlUtil.restPath("project/p/" + projectSlug +"/iterations/i" + versionSlug + "/resource?docId=" + docId);
     }
 
-    public MTDocument fromSingleTextFlow(String projectSlug, String versionSlug, String docId, LocaleId fromLocale, HTextFlow textFlow, String backendId) {
+    public MTDocument fromSingleTextFlow(String projectSlug, String versionSlug, String docId, LocaleId fromLocale, HTextFlow textFlow) {
         String url = buildDocUrl(projectSlug, versionSlug, docId);
         List<TypeString> contents = textFlow.getContents()
                 .stream().map(TypeString::new).collect(Collectors.toList());
 
-        return new MTDocument(url, contents, fromLocale.getId(), backendId);
+        return new MTDocument(url, contents, fromLocale.getId(), BACKEND_ID);
     }
 }

@@ -20,23 +20,23 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.genxdm.xpath.v10.ExprContextDynamic;
-import org.genxdm.xpath.v10.ExprContextDynamicArgs;
-import org.genxdm.xpath.v10.Variant;
+import org.genxdm.xpath.v10.NodeDynamicContext;
+import org.genxdm.xpath.v10.NodeDynamicContextBuilder;
+import org.genxdm.xpath.v10.NodeVariant;
 
 public final class ExprContextDynamicArgsImpl<N> extends DynamicContextBuilderBaseImpl
-    implements ExprContextDynamicArgs<N>
+    implements NodeDynamicContextBuilder<N>
 {
-	private final Map<QName, Variant<N>> variables = new HashMap<QName, Variant<N>>();
+	private final Map<QName, NodeVariant<N>> variables = new HashMap<QName, NodeVariant<N>>();
 	
 	@Override
-	public void bindVariableValue(final QName name, final Variant<N> value)
+	public void bindVariableValue(final QName name, final NodeVariant<N> value)
 	{
 		variables.put(name, value);
 	}
 
     @Override
-	public ExprContextDynamic<N> build()
+	public NodeDynamicContext<N> build()
 	{
 		return new ExprContextDynamicImpl<N>(position, size, variables, m_inheritAttributes, m_inheritNamespaces);
 	}

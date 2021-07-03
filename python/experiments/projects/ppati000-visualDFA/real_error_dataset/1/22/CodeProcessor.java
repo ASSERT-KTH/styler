@@ -1,9 +1,8 @@
 package codeprocessor;
 
 /**
- * @author Anika Nietzer 
- * 			A {@code CodeProcessor} represents a unit for compiling
- *         	and processing java-sourcecode to java-bytecode.
+ * @author Anika Nietzer A {@code CodeProcessor} represents a unit for compiling
+ *         and processing java-sourcecode to java-bytecode.
  */
 public class CodeProcessor {
 
@@ -50,7 +49,7 @@ public class CodeProcessor {
 	}
 
 	/**
-	 * Returns {@code true} if the compiling process was successful or {@code false} in the other case.
+	 * True if the compiling process was successful, false otherwise.
 	 * 
 	 * @return if the compiling process was successful
 	 */

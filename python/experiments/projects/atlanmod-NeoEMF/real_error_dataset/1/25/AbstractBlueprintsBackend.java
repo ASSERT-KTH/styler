@@ -1,12 +1,9 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
@@ -203,9 +200,10 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @return the formatted label
      */
     @Nonnull
+    // TODO Can cause a massive overhead (metaClassNameOf)
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id()) // TODO Can cause a massive overhead
+                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
 
@@ -234,11 +232,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     protected void innerClose() {
-        try {
-            graph.shutdown();
-        }
-        catch (Exception ignored) {
-        }
+        graph.shutdown();
     }
 
     @Override

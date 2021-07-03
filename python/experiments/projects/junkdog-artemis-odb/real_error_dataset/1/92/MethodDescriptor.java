@@ -12,15 +12,12 @@ import java.util.List;
 public class MethodDescriptor {
 
     public String name;
-    /**
-     * optional
-     */
+    /** optional */
     public Type returnType;
     public List<String> statements = new ArrayList<String>();
     public List<ParameterDescriptor> parameters = new ArrayList<ParameterDescriptor>();
     private boolean isStatic;
     private AccessLevel accessLevel = AccessLevel.PUBLIC;
-    private String debugNotes;
 
 
     public MethodDescriptor(Type returnType, String name) {
@@ -35,21 +32,12 @@ public class MethodDescriptor {
 
     @Override
     public String toString() {
-        return signature(true, true);
+        return signature();
     }
 
-    public String signature(boolean variableNames, boolean returnType) {
-        if (this.returnType instanceof Class)
-            return (returnType ? ((Class) this.returnType).getCanonicalName() + " " : "") + name + "()";
-        return (returnType ? (this.returnType.toString() + " ") : "") + name + "(" + parameterSignature(variableNames) + ")";
-    }
-
-    private String parameterSignature(boolean variableNames) {
-        String s = "";
-        for (ParameterDescriptor parameter : parameters) {
-            s = s + (!s.isEmpty() ? "," : "") + parameter.signature(variableNames);
-        }
-        return s;
+    public String signature() {
+        if ( returnType instanceof Class) return ((Class)returnType).getCanonicalName() + " " + name + "()";
+        return returnType.toString() + " " + name + "()";
     }
 
     public void addParameter(ParameterDescriptor parameter) {
@@ -70,13 +58,5 @@ public class MethodDescriptor {
 
     public AccessLevel getAccessLevel() {
         return accessLevel;
-    }
-
-    public void setDebugNotes(String debugNotes) {
-        this.debugNotes = debugNotes;
-    }
-
-    public String getDebugNotes() {
-        return debugNotes;
     }
 }

@@ -25,8 +25,8 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdProvider;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -47,7 +47,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
+abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
 
     /**
      * The {@link Converter} to use a long representation instead of {@link Id}.
@@ -56,8 +56,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      */
     @Nonnull
     protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
-            IdProvider.AS_LONG::convert,
-            o -> IdProvider.AS_LONG.revert(Long.class.cast(o)));
+            IdConverters.withLong()::convert,
+            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * The property key used to define the index of an edge.
@@ -140,7 +140,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
      * @see BlueprintsBackendFactory
      */
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
-        checkNotNull(baseGraph);
+        checkNotNull(baseGraph, "baseGraph");
 
         graph = new SmartIdGraph(baseGraph);
 
@@ -202,7 +202,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id()) // TODO Can cause a massive overhead
+                // TODO Can cause a massive overhead (metaClassNameOf)
+                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
 
@@ -231,11 +232,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     protected void innerClose() {
-        try {
-            graph.shutdown();
-        }
-        catch (Exception ignored) {
-        }
+        graph.shutdown();
     }
 
     @Override
@@ -254,7 +251,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> containmentVertex = get(id);
 
@@ -276,8 +273,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         Vertex containmentVertex = getOrCreate(id);
         Vertex containerVertex = getOrCreate(container.owner());
@@ -296,7 +293,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> containmentVertex = get(id);
 
@@ -316,7 +313,7 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> vertex = get(id);
 
@@ -338,8 +335,8 @@ abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend imple
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         Vertex vertex = getOrCreate(id);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.bean;
 
-import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
+import org.atlanmod.commons.LazyReference;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -26,16 +27,15 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a {@link EClass}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
  */
 @Immutable
 @ParametersAreNonnullByDefault
 public class ClassBean implements Serializable {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
 
     /**
@@ -58,20 +58,26 @@ public class ClassBean implements Serializable {
 
     /**
      * Constructs a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a simple
-     * representation of a an {@link EClass}.
+     * representation of a an {@link org.eclipse.emf.ecore.EClass}.
      *
-     * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
+     * @param name the name of the {@link org.eclipse.emf.ecore.EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link
+     *             org.eclipse.emf.ecore.EClass}
      */
     protected ClassBean(String name, String uri) {
         this.name = checkNotNull(name, "name");
         this.uri = checkNotNull(uri, "uri");
 
-        lazyClass = LazyReference.soft(() ->
-                Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))
-                        .map(p -> p.getEClassifier(name))
-                        .map(EClass.class::cast)
-                        .orElse(null));
+        lazyClass = LazyReference.soft(() -> {
+            EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri);
+            checkNotNull(p, "Unable to find EPackage associated with URI: %s. " +
+                    "Make sure it is registered in EPackage.Registry", uri);
+
+            EClass c = (EClass) p.getEClassifier(name);
+            checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, uri);
+
+            return c;
+        });
     }
 
     /**
@@ -86,12 +92,12 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Creates a new {@code ClassBean} from the given {@code object}. The {@link EClass} will be found by calling the
-     * {@link PersistentEObject#eClass()} method.
+     * Creates a new {@code ClassBean} from the given {@code object}. The {@link org.eclipse.emf.ecore.EClass} will be
+     * found by calling the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.
      *
-     * @param object the object from which the {@link EClass} has to be retrieve with the {@link
+     * @param object the object from which the {@link org.eclipse.emf.ecore.EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
      * @return a new {@code ClassBean}
@@ -109,7 +115,7 @@ public class ClassBean implements Serializable {
      * <p>
      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.
      *
-     * @param eClass the {@link EClass}
+     * @param eClass the {@link org.eclipse.emf.ecore.EClass}
      *
      * @return a new {@code ClassBean}
      *
@@ -122,10 +128,11 @@ public class ClassBean implements Serializable {
 
     /**
      * Creates a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a simple
-     * representation of a an {@link EClass}.
+     * representation of a an {@link org.eclipse.emf.ecore.EClass}.
      *
-     * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
+     * @param name the name of the {@link org.eclipse.emf.ecore.EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link
+     *             org.eclipse.emf.ecore.EClass}
      *
      * @return a new {@code ClassBean}
      *
@@ -147,7 +154,7 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Returns the literal representation of the {@link URI} of this {@code ClassBean}.
+     * Returns the literal representation of the {@link org.eclipse.emf.common.util.URI} of this {@code ClassBean}.
      *
      * @return the URI
      */
@@ -197,27 +204,29 @@ public class ClassBean implements Serializable {
      */
     @Nonnull
     public Set<ClassBean> inheritedBy() {
-        return get().getEPackage().getEClassifiers()
+        final EClass eClass = get();
+
+        final Predicate<EClass> isInheritedBy = c -> !c.isInterface()
+                && !c.isAbstract()
+                && eClass.isSuperTypeOf(c);
+
+        return eClass.getEPackage().getEClassifiers()
                 .parallelStream()
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast)
-                .filter(c -> get().isSuperTypeOf(c))
-                .filter(c -> !c.isAbstract())
-                .filter(c -> !c.isInterface())
+                .filter(isInheritedBy)
                 .map(ClassBean::from)
                 .collect(Collectors.toSet());
     }
 
     /**
-     * Retrieves the {@link EClass} corresponding to this {@code ClassBean}.
+     * Retrieves the {@link org.eclipse.emf.ecore.EClass} corresponding to this {@code ClassBean}.
      *
      * @return a class, or {@code null} if it cannot be found
      */
     @Nonnull
     public EClass get() {
-        return checkNotNull(lazyClass.get(),
-                "Unable to find the EPackage associated with URI: %s. " +
-                        "Make sure it is registered in EPackage.Registry.", uri);
+        return lazyClass.get();
     }
 
     @Override
@@ -230,11 +239,11 @@ public class ClassBean implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!ClassBean.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        ClassBean that = ClassBean.class.cast(o);
+        ClassBean that = (ClassBean) o;
         return Objects.equals(name, that.name)
                 && Objects.equals(uri, that.uri);
     }

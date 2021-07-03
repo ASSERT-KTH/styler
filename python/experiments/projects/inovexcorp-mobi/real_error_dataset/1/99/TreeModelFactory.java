@@ -1,8 +1,8 @@
-package com.mobi.rdf.core.impl.sesame;
+package org.matonto.rdf.core.impl.sesame;
 
 /*-
  * #%L
- * com.mobi.rdf.impl.sesame
+ * org.matonto.rdf.impl.sesame
  * $Id:$
  * $HeadURL:$
  * %%

@@ -236,6 +236,9 @@ public class SeleniumSpec extends BaseGSpec {
             assertThat(this.commonspec, commonspec.getPreviousWebElements()).as("There are less found elements than required")
                     .hasAtLeast(index);
             commonspec.getPreviousWebElements().getPreviousWebElements().get(index).click();
+        } catch (WebDriverException e) {
+            JavascriptExecutor executor = commonspec.getDriver();
+            executor.executeScript("arguments[0].click();", commonspec.getPreviousWebElements().getPreviousWebElements().get(index));
         }
     }
 

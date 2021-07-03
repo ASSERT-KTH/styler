@@ -1,23 +1,15 @@
 package nl.knaw.huygens.timbuctoo.v5.dataset;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.google.common.collect.Maps;
 import nl.knaw.huygens.timbuctoo.util.Tuple;
 import nl.knaw.huygens.timbuctoo.v5.berkeleydb.BdbEnvironmentCreator;
-import nl.knaw.huygens.timbuctoo.v5.dataset.dto.BasicDataSetMetaData;
 import nl.knaw.huygens.timbuctoo.v5.dataset.dto.DataSet;
-import nl.knaw.huygens.timbuctoo.v5.dataset.dto.DataSetMetaData;
-import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.DataSetPublishException;
+import nl.knaw.huygens.timbuctoo.v5.dataset.dto.PromotedDataSet;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.DataStoreCreationException;
 import nl.knaw.huygens.timbuctoo.v5.dataset.exceptions.IllegalDataSetNameException;
 import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSync;
 import nl.knaw.huygens.timbuctoo.v5.datastores.resourcesync.ResourceSyncException;
 import nl.knaw.huygens.timbuctoo.v5.filehelper.FileHelper;
-import nl.knaw.huygens.timbuctoo.v5.jacksonserializers.TimbuctooCustomSerializers;
 import nl.knaw.huygens.timbuctoo.v5.jsonfilebackeddata.JsonFileBackedData;
 import nl.knaw.huygens.timbuctoo.v5.security.PermissionFetcher;
 import nl.knaw.huygens.timbuctoo.v5.security.dto.Permission;
@@ -31,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static nl.knaw.huygens.timbuctoo.v5.dataset.dto.DataSet.dataSet;
+import static nl.knaw.huygens.timbuctoo.v5.dataset.dto.PromotedDataSet.promotedDataSet;
 
 /**
  * - stores all configuration parameters so it can inject them in the dataset constructor
@@ -62,7 +54,7 @@ public class DataSetRepository {
   private final DataSetConfiguration configuration;
   private final BdbEnvironmentCreator dataStoreFactory;
   private final Map<String, Map<String, DataSet>> dataSetMap;
-  private final Map<String, Set<DataSetMetaData>> metaDataSet;
+  private final JsonFileBackedData<Map<String, Set<PromotedDataSet>>> storedDataSets;
   private final TimbuctooRdfIdHelper rdfIdHelper;
   private final String rdfBaseUri;
   private final boolean publicByDefault;
@@ -81,39 +73,13 @@ public class DataSetRepository {
     this.configuration = configuration;
     this.dataStoreFactory = dataStoreFactory;
 
-    metaDataSet = Maps.newHashMap();
-
-    File[] directories = new File(configuration.getDataSetMetadataLocation()).listFiles(File::isDirectory);
-
-    for (int i = 0; i < directories.length; i++) {
-      String dirName = directories[i].toString();
-      String currentOwnerId = dirName.substring(dirName.lastIndexOf("/") + 1, dirName.length());
-      Set<DataSetMetaData> tempMetaDataSet = new HashSet<>();
-      Files.walk(directories[i].toPath())
-        .filter(current -> Files.isDirectory(current))
-        .forEach(
-          path -> {
-            File tempFile = new File(path.toString() + "/metaData.json");
-            if (tempFile.exists()) {
-              JsonFileBackedData<BasicDataSetMetaData> metaDataFromFile = null;
-              try {
-                metaDataFromFile = JsonFileBackedData.getOrCreate(
-                  tempFile,
-                  null,
-                  new TypeReference<BasicDataSetMetaData>() {
-                  });
-                tempMetaDataSet.add(metaDataFromFile.getData());
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-        );
-      metaDataSet.put(currentOwnerId, tempMetaDataSet);
-    }
-
     fileHelper = new FileHelper(configuration.getDataSetMetadataLocation());
-
+    storedDataSets = JsonFileBackedData.getOrCreate(
+      new File(configuration.getDataSetMetadataLocation(), "dataSets.json"),
+      HashMap::new,
+      new TypeReference<Map<String, Set<PromotedDataSet>>>() {
+      }
+    );
     this.rdfIdHelper = rdfIdHelper;
     this.rdfBaseUri = rdfIdHelper.instanceBaseUri();
     this.publicByDefault = publicByDefault;
@@ -126,38 +92,39 @@ public class DataSetRepository {
 
   private void loadDataSetsFromJson() throws IOException {
     synchronized (dataSetMap) {
-      metaDataSet.forEach((ownerId, ownerMetaDatas) -> {
+      for (Map.Entry<String, Set<PromotedDataSet>> entry : storedDataSets.getData().entrySet()) {
+        String ownerId = entry.getKey();
         HashMap<String, DataSet> ownersSets = new HashMap<>();
         dataSetMap.put(ownerId, ownersSets);
-        for (DataSetMetaData dataSetMetaData : ownerMetaDatas) {
-          String dataSetName = dataSetMetaData.getDataSetId();
+        for (PromotedDataSet promotedDataSet : entry.getValue()) {
+          String dataSetName = promotedDataSet.getDataSetId();
           try {
             ownersSets.put(
               dataSetName,
               dataSet(
-                dataSetMetaData,
+                promotedDataSet,
                 configuration,
                 fileHelper,
                 executorService,
                 rdfBaseUri,
                 dataStoreFactory,
                 resourceSync,
-                () -> onUpdated.accept(dataSetMetaData.getCombinedId())
+                () -> onUpdated.accept(promotedDataSet.getCombinedId())
               )
             );
           } catch (IOException | DataStoreCreationException | ResourceSyncException e) {
-            e.printStackTrace();
+            throw new IOException(e);
           }
         }
-      });
+      }
     }
   }
 
-  public Optional<DataSet> getDataSet(User user, String ownerId, String dataSetId) {
+  public Optional<DataSet> getDataSet(String userId, String ownerId, String dataSetId) {
     synchronized (dataSetMap) {
       if (dataSetMap.containsKey(ownerId) && dataSetMap.get(ownerId).containsKey(dataSetId)) {
         try {
-          if (permissionFetcher.getPermissions(user, dataSetMap.get(ownerId).get(dataSetId).getMetadata()
+          if (permissionFetcher.getPermissions(userId, dataSetMap.get(ownerId).get(dataSetId).getMetadata()
           ).contains(Permission.READ)) {
             return Optional.ofNullable(dataSetMap.get(ownerId).get(dataSetId));
           }
@@ -167,6 +134,19 @@ public class DataSetRepository {
       }
       return Optional.empty();
     }
+  }
+
+  public Optional<DataSet> getDataSet(String userId, String combinedId) {
+    final Tuple<String, String> splitId = PromotedDataSet.splitCombinedId(combinedId);
+    try {
+      if (permissionFetcher.getOldPermissions(userId,combinedId).contains(Permission.READ)) {
+        return Optional.ofNullable(dataSetMap.get(splitId.getLeft()))
+          .map(userDataSets -> userDataSets.get(splitId.getRight()));
+      }
+    } catch (PermissionFetchingException e) {
+      return Optional.empty();
+    }
+    return Optional.empty();
   }
 
   public Optional<DataSet> unsafeGetDataSetWithoutCheckingPermissions(String ownerId, String dataSetId) {
@@ -182,6 +162,7 @@ public class DataSetRepository {
   public boolean userMatchesPrefix(User user, String prefix) {
     return user != null && user.getPersistentId() != null && ("u" + user.getPersistentId()).equals(prefix);
   }
+
 
   public DataSet createDataSet(User user, String dataSetId) throws DataStoreCreationException,
     IllegalDataSetNameException {
@@ -214,7 +195,7 @@ public class DataSetRepository {
       uriPrefix = baseUri;
     }
 
-    final DataSetMetaData dataSet = new BasicDataSetMetaData(
+    final PromotedDataSet dataSet = promotedDataSet(
       ownerPrefix,
       dataSetId,
       baseUri,
@@ -222,29 +203,13 @@ public class DataSetRepository {
       false,
       publicByDefault
     );
-
-    ObjectMapper objectMapper = new ObjectMapper()
-      .registerModule(new Jdk8Module())
-      .registerModule(new GuavaModule())
-      .registerModule(new TimbuctooCustomSerializers())
-      .enable(SerializationFeature.INDENT_OUTPUT);
-
-    File metaDataFile = fileHelper.fileInDataSet(ownerPrefix, dataSetId, "metaData.json");
-
-
-    try {
-      objectMapper.writeValue(metaDataFile, dataSet);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-
     synchronized (dataSetMap) {
       Map<String, DataSet> userDataSets = dataSetMap.computeIfAbsent(ownerPrefix, key -> new HashMap<>());
 
       if (!userDataSets.containsKey(dataSetId)) {
         try {
-          permissionFetcher.initializeOwnerAuthorization(user, dataSet.getOwnerId(), dataSet.getDataSetId());
+          permissionFetcher.initializeOwnerAuthorization(user.getPersistentId(),
+            dataSet.getOwnerId(), dataSet.getDataSetId());
           userDataSets.put(
             dataSetId,
             dataSet(
@@ -258,6 +223,12 @@ public class DataSetRepository {
               () -> onUpdated.accept(dataSet.getCombinedId())
             )
           );
+          storedDataSets.updateData(dataSets -> {
+            dataSets
+              .computeIfAbsent(ownerPrefix, key -> new HashSet<>())
+              .add(dataSet);
+            return dataSets;
+          });
         } catch (
           PermissionFetchingException | AuthorizationCreationException | IOException | ResourceSyncException e1) {
           throw new DataStoreCreationException(e1);
@@ -271,39 +242,8 @@ public class DataSetRepository {
     return unsafeGetDataSetWithoutCheckingPermissions(ownerId, dataSet).isPresent();
   }
 
-  public void publishDataSet(User user, String ownerId, String dataSetName)
-    throws DataSetPublishException {
-    Optional<DataSet> dataSet = getDataSet(user,
-      ownerId, dataSetName);
-    try {
-      if (dataSet.isPresent() &&
-        permissionFetcher.getPermissions(user,dataSet.get().getMetadata()).contains(Permission.ADMIN)) {
-        DataSetMetaData dataSetMetaData = dataSet.get().getMetadata();
-
-        dataSetMetaData.publish();
-
-        ObjectMapper objectMapper = new ObjectMapper()
-          .registerModule(new Jdk8Module())
-          .registerModule(new GuavaModule())
-          .registerModule(new TimbuctooCustomSerializers())
-          .enable(SerializationFeature.INDENT_OUTPUT);
-
-        File metaDataFile = fileHelper.fileInDataSet(ownerId, dataSetName, "metaData.json");
-
-        try {
-          objectMapper.writeValue(metaDataFile, dataSetMetaData);
-        } catch (IOException e) {
-          throw new DataSetPublishException(e);
-        }
-      }
-    } catch (PermissionFetchingException e) {
-      throw new DataSetPublishException(e);
-    }
-  }
-
   public Collection<DataSet> getDataSets() {
-    return dataSetMap.values().stream().flatMap(x -> x.values().stream())
-      .collect(Collectors.toList());
+    return dataSetMap.values().stream().flatMap(x -> x.values().stream()).collect(Collectors.toList());
   }
 
   public Collection<DataSet> getPromotedDataSets() {
@@ -312,13 +252,13 @@ public class DataSetRepository {
       .collect(Collectors.toList());
   }
 
-  public Collection<DataSet> getDataSetsWithWriteAccess(User user) {
+  public Collection<DataSet> getDataSetsWithWriteAccess(String userId) {
     List<DataSet> dataSetsWithWriteAccess = new ArrayList<>();
 
     for (Map<String, DataSet> userDataSets : dataSetMap.values()) {
       for (DataSet dataSet : userDataSets.values()) {
         try {
-          boolean isAllowedToWrite = permissionFetcher.getOldPermissions(user, dataSet.getMetadata().getCombinedId())
+          boolean isAllowedToWrite = permissionFetcher.getOldPermissions(userId, dataSet.getMetadata().getCombinedId())
             .contains(Permission.WRITE);
           if (isAllowedToWrite) {
             dataSetsWithWriteAccess.add(dataSet);
@@ -350,14 +290,21 @@ public class DataSetRepository {
   }
 
   public void removeDataSet(String combinedId) throws IOException {
-    Tuple<String, String> ownerIdDataSetName = DataSetMetaData.splitCombinedId(combinedId);
+    Tuple<String, String> ownerIdDataSetName = PromotedDataSet.splitCombinedId(combinedId);
 
     this.removeDataSet(ownerIdDataSetName.getLeft(), ownerIdDataSetName.getRight());
   }
 
   public void removeDataSet(String ownerId, String dataSetName) throws IOException {
     dataStoreFactory.removeDatabasesFor(ownerId, dataSetName);
-
+    // remove from datasets.json
+    storedDataSets.updateData(dataSets -> {
+      Set<PromotedDataSet>
+        dataSetsToKeep = dataSets.get(ownerId).stream().filter(dataSet -> !dataSet.getDataSetId().equals(dataSetName))
+        .collect(Collectors.toSet());
+      dataSets.put(ownerId, dataSetsToKeep);
+      return dataSets;
+    });
     dataSetMap.get(ownerId).remove(dataSetName);
 
     try {

@@ -10,21 +10,19 @@
 
 package org.digidoc4j.impl.asic.xades;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Policy;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.Policy;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import org.digidoc4j.Configuration;
-import org.digidoc4j.Constant;
 import org.digidoc4j.OCSPSourceBuilder;
 import org.digidoc4j.Signature;
 import org.digidoc4j.SignatureProfile;
 import org.digidoc4j.exceptions.NotSupportedException;
-import org.digidoc4j.impl.AiaDataLoaderFactory;
-import org.digidoc4j.impl.TspDataLoaderFactory;
 import org.digidoc4j.impl.asic.AsicSignature;
+import org.digidoc4j.impl.asic.SkDataLoader;
+import org.digidoc4j.utils.Helper;
 import org.digidoc4j.utils.PolicyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,12 +87,11 @@ public class SignatureExtender {
 
   private void prepareExtendingFacade(SignatureProfile profile) {
     extendingFacade.setCertificateSource(configuration.getTSL());
-    OnlineTSPSource tspSource = createTimeStampProviderSource();
+    OnlineTSPSource tspSource = createTimeStampProviderSource(profile);
     extendingFacade.setTspSource(tspSource);
     SignatureLevel signatureLevel = getSignatureLevel(profile);
     extendingFacade.setSignatureLevel(signatureLevel);
     setSignaturePolicy(profile);
-    extendingFacade.setCustomDataLoader(new AiaDataLoaderFactory(configuration, Constant.USER_AGENT_STRING).create());
   }
 
   private DSSDocument extendSignature(Signature signature, SignatureProfile profile) {
@@ -109,9 +106,10 @@ public class SignatureExtender {
         withConfiguration(this.configuration).build();
   }
 
-  private OnlineTSPSource createTimeStampProviderSource() {
+  private OnlineTSPSource createTimeStampProviderSource(SignatureProfile profile) {
     OnlineTSPSource source = new OnlineTSPSource(this.configuration.getTspSource());
-    DataLoader loader = new TspDataLoaderFactory(this.configuration, Constant.USER_AGENT_STRING).create();
+    SkDataLoader loader = SkDataLoader.timestamp(this.configuration);
+    loader.setUserAgent(Helper.createBDocUserAgent(profile));
     source.setDataLoader(loader);
     return source;
   }

@@ -16,7 +16,7 @@
 
 // Note: This file is auto generated. Do not edit manually.
 
-package com.cloudera.director.client.v5.model;
+package com.cloudera.director.client.v8.model;
 
 
 public class TimeSeriesData {
