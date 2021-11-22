@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1062",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "63",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "66",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "61",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1062/ExecutionPlanConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1062/ExecutionPlanConverter.java\nindex 8b73d67efd3..8499381d8cb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1062/ExecutionPlanConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1062/ExecutionPlanConverter.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.bolt.v1.runtime;\n \n import java.util.HashMap;\n@@ -35,39 +36,41 @@ import static org.neo4j.values.storable.Values.doubleValue;\n import static org.neo4j.values.storable.Values.longValue;\n import static org.neo4j.values.storable.Values.stringValue;\n \n-/** Takes execution plans and converts them to the subset of types used in the Neo4j type system */\n+/**\n+ * Takes execution plans and converts them to the subset of types used in the Neo4j type system\n+ */\n class ExecutionPlanConverter\n {\n-    private ExecutionPlanConverter()\n-    {\n-    }\n+  private ExecutionPlanConverter()\n+  {\n+  }\n \n-    public static MapValue convert( ExecutionPlanDescription plan )\n+  public static MapValue convert(ExecutionPlanDescription plan)\n+  {\n+    Map<String, AnyValue> out = new HashMap<>();\n+    out.put(\"operatorType\", stringValue(plan.getName()));\n+    out.put(\"args\", ValueUtils.asMapValue(plan.getArguments()));\n+    out.put(\"identifiers\", ValueUtils.asListValue(plan.getIdentifiers()));\n+    out.put(\"children\", children(plan));\n+    if (plan.hasProfilerStatistics())\n     {\n-        Map<String,AnyValue> out = new HashMap<>();\n-        out.put( \"operatorType\", stringValue( plan.getName() ) );\n-        out.put( \"args\", ValueUtils.asMapValue( plan.getArguments() ) );\n-        out.put( \"identifiers\", ValueUtils.asListValue( plan.getIdentifiers() ) );\n-        out.put( \"children\", children( plan ) );\n-        if ( plan.hasProfilerStatistics() )\n-        {\n-            ExecutionPlanDescription.ProfilerStatistics profile = plan.getProfilerStatistics();\n-            out.put( \"dbHits\", longValue( profile.getDbHits() ) );\n-            out.put( \"pageCacheHits\", longValue( profile.getPageCacheHits() ) );\n-            out.put( \"pageCacheMisses\", longValue( profile.getPageCacheMisses() ) );\n-            out.put( \"pageCacheHitRatio\", doubleValue( profile.getPageCacheHitRatio() ) );\n-            out.put( \"rows\", longValue( profile.getRows() ) );\n-        }\n-        return VirtualValues.map( out );\n+      ExecutionPlanDescription.ProfilerStatistics profile = plan.getProfilerStatistics();\n+      out.put(\"dbHits\", longValue(profile.getDbHits()));\n+      out.put(\"pageCacheHits\", longValue(profile.getPageCacheHits()));\n+      out.put(\"pageCacheMisses\", longValue(profile.getPageCacheMisses()));\n+      out.put(\"pageCacheHitRatio\", doubleValue(profile.getPageCacheHitRatio()));\n+      out.put(\"rows\", longValue(profile.getRows()));\n     }\n+    return VirtualValues.map(out);\n+  }\n \n-    private static ListValue children( ExecutionPlanDescription plan )\n+  private static ListValue children(ExecutionPlanDescription plan)\n+  {\n+    List<AnyValue> children = new LinkedList<>();\n+    for (ExecutionPlanDescription child : plan.getChildren())\n     {\n-        List<AnyValue> children = new LinkedList<>();\n-        for ( ExecutionPlanDescription child : plan.getChildren() )\n-        {\n-            children.add( convert( child ) );\n-        }\n-        return VirtualValues.fromList( children );\n+      children.add(convert(child));\n     }\n+    return VirtualValues.fromList(children);\n+  }\n }\n",
+            "diff_size": 44
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1062/ExecutionPlanConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1062/ExecutionPlanConverter.java\nindex 8b73d67efd3..8eb1a557979 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1062/ExecutionPlanConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1062/ExecutionPlanConverter.java\n@@ -58,7 +58,8 @@ class ExecutionPlanConverter\n             out.put( \"pageCacheHitRatio\", doubleValue( profile.getPageCacheHitRatio() ) );\n             out.put( \"rows\", longValue( profile.getRows() ) );\n         }\n-        return VirtualValues.map( out );\n+\n+return VirtualValues.map( out );\n     }\n \n     private static ListValue children( ExecutionPlanDescription plan )\n@@ -68,6 +69,7 @@ class ExecutionPlanConverter\n         {\n             children.add( convert( child ) );\n         }\n-        return VirtualValues.fromList( children );\n+\n+return VirtualValues.fromList( children );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

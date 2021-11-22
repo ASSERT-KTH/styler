@@ -1,0 +1,158 @@
+{
+    "project_name": "neo4j-neo4j",
+    "error_id": "2926",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "68",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "63",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "60",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "95",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/2926/ReadOnlyDatabaseChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/2926/ReadOnlyDatabaseChecker.java\nindex c4d26653272..3bfb418c4c1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/2926/ReadOnlyDatabaseChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/2926/ReadOnlyDatabaseChecker.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.configuration.helpers;\n \n import java.util.Objects;\n@@ -43,13 +44,13 @@ public interface ReadOnlyDatabaseChecker extends Predicate<String>\n      * There are two configurations for declaring a database read_only.\n      * The global config `dbms.read_only` and the per database config `dbms.databases.read_only`.\n      * The former is fixed and the latter is dynamic.\n-     *\n+     * <p>\n      * This difference can be safely ignored in most cases, but the current implementation of `CommunityCommitProcessFactory`\n      * executes `ReadOnlyDatabaseChecker#test( databaseName )` and provides a `ReadOnlyTransactionCommitProcess` if true.\n-     *\n+     * <p>\n      * CommitProcesses cannot be replaced at runtime, so in such cases we need to be able to distinguish between a database\n      * being read_only due to dynamic or fixed config.\n-     *\n+     * <p>\n      * Most implementations / uses of `ReadOnlyDatabaseChecker` can safely ignore this method.\n      */\n     default boolean readOnlyFixed()\n@@ -62,29 +63,29 @@ public interface ReadOnlyDatabaseChecker extends Predicate<String>\n         return databaseName -> false;\n     }\n \n-    private static boolean check( Config config, String databaseName )\n+    private static boolean check(Config config, String databaseName)\n     {\n         //System database can't be read only\n-        if ( Objects.equals( SYSTEM_DATABASE_NAME, databaseName ) )\n+        if (Objects.equals(SYSTEM_DATABASE_NAME, databaseName))\n         {\n             return false;\n         }\n \n-        return config.get( read_only ) ||\n-               config.get( read_only_databases ).contains( databaseName ) ||\n-               defaultsToReadOnlyAndNotWritable( config, databaseName );\n+        return config.get(read_only) ||\n+          config.get(read_only_databases).contains(databaseName) ||\n+          defaultsToReadOnlyAndNotWritable(config, databaseName);\n     }\n \n-    private static boolean defaultsToReadOnlyAndNotWritable( Config config, String databaseName )\n+    private static boolean defaultsToReadOnlyAndNotWritable(Config config, String databaseName)\n     {\n-        return config.get( read_only_database_default ) && !config.get( writable_databases ).contains( databaseName );\n+        return config.get(read_only_database_default) && !config.get(writable_databases).contains(databaseName);\n     }\n \n     class Default implements ReadOnlyDatabaseChecker\n     {\n         private final Config config;\n \n-        public Default( Config config )\n+        public Default(Config config)\n         {\n             this.config = config;\n         }\n@@ -92,13 +93,13 @@ public interface ReadOnlyDatabaseChecker extends Predicate<String>\n         @Override\n         public boolean readOnlyFixed()\n         {\n-            return config.get( read_only );\n+            return config.get(read_only);\n         }\n \n         @Override\n-        public boolean test( String databaseName )\n+        public boolean test(String databaseName)\n         {\n-            return check( config, databaseName );\n+            return check(config, databaseName);\n         }\n     }\n }\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

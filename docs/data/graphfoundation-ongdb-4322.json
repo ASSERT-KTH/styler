@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4322",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "81",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4322/Conversation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4322/Conversation.java\nindex 48189635ff2..b0e7c5d795a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4322/Conversation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4322/Conversation.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.ha.com.master;\n \n \n@@ -29,66 +30,64 @@ import org.neo4j.kernel.impl.locking.Locks;\n  */\n public class Conversation implements AutoCloseable\n {\n-    private Locks.Client locks;\n-    private volatile boolean active = true;\n-    // since some client locks use pooling we need to be sure that\n-    // there is no race between client close and stop\n-    private ReentrantLock lockClientCleanupLock = new ReentrantLock();\n+  private Locks.Client locks;\n+  private volatile boolean active = true;\n+  // since some client locks use pooling we need to be sure that\n+  // there is no race between client close and stop\n+  private ReentrantLock lockClientCleanupLock = new ReentrantLock();\n \n-    public Conversation( Locks.Client locks )\n-    {\n-        this.locks = locks;\n-    }\n+  public Conversation(Locks.Client locks)\n+  {\n+    this.locks = locks;\n+  }\n \n-    public Locks.Client getLocks()\n-    {\n-        return locks;\n-    }\n+  public Locks.Client getLocks()\n+  {\n+    return locks;\n+  }\n \n-    @Override\n-    public void close()\n+  @Override\n+  public void close()\n+  {\n+    lockClientCleanupLock.lock();\n+    try\n     {\n-        lockClientCleanupLock.lock();\n-        try\n-        {\n-            if ( locks != null )\n-            {\n-                locks.close();\n-                locks = null;\n-                active = false;\n-            }\n-        }\n-        finally\n-        {\n-            lockClientCleanupLock.unlock();\n-        }\n-    }\n-\n-    public boolean isActive()\n+      if (locks != null)\n+      {\n+        locks.close();\n+        locks = null;\n+        active = false;\n+      }\n+    } finally\n     {\n-        return active;\n+      lockClientCleanupLock.unlock();\n     }\n+  }\n \n-    public void stop()\n-    {\n-        lockClientCleanupLock.lock();\n-        try\n-        {\n-            if ( locks != null )\n-            {\n-                locks.stop();\n-            }\n-        }\n-        finally\n-        {\n-            lockClientCleanupLock.unlock();\n-        }\n-    }\n+  public boolean isActive()\n+  {\n+    return active;\n+  }\n \n-    @Override\n-    public String toString()\n+  public void stop()\n+  {\n+    lockClientCleanupLock.lock();\n+    try\n     {\n-        String locks = this.locks.toString();\n-        return \"Conversation[lockClient: \" + locks + \"].\";\n+      if (locks != null)\n+      {\n+        locks.stop();\n+      }\n+    } finally\n+    {\n+      lockClientCleanupLock.unlock();\n     }\n+  }\n+\n+  @Override\n+  public String toString()\n+  {\n+    String locks = this.locks.toString();\n+    return \"Conversation[lockClient: \" + locks + \"].\";\n+  }\n }\n",
+            "diff_size": 72
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4322/Conversation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4322/Conversation.java\nindex 48189635ff2..2c67b1af655 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4322/Conversation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4322/Conversation.java\n@@ -18,8 +18,6 @@\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n package org.neo4j.kernel.ha.com.master;\n-\n-\n import java.util.concurrent.locks.ReentrantLock;\n \n import org.neo4j.kernel.impl.locking.Locks;\n@@ -91,4 +89,4 @@ public class Conversation implements AutoCloseable\n         String locks = this.locks.toString();\n         return \"Conversation[lockClient: \" + locks + \"].\";\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

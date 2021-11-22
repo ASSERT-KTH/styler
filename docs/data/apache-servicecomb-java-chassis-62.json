@@ -1,0 +1,178 @@
+{
+    "project_name": "apache-servicecomb-java-chassis",
+    "error_id": "62",
+    "information": {
+        "errors": [
+            {
+                "line": "159",
+                "column": "87",
+                "severity": "warning",
+                "message": "'?' should be on a new line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+            }
+        ]
+    },
+    "source_code": "            .build()\n    );\n    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ?\n        null : serviceCache.getInstances();\n  }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/styler/62/RegistryUtils.java\nindex c2eb750a439..e21048da76d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/styler/62/RegistryUtils.java\n@@ -156,8 +156,8 @@ public final class RegistryUtils {\n             .versionRule(versionRule)\n             .build()\n     );\n-    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ?\n-        null : serviceCache.getInstances();\n+    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus())\n+        ? null : serviceCache.getInstances();\n   }\n \n   // update microservice instance properties\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "159",
+                    "column": "87",
+                    "severity": "warning",
+                    "message": "'?' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/intellij/62/RegistryUtils.java\nindex c2eb750a439..21bf7e5890b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/intellij/62/RegistryUtils.java\n@@ -148,7 +148,7 @@ public final class RegistryUtils {\n \n \n   public static List<MicroserviceInstance> findServiceInstance(String appId, String serviceName,\n-      String versionRule) {\n+                                                               String versionRule) {\n     MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(\n         MicroserviceCacheKey.builder()\n             .appId(appId).serviceName(serviceName)\n@@ -175,7 +175,7 @@ public final class RegistryUtils {\n   }\n \n   public static MicroserviceInstances findServiceInstances(String appId, String serviceName,\n-      String versionRule) {\n+                                                           String versionRule) {\n     MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(\n         MicroserviceCacheKey.builder()\n             .appId(appId)\n@@ -258,6 +258,7 @@ public final class RegistryUtils {\n \n   /**\n    * To validate whether the name is legal value.\n+   *\n    * @param name name of the {@link ServiceRegistry}\n    * @throws IllegalArgumentException the input value is illegal\n    */\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "156",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/62/RegistryUtils.java\nindex c2eb750a439..b210b19f22a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/62/RegistryUtils.java\n@@ -87,8 +87,7 @@ public final class RegistryUtils {\n         .setCacheRefreshedWatcher(refreshedCaches -> DiscoveryManager.INSTANCE.getAppManager().pullInstances());\n \n     executeOnEachServiceRegistry(\n-        serviceRegistry -> serviceRegistry\n-            .getEventBus()\n+        serviceRegistry -> serviceRegistry.getEventBus()\n             .register(aggregateServiceRegistryCache));\n   }\n \n@@ -146,18 +145,15 @@ public final class RegistryUtils {\n     return serviceRegistry.getMicroserviceInstance();\n   }\n \n-\n-  public static List<MicroserviceInstance> findServiceInstance(String appId, String serviceName,\n+public static List<MicroserviceInstance> findServiceInstance(String appId, String serviceName,\n       String versionRule) {\n     MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(\n         MicroserviceCacheKey.builder()\n             .appId(appId).serviceName(serviceName)\n             .env(getMicroservice().getEnvironment())\n             .versionRule(versionRule)\n-            .build()\n-    );\n-    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ?\n-        null : serviceCache.getInstances();\n+            .build());\n+    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ? null : serviceCache.getInstances();\n   }\n \n   // update microservice instance properties\n@@ -213,7 +209,7 @@ public final class RegistryUtils {\n         return microserviceInstances;\n       default:\n         return null;\n-    }\n+  }\n   }\n \n   public static String calcSchemaSummary(String schemaContent) {\n@@ -307,8 +303,7 @@ public final class RegistryUtils {\n       EventManager.getEventBus().post(new MicroserviceInstanceRegisteredEvent(\n           ServiceCenterRegistration.NAME,\n           serviceRegistry.getMicroserviceInstance().getInstanceId(),\n-          false\n-      ));\n+          false));\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "84",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "85",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "142",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "143",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "144",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 154).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "145",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "146",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "147",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "166",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "167",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "168",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 154).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "169",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "170",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "214",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "263",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/62/RegistryUtils.java\nindex c2eb750a439..e6d849e4311 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/62/RegistryUtils.java\n@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;\n import java.util.function.Consumer;\n import java.util.function.Function;\n import java.util.regex.Matcher;\n-\n import org.apache.commons.configuration.Configuration;\n import org.apache.servicecomb.config.ConfigUtil;\n import org.apache.servicecomb.foundation.common.Holder;\n@@ -49,7 +48,6 @@ import org.apache.servicecomb.serviceregistry.task.MicroserviceInstanceRegisterT\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n import org.springframework.util.StringUtils;\n-\n import com.google.common.base.Charsets;\n import com.google.common.eventbus.Subscribe;\n import com.google.common.hash.Hashing;\n@@ -60,6 +58,7 @@ public final class RegistryUtils {\n   /**\n    * The default ServiceRegistry instance\n    */\n+\n   private static volatile ServiceRegistry serviceRegistry;\n \n   private static final Map<String, ServiceRegistry> EXTRA_SERVICE_REGISTRIES = new LinkedHashMap<>();\n@@ -75,7 +74,6 @@ public final class RegistryUtils {\n     }\n \n     initializeServiceRegistriesWithConfig(ConfigUtil.createLocalConfig());\n-\n     initAggregateServiceRegistryCache();\n   }\n \n@@ -83,18 +81,12 @@ public final class RegistryUtils {\n     ArrayList<ServiceRegistry> serviceRegistries = new ArrayList<>();\n     executeOnEachServiceRegistry(serviceRegistries::add);\n     aggregateServiceRegistryCache = new AggregateServiceRegistryCache(serviceRegistries);\n-    aggregateServiceRegistryCache\n-        .setCacheRefreshedWatcher(refreshedCaches -> DiscoveryManager.INSTANCE.getAppManager().pullInstances());\n-\n-    executeOnEachServiceRegistry(\n-        serviceRegistry -> serviceRegistry\n-            .getEventBus()\n-            .register(aggregateServiceRegistryCache));\n+    aggregateServiceRegistryCache.setCacheRefreshedWatcher(refreshedCaches -> DiscoveryManager.INSTANCE.getAppManager().pullInstances());\n+    executeOnEachServiceRegistry(serviceRegistry -> serviceRegistry.getEventBus().register(aggregateServiceRegistryCache));\n   }\n \n   private static void initializeServiceRegistriesWithConfig(Configuration configuration) {\n-    serviceRegistry =\n-        ServiceRegistryFactory.create(ServiceRegistryConfig.INSTANCE, configuration);\n+    serviceRegistry = ServiceRegistryFactory.create(ServiceRegistryConfig.INSTANCE, configuration);\n     initializeServiceRegistries(configuration);\n   }\n \n@@ -146,21 +138,17 @@ public final class RegistryUtils {\n     return serviceRegistry.getMicroserviceInstance();\n   }\n \n-\n-  public static List<MicroserviceInstance> findServiceInstance(String appId, String serviceName,\n-      String versionRule) {\n-    MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(\n-        MicroserviceCacheKey.builder()\n-            .appId(appId).serviceName(serviceName)\n-            .env(getMicroservice().getEnvironment())\n-            .versionRule(versionRule)\n-            .build()\n-    );\n-    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ?\n-        null : serviceCache.getInstances();\n+  public static List<MicroserviceInstance> findServiceInstance(String appId, String serviceName, String versionRule) {\n+    MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(MicroserviceCacheKey.builder().appId(appId)\n+                                                                                                                  .serviceName(serviceName)\n+                                                                                                                  .env(getMicroservice().getEnvironment())\n+                                                                                                                  .versionRule(versionRule)\n+                                                                                                                  .build());\n+    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ? null : serviceCache.getInstances();\n   }\n \n   // update microservice instance properties\n+\n   public static boolean updateInstanceProperties(Map<String, String> instanceProperties) {\n     Holder<Boolean> resultHolder = new Holder<>(true);\n     executeOnEachServiceRegistry(sr -> {\n@@ -174,21 +162,19 @@ public final class RegistryUtils {\n     return getResultFromFirstValidServiceRegistry(sr -> sr.getRemoteMicroservice(microserviceId));\n   }\n \n-  public static MicroserviceInstances findServiceInstances(String appId, String serviceName,\n-      String versionRule) {\n-    MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(\n-        MicroserviceCacheKey.builder()\n-            .appId(appId)\n-            .serviceName(serviceName)\n-            .env(getMicroservice().getEnvironment())\n-            .versionRule(versionRule)\n-            .build());\n+  public static MicroserviceInstances findServiceInstances(String appId, String serviceName, String versionRule) {\n+    MicroserviceCache serviceCache = aggregateServiceRegistryCache.findServiceCache(MicroserviceCacheKey.builder().appId(appId)\n+                                                                                                                  .serviceName(serviceName)\n+                                                                                                                  .env(getMicroservice().getEnvironment())\n+                                                                                                                  .versionRule(versionRule)\n+                                                                                                                  .build());\n     return convertCacheToMicroserviceInstances(serviceCache);\n   }\n \n   /**\n    * for compatibility\n    */\n+\n   public static MicroserviceInstances convertCacheToMicroserviceInstances(MicroserviceCache microserviceCache) {\n     MicroserviceInstances microserviceInstances = new MicroserviceInstances();\n     switch (microserviceCache.getStatus()) {\n@@ -207,6 +193,7 @@ public final class RegistryUtils {\n         microserviceInstances.setMicroserviceNotExist(false);\n         microserviceInstances.setNeedRefresh(true);\n         microserviceInstances.setRevision(microserviceCache.getRevisionId());\n+\n         FindInstancesResponse findInstancesResponse = new FindInstancesResponse();\n         findInstancesResponse.setInstances(new ArrayList<>(microserviceCache.getInstances()));\n         microserviceInstances.setInstancesResponse(findInstancesResponse);\n@@ -217,18 +204,20 @@ public final class RegistryUtils {\n   }\n \n   public static String calcSchemaSummary(String schemaContent) {\n-    return Hashing.sha256().newHasher().putString(schemaContent, Charsets.UTF_8).hash().toString();\n+    return Hashing.sha256().newHasher()\n+                           .putString(schemaContent, Charsets.UTF_8)\n+                           .hash()\n+                           .toString();\n   }\n \n   public static String getAggregatedSchema(String microserviceId, String schemaId) {\n-    return getResultFromFirstValidServiceRegistry(\n-        sr -> sr.getServiceRegistryClient().getAggregatedSchema(microserviceId, schemaId));\n+    return getResultFromFirstValidServiceRegistry(sr -> sr.getServiceRegistryClient().getAggregatedSchema(microserviceId, schemaId));\n   }\n \n   // TODO : rename to getMiscroservice and delete original getMiscroservice\n+\n   public static Microservice getAggregatedRemoteMicroservice(String microserviceId) {\n-    return getResultFromFirstValidServiceRegistry(\n-        sr -> sr.getAggregatedRemoteMicroservice(microserviceId));\n+    return getResultFromFirstValidServiceRegistry(sr -> sr.getAggregatedRemoteMicroservice(microserviceId));\n   }\n \n   public static <T> T getResultFromFirstValidServiceRegistry(Function<ServiceRegistry, T> action) {\n@@ -245,6 +234,7 @@ public final class RegistryUtils {\n     if (null != getServiceRegistry()) {\n       action.accept(getServiceRegistry());\n     }\n+\n     if (!EXTRA_SERVICE_REGISTRIES.isEmpty()) {\n       EXTRA_SERVICE_REGISTRIES.forEach((k, v) -> action.accept(v));\n     }\n@@ -252,7 +242,9 @@ public final class RegistryUtils {\n \n   public static void addExtraServiceRegistry(ServiceRegistry serviceRegistry) {\n     Objects.requireNonNull(serviceRegistry);\n-    LOGGER.info(\"extra ServiceRegistry added: [{}], [{}]\", serviceRegistry.getName(), serviceRegistry.getClass());\n+    LOGGER.info(\"extra ServiceRegistry added: [{}], [{}]\",\n+serviceRegistry.getName(),\n+serviceRegistry.getClass());\n     EXTRA_SERVICE_REGISTRIES.put(serviceRegistry.getName(), serviceRegistry);\n   }\n \n@@ -261,13 +253,14 @@ public final class RegistryUtils {\n    * @param name name of the {@link ServiceRegistry}\n    * @throws IllegalArgumentException the input value is illegal\n    */\n+\n   public static void validateRegistryName(String name) {\n     Objects.requireNonNull(name, \"null value is not allowed for the name of ServiceRegistry\");\n+\n     Matcher checkMatcher = ServiceRegistry.REGISTRY_NAME_PATTERN.matcher(name);\n     boolean isNameValid = checkMatcher.matches();\n     if (!isNameValid) {\n-      throw new IllegalArgumentException(\n-          \"Illegal registry name, the format should be \" + ServiceRegistry.REGISTRY_NAME_FORMAT);\n+      throw new IllegalArgumentException(\"Illegal registry name, the format should be \" + ServiceRegistry.REGISTRY_NAME_FORMAT);\n     }\n   }\n \n@@ -275,7 +268,6 @@ public final class RegistryUtils {\n     if (ServiceRegistry.DEFAULT_REGISTRY_NAME.equals(registryName)) {\n       return getServiceRegistry();\n     }\n-\n     return EXTRA_SERVICE_REGISTRIES.get(registryName);\n   }\n \n@@ -291,24 +283,24 @@ public final class RegistryUtils {\n \n     @Subscribe\n     public void afterRegistryInstance(MicroserviceInstanceRegisterTask microserviceInstanceRegisterTask) {\n-      LOGGER.info(\"receive MicroserviceInstanceRegisterTask event of [{}]\", serviceRegistry.getName());\n+      LOGGER.info(\"receive MicroserviceInstanceRegisterTask event of [{}]\",\n+serviceRegistry.getName());\n       if (StringUtils.isEmpty(serviceRegistry.getMicroserviceInstance().getInstanceId())) {\n         return;\n       }\n \n-      LOGGER.info(\"ServiceRegistry[{}] has completed instance registry\", serviceRegistry.getName());\n+      LOGGER.info(\"ServiceRegistry[{}] has completed instance registry\",\n+serviceRegistry.getName());\n       EventManager.unregister(this);\n-\n       if (instanceRegisterCounter.decrementAndGet() > 0) {\n         return;\n       }\n \n       // for simplicity , only send the last one event. can do it better, maybe.\n-      EventManager.getEventBus().post(new MicroserviceInstanceRegisteredEvent(\n-          ServiceCenterRegistration.NAME,\n-          serviceRegistry.getMicroserviceInstance().getInstanceId(),\n-          false\n-      ));\n+\n+      EventManager.getEventBus().post(new MicroserviceInstanceRegisteredEvent(ServiceCenterRegistration.NAME,\n+        serviceRegistry.getMicroserviceInstance().getInstanceId(),\n+          false));\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 66
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "159",
+                    "column": "87",
+                    "severity": "warning",
+                    "message": "'?' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/styler_three_grams/62/RegistryUtils.java\nindex c2eb750a439..e21048da76d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/62/RegistryUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/styler_three_grams/62/RegistryUtils.java\n@@ -156,8 +156,8 @@ public final class RegistryUtils {\n             .versionRule(versionRule)\n             .build()\n     );\n-    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus()) ?\n-        null : serviceCache.getInstances();\n+    return MicroserviceCacheStatus.SERVICE_NOT_FOUND.equals(serviceCache.getStatus())\n+        ? null : serviceCache.getInstances();\n   }\n \n   // update microservice instance properties\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

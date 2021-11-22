@@ -1,0 +1,80 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "468",
+    "information": {
+        "errors": [
+            {
+                "line": "49",
+                "column": "38",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "            }\n        } else {\n            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n                throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n            }\n            if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/468/DropSchema.java\nindex 73122036588..64a91f1ab5b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/468/DropSchema.java\n@@ -46,8 +46,9 @@ public class DropSchema extends DefineCommand {\n                 throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n             }\n         } else {\n-            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n-                throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n+            if (!schema.canDrop()) {\n+                //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n+            throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n             }\n             if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n                 ArrayList<SchemaObject> all = schema.getAll(null);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "51",
+                    "column": "32",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/468/DropSchema.java\nindex 73122036588..e2f32f29c9d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/468/DropSchema.java\n@@ -3,9 +3,11 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.command.ddl;\n \n import java.util.ArrayList;\n+\n import org.h2.api.ErrorCode;\n import org.h2.command.CommandInterface;\n import org.h2.constraint.ConstraintActionType;\n@@ -21,64 +23,64 @@ import org.h2.schema.SchemaObject;\n  */\n public class DropSchema extends DefineCommand {\n \n-    private String schemaName;\n-    private boolean ifExists;\n-    private ConstraintActionType dropAction;\n+  private String schemaName;\n+  private boolean ifExists;\n+  private ConstraintActionType dropAction;\n \n-    public DropSchema(Session session) {\n-        super(session);\n-        dropAction = session.getDatabase().getSettings().dropRestrict ?\n-                ConstraintActionType.RESTRICT : ConstraintActionType.CASCADE;\n-    }\n+  public DropSchema(Session session) {\n+    super(session);\n+    dropAction = session.getDatabase().getSettings().dropRestrict ?\n+        ConstraintActionType.RESTRICT : ConstraintActionType.CASCADE;\n+  }\n \n-    public void setSchemaName(String name) {\n-        this.schemaName = name;\n-    }\n+  public void setSchemaName(String name) {\n+    this.schemaName = name;\n+  }\n \n-    @Override\n-    public int update() {\n-        session.getUser().checkSchemaAdmin();\n-        session.commit(true);\n-        Database db = session.getDatabase();\n-        Schema schema = db.findSchema(schemaName);\n-        if (schema == null) {\n-            if (!ifExists) {\n-                throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n-            }\n-        } else {\n-            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n-                throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n+  @Override\n+  public int update() {\n+    session.getUser().checkSchemaAdmin();\n+    session.commit(true);\n+    Database db = session.getDatabase();\n+    Schema schema = db.findSchema(schemaName);\n+    if (schema == null) {\n+      if (!ifExists) {\n+        throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n+      }\n+    } else {\n+      if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n+        throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n+      }\n+      if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n+        ArrayList<SchemaObject> all = schema.getAll(null);\n+        int size = all.size();\n+        if (size > 0) {\n+          StringBuilder builder = new StringBuilder();\n+          for (int i = 0; i < size; i++) {\n+            if (i > 0) {\n+              builder.append(\", \");\n             }\n-            if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n-                ArrayList<SchemaObject> all = schema.getAll(null);\n-                int size = all.size();\n-                if (size > 0) {\n-                    StringBuilder builder = new StringBuilder();\n-                    for (int i = 0; i < size; i++) {\n-                        if (i > 0) {\n-                            builder.append(\", \");\n-                        }\n-                        builder.append(all.get(i).getName());\n-                    }\n-                    throw DbException.get(ErrorCode.CANNOT_DROP_2, schemaName, builder.toString());\n-                }\n-            }\n-            db.removeDatabaseObject(session, schema);\n+            builder.append(all.get(i).getName());\n+          }\n+          throw DbException.get(ErrorCode.CANNOT_DROP_2, schemaName, builder.toString());\n         }\n-        return 0;\n+      }\n+      db.removeDatabaseObject(session, schema);\n     }\n+    return 0;\n+  }\n \n-    public void setIfExists(boolean ifExists) {\n-        this.ifExists = ifExists;\n-    }\n+  public void setIfExists(boolean ifExists) {\n+    this.ifExists = ifExists;\n+  }\n \n-    public void setDropAction(ConstraintActionType dropAction) {\n-        this.dropAction = dropAction;\n-    }\n+  public void setDropAction(ConstraintActionType dropAction) {\n+    this.dropAction = dropAction;\n+  }\n \n-    @Override\n-    public int getType() {\n-        return CommandInterface.DROP_SCHEMA;\n-    }\n+  @Override\n+  public int getType() {\n+    return CommandInterface.DROP_SCHEMA;\n+  }\n \n }\n",
+            "diff_size": 64
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/468/DropSchema.java\nindex 73122036588..53c80d13938 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/468/DropSchema.java\n@@ -46,7 +46,8 @@ public class DropSchema extends DefineCommand {\n                 throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n             }\n         } else {\n-            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n+            if (!schema.canDrop()) {\n+    //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n                 throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n             }\n             if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n@@ -81,4 +82,4 @@ public class DropSchema extends DefineCommand {\n         return CommandInterface.DROP_SCHEMA;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "51",
+                    "column": "38",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/468/DropSchema.java\nindex 73122036588..48fe4b327a6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/468/DropSchema.java\n@@ -19,6 +19,8 @@ import org.h2.schema.SchemaObject;\n  * This class represents the statement\n  * DROP SCHEMA\n  */\n+\n+\n public class DropSchema extends DefineCommand {\n \n     private String schemaName;\n@@ -27,10 +29,10 @@ public class DropSchema extends DefineCommand {\n \n     public DropSchema(Session session) {\n         super(session);\n-        dropAction = session.getDatabase().getSettings().dropRestrict ?\n-                ConstraintActionType.RESTRICT : ConstraintActionType.CASCADE;\n+        dropAction = session.getDatabase().getSettings().dropRestrict ? ConstraintActionType.RESTRICT : ConstraintActionType.CASCADE;\n     }\n \n+\n     public void setSchemaName(String name) {\n         this.schemaName = name;\n     }\n@@ -68,10 +70,12 @@ public class DropSchema extends DefineCommand {\n         return 0;\n     }\n \n+\n     public void setIfExists(boolean ifExists) {\n         this.ifExists = ifExists;\n     }\n \n+\n     public void setDropAction(ConstraintActionType dropAction) {\n         this.dropAction = dropAction;\n     }\n@@ -81,4 +85,4 @@ public class DropSchema extends DefineCommand {\n         return CommandInterface.DROP_SCHEMA;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/468/DropSchema.java\nindex 73122036588..64a91f1ab5b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/468/DropSchema.java\n@@ -46,8 +46,9 @@ public class DropSchema extends DefineCommand {\n                 throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n             }\n         } else {\n-            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n-                throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n+            if (!schema.canDrop()) {\n+                //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n+            throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n             }\n             if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n                 ArrayList<SchemaObject> all = schema.getAll(null);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/468/DropSchema.java\nindex 73122036588..8adbb5cdac6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/468/DropSchema.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/468/DropSchema.java\n@@ -46,8 +46,9 @@ public class DropSchema extends DefineCommand {\n                 throw DbException.get(ErrorCode.SCHEMA_NOT_FOUND_1, schemaName);\n             }\n         } else {\n-            if (!schema.canDrop()) { //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n-                throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n+            if (!schema.canDrop()) {\n+        //\u6bd4\u5982public\u6a21\u5f0f\u4e0d\u80fddrop\n+            throw DbException.get(ErrorCode.SCHEMA_CAN_NOT_BE_DROPPED_1, schemaName);\n             }\n             if (dropAction == ConstraintActionType.RESTRICT && !schema.isEmpty()) {\n                 ArrayList<SchemaObject> all = schema.getAll(null);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff"
+    ]
+}

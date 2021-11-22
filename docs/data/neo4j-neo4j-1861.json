@@ -1,0 +1,130 @@
+{
+    "project_name": "neo4j-neo4j",
+    "error_id": "1861",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "117",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "140",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "74",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "100",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1861/DatabaseAvailability.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/1861/DatabaseAvailability.java\nindex 69b6a9f0f14..731e0d518b1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1861/DatabaseAvailability.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/1861/DatabaseAvailability.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.availability;\n \n import java.time.Clock;\n@@ -34,14 +35,14 @@ import static java.util.concurrent.locks.LockSupport.parkNanos;\n  */\n public class DatabaseAvailability extends LifecycleAdapter\n {\n-    private static final AvailabilityRequirement UNAVAILABILITY_REQUIREMENT = new DescriptiveAvailabilityRequirement( \"Database unavailable\" );\n+    private static final AvailabilityRequirement UNAVAILABILITY_REQUIREMENT = new DescriptiveAvailabilityRequirement(\"Database unavailable\");\n     private final AvailabilityGuard databaseAvailabilityGuard;\n     private final TransactionCounters transactionCounters;\n     private final Clock clock;\n     private final long awaitActiveTransactionDeadlineMillis;\n \n-    public DatabaseAvailability( AvailabilityGuard databaseAvailabilityGuard, TransactionCounters transactionCounters, Clock clock,\n-            long awaitActiveTransactionDeadlineMillis )\n+    public DatabaseAvailability(AvailabilityGuard databaseAvailabilityGuard, TransactionCounters transactionCounters, Clock clock,\n+                                long awaitActiveTransactionDeadlineMillis)\n     {\n         this.databaseAvailabilityGuard = databaseAvailabilityGuard;\n         this.transactionCounters = transactionCounters;\n@@ -52,13 +53,13 @@ public class DatabaseAvailability extends LifecycleAdapter\n     @Override\n     public void init() throws Exception\n     {\n-        databaseAvailabilityGuard.require( UNAVAILABILITY_REQUIREMENT );\n+        databaseAvailabilityGuard.require(UNAVAILABILITY_REQUIREMENT);\n     }\n \n     @Override\n     public void start()\n     {\n-        databaseAvailabilityGuard.fulfill( UNAVAILABILITY_REQUIREMENT );\n+        databaseAvailabilityGuard.fulfill(UNAVAILABILITY_REQUIREMENT);\n     }\n \n     @Override\n@@ -66,7 +67,7 @@ public class DatabaseAvailability extends LifecycleAdapter\n     {\n         // Database is no longer available for use\n         // Deny beginning new transactions\n-        databaseAvailabilityGuard.require( UNAVAILABILITY_REQUIREMENT );\n+        databaseAvailabilityGuard.require(UNAVAILABILITY_REQUIREMENT);\n \n         // Await transactions stopped\n         awaitTransactionsClosedWithinTimeout();\n@@ -75,9 +76,9 @@ public class DatabaseAvailability extends LifecycleAdapter\n     private void awaitTransactionsClosedWithinTimeout()\n     {\n         long deadline = clock.millis() + awaitActiveTransactionDeadlineMillis;\n-        while ( transactionCounters.getNumberOfActiveTransactions() > 0 && clock.millis() < deadline )\n+        while (transactionCounters.getNumberOfActiveTransactions() > 0 && clock.millis() < deadline)\n         {\n-            parkNanos( MILLISECONDS.toNanos( 10 ) );\n+            parkNanos(MILLISECONDS.toNanos(10));\n         }\n     }\n }\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

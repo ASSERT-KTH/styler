@@ -1,0 +1,87 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "91",
+    "information": {
+        "errors": [
+            {
+                "line": "45",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n    \n\tpublic void deleteFacetsFor( Dataverse d ) {\n\t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n\t\t\t.setParameter(\"ownerId\", d.getId())\n\t\t\t\t.executeUpdate();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/91/DataverseFacetServiceBean.java\nindex 67bf6a820e2..54f3d08dd36 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/91/DataverseFacetServiceBean.java\n@@ -41,8 +41,8 @@ public class DataverseFacetServiceBean implements java.io.Serializable {\n         em.remove(em.merge(dataverseFacet));\n         cache.invalidate();\n     }\n-    \n-\tpublic void deleteFacetsFor( Dataverse d ) {\n+\n+    public void deleteFacetsFor( Dataverse d ) {\n \t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n \t\t\t.setParameter(\"ownerId\", d.getId())\n \t\t\t\t.executeUpdate();\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/91/DataverseFacetServiceBean.java\nindex 67bf6a820e2..199b561def7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/91/DataverseFacetServiceBean.java\n@@ -9,63 +9,62 @@ import javax.persistence.EntityManager;\n import javax.persistence.PersistenceContext;\n \n /**\n- *\n  * @author xyang\n  * @author Michael Bar-Sinai\n  */\n @Stateless\n @Named\n public class DataverseFacetServiceBean implements java.io.Serializable {\n-    \n-    public static final LruCache<Long,List<DataverseFacet>> cache = new LruCache<>();\n-    \n-    @PersistenceContext(unitName = \"VDCNet-ejbPU\")\n-    private EntityManager em;\n-    \n-    @EJB\n-    DataverseServiceBean dataverses;\n-    \n-    public List<DataverseFacet> findByDataverseId(Long dataverseId) {\n-        List<DataverseFacet> res = cache.get(dataverseId);\n-\n-        if ( res == null ) {\n-            res = em.createNamedQuery(\"DataverseFacet.findByDataverseId\", DataverseFacet.class)\n-                            .setParameter(\"dataverseId\", dataverseId).getResultList();\n-            cache.put(dataverseId, res);\n-        }\n-\n-        return res; \n-    }\n \n-    public void delete(DataverseFacet dataverseFacet) {\n-        em.remove(em.merge(dataverseFacet));\n-        cache.invalidate();\n-    }\n-    \n-\tpublic void deleteFacetsFor( Dataverse d ) {\n-\t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n-\t\t\t.setParameter(\"ownerId\", d.getId())\n-\t\t\t\t.executeUpdate();\n-        cache.invalidate(d.getId());\n-        \n-\t}\n-\t\n-    public DataverseFacet create(int displayOrder, DatasetFieldType fieldType, Dataverse ownerDv) {\n-        DataverseFacet dataverseFacet = new DataverseFacet();\n-        \n-        dataverseFacet.setDisplayOrder(displayOrder);\n-        dataverseFacet.setDatasetFieldType(fieldType);\n-        dataverseFacet.setDataverse(ownerDv);\n-        \n-        ownerDv.getDataverseFacets().add(dataverseFacet);\n-        em.persist(dataverseFacet);\n-        return dataverseFacet;\n-    }\n-    \n-    public DataverseFacet create(int displayOrder, Long datasetFieldTypeId, Long dataverseId) {\n-        return create(displayOrder, em.find(DatasetFieldType.class,datasetFieldTypeId),\n-                        dataverses.find(dataverseId) );\n+  public static final LruCache<Long, List<DataverseFacet>> cache = new LruCache<>();\n+\n+  @PersistenceContext(unitName = \"VDCNet-ejbPU\")\n+  private EntityManager em;\n+\n+  @EJB\n+  DataverseServiceBean dataverses;\n+\n+  public List<DataverseFacet> findByDataverseId(Long dataverseId) {\n+    List<DataverseFacet> res = cache.get(dataverseId);\n+\n+    if (res == null) {\n+      res = em.createNamedQuery(\"DataverseFacet.findByDataverseId\", DataverseFacet.class)\n+        .setParameter(\"dataverseId\", dataverseId).getResultList();\n+      cache.put(dataverseId, res);\n     }\n-    \n+\n+    return res;\n+  }\n+\n+  public void delete(DataverseFacet dataverseFacet) {\n+    em.remove(em.merge(dataverseFacet));\n+    cache.invalidate();\n+  }\n+\n+  public void deleteFacetsFor(Dataverse d) {\n+    em.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n+      .setParameter(\"ownerId\", d.getId())\n+      .executeUpdate();\n+    cache.invalidate(d.getId());\n+\n+  }\n+\n+  public DataverseFacet create(int displayOrder, DatasetFieldType fieldType, Dataverse ownerDv) {\n+    DataverseFacet dataverseFacet = new DataverseFacet();\n+\n+    dataverseFacet.setDisplayOrder(displayOrder);\n+    dataverseFacet.setDatasetFieldType(fieldType);\n+    dataverseFacet.setDataverse(ownerDv);\n+\n+    ownerDv.getDataverseFacets().add(dataverseFacet);\n+    em.persist(dataverseFacet);\n+    return dataverseFacet;\n+  }\n+\n+  public DataverseFacet create(int displayOrder, Long datasetFieldTypeId, Long dataverseId) {\n+    return create(displayOrder, em.find(DatasetFieldType.class, datasetFieldTypeId),\n+      dataverses.find(dataverseId));\n+  }\n+\n }\n \n",
+            "diff_size": 83
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/91/DataverseFacetServiceBean.java\nindex 67bf6a820e2..81e8353a052 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/91/DataverseFacetServiceBean.java\n@@ -13,59 +13,51 @@ import javax.persistence.PersistenceContext;\n  * @author xyang\n  * @author Michael Bar-Sinai\n  */\n+\n+\n @Stateless\n @Named\n public class DataverseFacetServiceBean implements java.io.Serializable {\n-    \n-    public static final LruCache<Long,List<DataverseFacet>> cache = new LruCache<>();\n-    \n+\n+    public static final LruCache<Long, List<DataverseFacet>> cache = new LruCache<>();\n+\n     @PersistenceContext(unitName = \"VDCNet-ejbPU\")\n     private EntityManager em;\n-    \n+\n     @EJB\n     DataverseServiceBean dataverses;\n-    \n+\n     public List<DataverseFacet> findByDataverseId(Long dataverseId) {\n         List<DataverseFacet> res = cache.get(dataverseId);\n-\n-        if ( res == null ) {\n-            res = em.createNamedQuery(\"DataverseFacet.findByDataverseId\", DataverseFacet.class)\n-                            .setParameter(\"dataverseId\", dataverseId).getResultList();\n+        if (res == null) {\n+            res = em.createNamedQuery(\"DataverseFacet.findByDataverseId\", DataverseFacet.class).setParameter(\"dataverseId\", dataverseId).getResultList();\n             cache.put(dataverseId, res);\n         }\n-\n-        return res; \n+        return res;\n     }\n \n     public void delete(DataverseFacet dataverseFacet) {\n         em.remove(em.merge(dataverseFacet));\n         cache.invalidate();\n     }\n-    \n-\tpublic void deleteFacetsFor( Dataverse d ) {\n-\t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n-\t\t\t.setParameter(\"ownerId\", d.getId())\n-\t\t\t\t.executeUpdate();\n+\n+    public void deleteFacetsFor(Dataverse d) {\n+        em.createNamedQuery(\"DataverseFacet.removeByOwnerId\").setParameter(\"ownerId\", d.getId()).executeUpdate();\n         cache.invalidate(d.getId());\n-        \n-\t}\n-\t\n+    }\n+\n     public DataverseFacet create(int displayOrder, DatasetFieldType fieldType, Dataverse ownerDv) {\n         DataverseFacet dataverseFacet = new DataverseFacet();\n-        \n         dataverseFacet.setDisplayOrder(displayOrder);\n         dataverseFacet.setDatasetFieldType(fieldType);\n         dataverseFacet.setDataverse(ownerDv);\n-        \n         ownerDv.getDataverseFacets().add(dataverseFacet);\n         em.persist(dataverseFacet);\n         return dataverseFacet;\n     }\n-    \n+\n     public DataverseFacet create(int displayOrder, Long datasetFieldTypeId, Long dataverseId) {\n-        return create(displayOrder, em.find(DatasetFieldType.class,datasetFieldTypeId),\n-                        dataverses.find(dataverseId) );\n+        return create(displayOrder, em.find(DatasetFieldType.class, datasetFieldTypeId), dataverses.find(dataverseId));\n     }\n-    \n-}\n \n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/91/DataverseFacetServiceBean.java\nindex 67bf6a820e2..54f3d08dd36 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/91/DataverseFacetServiceBean.java\n@@ -41,8 +41,8 @@ public class DataverseFacetServiceBean implements java.io.Serializable {\n         em.remove(em.merge(dataverseFacet));\n         cache.invalidate();\n     }\n-    \n-\tpublic void deleteFacetsFor( Dataverse d ) {\n+\n+    public void deleteFacetsFor( Dataverse d ) {\n \t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n \t\t\t.setParameter(\"ownerId\", d.getId())\n \t\t\t\t.executeUpdate();\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/91/DataverseFacetServiceBean.java\nindex 67bf6a820e2..54f3d08dd36 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/91/DataverseFacetServiceBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/91/DataverseFacetServiceBean.java\n@@ -41,8 +41,8 @@ public class DataverseFacetServiceBean implements java.io.Serializable {\n         em.remove(em.merge(dataverseFacet));\n         cache.invalidate();\n     }\n-    \n-\tpublic void deleteFacetsFor( Dataverse d ) {\n+\n+    public void deleteFacetsFor( Dataverse d ) {\n \t\tem.createNamedQuery(\"DataverseFacet.removeByOwnerId\")\n \t\t\t.setParameter(\"ownerId\", d.getId())\n \t\t\t\t.executeUpdate();\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

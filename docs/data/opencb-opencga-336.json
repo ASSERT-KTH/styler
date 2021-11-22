@@ -1,0 +1,96 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "336",
+    "information": {
+        "errors": [
+            {
+                "line": "19",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 170).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "import org.opencb.opencga.core.models.variant.VariantFileQualityControl;\n\n@Migration(id=\"move_variant_file_stats_to_qc\", description = \"Move opencga_file_variant_stats annotation set from variable sets to FileQualityControl\", version = \"2.1.0\",\n        language = Migration.MigrationLanguage.JAVA,\n        domain = Migration.MigrationDomain.STORAGE,\n        patch = 1,",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 170).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 172).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/336/VariantFileStatsRelocation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/336/VariantFileStatsRelocation.java\nindex 23b8046c27d..698e0fdf504 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/336/VariantFileStatsRelocation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/336/VariantFileStatsRelocation.java\n@@ -16,47 +16,47 @@ import org.opencb.opencga.core.models.file.FileUpdateParams;\n import org.opencb.opencga.core.models.study.Study;\n import org.opencb.opencga.core.models.variant.VariantFileQualityControl;\n \n-@Migration(id=\"move_variant_file_stats_to_qc\", description = \"Move opencga_file_variant_stats annotation set from variable sets to FileQualityControl\", version = \"2.1.0\",\n-        language = Migration.MigrationLanguage.JAVA,\n-        domain = Migration.MigrationDomain.STORAGE,\n-        patch = 1,\n-        rank = 9)\n+@Migration(id = \"move_variant_file_stats_to_qc\", description = \"Move opencga_file_variant_stats annotation set from variable sets to FileQualityControl\", version = \"2.1.0\",\n+    language = Migration.MigrationLanguage.JAVA,\n+    domain = Migration.MigrationDomain.STORAGE,\n+    patch = 1,\n+    rank = 9)\n public class VariantFileStatsRelocation extends MigrationTool {\n \n-    private static final String FILE_VARIANT_STATS_VARIABLE_SET = \"opencga_file_variant_stats\";\n+  private static final String FILE_VARIANT_STATS_VARIABLE_SET = \"opencga_file_variant_stats\";\n \n-    @Override\n-    protected void run() throws Exception {\n-        for (Study study : catalogManager.getStudyManager().search(new Query(), new QueryOptions(), token).getResults()) {\n-            Query query = new Query(FileDBAdaptor.QueryParams.FORMAT.key(), File.Format.VCF);\n-            QueryOptions options = new QueryOptions();\n+  @Override\n+  protected void run() throws Exception {\n+    for (Study study : catalogManager.getStudyManager().search(new Query(), new QueryOptions(), token).getResults()) {\n+      Query query = new Query(FileDBAdaptor.QueryParams.FORMAT.key(), File.Format.VCF);\n+      QueryOptions options = new QueryOptions();\n \n-            ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());\n-            logger.info(\"Updating files from study {}\", study.getFqn());\n-            try (DBIterator<File> it = catalogManager.getFileManager().iterator(study.getFqn(), query, options, token)) {\n-                while (it.hasNext()) {\n-                    File file = it.next();\n-                    if (file.getQualityControl() != null\n-                            && file.getQualityControl().getVariant() != null\n-                            && file.getQualityControl().getVariant().getVariantSetMetrics() != null) {\n-                        logger.info(\"Variant stats from file {} already relocated.\", file.getId());\n-                        continue;\n-                    }\n-                    VariantSetStats variantSetStats = null;\n-                    for (AnnotationSet annotationSet : file.getAnnotationSets()) {\n-                        if (annotationSet.getVariableSetId().equals(FILE_VARIANT_STATS_VARIABLE_SET)) {\n-                            variantSetStats = objectMapper.convertValue(annotationSet.getAnnotations(), VariantSetStats.class);\n-                        }\n-                    }\n-                    if (variantSetStats != null) {\n-                        logger.info(\"Relocating variant stats from file {}\", file.getId());\n-                        catalogManager.getFileManager().update(study.getFqn(), file.getId(),\n-                                new FileUpdateParams().setQualityControl(\n-                                        new FileQualityControl().setVariant(new VariantFileQualityControl(variantSetStats))),\n-                                new QueryOptions(), token);\n-                    }\n-                }\n+      ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());\n+      logger.info(\"Updating files from study {}\", study.getFqn());\n+      try (DBIterator<File> it = catalogManager.getFileManager().iterator(study.getFqn(), query, options, token)) {\n+        while (it.hasNext()) {\n+          File file = it.next();\n+          if (file.getQualityControl() != null\n+              && file.getQualityControl().getVariant() != null\n+              && file.getQualityControl().getVariant().getVariantSetMetrics() != null) {\n+            logger.info(\"Variant stats from file {} already relocated.\", file.getId());\n+            continue;\n+          }\n+          VariantSetStats variantSetStats = null;\n+          for (AnnotationSet annotationSet : file.getAnnotationSets()) {\n+            if (annotationSet.getVariableSetId().equals(FILE_VARIANT_STATS_VARIABLE_SET)) {\n+              variantSetStats = objectMapper.convertValue(annotationSet.getAnnotations(), VariantSetStats.class);\n             }\n+          }\n+          if (variantSetStats != null) {\n+            logger.info(\"Relocating variant stats from file {}\", file.getId());\n+            catalogManager.getFileManager().update(study.getFqn(), file.getId(),\n+                new FileUpdateParams().setQualityControl(\n+                    new FileQualityControl().setVariant(new VariantFileQualityControl(variantSetStats))),\n+                new QueryOptions(), token);\n+          }\n         }\n+      }\n     }\n+  }\n }\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 172).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/336/VariantFileStatsRelocation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/336/VariantFileStatsRelocation.java\nindex 23b8046c27d..065e91bd7c9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/336/VariantFileStatsRelocation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/336/VariantFileStatsRelocation.java\n@@ -16,7 +16,7 @@ import org.opencb.opencga.core.models.file.FileUpdateParams;\n import org.opencb.opencga.core.models.study.Study;\n import org.opencb.opencga.core.models.variant.VariantFileQualityControl;\n \n-@Migration(id=\"move_variant_file_stats_to_qc\", description = \"Move opencga_file_variant_stats annotation set from variable sets to FileQualityControl\", version = \"2.1.0\",\n+@Migration(id = \"move_variant_file_stats_to_qc\", description = \"Move opencga_file_variant_stats annotation set from variable sets to FileQualityControl\", version = \"2.1.0\",\n         language = Migration.MigrationLanguage.JAVA,\n         domain = Migration.MigrationDomain.STORAGE,\n         patch = 1,\n@@ -59,4 +59,4 @@ public class VariantFileStatsRelocation extends MigrationTool {\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 170).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 170).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

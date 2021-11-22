@@ -7,6 +7,18 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # tf.logging.set_verbosity(tf.logging.INFO)
 
+def whatever(dir, folder, id, only_formatting=False):
+    dir = os.path.join(dir, f'./{folder}/{id}')
+    file_name = [ java_file for java_file in glob.glob(f'{dir}/*.java') if 'orig' not in java_file ][0].split('/')[-1].split('.')[0]
+    file = f'{dir}/{file_name}.java'
+    file_orig = f'{dir}/{file_name}-orig.java'
+    error_file = f'{dir}/metadata.json'
+    error = open_json(error_file)
+    # Compatibility
+    if 'line' not in error:
+        error = error['error']
+    return tokenizer.tokenize_errored_file_model2(file, file_orig, error)
+
 def merge_IOs(sub_set, ids, target):
     dir = f'{target}/{sub_set}'
     for type in ['I', 'O', 'E']:
@@ -50,6 +62,37 @@ def print_max_length_and_vocabulary(folder):
     axs[1].hist(out_length, bins=n_bins)
 
     plt.show()
+
+def gen_IO(dir, target, only_formatting=False):
+    create_dir(target)
+    sub_sets = ['learning', 'validation', 'testing']
+    diffs = []
+    weirdos = []
+    for sub_set in sub_sets:
+        sub_set_dir = os.path.join(dir, f'./{sub_set}')
+        if not os.path.exists(sub_set_dir):
+            continue
+        target_sub_set = f'{target}/{sub_set}'
+        create_dir(target_sub_set)
+        synthesis_error_ids = list_folders(sub_set_dir)
+        synthesis_error_ids = sorted(synthesis_error_ids, key=int)
+        for id in tqdm(synthesis_error_ids, desc=f'{dir.split("/")[-1]}/{sub_set}'):
+            try:
+                tokens_errored, tokens_correct, tokens_errored_in_tag, info = whatever(dir, sub_set, id)
+            except:
+                continue
+            if only_formatting:
+                tokens_correct = tokens_correct[1::2]
+                tokens_errored_in_tag = tokens_errored_in_tag[1::2]
+            save_file(target_sub_set, f'{id}-I.txt', " ".join(tokens_errored))
+            save_file(target_sub_set, f'{id}-O.txt', " ".join(tokens_correct))
+            save_file(target_sub_set, f'{id}-E.txt', " ".join(tokens_errored_in_tag))
+            save_json(target_sub_set, f'{id}-info.json', info)
+            diffs.append(info['count_diff'])
+            if info['count_diff'] == 2:
+                weirdos.append(f'{sub_set}/{id}')
+        merge_IOs(sub_set, synthesis_error_ids, target)
+    # print(weirdos)
 
 def print_diff(stringA, stringB, only_formatting=False):
     diffs = token_diff(stringA, stringB)

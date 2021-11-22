@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "99",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.cmd;\n\nimport java.io.Serializable;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/99/SetProcessInstanceNameCmd.java\nindex 40cdda5c056..b7335d103ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/99/SetProcessInstanceNameCmd.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/99/SetProcessInstanceNameCmd.java\nindex 40cdda5c056..0e98e07f4e6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/99/SetProcessInstanceNameCmd.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n@@ -26,47 +27,47 @@ import org.activiti.engine.runtime.ProcessInstance;\n \n public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {\n \n-  private static final long serialVersionUID = 1L;\n-\n-  protected String processInstanceId;\n-  protected String name;\n+    private static final long serialVersionUID = 1L;\n \n-  public SetProcessInstanceNameCmd(String processInstanceId, String name) {\n-    this.processInstanceId = processInstanceId;\n-    this.name = name;\n-  }\n+    protected String processInstanceId;\n+    protected String name;\n \n-  @Override\n-  public Void execute(CommandContext commandContext) {\n-    if (processInstanceId == null) {\n-      throw new ActivitiIllegalArgumentException(\"processInstanceId is null\");\n+    public SetProcessInstanceNameCmd(String processInstanceId, String name) {\n+        this.processInstanceId = processInstanceId;\n+        this.name = name;\n     }\n \n-    ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);\n+    @Override\n+    public Void execute(CommandContext commandContext) {\n+        if (processInstanceId == null) {\n+            throw new ActivitiIllegalArgumentException(\"processInstanceId is null\");\n+        }\n \n-    if (execution == null) {\n-      throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist\", ProcessInstance.class);\n-    }\n+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);\n \n-    if (!execution.isProcessInstanceType()) {\n-      throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist, the given ID references an execution, though\", ProcessInstance.class);\n-    }\n+        if (execution == null) {\n+            throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist\", ProcessInstance.class);\n+        }\n \n-    if (execution.isSuspended()) {\n-      throw new ActivitiException(\"process instance \" + processInstanceId + \" is suspended, cannot set name\");\n-    }\n+        if (!execution.isProcessInstanceType()) {\n+            throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist, the given ID references an execution, though\", ProcessInstance.class);\n+        }\n+\n+        if (execution.isSuspended()) {\n+            throw new ActivitiException(\"process instance \" + processInstanceId + \" is suspended, cannot set name\");\n+        }\n \n-    // Actually set the name\n-    execution.setName(name);\n-    \n-    if (commandContext.getEventDispatcher().isEnabled()) {\n-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));\n-      }\n+        // Actually set the name\n+        execution.setName(name);\n \n-    // Record the change in history\n-    commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);\n+        if (commandContext.getEventDispatcher().isEnabled()) {\n+            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));\n+        }\n \n-    return null;\n-  }\n+        // Record the change in history\n+        commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);\n+\n+        return null;\n+    }\n \n }\n",
+            "diff_size": 47
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/99/SetProcessInstanceNameCmd.java\nindex 40cdda5c056..927d87f6bb1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/99/SetProcessInstanceNameCmd.java\n@@ -13,7 +13,6 @@\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n-\n import org.activiti.engine.ActivitiException;\n import org.activiti.engine.ActivitiIllegalArgumentException;\n import org.activiti.engine.ActivitiObjectNotFoundException;\n@@ -24,10 +23,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;\n import org.activiti.engine.impl.persistence.entity.ExecutionEntity;\n import org.activiti.engine.runtime.ProcessInstance;\n \n+\n public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {\n \n   private static final long serialVersionUID = 1L;\n-\n   protected String processInstanceId;\n   protected String name;\n \n@@ -43,30 +42,26 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {\n     }\n \n     ExecutionEntity execution = commandContext.getExecutionEntityManager().findById(processInstanceId);\n-\n     if (execution == null) {\n-      throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist\", ProcessInstance.class);\n+      throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist\",\n+                                                ProcessInstance.class);\n     }\n-\n     if (!execution.isProcessInstanceType()) {\n       throw new ActivitiObjectNotFoundException(\"process instance \" + processInstanceId + \" doesn't exist, the given ID references an execution, though\", ProcessInstance.class);\n     }\n-\n     if (execution.isSuspended()) {\n       throw new ActivitiException(\"process instance \" + processInstanceId + \" is suspended, cannot set name\");\n     }\n \n     // Actually set the name\n     execution.setName(name);\n-    \n     if (commandContext.getEventDispatcher().isEnabled()) {\n-        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));\n-      }\n+      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED,\n+                                                                                               execution));\n+    }\n \n     // Record the change in history\n     commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);\n-\n     return null;\n   }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/99/SetProcessInstanceNameCmd.java\nindex 40cdda5c056..b7335d103ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/99/SetProcessInstanceNameCmd.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/99/SetProcessInstanceNameCmd.java\nindex 40cdda5c056..b7335d103ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/99/SetProcessInstanceNameCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/99/SetProcessInstanceNameCmd.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

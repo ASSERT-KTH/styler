@@ -1,0 +1,81 @@
+{
+    "project_name": "apache-iotdb",
+    "error_id": "513",
+    "information": {
+        "errors": [
+            {
+                "line": "19",
+                "severity": "warning",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * under the License.\n */\npackage org.apache.iotdb.db.qp.physical.crud;\n\nimport org.apache.iotdb.db.exception.metadata.IllegalPathException;\nimport org.apache.iotdb.db.exception.metadata.MetadataException;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler/513/QueryPlan.java\nindex c2c31577174..4995782c7d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler/513/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/intellij/513/QueryPlan.java\nindex c2c31577174..4995782c7d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/intellij/513/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "135",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 101).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "139",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/codebuff/513/QueryPlan.java\nindex c2c31577174..fa0758ffc23 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/codebuff/513/QueryPlan.java\n@@ -27,7 +27,6 @@ import org.apache.iotdb.db.qp.physical.PhysicalPlan;\n import org.apache.iotdb.db.qp.strategy.PhysicalGenerator;\n import org.apache.iotdb.db.query.expression.ResultColumn;\n import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;\n-\n import java.util.HashMap;\n import java.util.List;\n import java.util.Map;\n@@ -35,19 +34,16 @@ import java.util.Map;\n public abstract class QueryPlan extends PhysicalPlan {\n \n   protected List<ResultColumn> resultColumns = null;\n+\n   protected List<PartialPath> paths = null;\n+\n   protected List<TSDataType> dataTypes = null;\n   private boolean alignByTime = true; // for disable align sql\n-\n   private int rowLimit = 0;\n   private int rowOffset = 0;\n-\n   private boolean ascending = true;\n-\n   private Map<String, Integer> pathToIndex = new HashMap<>();\n-\n   private Map<String, Integer> vectorPathToIndex = new HashMap<>();\n-\n   private boolean enableRedirect = false;\n \n   // if true, we don't need the row whose any column is null\n@@ -135,11 +131,12 @@ public abstract class QueryPlan extends PhysicalPlan {\n \n   public String getColumnForReaderFromPath(PartialPath path, int pathIndex) {\n     ResultColumn resultColumn = resultColumns.get(pathIndex);\n-    return resultColumn.hasAlias() ? resultColumn.getAlias() : path.getFullPath();\n+    return resultColumn.hasAlias()\n+                                                                            ? resultColumn.getAlias()\n+                                                                            : path.getFullPath();\n   }\n \n-  public String getColumnForDisplay(String columnForReader, int pathIndex)\n-      throws IllegalPathException {\n+  public String getColumnForDisplay(String columnForReader, int pathIndex) throws IllegalPathException {\n     return resultColumns.get(pathIndex).getResultColumnName();\n   }\n \n@@ -182,4 +179,4 @@ public abstract class QueryPlan extends PhysicalPlan {\n   public void setWithoutAllNull(boolean withoutAllNull) {\n     this.withoutAllNull = withoutAllNull;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 14
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_random/513/QueryPlan.java\nindex c2c31577174..4995782c7d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_random/513/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_three_grams/513/QueryPlan.java\nindex c2c31577174..4995782c7d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/513/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_three_grams/513/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

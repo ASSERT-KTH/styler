@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "55",
+    "information": {
+        "errors": [
+            {
+                "line": "10",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.TableNotFoundException;\nimport org.apache.accumulo.core.client.admin.TableOperations;\nimport org.apache.accumulo.core.conf.Property;\nimport org.apache.accumulo.core.iterators.IteratorUtil.IteratorScope;\nimport org.apache.accumulo.core.iterators.user.SummingCombiner;\nimport org.apache.hadoop.conf.Configuration;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/55/MetadataTableConfigHelper.java\nindex e0e5f1f2940..908a91e99bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/55/MetadataTableConfigHelper.java\n@@ -14,61 +14,65 @@ import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n-    \n-    protected Logger log;\n-    protected Configuration conf;\n-    protected String tableName;\n-    \n-    @Override\n-    public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        if (tableName != null) {\n-            for (IteratorScope scope : IteratorScope.values()) {\n-                setFrequencyCombiner(tops, scope.name());\n-                setCombinerForCountMetadata(tops, scope.name());\n-                setCombinerForEdgeMetadata(tops, scope.name());\n-            }\n-        }\n-        \n-    }\n-    \n-    // add the EdgeMetadataCombiner to the edge column\n-    private String setCombinerForEdgeMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n-        String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"EdgeMetadataCombiner\");\n-        setPropertyIfNecessary(tableName, stem, \"19,datawave.iterators.EdgeMetadataCombiner\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_EDGE.toString(), tops, log);\n-        return stem;\n-    }\n-    \n-    // add the CountMetadataCombiner to the count column\n-    private String setCombinerForCountMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n-        String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"CountMetadataCombiner\");\n-        setPropertyIfNecessary(tableName, stem, \"15,datawave.iterators.CountMetadataCombiner\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_COUNT.toString(), tops, log);\n-        return stem;\n-    }\n-    \n-    // add the EdgeMetadataCombiner to the edge column\n-    private String setFrequencyCombiner(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"FrequencyCombiner\");\n-        setPropertyIfNecessary(tableName, stem, \"10,\" + SummingCombiner.class.getName(), tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_F.toString(), tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.type\", \"VARLEN\", tops, log);\n-        return stem;\n+\n+  protected Logger log;\n+  protected Configuration conf;\n+  protected String tableName;\n+\n+  @Override\n+  public void configure(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    if (tableName != null) {\n+      for (IteratorScope scope : IteratorScope.values()) {\n+        setFrequencyCombiner(tops, scope.name());\n+        setCombinerForCountMetadata(tops, scope.name());\n+        setCombinerForEdgeMetadata(tops, scope.name());\n+      }\n     }\n-    \n-    @Override\n-    public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n-        \n-        this.log = log;\n-        this.conf = config;\n-        this.tableName = conf.get(ShardedDataTypeHandler.METADATA_TABLE_NAME, null);\n-        \n-        if (this.tableName == null || !this.tableName.equals(tableName)) {\n-            throw new IllegalArgumentException(\"No Such Table: \" + tableName);\n-        }\n-        \n+\n+  }\n+\n+  // add the EdgeMetadataCombiner to the edge column\n+  private String setCombinerForEdgeMetadata(TableOperations tops, String scopeName)\n+      throws AccumuloException, AccumuloSecurityException,\n+      TableNotFoundException {\n+    String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"EdgeMetadataCombiner\");\n+    setPropertyIfNecessary(tableName, stem, \"19,datawave.iterators.EdgeMetadataCombiner\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_EDGE.toString(), tops, log);\n+    return stem;\n+  }\n+\n+  // add the CountMetadataCombiner to the count column\n+  private String setCombinerForCountMetadata(TableOperations tops, String scopeName)\n+      throws AccumuloException, AccumuloSecurityException,\n+      TableNotFoundException {\n+    String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"CountMetadataCombiner\");\n+    setPropertyIfNecessary(tableName, stem, \"15,datawave.iterators.CountMetadataCombiner\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_COUNT.toString(), tops, log);\n+    return stem;\n+  }\n+\n+  // add the EdgeMetadataCombiner to the edge column\n+  private String setFrequencyCombiner(TableOperations tops, String scopeName)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"FrequencyCombiner\");\n+    setPropertyIfNecessary(tableName, stem, \"10,\" + SummingCombiner.class.getName(), tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_F.toString(), tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.type\", \"VARLEN\", tops, log);\n+    return stem;\n+  }\n+\n+  @Override\n+  public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n+\n+    this.log = log;\n+    this.conf = config;\n+    this.tableName = conf.get(ShardedDataTypeHandler.METADATA_TABLE_NAME, null);\n+\n+    if (this.tableName == null || !this.tableName.equals(tableName)) {\n+      throw new IllegalArgumentException(\"No Such Table: \" + tableName);\n     }\n-    \n+\n+  }\n+\n }\n",
+            "diff_size": 87
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/55/MetadataTableConfigHelper.java\nindex e0e5f1f2940..8ada0908e88 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/55/MetadataTableConfigHelper.java\n@@ -71,4 +71,4 @@ public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n         \n     }\n     \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/55/MetadataTableConfigHelper.java\nindex e0e5f1f2940..9daaf557b2b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/55/MetadataTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/55/MetadataTableConfigHelper.java\n@@ -2,7 +2,6 @@ package datawave.ingest.table.config;\n \n import datawave.data.ColumnFamilyConstants;\n import datawave.ingest.mapreduce.handler.shard.ShardedDataTypeHandler;\n-\n import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.TableNotFoundException;\n@@ -13,12 +12,13 @@ import org.apache.accumulo.core.iterators.user.SummingCombiner;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n+\n public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n-    \n+\n     protected Logger log;\n     protected Configuration conf;\n     protected String tableName;\n-    \n+\n     @Override\n     public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         if (tableName != null) {\n@@ -28,12 +28,11 @@ public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n                 setCombinerForEdgeMetadata(tops, scope.name());\n             }\n         }\n-        \n     }\n     \n     // add the EdgeMetadataCombiner to the edge column\n-    private String setCombinerForEdgeMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n+\n+    private String setCombinerForEdgeMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"EdgeMetadataCombiner\");\n         setPropertyIfNecessary(tableName, stem, \"19,datawave.iterators.EdgeMetadataCombiner\", tops, log);\n         setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_EDGE.toString(), tops, log);\n@@ -41,8 +40,8 @@ public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n     }\n     \n     // add the CountMetadataCombiner to the count column\n-    private String setCombinerForCountMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n+\n+    private String setCombinerForCountMetadata(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"CountMetadataCombiner\");\n         setPropertyIfNecessary(tableName, stem, \"15,datawave.iterators.CountMetadataCombiner\", tops, log);\n         setPropertyIfNecessary(tableName, stem + \".opt.columns\", ColumnFamilyConstants.COLF_COUNT.toString(), tops, log);\n@@ -50,6 +49,7 @@ public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n     }\n     \n     // add the EdgeMetadataCombiner to the edge column\n+\n     private String setFrequencyCombiner(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"FrequencyCombiner\");\n         setPropertyIfNecessary(tableName, stem, \"10,\" + SummingCombiner.class.getName(), tops, log);\n@@ -57,18 +57,14 @@ public class MetadataTableConfigHelper extends AbstractTableConfigHelper {\n         setPropertyIfNecessary(tableName, stem + \".opt.type\", \"VARLEN\", tops, log);\n         return stem;\n     }\n-    \n+\n     @Override\n     public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n-        \n         this.log = log;\n         this.conf = config;\n         this.tableName = conf.get(ShardedDataTypeHandler.METADATA_TABLE_NAME, null);\n-        \n         if (this.tableName == null || !this.tableName.equals(tableName)) {\n             throw new IllegalArgumentException(\"No Such Table: \" + tableName);\n         }\n-        \n     }\n-    \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 16
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

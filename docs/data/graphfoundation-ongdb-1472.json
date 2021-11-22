@@ -1,0 +1,110 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1472",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "213",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "213",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1472/Transaction.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1472/Transaction.java\nindex 134c59b9955..cb1b73f821c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1472/Transaction.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1472/Transaction.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.internal.kernel.api;\n \n import java.util.Optional;\n@@ -27,11 +28,11 @@ import org.neo4j.kernel.api.exceptions.Status;\n \n /**\n  * A transaction with the graph database.\n- *\n+ * <p>\n  * Access to the graph is performed via sub-interfaces like {@link org.neo4j.internal.kernel.api.Read}.\n  * Changes made within a transaction are immediately visible to all operations within it, but are only\n  * visible to other transactions after the successful commit of the transaction.\n- *\n+ * <p>\n  * Typical usage:\n  * <pre>\n  * try ( Transaction transaction = session.beginTransaction() )\n@@ -44,7 +45,7 @@ import org.neo4j.kernel.api.exceptions.Status;\n  *      ...\n  * }\n  * </pre>\n- *\n+ * <p>\n  * Typical usage of failure if failure isn't controlled with exceptions:\n  * <pre>\n  * try ( Transaction transaction = session.beginTransaction() )\n@@ -61,153 +62,153 @@ import org.neo4j.kernel.api.exceptions.Status;\n  */\n public interface Transaction extends AutoCloseable\n {\n-    enum Type\n-    {\n-        implicit,\n-        explicit\n-    }\n-\n-    /**\n-     * The store id of a rolled back transaction.\n-     */\n-    long ROLLBACK = -1;\n-\n-    /**\n-     * The store id of a read-only transaction.\n-     */\n-    long READ_ONLY = 0;\n-\n-    /**\n-     * Marks this transaction as successful. When this transaction later gets {@link #close() closed}\n-     * its changes, if any, will be committed. If this method hasn't been called or if {@link #failure()}\n-     * has been called then any changes in this transaction will be rolled back as part of {@link #close() closing}.\n-     */\n-    void success();\n-\n-    /**\n-     * Marks this transaction as failed. No amount of calls to {@link #success()} will clear this flag.\n-     * When {@link #close() closing} this transaction any changes will be rolled back.\n-     */\n-    void failure();\n-\n-    /**\n-     * @return The Read operations of the graph. The returned instance targets the active transaction state layer.\n-     */\n-    Read dataRead();\n-\n-    /**\n-     * @return The Read operations of the graph. The returned instance targets the stable transaction state layer.\n-     */\n-    Read stableDataRead();\n-\n-    /**\n-     * Stabilize the active transaction state. This moves all changes up until this point to the stable\n-     * transaction state layer. Any further changes will be added to the (now empty) active transaction state.\n-     */\n-    void markAsStable();\n-\n-    /**\n-     * @return The Write operations of the graph. The returned instance writes to the active transaction state layer.\n-     * @throws InvalidTransactionTypeKernelException when transaction cannot be upgraded to a write transaction. This\n-     * can happen when there have been schema modifications.\n-     */\n-    Write dataWrite() throws InvalidTransactionTypeKernelException;\n-\n-    /**\n-     * @return The explicit index read operations of the graph.\n-     */\n-    ExplicitIndexRead indexRead();\n-\n-    /**\n-     * @return The explicit index write operations of the graph.\n-     */\n-    ExplicitIndexWrite indexWrite() throws InvalidTransactionTypeKernelException;\n-\n-    /**\n-     * @return Token read operations\n-     */\n-    TokenRead tokenRead();\n-\n-    /**\n-     * @return Token read operations\n-     */\n-    TokenWrite tokenWrite();\n-\n-    /**\n-     * @return Token read and write operations\n-     */\n-    Token token();\n-\n-    /**\n-     * @return The schema index read operations of the graph, used for finding indexes.\n-     */\n-    SchemaRead schemaRead();\n-\n-    /**\n-     * @return The schema index write operations of the graph, used for creating and dropping indexes and constraints.\n-     */\n-    SchemaWrite schemaWrite() throws InvalidTransactionTypeKernelException;\n-\n-    /**\n-     * @return The lock operations of the graph.\n-     */\n-    Locks locks();\n-\n-    /**\n-     * @return The cursor factory\n-     */\n-    CursorFactory cursors();\n-\n-    /**\n-     * @return Returns procedure operations\n-     */\n-    Procedures procedures();\n-\n-    /**\n-     * @return statistics about the execution\n-     */\n-    ExecutionStatistics executionStatistics();\n-\n-    /**\n-     * Closes this transaction, committing its changes if {@link #success()} has been called and neither\n-     * {@link #failure()} nor {@link #markForTermination(Status)} has been called.\n-     * Otherwise its changes will be rolled back.\n-     *\n-     * @return id of the committed transaction or {@link #ROLLBACK} if transaction was rolled back or\n-     * {@link #READ_ONLY} if transaction was read-only.\n-     */\n-    long closeTransaction() throws TransactionFailureException;\n-\n-    /**\n-     * Closes this transaction, committing its changes if {@link #success()} has been called and neither\n-     * {@link #failure()} nor {@link #markForTermination(Status)} has been called.\n-     * Otherwise its changes will be rolled back.\n-     */\n-    @Override\n-    default void close() throws TransactionFailureException\n-    {\n-        closeTransaction();\n-    }\n-\n-    /**\n-     * @return {@code true} if the transaction is still open, i.e. if {@link #close()} hasn't been called yet.\n-     */\n-    boolean isOpen();\n-\n-    /**\n-     * @return {@link Status} if {@link #markForTermination(Status)} has been invoked, otherwise empty optional.\n-     */\n-    Optional<Status> getReasonIfTerminated();\n-\n-    /**\n-     * @return true if transaction was terminated, otherwise false\n-     */\n-    boolean isTerminated();\n-\n-    /**\n-     * Marks this transaction for termination, such that it cannot commit successfully and will try to be\n-     * terminated by having other methods throw a specific termination exception, as to sooner reach the assumed\n-     * point where {@link #close()} will be invoked.\n-     */\n-    void markForTermination( Status reason );\n+  enum Type\n+  {\n+    implicit,\n+    explicit\n+  }\n+\n+  /**\n+   * The store id of a rolled back transaction.\n+   */\n+  long ROLLBACK = -1;\n+\n+  /**\n+   * The store id of a read-only transaction.\n+   */\n+  long READ_ONLY = 0;\n+\n+  /**\n+   * Marks this transaction as successful. When this transaction later gets {@link #close() closed}\n+   * its changes, if any, will be committed. If this method hasn't been called or if {@link #failure()}\n+   * has been called then any changes in this transaction will be rolled back as part of {@link #close() closing}.\n+   */\n+  void success();\n+\n+  /**\n+   * Marks this transaction as failed. No amount of calls to {@link #success()} will clear this flag.\n+   * When {@link #close() closing} this transaction any changes will be rolled back.\n+   */\n+  void failure();\n+\n+  /**\n+   * @return The Read operations of the graph. The returned instance targets the active transaction state layer.\n+   */\n+  Read dataRead();\n+\n+  /**\n+   * @return The Read operations of the graph. The returned instance targets the stable transaction state layer.\n+   */\n+  Read stableDataRead();\n+\n+  /**\n+   * Stabilize the active transaction state. This moves all changes up until this point to the stable\n+   * transaction state layer. Any further changes will be added to the (now empty) active transaction state.\n+   */\n+  void markAsStable();\n+\n+  /**\n+   * @return The Write operations of the graph. The returned instance writes to the active transaction state layer.\n+   * @throws InvalidTransactionTypeKernelException when transaction cannot be upgraded to a write transaction. This\n+   *                                               can happen when there have been schema modifications.\n+   */\n+  Write dataWrite() throws InvalidTransactionTypeKernelException;\n+\n+  /**\n+   * @return The explicit index read operations of the graph.\n+   */\n+  ExplicitIndexRead indexRead();\n+\n+  /**\n+   * @return The explicit index write operations of the graph.\n+   */\n+  ExplicitIndexWrite indexWrite() throws InvalidTransactionTypeKernelException;\n+\n+  /**\n+   * @return Token read operations\n+   */\n+  TokenRead tokenRead();\n+\n+  /**\n+   * @return Token read operations\n+   */\n+  TokenWrite tokenWrite();\n+\n+  /**\n+   * @return Token read and write operations\n+   */\n+  Token token();\n+\n+  /**\n+   * @return The schema index read operations of the graph, used for finding indexes.\n+   */\n+  SchemaRead schemaRead();\n+\n+  /**\n+   * @return The schema index write operations of the graph, used for creating and dropping indexes and constraints.\n+   */\n+  SchemaWrite schemaWrite() throws InvalidTransactionTypeKernelException;\n+\n+  /**\n+   * @return The lock operations of the graph.\n+   */\n+  Locks locks();\n+\n+  /**\n+   * @return The cursor factory\n+   */\n+  CursorFactory cursors();\n+\n+  /**\n+   * @return Returns procedure operations\n+   */\n+  Procedures procedures();\n+\n+  /**\n+   * @return statistics about the execution\n+   */\n+  ExecutionStatistics executionStatistics();\n+\n+  /**\n+   * Closes this transaction, committing its changes if {@link #success()} has been called and neither\n+   * {@link #failure()} nor {@link #markForTermination(Status)} has been called.\n+   * Otherwise its changes will be rolled back.\n+   *\n+   * @return id of the committed transaction or {@link #ROLLBACK} if transaction was rolled back or\n+   * {@link #READ_ONLY} if transaction was read-only.\n+   */\n+  long closeTransaction() throws TransactionFailureException;\n+\n+  /**\n+   * Closes this transaction, committing its changes if {@link #success()} has been called and neither\n+   * {@link #failure()} nor {@link #markForTermination(Status)} has been called.\n+   * Otherwise its changes will be rolled back.\n+   */\n+  @Override\n+  default void close() throws TransactionFailureException\n+  {\n+    closeTransaction();\n+  }\n+\n+  /**\n+   * @return {@code true} if the transaction is still open, i.e. if {@link #close()} hasn't been called yet.\n+   */\n+  boolean isOpen();\n+\n+  /**\n+   * @return {@link Status} if {@link #markForTermination(Status)} has been invoked, otherwise empty optional.\n+   */\n+  Optional<Status> getReasonIfTerminated();\n+\n+  /**\n+   * @return true if transaction was terminated, otherwise false\n+   */\n+  boolean isTerminated();\n+\n+  /**\n+   * Marks this transaction for termination, such that it cannot commit successfully and will try to be\n+   * terminated by having other methods throw a specific termination exception, as to sooner reach the assumed\n+   * point where {@link #close()} will be invoked.\n+   */\n+  void markForTermination(Status reason);\n }\n",
+            "diff_size": 153
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1472/Transaction.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1472/Transaction.java\nindex 134c59b9955..8731ef227c9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1472/Transaction.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1472/Transaction.java\n@@ -210,4 +210,4 @@ public interface Transaction extends AutoCloseable\n      * point where {@link #close()} will be invoked.\n      */\n     void markForTermination( Status reason );\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

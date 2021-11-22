@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "71",
+    "information": {
+        "errors": [
+            {
+                "line": "10",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.TableNotFoundException;\nimport org.apache.accumulo.core.client.admin.TableOperations;\nimport org.apache.accumulo.core.conf.Property;\nimport org.apache.accumulo.core.iterators.IteratorUtil.IteratorScope;\nimport org.apache.accumulo.core.iterators.LongCombiner;\nimport org.apache.hadoop.conf.Configuration;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/71/LoadDateTableConfigHelper.java\nindex d2d3e2c3fdb..c2c318a3177 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/71/LoadDateTableConfigHelper.java\n@@ -18,79 +18,82 @@ import java.util.Map;\n import java.util.Set;\n \n public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n-    public static final String LOAD_DATES_ENABLED_PROP = \"metadata.loaddates.enabled\";\n-    public static final String LOAD_DATES_LOCALITY_GROUP_PROP = \"metadata.loaddates.table.locality.groups\";\n-    public static final String LOAD_DATES_TABLE_NAME_PROP = \"metadata.loaddates.table.name\";\n-    public static final String LOAD_DATES_TABLE_LOADER_PRIORITY_PROP = \"metadata.loaddates.table.loader.priority\";\n-    protected Logger log;\n-    protected Configuration conf;\n-    private Map<String,Set<Text>> localityGroups;\n-    \n-    @Override\n-    public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n-        this.log = log;\n-        this.conf = config;\n-        this.localityGroups = createMapOfLocalityGroups(config);\n-    }\n-    \n-    @Override\n-    public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        for (IteratorScope scope : IteratorScope.values()) {\n-            setCombinerForLoadDateCounts(tops, scope.name());\n-            configureToDropBadData(tops, scope.name());\n-        }\n-        setLocalityGroupConfigurationIfNecessary(getLoadDatesTableName(conf), localityGroups, tops, log);\n+  public static final String LOAD_DATES_ENABLED_PROP = \"metadata.loaddates.enabled\";\n+  public static final String LOAD_DATES_LOCALITY_GROUP_PROP = \"metadata.loaddates.table.locality.groups\";\n+  public static final String LOAD_DATES_TABLE_NAME_PROP = \"metadata.loaddates.table.name\";\n+  public static final String LOAD_DATES_TABLE_LOADER_PRIORITY_PROP = \"metadata.loaddates.table.loader.priority\";\n+  protected Logger log;\n+  protected Configuration conf;\n+  private Map<String, Set<Text>> localityGroups;\n+\n+  @Override\n+  public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n+    this.log = log;\n+    this.conf = config;\n+    this.localityGroups = createMapOfLocalityGroups(config);\n+  }\n+\n+  @Override\n+  public void configure(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    for (IteratorScope scope : IteratorScope.values()) {\n+      setCombinerForLoadDateCounts(tops, scope.name());\n+      configureToDropBadData(tops, scope.name());\n     }\n-    \n-    private Map<String,Set<Text>> createMapOfLocalityGroups(Configuration config) {\n-        Map<String,Set<Text>> localityGroups = Maps.newHashMap();\n-        \n-        String localityPropertyValue = config.get(LOAD_DATES_LOCALITY_GROUP_PROP);\n-        if (null != localityPropertyValue) {\n-            for (String rawGroup : localityPropertyValue.split(\",\")) {\n-                rawGroup = rawGroup.replace(\"\\\\u0000\", \"\\u0000\");\n-                String[] components = rawGroup.split(\":\");\n-                String groupName = components[0];\n-                String[] columnFamiliesStr = components[1].split(\";\");\n-                Set<Text> columnFamilies = Sets.newHashSet();\n-                \n-                for (String colFamilyStr : columnFamiliesStr) {\n-                    columnFamilies.add(new Text(colFamilyStr));\n-                }\n-                localityGroups.put(groupName, columnFamilies);\n-            }\n+    setLocalityGroupConfigurationIfNecessary(getLoadDatesTableName(conf), localityGroups, tops, log);\n+  }\n+\n+  private Map<String, Set<Text>> createMapOfLocalityGroups(Configuration config) {\n+    Map<String, Set<Text>> localityGroups = Maps.newHashMap();\n+\n+    String localityPropertyValue = config.get(LOAD_DATES_LOCALITY_GROUP_PROP);\n+    if (null != localityPropertyValue) {\n+      for (String rawGroup : localityPropertyValue.split(\",\")) {\n+        rawGroup = rawGroup.replace(\"\\\\u0000\", \"\\u0000\");\n+        String[] components = rawGroup.split(\":\");\n+        String groupName = components[0];\n+        String[] columnFamiliesStr = components[1].split(\";\");\n+        Set<Text> columnFamilies = Sets.newHashSet();\n+\n+        for (String colFamilyStr : columnFamiliesStr) {\n+          columnFamilies.add(new Text(colFamilyStr));\n         }\n-        return localityGroups;\n-    }\n-    \n-    public static boolean isLoadDatesEnabled(Configuration conf) {\n-        return conf.getBoolean(LOAD_DATES_ENABLED_PROP, false);\n-    }\n-    \n-    public static String getLoadDatesTableName(Configuration conf) {\n-        return conf.get(LOAD_DATES_TABLE_NAME_PROP, TableName.LOAD_DATES);\n-    }\n-    \n-    public static int getLoadDatesTableLoaderPriority(Configuration conf) {\n-        return conf.getInt(LOAD_DATES_TABLE_LOADER_PRIORITY_PROP, 40);\n-    }\n-    \n-    private void setCombinerForLoadDateCounts(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n-        String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"LoadDateMetadataCombiner\");\n-        String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n-        setPropertyIfNecessary(tableName, stem, \"18,org.apache.accumulo.core.iterators.user.SummingCombiner\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.all\", \"true\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.type\", LongCombiner.Type.VARLEN.name(), tops, log);\n-    }\n-    \n-    // MetricsFileProtoIngestHelper creates nonsense field names, each containing a '.'\n-    private void configureToDropBadData(TableOperations tops, String scopeName) throws AccumuloSecurityException, AccumuloException, TableNotFoundException {\n-        String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"dropBadData\");\n-        String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n-        setPropertyIfNecessary(tableName, stem, \"30,org.apache.accumulo.core.iterators.user.RegExFilter\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.negate\", \"true\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.rowRegex\", \".*\\\\..*\", tops, log);\n-        setPropertyIfNecessary(tableName, stem + \".opt.encoding\", \"UTF-8\", tops, log);\n+        localityGroups.put(groupName, columnFamilies);\n+      }\n     }\n+    return localityGroups;\n+  }\n+\n+  public static boolean isLoadDatesEnabled(Configuration conf) {\n+    return conf.getBoolean(LOAD_DATES_ENABLED_PROP, false);\n+  }\n+\n+  public static String getLoadDatesTableName(Configuration conf) {\n+    return conf.get(LOAD_DATES_TABLE_NAME_PROP, TableName.LOAD_DATES);\n+  }\n+\n+  public static int getLoadDatesTableLoaderPriority(Configuration conf) {\n+    return conf.getInt(LOAD_DATES_TABLE_LOADER_PRIORITY_PROP, 40);\n+  }\n+\n+  private void setCombinerForLoadDateCounts(TableOperations tops, String scopeName)\n+      throws AccumuloException, AccumuloSecurityException,\n+      TableNotFoundException {\n+    String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"LoadDateMetadataCombiner\");\n+    String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n+    setPropertyIfNecessary(tableName, stem, \"18,org.apache.accumulo.core.iterators.user.SummingCombiner\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.all\", \"true\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.type\", LongCombiner.Type.VARLEN.name(), tops, log);\n+  }\n+\n+  // MetricsFileProtoIngestHelper creates nonsense field names, each containing a '.'\n+  private void configureToDropBadData(TableOperations tops, String scopeName)\n+      throws AccumuloSecurityException, AccumuloException, TableNotFoundException {\n+    String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"dropBadData\");\n+    String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n+    setPropertyIfNecessary(tableName, stem, \"30,org.apache.accumulo.core.iterators.user.RegExFilter\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.negate\", \"true\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.rowRegex\", \".*\\\\..*\", tops, log);\n+    setPropertyIfNecessary(tableName, stem + \".opt.encoding\", \"UTF-8\", tops, log);\n+  }\n }\n",
+            "diff_size": 107
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/71/LoadDateTableConfigHelper.java\nindex d2d3e2c3fdb..88c74de57af 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/71/LoadDateTableConfigHelper.java\n@@ -93,4 +93,4 @@ public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n         setPropertyIfNecessary(tableName, stem + \".opt.rowRegex\", \".*\\\\..*\", tops, log);\n         setPropertyIfNecessary(tableName, stem + \".opt.encoding\", \"UTF-8\", tops, log);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/71/LoadDateTableConfigHelper.java\nindex d2d3e2c3fdb..c3c15cf99eb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/71/LoadDateTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/71/LoadDateTableConfigHelper.java\n@@ -13,26 +13,29 @@ import org.apache.accumulo.core.iterators.LongCombiner;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.hadoop.io.Text;\n import org.apache.log4j.Logger;\n-\n import java.util.Map;\n import java.util.Set;\n \n+\n public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n     public static final String LOAD_DATES_ENABLED_PROP = \"metadata.loaddates.enabled\";\n+\n     public static final String LOAD_DATES_LOCALITY_GROUP_PROP = \"metadata.loaddates.table.locality.groups\";\n+\n     public static final String LOAD_DATES_TABLE_NAME_PROP = \"metadata.loaddates.table.name\";\n+\n     public static final String LOAD_DATES_TABLE_LOADER_PRIORITY_PROP = \"metadata.loaddates.table.loader.priority\";\n     protected Logger log;\n     protected Configuration conf;\n     private Map<String,Set<Text>> localityGroups;\n-    \n+\n     @Override\n     public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n         this.log = log;\n         this.conf = config;\n         this.localityGroups = createMapOfLocalityGroups(config);\n     }\n-    \n+\n     @Override\n     public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         for (IteratorScope scope : IteratorScope.values()) {\n@@ -41,19 +44,18 @@ public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n         }\n         setLocalityGroupConfigurationIfNecessary(getLoadDatesTableName(conf), localityGroups, tops, log);\n     }\n-    \n+\n     private Map<String,Set<Text>> createMapOfLocalityGroups(Configuration config) {\n         Map<String,Set<Text>> localityGroups = Maps.newHashMap();\n-        \n         String localityPropertyValue = config.get(LOAD_DATES_LOCALITY_GROUP_PROP);\n         if (null != localityPropertyValue) {\n             for (String rawGroup : localityPropertyValue.split(\",\")) {\n                 rawGroup = rawGroup.replace(\"\\\\u0000\", \"\\u0000\");\n+\n                 String[] components = rawGroup.split(\":\");\n                 String groupName = components[0];\n                 String[] columnFamiliesStr = components[1].split(\";\");\n                 Set<Text> columnFamilies = Sets.newHashSet();\n-                \n                 for (String colFamilyStr : columnFamiliesStr) {\n                     columnFamilies.add(new Text(colFamilyStr));\n                 }\n@@ -62,21 +64,20 @@ public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n         }\n         return localityGroups;\n     }\n-    \n+\n     public static boolean isLoadDatesEnabled(Configuration conf) {\n         return conf.getBoolean(LOAD_DATES_ENABLED_PROP, false);\n     }\n-    \n+\n     public static String getLoadDatesTableName(Configuration conf) {\n         return conf.get(LOAD_DATES_TABLE_NAME_PROP, TableName.LOAD_DATES);\n     }\n-    \n+\n     public static int getLoadDatesTableLoaderPriority(Configuration conf) {\n         return conf.getInt(LOAD_DATES_TABLE_LOADER_PRIORITY_PROP, 40);\n     }\n-    \n-    private void setCombinerForLoadDateCounts(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException,\n-                    TableNotFoundException {\n+\n+    private void setCombinerForLoadDateCounts(TableOperations tops, String scopeName) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"LoadDateMetadataCombiner\");\n         String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n         setPropertyIfNecessary(tableName, stem, \"18,org.apache.accumulo.core.iterators.user.SummingCombiner\", tops, log);\n@@ -85,6 +86,7 @@ public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n     }\n     \n     // MetricsFileProtoIngestHelper creates nonsense field names, each containing a '.'\n+\n     private void configureToDropBadData(TableOperations tops, String scopeName) throws AccumuloSecurityException, AccumuloException, TableNotFoundException {\n         String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scopeName, \"dropBadData\");\n         String tableName = LoadDateTableConfigHelper.getLoadDatesTableName(conf);\n@@ -93,4 +95,4 @@ public class LoadDateTableConfigHelper extends AbstractTableConfigHelper {\n         setPropertyIfNecessary(tableName, stem + \".opt.rowRegex\", \".*\\\\..*\", tops, log);\n         setPropertyIfNecessary(tableName, stem + \".opt.encoding\", \"UTF-8\", tops, log);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "10",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

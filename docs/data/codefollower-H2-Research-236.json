@@ -1,0 +1,63 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "236",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "column": "15",
+                "severity": "warning",
+                "message": "'(' is preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+            }
+        ]
+    },
+    "source_code": "    private String value;\n    \n    ValueJson (String s) {\n        this.value = s;\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/236/ValueJson.java\nindex 100710bac4d..82fbc57dfda 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/236/ValueJson.java\n@@ -13,7 +13,7 @@ public class ValueJson extends Value {\n     \n     private String value;\n     \n-    ValueJson (String s) {\n+    ValueJson(String s) {\n         this.value = s;\n     }\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/236/ValueJson.java\nindex 100710bac4d..94060d65114 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/236/ValueJson.java\n@@ -3,81 +3,83 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: Lazarev Nikita <lazarevn@ispras.ru>\n  */\n+\n package org.h2.value;\n \n import java.sql.PreparedStatement;\n import java.sql.SQLException;\n+\n import org.h2.util.StringUtils;\n \n public class ValueJson extends Value {\n-    \n-    private String value;\n-    \n-    ValueJson (String s) {\n-        this.value = s;\n-    }\n-\n-    @Override\n-    public StringBuilder getSQL(StringBuilder builder) {\n-        return StringUtils.quoteStringSQL(builder, value).append(\"::JSON\");\n-    }\n-\n-    @Override\n-    public TypeInfo getType() {\n-        return TypeInfo.TYPE_JSON;\n-    }\n-\n-    @Override\n-    public int getValueType() {\n-        return Value.JSON;\n-    }\n-\n-    @Override\n-    public String getString() {\n-        return value;\n-    }\n-\n-    @Override\n-    public Object getObject() {\n-        return value;\n-    }\n-    \n-    @Override\n-    public int getMemory() {\n-        return value.length() * 2 + 94;\n-    }\n-\n-    @Override\n-    public void set(PreparedStatement prep, int parameterIndex) throws SQLException {\n-        prep.setString(parameterIndex, value);\n-    }\n-\n-    /*\n-     * The simplest version\n-     * In fact {\"foo\":1,\"bar\":2} must be equal to {\"bar\":2, \"foo\":1}\n-     */\n-    @Override\n-    public int hashCode() {\n-        return value.hashCode();\n-    }\n-\n-    /*\n-     * Similar to hashCode()\n-     */\n-    @Override\n-    public boolean equals(Object other) {\n-        return other instanceof ValueJson &&\n-                this.value.equals(((ValueJson) other).value);\n-    }\n-\n-    @Override\n-    public int compareTypeSafe(Value v, CompareMode mode) {\n-        String other = ((ValueJson) v).value;\n-        return mode.compareString(value, other, false);\n-    }\n-    \n-    public static Value get(String s) {\n-        return new ValueJson(s);\n-    }\n+\n+  private String value;\n+\n+  ValueJson(String s) {\n+    this.value = s;\n+  }\n+\n+  @Override\n+  public StringBuilder getSQL(StringBuilder builder) {\n+    return StringUtils.quoteStringSQL(builder, value).append(\"::JSON\");\n+  }\n+\n+  @Override\n+  public TypeInfo getType() {\n+    return TypeInfo.TYPE_JSON;\n+  }\n+\n+  @Override\n+  public int getValueType() {\n+    return Value.JSON;\n+  }\n+\n+  @Override\n+  public String getString() {\n+    return value;\n+  }\n+\n+  @Override\n+  public Object getObject() {\n+    return value;\n+  }\n+\n+  @Override\n+  public int getMemory() {\n+    return value.length() * 2 + 94;\n+  }\n+\n+  @Override\n+  public void set(PreparedStatement prep, int parameterIndex) throws SQLException {\n+    prep.setString(parameterIndex, value);\n+  }\n+\n+  /*\n+   * The simplest version\n+   * In fact {\"foo\":1,\"bar\":2} must be equal to {\"bar\":2, \"foo\":1}\n+   */\n+  @Override\n+  public int hashCode() {\n+    return value.hashCode();\n+  }\n+\n+  /*\n+   * Similar to hashCode()\n+   */\n+  @Override\n+  public boolean equals(Object other) {\n+    return other instanceof ValueJson &&\n+        this.value.equals(((ValueJson) other).value);\n+  }\n+\n+  @Override\n+  public int compareTypeSafe(Value v, CompareMode mode) {\n+    String other = ((ValueJson) v).value;\n+    return mode.compareString(value, other, false);\n+  }\n+\n+  public static Value get(String s) {\n+    return new ValueJson(s);\n+  }\n \n }\n",
+            "diff_size": 71
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/236/ValueJson.java\nindex 100710bac4d..9425ad9ab26 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/236/ValueJson.java\n@@ -10,11 +10,11 @@ import java.sql.SQLException;\n import org.h2.util.StringUtils;\n \n public class ValueJson extends Value {\n-    \n+\n     private String value;\n     \n-    ValueJson (String s) {\n-        this.value = s;\n+    ValueJson(String s) {\n+    this.value = s;\n     }\n \n     @Override\n@@ -41,9 +41,9 @@ public class ValueJson extends Value {\n     public Object getObject() {\n         return value;\n     }\n-    \n-    @Override\n-    public int getMemory() {\n+\n+@Override\n+public int getMemory() {\n         return value.length() * 2 + 94;\n     }\n \n@@ -66,8 +66,7 @@ public class ValueJson extends Value {\n      */\n     @Override\n     public boolean equals(Object other) {\n-        return other instanceof ValueJson &&\n-                this.value.equals(((ValueJson) other).value);\n+        return other instanceof ValueJson && this.value.equals(((ValueJson) other).value);\n     }\n \n     @Override\n@@ -75,9 +74,9 @@ public class ValueJson extends Value {\n         String other = ((ValueJson) v).value;\n         return mode.compareString(value, other, false);\n     }\n-    \n-    public static Value get(String s) {\n-        return new ValueJson(s);\n+\n+public static Value get(String s) {\n+    return new ValueJson(s);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/236/ValueJson.java\nindex 100710bac4d..e9f67bf1c54 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/236/ValueJson.java\n@@ -9,11 +9,12 @@ import java.sql.PreparedStatement;\n import java.sql.SQLException;\n import org.h2.util.StringUtils;\n \n+\n public class ValueJson extends Value {\n-    \n+\n     private String value;\n-    \n-    ValueJson (String s) {\n+\n+    ValueJson(String s) {\n         this.value = s;\n     }\n \n@@ -41,7 +42,7 @@ public class ValueJson extends Value {\n     public Object getObject() {\n         return value;\n     }\n-    \n+\n     @Override\n     public int getMemory() {\n         return value.length() * 2 + 94;\n@@ -56,6 +57,7 @@ public class ValueJson extends Value {\n      * The simplest version\n      * In fact {\"foo\":1,\"bar\":2} must be equal to {\"bar\":2, \"foo\":1}\n      */\n+\n     @Override\n     public int hashCode() {\n         return value.hashCode();\n@@ -64,10 +66,10 @@ public class ValueJson extends Value {\n     /*\n      * Similar to hashCode()\n      */\n+\n     @Override\n     public boolean equals(Object other) {\n-        return other instanceof ValueJson &&\n-                this.value.equals(((ValueJson) other).value);\n+        return other instanceof ValueJson && this.value.equals(((ValueJson) other).value);\n     }\n \n     @Override\n@@ -75,9 +77,10 @@ public class ValueJson extends Value {\n         String other = ((ValueJson) v).value;\n         return mode.compareString(value, other, false);\n     }\n-    \n+\n+\n     public static Value get(String s) {\n         return new ValueJson(s);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/236/ValueJson.java\nindex 100710bac4d..82fbc57dfda 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/236/ValueJson.java\n@@ -13,7 +13,7 @@ public class ValueJson extends Value {\n     \n     private String value;\n     \n-    ValueJson (String s) {\n+    ValueJson(String s) {\n         this.value = s;\n     }\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/236/ValueJson.java\nindex 100710bac4d..82fbc57dfda 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/236/ValueJson.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/236/ValueJson.java\n@@ -13,7 +13,7 @@ public class ValueJson extends Value {\n     \n     private String value;\n     \n-    ValueJson (String s) {\n+    ValueJson(String s) {\n         this.value = s;\n     }\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": []
+}

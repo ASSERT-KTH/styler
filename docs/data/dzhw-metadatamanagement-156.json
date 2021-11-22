@@ -1,0 +1,128 @@
+{
+    "project_name": "dzhw-metadatamanagement",
+    "error_id": "156",
+    "information": {
+        "errors": [
+            {
+                "line": "21",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 104).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "@Component\n@RequestScope\npublic class RelatedPublicationChangesProvider extends DomainObjectChangesProvider<RelatedPublication> {\n  /**\n   * Get the list of surveyIds which need to be updated.\n   * @return a list of surveyIds",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/156/RelatedPublicationChangesProvider.java\nindex f2dd44f971b..a26a4984ff2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/156/RelatedPublicationChangesProvider.java\n@@ -13,14 +13,16 @@ import eu.dzhw.fdz.metadatamanagement.relatedpublicationmanagement.domain.Relate\n /**\n  * Remember the previous version of a related publication per request\n  * in order to update elasticsearch correctly.\n- *  \n+ *\n  * @author Ren\u00e9 Reitmann\n  */\n @Component\n @RequestScope\n-public class RelatedPublicationChangesProvider extends DomainObjectChangesProvider<RelatedPublication> {\n+public class RelatedPublicationChangesProvider\n+    extends DomainObjectChangesProvider<RelatedPublication> {\n   /**\n    * Get the list of surveyIds which need to be updated.\n+   *\n    * @return a list of surveyIds\n    */\n   public List<String> getAffectedSurveyIds(String relatedPublicationId) {\n@@ -34,16 +36,17 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     }\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n-  \n+\n   /**\n    * Get the list of studyIds which need to be updated.\n+   *\n    * @return a list of studyIds\n    */\n   public List<String> getAffectedStudyIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n     if (oldDomainObjects.get(relatedPublicationId) != null) {\n-      oldIds = oldDomainObjects.get(relatedPublicationId).getStudyIds() != null \n+      oldIds = oldDomainObjects.get(relatedPublicationId).getStudyIds() != null\n           ? oldDomainObjects.get(relatedPublicationId).getStudyIds()\n           : new ArrayList<>();\n     }\n@@ -54,9 +57,10 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     }\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n-  \n+\n   /**\n    * Get the list of dataSetIds which need to be updated.\n+   *\n    * @return a list of dataSetIds\n    */\n   public List<String> getAffectedDataSetIds(String relatedPublicationId) {\n@@ -73,6 +77,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n \n   /**\n    * Get the list of variableIds which need to be updated.\n+   *\n    * @return a list of variableIds\n    */\n   public List<String> getAffectedVariableIds(String relatedPublicationId) {\n@@ -86,9 +91,10 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     }\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n-  \n+\n   /**\n    * Get the list of instrumentIds which need to be updated.\n+   *\n    * @return a list of instrumentIds\n    */\n   public List<String> getAffectedInstrumentIds(String relatedPublicationId) {\n@@ -102,9 +108,10 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     }\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n-  \n+\n   /**\n    * Get the list of questionIds which need to be updated.\n+   *\n    * @return a list of questionIds\n    */\n   public List<String> getAffectedQuestionIds(String relatedPublicationId) {\n@@ -118,28 +125,30 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     }\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n-  \n+\n   /**\n    * Detect if changes need to be send to Dara.\n+   *\n    * @param relatedPublicationId The id of the related publication\n    * @return true if the changes need to be send to dara\n    */\n   public boolean hasChangesRelevantForDara(String relatedPublicationId) {\n-    if (newDomainObjects.get(relatedPublicationId) == null \n+    if (newDomainObjects.get(relatedPublicationId) == null\n         || oldDomainObjects.get(relatedPublicationId) == null) {\n       return true;\n     }\n     return !oldDomainObjects.get(relatedPublicationId).getSourceReference()\n         .equals(newDomainObjects.get(relatedPublicationId).getSourceReference());\n   }\n-  \n+\n   /**\n    * Get the list of study ids which have been removed from the publication.\n+   *\n    * @param relatedPublicationId the id of the publication\n    * @return list of study ids which have been removed from the publications\n    */\n   public List<String> getDeletedStudyIds(String relatedPublicationId) {\n-    if (oldDomainObjects.get(relatedPublicationId) == null \n+    if (oldDomainObjects.get(relatedPublicationId) == null\n         || oldDomainObjects.get(relatedPublicationId).getStudyIds() == null) {\n       return new ArrayList<>();\n     }\n@@ -152,14 +161,15 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     deletedStudyIds.removeAll(newDomainObjects.get(relatedPublicationId).getStudyIds());\n     return deletedStudyIds;\n   }\n-  \n+\n   /**\n    * Get the list of study ids which have been added to the publication.\n+   *\n    * @param relatedPublicationId the id of the publication\n    * @return list of study ids which have been added to the publications\n    */\n   public List<String> getAddedStudyIds(String relatedPublicationId) {\n-    if (newDomainObjects.get(relatedPublicationId) == null \n+    if (newDomainObjects.get(relatedPublicationId) == null\n         || newDomainObjects.get(relatedPublicationId)\n         .getStudyIds() == null) {\n       return new ArrayList<>();\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/156/RelatedPublicationChangesProvider.java\nindex f2dd44f971b..385d6539e9d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/156/RelatedPublicationChangesProvider.java\n@@ -174,4 +174,4 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n         .getStudyIds());\n     return addedStudyIds;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 138).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "52",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 138).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "162",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "182",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 107).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/156/RelatedPublicationChangesProvider.java\nindex f2dd44f971b..367decad5cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/156/RelatedPublicationChangesProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/156/RelatedPublicationChangesProvider.java\n@@ -2,10 +2,8 @@ package eu.dzhw.fdz.metadatamanagement.relatedpublicationmanagement.service;\n \n import java.util.ArrayList;\n import java.util.List;\n-\n import org.springframework.stereotype.Component;\n import org.springframework.web.context.annotation.RequestScope;\n-\n import eu.dzhw.fdz.metadatamanagement.common.service.DomainObjectChangesProvider;\n import eu.dzhw.fdz.metadatamanagement.common.service.util.ListUtils;\n import eu.dzhw.fdz.metadatamanagement.relatedpublicationmanagement.domain.RelatedPublication;\n@@ -16,6 +14,8 @@ import eu.dzhw.fdz.metadatamanagement.relatedpublicationmanagement.domain.Relate\n  *  \n  * @author Ren\u00e9 Reitmann\n  */\n+\n+\n @Component\n @RequestScope\n public class RelatedPublicationChangesProvider extends DomainObjectChangesProvider<RelatedPublication> {\n@@ -32,6 +32,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n       newIds = newDomainObjects.get(relatedPublicationId).getSurveyIds();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n   \n@@ -39,19 +40,19 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * Get the list of studyIds which need to be updated.\n    * @return a list of studyIds\n    */\n+\n   public List<String> getAffectedStudyIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n     if (oldDomainObjects.get(relatedPublicationId) != null) {\n-      oldIds = oldDomainObjects.get(relatedPublicationId).getStudyIds() != null \n-          ? oldDomainObjects.get(relatedPublicationId).getStudyIds()\n-          : new ArrayList<>();\n+      oldIds = oldDomainObjects.get(relatedPublicationId).getStudyIds() != null ? oldDomainObjects.get(relatedPublicationId).getStudyIds()\n+                                                                                : new ArrayList<>();\n     }\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n-      newIds = newDomainObjects.get(relatedPublicationId).getStudyIds() != null\n-          ? newDomainObjects.get(relatedPublicationId).getStudyIds()\n-          : new ArrayList<>();\n+      newIds = newDomainObjects.get(relatedPublicationId).getStudyIds() != null ? newDomainObjects.get(relatedPublicationId).getStudyIds()\n+                                                                                : new ArrayList<>();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n   \n@@ -59,6 +60,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * Get the list of dataSetIds which need to be updated.\n    * @return a list of dataSetIds\n    */\n+\n   public List<String> getAffectedDataSetIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n@@ -68,6 +70,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n       newIds = newDomainObjects.get(relatedPublicationId).getDataSetIds();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n \n@@ -75,6 +78,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * Get the list of variableIds which need to be updated.\n    * @return a list of variableIds\n    */\n+\n   public List<String> getAffectedVariableIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n@@ -84,6 +88,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n       newIds = newDomainObjects.get(relatedPublicationId).getVariableIds();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n   \n@@ -91,6 +96,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * Get the list of instrumentIds which need to be updated.\n    * @return a list of instrumentIds\n    */\n+\n   public List<String> getAffectedInstrumentIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n@@ -100,6 +106,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n       newIds = newDomainObjects.get(relatedPublicationId).getInstrumentIds();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n   \n@@ -107,6 +114,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * Get the list of questionIds which need to be updated.\n    * @return a list of questionIds\n    */\n+\n   public List<String> getAffectedQuestionIds(String relatedPublicationId) {\n     List<String> oldIds = null;\n     List<String> newIds = null;\n@@ -116,6 +124,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n     if (newDomainObjects.get(relatedPublicationId) != null) {\n       newIds = newDomainObjects.get(relatedPublicationId).getQuestionIds();\n     }\n+\n     return ListUtils.combineUniquely(newIds, oldIds);\n   }\n   \n@@ -124,13 +133,15 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * @param relatedPublicationId The id of the related publication\n    * @return true if the changes need to be send to dara\n    */\n+\n   public boolean hasChangesRelevantForDara(String relatedPublicationId) {\n-    if (newDomainObjects.get(relatedPublicationId) == null \n+    if (newDomainObjects.get(relatedPublicationId) == null\n         || oldDomainObjects.get(relatedPublicationId) == null) {\n       return true;\n     }\n+\n     return !oldDomainObjects.get(relatedPublicationId).getSourceReference()\n-        .equals(newDomainObjects.get(relatedPublicationId).getSourceReference());\n+                                                      .equals(newDomainObjects.get(relatedPublicationId).getSourceReference());\n   }\n   \n   /**\n@@ -138,8 +149,9 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * @param relatedPublicationId the id of the publication\n    * @return list of study ids which have been removed from the publications\n    */\n+\n   public List<String> getDeletedStudyIds(String relatedPublicationId) {\n-    if (oldDomainObjects.get(relatedPublicationId) == null \n+    if (oldDomainObjects.get(relatedPublicationId) == null\n         || oldDomainObjects.get(relatedPublicationId).getStudyIds() == null) {\n       return new ArrayList<>();\n     }\n@@ -147,8 +159,7 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n         || newDomainObjects.get(relatedPublicationId).getStudyIds() == null) {\n       return oldDomainObjects.get(relatedPublicationId).getStudyIds();\n     }\n-    List<String> deletedStudyIds = new ArrayList<>(oldDomainObjects.get(relatedPublicationId)\n-        .getStudyIds());\n+    List<String> deletedStudyIds = new ArrayList<>(oldDomainObjects.get(relatedPublicationId).getStudyIds());\n     deletedStudyIds.removeAll(newDomainObjects.get(relatedPublicationId).getStudyIds());\n     return deletedStudyIds;\n   }\n@@ -158,20 +169,18 @@ public class RelatedPublicationChangesProvider extends DomainObjectChangesProvid\n    * @param relatedPublicationId the id of the publication\n    * @return list of study ids which have been added to the publications\n    */\n+\n   public List<String> getAddedStudyIds(String relatedPublicationId) {\n-    if (newDomainObjects.get(relatedPublicationId) == null \n-        || newDomainObjects.get(relatedPublicationId)\n-        .getStudyIds() == null) {\n+    if (newDomainObjects.get(relatedPublicationId) == null\n+        || newDomainObjects.get(relatedPublicationId).getStudyIds() == null) {\n       return new ArrayList<>();\n     }\n     if (oldDomainObjects.get(relatedPublicationId) == null\n         || oldDomainObjects.get(relatedPublicationId).getStudyIds() == null) {\n       return newDomainObjects.get(relatedPublicationId).getStudyIds();\n     }\n-    List<String> addedStudyIds = new ArrayList<>(newDomainObjects.get(relatedPublicationId)\n-        .getStudyIds());\n-    addedStudyIds.removeAll(oldDomainObjects.get(relatedPublicationId)\n-        .getStudyIds());\n+    List<String> addedStudyIds = new ArrayList<>(newDomainObjects.get(relatedPublicationId).getStudyIds());\n+    addedStudyIds.removeAll(oldDomainObjects.get(relatedPublicationId).getStudyIds());\n     return addedStudyIds;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

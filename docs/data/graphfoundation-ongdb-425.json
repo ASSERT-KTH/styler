@@ -1,0 +1,96 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "425",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/425/ExecutionPlanDescription.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/425/ExecutionPlanDescription.java\nindex 0b71c68164d..2ec4c2971fb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/425/ExecutionPlanDescription.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/425/ExecutionPlanDescription.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.graphdb;\n \n import java.util.List;\n@@ -27,98 +28,98 @@ import org.neo4j.helpers.MathUtil;\n \n /**\n  * Instances describe single execution steps in a Cypher query execution plan\n- *\n+ * <p>\n  * Execution plans form a tree of execution steps.  Each step is described by a {@link ExecutionPlanDescription} object.\n  */\n public interface ExecutionPlanDescription\n {\n-    /**\n-     * Retrieves the name of this execution step.\n-     *\n-     * @return descriptive name for this kind of execution step\n-     */\n-    String getName();\n+  /**\n+   * Retrieves the name of this execution step.\n+   *\n+   * @return descriptive name for this kind of execution step\n+   */\n+  String getName();\n \n-    /**\n-     * Retrieves the children of this execution step.\n-     *\n-     * @return list of previous (child) execution step descriptions\n-     */\n-    List<ExecutionPlanDescription> getChildren();\n+  /**\n+   * Retrieves the children of this execution step.\n+   *\n+   * @return list of previous (child) execution step descriptions\n+   */\n+  List<ExecutionPlanDescription> getChildren();\n+\n+  /**\n+   * Retrieve argument map for the associated execution step\n+   * <p>\n+   * Valid arguments are all Java primitive values, Strings, Arrays of those, and Maps from Strings to\n+   * valid arguments.  Results are guaranteed to be trees (i.e. there are no cyclic dependencies among values)\n+   *\n+   * @return a map containing arguments that describe this execution step in more detail\n+   */\n+  Map<String, Object> getArguments();\n+\n+  /**\n+   * @return the set of identifiers used in this execution step\n+   */\n+  Set<String> getIdentifiers();\n+\n+  /**\n+   * Signifies that the query was profiled, and that statistics from the profiling can\n+   * {@link #getProfilerStatistics() be retrieved}.\n+   * <p>\n+   * The <a href=\"https://neo4j.com/docs/developer-manual/current/cypher/execution-plans/\">{@code PROFILE}</a> directive in Cypher\n+   * ensures the presence of profiler statistics in the plan description.\n+   *\n+   * @return true, if {@link ProfilerStatistics} are available for this execution step\n+   */\n+  boolean hasProfilerStatistics();\n \n+  /**\n+   * Retrieve the statistics collected from profiling this query.\n+   * <p>\n+   * If the query was not profiled, this method will throw {@link java.util.NoSuchElementException}.\n+   *\n+   * @return profiler statistics for this execution step iff available\n+   * @throws java.util.NoSuchElementException iff profiler statistics are not available\n+   */\n+  ProfilerStatistics getProfilerStatistics();\n+\n+  /**\n+   * Instances describe statistics from the profiler of a particular step in the execution plan.\n+   */\n+  interface ProfilerStatistics\n+  {\n     /**\n-     * Retrieve argument map for the associated execution step\n-     *\n-     * Valid arguments are all Java primitive values, Strings, Arrays of those, and Maps from Strings to\n-     * valid arguments.  Results are guaranteed to be trees (i.e. there are no cyclic dependencies among values)\n-     *\n-     * @return a map containing arguments that describe this execution step in more detail\n+     * @return number of rows processed by the associated execution step\n      */\n-    Map<String, Object> getArguments();\n+    long getRows();\n \n     /**\n-     * @return the set of identifiers used in this execution step\n+     * @return number of database hits (potential disk accesses) caused by executing the associated execution step\n      */\n-    Set<String> getIdentifiers();\n+    long getDbHits();\n \n     /**\n-     * Signifies that the query was profiled, and that statistics from the profiling can\n-     * {@link #getProfilerStatistics() be retrieved}.\n-     *\n-     * The <a href=\"https://neo4j.com/docs/developer-manual/current/cypher/execution-plans/\">{@code PROFILE}</a> directive in Cypher\n-     * ensures the presence of profiler statistics in the plan description.\n-     *\n-     * @return true, if {@link ProfilerStatistics} are available for this execution step\n+     * @return number of page cache hits caused by executing the associated execution step\n      */\n-    boolean hasProfilerStatistics();\n+    default long getPageCacheHits()\n+    {\n+      return 0;\n+    }\n \n     /**\n-     * Retrieve the statistics collected from profiling this query.\n-     *\n-     * If the query was not profiled, this method will throw {@link java.util.NoSuchElementException}.\n-     *\n-     * @return profiler statistics for this execution step iff available\n-     * @throws java.util.NoSuchElementException iff profiler statistics are not available\n+     * @return number of page cache misses caused by executing the associated execution step\n      */\n-    ProfilerStatistics getProfilerStatistics();\n+    default long getPageCacheMisses()\n+    {\n+      return 0;\n+    }\n \n     /**\n-     * Instances describe statistics from the profiler of a particular step in the execution plan.\n+     * @return the ratio of page cache hits to total number of lookups or {@link Double#NaN} if no data is available\n      */\n-    interface ProfilerStatistics\n+    default double getPageCacheHitRatio()\n     {\n-        /**\n-         * @return number of rows processed by the associated execution step\n-         */\n-        long getRows();\n-\n-        /**\n-         * @return number of database hits (potential disk accesses) caused by executing the associated execution step\n-         */\n-        long getDbHits();\n-\n-        /**\n-         * @return number of page cache hits caused by executing the associated execution step\n-         */\n-        default long getPageCacheHits()\n-        {\n-            return 0;\n-        }\n-\n-        /**\n-         * @return number of page cache misses caused by executing the associated execution step\n-         */\n-        default long getPageCacheMisses()\n-        {\n-            return 0;\n-        }\n-\n-        /**\n-         * @return the ratio of page cache hits to total number of lookups or {@link Double#NaN} if no data is available\n-         */\n-        default double getPageCacheHitRatio()\n-        {\n-            return MathUtil.portion( getPageCacheHits(), getPageCacheMisses() );\n-        }\n+      return MathUtil.portion(getPageCacheHits(), getPageCacheMisses());\n     }\n+  }\n }\n",
+            "diff_size": 121
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/425/ExecutionPlanDescription.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/425/ExecutionPlanDescription.java\nindex 0b71c68164d..8456f3463e2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/425/ExecutionPlanDescription.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/425/ExecutionPlanDescription.java\n@@ -54,7 +54,7 @@ public interface ExecutionPlanDescription\n      *\n      * @return a map containing arguments that describe this execution step in more detail\n      */\n-    Map<String, Object> getArguments();\n+    Map<String,Object> getArguments();\n \n     /**\n      * @return the set of identifiers used in this execution step\n@@ -121,4 +121,4 @@ public interface ExecutionPlanDescription\n             return MathUtil.portion( getPageCacheHits(), getPageCacheMisses() );\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

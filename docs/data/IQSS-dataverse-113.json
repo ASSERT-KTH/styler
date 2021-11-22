@@ -1,0 +1,87 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "113",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": " */\npublic class CommandHelper {\n\t\n\tpublic static final CommandHelper CH = new CommandHelper();\n\t\n\t/**",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/113/CommandHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/113/CommandHelper.java\nindex 8c0c26c5c12..59e1e1a1810 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/113/CommandHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/113/CommandHelper.java\n@@ -10,62 +10,62 @@ import java.util.*;\n  * @author michael\n  */\n public class CommandHelper {\n-\t\n-\tpublic static final CommandHelper CH = new CommandHelper();\n-\t\n-\t/**\n-     * Given a {@link Command} sub-class, returns the set of permissions needed\n-     * to be able to execute it. Needed permissions are specified by annotating\n-     * the command's class with the {@link RequiredPermissions} annotation.\n-\t * \n-\t * @param cmdClass A class of command\n-     * @return Set of permissions, or {@code null} if the command's class was\n-     * not annotated.\n-\t */\n-    public Map<String, Set<Permission>> permissionsRequired(Class<? extends Command> cmdClass) {\n-\t\tRequiredPermissions requiredPerms = cmdClass.getAnnotation(RequiredPermissions.class);\n-        if (requiredPerms == null) {\n-\t\t\t// try for the permission map\n-            RequiredPermissionsMap reqPermMap = cmdClass.getAnnotation(RequiredPermissionsMap.class);\n-            if (reqPermMap == null) {\n-                // No annotations here. Look up the class hierachy\n-                Class superClass = cmdClass.getSuperclass();\n-                if (superClass != null) {\n-                    return permissionsRequired(superClass);\n-                } else {\n-                    throw new IllegalArgumentException(\"Command class \" + cmdClass.getCanonicalName() \n-                     + \", and its superclasses, do not declare required permissions.\");\n-                }\n-            }\n-\t\t\tMap<String, Set<Permission>> retVal = new TreeMap<>();\n-            for (RequiredPermissions rp : reqPermMap.value()) {\n-                retVal.put(rp.dataverseName(), asPermissionSet(rp.value()));\n-\t\t\t}\n-\t\t\treturn retVal;\n-\t\t\t\n-\t\t} else {\n-\t\t\tPermission[] required = requiredPerms.value();\n-\t\t\treturn Collections.singletonMap(requiredPerms.dataverseName(),\n-                    asPermissionSet(required));\n-\t\t}\n-\t}\n-\t\n-\t/**\n-     * Given a command, returns the set of permissions needed to be able to\n-     * execute it. Needed permissions are specified by annotating the command's\n-     * class with the {@link RequiredPermissions} annotation.\n-\t * \n-\t * @param c The command\n-     * @return Set of permissions, or {@code null} if the command's class was\n-     * not annotated.\n-\t */\n-    public Map<String, Set<Permission>> permissionsRequired(Command c) {\n-\t\treturn permissionsRequired(c.getClass());\n-\t}\n-\t\n-    private Set<Permission> asPermissionSet(Permission[] permissionArray) {\n-        return (permissionArray.length == 0) ? EnumSet.noneOf(Permission.class)\n-                : (permissionArray.length == 1) ? EnumSet.of(permissionArray[0])\n-\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t: EnumSet.of(permissionArray[0], permissionArray);\n-\t}\n+\n+  public static final CommandHelper CH = new CommandHelper();\n+\n+  /**\n+   * Given a {@link Command} sub-class, returns the set of permissions needed\n+   * to be able to execute it. Needed permissions are specified by annotating\n+   * the command's class with the {@link RequiredPermissions} annotation.\n+   *\n+   * @param cmdClass A class of command\n+   * @return Set of permissions, or {@code null} if the command's class was\n+   * not annotated.\n+   */\n+  public Map<String, Set<Permission>> permissionsRequired(Class<? extends Command> cmdClass) {\n+    RequiredPermissions requiredPerms = cmdClass.getAnnotation(RequiredPermissions.class);\n+    if (requiredPerms == null) {\n+      // try for the permission map\n+      RequiredPermissionsMap reqPermMap = cmdClass.getAnnotation(RequiredPermissionsMap.class);\n+      if (reqPermMap == null) {\n+        // No annotations here. Look up the class hierachy\n+        Class superClass = cmdClass.getSuperclass();\n+        if (superClass != null) {\n+          return permissionsRequired(superClass);\n+        } else {\n+          throw new IllegalArgumentException(\"Command class \" + cmdClass.getCanonicalName()\n+            + \", and its superclasses, do not declare required permissions.\");\n+        }\n+      }\n+      Map<String, Set<Permission>> retVal = new TreeMap<>();\n+      for (RequiredPermissions rp : reqPermMap.value()) {\n+        retVal.put(rp.dataverseName(), asPermissionSet(rp.value()));\n+      }\n+      return retVal;\n+\n+    } else {\n+      Permission[] required = requiredPerms.value();\n+      return Collections.singletonMap(requiredPerms.dataverseName(),\n+        asPermissionSet(required));\n+    }\n+  }\n+\n+  /**\n+   * Given a command, returns the set of permissions needed to be able to\n+   * execute it. Needed permissions are specified by annotating the command's\n+   * class with the {@link RequiredPermissions} annotation.\n+   *\n+   * @param c The command\n+   * @return Set of permissions, or {@code null} if the command's class was\n+   * not annotated.\n+   */\n+  public Map<String, Set<Permission>> permissionsRequired(Command c) {\n+    return permissionsRequired(c.getClass());\n+  }\n+\n+  private Set<Permission> asPermissionSet(Permission[] permissionArray) {\n+    return (permissionArray.length == 0) ? EnumSet.noneOf(Permission.class)\n+      : (permissionArray.length == 1) ? EnumSet.of(permissionArray[0])\n+      : EnumSet.of(permissionArray[0], permissionArray);\n+  }\n }\n",
+            "diff_size": 58
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/113/CommandHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/113/CommandHelper.java\nindex 8c0c26c5c12..4d783fe8966 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/113/CommandHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/113/CommandHelper.java\n@@ -9,23 +9,26 @@ import java.util.*;\n  *\n  * @author michael\n  */\n+\n+\n public class CommandHelper {\n-\t\n-\tpublic static final CommandHelper CH = new CommandHelper();\n-\t\n-\t/**\n+\n+    public static final CommandHelper CH = new CommandHelper();\n+    \n+    /**\n      * Given a {@link Command} sub-class, returns the set of permissions needed\n      * to be able to execute it. Needed permissions are specified by annotating\n      * the command's class with the {@link RequiredPermissions} annotation.\n-\t * \n-\t * @param cmdClass A class of command\n+     * \n+     * @param cmdClass A class of command\n      * @return Set of permissions, or {@code null} if the command's class was\n      * not annotated.\n-\t */\n+     */\n+\n     public Map<String, Set<Permission>> permissionsRequired(Class<? extends Command> cmdClass) {\n-\t\tRequiredPermissions requiredPerms = cmdClass.getAnnotation(RequiredPermissions.class);\n+        RequiredPermissions requiredPerms = cmdClass.getAnnotation(RequiredPermissions.class);\n         if (requiredPerms == null) {\n-\t\t\t// try for the permission map\n+            // try for the permission map\n             RequiredPermissionsMap reqPermMap = cmdClass.getAnnotation(RequiredPermissionsMap.class);\n             if (reqPermMap == null) {\n                 // No annotations here. Look up the class hierachy\n@@ -33,39 +36,37 @@ public class CommandHelper {\n                 if (superClass != null) {\n                     return permissionsRequired(superClass);\n                 } else {\n-                    throw new IllegalArgumentException(\"Command class \" + cmdClass.getCanonicalName() \n-                     + \", and its superclasses, do not declare required permissions.\");\n+                    throw new IllegalArgumentException(\"Command class \" + cmdClass.getCanonicalName() + \", and its superclasses, do not declare required permissions.\");\n                 }\n             }\n-\t\t\tMap<String, Set<Permission>> retVal = new TreeMap<>();\n+\n+            Map<String, Set<Permission>> retVal = new TreeMap<>();\n             for (RequiredPermissions rp : reqPermMap.value()) {\n                 retVal.put(rp.dataverseName(), asPermissionSet(rp.value()));\n-\t\t\t}\n-\t\t\treturn retVal;\n-\t\t\t\n-\t\t} else {\n-\t\t\tPermission[] required = requiredPerms.value();\n-\t\t\treturn Collections.singletonMap(requiredPerms.dataverseName(),\n-                    asPermissionSet(required));\n-\t\t}\n-\t}\n-\t\n-\t/**\n+            }\n+            return retVal;\n+        } else {\n+            Permission[] required = requiredPerms.value();\n+            return Collections.singletonMap(requiredPerms.dataverseName(), asPermissionSet(required));\n+        }\n+    }\n+    \n+    /**\n      * Given a command, returns the set of permissions needed to be able to\n      * execute it. Needed permissions are specified by annotating the command's\n      * class with the {@link RequiredPermissions} annotation.\n-\t * \n-\t * @param c The command\n+     * \n+     * @param c The command\n      * @return Set of permissions, or {@code null} if the command's class was\n      * not annotated.\n-\t */\n+     */\n+\n     public Map<String, Set<Permission>> permissionsRequired(Command c) {\n-\t\treturn permissionsRequired(c.getClass());\n-\t}\n-\t\n+        return permissionsRequired(c.getClass());\n+    }\n+\n     private Set<Permission> asPermissionSet(Permission[] permissionArray) {\n-        return (permissionArray.length == 0) ? EnumSet.noneOf(Permission.class)\n-                : (permissionArray.length == 1) ? EnumSet.of(permissionArray[0])\n-\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t: EnumSet.of(permissionArray[0], permissionArray);\n-\t}\n-}\n+        return (permissionArray.length == 0) ? EnumSet.noneOf(Permission.class) : (permissionArray.length == 1) ? EnumSet.of(permissionArray[0]) : EnumSet.of(permissionArray[0], permissionArray);\n+    }\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 39
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,79 @@
+{
+    "project_name": "atlanmod-NeoEMF",
+    "error_id": "26",
+    "information": {
+        "errors": [
+            {
+                "line": "221",
+                "column": "73",
+                "severity": "warning",
+                "message": "'+' should be on a new line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+            }
+        ]
+    },
+    "source_code": "    public EClass get() {\n        return checkNotNull(lazyClass.get(),\n                \"Unable to find the EPackage associated with URI: %s. \" +\n                        \"Make sure it is registered in EPackage.Registry.\", uri);\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler/26/ClassBean.java\nindex 43a67e5867d..34e4dc62e1d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler/26/ClassBean.java\n@@ -218,8 +218,7 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public EClass get() {\n         return checkNotNull(lazyClass.get(),\n-                \"Unable to find the EPackage associated with URI: %s. \" +\n-                        \"Make sure it is registered in EPackage.Registry.\", uri);\n+                \"Unable to find the EPackage associated with URI: %s. \" + \"Make sure it is registered in EPackage.Registry.\", uri);\n     }\n \n     @Override\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "215",
+                    "column": "69",
+                    "severity": "warning",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/intellij/26/ClassBean.java\nindex 43a67e5867d..77d14251378 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/intellij/26/ClassBean.java\n@@ -69,10 +69,10 @@ public class ClassBean implements Serializable {\n         this.uri = checkNotNull(uri, \"uri\");\n \n         lazyClass = LazyReference.soft(() ->\n-                Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))\n-                        .map(p -> p.getEClassifier(name))\n-                        .map(EClass.class::cast)\n-                        .orElse(null));\n+            Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))\n+                .map(p -> p.getEClassifier(name))\n+                .map(EClass.class::cast)\n+                .orElse(null));\n     }\n \n     /**\n@@ -94,9 +94,7 @@ public class ClassBean implements Serializable {\n      *\n      * @param object the object from which the {@link org.eclipse.emf.ecore.EClass} has to be retrieve with the {@link\n      *               PersistentEObject#eClass()} method\n-     *\n      * @return a new {@code ClassBean}\n-     *\n      * @throws NullPointerException if any argument is {@code null}\n      * @see #from(EClass)\n      */\n@@ -111,9 +109,7 @@ public class ClassBean implements Serializable {\n      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.\n      *\n      * @param eClass the {@link org.eclipse.emf.ecore.EClass}\n-     *\n      * @return a new {@code ClassBean}\n-     *\n      * @throws NullPointerException if any argument is {@code null}\n      */\n     @Nonnull\n@@ -128,9 +124,7 @@ public class ClassBean implements Serializable {\n      * @param name the name of the {@link org.eclipse.emf.ecore.EClass}\n      * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link\n      *             org.eclipse.emf.ecore.EClass}\n-     *\n      * @return a new {@code ClassBean}\n-     *\n      * @throws NullPointerException if any argument is {@code null}\n      */\n     @Nonnull\n@@ -185,10 +179,10 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public Optional<ClassBean> inheritFrom() {\n         return get().getESuperTypes()\n-                .parallelStream()\n-                .filter(c -> !c.isInterface())\n-                .map(ClassBean::from)\n-                .findAny();\n+            .parallelStream()\n+            .filter(c -> !c.isInterface())\n+            .map(ClassBean::from)\n+            .findAny();\n     }\n \n     /**\n@@ -200,14 +194,14 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public Set<ClassBean> inheritedBy() {\n         return get().getEPackage().getEClassifiers()\n-                .parallelStream()\n-                .filter(EClass.class::isInstance)\n-                .map(EClass.class::cast)\n-                .filter(c -> get().isSuperTypeOf(c))\n-                .filter(c -> !c.isAbstract())\n-                .filter(c -> !c.isInterface())\n-                .map(ClassBean::from)\n-                .collect(Collectors.toSet());\n+            .parallelStream()\n+            .filter(EClass.class::isInstance)\n+            .map(EClass.class::cast)\n+            .filter(c -> get().isSuperTypeOf(c))\n+            .filter(c -> !c.isAbstract())\n+            .filter(c -> !c.isInterface())\n+            .map(ClassBean::from)\n+            .collect(Collectors.toSet());\n     }\n \n     /**\n@@ -218,8 +212,8 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public EClass get() {\n         return checkNotNull(lazyClass.get(),\n-                \"Unable to find the EPackage associated with URI: %s. \" +\n-                        \"Make sure it is registered in EPackage.Registry.\", uri);\n+            \"Unable to find the EPackage associated with URI: %s. \" +\n+                \"Make sure it is registered in EPackage.Registry.\", uri);\n     }\n \n     @Override\n@@ -238,7 +232,7 @@ public class ClassBean implements Serializable {\n \n         ClassBean that = ClassBean.class.cast(o);\n         return Objects.equals(name, that.name)\n-                && Objects.equals(uri, that.uri);\n+            && Objects.equals(uri, that.uri);\n     }\n \n     @Override\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/naturalize/26/ClassBean.java\nindex 43a67e5867d..18fd5d80570 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/naturalize/26/ClassBean.java\n@@ -218,8 +218,7 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public EClass get() {\n         return checkNotNull(lazyClass.get(),\n-                \"Unable to find the EPackage associated with URI: %s. \" +\n-                        \"Make sure it is registered in EPackage.Registry.\", uri);\n+                \"Unable to find the EPackage associated with URI: %s. \" + \"Make sure it is registered in EPackage.Registry.\", uri);\n     }\n \n     @Override\n@@ -245,5 +244,4 @@ public class ClassBean implements Serializable {\n     public String toString() {\n         return String.format(\"ClassBean {%s @ %s}\", name, uri);\n     }\n-}\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_random/26/ClassBean.java\nindex 43a67e5867d..34e4dc62e1d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_random/26/ClassBean.java\n@@ -218,8 +218,7 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public EClass get() {\n         return checkNotNull(lazyClass.get(),\n-                \"Unable to find the EPackage associated with URI: %s. \" +\n-                        \"Make sure it is registered in EPackage.Registry.\", uri);\n+                \"Unable to find the EPackage associated with URI: %s. \" + \"Make sure it is registered in EPackage.Registry.\", uri);\n     }\n \n     @Override\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "221",
+                    "column": "72",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_three_grams/26/ClassBean.java\nindex 43a67e5867d..5a502a26d54 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/26/ClassBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_three_grams/26/ClassBean.java\n@@ -218,8 +218,7 @@ public class ClassBean implements Serializable {\n     @Nonnull\n     public EClass get() {\n         return checkNotNull(lazyClass.get(),\n-                \"Unable to find the EPackage associated with URI: %s. \" +\n-                        \"Make sure it is registered in EPackage.Registry.\", uri);\n+                \"Unable to find the EPackage associated with URI: %s. \"+ \"Make sure it is registered in EPackage.Registry.\", uri);\n     }\n \n     @Override\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

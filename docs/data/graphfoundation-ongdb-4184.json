@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4184",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "28",
+                    "column": "53",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "28",
+                    "column": "64",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "30",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "30",
+                    "column": "93",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4184/SrvRecordResolver.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4184/SrvRecordResolver.java\nindex 35c25b52e9a..d002f1fb050 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4184/SrvRecordResolver.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4184/SrvRecordResolver.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.discovery;\n \n import java.util.stream.Stream;\n@@ -24,40 +25,40 @@ import javax.naming.NamingException;\n \n public abstract class SrvRecordResolver\n {\n-    public abstract Stream<SrvRecord> resolveSrvRecord( String url ) throws NamingException;\n+  public abstract Stream<SrvRecord> resolveSrvRecord(String url) throws NamingException;\n \n-    public Stream<SrvRecord> resolveSrvRecord( String service, String protocol, String hostname ) throws NamingException\n-    {\n-        String url = String.format( \"_%s._%s.%s\", service, protocol, hostname );\n+  public Stream<SrvRecord> resolveSrvRecord(String service, String protocol, String hostname) throws NamingException\n+  {\n+    String url = String.format(\"_%s._%s.%s\", service, protocol, hostname);\n+\n+    return resolveSrvRecord(url);\n+  }\n \n-        return resolveSrvRecord( url );\n+  public static class SrvRecord\n+  {\n+    public final int priority;\n+    public final int weight;\n+    public final int port;\n+    public final String host;\n+\n+    private SrvRecord(int priority, int weight, int port, String host)\n+    {\n+      this.priority = priority;\n+      this.weight = weight;\n+      this.port = port;\n+      // Typically the SRV record has a trailing dot - if that is the case we should remove it\n+      this.host = host.charAt(host.length() - 1) == '.' ? host.substring(0, host.length() - 1) : host;\n     }\n \n-    public static class SrvRecord\n+    public static SrvRecord parse(String input)\n     {\n-        public final int priority;\n-        public final int weight;\n-        public final int port;\n-        public final String host;\n-\n-        private SrvRecord( int priority, int weight, int port, String host )\n-        {\n-            this.priority = priority;\n-            this.weight = weight;\n-            this.port = port;\n-            // Typically the SRV record has a trailing dot - if that is the case we should remove it\n-            this.host = host.charAt( host.length() - 1 ) == '.' ? host.substring( 0, host.length() - 1 ) : host;\n-        }\n-\n-        public static SrvRecord parse( String input )\n-        {\n-            String[] parts = input.split( \" \" );\n-            return new SrvRecord(\n-                    Integer.parseInt( parts[0] ),\n-                    Integer.parseInt( parts[1] ),\n-                    Integer.parseInt( parts[2] ),\n-                    parts[3]\n-            );\n-        }\n+      String[] parts = input.split(\" \");\n+      return new SrvRecord(\n+          Integer.parseInt(parts[0]),\n+          Integer.parseInt(parts[1]),\n+          Integer.parseInt(parts[2]),\n+          parts[3]\n+      );\n     }\n+  }\n }\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4184/SrvRecordResolver.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4184/SrvRecordResolver.java\nindex 35c25b52e9a..c45400285d8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4184/SrvRecordResolver.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4184/SrvRecordResolver.java\n@@ -29,16 +29,18 @@ public abstract class SrvRecordResolver\n     public Stream<SrvRecord> resolveSrvRecord( String service, String protocol, String hostname ) throws NamingException\n     {\n         String url = String.format( \"_%s._%s.%s\", service, protocol, hostname );\n-\n-        return resolveSrvRecord( url );\n+return resolveSrvRecord( url );\n     }\n \n     public static class SrvRecord\n     {\n         public final int priority;\n-        public final int weight;\n-        public final int port;\n-        public final String host;\n+\n+public final int weight;\n+\n+public final int port;\n+\n+public final String host;\n \n         private SrvRecord( int priority, int weight, int port, String host )\n         {\n@@ -52,12 +54,8 @@ public abstract class SrvRecordResolver\n         public static SrvRecord parse( String input )\n         {\n             String[] parts = input.split( \" \" );\n-            return new SrvRecord(\n-                    Integer.parseInt( parts[0] ),\n-                    Integer.parseInt( parts[1] ),\n-                    Integer.parseInt( parts[2] ),\n-                    parts[3]\n-            );\n+            return new SrvRecord( Integer.parseInt( parts[0] ), Integer.parseInt( parts[1] ), Integer.parseInt( parts[2] ),\n+                    parts[3] );\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,94 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "577",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.engine.impl.bpmn.behavior;\n\nimport org.activiti.bpmn.model.FlowElement;\nimport org.activiti.bpmn.model.StartEvent;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/577/SubProcessActivityBehavior.java\nindex f5bcf8afe75..78e9efa4664 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/577/SubProcessActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.bpmn.model.FlowElement;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/577/SubProcessActivityBehavior.java\nindex f5bcf8afe75..73d01dd679f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/577/SubProcessActivityBehavior.java\n@@ -33,69 +33,67 @@ import java.util.Map;\n \n /**\n  * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.\n- *\n-\n  */\n public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {\n \n-  private static final long serialVersionUID = 1L;\n+    private static final long serialVersionUID = 1L;\n \n-  public void execute(DelegateExecution execution) {\n-    SubProcess subProcess = getSubProcessFromExecution(execution);\n+    public void execute(DelegateExecution execution) {\n+        SubProcess subProcess = getSubProcessFromExecution(execution);\n \n-    FlowElement startElement = null;\n-    if (CollectionUtil.isNotEmpty(subProcess.getFlowElements())) {\n-      for (FlowElement subElement : subProcess.getFlowElements()) {\n-        if (subElement instanceof StartEvent) {\n-          StartEvent startEvent = (StartEvent) subElement;\n+        FlowElement startElement = null;\n+        if (CollectionUtil.isNotEmpty(subProcess.getFlowElements())) {\n+            for (FlowElement subElement : subProcess.getFlowElements()) {\n+                if (subElement instanceof StartEvent) {\n+                    StartEvent startEvent = (StartEvent) subElement;\n \n-          // start none event\n-          if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {\n-            startElement = startEvent;\n-            break;\n-          }\n+                    // start none event\n+                    if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {\n+                        startElement = startEvent;\n+                        break;\n+                    }\n+                }\n+            }\n         }\n-      }\n-    }\n \n-    if (startElement == null) {\n-      throw new ActivitiException(\"No initial activity found for subprocess \" + subProcess.getId());\n-    }\n+        if (startElement == null) {\n+            throw new ActivitiException(\"No initial activity found for subprocess \" + subProcess.getId());\n+        }\n \n-    ExecutionEntity executionEntity = (ExecutionEntity) execution;\n-    executionEntity.setScope(true);\n+        ExecutionEntity executionEntity = (ExecutionEntity) execution;\n+        executionEntity.setScope(true);\n \n-    // initialize the template-defined data objects as variables\n-    Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());\n-    if (dataObjectVars != null) {\n-      executionEntity.setVariablesLocal(dataObjectVars);\n-    }\n+        // initialize the template-defined data objects as variables\n+        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());\n+        if (dataObjectVars != null) {\n+            executionEntity.setVariablesLocal(dataObjectVars);\n+        }\n \n-    ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()\n-        .createChildExecution(executionEntity);\n-    startSubProcessExecution.setCurrentFlowElement(startElement);\n-    Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);\n-  }\n+        ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()\n+                .createChildExecution(executionEntity);\n+        startSubProcessExecution.setCurrentFlowElement(startElement);\n+        Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);\n+    }\n \n-  protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {\n-    FlowElement flowElement = execution.getCurrentFlowElement();\n-    SubProcess subProcess = null;\n-    if (flowElement instanceof SubProcess) {\n-      subProcess = (SubProcess) flowElement;\n-    } else {\n-      throw new ActivitiException(\"Programmatic error: sub process behaviour can only be applied\" + \" to a SubProcess instance, but got an instance of \" + flowElement);\n+    protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {\n+        FlowElement flowElement = execution.getCurrentFlowElement();\n+        SubProcess subProcess = null;\n+        if (flowElement instanceof SubProcess) {\n+            subProcess = (SubProcess) flowElement;\n+        } else {\n+            throw new ActivitiException(\"Programmatic error: sub process behaviour can only be applied\" + \" to a SubProcess instance, but got an instance of \" + flowElement);\n+        }\n+        return subProcess;\n     }\n-    return subProcess;\n-  }\n \n-  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {\n-    Map<String, Object> variablesMap = new HashMap<String, Object>();\n-    // convert data objects to process variables\n-    if (dataObjects != null) {\n-      for (ValuedDataObject dataObject : dataObjects) {\n-        variablesMap.put(dataObject.getName(), dataObject.getValue());\n-      }\n+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {\n+        Map<String, Object> variablesMap = new HashMap<String, Object>();\n+        // convert data objects to process variables\n+        if (dataObjects != null) {\n+            for (ValuedDataObject dataObject : dataObjects) {\n+                variablesMap.put(dataObject.getName(), dataObject.getValue());\n+            }\n+        }\n+        return variablesMap;\n     }\n-    return variablesMap;\n-  }\n }\n",
+            "diff_size": 56
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 10, expected is 12, indentation should be the same level as line 52.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/577/SubProcessActivityBehavior.java\nindex f5bcf8afe75..bb11208b9cb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/577/SubProcessActivityBehavior.java\n@@ -26,7 +26,6 @@ import org.activiti.engine.delegate.DelegateExecution;\n import org.activiti.engine.impl.context.Context;\n import org.activiti.engine.impl.persistence.entity.ExecutionEntity;\n import org.activiti.engine.impl.util.CollectionUtil;\n-\n import java.util.Collection;\n import java.util.HashMap;\n import java.util.Map;\n@@ -36,28 +35,27 @@ import java.util.Map;\n  *\n \n  */\n+\n+\n public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {\n \n   private static final long serialVersionUID = 1L;\n-\n   public void execute(DelegateExecution execution) {\n     SubProcess subProcess = getSubProcessFromExecution(execution);\n-\n     FlowElement startElement = null;\n     if (CollectionUtil.isNotEmpty(subProcess.getFlowElements())) {\n-      for (FlowElement subElement : subProcess.getFlowElements()) {\n-        if (subElement instanceof StartEvent) {\n-          StartEvent startEvent = (StartEvent) subElement;\n+        for (FlowElement subElement : subProcess.getFlowElements()) {\n+          if (subElement instanceof StartEvent) {\n+            StartEvent startEvent = (StartEvent) subElement;\n \n           // start none event\n-          if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {\n-            startElement = startEvent;\n-            break;\n+            if (CollectionUtil.isEmpty(startEvent.getEventDefinitions())) {\n+              startElement = startEvent;\n+              break;\n+            }\n           }\n         }\n-      }\n     }\n-\n     if (startElement == null) {\n       throw new ActivitiException(\"No initial activity found for subprocess \" + subProcess.getId());\n     }\n@@ -66,13 +64,13 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {\n     executionEntity.setScope(true);\n \n     // initialize the template-defined data objects as variables\n+\n     Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());\n     if (dataObjectVars != null) {\n       executionEntity.setVariablesLocal(dataObjectVars);\n     }\n \n-    ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()\n-        .createChildExecution(executionEntity);\n+    ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(executionEntity);\n     startSubProcessExecution.setCurrentFlowElement(startElement);\n     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);\n   }\n@@ -92,10 +90,11 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {\n     Map<String, Object> variablesMap = new HashMap<String, Object>();\n     // convert data objects to process variables\n     if (dataObjects != null) {\n-      for (ValuedDataObject dataObject : dataObjects) {\n-        variablesMap.put(dataObject.getName(), dataObject.getValue());\n-      }\n+        for (ValuedDataObject dataObject : dataObjects) {\n+            variablesMap.put(dataObject.getName(),\n+                             dataObject.getValue());\n+        }\n     }\n     return variablesMap;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/577/SubProcessActivityBehavior.java\nindex f5bcf8afe75..78e9efa4664 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/577/SubProcessActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.bpmn.model.FlowElement;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/577/SubProcessActivityBehavior.java\nindex f5bcf8afe75..78e9efa4664 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/577/SubProcessActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/577/SubProcessActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.bpmn.model.FlowElement;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

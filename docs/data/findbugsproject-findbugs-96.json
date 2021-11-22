@@ -1,0 +1,87 @@
+{
+    "project_name": "findbugsproject-findbugs",
+    "error_id": "96",
+    "information": {
+        "errors": [
+            {
+                "line": "34",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "@DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\npublic class TestNullnessRelaxation {\n\tstatic interface I<T extends Number> {\n\t\t@Nonnull\n\t\tObject get();\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "35",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/96/TestNullnessRelaxation.java\nindex 66150667913..9f931e55606 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/96/TestNullnessRelaxation.java\n@@ -31,7 +31,7 @@ import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n  */\n @DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\n public class TestNullnessRelaxation {\n-\tstatic interface I<T extends Number> {\n+static interface I<T extends Number> {\n \t\t@Nonnull\n \t\tObject get();\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/96/TestNullnessRelaxation.java\nindex 66150667913..01349c9b6f3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/96/TestNullnessRelaxation.java\n@@ -31,68 +31,75 @@ import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n  */\n @DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\n public class TestNullnessRelaxation {\n-\tstatic interface I<T extends Number> {\n-\t\t@Nonnull\n-\t\tObject get();\n+    static interface I<T extends Number> {\n+        @Nonnull\n+        Object get();\n \n-\t\tNumber set(@CheckForNull Number o);\n+        Number set(@CheckForNull Number o);\n \n-\t\t@Nonnull\n-\t\tT set2(@CheckForNull T o);\n-\t}\n+        @Nonnull\n+        T set2(@CheckForNull T o);\n+    }\n+\n+    static interface SI2 extends I<Integer> {\n+        @CheckForNull\n+        @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n+        String get();\n \n-\tstatic interface SI2 extends I<Integer> {\n-\t\t@CheckForNull\n-\t\t@ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-\t\tString get();\n+        @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n+        public Integer set(@Nonnull Number o);\n \n-\t\t@ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-\t\tpublic Integer set(@Nonnull Number o);\n+        @CheckForNull\n+        @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n+        public Integer set2(@Nonnull Integer o);\n+    }\n \n-\t\t@CheckForNull\n-\t\t@ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-\t\tpublic Integer set2(@Nonnull Integer o);\n-\t}\n-\t\n     static class SimpleClazz implements I<Integer> {\n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n+        public Integer set2(@Nonnull Integer o) {\n             return null;\n         }\n-    }\t\n+    }\n+\n+    static interface SI3 extends I<Integer> {\n+    }\n+\n+    static interface SI4 extends SI3, SI2 {\n+    }\n+\n+    abstract static class Clazz1 implements SI4 {\n+    }\n \n-\tstatic interface SI3 extends I<Integer> {}\n-\tstatic interface SI4 extends SI3, SI2 {}\n-\tabstract static class Clazz1 implements SI4 {}\n-\tabstract static class Clazz2 extends Clazz1 {}\n+    abstract static class Clazz2 extends Clazz1 {\n+    }\n \n-\tstatic class Clazz extends Clazz2 {\n+    static class Clazz extends Clazz2 {\n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n+        public Integer set2(@Nonnull Integer o) {\n             return null;\n         }\n     }\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "37",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/96/TestNullnessRelaxation.java\nindex 66150667913..a57bf263ae1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/96/TestNullnessRelaxation.java\n@@ -31,18 +31,19 @@ import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n  */\n @DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\n public class TestNullnessRelaxation {\n-\tstatic interface I<T extends Number> {\n-\t\t@Nonnull\n+\n+    static interface I<T extends Number> {\n+    @Nonnull\n \t\tObject get();\n \n \t\tNumber set(@CheckForNull Number o);\n \n \t\t@Nonnull\n \t\tT set2(@CheckForNull T o);\n-\t}\n+    }\n \n \tstatic interface SI2 extends I<Integer> {\n-\t\t@CheckForNull\n+    @CheckForNull\n \t\t@ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n \t\tString get();\n \n@@ -52,49 +53,57 @@ public class TestNullnessRelaxation {\n \t\t@CheckForNull\n \t\t@ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n \t\tpublic Integer set2(@Nonnull Integer o);\n-\t}\n+        }\n \t\n     static class SimpleClazz implements I<Integer> {\n-        @CheckForNull\n+    @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n+        public Integer set2(@Nonnull Integer o) {\n             return null;\n         }\n-    }\t\n+    }\n \n-\tstatic interface SI3 extends I<Integer> {}\n-\tstatic interface SI4 extends SI3, SI2 {}\n-\tabstract static class Clazz1 implements SI4 {}\n-\tabstract static class Clazz2 extends Clazz1 {}\n+static interface SI3 extends I<Integer> {}\n+\n+    static interface SI4 extends SI3, SI2 {\n+\n+}\n+\n+abstract static class Clazz1 implements SI4 {\n+\n+}\n+\n+abstract static class Clazz2 extends Clazz1 {\n+}\n \n \tstatic class Clazz extends Clazz2 {\n-        @CheckForNull\n+    @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n+        public Integer set2(@Nonnull Integer o) {\n             return null;\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 28
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/96/TestNullnessRelaxation.java\nindex 66150667913..223a28dd6bb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/96/TestNullnessRelaxation.java\n@@ -21,7 +21,6 @@ package nullnessAnnotations.relax;\n \n import javax.annotation.CheckForNull;\n import javax.annotation.Nonnull;\n-\n import annotations.DetectorUnderTest;\n import edu.umd.cs.findbugs.annotations.ExpectWarning;\n import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n@@ -29,72 +28,79 @@ import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n /**\n  * @author nisticoa\n  */\n+\n @DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\n public class TestNullnessRelaxation {\n-\tstatic interface I<T extends Number> {\n-\t\t@Nonnull\n-\t\tObject get();\n+    static interface I<T extends Number> {\n+        @Nonnull\n+        Object get();\n \n-\t\tNumber set(@CheckForNull Number o);\n+        Number set(@CheckForNull Number o);\n \n-\t\t@Nonnull\n-\t\tT set2(@CheckForNull T o);\n-\t}\n+        @Nonnull\n+        T set2(@CheckForNull T o);\n+    }\n \n-\tstatic interface SI2 extends I<Integer> {\n-\t\t@CheckForNull\n-\t\t@ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-\t\tString get();\n+    static interface SI2 extends I<Integer> {\n+        @CheckForNull\n+        @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n+        String get();\n \n-\t\t@ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-\t\tpublic Integer set(@Nonnull Number o);\n+        @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n+        public Integer set(@Nonnull Number o);\n+\n+        @CheckForNull\n+        @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n+        public Integer set2(@Nonnull Integer o);\n+    }\n \n-\t\t@CheckForNull\n-\t\t@ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-\t\tpublic Integer set2(@Nonnull Integer o);\n-\t}\n-\t\n     static class SimpleClazz implements I<Integer> {\n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n-            return null;\n+        public Integer set2(@Nonnull Integer o) {\n+        return null;\n         }\n-    }\t\n+    }\n+\n+    static interface SI3 extends I<Integer> {\n+    }\n+\n+    static interface SI4 extends SI3, SI2 {\n+    }\n \n-\tstatic interface SI3 extends I<Integer> {}\n-\tstatic interface SI4 extends SI3, SI2 {}\n-\tabstract static class Clazz1 implements SI4 {}\n-\tabstract static class Clazz2 extends Clazz1 {}\n+    abstract static class Clazz1 implements SI4 {\n+    }\n+\n+    abstract static class Clazz2 extends Clazz1 {\n+    }\n \n-\tstatic class Clazz extends Clazz2 {\n+    static class Clazz extends Clazz2 {\n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public String get(){\n+        public String get() {\n             return null;\n         }\n \n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION\")\n-        public Integer set(@Nonnull Number o){\n+        public Integer set(@Nonnull Number o) {\n             return null;\n         }\n \n         @CheckForNull\n         @ExpectWarning(\"NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION,NP_METHOD_RETURN_RELAXING_ANNOTATION\")\n-        public Integer set2(@Nonnull Integer o){\n-            return null;\n+        public Integer set2(@Nonnull Integer o) {\n+        return null;\n         }\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "35",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/96/TestNullnessRelaxation.java\nindex 66150667913..9f931e55606 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/96/TestNullnessRelaxation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/96/TestNullnessRelaxation.java\n@@ -31,7 +31,7 @@ import edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation;\n  */\n @DetectorUnderTest(CheckRelaxingNullnessAnnotation.class)\n public class TestNullnessRelaxation {\n-\tstatic interface I<T extends Number> {\n+static interface I<T extends Number> {\n \t\t@Nonnull\n \t\tObject get();\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

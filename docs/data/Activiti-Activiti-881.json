@@ -1,0 +1,69 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "881",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.runtime.api.conf;\n\nimport static java.util.Collections.emptyList;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/881/CommonRuntimeAutoConfiguration.java\nindex 81e9f8616fb..169166b86e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/881/CommonRuntimeAutoConfiguration.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.conf;\n \n import static java.util.Collections.emptyList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/881/CommonRuntimeAutoConfiguration.java\nindex 81e9f8616fb..169166b86e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/881/CommonRuntimeAutoConfiguration.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.conf;\n \n import static java.util.Collections.emptyList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/881/CommonRuntimeAutoConfiguration.java\nindex 81e9f8616fb..03aebd2b533 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/881/CommonRuntimeAutoConfiguration.java\n@@ -16,9 +16,7 @@\n package org.activiti.runtime.api.conf;\n \n import static java.util.Collections.emptyList;\n-\n import java.util.List;\n-\n import org.activiti.api.model.shared.event.VariableCreatedEvent;\n import org.activiti.api.model.shared.event.VariableUpdatedEvent;\n import org.activiti.api.runtime.shared.events.VariableEventListener;\n@@ -38,30 +36,31 @@ import org.springframework.context.annotation.Configuration;\n @Configuration\n public class CommonRuntimeAutoConfiguration {\n \n-    @Bean\n-    public APIVariableInstanceConverter apiVariableInstanceConverter() {\n-        return new APIVariableInstanceConverter();\n-    }\n-\n-    @Bean\n-    public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,\n-                                                                    @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners) {\n-        return () -> runtimeService.addEventListener(new VariableCreatedListenerDelegate(getInitializedListeners(listeners), new ToVariableCreatedConverter()), ActivitiEventType.VARIABLE_CREATED);\n-    }\n+  @Bean\n+  public APIVariableInstanceConverter apiVariableInstanceConverter() {\n+    return new APIVariableInstanceConverter();\n+  }\n \n-    private <T> List<T> getInitializedListeners(List<T> eventListeners) {\n-        return eventListeners != null ? eventListeners : emptyList();\n-    }\n+  @Bean\n+  public InitializingBean registerVariableCreatedListenerDelegate(RuntimeService runtimeService,\n+                                                                  @Autowired(required = false) List<VariableEventListener<VariableCreatedEvent>> listeners) {\n+                                                                    return () -> runtimeService.addEventListener(new VariableCreatedListenerDelegate(getInitializedListeners(listeners),\n+                                                                      new ToVariableCreatedConverter()), ActivitiEventType.VARIABLE_CREATED);\n+  }\n \n-    @Bean\n-    public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,\n-                                                                    @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners) {\n-        return () -> runtimeService.addEventListener(new VariableUpdatedListenerDelegate(getInitializedListeners(listeners), new ToVariableUpdatedConverter()), ActivitiEventType.VARIABLE_UPDATED);\n-    }\n+  private <T> List<T> getInitializedListeners(List<T> eventListeners) {\n+    return eventListeners != null ? eventListeners : emptyList();\n+  }\n \n-    @Bean\n-    public VariableNameValidator variableNameValidator() {\n-        return new VariableNameValidator();\n-    }\n+  @Bean\n+  public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,\n+                                                                  @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners) {\n+                                                                    return () -> runtimeService.addEventListener(new VariableUpdatedListenerDelegate(getInitializedListeners(listeners),\n+                                                                      new ToVariableUpdatedConverter()), ActivitiEventType.VARIABLE_UPDATED);\n+  }\n \n-}\n+  @Bean\n+  public VariableNameValidator variableNameValidator() {\n+    return new VariableNameValidator();\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/881/CommonRuntimeAutoConfiguration.java\nindex 81e9f8616fb..169166b86e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/881/CommonRuntimeAutoConfiguration.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.conf;\n \n import static java.util.Collections.emptyList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/881/CommonRuntimeAutoConfiguration.java\nindex 81e9f8616fb..169166b86e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/881/CommonRuntimeAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/881/CommonRuntimeAutoConfiguration.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.conf;\n \n import static java.util.Collections.emptyList;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

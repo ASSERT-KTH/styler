@@ -1,0 +1,86 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "107",
+    "information": {
+        "errors": [
+            {
+                "line": "29",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "@RequiredPermissions( Permission.EditDataverse )\npublic class UpdateDataverseCommand extends AbstractCommand<Dataverse> {\n\t\n\tprivate final Dataverse editedDv;\n\tprivate final List<DatasetFieldType> facetList;\n        private final List<Dataverse> featuredDataverseList;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "29",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/107/UpdateDataverseCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/107/UpdateDataverseCommand.java\nindex 8c5cc0cc097..341022ac8e1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/107/UpdateDataverseCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/107/UpdateDataverseCommand.java\n@@ -22,87 +22,89 @@ import org.apache.solr.client.solrj.SolrServerException;\n \n /**\n  * Update an existing dataverse.\n+ *\n  * @author michael\n  */\n-@RequiredPermissions( Permission.EditDataverse )\n+@RequiredPermissions(Permission.EditDataverse)\n public class UpdateDataverseCommand extends AbstractCommand<Dataverse> {\n-\t\n-\tprivate final Dataverse editedDv;\n-\tprivate final List<DatasetFieldType> facetList;\n-        private final List<Dataverse> featuredDataverseList;\n-        private final List<DataverseFieldTypeInputLevel> inputLevelList;\n \n-\tpublic UpdateDataverseCommand(Dataverse editedDv, List<DatasetFieldType> facetList, List<Dataverse> featuredDataverseList, \n-                    DataverseRequest aRequest,  List<DataverseFieldTypeInputLevel> inputLevelList ) {\n-            super(aRequest, editedDv);\n-            this.editedDv = editedDv;\n-            // add update template uses this command but does not\n-            // update facet list or featured dataverses\n-            if (facetList != null){\n-               this.facetList = new ArrayList<>(facetList); \n-            } else {\n-               this.facetList = null;\n-            }\n-            if (featuredDataverseList != null){\n-                this.featuredDataverseList = new ArrayList<>(featuredDataverseList);\n-            } else {\n-                this.featuredDataverseList = null;\n-            }\n-            if (inputLevelList != null){\n-               this.inputLevelList = new ArrayList<>(inputLevelList); \n-            } else {\n-               this.inputLevelList = null;\n-            }\n-\t}\n-\t\n-\t@Override\n-\tpublic Dataverse execute(CommandContext ctxt) throws CommandException {\n-            DataverseType oldDvType = ctxt.dataverses().find(editedDv.getId()).getDataverseType();\n-            String oldDvAlias = ctxt.dataverses().find(editedDv.getId()).getAlias();\n-            String oldDvName = ctxt.dataverses().find(editedDv.getId()).getName();\n-            Dataverse result = ctxt.dataverses().save(editedDv);\n-            \n-            if ( facetList != null ) {\n-                ctxt.facets().deleteFacetsFor(result);\n-                int i=0;\n-                for ( DatasetFieldType df : facetList ) {\n-                    ctxt.facets().create(i++, df.getId(), result.getId());\n-                }\n-            }\n-            if ( featuredDataverseList != null ) {\n-                ctxt.featuredDataverses().deleteFeaturedDataversesFor(result);\n-                int i=0;\n-                for ( Object obj : featuredDataverseList ) {\n-                    Dataverse dv = (Dataverse) obj;\n-                    ctxt.featuredDataverses().create(i++, dv.getId(), result.getId());\n-                }\n-            }\n-            if ( inputLevelList != null ) {\n-                ctxt.fieldTypeInputLevels().deleteFacetsFor(result);\n-                for ( DataverseFieldTypeInputLevel obj : inputLevelList ) {               \n-                    ctxt.fieldTypeInputLevels().create(obj);\n-                }\n-            }\n-            \n-            \n-            return result;\n-\t}\n-        \n-    @Override\n-    public boolean onSuccess(CommandContext ctxt, Object r) {\n-        \n-        // first kick of async index of datasets\n-        // TODO: is this actually needed? Is there a better way to handle\n-        try {\n-            Dataverse result = (Dataverse) r;\n-            List<Dataset> datasets = ctxt.datasets().findByOwnerId(result.getId());\n-            ctxt.index().asyncIndexDatasetList(datasets, true);\n-        } catch (IOException | SolrServerException e) {\n-            // these datasets are being indexed asynchrounously, so not sure how to handle errors here\n-        }\n-        \n-        return ctxt.dataverses().index((Dataverse) r);\n-    }  \n+  private final Dataverse editedDv;\n+  private final List<DatasetFieldType> facetList;\n+  private final List<Dataverse> featuredDataverseList;\n+  private final List<DataverseFieldTypeInputLevel> inputLevelList;\n+\n+  public UpdateDataverseCommand(Dataverse editedDv, List<DatasetFieldType> facetList,\n+                                List<Dataverse> featuredDataverseList,\n+                                DataverseRequest aRequest, List<DataverseFieldTypeInputLevel> inputLevelList) {\n+    super(aRequest, editedDv);\n+    this.editedDv = editedDv;\n+    // add update template uses this command but does not\n+    // update facet list or featured dataverses\n+    if (facetList != null) {\n+      this.facetList = new ArrayList<>(facetList);\n+    } else {\n+      this.facetList = null;\n+    }\n+    if (featuredDataverseList != null) {\n+      this.featuredDataverseList = new ArrayList<>(featuredDataverseList);\n+    } else {\n+      this.featuredDataverseList = null;\n+    }\n+    if (inputLevelList != null) {\n+      this.inputLevelList = new ArrayList<>(inputLevelList);\n+    } else {\n+      this.inputLevelList = null;\n+    }\n+  }\n+\n+  @Override\n+  public Dataverse execute(CommandContext ctxt) throws CommandException {\n+    DataverseType oldDvType = ctxt.dataverses().find(editedDv.getId()).getDataverseType();\n+    String oldDvAlias = ctxt.dataverses().find(editedDv.getId()).getAlias();\n+    String oldDvName = ctxt.dataverses().find(editedDv.getId()).getName();\n+    Dataverse result = ctxt.dataverses().save(editedDv);\n+\n+    if (facetList != null) {\n+      ctxt.facets().deleteFacetsFor(result);\n+      int i = 0;\n+      for (DatasetFieldType df : facetList) {\n+        ctxt.facets().create(i++, df.getId(), result.getId());\n+      }\n+    }\n+    if (featuredDataverseList != null) {\n+      ctxt.featuredDataverses().deleteFeaturedDataversesFor(result);\n+      int i = 0;\n+      for (Object obj : featuredDataverseList) {\n+        Dataverse dv = (Dataverse) obj;\n+        ctxt.featuredDataverses().create(i++, dv.getId(), result.getId());\n+      }\n+    }\n+    if (inputLevelList != null) {\n+      ctxt.fieldTypeInputLevels().deleteFacetsFor(result);\n+      for (DataverseFieldTypeInputLevel obj : inputLevelList) {\n+        ctxt.fieldTypeInputLevels().create(obj);\n+      }\n+    }\n+\n+\n+    return result;\n+  }\n+\n+  @Override\n+  public boolean onSuccess(CommandContext ctxt, Object r) {\n+\n+    // first kick of async index of datasets\n+    // TODO: is this actually needed? Is there a better way to handle\n+    try {\n+      Dataverse result = (Dataverse) r;\n+      List<Dataset> datasets = ctxt.datasets().findByOwnerId(result.getId());\n+      ctxt.index().asyncIndexDatasetList(datasets, true);\n+    } catch (IOException | SolrServerException e) {\n+      // these datasets are being indexed asynchrounously, so not sure how to handle errors here\n+    }\n+\n+    return ctxt.dataverses().index((Dataverse) r);\n+  }\n \n }\n \n",
+            "diff_size": 84
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "29",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "29",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

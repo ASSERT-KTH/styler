@@ -1,0 +1,98 @@
+{
+    "project_name": "apache-usergrid",
+    "error_id": "7",
+    "information": {
+        "errors": [
+            {
+                "line": "43",
+                "severity": "warning",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "\n    /**\n     * Test the scheduler ramps up correctly when there are more jobs to be read after a \n     * pause when the job specifies the retry time\n     */\n    @Test",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/7/SchedulerRuntime6IT.java\nindex 4b9b23271d9..ab88ab5141a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/7/SchedulerRuntime6IT.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.usergrid.batch.job;\n \n \n@@ -40,72 +41,72 @@ import static org.junit.Assert.assertTrue;\n public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n \n     /**\n-     * Test the scheduler ramps up correctly when there are more jobs to be read after a \n+     * Test the scheduler ramps up correctly when there are more jobs to be read after a\n      * pause when the job specifies the retry time\n      */\n     @Test\n     public void onlyOnceTest() throws Exception {\n \n-        long sleepTime = Long.parseLong( props.getProperty( TIMEOUT_PROP ) );\n+        long sleepTime = Long.parseLong(props.getProperty(TIMEOUT_PROP));\n \n         long customRetry = sleepTime + 1000;\n         int numberOfRuns = 1;\n \n-        OnlyOnceExceution job = cassandraResource.getBean( \"onlyOnceExceution\", OnlyOnceExceution.class );\n+        OnlyOnceExceution job = cassandraResource.getBean(\"onlyOnceExceution\", OnlyOnceExceution.class);\n \n-        job.setTimeout( customRetry );\n-        job.setLatch( numberOfRuns );\n-        job.setDelay( sleepTime );\n+        job.setTimeout(customRetry);\n+        job.setLatch(numberOfRuns);\n+        job.setDelay(sleepTime);\n \n \n         getJobListener().setExpected(1);\n \n-        JobData returned = scheduler.createJob( \"onlyOnceExceution\", System.currentTimeMillis(), new JobData() );\n+        JobData returned = scheduler.createJob(\"onlyOnceExceution\", System.currentTimeMillis(), new JobData());\n \n         scheduler.refreshIndex();\n \n         // sleep until the job should have failed. We sleep 1 extra cycle just to\n         // make sure we're not racing the test\n-        boolean waited = getJobListener().blockTilDone( customRetry * numberOfRuns * 2 + 5000L );\n+        boolean waited = getJobListener().blockTilDone(customRetry * numberOfRuns * 2 + 5000L);\n \n-        assertTrue( \"Job ran twice\", waited );\n+        assertTrue(\"Job ran twice\", waited);\n \n \n-        getJobListener().setExpected( 2 );\n+        getJobListener().setExpected(2);\n         //reset our latch immediately for further tests\n-        job.setLatch( numberOfRuns );\n+        job.setLatch(numberOfRuns);\n \n         scheduler.refreshIndex();\n \n-        JobStat stat = scheduler.getStatsForJob( returned.getJobName(), returned.getUuid() );\n+        JobStat stat = scheduler.getStatsForJob(returned.getJobName(), returned.getUuid());\n \n         // we should have only marked this as run once since we delayed furthur execution\n         // we should have only marked this as run once\n-        assertNotNull( stat );\n-        assertEquals( numberOfRuns, stat.getTotalAttempts() );\n-        assertEquals( numberOfRuns, stat.getRunCount() );\n-        assertEquals( 0, stat.getDelayCount() );\n+        assertNotNull(stat);\n+        assertEquals(numberOfRuns, stat.getTotalAttempts());\n+        assertEquals(numberOfRuns, stat.getRunCount());\n+        assertEquals(0, stat.getDelayCount());\n \n \n-        boolean slept = job.waitForSleep( customRetry * numberOfRuns * 2, TimeUnit.MILLISECONDS );\n+        boolean slept = job.waitForSleep(customRetry * numberOfRuns * 2, TimeUnit.MILLISECONDS);\n \n-        assertTrue( \"Job slept\", slept );\n+        assertTrue(\"Job slept\", slept);\n \n         scheduler.refreshIndex();\n \n         //now wait again to see if the job fires one more time, it shouldn't\n-        waited = getJobListener().blockTilDone( customRetry * numberOfRuns * 2 );\n+        waited = getJobListener().blockTilDone(customRetry * numberOfRuns * 2);\n \n-        assertFalse( \"Job ran twice\", waited );\n+        assertFalse(\"Job ran twice\", waited);\n \n         scheduler.refreshIndex();\n \n-        stat = scheduler.getStatsForJob( returned.getJobName(), returned.getUuid() );\n+        stat = scheduler.getStatsForJob(returned.getJobName(), returned.getUuid());\n \n         // we should have only marked this as run once since we delayed further execution\n         // we should have only marked this as run once\n-        assertEquals( numberOfRuns, stat.getTotalAttempts() );\n-        assertEquals( numberOfRuns, stat.getRunCount() );\n-        assertEquals( 0, stat.getDelayCount() );\n+        assertEquals(numberOfRuns, stat.getTotalAttempts());\n+        assertEquals(numberOfRuns, stat.getRunCount());\n+        assertEquals(0, stat.getDelayCount());\n     }\n }\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/naturalize/7/SchedulerRuntime6IT.java\nindex 4b9b23271d9..30b563892dc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/naturalize/7/SchedulerRuntime6IT.java\n@@ -85,9 +85,7 @@ public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n         assertEquals( numberOfRuns, stat.getTotalAttempts() );\n         assertEquals( numberOfRuns, stat.getRunCount() );\n         assertEquals( 0, stat.getDelayCount() );\n-\n-\n-        boolean slept = job.waitForSleep( customRetry * numberOfRuns * 2, TimeUnit.MILLISECONDS );\n+boolean slept = job.waitForSleep( customRetry * numberOfRuns * 2, TimeUnit.MILLISECONDS );\n \n         assertTrue( \"Job slept\", slept );\n \n@@ -108,4 +106,4 @@ public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n         assertEquals( numberOfRuns, stat.getRunCount() );\n         assertEquals( 0, stat.getDelayCount() );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/codebuff/7/SchedulerRuntime6IT.java\nindex 4b9b23271d9..bb9a649b06d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/7/SchedulerRuntime6IT.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/codebuff/7/SchedulerRuntime6IT.java\n@@ -18,11 +18,9 @@ package org.apache.usergrid.batch.job;\n \n \n import java.util.concurrent.TimeUnit;\n-\n import org.apache.usergrid.cassandra.Concurrent;\n import org.apache.usergrid.persistence.entities.JobData;\n import org.apache.usergrid.persistence.entities.JobStat;\n-\n import org.junit.Ignore;\n import org.junit.Test;\n \n@@ -35,6 +33,8 @@ import static org.junit.Assert.assertTrue;\n /**\n  * Class to test job runtimes\n  */\n+\n+\n @Concurrent\n @Ignore(\"These tests no longer work with shared spring context. Need to re-evaluate\")\n public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n@@ -43,38 +43,28 @@ public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n      * Test the scheduler ramps up correctly when there are more jobs to be read after a \n      * pause when the job specifies the retry time\n      */\n+\n     @Test\n     public void onlyOnceTest() throws Exception {\n-\n         long sleepTime = Long.parseLong( props.getProperty( TIMEOUT_PROP ) );\n-\n         long customRetry = sleepTime + 1000;\n         int numberOfRuns = 1;\n-\n         OnlyOnceExceution job = cassandraResource.getBean( \"onlyOnceExceution\", OnlyOnceExceution.class );\n-\n         job.setTimeout( customRetry );\n         job.setLatch( numberOfRuns );\n         job.setDelay( sleepTime );\n-\n-\n-        getJobListener().setExpected(1);\n+        getJobListener().setExpected( 1 );\n \n         JobData returned = scheduler.createJob( \"onlyOnceExceution\", System.currentTimeMillis(), new JobData() );\n-\n         scheduler.refreshIndex();\n \n         // sleep until the job should have failed. We sleep 1 extra cycle just to\n         // make sure we're not racing the test\n         boolean waited = getJobListener().blockTilDone( customRetry * numberOfRuns * 2 + 5000L );\n-\n         assertTrue( \"Job ran twice\", waited );\n-\n-\n         getJobListener().setExpected( 2 );\n         //reset our latch immediately for further tests\n         job.setLatch( numberOfRuns );\n-\n         scheduler.refreshIndex();\n \n         JobStat stat = scheduler.getStatsForJob( returned.getJobName(), returned.getUuid() );\n@@ -85,21 +75,14 @@ public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n         assertEquals( numberOfRuns, stat.getTotalAttempts() );\n         assertEquals( numberOfRuns, stat.getRunCount() );\n         assertEquals( 0, stat.getDelayCount() );\n-\n-\n         boolean slept = job.waitForSleep( customRetry * numberOfRuns * 2, TimeUnit.MILLISECONDS );\n-\n         assertTrue( \"Job slept\", slept );\n-\n         scheduler.refreshIndex();\n \n         //now wait again to see if the job fires one more time, it shouldn't\n         waited = getJobListener().blockTilDone( customRetry * numberOfRuns * 2 );\n-\n         assertFalse( \"Job ran twice\", waited );\n-\n         scheduler.refreshIndex();\n-\n         stat = scheduler.getStatsForJob( returned.getJobName(), returned.getUuid() );\n \n         // we should have only marked this as run once since we delayed further execution\n@@ -108,4 +91,4 @@ public class SchedulerRuntime6IT extends AbstractSchedulerRuntimeIT {\n         assertEquals( numberOfRuns, stat.getRunCount() );\n         assertEquals( 0, stat.getDelayCount() );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

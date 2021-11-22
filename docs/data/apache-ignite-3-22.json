@@ -1,0 +1,177 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "22",
+    "information": {
+        "errors": [
+            {
+                "line": "44",
+                "column": "9",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "        int code;\n        /** error msg */\n        String msg;\n\n        State(int code, String msg) {\n            super();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/22/Status.java\nindex 017c6f42791..83aeb132028 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/22/Status.java\n@@ -41,6 +41,7 @@ public class Status implements Copiable<Status> {\n         /** error code */\n         int code;\n         /** error msg */\n+\n         String msg;\n \n         State(int code, String msg) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/22/Status.java\nindex 017c6f42791..4c05ef026bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/22/Status.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.ignite.raft.jraft;\n \n import org.apache.ignite.raft.jraft.error.RaftError;\n@@ -34,202 +35,201 @@ import org.apache.ignite.raft.jraft.util.Copiable;\n //failed status is frequent.\n public class Status implements Copiable<Status> {\n \n+  /**\n+   * Status internal state.\n+   */\n+  private static class State {\n     /**\n-     * Status internal state.\n+     * error code\n      */\n-    private static class State {\n-        /** error code */\n-        int code;\n-        /** error msg */\n-        String msg;\n-\n-        State(int code, String msg) {\n-            super();\n-            this.code = code;\n-            this.msg = msg;\n-        }\n-\n-        @Override\n-        public int hashCode() {\n-            final int prime = 31;\n-            int result = 1;\n-            result = prime * result + this.code;\n-            result = prime * result + (this.msg == null ? 0 : this.msg.hashCode());\n-            return result;\n-        }\n-\n-        @Override\n-        public boolean equals(Object obj) {\n-            if (this == obj) {\n-                return true;\n-            }\n-            if (obj == null) {\n-                return false;\n-            }\n-            if (getClass() != obj.getClass()) {\n-                return false;\n-            }\n-            State other = (State) obj;\n-            if (this.code != other.code) {\n-                return false;\n-            }\n-            if (this.msg == null) {\n-                return other.msg == null;\n-            }\n-            else {\n-                return this.msg.equals(other.msg);\n-            }\n-        }\n-    }\n-\n-    private State state;\n-\n-    public Status() {\n-        this.state = null;\n-    }\n+    int code;\n \n     /**\n-     * Creates a OK status instance.\n+     * error msg\n      */\n-    public static Status OK() {\n-        return new Status();\n-    }\n-\n-    public Status(Status s) {\n-        if (s.state != null) {\n-            this.state = new State(s.state.code, s.state.msg);\n-        }\n-        else {\n-            this.state = null;\n-        }\n-    }\n-\n-    public Status(RaftError raftError, String fmt, Object... args) {\n-        this.state = new State(raftError.getNumber(), String.format(fmt, args));\n-    }\n+    String msg;\n \n-    public Status(int code, String fmt, Object... args) {\n-        this.state = new State(code, String.format(fmt, args));\n-    }\n-\n-    public Status(int code, String errorMsg) {\n-        this.state = new State(code, errorMsg);\n+    State(int code, String msg) {\n+      super();\n+      this.code = code;\n+      this.msg = msg;\n     }\n \n     @Override\n     public int hashCode() {\n-        final int prime = 31;\n-        int result = 1;\n-        result = prime * result + (this.state == null ? 0 : this.state.hashCode());\n-        return result;\n+      final int prime = 31;\n+      int result = 1;\n+      result = prime * result + this.code;\n+      result = prime * result + (this.msg == null ? 0 : this.msg.hashCode());\n+      return result;\n     }\n \n     @Override\n     public boolean equals(Object obj) {\n-        if (this == obj) {\n-            return true;\n-        }\n-        if (obj == null) {\n-            return false;\n-        }\n-        if (getClass() != obj.getClass()) {\n-            return false;\n-        }\n-        Status other = (Status) obj;\n-        if (this.state == null) {\n-            return other.state == null;\n-        }\n-        else {\n-            return this.state.equals(other.state);\n-        }\n-    }\n-\n-    /**\n-     * Reset status to be OK state.\n-     */\n-    public void reset() {\n-        this.state = null;\n-    }\n-\n-    /**\n-     * Returns true when status is in OK state.\n-     */\n-    public boolean isOk() {\n-        return this.state == null || this.state.code == 0;\n-    }\n-\n-    /**\n-     * Set error code.\n-     */\n-    public void setCode(int code) {\n-        if (this.state == null) {\n-            this.state = new State(code, null);\n-        }\n-        else {\n-            this.state.code = code;\n-        }\n-    }\n-\n-    /**\n-     * Get error code.\n-     */\n-    public int getCode() {\n-        return this.state == null ? 0 : this.state.code;\n-    }\n-\n-    /**\n-     * Get raft error from error code.\n-     */\n-    public RaftError getRaftError() {\n-        return this.state == null ? RaftError.SUCCESS : RaftError.forNumber(this.state.code);\n-    }\n-\n-    /**\n-     * Set error msg\n-     */\n-    public void setErrorMsg(String errMsg) {\n-        if (this.state == null) {\n-            this.state = new State(0, errMsg);\n-        }\n-        else {\n-            this.state.msg = errMsg;\n-        }\n-    }\n-\n-    /**\n-     * Set error code and error msg.\n-     */\n-    public void setError(int code, String fmt, Object... args) {\n-        this.state = new State(code, String.format(String.valueOf(fmt), args));\n-    }\n-\n-    /**\n-     * Set raft error and error msg.\n-     */\n-    public void setError(RaftError error, String fmt, Object... args) {\n-        this.state = new State(error.getNumber(), String.format(String.valueOf(fmt), args));\n-    }\n-\n-    @Override\n-    public String toString() {\n-        if (isOk()) {\n-            return \"Status[OK]\";\n-        }\n-        else {\n-            return \"Status[\" + RaftError.describeCode(this.state.code) + \"<\" + this.state.code + \">: \" + this.state.msg\n-                + \"]\";\n-        }\n-    }\n-\n-    @Override\n-    public Status copy() {\n-        return new Status(this.getCode(), this.getErrorMsg());\n-    }\n-\n-    /**\n-     * Get the error msg.\n-     */\n-    public String getErrorMsg() {\n-        return this.state == null ? null : this.state.msg;\n-    }\n+      if (this == obj) {\n+        return true;\n+      }\n+      if (obj == null) {\n+        return false;\n+      }\n+      if (getClass() != obj.getClass()) {\n+        return false;\n+      }\n+      State other = (State) obj;\n+      if (this.code != other.code) {\n+        return false;\n+      }\n+      if (this.msg == null) {\n+        return other.msg == null;\n+      } else {\n+        return this.msg.equals(other.msg);\n+      }\n+    }\n+  }\n+\n+  private State state;\n+\n+  public Status() {\n+    this.state = null;\n+  }\n+\n+  /**\n+   * Creates a OK status instance.\n+   */\n+  public static Status OK() {\n+    return new Status();\n+  }\n+\n+  public Status(Status s) {\n+    if (s.state != null) {\n+      this.state = new State(s.state.code, s.state.msg);\n+    } else {\n+      this.state = null;\n+    }\n+  }\n+\n+  public Status(RaftError raftError, String fmt, Object... args) {\n+    this.state = new State(raftError.getNumber(), String.format(fmt, args));\n+  }\n+\n+  public Status(int code, String fmt, Object... args) {\n+    this.state = new State(code, String.format(fmt, args));\n+  }\n+\n+  public Status(int code, String errorMsg) {\n+    this.state = new State(code, errorMsg);\n+  }\n+\n+  @Override\n+  public int hashCode() {\n+    final int prime = 31;\n+    int result = 1;\n+    result = prime * result + (this.state == null ? 0 : this.state.hashCode());\n+    return result;\n+  }\n+\n+  @Override\n+  public boolean equals(Object obj) {\n+    if (this == obj) {\n+      return true;\n+    }\n+    if (obj == null) {\n+      return false;\n+    }\n+    if (getClass() != obj.getClass()) {\n+      return false;\n+    }\n+    Status other = (Status) obj;\n+    if (this.state == null) {\n+      return other.state == null;\n+    } else {\n+      return this.state.equals(other.state);\n+    }\n+  }\n+\n+  /**\n+   * Reset status to be OK state.\n+   */\n+  public void reset() {\n+    this.state = null;\n+  }\n+\n+  /**\n+   * Returns true when status is in OK state.\n+   */\n+  public boolean isOk() {\n+    return this.state == null || this.state.code == 0;\n+  }\n+\n+  /**\n+   * Set error code.\n+   */\n+  public void setCode(int code) {\n+    if (this.state == null) {\n+      this.state = new State(code, null);\n+    } else {\n+      this.state.code = code;\n+    }\n+  }\n+\n+  /**\n+   * Get error code.\n+   */\n+  public int getCode() {\n+    return this.state == null ? 0 : this.state.code;\n+  }\n+\n+  /**\n+   * Get raft error from error code.\n+   */\n+  public RaftError getRaftError() {\n+    return this.state == null ? RaftError.SUCCESS : RaftError.forNumber(this.state.code);\n+  }\n+\n+  /**\n+   * Set error msg\n+   */\n+  public void setErrorMsg(String errMsg) {\n+    if (this.state == null) {\n+      this.state = new State(0, errMsg);\n+    } else {\n+      this.state.msg = errMsg;\n+    }\n+  }\n+\n+  /**\n+   * Set error code and error msg.\n+   */\n+  public void setError(int code, String fmt, Object... args) {\n+    this.state = new State(code, String.format(String.valueOf(fmt), args));\n+  }\n+\n+  /**\n+   * Set raft error and error msg.\n+   */\n+  public void setError(RaftError error, String fmt, Object... args) {\n+    this.state = new State(error.getNumber(), String.format(String.valueOf(fmt), args));\n+  }\n+\n+  @Override\n+  public String toString() {\n+    if (isOk()) {\n+      return \"Status[OK]\";\n+    } else {\n+      return \"Status[\" + RaftError.describeCode(this.state.code) + \"<\" + this.state.code + \">: \" + this.state.msg\n+          + \"]\";\n+    }\n+  }\n+\n+  @Override\n+  public Status copy() {\n+    return new Status(this.getCode(), this.getErrorMsg());\n+  }\n+\n+  /**\n+   * Get the error msg.\n+   */\n+  public String getErrorMsg() {\n+    return this.state == null ? null : this.state.msg;\n+  }\n }\n",
+            "diff_size": 250
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "37",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "103",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "112",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "126",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "131",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "141",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "152",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "248",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "258",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/22/Status.java\nindex 017c6f42791..f34e13793ce 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/22/Status.java\n@@ -32,34 +32,46 @@ import org.apache.ignite.raft.jraft.util.Copiable;\n //\n //Since failed status needs to allocate memory, you should be careful when\n //failed status is frequent.\n+\n+\n public class Status implements Copiable<Status> {\n \n     /**\n      * Status internal state.\n      */\n+\n     private static class State {\n         /** error code */\n+\n         int code;\n         /** error msg */\n+\n+\n         String msg;\n \n+\n         State(int code, String msg) {\n             super();\n+\n             this.code = code;\n             this.msg = msg;\n         }\n \n-        @Override\n-        public int hashCode() {\n+\n+        @Override public int hashCode() {\n             final int prime = 31;\n+\n             int result = 1;\n+\n             result = prime * result + this.code;\n+\n             result = prime * result + (this.msg == null ? 0 : this.msg.hashCode());\n+\n             return result;\n         }\n \n-        @Override\n-        public boolean equals(Object obj) {\n+\n+        @Override public boolean equals(Object obj) {\n             if (this == obj) {\n                 return true;\n             }\n@@ -69,7 +81,9 @@ public class Status implements Copiable<Status> {\n             if (getClass() != obj.getClass()) {\n                 return false;\n             }\n-            State other = (State) obj;\n+\n+            State other = (State)obj;\n+\n             if (this.code != other.code) {\n                 return false;\n             }\n@@ -82,8 +96,10 @@ public class Status implements Copiable<Status> {\n         }\n     }\n \n+\n     private State state;\n \n+\n     public Status() {\n         this.state = null;\n     }\n@@ -91,6 +107,8 @@ public class Status implements Copiable<Status> {\n     /**\n      * Creates a OK status instance.\n      */\n+\n+\n     public static Status OK() {\n         return new Status();\n     }\n@@ -104,28 +122,34 @@ public class Status implements Copiable<Status> {\n         }\n     }\n \n+\n     public Status(RaftError raftError, String fmt, Object... args) {\n         this.state = new State(raftError.getNumber(), String.format(fmt, args));\n     }\n \n+\n     public Status(int code, String fmt, Object... args) {\n         this.state = new State(code, String.format(fmt, args));\n     }\n \n+\n     public Status(int code, String errorMsg) {\n         this.state = new State(code, errorMsg);\n     }\n \n-    @Override\n-    public int hashCode() {\n+\n+    @Override public int hashCode() {\n         final int prime = 31;\n+\n         int result = 1;\n+\n         result = prime * result + (this.state == null ? 0 : this.state.hashCode());\n+\n         return result;\n     }\n \n-    @Override\n-    public boolean equals(Object obj) {\n+\n+    @Override public boolean equals(Object obj) {\n         if (this == obj) {\n             return true;\n         }\n@@ -135,7 +159,9 @@ public class Status implements Copiable<Status> {\n         if (getClass() != obj.getClass()) {\n             return false;\n         }\n-        Status other = (Status) obj;\n+\n+        Status other = (Status)obj;\n+\n         if (this.state == null) {\n             return other.state == null;\n         }\n@@ -147,6 +173,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Reset status to be OK state.\n      */\n+\n     public void reset() {\n         this.state = null;\n     }\n@@ -154,6 +181,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Returns true when status is in OK state.\n      */\n+\n     public boolean isOk() {\n         return this.state == null || this.state.code == 0;\n     }\n@@ -161,6 +189,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Set error code.\n      */\n+\n     public void setCode(int code) {\n         if (this.state == null) {\n             this.state = new State(code, null);\n@@ -173,6 +202,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Get error code.\n      */\n+\n     public int getCode() {\n         return this.state == null ? 0 : this.state.code;\n     }\n@@ -180,6 +210,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Get raft error from error code.\n      */\n+\n     public RaftError getRaftError() {\n         return this.state == null ? RaftError.SUCCESS : RaftError.forNumber(this.state.code);\n     }\n@@ -187,6 +218,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Set error msg\n      */\n+\n     public void setErrorMsg(String errMsg) {\n         if (this.state == null) {\n             this.state = new State(0, errMsg);\n@@ -199,6 +231,7 @@ public class Status implements Copiable<Status> {\n     /**\n      * Set error code and error msg.\n      */\n+\n     public void setError(int code, String fmt, Object... args) {\n         this.state = new State(code, String.format(String.valueOf(fmt), args));\n     }\n@@ -206,30 +239,31 @@ public class Status implements Copiable<Status> {\n     /**\n      * Set raft error and error msg.\n      */\n+\n     public void setError(RaftError error, String fmt, Object... args) {\n         this.state = new State(error.getNumber(), String.format(String.valueOf(fmt), args));\n     }\n \n-    @Override\n-    public String toString() {\n+\n+    @Override public String toString() {\n         if (isOk()) {\n             return \"Status[OK]\";\n         }\n         else {\n-            return \"Status[\" + RaftError.describeCode(this.state.code) + \"<\" + this.state.code + \">: \" + this.state.msg\n-                + \"]\";\n+            return \"Status[\" + RaftError.describeCode(this.state.code) + \"<\" + this.state.code + \">: \" + this.state.msg + \"]\";\n         }\n     }\n \n-    @Override\n-    public Status copy() {\n+\n+    @Override public Status copy() {\n         return new Status(this.getCode(), this.getErrorMsg());\n     }\n \n     /**\n      * Get the error msg.\n      */\n+\n     public String getErrorMsg() {\n         return this.state == null ? null : this.state.msg;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 52
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "44",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/22/Status.java\nindex 017c6f42791..83aeb132028 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/22/Status.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/22/Status.java\n@@ -41,6 +41,7 @@ public class Status implements Copiable<Status> {\n         /** error code */\n         int code;\n         /** error msg */\n+\n         String msg;\n \n         State(int code, String msg) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

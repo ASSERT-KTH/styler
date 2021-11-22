@@ -1,0 +1,82 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "777",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.engine.impl.bpmn.behavior;\n\nimport org.activiti.engine.ActivitiException;\nimport org.activiti.engine.DynamicBpmnConstants;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/777/ServiceTaskExpressionActivityBehavior.java\nindex 3aa0c9fddfc..20c153dd976 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/777/ServiceTaskExpressionActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.engine.ActivitiException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/777/ServiceTaskExpressionActivityBehavior.java\nindex 3aa0c9fddfc..145fbce10f3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/777/ServiceTaskExpressionActivityBehavior.java\n@@ -31,69 +31,63 @@ import com.fasterxml.jackson.databind.node.ObjectNode;\n \n /**\n  * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result of the expression as a variable on the execution.\n- *\n-\n-\n-\n-\n-\n  */\n public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {\n \n-  private static final long serialVersionUID = 1L;\n-\n-  protected String serviceTaskId;\n-  protected Expression expression;\n-  protected Expression skipExpression;\n-  protected String resultVariable;\n+    private static final long serialVersionUID = 1L;\n \n-  public ServiceTaskExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, String resultVariable) {\n-    this.serviceTaskId = serviceTaskId;\n-    this.expression = expression;\n-    this.skipExpression = skipExpression;\n-    this.resultVariable = resultVariable;\n-  }\n+    protected String serviceTaskId;\n+    protected Expression expression;\n+    protected Expression skipExpression;\n+    protected String resultVariable;\n \n-  public void execute(DelegateExecution execution) {\n-    Object value = null;\n-    try {\n-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);\n-      if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {\n+    public ServiceTaskExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, String resultVariable) {\n+        this.serviceTaskId = serviceTaskId;\n+        this.expression = expression;\n+        this.skipExpression = skipExpression;\n+        this.resultVariable = resultVariable;\n+    }\n \n-        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {\n-          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());\n-          if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)) {\n-            String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION).asText();\n-            if (StringUtils.isNotEmpty(overrideExpression) && !overrideExpression.equals(expression.getExpressionText())) {\n-              expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideExpression);\n+    public void execute(DelegateExecution execution) {\n+        Object value = null;\n+        try {\n+            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);\n+            if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {\n+\n+                if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {\n+                    ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());\n+                    if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)) {\n+                        String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION).asText();\n+                        if (StringUtils.isNotEmpty(overrideExpression) && !overrideExpression.equals(expression.getExpressionText())) {\n+                            expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(overrideExpression);\n+                        }\n+                    }\n+                }\n+\n+                value = expression.getValue(execution);\n+                if (resultVariable != null) {\n+                    execution.setVariable(resultVariable, value);\n+                }\n             }\n-          }\n-        }\n-\n-        value = expression.getValue(execution);\n-        if (resultVariable != null) {\n-          execution.setVariable(resultVariable, value);\n-        }\n-      }\n \n-      leave(execution);\n-    } catch (Exception exc) {\n+            leave(execution);\n+        } catch (Exception exc) {\n+\n+            Throwable cause = exc;\n+            BpmnError error = null;\n+            while (cause != null) {\n+                if (cause instanceof BpmnError) {\n+                    error = (BpmnError) cause;\n+                    break;\n+                }\n+                cause = cause.getCause();\n+            }\n \n-      Throwable cause = exc;\n-      BpmnError error = null;\n-      while (cause != null) {\n-        if (cause instanceof BpmnError) {\n-          error = (BpmnError) cause;\n-          break;\n+            if (error != null) {\n+                ErrorPropagation.propagateError(error, execution);\n+            } else {\n+                throw new ActivitiException(\"Could not execute service task expression\", exc);\n+            }\n         }\n-        cause = cause.getCause();\n-      }\n-\n-      if (error != null) {\n-        ErrorPropagation.propagateError(error, execution);\n-      } else {\n-        throw new ActivitiException(\"Could not execute service task expression\", exc);\n-      }\n     }\n-  }\n }\n",
+            "diff_size": 79
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "42",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/777/ServiceTaskExpressionActivityBehavior.java\nindex 3aa0c9fddfc..e3301d3a8d2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/777/ServiceTaskExpressionActivityBehavior.java\n@@ -26,7 +26,6 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;\n import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;\n import org.activiti.engine.impl.context.Context;\n import org.apache.commons.lang3.StringUtils;\n-\n import com.fasterxml.jackson.databind.node.ObjectNode;\n \n /**\n@@ -38,16 +37,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;\n \n \n  */\n+\n+\n public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {\n \n   private static final long serialVersionUID = 1L;\n-\n   protected String serviceTaskId;\n   protected Expression expression;\n   protected Expression skipExpression;\n   protected String resultVariable;\n \n-  public ServiceTaskExpressionActivityBehavior(String serviceTaskId, Expression expression, Expression skipExpression, String resultVariable) {\n+  public ServiceTaskExpressionActivityBehavior(String serviceTaskId,\n+                                               Expression expression,\n+                                               Expression skipExpression, String resultVariable) {\n     this.serviceTaskId = serviceTaskId;\n     this.expression = expression;\n     this.skipExpression = skipExpression;\n@@ -59,9 +61,9 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior\n     try {\n       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);\n       if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {\n-\n         if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {\n-          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());\n+          ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId,\n+                                                                                      execution.getProcessDefinitionId());\n           if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION)) {\n             String overrideExpression = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_EXPRESSION).asText();\n             if (StringUtils.isNotEmpty(overrideExpression) && !overrideExpression.equals(expression.getExpressionText())) {\n@@ -69,16 +71,13 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior\n             }\n           }\n         }\n-\n         value = expression.getValue(execution);\n         if (resultVariable != null) {\n           execution.setVariable(resultVariable, value);\n         }\n       }\n-\n       leave(execution);\n     } catch (Exception exc) {\n-\n       Throwable cause = exc;\n       BpmnError error = null;\n       while (cause != null) {\n@@ -88,12 +87,13 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior\n         }\n         cause = cause.getCause();\n       }\n-\n       if (error != null) {\n         ErrorPropagation.propagateError(error, execution);\n       } else {\n-        throw new ActivitiException(\"Could not execute service task expression\", exc);\n+        throw new ActivitiException(\"Could not execute service task expression\",\n+                                    exc);\n       }\n     }\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/777/ServiceTaskExpressionActivityBehavior.java\nindex 3aa0c9fddfc..20c153dd976 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/777/ServiceTaskExpressionActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.engine.ActivitiException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/777/ServiceTaskExpressionActivityBehavior.java\nindex 3aa0c9fddfc..20c153dd976 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/777/ServiceTaskExpressionActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/777/ServiceTaskExpressionActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import org.activiti.engine.ActivitiException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

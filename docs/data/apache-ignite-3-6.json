@@ -1,0 +1,199 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "6",
+    "information": {
+        "errors": [
+            {
+                "line": "185",
+                "column": "9",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "        private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n        /** */\n        private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n\n        /** */\n        final List<ClusterService> members;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/6/ITScaleCubeNetworkMessagingTest.java\nindex c241dcfc207..85f7859e152 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/6/ITScaleCubeNetworkMessagingTest.java\n@@ -182,6 +182,7 @@ class ITScaleCubeNetworkMessagingTest {\n         /** */\n         private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n         /** */\n+\n         private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n         /** */\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/6/ITScaleCubeNetworkMessagingTest.java\nindex c241dcfc207..7caeceeb2c7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/6/ITScaleCubeNetworkMessagingTest.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.ignite.network.scalecube;\n \n import io.scalecube.cluster.ClusterImpl;\n@@ -46,210 +47,238 @@ import static org.hamcrest.Matchers.is;\n import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n-/** */\n+/**\n+ *\n+ */\n class ITScaleCubeNetworkMessagingTest {\n-    private Cluster testCluster;\n-\n-    /** */\n-    @AfterEach\n-    public void afterEach() {\n-        testCluster.shutdown();\n+  private Cluster testCluster;\n+\n+  /**\n+   *\n+   */\n+  @AfterEach\n+  public void afterEach() {\n+    testCluster.shutdown();\n+  }\n+\n+  /**\n+   * Test sending and receiving messages.\n+   */\n+  @Test\n+  public void messageWasSentToAllMembersSuccessfully() throws Exception {\n+    Map<String, NetworkMessage> messageStorage = new ConcurrentHashMap<>();\n+\n+    CountDownLatch messageReceivedLatch = new CountDownLatch(3);\n+\n+    testCluster = new Cluster(3);\n+\n+    for (ClusterService member : testCluster.members) {\n+      member.messagingService().addMessageHandler(\n+          (message, sender, correlationId) -> {\n+            messageStorage.put(member.localConfiguration().getName(), message);\n+            messageReceivedLatch.countDown();\n+          }\n+      );\n     }\n \n-    /**\n-     * Test sending and receiving messages.\n-     */\n-    @Test\n-    public void messageWasSentToAllMembersSuccessfully() throws Exception {\n-        Map<String, NetworkMessage> messageStorage = new ConcurrentHashMap<>();\n+    testCluster.startAwait();\n+\n+    TestMessage testMessage = new TestMessage(\"Message from Alice\", Collections.emptyMap());\n \n-        CountDownLatch messageReceivedLatch = new CountDownLatch(3);\n+    ClusterService alice = testCluster.members.get(0);\n \n-        testCluster = new Cluster(3);\n+    for (ClusterNode member : alice.topologyService().allMembers()) {\n+      alice.messagingService().weakSend(member, testMessage);\n+    }\n \n-        for (ClusterService member : testCluster.members) {\n-            member.messagingService().addMessageHandler(\n-                (message, sender, correlationId) -> {\n-                    messageStorage.put(member.localConfiguration().getName(), message);\n-                    messageReceivedLatch.countDown();\n-                }\n-            );\n+    boolean messagesReceived = messageReceivedLatch.await(3, TimeUnit.SECONDS);\n+    assertTrue(messagesReceived);\n+\n+    testCluster.members.stream()\n+        .map(member -> member.localConfiguration().getName())\n+        .map(messageStorage::get)\n+        .forEach(msg -> assertThat(msg, is(testMessage)));\n+  }\n+\n+  /**\n+   * Test graceful shutdown.\n+   *\n+   * @throws Exception If failed.\n+   */\n+  @Test\n+  public void testShutdown() throws Exception {\n+    testShutdown0(false);\n+  }\n+\n+  /**\n+   * Test forceful shutdown.\n+   *\n+   * @throws Exception If failed.\n+   */\n+  @Test\n+  public void testForcefulShutdown() throws Exception {\n+    testShutdown0(true);\n+  }\n+\n+  /**\n+   * Test shutdown.\n+   *\n+   * @param forceful Whether shutdown should be forceful.\n+   * @throws Exception If failed.\n+   */\n+  private void testShutdown0(boolean forceful) throws Exception {\n+    testCluster = new Cluster(2);\n+    testCluster.startAwait();\n+\n+    ClusterService alice = testCluster.members.get(0);\n+    ClusterService bob = testCluster.members.get(1);\n+    String aliceName = alice.localConfiguration().getName();\n+\n+    CountDownLatch aliceShutdownLatch = new CountDownLatch(1);\n+\n+    bob.topologyService().addEventHandler(new TopologyEventHandler() {\n+      /** {@inheritDoc} */\n+      @Override\n+      public void onAppeared(ClusterNode member) {\n+        // No-op.\n+      }\n+\n+      /** {@inheritDoc} */\n+      @Override\n+      public void onDisappeared(ClusterNode member) {\n+        if (aliceName.equals(member.name())) {\n+          aliceShutdownLatch.countDown();\n         }\n+      }\n+    });\n \n-        testCluster.startAwait();\n+    if (forceful) {\n+      stopForcefully(alice);\n+    } else {\n+      alice.shutdown();\n+    }\n \n-        TestMessage testMessage = new TestMessage(\"Message from Alice\", Collections.emptyMap());\n+    boolean aliceShutdownReceived = aliceShutdownLatch.await(forceful ? 10 : 3, TimeUnit.SECONDS);\n+    assertTrue(aliceShutdownReceived);\n \n-        ClusterService alice = testCluster.members.get(0);\n+    Collection<ClusterNode> networkMembers = bob.topologyService().allMembers();\n \n-        for (ClusterNode member : alice.topologyService().allMembers()) {\n-            alice.messagingService().weakSend(member, testMessage);\n-        }\n+    assertEquals(1, networkMembers.size());\n+  }\n \n-        boolean messagesReceived = messageReceivedLatch.await(3, TimeUnit.SECONDS);\n-        assertTrue(messagesReceived);\n+  /**\n+   * Find cluster's transport and force it to stop.\n+   *\n+   * @param cluster Cluster to be shutdown.\n+   * @throws Exception If failed to stop.\n+   */\n+  private static void stopForcefully(ClusterService cluster) throws Exception {\n+    Field clusterImplField = cluster.getClass().getDeclaredField(\"val$cluster\");\n+    clusterImplField.setAccessible(true);\n \n-        testCluster.members.stream()\n-            .map(member -> member.localConfiguration().getName())\n-            .map(messageStorage::get)\n-            .forEach(msg -> assertThat(msg, is(testMessage)));\n-    }\n+    ClusterImpl clusterImpl = (ClusterImpl) clusterImplField.get(cluster);\n+    Field transportField = clusterImpl.getClass().getDeclaredField(\"transport\");\n+    transportField.setAccessible(true);\n+\n+    Transport transport = (Transport) transportField.get(clusterImpl);\n+    Method stop = transport.getClass().getDeclaredMethod(\"stop\");\n+    stop.setAccessible(true);\n+\n+    Mono<?> invoke = (Mono<?>) stop.invoke(transport);\n+    invoke.block();\n+  }\n \n+  /**\n+   * Wrapper for cluster.\n+   */\n+  private static final class Cluster {\n     /**\n-     * Test graceful shutdown.\n-     * @throws Exception If failed.\n+     *\n      */\n-    @Test\n-    public void testShutdown() throws Exception {\n-        testShutdown0(false);\n-    }\n+    private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n \n     /**\n-     * Test forceful shutdown.\n-     * @throws Exception If failed.\n+     *\n      */\n-    @Test\n-    public void testForcefulShutdown() throws Exception {\n-        testShutdown0(true);\n-    }\n+    private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n     /**\n-     * Test shutdown.\n-     * @param forceful Whether shutdown should be forceful.\n-     * @throws Exception If failed.\n+     *\n      */\n-    private void testShutdown0(boolean forceful) throws Exception {\n-        testCluster = new Cluster(2);\n-        testCluster.startAwait();\n-\n-        ClusterService alice = testCluster.members.get(0);\n-        ClusterService bob = testCluster.members.get(1);\n-        String aliceName = alice.localConfiguration().getName();\n-\n-        CountDownLatch aliceShutdownLatch = new CountDownLatch(1);\n-\n-        bob.topologyService().addEventHandler(new TopologyEventHandler() {\n-            /** {@inheritDoc} */\n-            @Override public void onAppeared(ClusterNode member) {\n-                // No-op.\n-            }\n-\n-            /** {@inheritDoc} */\n-            @Override public void onDisappeared(ClusterNode member) {\n-                if (aliceName.equals(member.name()))\n-                    aliceShutdownLatch.countDown();\n-            }\n-        });\n-\n-        if (forceful)\n-            stopForcefully(alice);\n-        else\n-            alice.shutdown();\n-\n-        boolean aliceShutdownReceived = aliceShutdownLatch.await(forceful ? 10 : 3, TimeUnit.SECONDS);\n-        assertTrue(aliceShutdownReceived);\n+    final List<ClusterService> members;\n \n-        Collection<ClusterNode> networkMembers = bob.topologyService().allMembers();\n-\n-        assertEquals(1, networkMembers.size());\n-    }\n+    /**\n+     *\n+     */\n+    private final CountDownLatch startupLatch;\n \n     /**\n-     * Find cluster's transport and force it to stop.\n-     * @param cluster Cluster to be shutdown.\n-     * @throws Exception If failed to stop.\n+     * Constructor.\n      */\n-    private static void stopForcefully(ClusterService cluster) throws Exception {\n-        Field clusterImplField = cluster.getClass().getDeclaredField(\"val$cluster\");\n-        clusterImplField.setAccessible(true);\n+    Cluster(int numOfNodes) {\n+      startupLatch = new CountDownLatch(numOfNodes - 1);\n \n-        ClusterImpl clusterImpl = (ClusterImpl) clusterImplField.get(cluster);\n-        Field transportField = clusterImpl.getClass().getDeclaredField(\"transport\");\n-        transportField.setAccessible(true);\n+      int initialPort = 3344;\n \n-        Transport transport = (Transport) transportField.get(clusterImpl);\n-        Method stop = transport.getClass().getDeclaredMethod(\"stop\");\n-        stop.setAccessible(true);\n+      List<String> addresses = IntStream.range(0, numOfNodes)\n+          .mapToObj(i -> String.format(\"localhost:%d\", initialPort + i))\n+          .collect(Collectors.toUnmodifiableList());\n \n-        Mono<?> invoke = (Mono<?>) stop.invoke(transport);\n-        invoke.block();\n+      members = IntStream.range(0, numOfNodes)\n+          .mapToObj(i -> startNode(\"Node #\" + i, initialPort + i, addresses, i == 0))\n+          .collect(Collectors.toUnmodifiableList());\n     }\n \n     /**\n-     * Wrapper for cluster.\n+     * Start cluster node.\n+     *\n+     * @param name      Node name.\n+     * @param port      Node port.\n+     * @param addresses Addresses of other nodes.\n+     * @param initial   Whether this node is the first one.\n+     * @return Started cluster node.\n      */\n-    private static final class Cluster {\n-        /** */\n-        private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n-        /** */\n-        private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n-\n-        /** */\n-        final List<ClusterService> members;\n-\n-        /** */\n-        private final CountDownLatch startupLatch;\n-\n-        /** Constructor. */\n-        Cluster(int numOfNodes) {\n-            startupLatch = new CountDownLatch(numOfNodes - 1);\n-\n-            int initialPort = 3344;\n-\n-            List<String> addresses = IntStream.range(0, numOfNodes)\n-                .mapToObj(i -> String.format(\"localhost:%d\", initialPort + i))\n-                .collect(Collectors.toUnmodifiableList());\n-\n-            members = IntStream.range(0, numOfNodes)\n-                .mapToObj(i -> startNode(\"Node #\" + i, initialPort + i, addresses, i == 0))\n-                .collect(Collectors.toUnmodifiableList());\n-        }\n+    private ClusterService startNode(String name, int port, List<String> addresses, boolean initial) {\n+      var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n+\n+      ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n+\n+      if (initial) {\n+        clusterService.topologyService().addEventHandler(new TopologyEventHandler() {\n+          /** {@inheritDoc} */\n+          @Override\n+          public void onAppeared(ClusterNode member) {\n+            startupLatch.countDown();\n+          }\n+\n+          /** {@inheritDoc} */\n+          @Override\n+          public void onDisappeared(ClusterNode member) {\n+          }\n+        });\n+      }\n \n-        /**\n-         * Start cluster node.\n-         *\n-         * @param name Node name.\n-         * @param port Node port.\n-         * @param addresses Addresses of other nodes.\n-         * @param initial Whether this node is the first one.\n-         * @return Started cluster node.\n-         */\n-        private ClusterService startNode(String name, int port, List<String> addresses, boolean initial) {\n-            var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n-\n-            ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n-\n-            if (initial)\n-                clusterService.topologyService().addEventHandler(new TopologyEventHandler() {\n-                    /** {@inheritDoc} */\n-                    @Override public void onAppeared(ClusterNode member) {\n-                        startupLatch.countDown();\n-                    }\n-\n-                    /** {@inheritDoc} */\n-                    @Override public void onDisappeared(ClusterNode member) {\n-                    }\n-                });\n-\n-            return clusterService;\n-        }\n+      return clusterService;\n+    }\n \n-        /**\n-         * Start and wait for cluster to come up.\n-         * @throws InterruptedException If failed.\n-         */\n-        void startAwait() throws InterruptedException {\n-            members.forEach(ClusterService::start);\n+    /**\n+     * Start and wait for cluster to come up.\n+     *\n+     * @throws InterruptedException If failed.\n+     */\n+    void startAwait() throws InterruptedException {\n+      members.forEach(ClusterService::start);\n \n-            if (!startupLatch.await(3, TimeUnit.SECONDS))\n-                throw new AssertionError();\n-        }\n+      if (!startupLatch.await(3, TimeUnit.SECONDS)) {\n+        throw new AssertionError();\n+      }\n+    }\n \n-        /**\n-         * Shutdown cluster.\n-         */\n-        void shutdown() {\n-            members.forEach(ClusterService::shutdown);\n-        }\n+    /**\n+     * Shutdown cluster.\n+     */\n+    void shutdown() {\n+      members.forEach(ClusterService::shutdown);\n     }\n+  }\n }\n",
+            "diff_size": 279
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/6/ITScaleCubeNetworkMessagingTest.java\nindex c241dcfc207..13323bd7701 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/6/ITScaleCubeNetworkMessagingTest.java\n@@ -68,8 +68,7 @@ class ITScaleCubeNetworkMessagingTest {\n         testCluster = new Cluster(3);\n \n         for (ClusterService member : testCluster.members) {\n-            member.messagingService().addMessageHandler(\n-                (message, sender, correlationId) -> {\n+            member.messagingService().addMessageHandler((message, sender, correlationId) -> {\n                     messageStorage.put(member.localConfiguration().getName(), message);\n                     messageReceivedLatch.countDown();\n                 }\n@@ -171,7 +170,7 @@ class ITScaleCubeNetworkMessagingTest {\n         Method stop = transport.getClass().getDeclaredMethod(\"stop\");\n         stop.setAccessible(true);\n \n-        Mono<?> invoke = (Mono<?>) stop.invoke(transport);\n+        Mono<?> invoke = (Mono<?>)stop.invoke(transport);\n         invoke.block();\n     }\n \n@@ -181,7 +180,8 @@ class ITScaleCubeNetworkMessagingTest {\n     private static final class Cluster {\n         /** */\n         private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n-        /** */\n+\n+/** */\n         private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n         /** */\n@@ -252,4 +252,4 @@ class ITScaleCubeNetworkMessagingTest {\n             members.forEach(ClusterService::shutdown);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "58",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "116",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "127",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "146",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "There is more than 1 empty line after this line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "151",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "178",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "205",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "212",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "217",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "222",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "227",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "250",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "261",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "There is more than 1 empty line after this line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "266",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "280",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "292",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/6/ITScaleCubeNetworkMessagingTest.java\nindex c241dcfc207..a94998e28c9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/6/ITScaleCubeNetworkMessagingTest.java\n@@ -47,20 +47,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n /** */\n+\n class ITScaleCubeNetworkMessagingTest {\n+\n     private Cluster testCluster;\n \n     /** */\n-    @AfterEach\n-    public void afterEach() {\n+\n+\n+    @AfterEach public void afterEach() {\n         testCluster.shutdown();\n     }\n \n     /**\n      * Test sending and receiving messages.\n      */\n-    @Test\n-    public void messageWasSentToAllMembersSuccessfully() throws Exception {\n+\n+\n+    @Test public void messageWasSentToAllMembersSuccessfully() throws Exception {\n         Map<String, NetworkMessage> messageStorage = new ConcurrentHashMap<>();\n \n         CountDownLatch messageReceivedLatch = new CountDownLatch(3);\n@@ -68,12 +72,11 @@ class ITScaleCubeNetworkMessagingTest {\n         testCluster = new Cluster(3);\n \n         for (ClusterService member : testCluster.members) {\n-            member.messagingService().addMessageHandler(\n-                (message, sender, correlationId) -> {\n-                    messageStorage.put(member.localConfiguration().getName(), message);\n-                    messageReceivedLatch.countDown();\n-                }\n-            );\n+            member.messagingService().addMessageHandler((message, sender, correlationId) -> {\n+        messageStorage.put(member.localConfiguration().getName(), message);\n+\n+        messageReceivedLatch.countDown();\n+    });\n         }\n \n         testCluster.startAwait();\n@@ -87,20 +90,20 @@ class ITScaleCubeNetworkMessagingTest {\n         }\n \n         boolean messagesReceived = messageReceivedLatch.await(3, TimeUnit.SECONDS);\n+\n         assertTrue(messagesReceived);\n \n-        testCluster.members.stream()\n-            .map(member -> member.localConfiguration().getName())\n-            .map(messageStorage::get)\n-            .forEach(msg -> assertThat(msg, is(testMessage)));\n+        testCluster.members.stream().map(member -> member.localConfiguration().getName())\n+                                    .map(messageStorage::get).forEach(msg -> assertThat(msg, is(testMessage)));\n     }\n \n     /**\n      * Test graceful shutdown.\n      * @throws Exception If failed.\n      */\n-    @Test\n-    public void testShutdown() throws Exception {\n+\n+\n+    @Test public void testShutdown() throws Exception {\n         testShutdown0(false);\n     }\n \n@@ -108,8 +111,9 @@ class ITScaleCubeNetworkMessagingTest {\n      * Test forceful shutdown.\n      * @throws Exception If failed.\n      */\n-    @Test\n-    public void testForcefulShutdown() throws Exception {\n+\n+\n+    @Test public void testForcefulShutdown() throws Exception {\n         testShutdown0(true);\n     }\n \n@@ -118,23 +122,32 @@ class ITScaleCubeNetworkMessagingTest {\n      * @param forceful Whether shutdown should be forceful.\n      * @throws Exception If failed.\n      */\n+\n+\n     private void testShutdown0(boolean forceful) throws Exception {\n         testCluster = new Cluster(2);\n+\n         testCluster.startAwait();\n \n         ClusterService alice = testCluster.members.get(0);\n+\n         ClusterService bob = testCluster.members.get(1);\n+\n         String aliceName = alice.localConfiguration().getName();\n \n         CountDownLatch aliceShutdownLatch = new CountDownLatch(1);\n \n         bob.topologyService().addEventHandler(new TopologyEventHandler() {\n             /** {@inheritDoc} */\n+\n             @Override public void onAppeared(ClusterNode member) {\n                 // No-op.\n+\n             }\n \n             /** {@inheritDoc} */\n+\n+\n             @Override public void onDisappeared(ClusterNode member) {\n                 if (aliceName.equals(member.name()))\n                     aliceShutdownLatch.countDown();\n@@ -147,6 +160,7 @@ class ITScaleCubeNetworkMessagingTest {\n             alice.shutdown();\n \n         boolean aliceShutdownReceived = aliceShutdownLatch.await(forceful ? 10 : 3, TimeUnit.SECONDS);\n+\n         assertTrue(aliceShutdownReceived);\n \n         Collection<ClusterNode> networkMembers = bob.topologyService().allMembers();\n@@ -159,51 +173,68 @@ class ITScaleCubeNetworkMessagingTest {\n      * @param cluster Cluster to be shutdown.\n      * @throws Exception If failed to stop.\n      */\n+\n+\n     private static void stopForcefully(ClusterService cluster) throws Exception {\n         Field clusterImplField = cluster.getClass().getDeclaredField(\"val$cluster\");\n+\n         clusterImplField.setAccessible(true);\n \n-        ClusterImpl clusterImpl = (ClusterImpl) clusterImplField.get(cluster);\n+        ClusterImpl clusterImpl = (ClusterImpl)clusterImplField.get(cluster);\n+\n         Field transportField = clusterImpl.getClass().getDeclaredField(\"transport\");\n+\n         transportField.setAccessible(true);\n \n-        Transport transport = (Transport) transportField.get(clusterImpl);\n+        Transport transport = (Transport)transportField.get(clusterImpl);\n+\n         Method stop = transport.getClass().getDeclaredMethod(\"stop\");\n+\n         stop.setAccessible(true);\n \n-        Mono<?> invoke = (Mono<?>) stop.invoke(transport);\n+        Mono<?> invoke = (Mono<?>)stop.invoke(transport);\n+\n         invoke.block();\n     }\n \n     /**\n      * Wrapper for cluster.\n      */\n+\n+\n     private static final class Cluster {\n         /** */\n-        private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n+\n+                               private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n         /** */\n-        private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n+\n+\n+                               private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n         /** */\n-        final List<ClusterService> members;\n+\n+\n+                               final List<ClusterService> members;\n \n         /** */\n-        private final CountDownLatch startupLatch;\n+\n+\n+                               private final CountDownLatch startupLatch;\n \n         /** Constructor. */\n-        Cluster(int numOfNodes) {\n-            startupLatch = new CountDownLatch(numOfNodes - 1);\n \n-            int initialPort = 3344;\n \n-            List<String> addresses = IntStream.range(0, numOfNodes)\n-                .mapToObj(i -> String.format(\"localhost:%d\", initialPort + i))\n-                .collect(Collectors.toUnmodifiableList());\n+                               Cluster(int numOfNodes) {\n+                                   startupLatch = new CountDownLatch(numOfNodes - 1);\n \n-            members = IntStream.range(0, numOfNodes)\n-                .mapToObj(i -> startNode(\"Node #\" + i, initialPort + i, addresses, i == 0))\n-                .collect(Collectors.toUnmodifiableList());\n-        }\n+                                   int initialPort = 3344;\n+\n+                                   List<String> addresses = IntStream.range(0, numOfNodes).mapToObj(i -> String.format(\"localhost:%d\", initialPort + i))\n+                                                                                          .collect(Collectors.toUnmodifiableList());\n+\n+                                   members = IntStream.range(0, numOfNodes).mapToObj(i -> startNode(\"Node #\" + i, initialPort + i, addresses, i == 0))\n+                                                                           .collect(Collectors.toUnmodifiableList());\n+                               }\n \n         /**\n          * Start cluster node.\n@@ -214,42 +245,52 @@ class ITScaleCubeNetworkMessagingTest {\n          * @param initial Whether this node is the first one.\n          * @return Started cluster node.\n          */\n-        private ClusterService startNode(String name, int port, List<String> addresses, boolean initial) {\n-            var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n \n-            ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n \n-            if (initial)\n-                clusterService.topologyService().addEventHandler(new TopologyEventHandler() {\n+                               private ClusterService startNode(String name, int port, List<String> addresses, boolean initial) {\n+                                   var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n+\n+                                   ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n+\n+                                   if (initial)\n+                                       clusterService.topologyService().addEventHandler(new TopologyEventHandler() {\n                     /** {@inheritDoc} */\n-                    @Override public void onAppeared(ClusterNode member) {\n-                        startupLatch.countDown();\n-                    }\n+\n+                                           @Override public void onAppeared(ClusterNode member) {\n+                                               startupLatch.countDown();\n+                                           }\n \n                     /** {@inheritDoc} */\n-                    @Override public void onDisappeared(ClusterNode member) {\n-                    }\n-                });\n \n-            return clusterService;\n-        }\n+\n+                                           @Override public void onDisappeared(ClusterNode member) {\n+\n+                                           }\n+                                       });\n+\n+                                   return clusterService;\n+                               }\n \n         /**\n          * Start and wait for cluster to come up.\n          * @throws InterruptedException If failed.\n          */\n-        void startAwait() throws InterruptedException {\n-            members.forEach(ClusterService::start);\n \n-            if (!startupLatch.await(3, TimeUnit.SECONDS))\n-                throw new AssertionError();\n-        }\n+\n+                               void startAwait() throws InterruptedException {\n+                                   members.forEach(ClusterService::start);\n+\n+                                   if (!startupLatch.await(3, TimeUnit.SECONDS))\n+                                       throw new AssertionError();\n+                               }\n \n         /**\n          * Shutdown cluster.\n          */\n-        void shutdown() {\n-            members.forEach(ClusterService::shutdown);\n-        }\n+\n+\n+                               void shutdown() {\n+                                   members.forEach(ClusterService::shutdown);\n+                               }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 113
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "185",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/6/ITScaleCubeNetworkMessagingTest.java\nindex c241dcfc207..85f7859e152 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/6/ITScaleCubeNetworkMessagingTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/6/ITScaleCubeNetworkMessagingTest.java\n@@ -182,6 +182,7 @@ class ITScaleCubeNetworkMessagingTest {\n         /** */\n         private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n         /** */\n+\n         private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n         /** */\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff",
+        "styler_random"
+    ]
+}

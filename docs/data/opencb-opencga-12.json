@@ -1,0 +1,112 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "12",
+    "information": {
+        "errors": [
+            {
+                "line": "169",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 145).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        File bamFile = getBamFileFromCatalog();\n        if (bamFile == null) {\n            addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided and no BAM file found for sample \" + sample.getId());\n            return;\n        }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "169",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/12/SampleQcLocalAnalysisExecutor.java\nindex 38937875e59..5685f7c1567 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/12/SampleQcLocalAnalysisExecutor.java\n@@ -32,211 +32,211 @@ import org.opencb.opencga.core.tools.variant.SampleQcAnalysisExecutor;\n \n import java.nio.file.Path;\n \n-@ToolExecutor(id=\"opencga-local\", tool = SampleQcAnalysis.ID, framework = ToolExecutor.Framework.LOCAL,\n-        source = ToolExecutor.Source.STORAGE)\n+@ToolExecutor(id = \"opencga-local\", tool = SampleQcAnalysis.ID, framework = ToolExecutor.Framework.LOCAL,\n+    source = ToolExecutor.Source.STORAGE)\n public class SampleQcLocalAnalysisExecutor extends SampleQcAnalysisExecutor implements StorageToolExecutor {\n \n-    private Sample sample;\n+  private Sample sample;\n \n-    private SampleQualityControl qc;\n-    private CatalogManager catalogManager;\n-\n-    @Override\n-    public void run() throws ToolException {\n-\n-        sample = getSample();\n-        qc = sample.getQualityControl();\n-        if (qc == null) {\n-            qc = new SampleQualityControl();\n-        }\n+  private SampleQualityControl qc;\n+  private CatalogManager catalogManager;\n \n-        catalogManager = getVariantStorageManager().getCatalogManager();\n+  @Override\n+  public void run() throws ToolException {\n \n-        switch (getQc()) {\n-            case VARIAN_STATS: {\n-                runVariantStats();\n-                break;\n-            }\n-\n-            case FASTQC: {\n-                runFastqc();\n-                break;\n-            }\n-\n-            case FLAG_STATS: {\n-                runFlagStats();\n-                break;\n-            }\n+    sample = getSample();\n+    qc = sample.getQualityControl();\n+    if (qc == null) {\n+      qc = new SampleQualityControl();\n+    }\n \n-            case HS_METRICS: {\n-                runHsMetrics();\n-                break;\n-            }\n+    catalogManager = getVariantStorageManager().getCatalogManager();\n+\n+    switch (getQc()) {\n+      case VARIAN_STATS: {\n+        runVariantStats();\n+        break;\n+      }\n+\n+      case FASTQC: {\n+        runFastqc();\n+        break;\n+      }\n+\n+      case FLAG_STATS: {\n+        runFlagStats();\n+        break;\n+      }\n+\n+      case HS_METRICS: {\n+        runHsMetrics();\n+        break;\n+      }\n+\n+      case GENE_COVERAGE_STATS: {\n+        runGeneCoverageStats();\n+        break;\n+      }\n+\n+      case MUTATIONAL_SIGNATURE: {\n+        runMutationalSignature();\n+        break;\n+      }\n+      default: {\n+        throw new ToolException(\"Unknown quality control: \" + getQc());\n+      }\n+    }\n+  }\n \n-            case GENE_COVERAGE_STATS: {\n-                runGeneCoverageStats();\n-                break;\n-            }\n+  private void runVariantStats() throws ToolException {\n+  }\n \n-            case MUTATIONAL_SIGNATURE: {\n-                runMutationalSignature();\n-                break;\n-            }\n-            default: {\n-                throw new ToolException(\"Unknown quality control: \" + getQc());\n-            }\n-        }\n+  private void runFastqc() throws ToolException {\n+    if (qc.getFastQc() != null) {\n+      // FastQC already exists!\n+      addWarning(\"Skipping FastQC analysis: it was already computed\");\n+      return;\n     }\n \n-    private void runVariantStats() throws ToolException {\n+    // Check BAM file\n+    if (StringUtils.isEmpty(getBamFile())) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided\");\n+    }\n+    File bamFile = AnalysisUtils.getCatalogFile(getBamFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n+    if (bamFile == null) {\n+      addWarning(\"Skipping FastQC analysis: missing BAM file '\" + getBamFile() + \"' in catalog database\");\n+      return;\n     }\n \n-    private void runFastqc() throws ToolException {\n-        if (qc.getFastQc() != null) {\n-            // FastQC already exists!\n-            addWarning(\"Skipping FastQC analysis: it was already computed\");\n-            return;\n-        }\n+    ObjectMap params = new ObjectMap();\n+    params.put(\"extract\", \"\");\n \n-        // Check BAM file\n-        if (StringUtils.isEmpty(getBamFile())) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided\");\n-        }\n-        File bamFile = AnalysisUtils.getCatalogFile(getBamFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n-        if (bamFile == null) {\n-            addWarning(\"Skipping FastQC analysis: missing BAM file '\" + getBamFile() + \"' in catalog database\");\n-            return;\n-        }\n+    Path outDir = getOutDir().resolve(\"fastqc\");\n+    Path scratchDir = outDir.resolve(\"scratch\");\n+    scratchDir.toFile().mkdirs();\n \n-        ObjectMap params = new ObjectMap();\n-        params.put(\"extract\", \"\");\n+    FastqcWrapperAnalysisExecutor executor = new FastqcWrapperAnalysisExecutor(getStudyId(), params, outDir, scratchDir, catalogManager,\n+        getToken());\n \n-        Path outDir = getOutDir().resolve(\"fastqc\");\n-        Path scratchDir = outDir.resolve(\"scratch\");\n-        scratchDir.toFile().mkdirs();\n+    executor.setFile(getBamFile());\n+    executor.run();\n \n-        FastqcWrapperAnalysisExecutor executor = new FastqcWrapperAnalysisExecutor(getStudyId(), params, outDir, scratchDir, catalogManager,\n-                getToken());\n+    // Check for result\n+    FastQc fastQc = executor.getResult();\n+    if (fastQc != null) {\n+      qc.setFastQc(fastQc);\n+      System.out.println(fastQc);\n+    }\n+  }\n \n-        executor.setFile(getBamFile());\n-        executor.run();\n+  private void runFlagStats() throws ToolException {\n+    if (qc.getSamtoolsFlagStatsReport() != null) {\n+      // Samtools flag stats already exists!\n+      addWarning(\"Skipping samtools/flagstat analysis: it was already computed\");\n+      return;\n+    }\n+\n+    CatalogManager catalogManager = getVariantStorageManager().getCatalogManager();\n \n-        // Check for result\n-        FastQc fastQc = executor.getResult();\n-        if (fastQc != null) {\n-            qc.setFastQc(fastQc);\n-            System.out.println(fastQc);\n-        }\n+    // Check BAM file\n+    if (StringUtils.isEmpty(getBaitFile())) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file was provided\");\n     }\n+    File baitFile = AnalysisUtils.getCatalogFile(getBaitFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n \n-    private void runFlagStats() throws ToolException {\n-        if (qc.getSamtoolsFlagStatsReport() != null) {\n-            // Samtools flag stats already exists!\n-            addWarning(\"Skipping samtools/flagstat analysis: it was already computed\");\n-            return;\n-        }\n+    ObjectMap params = new ObjectMap();\n \n-        CatalogManager catalogManager = getVariantStorageManager().getCatalogManager();\n-\n-        // Check BAM file\n-        if (StringUtils.isEmpty(getBaitFile())) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file was provided\");\n-        }\n-        File baitFile = AnalysisUtils.getCatalogFile(getBaitFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n-\n-        ObjectMap params = new ObjectMap();\n-\n-        Path outDir = getOutDir().resolve(\"flagstat\");\n-        Path scratchDir = outDir.resolve(\"scratch\");\n+    Path outDir = getOutDir().resolve(\"flagstat\");\n+    Path scratchDir = outDir.resolve(\"scratch\");\n \n //        SamtoolsWrapperAnalysisExecutor executor = new SamtoolsWrapperAnalysisExecutor(getStudyId(), params, outDir, scratchDir,\n //                catalogManager, getToken());\n //\n //        executor.setFile(getBamFile());\n //        executor.run();\n+  }\n+\n+  private void runHsMetrics() throws ToolException {\n+    if (qc.getHsMetricsReport() != null) {\n+      // Hs metrics already exists!\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: it was already computed\");\n+      return;\n+    }\n+\n+    // Check BAM file\n+    File bamFile = getBamFileFromCatalog();\n+    if (bamFile == null) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided and no BAM file found for sample \" + sample.getId());\n+      return;\n     }\n \n-    private void runHsMetrics() throws ToolException {\n-        if (qc.getHsMetricsReport() != null) {\n-            // Hs metrics already exists!\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: it was already computed\");\n-            return;\n-        }\n-\n-        // Check BAM file\n-        File bamFile = getBamFileFromCatalog();\n-        if (bamFile == null) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided and no BAM file found for sample \" + sample.getId());\n-            return;\n-        }\n-\n-        // Check bait file\n-        if (StringUtils.isEmpty(getBaitFile())) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file was provided\");\n-        }\n-        File baitFile = AnalysisUtils.getCatalogFile(getBaitFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n-        if (baitFile == null) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file '\" + getBaitFile() + \"' found in catalog database\");\n-            return;\n-        }\n-\n-        // Check target file\n-        if (StringUtils.isEmpty(getTargetFile())) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no target file was provided\");\n-        }\n-        File targetFile = AnalysisUtils.getCatalogFile(getTargetFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n-        if (targetFile == null) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no target file '\" + getBaitFile() + \"' found in catalog database\");\n-            return;\n-        }\n-\n-        // Check fasta file\n-        if (StringUtils.isEmpty(getFastaFile())) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no fasta file was provided\");\n-        }\n-        File fastaFile = AnalysisUtils.getCatalogFile(getFastaFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n-        if (fastaFile == null) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no fasta file '\" + getFastaFile() + \"' found in catalog database\");\n-            return;\n-        }\n-\n-        ObjectMap params = new ObjectMap();\n-        params.put(\"INPUT\", getBamFile());\n-\n-        Path outDir = getOutDir().resolve(\"/fastqc\");\n-        Path scratchDir = outDir.resolve(\"/scratch\");\n-\n-        FastqcWrapperAnalysisExecutor executor = new FastqcWrapperAnalysisExecutor(getStudyId(), params, outDir, scratchDir, catalogManager,\n-                getToken());\n-\n-        executor.setFile(getBamFile());\n-        executor.run();\n-    }\n-\n-    private void runGeneCoverageStats() throws ToolException {\n-    }\n-\n-    private void runMutationalSignature() throws ToolException {\n-    }\n-\n-    private File getBamFileFromCatalog() {\n-        File file;\n-        if (StringUtils.isEmpty(getBamFile())) {\n-            try {\n-                file = AnalysisUtils.getBamFileBySampleId(sample.getId(), getStudyId(), catalogManager.getFileManager(), getToken());\n-            } catch (ToolException e) {\n-                // FastQC already exists!\n-                return null;\n-            }\n-        } else {\n-            try {\n-                file = AnalysisUtils.getBamFile(getBamFile(), sample.getId(), getStudyId(), catalogManager.getFileManager(), getToken());\n-            } catch (ToolException e) {\n-                return null;\n-            }\n-        }\n-\n-        return file;\n+    // Check bait file\n+    if (StringUtils.isEmpty(getBaitFile())) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file was provided\");\n     }\n+    File baitFile = AnalysisUtils.getCatalogFile(getBaitFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n+    if (baitFile == null) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no bait file '\" + getBaitFile() + \"' found in catalog database\");\n+      return;\n+    }\n+\n+    // Check target file\n+    if (StringUtils.isEmpty(getTargetFile())) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no target file was provided\");\n+    }\n+    File targetFile = AnalysisUtils.getCatalogFile(getTargetFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n+    if (targetFile == null) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no target file '\" + getBaitFile() + \"' found in catalog database\");\n+      return;\n+    }\n+\n+    // Check fasta file\n+    if (StringUtils.isEmpty(getFastaFile())) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no fasta file was provided\");\n+    }\n+    File fastaFile = AnalysisUtils.getCatalogFile(getFastaFile(), getStudyId(), catalogManager.getFileManager(), getToken());\n+    if (fastaFile == null) {\n+      addWarning(\"Skipping picard/CollectHsMetrics analysis: no fasta file '\" + getFastaFile() + \"' found in catalog database\");\n+      return;\n+    }\n+\n+    ObjectMap params = new ObjectMap();\n+    params.put(\"INPUT\", getBamFile());\n+\n+    Path outDir = getOutDir().resolve(\"/fastqc\");\n+    Path scratchDir = outDir.resolve(\"/scratch\");\n+\n+    FastqcWrapperAnalysisExecutor executor = new FastqcWrapperAnalysisExecutor(getStudyId(), params, outDir, scratchDir, catalogManager,\n+        getToken());\n+\n+    executor.setFile(getBamFile());\n+    executor.run();\n+  }\n+\n+  private void runGeneCoverageStats() throws ToolException {\n+  }\n+\n+  private void runMutationalSignature() throws ToolException {\n+  }\n+\n+  private File getBamFileFromCatalog() {\n+    File file;\n+    if (StringUtils.isEmpty(getBamFile())) {\n+      try {\n+        file = AnalysisUtils.getBamFileBySampleId(sample.getId(), getStudyId(), catalogManager.getFileManager(), getToken());\n+      } catch (ToolException e) {\n+        // FastQC already exists!\n+        return null;\n+      }\n+    } else {\n+      try {\n+        file = AnalysisUtils.getBamFile(getBamFile(), sample.getId(), getStudyId(), catalogManager.getFileManager(), getToken());\n+      } catch (ToolException e) {\n+        return null;\n+      }\n+    }\n+\n+    return file;\n+  }\n \n }\n",
+            "diff_size": 307
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "164",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/12/SampleQcLocalAnalysisExecutor.java\nindex 38937875e59..e244ad1c24b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/12/SampleQcLocalAnalysisExecutor.java\n@@ -32,7 +32,7 @@ import org.opencb.opencga.core.tools.variant.SampleQcAnalysisExecutor;\n \n import java.nio.file.Path;\n \n-@ToolExecutor(id=\"opencga-local\", tool = SampleQcAnalysis.ID, framework = ToolExecutor.Framework.LOCAL,\n+@ToolExecutor(id = \"opencga-local\", tool = SampleQcAnalysis.ID, framework = ToolExecutor.Framework.LOCAL,\n         source = ToolExecutor.Source.STORAGE)\n public class SampleQcLocalAnalysisExecutor extends SampleQcAnalysisExecutor implements StorageToolExecutor {\n \n@@ -57,28 +57,23 @@ public class SampleQcLocalAnalysisExecutor extends SampleQcAnalysisExecutor impl\n                 runVariantStats();\n                 break;\n             }\n-\n-            case FASTQC: {\n+case FASTQC: {\n                 runFastqc();\n                 break;\n             }\n-\n-            case FLAG_STATS: {\n+case FLAG_STATS: {\n                 runFlagStats();\n                 break;\n             }\n-\n-            case HS_METRICS: {\n+case HS_METRICS: {\n                 runHsMetrics();\n                 break;\n             }\n-\n-            case GENE_COVERAGE_STATS: {\n+case GENE_COVERAGE_STATS: {\n                 runGeneCoverageStats();\n                 break;\n             }\n-\n-            case MUTATIONAL_SIGNATURE: {\n+case MUTATIONAL_SIGNATURE: {\n                 runMutationalSignature();\n                 break;\n             }\n@@ -239,4 +234,4 @@ public class SampleQcLocalAnalysisExecutor extends SampleQcAnalysisExecutor impl\n         return file;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "169",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "169",
+                    "column": "127",
+                    "severity": "error",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "169",
+                    "column": "128",
+                    "severity": "error",
+                    "message": "'+' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "170",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "170",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/12/SampleQcLocalAnalysisExecutor.java\nindex 38937875e59..761aa9320a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/12/SampleQcLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/12/SampleQcLocalAnalysisExecutor.java\n@@ -166,8 +166,8 @@ public class SampleQcLocalAnalysisExecutor extends SampleQcAnalysisExecutor impl\n         // Check BAM file\n         File bamFile = getBamFileFromCatalog();\n         if (bamFile == null) {\n-            addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided and no BAM file found for sample \" + sample.getId());\n-            return;\n+            addWarning(\"Skipping picard/CollectHsMetrics analysis: no BAM file was provided and no BAM file found for sample \"+sample.\n+            getId()) ; return ;\n         }\n \n         // Check bait file\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4539",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "105",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "84",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4539/Followers.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4539/Followers.java\nindex e3f1e7b2e52..e9870edbf97 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4539/Followers.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4539/Followers.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.core.consensus;\n \n import java.util.Map;\n@@ -28,44 +29,44 @@ import org.neo4j.causalclustering.core.consensus.roles.follower.FollowerStates;\n public class Followers\n {\n \n-    private Followers()\n+  private Followers()\n+  {\n+  }\n+\n+  // TODO: This method is inefficient.. we should not have to update this state by a complete\n+  // TODO: iteration each time. Instead it should be updated as a direct response to each\n+  // TODO: append response.\n+  public static <MEMBER> long quorumAppendIndex(Set<MEMBER> votingMembers, FollowerStates<MEMBER> states)\n+  {\n+    /*\n+     * Build up a map of tx id -> number of instances that have appended,\n+     * sorted by tx id.\n+     *\n+     * This allows us to then iterate backwards over the values in the map,\n+     * adding up a total count of how many have appended, until we reach a majority.\n+     * Once we do, the tx id at the current entry in the map will be the highest one\n+     * with a majority appended.\n+     */\n+\n+    TreeMap</* txId */Long, /* numAppended */Integer> appendedCounts = new TreeMap<>();\n+    for (MEMBER member : votingMembers)\n     {\n+      long txId = states.get(member).getMatchIndex();\n+      appendedCounts.merge(txId, 1, (a, b) -> a + b);\n     }\n \n-    // TODO: This method is inefficient.. we should not have to update this state by a complete\n-    // TODO: iteration each time. Instead it should be updated as a direct response to each\n-    // TODO: append response.\n-    public static <MEMBER> long quorumAppendIndex( Set<MEMBER> votingMembers, FollowerStates<MEMBER> states )\n+    // Iterate over it until we find a majority\n+    int total = 0;\n+    for (Map.Entry<Long, Integer> entry : appendedCounts.descendingMap().entrySet())\n     {\n-        /*\n-         * Build up a map of tx id -> number of instances that have appended,\n-         * sorted by tx id.\n-         *\n-         * This allows us to then iterate backwards over the values in the map,\n-         * adding up a total count of how many have appended, until we reach a majority.\n-         * Once we do, the tx id at the current entry in the map will be the highest one\n-         * with a majority appended.\n-         */\n-\n-        TreeMap</* txId */Long, /* numAppended */Integer> appendedCounts = new TreeMap<>();\n-        for ( MEMBER member : votingMembers )\n-        {\n-            long txId = states.get( member ).getMatchIndex();\n-            appendedCounts.merge( txId, 1, ( a, b ) -> a + b );\n-        }\n-\n-        // Iterate over it until we find a majority\n-        int total = 0;\n-        for ( Map.Entry<Long, Integer> entry : appendedCounts.descendingMap().entrySet() )\n-        {\n-            total += entry.getValue();\n-            if ( MajorityIncludingSelfQuorum.isQuorum( votingMembers.size(), total ) )\n-            {\n-                return entry.getKey();\n-            }\n-        }\n-\n-        // No majority for any appended entry\n-        return -1;\n+      total += entry.getValue();\n+      if (MajorityIncludingSelfQuorum.isQuorum(votingMembers.size(), total))\n+      {\n+        return entry.getKey();\n+      }\n     }\n+\n+    // No majority for any appended entry\n+    return -1;\n+  }\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4539/Followers.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4539/Followers.java\nindex e3f1e7b2e52..fb349fdd23d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4539/Followers.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4539/Followers.java\n@@ -27,7 +27,6 @@ import org.neo4j.causalclustering.core.consensus.roles.follower.FollowerStates;\n \n public class Followers\n {\n-\n     private Followers()\n     {\n     }\n@@ -56,7 +55,7 @@ public class Followers\n \n         // Iterate over it until we find a majority\n         int total = 0;\n-        for ( Map.Entry<Long, Integer> entry : appendedCounts.descendingMap().entrySet() )\n+        for ( Map.Entry<Long,Integer> entry : appendedCounts.descendingMap().entrySet() )\n         {\n             total += entry.getValue();\n             if ( MajorityIncludingSelfQuorum.isQuorum( votingMembers.size(), total ) )\n@@ -68,4 +67,4 @@ public class Followers\n         // No majority for any appended entry\n         return -1;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

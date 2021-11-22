@@ -1,0 +1,99 @@
+{
+    "project_name": "apache-iotdb",
+    "error_id": "514",
+    "information": {
+        "errors": [
+            {
+                "line": "19",
+                "severity": "warning",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * under the License.\n */\npackage org.apache.iotdb.db.qp.physical.crud;\n\nimport org.apache.iotdb.db.exception.metadata.IllegalPathException;\nimport org.apache.iotdb.db.exception.query.QueryProcessException;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler/514/QueryPlan.java\nindex a188db591e1..b28235aa12e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler/514/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/intellij/514/QueryPlan.java\nindex a188db591e1..b28235aa12e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/intellij/514/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "116",
+                    "severity": "warning",
+                    "message": "'?' has incorrect indentation level 6, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "117",
+                    "severity": "warning",
+                    "message": "':' has incorrect indentation level 6, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "120",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "121",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "126",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/codebuff/514/QueryPlan.java\nindex a188db591e1..33633d8066d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/codebuff/514/QueryPlan.java\n@@ -24,7 +24,6 @@ import org.apache.iotdb.db.metadata.PartialPath;\n import org.apache.iotdb.db.qp.logical.Operator;\n import org.apache.iotdb.db.qp.physical.PhysicalPlan;\n import org.apache.iotdb.tsfile.file.metadata.enums.TSDataType;\n-\n import java.util.HashMap;\n import java.util.List;\n import java.util.Map;\n@@ -32,16 +31,13 @@ import java.util.Map;\n public abstract class QueryPlan extends PhysicalPlan {\n \n   protected List<PartialPath> paths = null;\n+\n   protected List<TSDataType> dataTypes = null;\n   private boolean alignByTime = true; // for disable align sql\n-\n   private int rowLimit = 0;\n   private int rowOffset = 0;\n-\n   private boolean ascending = true;\n-\n   private Map<String, Integer> pathToIndex = new HashMap<>();\n-\n   private boolean enableRedirect = false;\n \n   public QueryPlan() {\n@@ -116,16 +112,18 @@ public abstract class QueryPlan extends PhysicalPlan {\n   }\n \n   public String getColumnForReaderFromPath(PartialPath path, int pathIndex) {\n-    String columnForReader = path.isTsAliasExists() ? path.getTsAlias() : null;\n+    String columnForReader = path.isTsAliasExists()\n+      ? path.getTsAlias()\n+      : null;\n     if (columnForReader == null) {\n-      columnForReader =\n-          path.isMeasurementAliasExists() ? path.getFullPathWithAlias() : path.toString();\n+      columnForReader = path.isMeasurementAliasExists()\n+? path.getFullPathWithAlias()\n+: path.toString();\n     }\n     return columnForReader;\n   }\n \n-  public String getColumnForDisplay(String columnForReader, int pathIndex)\n-      throws IllegalPathException {\n+  public String getColumnForDisplay(String columnForReader, int pathIndex) throws IllegalPathException {\n     return columnForReader;\n   }\n \n@@ -136,4 +134,4 @@ public abstract class QueryPlan extends PhysicalPlan {\n   public void setEnableRedirect(boolean enableRedirect) {\n     this.enableRedirect = enableRedirect;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_random/514/QueryPlan.java\nindex a188db591e1..b28235aa12e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_random/514/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_three_grams/514/QueryPlan.java\nindex a188db591e1..b28235aa12e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/errored/1/514/QueryPlan.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-iotdb/styler_three_grams/514/QueryPlan.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.iotdb.db.qp.physical.crud;\n \n import org.apache.iotdb.db.exception.metadata.IllegalPathException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

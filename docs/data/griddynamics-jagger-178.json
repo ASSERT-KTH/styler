@@ -1,0 +1,69 @@
+{
+    "project_name": "griddynamics-jagger",
+    "error_id": "178",
+    "information": {
+        "errors": [
+            {
+                "line": "166",
+                "severity": "warning",
+                "message": "'METHOD_DEF' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "                }\n            }\n            @Override\n            protected T computeNext() {\n                try {\n                    return objectCreator.createObject(scanner.next());",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler/178/FileProvider.java\nindex c0cd8cece0a..bae1e11de34 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler/178/FileProvider.java\n@@ -163,6 +163,7 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n                     throw Throwables.propagate(e);\n                 }\n             }\n+\n             @Override\n             protected T computeNext() {\n                 try {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/178/FileProvider.java\nindex c0cd8cece0a..b6db3ef4da4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/178/FileProvider.java\n@@ -33,30 +33,27 @@ import java.util.Iterator;\n import java.util.NoSuchElementException;\n import java.util.Scanner;\n \n-/** Reads data from files\n+/**\n+ * Reads data from files\n+ *\n  * @author Nikolay Musienko\n  * @n\n  * @par Details:\n  * @details Reads data from files, which uses special delimiter.\n+ * @n For example : if your file contains next info -\n  * @n\n- * For example : if your file contains next info -\n- * @n\n- * @code\n- * NYC 89,5$|MOS 67,4$|SPB 109,6$\n+ * @code NYC 89,5$|MOS 67,4$|SPB 109,6$\n  * @endcode\n- * @n\n- * And your delimiter equals '|'\n- * @n\n- * Provider will create 3 records - 'NYC 89,5$', 'MOS 67,4$', 'SPB 109,6$'.\n+ * @n And your delimiter equals '|'\n+ * @n Provider will create 3 records - 'NYC 89,5$', 'MOS 67,4$', 'SPB 109,6$'.\n  * You can create a special object creator, which will translate such records to your java object.\n  * This object may looks like this\n  * @n\n- * @code\n- * class InternationalTicket{\n- *     private String city;\n- *     private double price;\n- *     ....\n- *     ....\n+ * @code class InternationalTicket{\n+ * private String city;\n+ * private double price;\n+ * ....\n+ * ....\n  * }\n  * @endcode\n  */\n@@ -66,79 +63,104 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n     private String delimeter;\n     private ObjectCreator<T> objectCreator;\n \n-    /** Creates new file provider\n+    /**\n+     * Creates new file provider\n+     *\n+     * @param path          - full name of file\n+     * @param delimeter     - a symbol, which separate data\n+     * @param objectCreator - translate data to java objects\n      * @author Nikolay Musienko\n      * @n\n-     * @param path - full name of file\n-     * @param delimeter - a symbol, which separate data\n-     * @param objectCreator - translate data to java objects*/\n+     */\n     public FileProvider(String path, String delimeter, ObjectCreator<T> objectCreator) {\n         this.path = path;\n         this.delimeter = delimeter;\n         this.objectCreator = objectCreator;\n     }\n \n-    /** Creates new file provider.\n+    /**\n+     * Creates new file provider.\n+     *\n+     * @param path          - full name of file\n+     * @param objectCreator - translate data to java objects\n      * @author Nikolay Musienko\n      * @n\n      * @par Details:\n      * @details Uses system line separator as default delimiter\n-     *\n-     * @param path - full name of file\n-     * @param objectCreator - translate data to java objects*/\n+     */\n     public FileProvider(String path, ObjectCreator<T> objectCreator) {\n         this(path, System.getProperty(\"line.separator\"), objectCreator);\n     }\n \n-    /** Creates new file provider\n+    /**\n+     * Creates new file provider\n+     *\n+     * @param path - full name of file\n      * @author Nikolay Musienko\n      * @n\n      * @par Details:\n      * @details Uses StringCreator as default objectCreator\n-     *\n-     * @param path - full name of file*/\n+     */\n     public FileProvider(String path) {\n         this(path, (ObjectCreator<T>) new StringCreator());\n     }\n \n-    /** Returns delimiter\n+    /**\n+     * Returns delimiter\n+     *\n+     * @return delimiter\n      * @author Nikolay Musienko\n-     * @return delimiter*/\n+     */\n     public String getDelimeter() {\n         return delimeter;\n     }\n \n-    /** Set provider delimiter\n+    /**\n+     * Set provider delimiter\n+     *\n+     * @param delimeter - provider delimiter\n      * @author Nikolay Musienko\n-     * @param delimeter - provider delimiter*/\n+     */\n     public void setDelimeter(String delimeter) {\n         this.delimeter = delimeter;\n     }\n \n-    /** Returns object creator, which translate row data to java objects\n+    /**\n+     * Returns object creator, which translate row data to java objects\n+     *\n+     * @return object creator\n      * @author Nikolay Musienko\n-     * @return object creator*/\n+     */\n     public ObjectCreator<T> getObjectCreator() {\n         return objectCreator;\n     }\n \n-    /** Set object creator, which translate row data to java objects\n+    /**\n+     * Set object creator, which translate row data to java objects\n+     *\n+     * @param objectCreator - object creator\n      * @author Nikolay Musienko\n-     * @param objectCreator - object creator*/\n+     */\n     public void setObjectCreator(ObjectCreator<T> objectCreator) {\n         this.objectCreator = objectCreator;\n     }\n \n-    /** Returns file name\n+    /**\n+     * Returns file name\n+     *\n+     * @return file name\n      * @author Nikolay Musienko\n-     * @return file name*/\n+     */\n     public String getPath() {\n         return path;\n     }\n \n-    /** Set file name\n+    /**\n+     * Set file name\n+     *\n+     * @param filePath - full name of file\n      * @author Nikolay Musienko\n-     * @param filePath - full name of file*/\n+     */\n     public void setPath(String filePath) {\n         this.path = filePath;\n     }\n@@ -163,6 +185,7 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n                     throw Throwables.propagate(e);\n                 }\n             }\n+\n             @Override\n             protected T computeNext() {\n                 try {\n",
+            "diff_size": 72
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "167",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 0, expected level should be one of the following: 12, 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/naturalize/178/FileProvider.java\nindex c0cd8cece0a..f5d752e3998 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/naturalize/178/FileProvider.java\n@@ -163,7 +163,8 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n                     throw Throwables.propagate(e);\n                 }\n             }\n-            @Override\n+\n+@Override\n             protected T computeNext() {\n                 try {\n                     return objectCreator.createObject(scanner.next());\n@@ -173,5 +174,4 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n             }\n         };\n     }\n-}\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_random/178/FileProvider.java\nindex c0cd8cece0a..bae1e11de34 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_random/178/FileProvider.java\n@@ -163,6 +163,7 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n                     throw Throwables.propagate(e);\n                 }\n             }\n+\n             @Override\n             protected T computeNext() {\n                 try {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_three_grams/178/FileProvider.java\nindex c0cd8cece0a..bae1e11de34 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/178/FileProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_three_grams/178/FileProvider.java\n@@ -163,6 +163,7 @@ public class FileProvider<T> implements Iterable<T>, Serializable {\n                     throw Throwables.propagate(e);\n                 }\n             }\n+\n             @Override\n             protected T computeNext() {\n                 try {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,120 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "1220",
+    "information": {
+        "errors": [
+            {
+                "line": "99",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 120).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        WorkerAttempt runningAttempt = worker.getRunningAttempt();\n        if(runningAttempt != null) {\n          context.getEventHandler().handle(new WorkerAttemptEvent(WorkerAttemptEventType.KILL, runningAttempt.getId()));\n        }\n      }\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 120).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/1220/SlowChecker.java\nindex 5618d1b3469..c98ea8d13ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/1220/SlowChecker.java\n@@ -25,14 +25,20 @@ public class SlowChecker extends AbstractService {\n   private static final Log LOG = LogFactory.getLog(SlowChecker.class);\n   private final AMContext context;\n \n-  /** check polices*/\n+  /**\n+   * check polices\n+   */\n   private final List<CheckPolicy> checkPolices;\n \n-  /** enable checker or not */\n+  /**\n+   * enable checker or not\n+   */\n   private final boolean slowCheckEnable;\n   private AtomicBoolean stopped;\n \n-  /** check interval in milliseconds*/\n+  /**\n+   * check interval in milliseconds\n+   */\n   private final int checkIntervalMs;\n   private volatile Thread checker;\n \n@@ -44,9 +50,9 @@ public class SlowChecker extends AbstractService {\n     this.context = context;\n     checkPolices = new ArrayList<>();\n     slowCheckEnable = context.getConf().getBoolean(AngelConf.ANGEL_AM_SLOW_CHECK_ENABLE,\n-      AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_ENABLE);\n+        AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_ENABLE);\n     checkIntervalMs = context.getConf().getInt(AngelConf.ANGEL_AM_SLOW_CHECK_INTERVAL_MS,\n-      AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_INTERVAL_MS);\n+        AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_INTERVAL_MS);\n     stopped = new AtomicBoolean(false);\n   }\n \n@@ -54,14 +60,14 @@ public class SlowChecker extends AbstractService {\n   protected void serviceStart() throws Exception {\n     LOG.info(\"slowCheckEnable = \" + slowCheckEnable + \", checkIntervalMs = \" + checkIntervalMs);\n \n-    if(slowCheckEnable) {\n+    if (slowCheckEnable) {\n       checker = new Thread(new Runnable() {\n         @Override\n         public void run() {\n           LOG.info(\"start slow check thread\");\n           int size = checkPolices.size();\n-          while(!stopped.get() && !Thread.interrupted()) {\n-            for(int i = 0; i < size; i++) {\n+          while (!stopped.get() && !Thread.interrupted()) {\n+            for (int i = 0; i < size; i++) {\n               List<Id> slowItems = checkPolices.get(i).check(context);\n               handleSlowItems(slowItems);\n             }\n@@ -80,9 +86,9 @@ public class SlowChecker extends AbstractService {\n   }\n \n   private void handleSlowItems(List<Id> slowItems) {\n-    if(slowItems != null && slowItems.isEmpty()) {\n+    if (slowItems != null && slowItems.isEmpty()) {\n       int size = slowItems.size();\n-      for(int i = 0; i < size; i++) {\n+      for (int i = 0; i < size; i++) {\n         handleSlowItem(slowItems.get(i));\n       }\n     }\n@@ -90,13 +96,14 @@ public class SlowChecker extends AbstractService {\n \n   private void handleSlowItem(Id id) {\n     LOG.info(\"slow item \" + id + \" is checked!!\");\n-    if(id instanceof WorkerId) {\n+    if (id instanceof WorkerId) {\n       AMWorker worker = context.getWorkerManager().getWorker((WorkerId) id);\n \n-      if(worker.getAttempts().size() < worker.getMaxAttempts()) {\n+      if (worker.getAttempts().size() < worker.getMaxAttempts()) {\n         WorkerAttempt runningAttempt = worker.getRunningAttempt();\n-        if(runningAttempt != null) {\n-          context.getEventHandler().handle(new WorkerAttemptEvent(WorkerAttemptEventType.KILL, runningAttempt.getId()));\n+        if (runningAttempt != null) {\n+          context.getEventHandler()\n+              .handle(new WorkerAttemptEvent(WorkerAttemptEventType.KILL, runningAttempt.getId()));\n         }\n       }\n     }\n@@ -104,15 +111,15 @@ public class SlowChecker extends AbstractService {\n \n   @Override\n   protected void serviceInit(Configuration conf) throws Exception {\n-    if(slowCheckEnable) {\n+    if (slowCheckEnable) {\n       String polices = conf.get(AngelConf.ANGEL_AM_SLOW_CHECK_POLICES,\n-        AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_POLICES);\n+          AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_POLICES);\n \n       LOG.info(\"slow check policy list = \" + polices);\n-      String [] policyNames = polices.split(\",\");\n-      for(int i = 0; i < policyNames.length; i++) {\n+      String[] policyNames = polices.split(\",\");\n+      for (int i = 0; i < policyNames.length; i++) {\n         Class<? extends CheckPolicy> policyClass =\n-          (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n+            (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n         Constructor<? extends CheckPolicy> constructor = policyClass.getConstructor();\n         constructor.setAccessible(true);\n         checkPolices.add(constructor.newInstance());\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 120).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/1220/SlowChecker.java\nindex 5618d1b3469..f90e8c71ca5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/1220/SlowChecker.java\n@@ -45,23 +45,23 @@ public class SlowChecker extends AbstractService {\n     checkPolices = new ArrayList<>();\n     slowCheckEnable = context.getConf().getBoolean(AngelConf.ANGEL_AM_SLOW_CHECK_ENABLE,\n       AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_ENABLE);\n-    checkIntervalMs = context.getConf().getInt(AngelConf.ANGEL_AM_SLOW_CHECK_INTERVAL_MS,\n+checkIntervalMs = context.getConf().getInt(AngelConf.ANGEL_AM_SLOW_CHECK_INTERVAL_MS,\n       AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_INTERVAL_MS);\n-    stopped = new AtomicBoolean(false);\n+stopped = new AtomicBoolean(false);\n   }\n \n   @Override\n   protected void serviceStart() throws Exception {\n     LOG.info(\"slowCheckEnable = \" + slowCheckEnable + \", checkIntervalMs = \" + checkIntervalMs);\n \n-    if(slowCheckEnable) {\n+    if (slowCheckEnable) {\n       checker = new Thread(new Runnable() {\n         @Override\n         public void run() {\n           LOG.info(\"start slow check thread\");\n           int size = checkPolices.size();\n-          while(!stopped.get() && !Thread.interrupted()) {\n-            for(int i = 0; i < size; i++) {\n+          while (!stopped.get() && !Thread.interrupted()) {\n+            for (int i = 0; i < size; i++) {\n               List<Id> slowItems = checkPolices.get(i).check(context);\n               handleSlowItems(slowItems);\n             }\n@@ -82,7 +82,7 @@ public class SlowChecker extends AbstractService {\n   private void handleSlowItems(List<Id> slowItems) {\n     if(slowItems != null && slowItems.isEmpty()) {\n       int size = slowItems.size();\n-      for(int i = 0; i < size; i++) {\n+      for (int i = 0; i < size; i++) {\n         handleSlowItem(slowItems.get(i));\n       }\n     }\n@@ -90,12 +90,12 @@ public class SlowChecker extends AbstractService {\n \n   private void handleSlowItem(Id id) {\n     LOG.info(\"slow item \" + id + \" is checked!!\");\n-    if(id instanceof WorkerId) {\n+    if (id instanceof WorkerId) {\n       AMWorker worker = context.getWorkerManager().getWorker((WorkerId) id);\n \n-      if(worker.getAttempts().size() < worker.getMaxAttempts()) {\n+      if (worker.getAttempts().size() < worker.getMaxAttempts()) {\n         WorkerAttempt runningAttempt = worker.getRunningAttempt();\n-        if(runningAttempt != null) {\n+        if (runningAttempt != null) {\n           context.getEventHandler().handle(new WorkerAttemptEvent(WorkerAttemptEventType.KILL, runningAttempt.getId()));\n         }\n       }\n@@ -109,11 +109,10 @@ public class SlowChecker extends AbstractService {\n         AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_POLICES);\n \n       LOG.info(\"slow check policy list = \" + polices);\n-      String [] policyNames = polices.split(\",\");\n-      for(int i = 0; i < policyNames.length; i++) {\n-        Class<? extends CheckPolicy> policyClass =\n-          (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n-        Constructor<? extends CheckPolicy> constructor = policyClass.getConstructor();\n+      String[] policyNames = polices.split(\",\");\n+      for (int i = 0; i < policyNames.length; i++) {\n+        Class<? extends CheckPolicy> policyClass = (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n+Constructor<? extends CheckPolicy> constructor = policyClass.getConstructor();\n         constructor.setAccessible(true);\n         checkPolices.add(constructor.newInstance());\n       }\n@@ -134,4 +133,4 @@ public class SlowChecker extends AbstractService {\n       }\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 135).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 120).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "108",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 118).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "112",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1220/SlowChecker.java\nindex 5618d1b3469..f80123ff9e4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1220/SlowChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1220/SlowChecker.java\n@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.hadoop.service.AbstractService;\n-\n import java.lang.reflect.Constructor;\n import java.util.ArrayList;\n import java.util.List;\n@@ -21,7 +20,9 @@ import java.util.concurrent.atomic.AtomicBoolean;\n /**\n  * Slow workers and pss checker.\n  */\n+\n public class SlowChecker extends AbstractService {\n+\n   private static final Log LOG = LogFactory.getLog(SlowChecker.class);\n   private final AMContext context;\n \n@@ -39,33 +40,33 @@ public class SlowChecker extends AbstractService {\n   /**\n    * Construct the service.\n    */\n+\n   public SlowChecker(AMContext context) {\n     super(\"slow-checker\");\n     this.context = context;\n     checkPolices = new ArrayList<>();\n-    slowCheckEnable = context.getConf().getBoolean(AngelConf.ANGEL_AM_SLOW_CHECK_ENABLE,\n-      AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_ENABLE);\n-    checkIntervalMs = context.getConf().getInt(AngelConf.ANGEL_AM_SLOW_CHECK_INTERVAL_MS,\n-      AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_INTERVAL_MS);\n+    slowCheckEnable = context.getConf().getBoolean(AngelConf.ANGEL_AM_SLOW_CHECK_ENABLE, AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_ENABLE);\n+    checkIntervalMs = context.getConf().getInt(AngelConf.ANGEL_AM_SLOW_CHECK_INTERVAL_MS, AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_INTERVAL_MS);\n     stopped = new AtomicBoolean(false);\n   }\n \n   @Override\n   protected void serviceStart() throws Exception {\n     LOG.info(\"slowCheckEnable = \" + slowCheckEnable + \", checkIntervalMs = \" + checkIntervalMs);\n-\n-    if(slowCheckEnable) {\n+    if (slowCheckEnable) {\n       checker = new Thread(new Runnable() {\n+\n+\n         @Override\n         public void run() {\n           LOG.info(\"start slow check thread\");\n+\n           int size = checkPolices.size();\n-          while(!stopped.get() && !Thread.interrupted()) {\n-            for(int i = 0; i < size; i++) {\n+          while (!stopped.get() && !Thread.interrupted()) {\n+            for (int i = 0; i < size; i++) {\n               List<Id> slowItems = checkPolices.get(i).check(context);\n               handleSlowItems(slowItems);\n             }\n-\n             try {\n               Thread.sleep(checkIntervalMs);\n             } catch (InterruptedException e) {\n@@ -80,9 +81,9 @@ public class SlowChecker extends AbstractService {\n   }\n \n   private void handleSlowItems(List<Id> slowItems) {\n-    if(slowItems != null && slowItems.isEmpty()) {\n+    if (slowItems != null && slowItems.isEmpty()) {\n       int size = slowItems.size();\n-      for(int i = 0; i < size; i++) {\n+      for (int i = 0; i < size; i++) {\n         handleSlowItem(slowItems.get(i));\n       }\n     }\n@@ -90,12 +91,11 @@ public class SlowChecker extends AbstractService {\n \n   private void handleSlowItem(Id id) {\n     LOG.info(\"slow item \" + id + \" is checked!!\");\n-    if(id instanceof WorkerId) {\n+    if (id instanceof WorkerId) {\n       AMWorker worker = context.getWorkerManager().getWorker((WorkerId) id);\n-\n-      if(worker.getAttempts().size() < worker.getMaxAttempts()) {\n+      if (worker.getAttempts().size() < worker.getMaxAttempts()) {\n         WorkerAttempt runningAttempt = worker.getRunningAttempt();\n-        if(runningAttempt != null) {\n+        if (runningAttempt != null) {\n           context.getEventHandler().handle(new WorkerAttemptEvent(WorkerAttemptEventType.KILL, runningAttempt.getId()));\n         }\n       }\n@@ -104,15 +104,12 @@ public class SlowChecker extends AbstractService {\n \n   @Override\n   protected void serviceInit(Configuration conf) throws Exception {\n-    if(slowCheckEnable) {\n-      String polices = conf.get(AngelConf.ANGEL_AM_SLOW_CHECK_POLICES,\n-        AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_POLICES);\n-\n+    if (slowCheckEnable) {\n+      String polices = conf.get(AngelConf.ANGEL_AM_SLOW_CHECK_POLICES, AngelConf.DEFAULT_ANGEL_AM_SLOW_CHECK_POLICES);\n       LOG.info(\"slow check policy list = \" + polices);\n-      String [] policyNames = polices.split(\",\");\n-      for(int i = 0; i < policyNames.length; i++) {\n-        Class<? extends CheckPolicy> policyClass =\n-          (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n+      String[] policyNames = polices.split(\",\");\n+      for (int i = 0; i < policyNames.length; i++) {\n+        Class<? extends CheckPolicy> policyClass = (Class<? extends CheckPolicy>) Class.forName(policyNames[i]);\n         Constructor<? extends CheckPolicy> constructor = policyClass.getConstructor();\n         constructor.setAccessible(true);\n         checkPolices.add(constructor.newInstance());\n@@ -125,6 +122,7 @@ public class SlowChecker extends AbstractService {\n     if (stopped.getAndSet(true)) {\n       return;\n     }\n+\n     if (checker != null) {\n       checker.interrupt();\n       try {\n@@ -134,4 +132,4 @@ public class SlowChecker extends AbstractService {\n       }\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 32
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 120).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,71 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "60",
+    "information": {
+        "errors": [
+            {
+                "line": "198",
+                "column": "95",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "     * @throws UserStoreException\n     */\n    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n\n    /**\n     * Add the given attribute values to the user entry.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/60/UserStoreProvider.java\nindex d69b9fc8a46..85902dc74f0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/60/UserStoreProvider.java\n@@ -195,8 +195,9 @@ public interface UserStoreProvider {\n      *\n      * @throws UserStoreException\n      */\n-    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n+    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;\n \n+    // setPassword(String uid, char[] pwd)?  password reset?\n     /**\n      * Add the given attribute values to the user entry.\n      *\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "207",
+                    "column": "37",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/60/UserStoreProvider.java\nindex d69b9fc8a46..d75ba4f3b6d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/60/UserStoreProvider.java\n@@ -34,10 +34,15 @@ public interface UserStoreProvider {\n      */\n     public interface UserEntry {\n         String getName();\n+\n         String getDN();\n+\n         String getUid();\n+\n         String getStoreId();\n+\n         Set<GroupEntry> getGroups();\n+\n         Attributes getAttributes();\n     }\n \n@@ -46,9 +51,13 @@ public interface UserStoreProvider {\n      */\n     public interface GroupEntry {\n         String getName();\n+\n         String getDN();\n+\n         String getUid();\n+\n         String getStoreId();\n+\n         Set<String> getMembers();\n     }\n \n@@ -57,7 +66,9 @@ public interface UserStoreProvider {\n      */\n     public interface ResultSet<T> {\n         boolean hasNext();\n+\n         T getNext();\n+\n         void close();\n     }\n \n@@ -99,12 +110,13 @@ public interface UserStoreProvider {\n      * used is X509Certificate, but it's possible to imagine, e.g., KerberosToken or PasswordDigest.\n      *\n      * @param cbh\n-     * @param isGetGroups Whether or not to return the user's groups.\n+     * @param isGetGroups    Whether or not to return the user's groups.\n      * @param attributeNames Names of attributes to return, or null for no attributes.\n      * @return If successful, a UserEntry representing the authenticated user, otherwise throws an exception.\n      * @throws LoginException\n      */\n-    UserEntry authenticate(CallbackHandler cbh, boolean isGetGroups, Set<String> attributeNames) throws LoginException;\n+    UserEntry authenticate(CallbackHandler cbh, boolean isGetGroups, Set<String> attributeNames)\n+        throws LoginException;\n \n     /*\n      * User Lookup\n@@ -115,27 +127,27 @@ public interface UserStoreProvider {\n      * Group membership and selected attributes can also be requested, but requesting these may be inefficient\n      * if more than one user is matched.\n      *\n-     * @param name The user name to searech for.\n-     * @param isGetGroups Whether or not to return users' groups.\n+     * @param name           The user name to searech for.\n+     * @param isGetGroups    Whether or not to return users' groups.\n      * @param attributeNames Names of attributes to return, or null for no attributes.\n      * @return The Set of UserEntrys found.\n-     *\n      * @throws UserStoreException\n      */\n-    ResultSet<UserEntry> lookupUsersByName(String name, boolean isGetGroups, Set<String> attributeNames) throws UserStoreException;\n+    ResultSet<UserEntry> lookupUsersByName(String name, boolean isGetGroups,\n+                                           Set<String> attributeNames) throws UserStoreException;\n \n     /**\n      * Lookup a user by unique ID.  Returns the corresponding UserEntry if found.\n      * Group membership and selected attributes can also be requested.\n      *\n      * @param uid\n-     * @param isGetGroups Whether or not to return users' groups.\n+     * @param isGetGroups    Whether or not to return users' groups.\n      * @param attributeNames Names of attributes to return, or null for no attributes.\n      * @return The UserEntry (if found).\n-     *\n      * @throws UserStoreException\n      */\n-    UserEntry lookupUserByUid(String uid, boolean isGetGroups, Set<String> attributeNames) throws UserStoreException;\n+    UserEntry lookupUserByUid(String uid, boolean isGetGroups, Set<String> attributeNames)\n+        throws UserStoreException;\n \n     /*\n      * Group Lookup\n@@ -146,7 +158,6 @@ public interface UserStoreProvider {\n      *\n      * @param name The name to search on, may include wildcards (e.g., a*, *b, etc.)\n      * @return ResultSet of the GroupEntries matching the specified name.\n-     *\n      * @throws UserStoreException\n      */\n     ResultSet<GroupEntry> lookupGroupsByName(String name) throws UserStoreException;\n@@ -156,7 +167,6 @@ public interface UserStoreProvider {\n      *\n      * @param uid The UID of the group to return.\n      * @return GroupEntry corresponding to the group UID.\n-     *\n      * @throws UserStoreException\n      */\n     GroupEntry lookupGroupByUid(String uid) throws UserStoreException;\n@@ -168,20 +178,19 @@ public interface UserStoreProvider {\n     /**\n      * Create a new user and return the unique ID assigned.\n      *\n-     * @param name Name of the new user entry.\n-     * @param pwd Password to set on the new entry.\n+     * @param name       Name of the new user entry.\n+     * @param pwd        Password to set on the new entry.\n      * @param attributes Attributes to set on the entry (or null if none).\n      * @return Returns the UID assigned to the new entry (can be used for subsequent operations)\n-     *\n      * @throws UserStoreException\n      */\n-    String /*uid*/ createUser(String name, char[] pwd, Attributes attributes) throws UserStoreException;\n+    String /*uid*/ createUser(String name, char[] pwd, Attributes attributes)\n+        throws UserStoreException;\n \n     /**\n      * Remove the specified user.\n      *\n      * @param uid UID of the user to remove.\n-     *\n      * @throws UserStoreException\n      */\n     void deleteUser(String uid) throws UserStoreException;\n@@ -189,13 +198,13 @@ public interface UserStoreProvider {\n     /**\n      * Change the password for the specified user.  If old password is provided, verify before changing.\n      *\n-     * @param uid UID of user whose password should be changed.\n+     * @param uid    UID of user whose password should be changed.\n      * @param oldPwd Old password, if verification desired, or null.  If provided, must be valid.\n      * @param newPwd New password to set.\n-     *\n      * @throws UserStoreException\n      */\n-    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n+    void changePassword(String uid, char[] oldPwd, char[] newPwd)\n+        throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n \n     /**\n      * Add the given attribute values to the user entry.\n@@ -205,7 +214,8 @@ public interface UserStoreProvider {\n      * @param replace\n      * @throws UserStoreException\n      */\n-    void addAttributeValues(String uid, Attributes attributes, boolean replace) throws UserStoreException;\n+    void addAttributeValues(String uid, Attributes attributes, boolean replace)\n+        throws UserStoreException;\n \n     /**\n      * Remove the given attribute values from the user entry.\n",
+            "diff_size": 37
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/60/UserStoreProvider.java\nindex d69b9fc8a46..55cb031c451 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/60/UserStoreProvider.java\n@@ -195,7 +195,9 @@ public interface UserStoreProvider {\n      *\n      * @throws UserStoreException\n      */\n-    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n+    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;\n+\n+// setPassword(String uid, char[] pwd)?  password reset?\n \n     /**\n      * Add the given attribute values to the user entry.\n@@ -282,4 +284,4 @@ public interface UserStoreProvider {\n      */\n     void removeUsersFromGroup(Set<String> uids, String group) throws UserStoreException;\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/60/UserStoreProvider.java\nindex d69b9fc8a46..65d7b68d5b8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/60/UserStoreProvider.java\n@@ -195,9 +195,10 @@ public interface UserStoreProvider {\n      *\n      * @throws UserStoreException\n      */\n-    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n+    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;\n+     // setPassword(String uid, char[] pwd)?  password reset?\n \n-    /**\n+      /**\n      * Add the given attribute values to the user entry.\n      *\n      * @param uid\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/60/UserStoreProvider.java\nindex d69b9fc8a46..85902dc74f0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/60/UserStoreProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/60/UserStoreProvider.java\n@@ -195,8 +195,9 @@ public interface UserStoreProvider {\n      *\n      * @throws UserStoreException\n      */\n-    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;  // setPassword(String uid, char[] pwd)?  password reset?\n+    void changePassword(String uid, char[] oldPwd, char[] newPwd) throws UserStoreException;\n \n+    // setPassword(String uid, char[] pwd)?  password reset?\n     /**\n      * Add the given attribute values to the user entry.\n      *\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff"
+    ]
+}

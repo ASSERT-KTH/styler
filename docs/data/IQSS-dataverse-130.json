@@ -1,0 +1,96 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "130",
+    "information": {
+        "errors": [
+            {
+                "line": "31",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "\n        try {\n\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n\t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n\n            for(String fname: filenames){",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "32",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/130/ZipMaker.java\nindex 957b0c33b15..cbb94b755ef 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/130/ZipMaker.java\n@@ -28,7 +28,7 @@ public class ZipMaker{\n     public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n \n         try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n+           FileOutputStream fos = new FileOutputStream(outputZipFilename);\n \t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n \n             for(String fname: filenames){\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/130/ZipMaker.java\nindex 957b0c33b15..8e9218727b9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/130/ZipMaker.java\n@@ -10,65 +10,63 @@ import java.util.zip.ZipEntry;\n import java.util.zip.ZipOutputStream;\n \n /**\n- *  Convenience class to create a zip file, used by ShapefileHandler\n- *\n+ * Convenience class to create a zip file, used by ShapefileHandler\n+ * <p>\n  * source: http://www.avajava.com/tutorials/lessons/how-can-i-create-a-zip-file-from-a-set-of-files.html\n- * \n- * \n- * \n  */\n-public class ZipMaker{\n+public class ZipMaker {\n \n-    private static boolean DEBUG = false;\n-    \n-    public static void main(String[] args){\n-        \n-    }\n+  private static boolean DEBUG = false;\n+\n+  public static void main(String[] args) {\n+\n+  }\n+\n+  public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename) {\n+\n+    try {\n+      FileOutputStream fos = new FileOutputStream(outputZipFilename);\n+      ZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n \n-    public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n+      for (String fname : filenames) {\n \n-        try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n-\t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n+        String fullpath = new String(inputDirname + '/' + fname);\n+        addToZipFile(fname, fullpath, zip_output_stream);\n \n-            for(String fname: filenames){\n-            \n-                String fullpath = new String(inputDirname + '/' + fname);\n-                addToZipFile(fname, fullpath, zip_output_stream);\n-    \t\t\t\n-            }\n+      }\n \n-\t\t\tzip_output_stream.close();\n-\t\t\tfos.close();\n+      zip_output_stream.close();\n+      fos.close();\n \n-\t\t} catch (FileNotFoundException e) {\n-\t\t\te.printStackTrace();\n-\t\t} catch (IOException e) {\n-\t\t\te.printStackTrace();\n-\t\t}\n-        \n+    } catch (FileNotFoundException e) {\n+      e.printStackTrace();\n+    } catch (IOException e) {\n+      e.printStackTrace();\n     }\n \n+  }\n \n-public static void addToZipFile(String fileName, String fullFilepath, ZipOutputStream zip_output_stream) throws FileNotFoundException, IOException {\n \n-        if (DEBUG){\n-\t\t    System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n-        }\n-        \n-\t\tFile file = new File(fullFilepath);\n-\t\tFileInputStream file_input_stream = new FileInputStream(file);\n-\t\tZipEntry zipEntry = new ZipEntry(fileName);\n-\t\tzip_output_stream.putNextEntry(zipEntry);\n+  public static void addToZipFile(String fileName, String fullFilepath, ZipOutputStream zip_output_stream)\n+    throws FileNotFoundException, IOException {\n \n-\t\tbyte[] bytes = new byte[1024];\n-\t\tint length;\n-\t\twhile ((length = file_input_stream.read(bytes)) >= 0) {\n-\t\t\tzip_output_stream.write(bytes, 0, length);\n-\t\t}\n+    if (DEBUG) {\n+      System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n+    }\n+\n+    File file = new File(fullFilepath);\n+    FileInputStream file_input_stream = new FileInputStream(file);\n+    ZipEntry zipEntry = new ZipEntry(fileName);\n+    zip_output_stream.putNextEntry(zipEntry);\n+\n+    byte[] bytes = new byte[1024];\n+    int length;\n+    while ((length = file_input_stream.read(bytes)) >= 0) {\n+      zip_output_stream.write(bytes, 0, length);\n+    }\n \n-\t\tzip_output_stream.closeEntry();\n-\t\tfile_input_stream.close();\n-\t}\n+    zip_output_stream.closeEntry();\n+    file_input_stream.close();\n+  }\n \n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "32",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/naturalize/130/ZipMaker.java\nindex 957b0c33b15..e06ed5be30e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/naturalize/130/ZipMaker.java\n@@ -25,38 +25,31 @@ public class ZipMaker{\n         \n     }\n \n-    public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n+    public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename) {\n \n         try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n+    FileOutputStream fos = new FileOutputStream(outputZipFilename);\n \t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n-\n-            for(String fname: filenames){\n+for(String fname: filenames){\n             \n                 String fullpath = new String(inputDirname + '/' + fname);\n                 addToZipFile(fname, fullpath, zip_output_stream);\n-    \t\t\t\n             }\n-\n-\t\t\tzip_output_stream.close();\n+zip_output_stream.close();\n \t\t\tfos.close();\n-\n-\t\t} catch (FileNotFoundException e) {\n-\t\t\te.printStackTrace();\n-\t\t} catch (IOException e) {\n-\t\t\te.printStackTrace();\n-\t\t}\n-        \n+    } catch (FileNotFoundException e) {\n+    e.printStackTrace();\n+    } catch (IOException e) {\n+    e.printStackTrace();\n+    }\n     }\n-\n \n public static void addToZipFile(String fileName, String fullFilepath, ZipOutputStream zip_output_stream) throws FileNotFoundException, IOException {\n \n         if (DEBUG){\n-\t\t    System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n-        }\n-        \n-\t\tFile file = new File(fullFilepath);\n+    System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n+    }\n+File file = new File(fullFilepath);\n \t\tFileInputStream file_input_stream = new FileInputStream(file);\n \t\tZipEntry zipEntry = new ZipEntry(fileName);\n \t\tzip_output_stream.putNextEntry(zipEntry);\n@@ -64,11 +57,11 @@ public static void addToZipFile(String fileName, String fullFilepath, ZipOutputS\n \t\tbyte[] bytes = new byte[1024];\n \t\tint length;\n \t\twhile ((length = file_input_stream.read(bytes)) >= 0) {\n-\t\t\tzip_output_stream.write(bytes, 0, length);\n-\t\t}\n+    zip_output_stream.write(bytes, 0, length);\n+    }\n \n \t\tzip_output_stream.closeEntry();\n \t\tfile_input_stream.close();\n-\t}\n+    }\n \n-}\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/130/ZipMaker.java\nindex 957b0c33b15..2f8c5da4221 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/130/ZipMaker.java\n@@ -17,58 +17,47 @@ import java.util.zip.ZipOutputStream;\n  * \n  * \n  */\n-public class ZipMaker{\n+\n+\n+public class ZipMaker {\n \n     private static boolean DEBUG = false;\n-    \n-    public static void main(String[] args){\n-        \n-    }\n \n-    public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n+    public static void main(String[] args) {}\n \n+    public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename) {\n         try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n-\t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n-\n-            for(String fname: filenames){\n-            \n+            FileOutputStream fos = new FileOutputStream(outputZipFilename);\n+            ZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n+            for (String fname : filenames) {\n                 String fullpath = new String(inputDirname + '/' + fname);\n                 addToZipFile(fname, fullpath, zip_output_stream);\n-    \t\t\t\n             }\n-\n-\t\t\tzip_output_stream.close();\n-\t\t\tfos.close();\n-\n-\t\t} catch (FileNotFoundException e) {\n-\t\t\te.printStackTrace();\n-\t\t} catch (IOException e) {\n-\t\t\te.printStackTrace();\n-\t\t}\n-        \n+            zip_output_stream.close();\n+            fos.close();\n+        } catch (FileNotFoundException e) {\n+            e.printStackTrace();\n+        } catch (IOException e) {\n+            e.printStackTrace();\n+        }\n     }\n \n-\n-public static void addToZipFile(String fileName, String fullFilepath, ZipOutputStream zip_output_stream) throws FileNotFoundException, IOException {\n-\n-        if (DEBUG){\n-\t\t    System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n+    public static void addToZipFile(String fileName, String fullFilepath, ZipOutputStream zip_output_stream) throws FileNotFoundException, IOException {\n+        if (DEBUG) {\n+            System.out.println(\"Writing '\" + fileName + \"' to zip file\");\n         }\n-        \n-\t\tFile file = new File(fullFilepath);\n-\t\tFileInputStream file_input_stream = new FileInputStream(file);\n-\t\tZipEntry zipEntry = new ZipEntry(fileName);\n-\t\tzip_output_stream.putNextEntry(zipEntry);\n \n-\t\tbyte[] bytes = new byte[1024];\n-\t\tint length;\n-\t\twhile ((length = file_input_stream.read(bytes)) >= 0) {\n-\t\t\tzip_output_stream.write(bytes, 0, length);\n-\t\t}\n-\n-\t\tzip_output_stream.closeEntry();\n-\t\tfile_input_stream.close();\n-\t}\n+        File file = new File(fullFilepath);\n+        FileInputStream file_input_stream = new FileInputStream(file);\n+        ZipEntry zipEntry = new ZipEntry(fileName);\n+        zip_output_stream.putNextEntry(zipEntry);\n+        byte[] bytes = new byte[1024];\n+        int length;\n+        while ((length = file_input_stream.read(bytes)) >=0) {\n+            zip_output_stream.write(bytes, 0, length);\n+        }\n+        zip_output_stream.closeEntry();\n+        file_input_stream.close();\n+    }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "32",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/130/ZipMaker.java\nindex 957b0c33b15..cbb94b755ef 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/130/ZipMaker.java\n@@ -28,7 +28,7 @@ public class ZipMaker{\n     public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n \n         try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n+           FileOutputStream fos = new FileOutputStream(outputZipFilename);\n \t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n \n             for(String fname: filenames){\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "32",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/130/ZipMaker.java\nindex 957b0c33b15..f8b44308081 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/130/ZipMaker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/130/ZipMaker.java\n@@ -28,7 +28,7 @@ public class ZipMaker{\n     public ZipMaker(List<String> filenames, String inputDirname, String outputZipFilename){\n \n         try {\n-\t\t\tFileOutputStream fos = new FileOutputStream(outputZipFilename);\n+            FileOutputStream fos = new FileOutputStream(outputZipFilename);\n \t\t\tZipOutputStream zip_output_stream = new ZipOutputStream(fos);\n \n             for(String fname: filenames){\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

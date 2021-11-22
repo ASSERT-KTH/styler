@@ -1,0 +1,71 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "54",
+    "information": {
+        "errors": [
+            {
+                "line": "38",
+                "column": "2",
+                "severity": "warning",
+                "message": "'class def modifier' has incorrect indentation level 1, expected level should be 0.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "@TransactionManagement(TransactionManagementType.BEAN)\n@MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n public class MessageBean implements MessageListener {\n\n    @EJB private Hello1 hello1;\n    @EJB private Hello2 hello2;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/54/MessageBean.java\nindex cb20f04f1cd..039a41ba64a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/54/MessageBean.java\n@@ -35,7 +35,7 @@ import jakarta.annotation.Resource;\n \n @TransactionManagement(TransactionManagementType.BEAN)\n @MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n- public class MessageBean implements MessageListener {\n+public class MessageBean implements MessageListener {\n \n     @EJB private Hello1 hello1;\n     @EJB private Hello2 hello2;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/54/MessageBean.java\nindex cb20f04f1cd..16f0fa67e4c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/54/MessageBean.java\n@@ -34,17 +34,20 @@ import jakarta.jms.Session;\n import jakarta.annotation.Resource;\n \n @TransactionManagement(TransactionManagementType.BEAN)\n-@MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n- public class MessageBean implements MessageListener {\n+@MessageDriven(mappedName = \"jms/ejb_ejb30_hello_mdb_InQueue\", description = \"mymessagedriven bean description\")\n+public class MessageBean implements MessageListener {\n \n-    @EJB private Hello1 hello1;\n-    @EJB private Hello2 hello2;\n+    @EJB\n+    private Hello1 hello1;\n+    @EJB\n+    private Hello2 hello2;\n \n-    @Resource(name=\"jms/MyQueueConnectionFactory\",\n-              mappedName=\"jms/ejb_ejb30_hello_mdb_QCF\")\n+    @Resource(name = \"jms/MyQueueConnectionFactory\",\n+        mappedName = \"jms/ejb_ejb30_hello_mdb_QCF\")\n     QueueConnectionFactory qcFactory;\n \n-    @Resource(mappedName=\"jms/ejb_ejb30_hello_mdb_OutQueue\") Queue clientQueue;\n+    @Resource(mappedName = \"jms/ejb_ejb30_hello_mdb_OutQueue\")\n+    Queue clientQueue;\n \n     public void onMessage(Message message) {\n         System.out.println(\"Got message!!!\");\n@@ -60,15 +63,15 @@ import jakarta.annotation.Resource;\n             try {\n                 hello2.hello(\"this call should not go through\");\n                 throw new Exception(\"bean should have been removed \" +\n-                                    \"after removeMethod()\");\n-            } catch(NoSuchEJBException e) {\n+                    \"after removeMethod()\");\n+            } catch (NoSuchEJBException e) {\n                 System.out.println(\"Successfully caught EJBException after \" +\n-                                   \" accessing removed SFSB\");\n+                    \" accessing removed SFSB\");\n             }\n \n             connection = qcFactory.createQueueConnection();\n             QueueSession session = connection.createQueueSession(false,\n-                                   Session.AUTO_ACKNOWLEDGE);\n+                Session.AUTO_ACKNOWLEDGE);\n             QueueSender sender = session.createSender(clientQueue);\n             TextMessage tmessage = session.createTextMessage();\n             tmessage.setText(\"mdb() invoked\");\n@@ -76,14 +79,14 @@ import jakarta.annotation.Resource;\n             sender.send(tmessage);\n             System.out.println(\"message sent\");\n \n-        } catch(Exception e) {\n+        } catch (Exception e) {\n             e.printStackTrace();\n         } finally {\n             try {\n-                if(connection != null) {\n+                if (connection != null) {\n                     connection.close();\n                 }\n-            } catch(Exception e) {\n+            } catch (Exception e) {\n                 e.printStackTrace();\n             }\n         }\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "70",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'try' child has incorrect indentation level 0, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/54/MessageBean.java\nindex cb20f04f1cd..fc94d4777a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/54/MessageBean.java\n@@ -35,14 +35,12 @@ import jakarta.annotation.Resource;\n \n @TransactionManagement(TransactionManagementType.BEAN)\n @MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n- public class MessageBean implements MessageListener {\n+public class MessageBean implements MessageListener {\n \n     @EJB private Hello1 hello1;\n     @EJB private Hello2 hello2;\n \n-    @Resource(name=\"jms/MyQueueConnectionFactory\",\n-              mappedName=\"jms/ejb_ejb30_hello_mdb_QCF\")\n-    QueueConnectionFactory qcFactory;\n+    @Resource(name=\"jms/MyQueueConnectionFactory\", mappedName=\"jms/ejb_ejb30_hello_mdb_QCF\") QueueConnectionFactory qcFactory;\n \n     @Resource(mappedName=\"jms/ejb_ejb30_hello_mdb_OutQueue\") Queue clientQueue;\n \n@@ -69,7 +67,7 @@ import jakarta.annotation.Resource;\n             connection = qcFactory.createQueueConnection();\n             QueueSession session = connection.createQueueSession(false,\n                                    Session.AUTO_ACKNOWLEDGE);\n-            QueueSender sender = session.createSender(clientQueue);\n+QueueSender sender = session.createSender(clientQueue);\n             TextMessage tmessage = session.createTextMessage();\n             tmessage.setText(\"mdb() invoked\");\n             System.out.println(\"Sending message\");\n@@ -90,4 +88,4 @@ import jakarta.annotation.Resource;\n \n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/54/MessageBean.java\nindex cb20f04f1cd..039a41ba64a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/54/MessageBean.java\n@@ -35,7 +35,7 @@ import jakarta.annotation.Resource;\n \n @TransactionManagement(TransactionManagementType.BEAN)\n @MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n- public class MessageBean implements MessageListener {\n+public class MessageBean implements MessageListener {\n \n     @EJB private Hello1 hello1;\n     @EJB private Hello2 hello2;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/54/MessageBean.java\nindex cb20f04f1cd..039a41ba64a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/54/MessageBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/54/MessageBean.java\n@@ -35,7 +35,7 @@ import jakarta.annotation.Resource;\n \n @TransactionManagement(TransactionManagementType.BEAN)\n @MessageDriven(mappedName=\"jms/ejb_ejb30_hello_mdb_InQueue\", description=\"mymessagedriven bean description\")\n- public class MessageBean implements MessageListener {\n+public class MessageBean implements MessageListener {\n \n     @EJB private Hello1 hello1;\n     @EJB private Hello2 hello2;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

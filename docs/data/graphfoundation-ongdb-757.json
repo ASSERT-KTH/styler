@@ -1,0 +1,165 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "757",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "120",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/757/PropertyLookupFallbackComparator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/757/PropertyLookupFallbackComparator.java\nindex 80f0fd7d33d..526195a68b6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/757/PropertyLookupFallbackComparator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/757/PropertyLookupFallbackComparator.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.index.schema;\n \n import java.util.Comparator;\n@@ -28,40 +29,40 @@ import org.neo4j.values.storable.Values;\n /**\n  * Compares {@link NativeSchemaKey}, but will consult {@link PropertyAccessor} on coming across a comparison of zero.\n  * This is useful for e.g. spatial keys which are indexed lossily.\n+ *\n  * @param <KEY> type of index key.\n  */\n class PropertyLookupFallbackComparator<KEY extends NativeSchemaKey<KEY>> implements Comparator<KEY>\n {\n-    private final SchemaLayout<KEY> schemaLayout;\n-    private final PropertyAccessor propertyAccessor;\n-    private final int propertyKeyId;\n+  private final SchemaLayout<KEY> schemaLayout;\n+  private final PropertyAccessor propertyAccessor;\n+  private final int propertyKeyId;\n+\n+  PropertyLookupFallbackComparator(SchemaLayout<KEY> schemaLayout, PropertyAccessor propertyAccessor, int propertyKeyId)\n+  {\n+    this.schemaLayout = schemaLayout;\n+    this.propertyAccessor = propertyAccessor;\n+    this.propertyKeyId = propertyKeyId;\n+  }\n \n-    PropertyLookupFallbackComparator( SchemaLayout<KEY> schemaLayout, PropertyAccessor propertyAccessor, int propertyKeyId )\n+  @Override\n+  public int compare(KEY k1, KEY k2)\n+  {\n+    int comparison = schemaLayout.compareValue(k1, k2);\n+    if (comparison != 0)\n     {\n-        this.schemaLayout = schemaLayout;\n-        this.propertyAccessor = propertyAccessor;\n-        this.propertyKeyId = propertyKeyId;\n+      return comparison;\n     }\n-\n-    @Override\n-    public int compare( KEY k1, KEY k2 )\n+    try\n+    {\n+      return Values.COMPARATOR.compare(\n+          propertyAccessor.getPropertyValue(k1.getEntityId(), propertyKeyId),\n+          propertyAccessor.getPropertyValue(k2.getEntityId(), propertyKeyId));\n+    } catch (EntityNotFoundException e)\n     {\n-        int comparison = schemaLayout.compareValue( k1, k2 );\n-        if ( comparison != 0 )\n-        {\n-            return comparison;\n-        }\n-        try\n-        {\n-            return Values.COMPARATOR.compare(\n-                    propertyAccessor.getPropertyValue( k1.getEntityId(), propertyKeyId ),\n-                    propertyAccessor.getPropertyValue( k2.getEntityId(), propertyKeyId ) );\n-        }\n-        catch ( EntityNotFoundException e )\n-        {\n-            // We don't want this operation to fail since it's merely counting distinct values.\n-            // This entity not being there is most likely a result of a concurrent deletion happening as we speak.\n-            return comparison;\n-        }\n+      // We don't want this operation to fail since it's merely counting distinct values.\n+      // This entity not being there is most likely a result of a concurrent deletion happening as we speak.\n+      return comparison;\n     }\n+  }\n }\n",
+            "diff_size": 44
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "57",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 187).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/757/PropertyLookupFallbackComparator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/757/PropertyLookupFallbackComparator.java\nindex 80f0fd7d33d..f83c29f41f0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/757/PropertyLookupFallbackComparator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/757/PropertyLookupFallbackComparator.java\n@@ -51,12 +51,11 @@ class PropertyLookupFallbackComparator<KEY extends NativeSchemaKey<KEY>> impleme\n         {\n             return comparison;\n         }\n-        try\n+\n+try\n         {\n-            return Values.COMPARATOR.compare(\n-                    propertyAccessor.getPropertyValue( k1.getEntityId(), propertyKeyId ),\n-                    propertyAccessor.getPropertyValue( k2.getEntityId(), propertyKeyId ) );\n-        }\n+            return Values.COMPARATOR.compare( propertyAccessor.getPropertyValue( k1.getEntityId(), propertyKeyId ), propertyAccessor.getPropertyValue( k2.getEntityId(), propertyKeyId ) );\n+    }\n         catch ( EntityNotFoundException e )\n         {\n             // We don't want this operation to fail since it's merely counting distinct values.\n@@ -64,4 +63,4 @@ class PropertyLookupFallbackComparator<KEY extends NativeSchemaKey<KEY>> impleme\n             return comparison;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

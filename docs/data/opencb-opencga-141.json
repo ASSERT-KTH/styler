@@ -1,0 +1,76 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "141",
+    "information": {
+        "errors": [
+            {
+                "line": "34",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 162).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n        VIEW_CONTENT(Collections.singletonList(VIEW)),\n        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n        DELETE(Arrays.asList(VIEW, WRITE)),\n        DOWNLOAD(Collections.singletonList(VIEW)),\n        UPLOAD(Arrays.asList(VIEW, WRITE)),",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/141/FileAclEntry.java\nindex f83fa957a25..8137f9d03ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/141/FileAclEntry.java\n@@ -31,8 +31,9 @@ public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions>\n         VIEW(Collections.emptyList()),\n         VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n         VIEW_CONTENT(Collections.singletonList(VIEW)),\n-        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n-        DELETE(Arrays.asList(VIEW, WRITE)),\n+        WRITE(Collections.singletonList(VIEW)),\n+                // If a folder contains this permission for a user, the user will be able to create files under that folder.\n+               DELETE(Arrays.asList(VIEW, WRITE)),\n         DOWNLOAD(Collections.singletonList(VIEW)),\n         UPLOAD(Arrays.asList(VIEW, WRITE)),\n         VIEW_ANNOTATIONS(Collections.singletonList(VIEW)),\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/141/FileAclEntry.java\nindex f83fa957a25..766535ce40d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/141/FileAclEntry.java\n@@ -27,62 +27,63 @@ import java.util.stream.Collectors;\n  */\n public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions> {\n \n-    public enum FilePermissions {\n-        VIEW(Collections.emptyList()),\n-        VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n-        VIEW_CONTENT(Collections.singletonList(VIEW)),\n-        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n-        DELETE(Arrays.asList(VIEW, WRITE)),\n-        DOWNLOAD(Collections.singletonList(VIEW)),\n-        UPLOAD(Arrays.asList(VIEW, WRITE)),\n-        VIEW_ANNOTATIONS(Collections.singletonList(VIEW)),\n-        WRITE_ANNOTATIONS(Arrays.asList(VIEW_ANNOTATIONS, VIEW)),\n-        DELETE_ANNOTATIONS(Arrays.asList(VIEW_ANNOTATIONS, WRITE_ANNOTATIONS, VIEW));\n+  public enum FilePermissions {\n+    VIEW(Collections.emptyList()),\n+    VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n+    VIEW_CONTENT(Collections.singletonList(VIEW)),\n+    WRITE(Collections.singletonList(\n+        VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n+    DELETE(Arrays.asList(VIEW, WRITE)),\n+    DOWNLOAD(Collections.singletonList(VIEW)),\n+    UPLOAD(Arrays.asList(VIEW, WRITE)),\n+    VIEW_ANNOTATIONS(Collections.singletonList(VIEW)),\n+    WRITE_ANNOTATIONS(Arrays.asList(VIEW_ANNOTATIONS, VIEW)),\n+    DELETE_ANNOTATIONS(Arrays.asList(VIEW_ANNOTATIONS, WRITE_ANNOTATIONS, VIEW));\n \n-        private List<FilePermissions> implicitPermissions;\n+    private List<FilePermissions> implicitPermissions;\n \n-        FilePermissions(List<FilePermissions> implicitPermissions) {\n-            this.implicitPermissions = implicitPermissions;\n-        }\n+    FilePermissions(List<FilePermissions> implicitPermissions) {\n+      this.implicitPermissions = implicitPermissions;\n+    }\n \n-        public List<FilePermissions> getImplicitPermissions() {\n-            return implicitPermissions;\n-        }\n+    public List<FilePermissions> getImplicitPermissions() {\n+      return implicitPermissions;\n+    }\n \n-        public List<FilePermissions> getDependentPermissions() {\n-            List<FilePermissions> dependentPermissions = new LinkedList<>();\n-            for (FilePermissions permission : EnumSet.complementOf(EnumSet.of(this))) {\n-                if (permission.getImplicitPermissions().contains(this)) {\n-                    dependentPermissions.add(permission);\n-                }\n-            }\n-            return dependentPermissions;\n+    public List<FilePermissions> getDependentPermissions() {\n+      List<FilePermissions> dependentPermissions = new LinkedList<>();\n+      for (FilePermissions permission : EnumSet.complementOf(EnumSet.of(this))) {\n+        if (permission.getImplicitPermissions().contains(this)) {\n+          dependentPermissions.add(permission);\n         }\n+      }\n+      return dependentPermissions;\n     }\n+  }\n \n-    public FileAclEntry() {\n-        this(\"\", Collections.emptyList());\n-    }\n+  public FileAclEntry() {\n+    this(\"\", Collections.emptyList());\n+  }\n \n-    public FileAclEntry(String member, EnumSet<FilePermissions> permissions) {\n-        super(member, permissions);\n-    }\n+  public FileAclEntry(String member, EnumSet<FilePermissions> permissions) {\n+    super(member, permissions);\n+  }\n \n-    public FileAclEntry(String member, ObjectMap permissions) {\n-        super(member, EnumSet.noneOf(FilePermissions.class));\n+  public FileAclEntry(String member, ObjectMap permissions) {\n+    super(member, EnumSet.noneOf(FilePermissions.class));\n \n-        EnumSet<FilePermissions> aux = EnumSet.allOf(FilePermissions.class);\n-        for (FilePermissions permission : aux) {\n-            if (permissions.containsKey(permission.name()) && permissions.getBoolean(permission.name())) {\n-                this.permissions.add(permission);\n-            }\n-        }\n+    EnumSet<FilePermissions> aux = EnumSet.allOf(FilePermissions.class);\n+    for (FilePermissions permission : aux) {\n+      if (permissions.containsKey(permission.name()) && permissions.getBoolean(permission.name())) {\n+        this.permissions.add(permission);\n+      }\n     }\n+  }\n \n-    public FileAclEntry(String member, List<String> permissions) {\n-        super(member, EnumSet.noneOf(FilePermissions.class));\n-        if (permissions.size() > 0) {\n-            this.permissions.addAll(permissions.stream().map(FilePermissions::valueOf).collect(Collectors.toList()));\n-        }\n+  public FileAclEntry(String member, List<String> permissions) {\n+    super(member, EnumSet.noneOf(FilePermissions.class));\n+    if (permissions.size() > 0) {\n+      this.permissions.addAll(permissions.stream().map(FilePermissions::valueOf).collect(Collectors.toList()));\n     }\n+  }\n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/141/FileAclEntry.java\nindex f83fa957a25..1a6e34fbd81 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/141/FileAclEntry.java\n@@ -31,7 +31,7 @@ public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions>\n         VIEW(Collections.emptyList()),\n         VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n         VIEW_CONTENT(Collections.singletonList(VIEW)),\n-        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n+        WRITE(Collections.singletonList(VIEW)), // If a folder contains this permission for a user, the user will be able to create files under that folder.\n         DELETE(Arrays.asList(VIEW, WRITE)),\n         DOWNLOAD(Collections.singletonList(VIEW)),\n         UPLOAD(Arrays.asList(VIEW, WRITE)),\n@@ -85,4 +85,4 @@ public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions>\n             this.permissions.addAll(permissions.stream().map(FilePermissions::valueOf).collect(Collectors.toList()));\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/141/FileAclEntry.java\nindex f83fa957a25..8137f9d03ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/141/FileAclEntry.java\n@@ -31,8 +31,9 @@ public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions>\n         VIEW(Collections.emptyList()),\n         VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n         VIEW_CONTENT(Collections.singletonList(VIEW)),\n-        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n-        DELETE(Arrays.asList(VIEW, WRITE)),\n+        WRITE(Collections.singletonList(VIEW)),\n+                // If a folder contains this permission for a user, the user will be able to create files under that folder.\n+               DELETE(Arrays.asList(VIEW, WRITE)),\n         DOWNLOAD(Collections.singletonList(VIEW)),\n         UPLOAD(Arrays.asList(VIEW, WRITE)),\n         VIEW_ANNOTATIONS(Collections.singletonList(VIEW)),\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 192).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/141/FileAclEntry.java\nindex f83fa957a25..df9ba4ddff1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/141/FileAclEntry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/141/FileAclEntry.java\n@@ -31,8 +31,8 @@ public class FileAclEntry extends AbstractAclEntry<FileAclEntry.FilePermissions>\n         VIEW(Collections.emptyList()),\n         VIEW_HEADER(Collections.singletonList(VIEW)),  // Includes permission to view the sample ids from a VCF file.,\n         VIEW_CONTENT(Collections.singletonList(VIEW)),\n-        WRITE(Collections.singletonList(VIEW)),       // If a folder contains this permission for a user, the user will be able to create files under that folder.\n-        DELETE(Arrays.asList(VIEW, WRITE)),\n+        WRITE(Collections.singletonList(VIEW)), // If a folder contains this permission for a user, the user will be able to create files under that folder.DELETE (Arrays.asList(VIEW, WRITE)),\n+        DOWNLOAD(Arrays.asList(VIEW, WRITE)),\n         DOWNLOAD(Collections.singletonList(VIEW)),\n         UPLOAD(Arrays.asList(VIEW, WRITE)),\n         VIEW_ANNOTATIONS(Collections.singletonList(VIEW)),\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

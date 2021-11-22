@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "125",
+    "information": {
+        "errors": [
+            {
+                "line": "2",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 151).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * $HeadURL: http://svn.apache.org/repos/asf/httpcomponents/httpcore/trunk/contrib/src/main/java/org/apache/http/contrib/benchmark/HttpBenchmark.java $\n * $Revision: 693050 $\n * $Date: 2008-09-08 03:50:56 -0700 (Mon, 08 Sep 2008) $\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "2",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "2",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/125/HttpBenchmark.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/125/HttpBenchmark.java\nindex a130b339505..1fae5ec4fbb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/125/HttpBenchmark.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/125/HttpBenchmark.java\n@@ -28,6 +28,7 @@\n  * <http://www.apache.org/>.\n  *\n  */\n+\n package org.apache.http.contrib.benchmark;\n \n import java.io.File;\n@@ -59,150 +60,149 @@ import java.util.concurrent.TimeUnit;\n  * Main program of the HTTP benchmark.\n  *\n  * @author <a href=\"mailto:oleg at ural.ru\">Oleg Kalnichevski</a>\n- *\n+ * <p>\n  * <!-- empty lines above to avoid 'svn diff' context problems -->\n  * @version $Revision: 693050 $\n- * \n  * @since 4.0\n  */\n public class HttpBenchmark {\n \n-    private HttpParams params = null;\n-    private HttpRequest[] request = null;\n-    private HttpHost host = null;\n-    protected int verbosity = 0;\n-    protected boolean keepAlive = false;\n-    protected int requests = 1;\n-    protected int threads = 1;\n-    protected URL url = null;\n-    protected File postFile = null;\n-    protected String contentType = null;\n-    protected String[] headers = null;\n-    protected boolean doHeadInsteadOfGet = false;\n-    private long contentLength = -1;\n-    protected int socketTimeout = 60000;\n-    protected boolean useHttp1_0 = false;\n-\n-    public static void main(String[] args) throws Exception {\n-\n-        Options options = CommandLineUtils.getOptions();\n-        CommandLineParser parser = new PosixParser();\n-        CommandLine cmd = parser.parse(options, args);\n-\n-        if (args.length == 0 || cmd.hasOption('h') || cmd.getArgs().length != 1) {\n-            CommandLineUtils.showUsage(options);\n-            System.exit(1);\n-        }\n-\n-        HttpBenchmark httpBenchmark = new HttpBenchmark();\n-        CommandLineUtils.parseCommandLine(cmd, httpBenchmark);\n-        httpBenchmark.execute();\n+  private HttpParams params = null;\n+  private HttpRequest[] request = null;\n+  private HttpHost host = null;\n+  protected int verbosity = 0;\n+  protected boolean keepAlive = false;\n+  protected int requests = 1;\n+  protected int threads = 1;\n+  protected URL url = null;\n+  protected File postFile = null;\n+  protected String contentType = null;\n+  protected String[] headers = null;\n+  protected boolean doHeadInsteadOfGet = false;\n+  private long contentLength = -1;\n+  protected int socketTimeout = 60000;\n+  protected boolean useHttp1_0 = false;\n+\n+  public static void main(String[] args) throws Exception {\n+\n+    Options options = CommandLineUtils.getOptions();\n+    CommandLineParser parser = new PosixParser();\n+    CommandLine cmd = parser.parse(options, args);\n+\n+    if (args.length == 0 || cmd.hasOption('h') || cmd.getArgs().length != 1) {\n+      CommandLineUtils.showUsage(options);\n+      System.exit(1);\n     }\n \n+    HttpBenchmark httpBenchmark = new HttpBenchmark();\n+    CommandLineUtils.parseCommandLine(cmd, httpBenchmark);\n+    httpBenchmark.execute();\n+  }\n \n-    private void prepare() {\n-        // prepare http params\n-        params = getHttpParams(socketTimeout, useHttp1_0);\n \n-        host = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());\n+  private void prepare() {\n+    // prepare http params\n+    params = getHttpParams(socketTimeout, useHttp1_0);\n \n-        // Prepare requests for each thread\n-        request = new HttpRequest[threads];\n+    host = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());\n \n-        if (postFile != null) {\n-            FileEntity entity = new FileEntity(postFile, contentType);\n-            contentLength = entity.getContentLength();\n-            if (postFile.length() > 100000) {\n-                entity.setChunked(true);\n-            }\n+    // Prepare requests for each thread\n+    request = new HttpRequest[threads];\n \n-            for (int i = 0; i < threads; i++) {\n-                BasicHttpEntityEnclosingRequest httppost = \n-                    new BasicHttpEntityEnclosingRequest(\"POST\", url.getPath());\n-                httppost.setEntity(entity);\n-                request[i] = httppost;\n-            }\n+    if (postFile != null) {\n+      FileEntity entity = new FileEntity(postFile, contentType);\n+      contentLength = entity.getContentLength();\n+      if (postFile.length() > 100000) {\n+        entity.setChunked(true);\n+      }\n \n-        } else if (doHeadInsteadOfGet) {\n-            for (int i = 0; i < threads; i++) {\n-                request[i] = new BasicHttpRequest(\"HEAD\", url.getPath());\n-            }\n+      for (int i = 0; i < threads; i++) {\n+        BasicHttpEntityEnclosingRequest httppost =\n+          new BasicHttpEntityEnclosingRequest(\"POST\", url.getPath());\n+        httppost.setEntity(entity);\n+        request[i] = httppost;\n+      }\n \n-        } else {\n-            for (int i = 0; i < threads; i++) {\n-                request[i] = new BasicHttpRequest(\"GET\", url.getPath());\n-            }\n-        }\n+    } else if (doHeadInsteadOfGet) {\n+      for (int i = 0; i < threads; i++) {\n+        request[i] = new BasicHttpRequest(\"HEAD\", url.getPath());\n+      }\n \n-        if (!keepAlive) {\n-            for (int i = 0; i < threads; i++) {\n-                request[i].addHeader(new DefaultHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE));\n-            }\n-        }\n+    } else {\n+      for (int i = 0; i < threads; i++) {\n+        request[i] = new BasicHttpRequest(\"GET\", url.getPath());\n+      }\n+    }\n \n-        if (headers != null) {\n-            for (int i = 0; i < headers.length; i++) {\n-                String s = headers[i];\n-                int pos = s.indexOf(':');\n-                if (pos != -1) {\n-                    Header header = new DefaultHeader(s.substring(0, pos).trim(), s.substring(pos + 1));\n-                    for (int j = 0; j < threads; j++) {\n-                        request[j].addHeader(header);\n-                    }\n-                }\n-            }\n-        }\n+    if (!keepAlive) {\n+      for (int i = 0; i < threads; i++) {\n+        request[i].addHeader(new DefaultHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE));\n+      }\n     }\n \n-    private void execute() {\n-\n-        prepare();\n-\n-        ThreadPoolExecutor workerPool = new ThreadPoolExecutor(\n-            threads, threads, 5, TimeUnit.SECONDS,\n-            new LinkedBlockingQueue<Runnable>(),\n-            new ThreadFactory() {\n-                \n-                public Thread newThread(Runnable r) {\n-                    return new Thread(r, \"ClientPool\");\n-                }\n-                \n-            });\n-        workerPool.prestartAllCoreThreads();\n-\n-        BenchmarkWorker[] workers = new BenchmarkWorker[threads];\n-        for (int i = 0; i < threads; i++) {\n-            workers[i] = new BenchmarkWorker(\n-                    params, \n-                    verbosity, \n-                    request[i], \n-                    host, \n-                    requests, \n-                    keepAlive);\n-            workerPool.execute(workers[i]);\n+    if (headers != null) {\n+      for (int i = 0; i < headers.length; i++) {\n+        String s = headers[i];\n+        int pos = s.indexOf(':');\n+        if (pos != -1) {\n+          Header header = new DefaultHeader(s.substring(0, pos).trim(), s.substring(pos + 1));\n+          for (int j = 0; j < threads; j++) {\n+            request[j].addHeader(header);\n+          }\n         }\n+      }\n+    }\n+  }\n+\n+  private void execute() {\n \n-        while (workerPool.getCompletedTaskCount() < threads) {\n-            Thread.yield();\n-            try {\n-                Thread.sleep(1000);\n-            } catch (InterruptedException ignore) {\n-            }\n+    prepare();\n+\n+    ThreadPoolExecutor workerPool = new ThreadPoolExecutor(\n+      threads, threads, 5, TimeUnit.SECONDS,\n+      new LinkedBlockingQueue<Runnable>(),\n+      new ThreadFactory() {\n+\n+        public Thread newThread(Runnable r) {\n+          return new Thread(r, \"ClientPool\");\n         }\n \n-        workerPool.shutdown();\n-        ResultProcessor.printResults(workers, host, url.toString(), contentLength);\n+      });\n+    workerPool.prestartAllCoreThreads();\n+\n+    BenchmarkWorker[] workers = new BenchmarkWorker[threads];\n+    for (int i = 0; i < threads; i++) {\n+      workers[i] = new BenchmarkWorker(\n+        params,\n+        verbosity,\n+        request[i],\n+        host,\n+        requests,\n+        keepAlive);\n+      workerPool.execute(workers[i]);\n     }\n \n-    private HttpParams getHttpParams(int socketTimeout, boolean useHttp1_0) {\n-        HttpParams params = new BasicHttpParams();\n-        params.setParameter(HttpProtocolParams.PROTOCOL_VERSION,\n-            useHttp1_0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1)\n-            .setParameter(HttpProtocolParams.USER_AGENT, \"Jakarta-HttpComponents-Bench/1.1\")\n-            .setBooleanParameter(HttpProtocolParams.USE_EXPECT_CONTINUE, false)\n-            .setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, false)\n-            .setIntParameter(HttpConnectionParams.SO_TIMEOUT, socketTimeout);\n-        return params;\n+    while (workerPool.getCompletedTaskCount() < threads) {\n+      Thread.yield();\n+      try {\n+        Thread.sleep(1000);\n+      } catch (InterruptedException ignore) {\n+      }\n     }\n \n+    workerPool.shutdown();\n+    ResultProcessor.printResults(workers, host, url.toString(), contentLength);\n+  }\n+\n+  private HttpParams getHttpParams(int socketTimeout, boolean useHttp1_0) {\n+    HttpParams params = new BasicHttpParams();\n+    params.setParameter(HttpProtocolParams.PROTOCOL_VERSION,\n+      useHttp1_0 ? HttpVersion.HTTP_1_0 : HttpVersion.HTTP_1_1)\n+      .setParameter(HttpProtocolParams.USER_AGENT, \"Jakarta-HttpComponents-Bench/1.1\")\n+      .setBooleanParameter(HttpProtocolParams.USE_EXPECT_CONTINUE, false)\n+      .setBooleanParameter(HttpConnectionParams.STALE_CONNECTION_CHECK, false)\n+      .setIntParameter(HttpConnectionParams.SO_TIMEOUT, socketTimeout);\n+    return params;\n+  }\n+\n }\n",
+            "diff_size": 162
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "2",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/125/HttpBenchmark.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/125/HttpBenchmark.java\nindex a130b339505..c89a0f25130 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/125/HttpBenchmark.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/125/HttpBenchmark.java\n@@ -155,20 +155,18 @@ public class HttpBenchmark {\n     }\n \n     private void execute() {\n-\n-        prepare();\n+    prepare();\n \n         ThreadPoolExecutor workerPool = new ThreadPoolExecutor(\n             threads, threads, 5, TimeUnit.SECONDS,\n             new LinkedBlockingQueue<Runnable>(),\n             new ThreadFactory() {\n-                \n-                public Thread newThread(Runnable r) {\n-                    return new Thread(r, \"ClientPool\");\n+    public Thread newThread(Runnable r) {\n+    return new Thread(r, \"ClientPool\");\n                 }\n                 \n             });\n-        workerPool.prestartAllCoreThreads();\n+workerPool.prestartAllCoreThreads();\n \n         BenchmarkWorker[] workers = new BenchmarkWorker[threads];\n         for (int i = 0; i < threads; i++) {\n@@ -205,4 +203,4 @@ public class HttpBenchmark {\n         return params;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "2",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "2",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

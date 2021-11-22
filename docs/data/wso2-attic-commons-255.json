@@ -1,0 +1,90 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "255",
+    "information": {
+        "errors": [
+            {
+                "line": "114",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 128).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    {\n      int index = uri.indexOf(\":\");\n      if (index != -1 && index > 2) // assume protocol with be length 3 so that the'C' in 'C:/' is not interpreted as a protocol\n      {\n        result = true;\n      }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/255/WSDLReaderImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/255/WSDLReaderImpl.java\nindex b6963f67660..97b0bb78a48 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/255/WSDLReaderImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/255/WSDLReaderImpl.java\n@@ -4,10 +4,11 @@\n  * are made available under the terms of the Eclipse Public License v1.0\n  * which accompanies this distribution, and is available at\n  * http://www.eclipse.org/legal/epl-v10.html\n- * \n+ *\n  * Contributors:\n  *     IBM Corporation - initial API and implementation\n  *******************************************************************************/\n+\n package org.eclipse.wst.wsdl.internal.impl.wsdl4j;\n \n \n@@ -30,39 +31,32 @@ import org.w3c.dom.Element;\n import org.xml.sax.InputSource;\n \n \n-public final class WSDLReaderImpl implements WSDLReader\n-{\n+public final class WSDLReaderImpl implements WSDLReader {\n   private String factoryImplName;\n \n   private ExtensionRegistry extReg;\n \n-  public ExtensionRegistry getExtensionRegistry()\n-  {\n+  public ExtensionRegistry getExtensionRegistry() {\n     return extReg;\n   }\n \n-  public void setExtensionRegistry(ExtensionRegistry extReg)\n-  {\n+  public void setExtensionRegistry(ExtensionRegistry extReg) {\n     this.extReg = extReg;\n   }\n \n-  public String getFactoryImplName()\n-  {\n+  public String getFactoryImplName() {\n     return factoryImplName;\n   }\n \n-  public void setFactoryImplName(String factoryImplName) throws UnsupportedOperationException\n-  {\n+  public void setFactoryImplName(String factoryImplName) throws UnsupportedOperationException {\n     this.factoryImplName = factoryImplName;\n   }\n \n-  public boolean getFeature(String name) throws IllegalArgumentException\n-  {\n+  public boolean getFeature(String name) throws IllegalArgumentException {\n     return false;\n   }\n \n-  public void setFeature(String name, boolean value) throws IllegalArgumentException\n-  {\n+  public void setFeature(String name, boolean value) throws IllegalArgumentException {\n     throw new IllegalArgumentException(\"Not Implemented\");\n   }\n \n@@ -71,33 +65,30 @@ public final class WSDLReaderImpl implements WSDLReader\n    * URI into a WSDL definition.\n    *\n    * @param wsdlURI a URI (can be a filename or URL) pointing to a\n-   * WSDL XML definition.\n+   *                WSDL XML definition.\n    * @return the definition.\n    */\n-  public Definition readWSDL(String wsdlURI) throws WSDLException\n-  {\n+  public Definition readWSDL(String wsdlURI) throws WSDLException {\n     URI uri;\n-    if (hasProtocol(wsdlURI))\n+    if (hasProtocol(wsdlURI)) {\n       uri = URI.createURI(wsdlURI);\n-    else\n+    } else {\n       uri = URI.createFileURI(wsdlURI);\n+    }\n \n     // Create a resource set, create a wsdl resource, and load the main wsdl file into it.\n \n     ResourceSet resourceSet = new ResourceSetImpl();\n     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(\"wsdl\", new WSDLResourceFactoryImpl());\n \n-    WSDLResourceImpl wsdlMainResource = (WSDLResourceImpl)resourceSet.createResource(URI.createURI(\"*.wsdl\"));\n+    WSDLResourceImpl wsdlMainResource = (WSDLResourceImpl) resourceSet.createResource(URI.createURI(\"*.wsdl\"));\n     wsdlMainResource.setURI(uri);\n \n-    try\n-    {\n+    try {\n       InputStream inputStream = resourceSet.getURIConverter().createInputStream(uri);\n       wsdlMainResource.load(inputStream, resourceSet.getLoadOptions());\n       //wsdlMainResource.load(resourceSet.getLoadOptions());\n-    }\n-    catch (IOException e)\n-    {\n+    } catch (IOException e) {\n       throw new WSDLException(WSDLException.INVALID_WSDL, \"WSDL URI: \" + wsdlURI, e);\n     }\n \n@@ -105,13 +96,12 @@ public final class WSDLReaderImpl implements WSDLReader\n     return wsdlMainResource.getDefinition();\n   }\n \n-  private boolean hasProtocol(String uri)\n-  {\n+  private boolean hasProtocol(String uri) {\n     boolean result = false;\n-    if (uri != null)\n-    {\n+    if (uri != null) {\n       int index = uri.indexOf(\":\");\n-      if (index != -1 && index > 2) // assume protocol with be length 3 so that the'C' in 'C:/' is not interpreted as a protocol\n+      if (index != -1 &&\n+        index > 2) // assume protocol with be length 3 so that the'C' in 'C:/' is not interpreted as a protocol\n       {\n         result = true;\n       }\n@@ -124,14 +114,13 @@ public final class WSDLReaderImpl implements WSDLReader\n    * URI into a WSDL definition.\n    *\n    * @param contextURI the context in which to resolve the\n-   * wsdlURI, if the wsdlURI is relative. Can be null, in which\n-   * case it will be ignored.\n-   * @param wsdlURI a URI (can be a filename or URL) pointing to a\n-   * WSDL XML definition.\n+   *                   wsdlURI, if the wsdlURI is relative. Can be null, in which\n+   *                   case it will be ignored.\n+   * @param wsdlURI    a URI (can be a filename or URL) pointing to a\n+   *                   WSDL XML definition.\n    * @return the definition.\n    */\n-  public Definition readWSDL(String contextURI, String wsdlURI) throws WSDLException\n-  {\n+  public Definition readWSDL(String contextURI, String wsdlURI) throws WSDLException {\n     throw new WSDLException(WSDLException.OTHER_ERROR, \"Not Implemented\");\n   }\n \n@@ -139,15 +128,14 @@ public final class WSDLReaderImpl implements WSDLReader\n    * Read the specified &lt;wsdl:definitions&gt; element into a WSDL\n    * definition.\n    *\n-   * @param documentBaseURI the document base URI of the WSDL definition\n-   * described by the element. Will be set as the documentBaseURI\n-   * of the returned Definition. Can be null, in which case it\n-   * will be ignored.\n+   * @param documentBaseURI    the document base URI of the WSDL definition\n+   *                           described by the element. Will be set as the documentBaseURI\n+   *                           of the returned Definition. Can be null, in which case it\n+   *                           will be ignored.\n    * @param definitionsElement the &lt;wsdl:definitions&gt; element\n    * @return the definition described by the element.\n    */\n-  public Definition readWSDL(String documentBaseURI, Element definitionsElement) throws WSDLException\n-  {\n+  public Definition readWSDL(String documentBaseURI, Element definitionsElement) throws WSDLException {\n     throw new WSDLException(WSDLException.OTHER_ERROR, \"Not Implemented\");\n   }\n \n@@ -155,15 +143,14 @@ public final class WSDLReaderImpl implements WSDLReader\n    * Read the specified WSDL document into a WSDL definition.\n    *\n    * @param documentBaseURI the document base URI of the WSDL definition\n-   * described by the document. Will be set as the documentBaseURI\n-   * of the returned Definition. Can be null, in which case it\n-   * will be ignored.\n-   * @param wsdlDocument the WSDL document, an XML \n-   * document obeying the WSDL schema.\n+   *                        described by the document. Will be set as the documentBaseURI\n+   *                        of the returned Definition. Can be null, in which case it\n+   *                        will be ignored.\n+   * @param wsdlDocument    the WSDL document, an XML\n+   *                        document obeying the WSDL schema.\n    * @return the definition described in the document.\n    */\n-  public Definition readWSDL(String documentBaseURI, Document wsdlDocument) throws WSDLException\n-  {\n+  public Definition readWSDL(String documentBaseURI, Document wsdlDocument) throws WSDLException {\n     throw new WSDLException(WSDLException.OTHER_ERROR, \"Not Implemented\");\n   }\n \n@@ -171,35 +158,33 @@ public final class WSDLReaderImpl implements WSDLReader\n    * Read a WSDL document into a WSDL definition.\n    *\n    * @param documentBaseURI the document base URI of the WSDL definition\n-   * described by the document. Will be set as the documentBaseURI\n-   * of the returned Definition. Can be null, in which case it\n-   * will be ignored.\n-   * @param inputSource an InputSource pointing to the\n-   * WSDL document, an XML document obeying the WSDL schema.\n+   *                        described by the document. Will be set as the documentBaseURI\n+   *                        of the returned Definition. Can be null, in which case it\n+   *                        will be ignored.\n+   * @param inputSource     an InputSource pointing to the\n+   *                        WSDL document, an XML document obeying the WSDL schema.\n    * @return the definition described in the document pointed to\n    * by the InputSource.\n    */\n-  public Definition readWSDL(String documentBaseURI, InputSource inputSource) throws WSDLException\n-  {\n+  public Definition readWSDL(String documentBaseURI, InputSource inputSource) throws WSDLException {\n     ResourceSet resourceSet = new ResourceSetImpl();\n     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(\"wsdl\", new WSDLResourceFactoryImpl());\n-    WSDLResourceImpl wsdlMainResource = (WSDLResourceImpl)resourceSet.createResource(URI.createURI(\"*.wsdl\"));\n+    WSDLResourceImpl wsdlMainResource = (WSDLResourceImpl) resourceSet.createResource(URI.createURI(\"*.wsdl\"));\n \n-    try\n-    {\n-      if (documentBaseURI != null)\n+    try {\n+      if (documentBaseURI != null) {\n         wsdlMainResource.setURI(createURI(documentBaseURI));\n+      }\n       resourceSet.getLoadOptions().put(WSDLResourceImpl.CONTINUE_ON_LOAD_ERROR, new Boolean(false));\n       wsdlMainResource.load(inputSource.getByteStream(), resourceSet.getLoadOptions());\n-    }\n-    catch (IOException ioe)\n-    {\n+    } catch (IOException ioe) {\n       throw new WSDLException(WSDLException.INVALID_WSDL, \"\", ioe);\n     }\n \n     Definition definition = wsdlMainResource.getDefinition();\n-    if (definition != null)\n+    if (definition != null) {\n       definition.setDocumentBaseURI(documentBaseURI);\n+    }\n \n     return definition;\n   }\n@@ -208,20 +193,19 @@ public final class WSDLReaderImpl implements WSDLReader\n    * Read a WSDL document into a WSDL definition.\n    *\n    * @param locator A WSDLLocator object used to provide InputSources\n-   * pointing to the wsdl file.\n+   *                pointing to the wsdl file.\n    * @return the definition described in the document\n    */\n-  public Definition readWSDL(WSDLLocator locator) throws WSDLException\n-  {\n+  public Definition readWSDL(WSDLLocator locator) throws WSDLException {\n     throw new WSDLException(WSDLException.OTHER_ERROR, \"Not Implemented\");\n   }\n \n-  private URI createURI(String uriString)\n-  {\n-    if (hasProtocol(uriString))\n+  private URI createURI(String uriString) {\n+    if (hasProtocol(uriString)) {\n       return URI.createURI(uriString);\n-    else\n+    } else {\n       return URI.createFileURI(uriString);\n+    }\n   }\n \n }\n",
+            "diff_size": 78
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/255/WSDLReaderImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/255/WSDLReaderImpl.java\nindex b6963f67660..e690e829466 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/255/WSDLReaderImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/255/WSDLReaderImpl.java\n@@ -224,4 +224,4 @@ public final class WSDLReaderImpl implements WSDLReader\n       return URI.createFileURI(uriString);\n   }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

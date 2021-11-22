@@ -1,0 +1,123 @@
+{
+    "project_name": "spark-root-laurelin",
+    "error_id": "18",
+    "information": {
+        "errors": [
+            {
+                "line": "133",
+                "column": "73",
+                "severity": "warning",
+                "message": "WhitespaceAround: ':' is not preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "        }\n\n        assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n\n        /*\n         *  At this point, we have a list of post-globbing URIs and lists of",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/18/IOFactory.java\nindex f9659eed4fe..a5ca0553197 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/18/IOFactory.java\n@@ -130,7 +130,7 @@ public class IOFactory {\n             }\n         }\n \n-        assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n+        assert qualifiedListingToStatusMap.size() >= globResolved.size() : \"qualifiedlisting < globresolved\";\n \n         /*\n          *  At this point, we have a list of post-globbing URIs and lists of\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "134",
+                    "column": "77",
+                    "severity": "warning",
+                    "message": "'==' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                },
+                {
+                    "line": "169",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "'&&' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/18/IOFactory.java\nindex f9659eed4fe..ee2caa6e0b0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/18/IOFactory.java\n@@ -62,17 +62,19 @@ public class IOFactory {\n      * @return Fully expanded list of ROOT file paths\n      * @throws IOException If any globs don't resolve or paths don't exist\n      */\n-    public static List<Path> resolvePathList(List<String> paths) throws IOException {\n+    public static List<Path> resolvePathList(List<String> paths)\n+        throws IOException {\n         Configuration hadoopConf;\n         try {\n-            hadoopConf = SparkSession.active().sparkContext().hadoopConfiguration();\n+            hadoopConf =\n+                SparkSession.active().sparkContext().hadoopConfiguration();\n         } catch (IllegalStateException e) {\n             hadoopConf = new Configuration();\n         }\n \n         List<Path> globResolved = new ArrayList<Path>(paths.size());\n         // First perform any globbing\n-        for (String path: paths) {\n+        for (String path : paths) {\n             if (isGlob(path)) {\n                 globResolved.addAll(resolveGlob(path));\n             } else {\n@@ -105,40 +107,47 @@ public class IOFactory {\n \n         // Loop over all the paths and keep the unique parents of them all\n         // TODO: Is repeatedly instantiating FileSystem objects slow over WAN?\n-        Map<Path, List<FileStatus>> parentDirectories = new HashMap<Path, List<FileStatus>>();\n+        Map<Path, List<FileStatus>> parentDirectories =\n+            new HashMap<Path, List<FileStatus>>();\n         Map<Path, Path> childToParentMap = new HashMap<Path, Path>();\n         Map<Path, Path> qualifiedChildToParentMap = new HashMap<Path, Path>();\n-        for (Path path: globResolved) {\n+        for (Path path : globResolved) {\n             Path parent = path.getParent();\n             parentDirectories.put(parent, null);\n             childToParentMap.put(path, parent);\n             FileSystem fs = parent.getFileSystem(hadoopConf);\n-            Path qualifiedChild = path.makeQualified(fs.getUri(), fs.getWorkingDirectory());\n+            Path qualifiedChild =\n+                path.makeQualified(fs.getUri(), fs.getWorkingDirectory());\n             qualifiedChildToParentMap.put(qualifiedChild, parent);\n         }\n \n         // Retrieve the listing for all the parent dirs\n-        Map<Path, List<FileStatus>> parentToStatusMap = new HashMap<Path, List<FileStatus>>();\n-        Map<Path, FileStatus> qualifiedListingToStatusMap = new HashMap<Path, FileStatus>();\n-        for (Path parent: parentDirectories.keySet()) {\n+        Map<Path, List<FileStatus>> parentToStatusMap =\n+            new HashMap<Path, List<FileStatus>>();\n+        Map<Path, FileStatus> qualifiedListingToStatusMap =\n+            new HashMap<Path, FileStatus>();\n+        for (Path parent : parentDirectories.keySet()) {\n             FileSystem fs = parent.getFileSystem(hadoopConf);\n             FileStatus[] listing = fs.listStatus(parent);\n             parentToStatusMap.put(parent, Arrays.asList(listing));\n-            for (FileStatus s: listing) {\n-                assert qualifiedListingToStatusMap.containsKey(s.getPath()) == false;\n+            for (FileStatus s : listing) {\n+                assert qualifiedListingToStatusMap.containsKey(s.getPath()) ==\n+                    false;\n                 qualifiedListingToStatusMap.put(s.getPath(), s);\n             }\n         }\n \n-        assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n+        assert qualifiedListingToStatusMap.size() >= globResolved.size() :\n+            \"qualifiedlisting < globresolved\";\n \n         /*\n          *  At this point, we have a list of post-globbing URIs and lists of\n          *  FileStatus for every parent of those URIs. Use this to make a map of\n          *  Globbed path -> FileStatus\n          */\n-        Map<Path, FileStatus> clientRequestedPathToStatusMap = new HashMap<Path, FileStatus>();\n-        for (Entry<Path, Path> e: qualifiedChildToParentMap.entrySet()) {\n+        Map<Path, FileStatus> clientRequestedPathToStatusMap =\n+            new HashMap<Path, FileStatus>();\n+        for (Entry<Path, Path> e : qualifiedChildToParentMap.entrySet()) {\n             if (!qualifiedListingToStatusMap.containsKey(e.getKey())) {\n                 throw new IOException(\"Path not found: \" + e.getKey());\n             }\n@@ -148,15 +157,17 @@ public class IOFactory {\n \n         // Walk the statuses to sort between files and directories\n         List<Path> ret = new ArrayList<Path>(globResolved.size());\n-        for (FileStatus status: clientRequestedPathToStatusMap.values()) {\n+        for (FileStatus status : clientRequestedPathToStatusMap.values()) {\n             Path path = status.getPath();\n             if (status.isDirectory()) {\n                 // We were given a directory, add everything recursively\n                 FileSystem fs = status.getPath().getFileSystem(hadoopConf);\n-                RemoteIterator<LocatedFileStatus> fileList = fs.listFiles(status.getPath(), true);\n+                RemoteIterator<LocatedFileStatus> fileList =\n+                    fs.listFiles(status.getPath(), true);\n                 while (fileList.hasNext()) {\n                     LocatedFileStatus file = fileList.next();\n-                    if (file.isFile() && (file.getPath().getName().endsWith(\".root\"))) {\n+                    if (file.isFile() &&\n+                        (file.getPath().getName().endsWith(\".root\"))) {\n                         ret.add(file.getPath());\n                     }\n                 }\n@@ -172,6 +183,7 @@ public class IOFactory {\n \n     /**\n      * Perform glob expansion on a path\n+     *\n      * @param path Glob to expand\n      * @return List of paths that match the given glob\n      * @throws IOException Nothing matches the given glob\n@@ -179,25 +191,30 @@ public class IOFactory {\n     private static List<Path> resolveGlob(String path) throws IOException {\n         Configuration hadoopConf;\n         try {\n-            hadoopConf = SparkSession.active().sparkContext().hadoopConfiguration();\n+            hadoopConf =\n+                SparkSession.active().sparkContext().hadoopConfiguration();\n         } catch (IllegalStateException e) {\n             hadoopConf = new Configuration();\n         }\n \n         Path hdfsPath = new Path(path);\n         FileSystem fs = hdfsPath.getFileSystem(hadoopConf);\n-        Path qualified = hdfsPath.makeQualified(fs.getUri(), fs.getWorkingDirectory());\n-        Seq<Path> globPath = SparkHadoopUtil.get().globPathIfNecessary(fs, qualified);\n+        Path qualified =\n+            hdfsPath.makeQualified(fs.getUri(), fs.getWorkingDirectory());\n+        Seq<Path> globPath =\n+            SparkHadoopUtil.get().globPathIfNecessary(fs, qualified);\n         if (globPath.isEmpty()) {\n             throw new IOException(\"Path does not exist: \" + qualified);\n         }\n         // TODO: Is this stable across Scala versions?\n-        List<Path> ret = JavaConverters.seqAsJavaListConverter(globPath).asJava();\n+        List<Path> ret =\n+            JavaConverters.seqAsJavaListConverter(globPath).asJava();\n         return ret;\n     }\n \n     /**\n      * See if the given path has any glob metacharacters\n+     *\n      * @param path Input path\n      * @return True if the path looks like a glob. False otherwise.\n      */\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "47",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "73",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: ':' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "194",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "Comment has incorrect indentation level 0, expected is 8, indentation should be the same level as line 195.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/18/IOFactory.java\nindex f9659eed4fe..e7752592b23 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/18/IOFactory.java\n@@ -44,8 +44,7 @@ public class IOFactory {\n             //Only support reading xz-compressed files locally\n             path = path.replace(\"$$XZ$$\", \"\");\n             ret = new XZDecompressionWrapper(path);\n-\n-        } else if (Pattern.matches(hadoopPattern, path)) {\n+    } else if (Pattern.matches(hadoopPattern, path)) {\n             ret = new HadoopFile(path);\n         } else {\n             ret = new NIOFile(path);\n@@ -191,7 +190,8 @@ public class IOFactory {\n         if (globPath.isEmpty()) {\n             throw new IOException(\"Path does not exist: \" + qualified);\n         }\n-        // TODO: Is this stable across Scala versions?\n+\n+// TODO: Is this stable across Scala versions?\n         List<Path> ret = JavaConverters.seqAsJavaListConverter(globPath).asJava();\n         return ret;\n     }\n@@ -204,4 +204,4 @@ public class IOFactory {\n     private static boolean isGlob(String path) {\n         return path.matches(\".*[{}\\\\[\\\\]*?].*\");\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "48",
+                    "column": "20",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "128",
+                    "column": "73",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: ':' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "161",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 23, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/18/IOFactory.java\nindex f9659eed4fe..757fb85065f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/18/IOFactory.java\n@@ -12,7 +12,6 @@ import java.util.List;\n import java.util.Map;\n import java.util.Map.Entry;\n import java.util.regex.Pattern;\n-\n import org.apache.hadoop.conf.Configuration;\n import org.apache.hadoop.fs.FileStatus;\n import org.apache.hadoop.fs.FileSystem;\n@@ -21,7 +20,6 @@ import org.apache.hadoop.fs.Path;\n import org.apache.hadoop.fs.RemoteIterator;\n import org.apache.spark.deploy.SparkHadoopUtil;\n import org.apache.spark.sql.SparkSession;\n-\n import edu.vanderbilt.accre.laurelin.root_proxy.XZDecompressionWrapper;\n import scala.collection.JavaConverters;\n import scala.collection.Seq;\n@@ -44,13 +42,11 @@ public class IOFactory {\n             //Only support reading xz-compressed files locally\n             path = path.replace(\"$$XZ$$\", \"\");\n             ret = new XZDecompressionWrapper(path);\n-\n         } else if (Pattern.matches(hadoopPattern, path)) {\n             ret = new HadoopFile(path);\n         } else {\n-            ret = new NIOFile(path);\n+                   ret = new NIOFile(path);\n         }\n-\n         return ret;\n     }\n \n@@ -62,6 +58,7 @@ public class IOFactory {\n      * @return Fully expanded list of ROOT file paths\n      * @throws IOException If any globs don't resolve or paths don't exist\n      */\n+\n     public static List<Path> resolvePathList(List<String> paths) throws IOException {\n         Configuration hadoopConf;\n         try {\n@@ -69,7 +66,6 @@ public class IOFactory {\n         } catch (IllegalStateException e) {\n             hadoopConf = new Configuration();\n         }\n-\n         List<Path> globResolved = new ArrayList<Path>(paths.size());\n         // First perform any globbing\n         for (String path: paths) {\n@@ -129,7 +125,6 @@ public class IOFactory {\n                 qualifiedListingToStatusMap.put(s.getPath(), s);\n             }\n         }\n-\n         assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n \n         /*\n@@ -163,10 +158,9 @@ public class IOFactory {\n             } else if (status.isFile()) {\n                 ret.add(status.getPath());\n             } else {\n-                throw new IOException(\"File '\" + path + \"' is an unknown type\");\n+                       throw new IOException(\"File '\" + path + \"' is an unknown type\");\n             }\n         }\n-\n         return ret;\n     }\n \n@@ -176,6 +170,7 @@ public class IOFactory {\n      * @return List of paths that match the given glob\n      * @throws IOException Nothing matches the given glob\n      */\n+\n     private static List<Path> resolveGlob(String path) throws IOException {\n         Configuration hadoopConf;\n         try {\n@@ -183,7 +178,6 @@ public class IOFactory {\n         } catch (IllegalStateException e) {\n             hadoopConf = new Configuration();\n         }\n-\n         Path hdfsPath = new Path(path);\n         FileSystem fs = hdfsPath.getFileSystem(hadoopConf);\n         Path qualified = hdfsPath.makeQualified(fs.getUri(), fs.getWorkingDirectory());\n@@ -201,7 +195,9 @@ public class IOFactory {\n      * @param path Input path\n      * @return True if the path looks like a glob. False otherwise.\n      */\n+\n     private static boolean isGlob(String path) {\n         return path.matches(\".*[{}\\\\[\\\\]*?].*\");\n     }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/18/IOFactory.java\nindex f9659eed4fe..a5ca0553197 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/18/IOFactory.java\n@@ -130,7 +130,7 @@ public class IOFactory {\n             }\n         }\n \n-        assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n+        assert qualifiedListingToStatusMap.size() >= globResolved.size() : \"qualifiedlisting < globresolved\";\n \n         /*\n          *  At this point, we have a list of post-globbing URIs and lists of\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/18/IOFactory.java\nindex f9659eed4fe..a5ca0553197 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/18/IOFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/18/IOFactory.java\n@@ -130,7 +130,7 @@ public class IOFactory {\n             }\n         }\n \n-        assert qualifiedListingToStatusMap.size() >= globResolved.size(): \"qualifiedlisting < globresolved\";\n+        assert qualifiedListingToStatusMap.size() >= globResolved.size() : \"qualifiedlisting < globresolved\";\n \n         /*\n          *  At this point, we have a list of post-globbing URIs and lists of\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

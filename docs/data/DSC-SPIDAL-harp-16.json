@@ -1,0 +1,90 @@
+{
+    "project_name": "DSC-SPIDAL-harp",
+    "error_id": "16",
+    "information": {
+        "errors": [
+            {
+                "line": "3",
+                "severity": "error",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright 2013-2017 Indiana University\n * \n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/16/TaskMonitor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/intellij/16/TaskMonitor.java\nindex a50fa35bf83..5dfc604bd71 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/16/TaskMonitor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/intellij/16/TaskMonitor.java\n@@ -1,6 +1,6 @@\n /*\r\n  * Copyright 2013-2017 Indiana University\r\n- * \r\n+ *\r\n  * Licensed under the Apache License, Version 2.0 (the \"License\");\r\n  * you may not use this file except in compliance with the License.\r\n  * You may obtain a copy of the License at\r\n@@ -26,74 +26,74 @@ import java.util.concurrent.Semaphore;\n  * Monitor and manage tasks\r\n  ******************************************************/\r\n public class TaskMonitor<I, O, T extends Task<I, O>>\r\n-  implements Runnable {\r\n+    implements Runnable {\r\n \r\n-  protected static final Logger LOG =\r\n-    Logger.getLogger(TaskMonitor.class);\r\n+    protected static final Logger LOG =\r\n+        Logger.getLogger(TaskMonitor.class);\r\n \r\n-  private final BlockingDeque<Input<I>> inputQueue;\r\n-  private final BlockingQueue<Output<O>> outputQueue;\r\n-  private final T taskObject;\r\n-  private final Semaphore barrier1;\r\n-  private final Semaphore barrier2;\r\n+    private final BlockingDeque<Input<I>> inputQueue;\r\n+    private final BlockingQueue<Output<O>> outputQueue;\r\n+    private final T taskObject;\r\n+    private final Semaphore barrier1;\r\n+    private final Semaphore barrier2;\r\n \r\n-  TaskMonitor(BlockingDeque<Input<I>> inQueue,\r\n-    BlockingQueue<Output<O>> outQueue, T task,\r\n-    Semaphore barrier1) {\r\n-    inputQueue = inQueue;\r\n-    outputQueue = outQueue;\r\n-    taskObject = task;\r\n-    this.barrier1 = barrier1;\r\n-    this.barrier2 = new Semaphore(0);\r\n-  }\r\n+    TaskMonitor(BlockingDeque<Input<I>> inQueue,\r\n+                BlockingQueue<Output<O>> outQueue, T task,\r\n+                Semaphore barrier1) {\r\n+        inputQueue = inQueue;\r\n+        outputQueue = outQueue;\r\n+        taskObject = task;\r\n+        this.barrier1 = barrier1;\r\n+        this.barrier2 = new Semaphore(0);\r\n+    }\r\n \r\n-  /**\r\n-   * Release the barrier\r\n-   */\r\n-  void release() {\r\n-    barrier2.release();\r\n-  }\r\n+    /**\r\n+     * Release the barrier\r\n+     */\r\n+    void release() {\r\n+        barrier2.release();\r\n+    }\r\n \r\n-  /**\r\n-   * The main process of monitoring and managing\r\n-   * tasks\r\n-   */\r\n-  @Override\r\n-  public void run() {\r\n-    while (true) {\r\n-      try {\r\n-        Input<I> input = inputQueue.take();\r\n-        if (input != null) {\r\n-          if (input.isStop()) {\r\n-            break;\r\n-          } else if (input.isPause()) {\r\n-            barrier1.release();\r\n-            ComputeUtil.acquire(barrier2);\r\n-          } else {\r\n-            O output = null;\r\n-            boolean isFailed = false;\r\n+    /**\r\n+     * The main process of monitoring and managing\r\n+     * tasks\r\n+     */\r\n+    @Override\r\n+    public void run() {\r\n+        while (true) {\r\n             try {\r\n-              output =\r\n-                taskObject.run(input.getInput());\r\n-            } catch (Exception e) {\r\n-              output = null;\r\n-              isFailed = true;\r\n-              LOG.error(\r\n-                \"Error when processing input\", e);\r\n-            }\r\n-            if (isFailed) {\r\n-              outputQueue\r\n-                .add(new Output<>(null, true));\r\n-            } else {\r\n-              outputQueue\r\n-                .add(new Output<>(output, false));\r\n+                Input<I> input = inputQueue.take();\r\n+                if (input != null) {\r\n+                    if (input.isStop()) {\r\n+                        break;\r\n+                    } else if (input.isPause()) {\r\n+                        barrier1.release();\r\n+                        ComputeUtil.acquire(barrier2);\r\n+                    } else {\r\n+                        O output = null;\r\n+                        boolean isFailed = false;\r\n+                        try {\r\n+                            output =\r\n+                                taskObject.run(input.getInput());\r\n+                        } catch (Exception e) {\r\n+                            output = null;\r\n+                            isFailed = true;\r\n+                            LOG.error(\r\n+                                \"Error when processing input\", e);\r\n+                        }\r\n+                        if (isFailed) {\r\n+                            outputQueue\r\n+                                .add(new Output<>(null, true));\r\n+                        } else {\r\n+                            outputQueue\r\n+                                .add(new Output<>(output, false));\r\n+                        }\r\n+                    }\r\n+                }\r\n+            } catch (InterruptedException e) {\r\n+                LOG.error(\"Fail to run input\", e);\r\n+                continue;\r\n             }\r\n-          }\r\n         }\r\n-      } catch (InterruptedException e) {\r\n-        LOG.error(\"Fail to run input\", e);\r\n-        continue;\r\n-      }\r\n     }\r\n-  }\r\n }\r\n",
+            "diff_size": 79
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/16/TaskMonitor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/codebuff/16/TaskMonitor.java\nindex a50fa35bf83..64bab04f15e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/16/TaskMonitor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/codebuff/16/TaskMonitor.java\n@@ -14,86 +14,88 @@\n  * limitations under the License.\r\n  */\r\n \r\n-package edu.iu.harp.schdynamic;\r\n-\r\n-import org.apache.log4j.Logger;\r\n-\r\n-import java.util.concurrent.BlockingDeque;\r\n-import java.util.concurrent.BlockingQueue;\r\n+package edu.iu.harp.schdynamic;\n+\n+import org.apache.log4j.Logger;\n+import java.util.concurrent.BlockingDeque;\n+import java.util.concurrent.BlockingQueue;\n import java.util.concurrent.Semaphore;\r\n \r\n /*******************************************************\r\n  * Monitor and manage tasks\r\n- ******************************************************/\r\n-public class TaskMonitor<I, O, T extends Task<I, O>>\r\n-  implements Runnable {\r\n-\r\n-  protected static final Logger LOG =\r\n-    Logger.getLogger(TaskMonitor.class);\r\n-\r\n-  private final BlockingDeque<Input<I>> inputQueue;\r\n-  private final BlockingQueue<Output<O>> outputQueue;\r\n-  private final T taskObject;\r\n-  private final Semaphore barrier1;\r\n-  private final Semaphore barrier2;\r\n-\r\n-  TaskMonitor(BlockingDeque<Input<I>> inQueue,\r\n-    BlockingQueue<Output<O>> outQueue, T task,\r\n-    Semaphore barrier1) {\r\n-    inputQueue = inQueue;\r\n-    outputQueue = outQueue;\r\n-    taskObject = task;\r\n-    this.barrier1 = barrier1;\r\n-    this.barrier2 = new Semaphore(0);\r\n+ ******************************************************/\n+\n+\n+public class TaskMonitor<I, O, T extends Task<I, O>>\n+  implements Runnable {\n+\n+  protected static final Logger LOG = Logger.getLogger(TaskMonitor.class);\n+  private final BlockingDeque<Input<I>> inputQueue;\n+  private final BlockingQueue<Output<O>> outputQueue;\n+  private final T taskObject;\n+  private final Semaphore barrier1;\n+  private final Semaphore barrier2;\n+\n+  TaskMonitor(BlockingDeque<Input<I>> inQueue,\n+              BlockingQueue<Output<O>> outQueue,\n+              T task,\n+              Semaphore barrier1) {\n+    inputQueue = inQueue;\n+    outputQueue = outQueue;\n+    taskObject = task;\n+    this.barrier1 = barrier1;\n+    this.barrier2 = new Semaphore(0);\n   }\r\n \r\n   /**\r\n    * Release the barrier\r\n-   */\r\n-  void release() {\r\n-    barrier2.release();\r\n+   */\n+\n+\n+  void release() {\n+  barrier2.release();\n   }\r\n \r\n   /**\r\n    * The main process of monitoring and managing\r\n    * tasks\r\n-   */\r\n-  @Override\r\n-  public void run() {\r\n-    while (true) {\r\n-      try {\r\n-        Input<I> input = inputQueue.take();\r\n-        if (input != null) {\r\n-          if (input.isStop()) {\r\n-            break;\r\n-          } else if (input.isPause()) {\r\n-            barrier1.release();\r\n-            ComputeUtil.acquire(barrier2);\r\n-          } else {\r\n-            O output = null;\r\n-            boolean isFailed = false;\r\n-            try {\r\n-              output =\r\n-                taskObject.run(input.getInput());\r\n-            } catch (Exception e) {\r\n-              output = null;\r\n-              isFailed = true;\r\n-              LOG.error(\r\n-                \"Error when processing input\", e);\r\n-            }\r\n-            if (isFailed) {\r\n-              outputQueue\r\n-                .add(new Output<>(null, true));\r\n-            } else {\r\n-              outputQueue\r\n-                .add(new Output<>(output, false));\r\n-            }\r\n-          }\r\n-        }\r\n-      } catch (InterruptedException e) {\r\n-        LOG.error(\"Fail to run input\", e);\r\n-        continue;\r\n-      }\r\n-    }\r\n-  }\r\n-}\r\n+   */\n+\n+\n+  @Override\n+  public void run() {\n+\n+    while (true) {\n+\n+      try {\n+        Input<I> input = inputQueue.take();\n+        if (input != null) {\n+          if (input.isStop()) {\n+            break;\n+          } else if (input.isPause()) {\n+            barrier1.release();\n+            ComputeUtil.acquire(barrier2);\n+          } else {\n+                   O output = null;\n+                   boolean isFailed = false;\n+                   try {\n+                     output = taskObject.run(input.getInput());\n+                   } catch (Exception e) {\n+                     output = null;\n+                     isFailed = true;\n+                     LOG.error(\"Error when processing input\", e);\n+                   }\n+                   if (isFailed) {\n+                     outputQueue.add(new Output<>(null, true));\n+                   } else {\n+                     outputQueue.add(new Output<>(output, false));\n+                   }\n+                 }\n+        }\n+      } catch (InterruptedException e) {\n+        LOG.error(\"Fail to run input\", e);\n+        continue;\n+      }\n+    }\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 73
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

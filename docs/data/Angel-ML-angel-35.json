@@ -1,0 +1,134 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "35",
+    "information": {
+        "errors": [
+            {
+                "line": "34",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 128).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        TVector row = client.getRow(0);\n        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n\n        startTs = System.currentTimeMillis();\n        CompSparseDoubleLongKeyVector",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..11ba4538ef9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/35/LongKeyTestTask.java\n@@ -31,8 +31,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n-\n+          + \" pull use time=\" + (System.currentTimeMillis()- startTs )+ \", sum=\" + ( (CompSparseDoubleLongKeyVector)row).sum());\n         startTs = System.currentTimeMillis();\n         CompSparseDoubleLongKeyVector\n           deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..5f0b58812d4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/35/LongKeyTestTask.java\n@@ -18,38 +18,44 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+  public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n+  @Override\n+  public void preProcess(TaskContext taskContext) {\n+  }\n \n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+  @Override\n+  public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"longkey_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n+            + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" +\n+            ((CompSparseDoubleLongKeyVector) row).sum());\n \n         startTs = System.currentTimeMillis();\n         CompSparseDoubleLongKeyVector\n-          deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n+            deltaV =\n+            new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0, 2100000000, 110000000);\n         SparseDoubleLongKeyVector deltaV1 = new SparseDoubleLongKeyVector(2100000000, 150000000);\n         DenseDoubleVector deltaV2 = new DenseDoubleVector(110000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i += 20) {\n           deltaV.set(i, 1.0);\n           deltaV1.set(i, 1.0);\n         }\n \n-        for(int i = 0; i < 110000000; i++) {\n+        for (int i = 0; i < 110000000; i++) {\n           deltaV2.set(i, 1.0);\n         }\n \n         startTs = System.currentTimeMillis();\n         int tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV.timesBy(2.0);\n         }\n \n@@ -57,7 +63,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n \n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV1.timesBy(2.0);\n         }\n \n@@ -65,7 +71,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n \n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV2.timesBy(2.0);\n         }\n \n@@ -75,13 +81,13 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n         deltaV.setRowId(0);\n \n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n+            + \" train use time=\" + (System.currentTimeMillis() - startTs));\n \n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+            + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -90,9 +96,9 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n   }\n \n   private double sum(SparseDoubleLongKeyVector row) {\n-    double [] data = row.getValues();\n+    double[] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n \n",
+            "diff_size": 21
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "36",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 213).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..614df8371fc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/35/LongKeyTestTask.java\n@@ -18,38 +18,39 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n+  @Override\n+public void preProcess(TaskContext taskContext) {}\n \n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+  @Override\n+public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"longkey_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n \n         startTs = System.currentTimeMillis();\n-        CompSparseDoubleLongKeyVector\n-          deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n+        CompSparseDoubleLongKeyVector deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0, 2100000000, 110000000);\n         SparseDoubleLongKeyVector deltaV1 = new SparseDoubleLongKeyVector(2100000000, 150000000);\n         DenseDoubleVector deltaV2 = new DenseDoubleVector(110000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i+= 20) {\n           deltaV.set(i, 1.0);\n           deltaV1.set(i, 1.0);\n         }\n \n-        for(int i = 0; i < 110000000; i++) {\n+        for (int i = 0; i < 110000000; i++) {\n           deltaV2.set(i, 1.0);\n         }\n \n         startTs = System.currentTimeMillis();\n         int tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV.timesBy(2.0);\n         }\n \n@@ -57,7 +58,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n \n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV1.timesBy(2.0);\n         }\n \n@@ -65,7 +66,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n \n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV2.timesBy(2.0);\n         }\n \n@@ -74,14 +75,12 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n         deltaV.setMatrixId(client.getMatrixId());\n         deltaV.setRowId(0);\n \n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" train use time=\" + (System.currentTimeMillis() - startTs));\n \n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -92,10 +91,10 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n   private double sum(SparseDoubleLongKeyVector row) {\n     double [] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n \n     return ret;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 214).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..e895202bdc8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/35/LongKeyTestTask.java\n@@ -12,76 +12,69 @@ import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n \n public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n+\n   private static final Log LOG = LogFactory.getLog(PSFTestTask.class);\n \n   public LongKeyTestTask(TaskContext taskContext) {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+  public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n+  @Override\n+  public void preProcess(TaskContext taskContext) {}\n \n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+  @Override\n+  public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"longkey_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n-\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector) row).sum());\n         startTs = System.currentTimeMillis();\n-        CompSparseDoubleLongKeyVector\n-          deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n+        CompSparseDoubleLongKeyVector deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0, 2100000000, 110000000);\n         SparseDoubleLongKeyVector deltaV1 = new SparseDoubleLongKeyVector(2100000000, 150000000);\n         DenseDoubleVector deltaV2 = new DenseDoubleVector(110000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i += 20) {\n           deltaV.set(i, 1.0);\n           deltaV1.set(i, 1.0);\n         }\n \n-        for(int i = 0; i < 110000000; i++) {\n+        for (int i = 0; i < 110000000; i++) {\n           deltaV2.set(i, 1.0);\n         }\n-\n         startTs = System.currentTimeMillis();\n+\n         int tryNum = 100;\n-        while(tryNum-- > 0) {\n+        while (tryNum-- > 0) {\n           deltaV.timesBy(2.0);\n         }\n-\n         LOG.info(\"combine times use time \" + (System.currentTimeMillis() - startTs));\n-\n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+\n+        while (tryNum-- > 0) {\n           deltaV1.timesBy(2.0);\n         }\n-\n         LOG.info(\"single times use time \" + (System.currentTimeMillis() - startTs));\n-\n         startTs = System.currentTimeMillis();\n         tryNum = 100;\n-        while(tryNum-- > 0) {\n+\n+        while (tryNum-- > 0) {\n           deltaV2.timesBy(2.0);\n         }\n-\n         LOG.info(\"dense times use time \" + (System.currentTimeMillis() - startTs));\n-\n         deltaV.setMatrixId(client.getMatrixId());\n         deltaV.setRowId(0);\n-\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n-\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" train use time=\" + (System.currentTimeMillis() - startTs));\n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -90,12 +83,12 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n   }\n \n   private double sum(SparseDoubleLongKeyVector row) {\n-    double [] data = row.getValues();\n+    double[] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n-\n     return ret;\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 39
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..11ba4538ef9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/35/LongKeyTestTask.java\n@@ -31,8 +31,7 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n-\n+          + \" pull use time=\" + (System.currentTimeMillis()- startTs )+ \", sum=\" + ( (CompSparseDoubleLongKeyVector)row).sum());\n         startTs = System.currentTimeMillis();\n         CompSparseDoubleLongKeyVector\n           deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 211).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/35/LongKeyTestTask.java\nindex 8cbdf1bec3e..c5a098d211e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/35/LongKeyTestTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/35/LongKeyTestTask.java\n@@ -30,10 +30,9 @@ public class LongKeyTestTask extends BaseTask<Long, Long, Long> {\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()+\" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + ((CompSparseDoubleLongKeyVector)row).sum());\n \n-        startTs = System.currentTimeMillis();\n+      startTs = System.currentTimeMillis();\n         CompSparseDoubleLongKeyVector\n           deltaV = new CompSparseDoubleLongKeyVector(client.getMatrixId(), 0,2100000000, 110000000);\n         SparseDoubleLongKeyVector deltaV1 = new SparseDoubleLongKeyVector(2100000000, 150000000);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

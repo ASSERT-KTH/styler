@@ -5,21 +5,14 @@ class Corpus:
     def __init__(self, path, name):
         self.path = path
         self.name = name
-        self.read_info()
         self.training_data_folder_path = os.path.join(self.path, "data")
         self.training_data_file_extension = (".java")
-        # Maybe create a future folder corpus.json with the specifiques files ?
         for file in os.listdir(self.path):
             if file == "checkstyle.xml":
                 self.checkstyle = os.path.join(self.path, file)
                 break
         self.files = []
         self.update_files_list()
-
-    def read_info(self):
-        with open(os.path.join(self.path, "corpus.json")) as f:
-            data = json.load(f)
-            self.info = data
 
     def update_files_list(self):
         file_list = dict()

@@ -1,0 +1,172 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4176",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "32",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "32",
+                    "column": "75",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4176/EntryBasedLogPruningStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4176/EntryBasedLogPruningStrategy.java\nindex ab5c04a25d7..34f7b409111 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4176/EntryBasedLogPruningStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4176/EntryBasedLogPruningStrategy.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.core.consensus.log.segmented;\n \n import org.neo4j.helpers.collection.Visitor;\n@@ -25,53 +26,53 @@ import org.neo4j.logging.LogProvider;\n \n class EntryBasedLogPruningStrategy implements CoreLogPruningStrategy\n {\n-    private final long entriesToKeep;\n-    private final Log log;\n+  private final long entriesToKeep;\n+  private final Log log;\n \n-    EntryBasedLogPruningStrategy( long entriesToKeep, LogProvider logProvider )\n-    {\n-        this.entriesToKeep = entriesToKeep;\n-        this.log = logProvider.getLog( getClass() );\n-    }\n+  EntryBasedLogPruningStrategy(long entriesToKeep, LogProvider logProvider)\n+  {\n+    this.entriesToKeep = entriesToKeep;\n+    this.log = logProvider.getLog(getClass());\n+  }\n \n-    @Override\n-    public long getIndexToKeep( Segments segments )\n+  @Override\n+  public long getIndexToKeep(Segments segments)\n+  {\n+    SegmentVisitor visitor = new SegmentVisitor();\n+    segments.visitBackwards(visitor);\n+\n+    if (visitor.visitedCount == 0)\n     {\n-        SegmentVisitor visitor = new SegmentVisitor();\n-        segments.visitBackwards( visitor );\n+      log.warn(\"No log files found during the prune operation. This state should resolve on its own, but\" +\n+          \" if this warning continues, you may want to look for other errors in the user log.\");\n+    }\n \n-        if ( visitor.visitedCount == 0 )\n-        {\n-            log.warn( \"No log files found during the prune operation. This state should resolve on its own, but\" +\n-                      \" if this warning continues, you may want to look for other errors in the user log.\" );\n-        }\n+    return visitor.prevIndex;\n+  }\n \n-        return visitor.prevIndex;\n-    }\n+  private class SegmentVisitor implements Visitor<SegmentFile, RuntimeException>\n+  {\n+    long visitedCount;\n+    long accumulated;\n+    long prevIndex = -1;\n+    long lastPrevIndex = -1;\n \n-    private class SegmentVisitor implements Visitor<SegmentFile,RuntimeException>\n+    @Override\n+    public boolean visit(SegmentFile segment) throws RuntimeException\n     {\n-        long visitedCount;\n-        long accumulated;\n-        long prevIndex = -1;\n-        long lastPrevIndex = -1;\n-\n-        @Override\n-        public boolean visit( SegmentFile segment ) throws RuntimeException\n-        {\n-            visitedCount++;\n+      visitedCount++;\n \n-            if ( lastPrevIndex == -1 )\n-            {\n-                lastPrevIndex = segment.header().prevIndex();\n-                return false; // first entry, continue visiting next\n-            }\n+      if (lastPrevIndex == -1)\n+      {\n+        lastPrevIndex = segment.header().prevIndex();\n+        return false; // first entry, continue visiting next\n+      }\n \n-            prevIndex = segment.header().prevIndex();\n-            accumulated += lastPrevIndex - prevIndex;\n-            lastPrevIndex = prevIndex;\n+      prevIndex = segment.header().prevIndex();\n+      accumulated += lastPrevIndex - prevIndex;\n+      lastPrevIndex = prevIndex;\n \n-            return accumulated >= entriesToKeep;\n-        }\n+      return accumulated >= entriesToKeep;\n     }\n+  }\n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "44",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 202).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4176/EntryBasedLogPruningStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4176/EntryBasedLogPruningStrategy.java\nindex ab5c04a25d7..d0182941da2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4176/EntryBasedLogPruningStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4176/EntryBasedLogPruningStrategy.java\n@@ -39,12 +39,10 @@ class EntryBasedLogPruningStrategy implements CoreLogPruningStrategy\n     {\n         SegmentVisitor visitor = new SegmentVisitor();\n         segments.visitBackwards( visitor );\n-\n-        if ( visitor.visitedCount == 0 )\n+if ( visitor.visitedCount == 0 )\n         {\n-            log.warn( \"No log files found during the prune operation. This state should resolve on its own, but\" +\n-                      \" if this warning continues, you may want to look for other errors in the user log.\" );\n-        }\n+            log.warn( \"No log files found during the prune operation. This state should resolve on its own, but\" + \" if this warning continues, you may want to look for other errors in the user log.\" );\n+    }\n \n         return visitor.prevIndex;\n     }\n@@ -74,4 +72,4 @@ class EntryBasedLogPruningStrategy implements CoreLogPruningStrategy\n             return accumulated >= entriesToKeep;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,87 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "45",
+    "information": {
+        "errors": [
+            {
+                "line": "239",
+                "column": "96",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "            NetworkConnectionInfo networkConnectionInfo = session.getNetworkConnectionInfo();\n            if (networkConnectionInfo != null) {\n                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n') //\n                        .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n                String clientInfo = networkConnectionInfo.getClientInfo();\n                if (clientInfo != null) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/45/DatabaseInfo.java\nindex 8e9eee008dd..32982d25d54 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/45/DatabaseInfo.java\n@@ -236,8 +236,9 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n                     append('\\n');\n             NetworkConnectionInfo networkConnectionInfo = session.getNetworkConnectionInfo();\n             if (networkConnectionInfo != null) {\n-                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n') //\n-                        .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n+                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n')\n+                    //\n+                         .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n                 String clientInfo = networkConnectionInfo.getClientInfo();\n                 if (clientInfo != null) {\n                     buff.append(\"clientInfo: \").append(clientInfo).append('\\n');\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "250",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/45/DatabaseInfo.java\nindex 8e9eee008dd..9e78e72acc2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/45/DatabaseInfo.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.jmx;\n \n import java.lang.management.ManagementFactory;\n@@ -34,12 +35,15 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n \n     private static final Map<String, ObjectName> MBEANS = new HashMap<>();\n \n-    /** Database. */\n+    /**\n+     * Database.\n+     */\n     private final Database database;\n \n     private DatabaseInfo(Database database) {\n         if (database == null) {\n-            throw new IllegalArgumentException(\"Argument 'database' must not be null\");\n+            throw new IllegalArgumentException(\n+                    \"Argument 'database' must not be null\");\n         }\n         this.database = database;\n     }\n@@ -66,13 +70,14 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n      * Registers an MBean for the database.\n      *\n      * @param connectionInfo connection info\n-     * @param database database\n+     * @param database       database\n      */\n     public static void registerMBean(ConnectionInfo connectionInfo,\n-            Database database) throws JMException {\n+                                     Database database) throws JMException {\n         String path = connectionInfo.getName();\n         if (!MBEANS.containsKey(path)) {\n-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();\n+            MBeanServer mbeanServer =\n+                    ManagementFactory.getPlatformMBeanServer();\n             String name = database.getShortName();\n             ObjectName mbeanObjectName = getObjectName(name, path);\n             MBEANS.put(path, mbeanObjectName);\n@@ -90,7 +95,8 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n     public static void unregisterMBean(String name) throws Exception {\n         ObjectName mbeanObjectName = MBEANS.remove(name);\n         if (mbeanObjectName != null) {\n-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();\n+            MBeanServer mbeanServer =\n+                    ManagementFactory.getPlatformMBeanServer();\n             mbeanServer.unregisterMBean(mbeanObjectName);\n         }\n     }\n@@ -220,8 +226,10 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n     @Override\n     public String listSettings() {\n         StringBuilder builder = new StringBuilder();\n-        for (Entry<String, String> e : database.getSettings().getSortedSettings()) {\n-            builder.append(e.getKey()).append(\" = \").append(e.getValue()).append('\\n');\n+        for (Entry<String, String> e : database.getSettings()\n+                .getSortedSettings()) {\n+            builder.append(e.getKey()).append(\" = \").append(e.getValue())\n+                    .append('\\n');\n         }\n         return builder.toString();\n     }\n@@ -234,10 +242,14 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n             buff.append(\" user: \").\n                     append(session.getUser().getName()).\n                     append('\\n');\n-            NetworkConnectionInfo networkConnectionInfo = session.getNetworkConnectionInfo();\n+            NetworkConnectionInfo networkConnectionInfo =\n+                    session.getNetworkConnectionInfo();\n             if (networkConnectionInfo != null) {\n-                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n') //\n-                        .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n+                buff.append(\"server: \")\n+                        .append(networkConnectionInfo.getServer())\n+                        .append('\\n') //\n+                        .append(\"clientAddr: \")\n+                        .append(networkConnectionInfo.getClient()).append('\\n');\n                 String clientInfo = networkConnectionInfo.getClientInfo();\n                 if (clientInfo != null) {\n                     buff.append(\"clientInfo: \").append(clientInfo).append('\\n');\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "239",
+                    "column": "96",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/45/DatabaseInfo.java\nindex 8e9eee008dd..f442812fb63 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/45/DatabaseInfo.java\n@@ -270,4 +270,4 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n         return buff.toString();\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "239",
+                    "column": "95",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/45/DatabaseInfo.java\nindex 8e9eee008dd..7b355650035 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/45/DatabaseInfo.java\n@@ -236,7 +236,7 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n                     append('\\n');\n             NetworkConnectionInfo networkConnectionInfo = session.getNetworkConnectionInfo();\n             if (networkConnectionInfo != null) {\n-                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n') //\n+                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n')//\n                         .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n                 String clientInfo = networkConnectionInfo.getClientInfo();\n                 if (clientInfo != null) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/45/DatabaseInfo.java\nindex 8e9eee008dd..32982d25d54 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/45/DatabaseInfo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/45/DatabaseInfo.java\n@@ -236,8 +236,9 @@ public class DatabaseInfo implements DatabaseInfoMBean {\n                     append('\\n');\n             NetworkConnectionInfo networkConnectionInfo = session.getNetworkConnectionInfo();\n             if (networkConnectionInfo != null) {\n-                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n') //\n-                        .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n+                buff.append(\"server: \").append(networkConnectionInfo.getServer()).append('\\n')\n+                    //\n+                         .append(\"clientAddr: \").append(networkConnectionInfo.getClient()).append('\\n');\n                 String clientInfo = networkConnectionInfo.getClientInfo();\n                 if (clientInfo != null) {\n                     buff.append(\"clientInfo: \").append(clientInfo).append('\\n');\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

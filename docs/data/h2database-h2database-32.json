@@ -1,0 +1,63 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "32",
+    "information": {
+        "errors": [
+            {
+                "line": "47",
+                "column": "49",
+                "severity": "warning",
+                "message": "'{' at column 49 should have line break after.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n\n    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n\n    @Override\n    public long update() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/32/CreateSynonym.java\nindex b4c1b4dc157..e0a0e538b22 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/32/CreateSynonym.java\n@@ -44,7 +44,8 @@ public class CreateSynonym extends SchemaCommand {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+    public void setOrReplace(boolean orReplace) {\n+        this.orReplace = orReplace; }\n \n     @Override\n     public long update() {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/32/CreateSynonym.java\nindex b4c1b4dc157..63691611ad6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/32/CreateSynonym.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.command.ddl;\n \n import org.h2.api.ErrorCode;\n@@ -44,7 +45,9 @@ public class CreateSynonym extends SchemaCommand {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+    public void setOrReplace(boolean orReplace) {\n+        this.orReplace = orReplace;\n+    }\n \n     @Override\n     public long update() {\n@@ -57,10 +60,12 @@ public class CreateSynonym extends SchemaCommand {\n         db.lockMeta(session);\n \n         if (getSchema().findTableOrView(session, data.synonymName) != null) {\n-            throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1, data.synonymName);\n+            throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1,\n+                    data.synonymName);\n         }\n \n-        if (data.synonymForSchema.findTableOrView(session, data.synonymFor) != null) {\n+        if (data.synonymForSchema.findTableOrView(session, data.synonymFor) !=\n+                null) {\n             return createTableSynonym(db);\n         }\n \n@@ -78,7 +83,8 @@ public class CreateSynonym extends SchemaCommand {\n             } else if (ifNotExists) {\n                 return 0;\n             } else {\n-                throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1, data.synonymName);\n+                throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1,\n+                        data.synonymName);\n             }\n         }\n \n",
+            "diff_size": 10
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/32/CreateSynonym.java\nindex b4c1b4dc157..0f3f67ef73a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/32/CreateSynonym.java\n@@ -44,7 +44,9 @@ public class CreateSynonym extends SchemaCommand {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+    public void setOrReplace(boolean orReplace) {\n+    this.orReplace = orReplace;\n+    }\n \n     @Override\n     public long update() {\n@@ -63,15 +65,12 @@ public class CreateSynonym extends SchemaCommand {\n         if (data.synonymForSchema.findTableOrView(session, data.synonymFor) != null) {\n             return createTableSynonym(db);\n         }\n-\n-        throw DbException.get(ErrorCode.TABLE_OR_VIEW_NOT_FOUND_1,\n+throw DbException.get(ErrorCode.TABLE_OR_VIEW_NOT_FOUND_1,\n                 data.synonymForSchema.getName() + \".\" + data.synonymFor);\n-\n     }\n \n     private int createTableSynonym(Database db) {\n-\n-        TableSynonym old = getSchema().getSynonym(data.synonymName);\n+    TableSynonym old = getSchema().getSynonym(data.synonymName);\n         if (old != null) {\n             if (orReplace) {\n                 // ok, we replacing the existing synonym\n@@ -111,4 +110,4 @@ public class CreateSynonym extends SchemaCommand {\n     }\n \n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/codebuff/32/CreateSynonym.java\nindex b4c1b4dc157..91ebc086161 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/codebuff/32/CreateSynonym.java\n@@ -17,6 +17,8 @@ import org.h2.table.TableSynonym;\n  * This class represents the statement\n  * CREATE SYNONYM\n  */\n+\n+\n public class CreateSynonym extends SchemaCommand {\n \n     private final CreateSynonymData data = new CreateSynonymData();\n@@ -28,23 +30,30 @@ public class CreateSynonym extends SchemaCommand {\n         super(session, schema);\n     }\n \n+\n     public void setName(String name) {\n         data.synonymName = name;\n     }\n \n+\n     public void setSynonymFor(String tableName) {\n         data.synonymFor = tableName;\n     }\n \n+\n     public void setSynonymForSchema(Schema synonymForSchema) {\n         data.synonymForSchema = synonymForSchema;\n     }\n \n+\n     public void setIfNotExists(boolean ifNotExists) {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+\n+    public void setOrReplace(boolean orReplace) {\n+        this.orReplace = orReplace;\n+    }\n \n     @Override\n     public long update() {\n@@ -55,33 +64,27 @@ public class CreateSynonym extends SchemaCommand {\n         Database db = session.getDatabase();\n         data.session = session;\n         db.lockMeta(session);\n-\n         if (getSchema().findTableOrView(session, data.synonymName) != null) {\n             throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1, data.synonymName);\n         }\n-\n         if (data.synonymForSchema.findTableOrView(session, data.synonymFor) != null) {\n             return createTableSynonym(db);\n         }\n-\n-        throw DbException.get(ErrorCode.TABLE_OR_VIEW_NOT_FOUND_1,\n-                data.synonymForSchema.getName() + \".\" + data.synonymFor);\n-\n+        throw DbException.get(ErrorCode.TABLE_OR_VIEW_NOT_FOUND_1, data.synonymForSchema.getName() + \".\" + data.synonymFor);\n     }\n \n     private int createTableSynonym(Database db) {\n-\n         TableSynonym old = getSchema().getSynonym(data.synonymName);\n         if (old != null) {\n             if (orReplace) {\n                 // ok, we replacing the existing synonym\n+\n             } else if (ifNotExists) {\n                 return 0;\n-            } else {\n+                         } else {\n                 throw DbException.get(ErrorCode.TABLE_OR_VIEW_ALREADY_EXISTS_1, data.synonymName);\n             }\n         }\n-\n         TableSynonym table;\n         if (old != null) {\n             table = old;\n@@ -96,11 +99,11 @@ public class CreateSynonym extends SchemaCommand {\n             table.setComment(comment);\n             db.addSchemaObject(session, table);\n         }\n-\n         table.updateSynonymFor();\n         return 0;\n     }\n \n+\n     public void setComment(String comment) {\n         this.comment = comment;\n     }\n@@ -110,5 +113,4 @@ public class CreateSynonym extends SchemaCommand {\n         return CommandInterface.CREATE_SYNONYM;\n     }\n \n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 24
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/32/CreateSynonym.java\nindex b4c1b4dc157..e0a0e538b22 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/32/CreateSynonym.java\n@@ -44,7 +44,8 @@ public class CreateSynonym extends SchemaCommand {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+    public void setOrReplace(boolean orReplace) {\n+        this.orReplace = orReplace; }\n \n     @Override\n     public long update() {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/32/CreateSynonym.java\nindex b4c1b4dc157..e0a0e538b22 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/32/CreateSynonym.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/32/CreateSynonym.java\n@@ -44,7 +44,8 @@ public class CreateSynonym extends SchemaCommand {\n         this.ifNotExists = ifNotExists;\n     }\n \n-    public void setOrReplace(boolean orReplace) { this.orReplace = orReplace; }\n+    public void setOrReplace(boolean orReplace) {\n+        this.orReplace = orReplace; }\n \n     @Override\n     public long update() {\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": []
+}

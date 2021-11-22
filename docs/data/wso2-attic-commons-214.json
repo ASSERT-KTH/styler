@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "214",
+    "information": {
+        "errors": [
+            {
+                "line": "57",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 123).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "     * @throws MessageTranslationException\n     */\n    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault) throws MessagingException,\n            MessageTranslationException;\n\n    /**",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/214/Mapper.java\nindex b27bf7066db..5ed47db987b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/214/Mapper.java\n@@ -54,8 +54,9 @@ public interface Mapper {\n      * @throws MessagingException\n      * @throws MessageTranslationException\n      */\n-    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault) throws MessagingException,\n-            MessageTranslationException;\n+    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault)\n+        throws MessagingException,\n+             MessageTranslationException;\n \n     /**\n      * Convert an NMS message to ODE format. This call must only be called if\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/214/Mapper.java\nindex b27bf7066db..1769c59d940 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/214/Mapper.java\n@@ -35,52 +35,54 @@ import org.apache.ode.bpel.iapi.Message;\n  */\n public interface Mapper {\n \n-    /**\n-     * Determine if this mapper recognizes the format of the NMS message.\n-     * \n-     * @param nmsMsg\n-     * @return\n-     */\n-    Recognized isRecognized(NormalizedMessage nmsMsg, Operation op);\n+  /**\n+   * Determine if this mapper recognizes the format of the NMS message.\n+   *\n+   * @param nmsMsg\n+   * @return\n+   */\n+  Recognized isRecognized(NormalizedMessage nmsMsg, Operation op);\n \n-    /**\n-     * Convert a ODE message to NMS format. This call must only be called if\n-     * {@link #isRecognized(NormalizedMessage, Operation)} returned,\n-     * <code>true</code>.\n-     * \n-     * @param nmsMsg\n-     * @param odeMsg\n-     * @param msgdef\n-     * @throws MessagingException\n-     * @throws MessageTranslationException\n-     */\n-    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault) throws MessagingException,\n-            MessageTranslationException;\n+  /**\n+   * Convert a ODE message to NMS format. This call must only be called if\n+   * {@link #isRecognized(NormalizedMessage, Operation)} returned,\n+   * <code>true</code>.\n+   *\n+   * @param nmsMsg\n+   * @param odeMsg\n+   * @param msgdef\n+   * @throws MessagingException\n+   * @throws MessageTranslationException\n+   */\n+  void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault)\n+    throws MessagingException,\n+    MessageTranslationException;\n \n-    /**\n-     * Convert an NMS message to ODE format. This call must only be called if\n-     * {@link #isRecognized(NormalizedMessage, Operation)} returned,\n-     * <code>true</code>.\n-     * \n-     * @param odeMsg\n-     * @param nmsMsg\n-     * @param msgdef\n-     * @throws MessageTranslationException\n-     */\n-    void toODE(Message odeMsg, NormalizedMessage nmsMsg, javax.wsdl.Message msgdef) throws MessageTranslationException;\n+  /**\n+   * Convert an NMS message to ODE format. This call must only be called if\n+   * {@link #isRecognized(NormalizedMessage, Operation)} returned,\n+   * <code>true</code>.\n+   *\n+   * @param odeMsg\n+   * @param nmsMsg\n+   * @param msgdef\n+   * @throws MessageTranslationException\n+   */\n+  void toODE(Message odeMsg, NormalizedMessage nmsMsg, javax.wsdl.Message msgdef) throws MessageTranslationException;\n+\n+  /**\n+   * Infer the fault type based on the message.\n+   *\n+   * @param jbiFlt JBI fault message\n+   * @param faults collection of possible faults\n+   * @return matching fault, or null if no match\n+   * @throws MessageTranslationException\n+   */\n+  Fault toFaultType(javax.jbi.messaging.Fault jbiFlt, Collection<Fault> faults) throws MessageTranslationException;\n+\n+  enum Recognized {\n+    TRUE, FALSE, UNSURE\n+  }\n \n-    /** \n-     * Infer the fault type based on the message.\n-     * @param jbiFlt JBI fault message\n-     * @param faults collection of possible faults\n-     * @return matching fault, or null if no match\n-     * @throws MessageTranslationException \n-     */\n-    Fault toFaultType(javax.jbi.messaging.Fault jbiFlt, Collection<Fault> faults) throws MessageTranslationException;\n-    \n-    enum Recognized {\n-        TRUE, FALSE, UNSURE\n-    }\n \n-   \n }\n",
+            "diff_size": 59
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "57",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/214/Mapper.java\nindex b27bf7066db..9f097f1d58a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/214/Mapper.java\n@@ -81,6 +81,4 @@ public interface Mapper {\n     enum Recognized {\n         TRUE, FALSE, UNSURE\n     }\n-\n-   \n-}\n+ }\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "57",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/214/Mapper.java\nindex b27bf7066db..5ed47db987b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/214/Mapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/214/Mapper.java\n@@ -54,8 +54,9 @@ public interface Mapper {\n      * @throws MessagingException\n      * @throws MessageTranslationException\n      */\n-    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault) throws MessagingException,\n-            MessageTranslationException;\n+    void toNMS(NormalizedMessage nmsMsg, Message odeMsg, javax.wsdl.Message msgdef, QName fault)\n+        throws MessagingException,\n+             MessageTranslationException;\n \n     /**\n      * Convert an NMS message to ODE format. This call must only be called if\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

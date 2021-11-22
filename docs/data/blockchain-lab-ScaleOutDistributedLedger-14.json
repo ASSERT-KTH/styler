@@ -1,0 +1,86 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "14",
+    "information": {
+        "errors": [
+            {
+                "line": "73",
+                "column": "9",
+                "severity": "warning",
+                "message": "'for' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\tpublic Block toBlockWithoutSources(LocalStore localStore) {\n\t\tList<Transaction> transactions = new ArrayList<>();\n\t\tfor(TransactionMessage tm : this.transactions) {\n\t\t\ttransactions.add(tm.toTransactionWithoutSources(localStore));\n\t\t}\n\t\treturn new Block(this.number, localStore.getNode(this.ownerId), transactions);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "73",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/14/BlockMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/14/BlockMessage.java\nindex 3a885db5363..4aee20bc982 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/14/BlockMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/14/BlockMessage.java\n@@ -14,65 +14,66 @@ import nl.tudelft.blockchain.scaleoutdistributedledger.model.Node;\n  * Block message for netty.\n  */\n public class BlockMessage extends Message {\n-\t\n-\t@Getter\n-\tprivate final int number;\n \n-\t@Getter\n-\tprivate final int previousBlockNumber;\n-\t\n-\t//@Getter\n-\t//private final BlockMessage previousBlock;\n-\t\n-\t@Getter\n-\tprivate final int ownerId;\n+    @Getter\n+    private final int number;\n \n-\t@Getter\n-\tprivate final List<TransactionMessage> transactions;\n+    @Getter\n+    private final int previousBlockNumber;\n \n-\t@Getter\n-\tprivate final Sha256Hash hash;\n+    //@Getter\n+    //private final BlockMessage previousBlock;\n \n-\t//private transient BlockAbstract blockAbstract;\n-\t//private transient Boolean hasAbstract;\n-\t\n-\t/**\n-\t * Constructor.\n-\t * @param block - original block\n-\t * @param proofReceiver - receiver of the proof\n-\t */\n-\tpublic BlockMessage(Block block, Node proofReceiver) {\n-\t\tthis.number = block.getNumber();\n-\t\tBlock prevBlock = block.getPreviousBlock();\n-\t\tif (prevBlock != null) {\n-\t\t\tthis.previousBlockNumber = prevBlock.getNumber();\n-\t\t} else {\n-\t\t\t// It's a genesis block\n-\t\t\tthis.previousBlockNumber = -1;\n-\t\t}\n-\t\t// It's a genesis block\n-\t\tif (block.getOwner() == null) {\n-\t\t\tthis.ownerId = Transaction.GENESIS_SENDER;\n-\t\t} else {\n-\t\t\tthis.ownerId = block.getOwner().getId();\n-\t\t}\n-\t\tthis.transactions = new ArrayList<>();\n-\t\tfor (Transaction transaction : block.getTransactions()) {\n-\t\t\tthis.transactions.add(new TransactionMessage(transaction, proofReceiver));\n-\t\t}\n-\t\tthis.hash = block.getHash();\n-\t}\n+    @Getter\n+    private final int ownerId;\n \n-\t@Override\n-\tpublic void handle(LocalStore localStore) {\n-\t\t// Do nothing.\n-\t}\n+    @Getter\n+    private final List<TransactionMessage> transactions;\n \n-\tpublic Block toBlockWithoutSources(LocalStore localStore) {\n-\t\tList<Transaction> transactions = new ArrayList<>();\n-\t\tfor(TransactionMessage tm : this.transactions) {\n-\t\t\ttransactions.add(tm.toTransactionWithoutSources(localStore));\n-\t\t}\n-\t\treturn new Block(this.number, localStore.getNode(this.ownerId), transactions);\n-\t}\n+    @Getter\n+    private final Sha256Hash hash;\n+\n+    //private transient BlockAbstract blockAbstract;\n+    //private transient Boolean hasAbstract;\n+\n+    /**\n+     * Constructor.\n+     *\n+     * @param block         - original block\n+     * @param proofReceiver - receiver of the proof\n+     */\n+    public BlockMessage(Block block, Node proofReceiver) {\n+        this.number = block.getNumber();\n+        Block prevBlock = block.getPreviousBlock();\n+        if (prevBlock != null) {\n+            this.previousBlockNumber = prevBlock.getNumber();\n+        } else {\n+            // It's a genesis block\n+            this.previousBlockNumber = -1;\n+        }\n+        // It's a genesis block\n+        if (block.getOwner() == null) {\n+            this.ownerId = Transaction.GENESIS_SENDER;\n+        } else {\n+            this.ownerId = block.getOwner().getId();\n+        }\n+        this.transactions = new ArrayList<>();\n+        for (Transaction transaction : block.getTransactions()) {\n+            this.transactions.add(new TransactionMessage(transaction, proofReceiver));\n+        }\n+        this.hash = block.getHash();\n+    }\n+\n+    @Override\n+    public void handle(LocalStore localStore) {\n+        // Do nothing.\n+    }\n+\n+    public Block toBlockWithoutSources(LocalStore localStore) {\n+        List<Transaction> transactions = new ArrayList<>();\n+        for (TransactionMessage tm : this.transactions) {\n+            transactions.add(tm.toTransactionWithoutSources(localStore));\n+        }\n+        return new Block(this.number, localStore.getNode(this.ownerId), transactions);\n+    }\n }\n",
+            "diff_size": 94
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "73",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "73",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/14/BlockMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/14/BlockMessage.java\nindex 3a885db5363..7538fa0e905 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/14/BlockMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/14/BlockMessage.java\n@@ -70,7 +70,7 @@ public class BlockMessage extends Message {\n \n \tpublic Block toBlockWithoutSources(LocalStore localStore) {\n \t\tList<Transaction> transactions = new ArrayList<>();\n-\t\tfor(TransactionMessage tm : this.transactions) {\n+\t\tfor(TransactionMessagetm tm : this.transactions) {\n \t\t\ttransactions.add(tm.toTransactionWithoutSources(localStore));\n \t\t}\n \t\treturn new Block(this.number, localStore.getNode(this.ownerId), transactions);\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

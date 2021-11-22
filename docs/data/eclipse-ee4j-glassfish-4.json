@@ -1,0 +1,78 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "4",
+    "information": {
+        "errors": [
+            {
+                "line": "69",
+                "column": "20",
+                "severity": "warning",
+                "message": "'if' child has incorrect indentation level 19, expected level should be 20.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "            } else {\n                if(_logger.isLoggable(Level.FINEST)){\n                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n                }\n            }\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/4/ConnectorJavaBeanValidator.java\nindex 20ab638bcc8..64ce9a7dc4b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/4/ConnectorJavaBeanValidator.java\n@@ -66,7 +66,7 @@ public class ConnectorJavaBeanValidator {\n                 }\n             } else {\n                 if(_logger.isLoggable(Level.FINEST)){\n-                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n+                    _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n                 }\n             }\n         }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/4/ConnectorJavaBeanValidator.java\nindex 20ab638bcc8..5da5ac5b753 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/4/ConnectorJavaBeanValidator.java\n@@ -33,22 +33,23 @@ import com.sun.enterprise.connectors.ConnectorRegistry;\n public class ConnectorJavaBeanValidator {\n \n     private final static Logger _logger = LogDomains.getLogger(\n-            ConnectorJavaBeanValidator.class, LogDomains.RSR_LOGGER);\n+        ConnectorJavaBeanValidator.class, LogDomains.RSR_LOGGER);\n \n     public void validateJavaBean(Object bean, String rarName) {\n         if (bean != null) {\n             Validator validator = getBeanValidator(rarName);\n             if (validator != null) {\n                 BeanDescriptor bd =\n-                        validator.getConstraintsForClass(bean.getClass());\n+                    validator.getConstraintsForClass(bean.getClass());\n                 bd.getConstraintDescriptors();\n \n-                Class array[] = new Class[]{};\n+                Class array[] = new Class[] {};\n                 Set constraintViolations = validator.validate(bean, array);\n \n \n                 if (constraintViolations != null && constraintViolations.size() > 0) {\n-                    ConstraintViolationException cve = new ConstraintViolationException(constraintViolations);\n+                    ConstraintViolationException cve =\n+                        new ConstraintViolationException(constraintViolations);\n                     StringBuffer msg = new StringBuffer();\n \n                     Iterator it = constraintViolations.iterator();\n@@ -56,17 +57,18 @@ public class ConnectorJavaBeanValidator {\n                         ConstraintViolation cv = (ConstraintViolation) it.next();\n                         msg.append(\"\\n Bean Class : \").append(cv.getRootBeanClass());\n                         msg.append(\"\\n Bean : \").append(cv.getRootBean());\n-                        msg.append(\"\\n Property path : \" ).append(cv.getPropertyPath());\n-                        msg.append(\"\\n Violation Message : \" ).append(cv.getMessage());\n+                        msg.append(\"\\n Property path : \").append(cv.getPropertyPath());\n+                        msg.append(\"\\n Violation Message : \").append(cv.getMessage());\n                     }\n \n-                    Object[] args = new Object[]{bean.getClass(), rarName, msg.toString()};\n-                    _logger.log(Level.SEVERE, \"validation.constraints.violation\",args);\n+                    Object[] args = new Object[] {bean.getClass(), rarName, msg.toString()};\n+                    _logger.log(Level.SEVERE, \"validation.constraints.violation\", args);\n                     throw cve;\n                 }\n             } else {\n-                if(_logger.isLoggable(Level.FINEST)){\n-                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n+                if (_logger.isLoggable(Level.FINEST)) {\n+                    _logger.log(Level.FINEST,\n+                        \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n                 }\n             }\n         }\n@@ -79,13 +81,15 @@ public class ConnectorJavaBeanValidator {\n         // and system-resource-adapters in server.\n         if (beanValidator == null) {\n             ClassLoader contextCL = null;\n-            try{\n+            try {\n                 contextCL = Thread.currentThread().getContextClassLoader();\n-                Thread.currentThread().setContextClassLoader(ConnectorRuntime.getRuntime().getConnectorClassLoader());\n-                validatorFactory = Validation.byDefaultProvider().configure().buildValidatorFactory();\n+                Thread.currentThread()\n+                    .setContextClassLoader(ConnectorRuntime.getRuntime().getConnectorClassLoader());\n+                validatorFactory =\n+                    Validation.byDefaultProvider().configure().buildValidatorFactory();\n                 beanValidator = validatorFactory.getValidator();\n                 ConnectorRegistry.getInstance().addBeanValidator(rarName, beanValidator);\n-            }finally{\n+            } finally {\n                 Thread.currentThread().setContextClassLoader(contextCL);\n             }\n         }\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "69",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 4, expected level should be 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 4, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/4/ConnectorJavaBeanValidator.java\nindex 20ab638bcc8..15ffed70791 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/4/ConnectorJavaBeanValidator.java\n@@ -56,8 +56,8 @@ public class ConnectorJavaBeanValidator {\n                         ConstraintViolation cv = (ConstraintViolation) it.next();\n                         msg.append(\"\\n Bean Class : \").append(cv.getRootBeanClass());\n                         msg.append(\"\\n Bean : \").append(cv.getRootBean());\n-                        msg.append(\"\\n Property path : \" ).append(cv.getPropertyPath());\n-                        msg.append(\"\\n Violation Message : \" ).append(cv.getMessage());\n+                        msg.append(\"\\n Property path : \").append(cv.getPropertyPath());\n+                        msg.append(\"\\n Violation Message : \").append(cv.getMessage());\n                     }\n \n                     Object[] args = new Object[]{bean.getClass(), rarName, msg.toString()};\n@@ -65,9 +65,9 @@ public class ConnectorJavaBeanValidator {\n                     throw cve;\n                 }\n             } else {\n-                if(_logger.isLoggable(Level.FINEST)){\n-                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n-                }\n+                if(_logger.isLoggable(Level.FINEST)) {\n+    _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n+    }\n             }\n         }\n     }\n@@ -91,4 +91,4 @@ public class ConnectorJavaBeanValidator {\n         }\n         return beanValidator;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/4/ConnectorJavaBeanValidator.java\nindex 20ab638bcc8..64ce9a7dc4b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/4/ConnectorJavaBeanValidator.java\n@@ -66,7 +66,7 @@ public class ConnectorJavaBeanValidator {\n                 }\n             } else {\n                 if(_logger.isLoggable(Level.FINEST)){\n-                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n+                    _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n                 }\n             }\n         }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/4/ConnectorJavaBeanValidator.java\nindex 20ab638bcc8..64ce9a7dc4b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/4/ConnectorJavaBeanValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/4/ConnectorJavaBeanValidator.java\n@@ -66,7 +66,7 @@ public class ConnectorJavaBeanValidator {\n                 }\n             } else {\n                 if(_logger.isLoggable(Level.FINEST)){\n-                   _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n+                    _logger.log(Level.FINEST, \"No Bean Validator is available for RAR [ \" + rarName + \" ]\");\n                 }\n             }\n         }\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

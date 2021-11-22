@@ -1,0 +1,817 @@
+{
+    "project_name": "couchbase-couchbase-jvm-core",
+    "error_id": "51",
+    "information": {
+        "errors": [
+            {
+                "line": "245",
+                "column": "15",
+                "severity": "warning",
+                "message": "WhitespaceAround: 'if' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\n            //don't send timed out requests to server\n            if(!request.isActive()) {\n                return;\n            }\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/51/RequestHandler.java\nindex 928fb473a2c..1a979389849 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/51/RequestHandler.java\n@@ -242,7 +242,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/51/RequestHandler.java\nindex 928fb473a2c..320943c5921 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/51/RequestHandler.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package com.couchbase.client.core;\n \n import com.couchbase.client.core.config.BucketConfig;\n@@ -140,18 +141,19 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * Create a new {@link RequestHandler}.\n      */\n     public RequestHandler(final CoreEnvironment environment, final Observable<ClusterConfig> configObservable,\n-        final RingBuffer<ResponseEvent> responseBuffer) {\n+                          final RingBuffer<ResponseEvent> responseBuffer) {\n         this(new CopyOnWriteArrayList<Node>(), environment, configObservable, responseBuffer);\n     }\n \n     /**\n      * Create a new {@link RequestHandler} with a custom node list.\n-     *\n+     * <p>\n      * This constructor should only be used for testing purposes.\n+     *\n      * @param nodes the node list to start with.\n      */\n     RequestHandler(final CopyOnWriteArrayList<Node> nodes, final CoreEnvironment environment,\n-        final Observable<ClusterConfig> configObservable, final RingBuffer<ResponseEvent> responseBuffer) {\n+                   final Observable<ClusterConfig> configObservable, final RingBuffer<ResponseEvent> responseBuffer) {\n         this.nodes = nodes;\n         this.environment = environment;\n         this.responseBuffer = responseBuffer;\n@@ -166,7 +168,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     configuration = config;\n                     reconfigure(config).subscribe(new Subscriber<ClusterConfig>() {\n                         @Override\n-                        public void onCompleted() {}\n+                        public void onCompleted() {\n+                        }\n \n                         @Override\n                         public void onError(Throwable e) {\n@@ -227,9 +230,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n         //prevent non-bootstrap requests to go through if bucket not part of config\n         if (!(request instanceof BootstrapMessage)) {\n             BucketConfig bucketConfig = config == null ? null : config.bucketConfig(request.bucket());\n-            if (config == null || (request.bucket() != null  && bucketConfig == null)) {\n+            if (config == null || (request.bucket() != null && bucketConfig == null)) {\n                 failSafe(environment.scheduler(), true, request.observable(),\n-                        new BucketClosedException(request.bucket() + \" has been closed\"));\n+                    new BucketClosedException(request.bucket() + \" has been closed\"));\n                 return;\n             }\n \n@@ -242,7 +245,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n@@ -293,7 +296,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n \n     /**\n      * Adds a {@link Node} to the cluster.\n-     *\n+     * <p>\n      * The code first initiates a asynchronous connect and then eventually adds it to the node list once it has been\n      * connected successfully.\n      */\n@@ -328,7 +331,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n \n     /**\n      * Removes a {@link Node} from the cluster.\n-     *\n+     * <p>\n      * The node first gets removed from the list and then is disconnected afterwards, so that outstanding\n      * operations can be handled gracefully.\n      */\n@@ -423,7 +426,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n \n     /**\n      * Helper method which grabs the current configuration and checks if the node setup is out of sync.\n-     *\n+     * <p>\n      * This method is always called when a new configuration arrives and it will try to sync the actual node\n      * and service setup with the one proposed by the configuration.\n      */\n@@ -448,7 +451,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     removeNode(node);\n                     node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n                         @Override\n-                        public void onCompleted() {}\n+                        public void onCompleted() {\n+                        }\n \n                         @Override\n                         public void onError(Throwable e) {\n@@ -456,7 +460,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                         }\n \n                         @Override\n-                        public void onNext(LifecycleState lifecycleState) {}\n+                        public void onNext(LifecycleState lifecycleState) {\n+                        }\n                     });\n                 }\n             }).last().map(new Func1<Node, ClusterConfig>() {\n@@ -492,7 +497,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                             removeNode(node);\n                             node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n                                 @Override\n-                                public void onCompleted() {}\n+                                public void onCompleted() {\n+                                }\n \n                                 @Override\n                                 public void onError(Throwable e) {\n@@ -500,7 +506,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                                 }\n \n                                 @Override\n-                                public void onNext(LifecycleState lifecycleState) {}\n+                                public void onNext(LifecycleState lifecycleState) {\n+                                }\n                             });\n                         }\n                     }\n@@ -529,7 +536,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     @Override\n                     public Observable<Map<ServiceType, Integer>> call(final LifecycleState lifecycleState) {\n                         Map<ServiceType, Integer> services =\n-                                environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n+                            environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n                         return Observable.just(services);\n                     }\n                 }).flatMap(new Func1<Map<ServiceType, Integer>, Observable<AddServiceRequest>>() {\n@@ -538,7 +545,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                         List<AddServiceRequest> requests = new ArrayList<AddServiceRequest>(services.size());\n                         for (Map.Entry<ServiceType, Integer> service : services.entrySet()) {\n                             requests.add(new AddServiceRequest(service.getKey(), config.name(), config.username(),\n-                                    config.password(), service.getValue(), nodeInfo.hostname()));\n+                                config.password(), service.getValue(), nodeInfo.hostname()));\n                         }\n                         return Observable.from(requests);\n                     }\n@@ -548,11 +555,11 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                         return addService(request);\n                     }\n                 }).last().map(new Func1<Service, Boolean>() {\n-                        @Override\n-                        public Boolean call(Service service) {\n-                            return true;\n-                        }\n-                    });\n+                    @Override\n+                    public Boolean call(Service service) {\n+                        return true;\n+                    }\n+                });\n             observables.add(obs);\n         }\n \n",
+            "diff_size": 28
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "171",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "184",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 193).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "232",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "233",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 0, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "262",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "264",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "266",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "268",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "270",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 135).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "448",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "458",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "495",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 32, 36.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "505",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 32, 36.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "533",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "534",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "541",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 176).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "542",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 4, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "551",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 4, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "556",
+                    "severity": "warning",
+                    "message": "'for' child has incorrect indentation level 0, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/51/RequestHandler.java\nindex 928fb473a2c..e7b55833903 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/51/RequestHandler.java\n@@ -141,7 +141,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      */\n     public RequestHandler(final CoreEnvironment environment, final Observable<ClusterConfig> configObservable,\n         final RingBuffer<ResponseEvent> responseBuffer) {\n-        this(new CopyOnWriteArrayList<Node>(), environment, configObservable, responseBuffer);\n+    this(new CopyOnWriteArrayList<Node>(), environment, configObservable, responseBuffer);\n     }\n \n     /**\n@@ -166,7 +166,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     configuration = config;\n                     reconfigure(config).subscribe(new Subscriber<ClusterConfig>() {\n                         @Override\n-                        public void onCompleted() {}\n+                        public void onCompleted() {\n+\n+}\n \n                         @Override\n                         public void onError(Throwable e) {\n@@ -179,8 +181,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                             int configNodes = clusterConfig.allNodeAddresses().size();\n \n                             if (logicalNodes != configNodes) {\n-                                LOGGER.debug(\"Number of logical Nodes does not match the number of nodes in the \"\n-                                    + \"current configuration! logical: {}, config: {}\", logicalNodes, configNodes);\n+                                LOGGER.debug(\"Number of logical Nodes does not match the number of nodes in the \" + \"current configuration! logical: {}, config: {}\", logicalNodes, configNodes);\n                             }\n                         }\n                     });\n@@ -227,10 +228,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n         //prevent non-bootstrap requests to go through if bucket not part of config\n         if (!(request instanceof BootstrapMessage)) {\n             BucketConfig bucketConfig = config == null ? null : config.bucketConfig(request.bucket());\n-            if (config == null || (request.bucket() != null  && bucketConfig == null)) {\n-                failSafe(environment.scheduler(), true, request.observable(),\n-                        new BucketClosedException(request.bucket() + \" has been closed\"));\n-                return;\n+            if (config == null || (request.bucket() != null && bucketConfig == null)) {\n+                failSafe(environment.scheduler(), true, request.observable(), new BucketClosedException(request.bucket() + \" has been closed\"));\n+return;\n             }\n \n             //short-circuit some kind of requests for which we know there won't be any handler to respond.\n@@ -242,7 +242,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n@@ -259,20 +259,15 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      */\n     protected void checkFeaturesForRequest(final CouchbaseRequest request, final BucketConfig config) {\n         if (request instanceof BinaryRequest && !config.serviceEnabled(ServiceType.BINARY)) {\n-            throw new ServiceNotAvailableException(\"The KeyValue service is not enabled or no node in the cluster \"\n-                + \"supports it.\");\n+            throw new ServiceNotAvailableException(\"The KeyValue service is not enabled or no node in the cluster \" + \"supports it.\");\n         } else if (request instanceof ViewRequest && !config.serviceEnabled(ServiceType.VIEW)) {\n-            throw new ServiceNotAvailableException(\"The View service is not enabled or no node in the cluster \"\n-                + \"supports it.\");\n+            throw new ServiceNotAvailableException(\"The View service is not enabled or no node in the cluster \" + \"supports it.\");\n         } else if (request instanceof QueryRequest && !config.serviceEnabled(ServiceType.QUERY)) {\n-            throw new ServiceNotAvailableException(\"The Query service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n+            throw new ServiceNotAvailableException(\"The Query service is not enabled or no node in the \" + \"cluster supports it.\");\n         } else if (request instanceof SearchRequest && !config.serviceEnabled(ServiceType.SEARCH)) {\n-            throw new ServiceNotAvailableException(\"The Search service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n+            throw new ServiceNotAvailableException(\"The Search service is not enabled or no node in the \" + \"cluster supports it.\");\n         } else if (request instanceof AnalyticsRequest && !config.serviceEnabled(ServiceType.ANALYTICS)) {\n-            throw new ServiceNotAvailableException(\"The Analytics service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n+            throw new ServiceNotAvailableException(\"The Analytics service is not enabled or no node in the \" + \"cluster supports it.\");\n         }\n     }\n \n@@ -448,7 +443,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     removeNode(node);\n                     node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n                         @Override\n-                        public void onCompleted() {}\n+                        public void onCompleted() {\n+\n+}\n \n                         @Override\n                         public void onError(Throwable e) {\n@@ -456,7 +453,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                         }\n \n                         @Override\n-                        public void onNext(LifecycleState lifecycleState) {}\n+                        public void onNext(LifecycleState lifecycleState) {\n+\n+}\n                     });\n                 }\n             }).last().map(new Func1<Node, ClusterConfig>() {\n@@ -467,8 +466,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             });\n         }\n \n-        return Observable\n-            .just(config)\n+        return Observable.just(config)\n             .flatMap(new Func1<ClusterConfig, Observable<BucketConfig>>() {\n                 @Override\n                 public Observable<BucketConfig> call(final ClusterConfig clusterConfig) {\n@@ -492,7 +490,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                             removeNode(node);\n                             node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n                                 @Override\n-                                public void onCompleted() {}\n+                                public void onCompleted() {\n+\n+}\n \n                                 @Override\n                                 public void onError(Throwable e) {\n@@ -500,7 +500,9 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                                 }\n \n                                 @Override\n-                                public void onNext(LifecycleState lifecycleState) {}\n+                                public void onNext(LifecycleState lifecycleState) {\n+\n+}\n                             });\n                         }\n                     }\n@@ -528,18 +530,16 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                 .flatMap(new Func1<LifecycleState, Observable<Map<ServiceType, Integer>>>() {\n                     @Override\n                     public Observable<Map<ServiceType, Integer>> call(final LifecycleState lifecycleState) {\n-                        Map<ServiceType, Integer> services =\n-                                environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n-                        return Observable.just(services);\n+                        Map<ServiceType, Integer> services = environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n+return Observable.just(services);\n                     }\n                 }).flatMap(new Func1<Map<ServiceType, Integer>, Observable<AddServiceRequest>>() {\n                     @Override\n                     public Observable<AddServiceRequest> call(final Map<ServiceType, Integer> services) {\n                         List<AddServiceRequest> requests = new ArrayList<AddServiceRequest>(services.size());\n                         for (Map.Entry<ServiceType, Integer> service : services.entrySet()) {\n-                            requests.add(new AddServiceRequest(service.getKey(), config.name(), config.username(),\n-                                    config.password(), service.getValue(), nodeInfo.hostname()));\n-                        }\n+                            requests.add(new AddServiceRequest(service.getKey(), config.name(), config.username(), config.password(), service.getValue(), nodeInfo.hostname()));\n+    }\n                         return Observable.from(requests);\n                     }\n                 }).flatMap(new Func1<AddServiceRequest, Observable<Service>>() {\n@@ -548,15 +548,15 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                         return addService(request);\n                     }\n                 }).last().map(new Func1<Service, Boolean>() {\n-                        @Override\n+    @Override\n                         public Boolean call(Service service) {\n                             return true;\n                         }\n                     });\n-            observables.add(obs);\n+observables.add(obs);\n         }\n \n         return Observable.merge(observables).last();\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 44
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "warning",
+                    "message": "'import' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "143",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 160).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "154",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 193).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "184",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 193).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "233",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "265",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "267",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "269",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "269",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 138).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "270",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "271",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "271",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "272",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "273",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 26, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "273",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "274",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "309",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 33, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "311",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 37, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "312",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 37, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "313",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 37, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "314",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 33, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "315",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 29, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "399",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "400",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "401",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "402",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "403",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 26, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "404",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "405",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 26, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "406",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "407",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 33, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "408",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "424",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 58, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "426",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 62, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "426",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "427",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 58, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "428",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 54, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "445",
+                    "column": "25",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: 'synchronized' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "446",
+                    "severity": "warning",
+                    "message": "'synchronized' child has incorrect indentation level 32, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "453",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 53, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "455",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 57, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "456",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 57, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "474",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 53, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "475",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 49, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "476",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 62, expected level should be one of the following: 53, 57.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "478",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 66, expected level should be one of the following: 57, 61.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "479",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 62, expected level should be one of the following: 53, 57.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "480",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 58, expected level should be one of the following: 49, 53.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "483",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 42, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "485",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 46, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "486",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 42, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "487",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 38, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "488",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 44, expected level should be one of the following: 42, 46.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "490",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 48, expected level should be one of the following: 46, 50.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "491",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 44, expected level should be one of the following: 42, 46.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "492",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 40, expected level should be one of the following: 38, 42.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "493",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 53, expected level should be one of the following: 44, 48.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "495",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 57, expected level should be one of the following: 48, 52.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "496",
+                    "severity": "warning",
+                    "message": "'for' has incorrect indentation level 57, expected level should be one of the following: 48, 52.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "497",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 61, expected level should be one of the following: 52, 56.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "498",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 65, expected level should be one of the following: 56, 60.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "498",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "499",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 65, expected level should be one of the following: 56, 60.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "500",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 65, expected level should be one of the following: 56, 60.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "500",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "509",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "518",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 61, expected level should be one of the following: 52, 56.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "519",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 57, expected level should be one of the following: 48, 52.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "520",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 53, expected level should be one of the following: 44, 48.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "521",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 49, expected level should be one of the following: 40, 44.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "522",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 55, expected level should be one of the following: 53, 57.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "524",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 59, expected level should be one of the following: 57, 61.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "525",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 55, expected level should be one of the following: 53, 57.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "526",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 51, expected level should be one of the following: 49, 53.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "539",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 143).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "540",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 70, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "541",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "542",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 74, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "542",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 183).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "543",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 74, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "544",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 70, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "545",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 66, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "545",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 148).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "546",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 72, expected level should be one of the following: 70, 74.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "547",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 157).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "548",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 76, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "548",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 161).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "549",
+                    "severity": "warning",
+                    "message": "'for' has incorrect indentation level 76, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "549",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "550",
+                    "severity": "warning",
+                    "message": "'for' child has incorrect indentation level 80, expected level should be one of the following: 78, 82.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "550",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 228).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "551",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 76, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "552",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 76, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "553",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 72, expected level should be one of the following: 70, 74.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "554",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 68, expected level should be one of the following: 66, 70.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "554",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "555",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 74, expected level should be one of the following: 72, 76.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "556",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "557",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 78, expected level should be one of the following: 76, 80.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "558",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 74, expected level should be one of the following: 72, 76.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "559",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 70, expected level should be one of the following: 68, 72.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "560",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 83, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "561",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "562",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 87, expected level should be one of the following: 78, 82.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "563",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 83, expected level should be one of the following: 74, 78.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "564",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 79, expected level should be one of the following: 70, 74.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/51/RequestHandler.java\nindex 928fb473a2c..ce090d8d2f8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/51/RequestHandler.java\n@@ -57,13 +57,11 @@ import rx.Observable;\n import rx.Subscriber;\n import rx.functions.Action1;\n import rx.functions.Func1;\n-\n import java.util.ArrayList;\n import java.util.List;\n import java.util.Map;\n import java.util.Set;\n import java.util.concurrent.CopyOnWriteArrayList;\n-\n import static com.couchbase.client.core.utils.Observables.failSafe;\n \n /**\n@@ -74,11 +72,13 @@ import static com.couchbase.client.core.utils.Observables.failSafe;\n  * @author Michael Nitschinger\n  * @since 1.0\n  */\n+\n public class RequestHandler implements EventHandler<RequestEvent> {\n \n     /**\n      * The logger used.\n      */\n+\n     private static final CouchbaseLogger LOGGER = CouchbaseLoggerFactory.getInstance(RequestHandler.class);\n \n     /**\n@@ -139,8 +139,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n     /**\n      * Create a new {@link RequestHandler}.\n      */\n-    public RequestHandler(final CoreEnvironment environment, final Observable<ClusterConfig> configObservable,\n-        final RingBuffer<ResponseEvent> responseBuffer) {\n+\n+    public RequestHandler(final CoreEnvironment environment, final Observable<ClusterConfig> configObservable, final RingBuffer<ResponseEvent> responseBuffer) {\n         this(new CopyOnWriteArrayList<Node>(), environment, configObservable, responseBuffer);\n     }\n \n@@ -150,14 +150,13 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * This constructor should only be used for testing purposes.\n      * @param nodes the node list to start with.\n      */\n-    RequestHandler(final CopyOnWriteArrayList<Node> nodes, final CoreEnvironment environment,\n-        final Observable<ClusterConfig> configObservable, final RingBuffer<ResponseEvent> responseBuffer) {\n+\n+    RequestHandler(final CopyOnWriteArrayList<Node> nodes, final CoreEnvironment environment, final Observable<ClusterConfig> configObservable, final RingBuffer<ResponseEvent> responseBuffer) {\n         this.nodes = nodes;\n         this.environment = environment;\n         this.responseBuffer = responseBuffer;\n         this.eventBus = environment.eventBus();\n         configuration = null;\n-\n         configObservable.subscribe(new Action1<ClusterConfig>() {\n             @Override\n             public void call(final ClusterConfig config) {\n@@ -166,25 +165,26 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n                     configuration = config;\n                     reconfigure(config).subscribe(new Subscriber<ClusterConfig>() {\n                         @Override\n-                        public void onCompleted() {}\n+                        public void onCompleted() {\n+\n+                        }\n+\n \n                         @Override\n                         public void onError(Throwable e) {\n                             LOGGER.warn(\"Received Error during Reconfiguration.\", e);\n                         }\n \n+\n                         @Override\n                         public void onNext(final ClusterConfig clusterConfig) {\n                             int logicalNodes = nodes.size();\n                             int configNodes = clusterConfig.allNodeAddresses().size();\n-\n                             if (logicalNodes != configNodes) {\n-                                LOGGER.debug(\"Number of logical Nodes does not match the number of nodes in the \"\n-                                    + \"current configuration! logical: {}, config: {}\", logicalNodes, configNodes);\n+                                LOGGER.debug(\"Number of logical Nodes does not match the number of nodes in the \" + \"current configuration! logical: {}, config: {}\", logicalNodes, configNodes);\n                             }\n                         }\n-                    });\n-\n+                        });\n                     if (eventBus != null) {\n                         eventBus.publish(new ConfigUpdatedEvent(config));\n                     }\n@@ -210,6 +210,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n     /**\n      * Helper method to send the flush signal to all of the nodes available.\n      */\n+\n     private void flush() {\n         for (Node node : nodes) {\n             node.send(SignalFlush.INSTANCE);\n@@ -221,15 +222,15 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      *\n      * @param request the request to dispatch.\n      */\n+\n     private void dispatchRequest(final CouchbaseRequest request) {\n         ClusterConfig config = configuration;\n \n         //prevent non-bootstrap requests to go through if bucket not part of config\n         if (!(request instanceof BootstrapMessage)) {\n             BucketConfig bucketConfig = config == null ? null : config.bucketConfig(request.bucket());\n-            if (config == null || (request.bucket() != null  && bucketConfig == null)) {\n-                failSafe(environment.scheduler(), true, request.observable(),\n-                        new BucketClosedException(request.bucket() + \" has been closed\"));\n+            if (config == null || (request.bucket() != null && bucketConfig == null)) {\n+                failSafe(environment.scheduler(), true, request.observable(), new BucketClosedException(request.bucket() + \" has been closed\"));\n                 return;\n             }\n \n@@ -242,11 +243,11 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n-\n         locator(request).locateAndDispatch(request, nodes, config, environment, responseBuffer);\n     }\n \n@@ -257,23 +258,20 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param request the request to check.\n      * @throws ServiceNotAvailableException if the request type needs a particular feature which isn't activated.\n      */\n+\n+\n     protected void checkFeaturesForRequest(final CouchbaseRequest request, final BucketConfig config) {\n         if (request instanceof BinaryRequest && !config.serviceEnabled(ServiceType.BINARY)) {\n-            throw new ServiceNotAvailableException(\"The KeyValue service is not enabled or no node in the cluster \"\n-                + \"supports it.\");\n+            throw new ServiceNotAvailableException(\"The KeyValue service is not enabled or no node in the cluster \" + \"supports it.\");\n         } else if (request instanceof ViewRequest && !config.serviceEnabled(ServiceType.VIEW)) {\n-            throw new ServiceNotAvailableException(\"The View service is not enabled or no node in the cluster \"\n-                + \"supports it.\");\n+            throw new ServiceNotAvailableException(\"The View service is not enabled or no node in the cluster \" + \"supports it.\");\n         } else if (request instanceof QueryRequest && !config.serviceEnabled(ServiceType.QUERY)) {\n-            throw new ServiceNotAvailableException(\"The Query service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n-        } else if (request instanceof SearchRequest && !config.serviceEnabled(ServiceType.SEARCH)) {\n-            throw new ServiceNotAvailableException(\"The Search service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n-        } else if (request instanceof AnalyticsRequest && !config.serviceEnabled(ServiceType.ANALYTICS)) {\n-            throw new ServiceNotAvailableException(\"The Analytics service is not enabled or no node in the \"\n-                + \"cluster supports it.\");\n-        }\n+                   throw new ServiceNotAvailableException(\"The Query service is not enabled or no node in the \" + \"cluster supports it.\");\n+               } else if (request instanceof SearchRequest && !config.serviceEnabled(ServiceType.SEARCH)) {\n+                   throw new ServiceNotAvailableException(\"The Search service is not enabled or no node in the \" + \"cluster supports it.\");\n+               } else if (request instanceof AnalyticsRequest && !config.serviceEnabled(ServiceType.ANALYTICS)) {\n+                          throw new ServiceNotAvailableException(\"The Analytics service is not enabled or no node in the \" + \"cluster supports it.\");\n+                      }\n     }\n \n     /**\n@@ -282,6 +280,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param hostname the hostname of the node.\n      * @return the states of the node (most probably {@link LifecycleState#CONNECTED}).\n      */\n+\n     public Observable<LifecycleState> addNode(final NetworkAddress hostname) {\n         Node node = nodeBy(hostname);\n         if (node != null) {\n@@ -297,23 +296,23 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * The code first initiates a asynchronous connect and then eventually adds it to the node list once it has been\n      * connected successfully.\n      */\n+\n+\n     Observable<LifecycleState> addNode(final Node node) {\n         LOGGER.debug(\"Got instructed to add Node {}\", node.hostname());\n-\n         if (nodes.contains(node)) {\n             LOGGER.debug(\"Node {} already registered, skipping.\", node.hostname());\n             return Observable.just(node.state());\n         }\n-\n         LOGGER.debug(\"Connecting Node \" + node.hostname());\n         return node.connect().map(new Func1<LifecycleState, LifecycleState>() {\n-            @Override\n-            public LifecycleState call(LifecycleState lifecycleState) {\n-                LOGGER.debug(\"Connect finished, registering for use.\");\n-                nodes.addIfAbsent(node);\n-                return lifecycleState;\n-            }\n-        });\n+                                 @Override\n+                                 public LifecycleState call(LifecycleState lifecycleState) {\n+                                     LOGGER.debug(\"Connect finished, registering for use.\");\n+                                     nodes.addIfAbsent(node);\n+                                     return lifecycleState;\n+                                 }\n+                             });\n     }\n \n     /**\n@@ -322,6 +321,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param hostname the hostname of the node.\n      * @return the states of the node (most probably {@link LifecycleState#DISCONNECTED}).\n      */\n+\n     public Observable<LifecycleState> removeNode(final NetworkAddress hostname) {\n         return removeNode(nodeBy(hostname));\n     }\n@@ -332,6 +332,8 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * The node first gets removed from the list and then is disconnected afterwards, so that outstanding\n      * operations can be handled gracefully.\n      */\n+\n+\n     Observable<LifecycleState> removeNode(final Node node) {\n         LOGGER.debug(\"Got instructed to remove Node {}\", node.hostname());\n         nodes.remove(node);\n@@ -344,6 +346,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param request the request which contains infos about the service and node to add.\n      * @return an observable which contains the newly created service.\n      */\n+\n     public Observable<Service> addService(final AddServiceRequest request) {\n         LOGGER.debug(\"Got instructed to add Service {}, to Node {}\", request.type(), request.hostname());\n         return nodeBy(request.hostname()).addService(request);\n@@ -355,6 +358,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param request the request which contains infos about the service and node to remove.\n      * @return an observable which contains the removed service.\n      */\n+\n     public Observable<Service> removeService(final RemoveServiceRequest request) {\n         LOGGER.debug(\"Got instructed to remove Service {}, from Node {}\", request.type(), request.hostname());\n         return nodeBy(request.hostname()).removeService(request);\n@@ -366,11 +370,11 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * @param hostname the hostname of the node.\n      * @return the node or null if no hostname for that ip address.\n      */\n+\n     public Node nodeBy(final NetworkAddress hostname) {\n         if (hostname == null) {\n             return null;\n         }\n-\n         for (Node node : nodes) {\n             if (node.hostname().equals(hostname)) {\n                 return node;\n@@ -384,22 +388,24 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      *\n      * @return the locator for the given request type.\n      */\n+\n+\n     protected Locator locator(final CouchbaseRequest request) {\n         if (request instanceof BinaryRequest) {\n             return binaryLocator;\n         } else if (request instanceof ViewRequest) {\n             return viewLocator;\n         } else if (request instanceof QueryRequest) {\n-            return queryLocator;\n-        } else if (request instanceof ConfigRequest) {\n-            return configLocator;\n-        } else if (request instanceof SearchRequest) {\n-            return searchLocator;\n-        } else if (request instanceof AnalyticsRequest) {\n-            return analyticsLocator;\n-        } else {\n-            throw new IllegalArgumentException(\"Unknown Request Type: \" + request);\n-        }\n+                   return queryLocator;\n+               } else if (request instanceof ConfigRequest) {\n+                   return configLocator;\n+               } else if (request instanceof SearchRequest) {\n+                          return searchLocator;\n+                      } else if (request instanceof AnalyticsRequest) {\n+                          return analyticsLocator;\n+                      } else {\n+                                 throw new IllegalArgumentException(\"Unknown Request Type: \" + request);\n+                      }\n     }\n \n     /**\n@@ -408,17 +414,18 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      *\n      * @return an observable with the response once ready.\n      */\n+\n     public Observable<HealthCheckResponse> healthCheck() {\n         List<Observable<EndpointHealth>> healthChecks = new ArrayList<Observable<EndpointHealth>>(nodes.size());\n         for (Node node : nodes) {\n             healthChecks.add(node.healthCheck());\n         }\n         return Observable.merge(healthChecks).toList().map(new Func1<List<EndpointHealth>, HealthCheckResponse>() {\n-            @Override\n-            public HealthCheckResponse call(List<EndpointHealth> checks) {\n-                return new HealthCheckResponse(new ServicesHealth(checks));\n-            }\n-        });\n+                                                          @Override\n+                                                          public HealthCheckResponse call(List<EndpointHealth> checks) {\n+                                                              return new HealthCheckResponse(new ServicesHealth(checks));\n+                                                          }\n+                                                      });\n     }\n \n     /**\n@@ -427,91 +434,96 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      * This method is always called when a new configuration arrives and it will try to sync the actual node\n      * and service setup with the one proposed by the configuration.\n      */\n+\n     public Observable<ClusterConfig> reconfigure(final ClusterConfig config) {\n         LOGGER.debug(\"Starting reconfiguration.\");\n-\n         if (config.bucketConfigs().values().isEmpty()) {\n             LOGGER.debug(\"No open bucket found in config, disconnecting all nodes.\");\n             //JVMCBC-231: a race condition can happen where the nodes set is seen as\n             // not empty, while the subsequent Observable.from is not, failing in calling last()\n             List<Node> snapshotNodes;\n-            synchronized (nodes) {\n-                snapshotNodes = new ArrayList<Node>(nodes);\n+            synchronized(nodes) {\n+                                snapshotNodes = new ArrayList<Node>(nodes);\n             }\n+\n             if (snapshotNodes.isEmpty()) {\n                 return Observable.just(config);\n             }\n-\n             return Observable.from(snapshotNodes).doOnNext(new Action1<Node>() {\n-                @Override\n-                public void call(Node node) {\n-                    removeNode(node);\n-                    node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n-                        @Override\n-                        public void onCompleted() {}\n-\n-                        @Override\n-                        public void onError(Throwable e) {\n-                            LOGGER.warn(\"Got error during node disconnect.\", e);\n-                        }\n-\n-                        @Override\n-                        public void onNext(LifecycleState lifecycleState) {}\n-                    });\n-                }\n-            }).last().map(new Func1<Node, ClusterConfig>() {\n-                @Override\n-                public ClusterConfig call(Node node) {\n-                    return config;\n-                }\n-            });\n+                                                     @Override\n+                                                     public void call(Node node) {\n+                                                         removeNode(node);\n+                                                         node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n+                                                             @Override\n+                                                             public void onCompleted() {\n+\n+                                                             }\n+\n+\n+                                                             @Override\n+                                                             public void onError(Throwable e) {\n+                                                                 LOGGER.warn(\"Got error during node disconnect.\", e);\n+                                                             }\n+\n+\n+                                                             @Override\n+                                                             public void onNext(LifecycleState lifecycleState) {\n+\n+                                                             }\n+                                                             });\n+                                                     }\n+                                                 }).last().map(new Func1<Node, ClusterConfig>() {\n+                                                              @Override\n+                                                              public ClusterConfig call(Node node) {\n+                                                                  return config;\n+                                                              }\n+                                                          });\n         }\n-\n-        return Observable\n-            .just(config)\n-            .flatMap(new Func1<ClusterConfig, Observable<BucketConfig>>() {\n-                @Override\n-                public Observable<BucketConfig> call(final ClusterConfig clusterConfig) {\n-                    return Observable.from(clusterConfig.bucketConfigs().values());\n-                }\n-            }).flatMap(new Func1<BucketConfig, Observable<Boolean>>() {\n-                @Override\n-                public Observable<Boolean> call(BucketConfig bucketConfig) {\n-                    return reconfigureBucket(bucketConfig);\n-                }\n-            })\n-            .last()\n-            .doOnNext(new Action1<Boolean>() {\n-                @Override\n-                public void call(Boolean aBoolean) {\n-                    Set<NetworkAddress> configNodes = config.allNodeAddresses();\n-\n-                    for (Node node : nodes) {\n-                        if (!configNodes.contains(node.hostname())) {\n-                            LOGGER.debug(\"Removing and disconnecting node {}.\", node.hostname());\n-                            removeNode(node);\n-                            node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n-                                @Override\n-                                public void onCompleted() {}\n-\n-                                @Override\n-                                public void onError(Throwable e) {\n-                                    LOGGER.warn(\"Got error during node disconnect.\", e);\n-                                }\n-\n-                                @Override\n-                                public void onNext(LifecycleState lifecycleState) {}\n-                            });\n-                        }\n-                    }\n-                }\n-            })\n-            .map(new Func1<Boolean, ClusterConfig>() {\n-                @Override\n-                public ClusterConfig call(Boolean aBoolean) {\n-                    return config;\n-                }\n-            });\n+        return Observable.just(config).flatMap(new Func1<ClusterConfig, Observable<BucketConfig>>() {\n+                                          @Override\n+                                          public Observable<BucketConfig> call(final ClusterConfig clusterConfig) {\n+                                              return Observable.from(clusterConfig.bucketConfigs().values());\n+                                          }\n+                                      }).flatMap(new Func1<BucketConfig, Observable<Boolean>>() {\n+                                            @Override\n+                                            public Observable<Boolean> call(BucketConfig bucketConfig) {\n+                                                return reconfigureBucket(bucketConfig);\n+                                            }\n+                                        }).last().doOnNext(new Action1<Boolean>() {\n+                                                     @Override\n+                                                     public void call(Boolean aBoolean) {\n+                                                         Set<NetworkAddress> configNodes = config.allNodeAddresses();\n+                                                         for (Node node : nodes) {\n+                                                             if (!configNodes.contains(node.hostname())) {\n+                                                                 LOGGER.debug(\"Removing and disconnecting node {}.\", node.hostname());\n+                                                                 removeNode(node);\n+                                                                 node.disconnect().subscribe(new Subscriber<LifecycleState>() {\n+                                                                     @Override\n+                                                                     public void onCompleted() {\n+\n+                                                                     }\n+\n+\n+                                                                     @Override\n+                                                                     public void onError(Throwable e) {\n+                                                                         LOGGER.warn(\"Got error during node disconnect.\", e);\n+                                                                     }\n+\n+\n+                                                                     @Override\n+                                                                     public void onNext(LifecycleState lifecycleState) {\n+\n+                                                                     }\n+                                                                     });\n+                                                             }\n+                                                         }\n+                                                     }\n+                                                 }).map(new Func1<Boolean, ClusterConfig>() {\n+                                                       @Override\n+                                                       public ClusterConfig call(Boolean aBoolean) {\n+                                                           return config;\n+                                                       }\n+                                                   });\n     }\n \n     /**\n@@ -519,44 +531,39 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n      *\n      * @param config the config for this bucket.\n      */\n+\n     private Observable<Boolean> reconfigureBucket(final BucketConfig config) {\n         LOGGER.debug(\"Starting reconfiguration for bucket {}\", config.name());\n-\n         List<Observable<Boolean>> observables = new ArrayList<Observable<Boolean>>();\n         for (final NodeInfo nodeInfo : config.nodes()) {\n-            Observable<Boolean> obs = addNode(nodeInfo.hostname())\n-                .flatMap(new Func1<LifecycleState, Observable<Map<ServiceType, Integer>>>() {\n-                    @Override\n-                    public Observable<Map<ServiceType, Integer>> call(final LifecycleState lifecycleState) {\n-                        Map<ServiceType, Integer> services =\n-                                environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n-                        return Observable.just(services);\n-                    }\n-                }).flatMap(new Func1<Map<ServiceType, Integer>, Observable<AddServiceRequest>>() {\n-                    @Override\n-                    public Observable<AddServiceRequest> call(final Map<ServiceType, Integer> services) {\n-                        List<AddServiceRequest> requests = new ArrayList<AddServiceRequest>(services.size());\n-                        for (Map.Entry<ServiceType, Integer> service : services.entrySet()) {\n-                            requests.add(new AddServiceRequest(service.getKey(), config.name(), config.username(),\n-                                    config.password(), service.getValue(), nodeInfo.hostname()));\n-                        }\n-                        return Observable.from(requests);\n-                    }\n-                }).flatMap(new Func1<AddServiceRequest, Observable<Service>>() {\n-                    @Override\n-                    public Observable<Service> call(AddServiceRequest request) {\n-                        return addService(request);\n-                    }\n-                }).last().map(new Func1<Service, Boolean>() {\n-                        @Override\n-                        public Boolean call(Service service) {\n-                            return true;\n-                        }\n-                    });\n+            Observable<Boolean> obs = addNode(nodeInfo.hostname()).flatMap(new Func1<LifecycleState, Observable<Map<ServiceType, Integer>>>() {\n+                                                                      @Override\n+                                                                      public Observable<Map<ServiceType, Integer>> call(final LifecycleState lifecycleState) {\n+                                                                          Map<ServiceType, Integer> services = environment.sslEnabled() ? nodeInfo.sslServices() : nodeInfo.services();\n+                                                                          return Observable.just(services);\n+                                                                      }\n+                                                                  }).flatMap(new Func1<Map<ServiceType, Integer>, Observable<AddServiceRequest>>() {\n+                                                                        @Override\n+                                                                        public Observable<AddServiceRequest> call(final Map<ServiceType, Integer> services) {\n+                                                                            List<AddServiceRequest> requests = new ArrayList<AddServiceRequest>(services.size());\n+                                                                            for (Map.Entry<ServiceType, Integer> service : services.entrySet()) {\n+                                                                                requests.add(new AddServiceRequest(service.getKey(), config.name(), config.username(), config.password(), service.getValue(), nodeInfo.hostname()));\n+                                                                            }\n+                                                                            return Observable.from(requests);\n+                                                                        }\n+                                                                    }).flatMap(new Func1<AddServiceRequest, Observable<Service>>() {\n+                                                                          @Override\n+                                                                          public Observable<Service> call(AddServiceRequest request) {\n+                                                                              return addService(request);\n+                                                                          }\n+                                                                      }).last().map(new Func1<Service, Boolean>() {\n+                                                                                   @Override\n+                                                                                   public Boolean call(Service service) {\n+                                                                                       return true;\n+                                                                                   }\n+                                                                               });\n             observables.add(obs);\n         }\n-\n         return Observable.merge(observables).last();\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 193
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_random/51/RequestHandler.java\nindex 928fb473a2c..1a979389849 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_random/51/RequestHandler.java\n@@ -242,7 +242,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/51/RequestHandler.java\nindex 928fb473a2c..1a979389849 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/51/RequestHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/51/RequestHandler.java\n@@ -242,7 +242,7 @@ public class RequestHandler implements EventHandler<RequestEvent> {\n             }\n \n             //don't send timed out requests to server\n-            if(!request.isActive()) {\n+            if (!request.isActive()) {\n                 return;\n             }\n         }\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

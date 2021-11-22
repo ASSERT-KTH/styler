@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3249",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "58",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "52",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "69",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "52",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "14",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3249/Header.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3249/Header.java\nindex 5f4ffe5b9be..57814db2605 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3249/Header.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3249/Header.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.index.internal.gbptree;\n \n import java.nio.ByteBuffer;\n@@ -29,51 +30,52 @@ import org.neo4j.io.pagecache.PageCursor;\n  */\n public class Header\n {\n+  /**\n+   * Writes a header into a {@link GBPTree} state page during\n+   * {@link GBPTree#checkpoint(org.neo4j.io.pagecache.IOLimiter)}.\n+   */\n+  public interface Writer\n+  {\n     /**\n-     * Writes a header into a {@link GBPTree} state page during\n-     * {@link GBPTree#checkpoint(org.neo4j.io.pagecache.IOLimiter)}.\n+     * Writes header data into {@code to} with previous valid header data found in {@code from} of {@code length}\n+     * bytes in size.\n+     *\n+     * @param from   {@link PageCursor} positioned at the header data written in the previous check point.\n+     * @param length size in bytes of the previous header data.\n+     * @param to     {@link PageCursor} to write new header into.\n      */\n-    public interface Writer\n-    {\n-        /**\n-         * Writes header data into {@code to} with previous valid header data found in {@code from} of {@code length}\n-         * bytes in size.\n-         * @param from {@link PageCursor} positioned at the header data written in the previous check point.\n-         * @param length size in bytes of the previous header data.\n-         * @param to {@link PageCursor} to write new header into.\n-         */\n-        void write( PageCursor from, int length, PageCursor to );\n-    }\n+    void write(PageCursor from, int length, PageCursor to);\n+  }\n \n-    private Header()\n-    {\n-    }\n+  private Header()\n+  {\n+  }\n \n-    static final Writer CARRY_OVER_PREVIOUS_HEADER = ( from, length, to ) ->\n-    {\n-        int toOffset = to.getOffset();\n-        from.copyTo( from.getOffset(), to, toOffset, length );\n-        to.setOffset( toOffset + length );\n-    };\n+  static final Writer CARRY_OVER_PREVIOUS_HEADER = (from, length, to) ->\n+  {\n+    int toOffset = to.getOffset();\n+    from.copyTo(from.getOffset(), to, toOffset, length);\n+    to.setOffset(toOffset + length);\n+  };\n \n-    static Writer replace( Consumer<PageCursor> writer )\n-    {\n-        // Discard the previous state, just write the new\n-        return ( from, length, to ) -> writer.accept( to );\n-    }\n+  static Writer replace(Consumer<PageCursor> writer)\n+  {\n+    // Discard the previous state, just write the new\n+    return (from, length, to) -> writer.accept(to);\n+  }\n \n+  /**\n+   * Reads a header from a {@link GBPTree} state page during opening it.\n+   */\n+  public interface Reader\n+  {\n     /**\n-     * Reads a header from a {@link GBPTree} state page during opening it.\n+     * Called when it's time to read header data from the most up to date and valid state page.\n+     * The data that can be accessed from the {@code headerBytes} buffer have been consistently\n+     * read from a {@link PageCursor}.\n+     *\n+     * @param headerBytes {@link ByteBuffer} containing the header data.\n      */\n-    public interface Reader\n-    {\n-        /**\n-         * Called when it's time to read header data from the most up to date and valid state page.\n-         * The data that can be accessed from the {@code headerBytes} buffer have been consistently\n-         * read from a {@link PageCursor}.\n-         *\n-         * @param headerBytes {@link ByteBuffer} containing the header data.\n-         */\n-        void read( ByteBuffer headerBytes );\n-    }\n+    void read(ByteBuffer headerBytes);\n+  }\n }\n",
+            "diff_size": 59
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3249/Header.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3249/Header.java\nindex 5f4ffe5b9be..9b84e1929a1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3249/Header.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3249/Header.java\n@@ -76,4 +76,4 @@ public class Header\n          */\n         void read( ByteBuffer headerBytes );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

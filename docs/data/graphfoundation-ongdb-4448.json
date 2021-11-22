@@ -1,0 +1,96 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4448",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4448/IndexHits.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4448/IndexHits.java\nindex 4522aa74328..1f5e5f48521 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4448/IndexHits.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4448/IndexHits.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.graphdb.index;\n \n import java.util.Iterator;\n@@ -36,9 +37,9 @@ import org.neo4j.helpers.collection.Iterators;\n  * foremost an {@link Iterator}, but also an {@link Iterable} JUST so that it\n  * can be used in a for-each loop. The <code>iterator()</code> method\n  * <i>always</i> returns <code>this</code>.\n- *\n+ * <p>\n  * The size is calculated before-hand so that calling it is always fast.\n- *\n+ * <p>\n  * When you're done with the result and haven't reached the end of the\n  * iteration {@link #close()} must be called. Results which are looped through\n  * entirely closes automatically. Typical use:\n@@ -64,63 +65,64 @@ import org.neo4j.helpers.collection.Iterators;\n  */\n public interface IndexHits<T> extends ResourceIterator<T>, ResourceIterable<T>\n {\n-    /**\n-     * Returns the size of this iterable, in most scenarios this value is accurate\n-     * while in some scenarios near-accurate.\n-     *\n-     * There's no cost in calling this method. It's considered near-accurate if this\n-     * {@link IndexHits} object has been returned when inside a {@link Transaction}\n-     * which has index modifications, of a certain nature. Also entities\n-     * ({@link Node}s/{@link Relationship}s) which have been deleted from the graph,\n-     * but are still in the index will also affect the accuracy of the returned size.\n-     *\n-     * @return the near-accurate size if this iterable.\n-     */\n-    int size();\n+  /**\n+   * Returns the size of this iterable, in most scenarios this value is accurate\n+   * while in some scenarios near-accurate.\n+   * <p>\n+   * There's no cost in calling this method. It's considered near-accurate if this\n+   * {@link IndexHits} object has been returned when inside a {@link Transaction}\n+   * which has index modifications, of a certain nature. Also entities\n+   * ({@link Node}s/{@link Relationship}s) which have been deleted from the graph,\n+   * but are still in the index will also affect the accuracy of the returned size.\n+   *\n+   * @return the near-accurate size if this iterable.\n+   */\n+  int size();\n \n-    /**\n-     * Closes the underlying search result. This method should be called\n-     * whenever you've got what you wanted from the result and won't use it\n-     * anymore. It's necessary to call it so that underlying indexes can dispose\n-     * of allocated resources for this search result.\n-     *\n-     * You can however skip to call this method if you loop through the whole\n-     * result, then close() will be called automatically. Even if you loop\n-     * through the entire result and then call this method it will silently\n-     * ignore any consecutive call (for convenience).\n-     */\n-    @Override\n-    void close();\n+  /**\n+   * Closes the underlying search result. This method should be called\n+   * whenever you've got what you wanted from the result and won't use it\n+   * anymore. It's necessary to call it so that underlying indexes can dispose\n+   * of allocated resources for this search result.\n+   * <p>\n+   * You can however skip to call this method if you loop through the whole\n+   * result, then close() will be called automatically. Even if you loop\n+   * through the entire result and then call this method it will silently\n+   * ignore any consecutive call (for convenience).\n+   */\n+  @Override\n+  void close();\n \n-    /**\n-     * @return these index hits in a {@link Stream}\n-     */\n-    @Override\n-    default Stream<T> stream()\n-    {\n-        // Implementation note: we need this for two reasons:\n-        // one, to disambiguate #stream between ResourceIterator and ResourceIterable,\n-        // two, because implementations of this return themselves on #iterator, so we can't\n-        //      use #iterator().stream(), that then causes stack overflows.\n-        return Iterators.stream( this );\n-    }\n+  /**\n+   * @return these index hits in a {@link Stream}\n+   */\n+  @Override\n+  default Stream<T> stream()\n+  {\n+    // Implementation note: we need this for two reasons:\n+    // one, to disambiguate #stream between ResourceIterator and ResourceIterable,\n+    // two, because implementations of this return themselves on #iterator, so we can't\n+    //      use #iterator().stream(), that then causes stack overflows.\n+    return Iterators.stream(this);\n+  }\n \n-    /**\n-     * Returns the first and only item from the result iterator, or {@code null}\n-     * if there was none. If there were more than one item in the result a\n-     * {@link NoSuchElementException} will be thrown. This method must be called\n-     * first in the iteration and will grab the first item from the iteration,\n-     * so the result is considered broken after this call.\n-     *\n-     * @return the first and only item, or {@code null} if none.\n-     */\n-    T getSingle();\n+  /**\n+   * Returns the first and only item from the result iterator, or {@code null}\n+   * if there was none. If there were more than one item in the result a\n+   * {@link NoSuchElementException} will be thrown. This method must be called\n+   * first in the iteration and will grab the first item from the iteration,\n+   * so the result is considered broken after this call.\n+   *\n+   * @return the first and only item, or {@code null} if none.\n+   */\n+  T getSingle();\n \n-    /**\n-     * Returns the score of the most recently fetched item from this iterator\n-     * (from {@link #next()}). The range of the returned values is up to the\n-     * {@link Index} implementation to dictate.\n-     * @return the score of the most recently fetched item from this iterator.\n-     */\n-    float currentScore();\n+  /**\n+   * Returns the score of the most recently fetched item from this iterator\n+   * (from {@link #next()}). The range of the returned values is up to the\n+   * {@link Index} implementation to dictate.\n+   *\n+   * @return the score of the most recently fetched item from this iterator.\n+   */\n+  float currentScore();\n }\n",
+            "diff_size": 59
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4448/IndexHits.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4448/IndexHits.java\nindex 4522aa74328..22d1834d543 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4448/IndexHits.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4448/IndexHits.java\n@@ -123,4 +123,4 @@ public interface IndexHits<T> extends ResourceIterator<T>, ResourceIterable<T>\n      * @return the score of the most recently fetched item from this iterator.\n      */\n     float currentScore();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

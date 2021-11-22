@@ -1,0 +1,66 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "104",
+    "information": {
+        "errors": [
+            {
+                "line": "60",
+                "column": "44",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "        for (WebSocket websocket : getWebSockets()) {\n            final ChatWebSocket chat = (ChatWebSocket) websocket;\n            if (chat.getUser() != null) {  // it may happen some websocket is on the list, but not logged in to the chat\n                chat.sendJson(user, text);\n            }\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "62",
+                    "column": "26",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/104/ChatApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/104/ChatApplication.java\nindex 3f3f92ef77d..071929e00ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/104/ChatApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/104/ChatApplication.java\n@@ -44,7 +44,7 @@ public class ChatApplication extends WebSocketApplication {\n \n     @Override\n     public void onClose(WebSocket websocket) {\n-        broadcast(\"system\", ((ChatWebSocket)websocket).getUser() + \" left the chat\");\n+        broadcast(\"system\", ((ChatWebSocket) websocket).getUser() + \" left the chat\");\n     }\n \n     /**\n@@ -54,10 +54,12 @@ public class ChatApplication extends WebSocketApplication {\n      * @param text the text message\n      */\n     private void broadcast(String user, String text) {\n-        WebSocketsServlet.logger.log(Level.INFO, \"Broadcasting: {0} from: {1}\", new Object[]{text, user});\n+        WebSocketsServlet.logger\n+            .log(Level.INFO, \"Broadcasting: {0} from: {1}\", new Object[] {text, user});\n         for (WebSocket websocket : getWebSockets()) {\n             final ChatWebSocket chat = (ChatWebSocket) websocket;\n-            if (chat.getUser() != null) {  // it may happen some websocket is on the list, but not logged in to the chat\n+            if (chat.getUser() !=\n+                null) {  // it may happen some websocket is on the list, but not logged in to the chat\n                 chat.sendJson(user, text);\n             }\n         }\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,94 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "143",
+    "information": {
+        "errors": [
+            {
+                "line": "67",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 144).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Override\n    public void distinct(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.StringArrayResponse> responseObserver) {\n        throw new UnsupportedOperationException();\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/143/AlignmentGrpcService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/143/AlignmentGrpcService.java\nindex 0b72a165ea0..7bea3182ebb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/143/AlignmentGrpcService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/143/AlignmentGrpcService.java\n@@ -32,111 +32,112 @@ import org.opencb.opencga.analysis.alignment.AlignmentStorageManager;\n  */\n public class AlignmentGrpcService extends AlignmentServiceGrpc.AlignmentServiceImplBase {\n \n-    private GenericGrpcService genericGrpcService;\n-    private AlignmentStorageManager alignmentStorageManager;\n-\n-    public AlignmentGrpcService(Configuration configuration, StorageConfiguration storageConfiguration) {\n-        genericGrpcService = new GenericGrpcService(configuration, storageConfiguration);\n-        alignmentStorageManager = new AlignmentStorageManager(genericGrpcService.catalogManager, GenericGrpcService.storageEngineFactory);\n-    }\n-\n-    @Override\n-    public void count(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.LongResponse> responseObserver) {\n-        try {\n-            // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n-            Query query = createQuery(request);\n-            QueryOptions queryOptions = createQueryOptions(request);\n-\n-            String studyIdStr = query.getString(\"study\");\n-            String fileIdStr = query.getString(\"fileId\");\n-            String sessionId = query.getString(\"sid\");\n-\n-            DataResult<Long> countDataResult = alignmentStorageManager.count(studyIdStr, fileIdStr, query, queryOptions, sessionId);\n-\n-            long count = countDataResult.first();\n-            ServiceTypesModel.LongResponse longResponse = ServiceTypesModel.LongResponse.newBuilder().setValue(count).build();\n-            responseObserver.onNext(longResponse);\n-            responseObserver.onCompleted();\n+  private GenericGrpcService genericGrpcService;\n+  private AlignmentStorageManager alignmentStorageManager;\n+\n+  public AlignmentGrpcService(Configuration configuration, StorageConfiguration storageConfiguration) {\n+    genericGrpcService = new GenericGrpcService(configuration, storageConfiguration);\n+    alignmentStorageManager = new AlignmentStorageManager(genericGrpcService.catalogManager, GenericGrpcService.storageEngineFactory);\n+  }\n+\n+  @Override\n+  public void count(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.LongResponse> responseObserver) {\n+    try {\n+      // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n+      Query query = createQuery(request);\n+      QueryOptions queryOptions = createQueryOptions(request);\n+\n+      String studyIdStr = query.getString(\"study\");\n+      String fileIdStr = query.getString(\"fileId\");\n+      String sessionId = query.getString(\"sid\");\n+\n+      DataResult<Long> countDataResult = alignmentStorageManager.count(studyIdStr, fileIdStr, query, queryOptions, sessionId);\n+\n+      long count = countDataResult.first();\n+      ServiceTypesModel.LongResponse longResponse = ServiceTypesModel.LongResponse.newBuilder().setValue(count).build();\n+      responseObserver.onNext(longResponse);\n+      responseObserver.onCompleted();\n //            alignmentDBAdaptor.close();\n-        } catch (Exception e) {\n-            e.printStackTrace();\n-        }\n+    } catch (Exception e) {\n+      e.printStackTrace();\n     }\n-\n-    @Override\n-    public void distinct(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.StringArrayResponse> responseObserver) {\n-        throw new UnsupportedOperationException();\n-    }\n-\n-    @Override\n-    public void get(GenericAlignmentServiceModel.Request request, StreamObserver<Reads.ReadAlignment> responseObserver) {\n-        // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n-        Query query = createQuery(request);\n-        QueryOptions queryOptions = createQueryOptions(request);\n-\n-        String studyIdStr = query.getString(\"study\");\n-        String fileIdStr = query.getString(\"fileId\");\n-        String sessionId = query.getString(\"sid\");\n-\n-        try (AlignmentIterator<Reads.ReadAlignment> iterator =\n-                     alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, Reads.ReadAlignment.class)) {\n-            while (iterator.hasNext()) {\n-                responseObserver.onNext(iterator.next());\n-            }\n-            responseObserver.onCompleted();\n-        } catch (Exception e) {\n-            e.printStackTrace();\n-        }\n+  }\n+\n+  @Override\n+  public void distinct(GenericAlignmentServiceModel.Request request,\n+                       StreamObserver<ServiceTypesModel.StringArrayResponse> responseObserver) {\n+    throw new UnsupportedOperationException();\n+  }\n+\n+  @Override\n+  public void get(GenericAlignmentServiceModel.Request request, StreamObserver<Reads.ReadAlignment> responseObserver) {\n+    // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n+    Query query = createQuery(request);\n+    QueryOptions queryOptions = createQueryOptions(request);\n+\n+    String studyIdStr = query.getString(\"study\");\n+    String fileIdStr = query.getString(\"fileId\");\n+    String sessionId = query.getString(\"sid\");\n+\n+    try (AlignmentIterator<Reads.ReadAlignment> iterator =\n+             alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, Reads.ReadAlignment.class)) {\n+      while (iterator.hasNext()) {\n+        responseObserver.onNext(iterator.next());\n+      }\n+      responseObserver.onCompleted();\n+    } catch (Exception e) {\n+      e.printStackTrace();\n     }\n-\n-    @Override\n-    public void getAsSam(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.StringResponse> responseObserver) {\n-        // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n-        Query query = createQuery(request);\n-        QueryOptions queryOptions = createQueryOptions(request);\n-\n-        String studyIdStr = query.getString(\"study\");\n-        String fileIdStr = query.getString(\"fileId\");\n-        String sessionId = query.getString(\"sid\");\n-\n-        try (AlignmentIterator<SAMRecord> iterator =\n-                     alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, SAMRecord.class)) {\n-            while (iterator.hasNext()) {\n-                ServiceTypesModel.StringResponse response =\n-                        ServiceTypesModel.StringResponse.newBuilder().setValue(iterator.next().getSAMString()).build();\n-                responseObserver.onNext(response);\n-            }\n-            responseObserver.onCompleted();\n-        } catch (Exception e) {\n-            e.printStackTrace();\n-        }\n+  }\n+\n+  @Override\n+  public void getAsSam(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.StringResponse> responseObserver) {\n+    // Creating the datastore Query and QueryOptions objects from the gRPC request Map of Strings\n+    Query query = createQuery(request);\n+    QueryOptions queryOptions = createQueryOptions(request);\n+\n+    String studyIdStr = query.getString(\"study\");\n+    String fileIdStr = query.getString(\"fileId\");\n+    String sessionId = query.getString(\"sid\");\n+\n+    try (AlignmentIterator<SAMRecord> iterator =\n+             alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, SAMRecord.class)) {\n+      while (iterator.hasNext()) {\n+        ServiceTypesModel.StringResponse response =\n+            ServiceTypesModel.StringResponse.newBuilder().setValue(iterator.next().getSAMString()).build();\n+        responseObserver.onNext(response);\n+      }\n+      responseObserver.onCompleted();\n+    } catch (Exception e) {\n+      e.printStackTrace();\n     }\n+  }\n \n \n-    @Override\n-    public void groupBy(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.GroupResponse> responseObserver) {\n-        throw new UnsupportedOperationException();\n-    }\n+  @Override\n+  public void groupBy(GenericAlignmentServiceModel.Request request, StreamObserver<ServiceTypesModel.GroupResponse> responseObserver) {\n+    throw new UnsupportedOperationException();\n+  }\n \n-    // TODO: Temporal solution. We have to implement a general createQuery and createQueryOptions\n-    private Query createQuery(GenericAlignmentServiceModel.Request request) {\n-        Query query = new Query();\n-        for (String key : request.getQuery().keySet()) {\n-            if (request.getQuery().get(key) != null) {\n-                query.put(key, request.getQuery().get(key));\n-            }\n-        }\n-        return query;\n+  // TODO: Temporal solution. We have to implement a general createQuery and createQueryOptions\n+  private Query createQuery(GenericAlignmentServiceModel.Request request) {\n+    Query query = new Query();\n+    for (String key : request.getQuery().keySet()) {\n+      if (request.getQuery().get(key) != null) {\n+        query.put(key, request.getQuery().get(key));\n+      }\n     }\n-\n-    private QueryOptions createQueryOptions(GenericAlignmentServiceModel.Request request) {\n-        QueryOptions queryOptions = new QueryOptions();\n-        for (String key : request.getOptions().keySet()) {\n-            if (request.getOptions().get(key) != null) {\n-                queryOptions.put(key, request.getOptions().get(key));\n-            }\n-        }\n-        return queryOptions;\n+    return query;\n+  }\n+\n+  private QueryOptions createQueryOptions(GenericAlignmentServiceModel.Request request) {\n+    QueryOptions queryOptions = new QueryOptions();\n+    for (String key : request.getOptions().keySet()) {\n+      if (request.getOptions().get(key) != null) {\n+        queryOptions.put(key, request.getOptions().get(key));\n+      }\n     }\n+    return queryOptions;\n+  }\n \n }\n",
+            "diff_size": 101
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 180).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "101",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 160).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/143/AlignmentGrpcService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/143/AlignmentGrpcService.java\nindex 0b72a165ea0..ae7c8b54add 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/143/AlignmentGrpcService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/143/AlignmentGrpcService.java\n@@ -78,9 +78,8 @@ public class AlignmentGrpcService extends AlignmentServiceGrpc.AlignmentServiceI\n         String fileIdStr = query.getString(\"fileId\");\n         String sessionId = query.getString(\"sid\");\n \n-        try (AlignmentIterator<Reads.ReadAlignment> iterator =\n-                     alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, Reads.ReadAlignment.class)) {\n-            while (iterator.hasNext()) {\n+        try (AlignmentIterator<Reads.ReadAlignment> iterator = alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, Reads.ReadAlignment.class)) {\n+    while (iterator.hasNext()) {\n                 responseObserver.onNext(iterator.next());\n             }\n             responseObserver.onCompleted();\n@@ -99,9 +98,8 @@ public class AlignmentGrpcService extends AlignmentServiceGrpc.AlignmentServiceI\n         String fileIdStr = query.getString(\"fileId\");\n         String sessionId = query.getString(\"sid\");\n \n-        try (AlignmentIterator<SAMRecord> iterator =\n-                     alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, SAMRecord.class)) {\n-            while (iterator.hasNext()) {\n+        try (AlignmentIterator<SAMRecord> iterator = alignmentStorageManager.iterator(studyIdStr, fileIdStr, query, queryOptions, sessionId, SAMRecord.class)) {\n+    while (iterator.hasNext()) {\n                 ServiceTypesModel.StringResponse response =\n                         ServiceTypesModel.StringResponse.newBuilder().setValue(iterator.next().getSAMString()).build();\n                 responseObserver.onNext(response);\n@@ -139,4 +137,4 @@ public class AlignmentGrpcService extends AlignmentServiceGrpc.AlignmentServiceI\n         return queryOptions;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

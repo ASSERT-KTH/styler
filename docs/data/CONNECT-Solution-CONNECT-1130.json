@@ -1,0 +1,77 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "1130",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.messaging.client;\n\nimport gov.hhs.fha.nhinc.common.nhinccommon.AssertionType;\nimport gov.hhs.fha.nhinc.messaging.service.port.ServicePortDescriptor;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/1130/CONNECTCXFClientFactory.java\nindex eeffc2530e8..70dddb374d2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/1130/CONNECTCXFClientFactory.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.messaging.client;\n \n import gov.hhs.fha.nhinc.common.nhinccommon.AssertionType;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/1130/CONNECTCXFClientFactory.java\nindex eeffc2530e8..4f14593edd1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/1130/CONNECTCXFClientFactory.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.messaging.client;\n \n import gov.hhs.fha.nhinc.common.nhinccommon.AssertionType;\n@@ -33,42 +34,42 @@ import org.apache.commons.lang3.StringUtils;\n \n /**\n  * @author akong\n- *\n  */\n public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n \n-    /**\n-     * Returns a CONNECTClient configured for secured invocation.\n-     */\n-    @Override\n-    public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor, String url,\n-        AssertionType assertion) {\n-\n-        return new CONNECTCXFClientSecured<>(portDescriptor, url, assertion);\n-    }\n+  /**\n+   * Returns a CONNECTClient configured for secured invocation.\n+   */\n+  @Override\n+  public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor, String url,\n+                                                      AssertionType assertion) {\n \n-    /**\n-     * Returns a CONNECTClient configured for secured invocation. This method allows the target hcid and service name to\n-     * be passed to be used for purpose of/purpose for logic.\n-     */\n-    @Override\n-    public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor,\n-        AssertionType assertion, String url, String targetHomeCommunityId, String serviceName) {\n+    return new CONNECTCXFClientSecured<>(portDescriptor, url, assertion);\n+  }\n \n-        if (StringUtils.isEmpty(url)) {\n-            throw new WebServiceException(\"URL for a CONNECT Client must be provided. Got '\" + url + \"'\");\n-        }\n+  /**\n+   * Returns a CONNECTClient configured for secured invocation. This method allows the target hcid and service name to\n+   * be passed to be used for purpose of/purpose for logic.\n+   */\n+  @Override\n+  public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor,\n+                                                      AssertionType assertion, String url, String targetHomeCommunityId,\n+                                                      String serviceName) {\n \n-        return new CONNECTCXFClientSecured<>(portDescriptor, assertion, url, targetHomeCommunityId, serviceName);\n+    if (StringUtils.isEmpty(url)) {\n+      throw new WebServiceException(\"URL for a CONNECT Client must be provided. Got '\" + url + \"'\");\n     }\n \n-    /**\n-     * Returns a CONNECTClient configured for unsecured invocation.\n-     */\n-    @Override\n-    public <T> CONNECTClient<T> getCONNECTClientUnsecured(ServicePortDescriptor<T> portDescriptor, String url,\n-        AssertionType assertion) {\n-        return new CONNECTCXFClientUnsecured<>(portDescriptor, url, assertion);\n-    }\n+    return new CONNECTCXFClientSecured<>(portDescriptor, assertion, url, targetHomeCommunityId, serviceName);\n+  }\n+\n+  /**\n+   * Returns a CONNECTClient configured for unsecured invocation.\n+   */\n+  @Override\n+  public <T> CONNECTClient<T> getCONNECTClientUnsecured(ServicePortDescriptor<T> portDescriptor, String url,\n+                                                        AssertionType assertion) {\n+    return new CONNECTCXFClientUnsecured<>(portDescriptor, url, assertion);\n+  }\n \n }\n",
+            "diff_size": 39
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/1130/CONNECTCXFClientFactory.java\nindex eeffc2530e8..965d5a3567b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/1130/CONNECTCXFClientFactory.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.messaging.client;\n \n import gov.hhs.fha.nhinc.common.nhinccommon.AssertionType;\n@@ -43,8 +44,7 @@ public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n     @Override\n     public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor, String url,\n         AssertionType assertion) {\n-\n-        return new CONNECTCXFClientSecured<>(portDescriptor, url, assertion);\n+    return new CONNECTCXFClientSecured<>(portDescriptor, url, assertion);\n     }\n \n     /**\n@@ -54,8 +54,7 @@ public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n     @Override\n     public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor,\n         AssertionType assertion, String url, String targetHomeCommunityId, String serviceName) {\n-\n-        if (StringUtils.isEmpty(url)) {\n+    if (StringUtils.isEmpty(url)) {\n             throw new WebServiceException(\"URL for a CONNECT Client must be provided. Got '\" + url + \"'\");\n         }\n \n@@ -68,7 +67,7 @@ public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n     @Override\n     public <T> CONNECTClient<T> getCONNECTClientUnsecured(ServicePortDescriptor<T> portDescriptor, String url,\n         AssertionType assertion) {\n-        return new CONNECTCXFClientUnsecured<>(portDescriptor, url, assertion);\n+    return new CONNECTCXFClientUnsecured<>(portDescriptor, url, assertion);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/1130/CONNECTCXFClientFactory.java\nindex eeffc2530e8..8583699d7d9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/1130/CONNECTCXFClientFactory.java\n@@ -35,15 +35,19 @@ import org.apache.commons.lang3.StringUtils;\n  * @author akong\n  *\n  */\n-public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n+\n+\n+public class CONNECTCXFClientFactory extends\n+    CONNECTClientFactory {\n \n     /**\n      * Returns a CONNECTClient configured for secured invocation.\n      */\n-    @Override\n-    public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor, String url,\n-        AssertionType assertion) {\n \n+\n+    @Override\n+    public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor,\n+        String url, AssertionType assertion) {\n         return new CONNECTCXFClientSecured<>(portDescriptor, url, assertion);\n     }\n \n@@ -51,24 +55,28 @@ public class CONNECTCXFClientFactory extends CONNECTClientFactory {\n      * Returns a CONNECTClient configured for secured invocation. This method allows the target hcid and service name to\n      * be passed to be used for purpose of/purpose for logic.\n      */\n+\n+\n     @Override\n     public <T> CONNECTClient<T> getCONNECTClientSecured(ServicePortDescriptor<T> portDescriptor,\n-        AssertionType assertion, String url, String targetHomeCommunityId, String serviceName) {\n-\n+        AssertionType assertion,\n+        String url,\n+        String targetHomeCommunityId, String serviceName) {\n         if (StringUtils.isEmpty(url)) {\n             throw new WebServiceException(\"URL for a CONNECT Client must be provided. Got '\" + url + \"'\");\n         }\n-\n         return new CONNECTCXFClientSecured<>(portDescriptor, assertion, url, targetHomeCommunityId, serviceName);\n     }\n \n     /**\n      * Returns a CONNECTClient configured for unsecured invocation.\n      */\n+\n+\n     @Override\n-    public <T> CONNECTClient<T> getCONNECTClientUnsecured(ServicePortDescriptor<T> portDescriptor, String url,\n-        AssertionType assertion) {\n+    public <T> CONNECTClient<T> getCONNECTClientUnsecured(ServicePortDescriptor<T> portDescriptor,\n+        String url, AssertionType assertion) {\n         return new CONNECTCXFClientUnsecured<>(portDescriptor, url, assertion);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/1130/CONNECTCXFClientFactory.java\nindex eeffc2530e8..70dddb374d2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1130/CONNECTCXFClientFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/1130/CONNECTCXFClientFactory.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.messaging.client;\n \n import gov.hhs.fha.nhinc.common.nhinccommon.AssertionType;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff",
+        "styler_random"
+    ]
+}

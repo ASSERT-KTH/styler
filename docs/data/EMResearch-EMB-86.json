@@ -1,0 +1,98 @@
+{
+    "project_name": "EMResearch-EMB",
+    "error_id": "86",
+    "information": {
+        "errors": [
+            {
+                "line": "58",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 139).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "   */\n  @Override\n  public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> args, int patternTokenPos, AnalyzedTokenReadings[] patternTokens) {\n    Calendar dateFromDate = getDate(args);\n    Calendar currentDate = getCalendar();\n    if (TestHackHelper.isJUnitTest()) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/86/AbstractFutureDateFilter.java\nindex 30b9c060e12..257b1739a9b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/86/AbstractFutureDateFilter.java\n@@ -16,6 +16,7 @@\n  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301\n  * USA\n  */\n+\n package org.languagetool.rules;\n \n import org.apache.commons.lang3.StringUtils;\n@@ -30,85 +31,90 @@ import java.util.regex.Pattern;\n /**\n  * Checks if a given date is in the future\n  * Used for mismatch detection between verb tense and a given date\n+ *\n  * @since 4.3\n  */\n public abstract class AbstractFutureDateFilter extends RuleFilter {\n \n-  private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile(\"(\\\\d+).*\");\n-  /**\n-   * Implement so that \"first\" returns {@code 1}, second returns {@code 2} etc.\n-   * @param localizedDayOfMonth name of day of the month or abbreviation thereof\n-   */\n-  protected int getDayOfMonth(String localizedDayOfMonth) {\n-    return 0;\n-  }\n+    private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile(\"(\\\\d+).*\");\n+\n+    /**\n+     * Implement so that \"first\" returns {@code 1}, second returns {@code 2} etc.\n+     *\n+     * @param localizedDayOfMonth name of day of the month or abbreviation thereof\n+     */\n+    protected int getDayOfMonth(String localizedDayOfMonth) {\n+        return 0;\n+    }\n \n-  /**\n-   * Implement so that January returns {@code 1}, February {@code 2} etc.\n-   * @param localizedMonth name of a month or abbreviation thereof\n-   */\n-  protected abstract int getMonth(String localizedMonth);\n+    /**\n+     * Implement so that January returns {@code 1}, February {@code 2} etc.\n+     *\n+     * @param localizedMonth name of a month or abbreviation thereof\n+     */\n+    protected abstract int getMonth(String localizedMonth);\n \n-  protected abstract Calendar getCalendar();\n+    protected abstract Calendar getCalendar();\n \n-  /**\n-   * @param args a map with values for {@code year}, {@code month}, {@code day} (day of month), {@code weekDay}\n-   */\n-  @Override\n-  public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> args, int patternTokenPos, AnalyzedTokenReadings[] patternTokens) {\n-    Calendar dateFromDate = getDate(args);\n-    Calendar currentDate = getCalendar();\n-    if (TestHackHelper.isJUnitTest()) {\n-      currentDate = new Calendar.Builder().setDate(2014, 0, 1).build();\n-    }\n-    try {\n-      if (dateFromDate.after(currentDate)) {\n-        return match;\n-      } else {\n-        return null;\n-      }\n-    } catch (IllegalArgumentException ignore) {\n-      // happens with 'dates' like '32.8.2014' - those should be caught by a different rule\n-      return null;\n+    /**\n+     * @param args a map with values for {@code year}, {@code month}, {@code day} (day of month), {@code weekDay}\n+     */\n+    @Override\n+    public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> args, int patternTokenPos,\n+                                     AnalyzedTokenReadings[] patternTokens) {\n+        Calendar dateFromDate = getDate(args);\n+        Calendar currentDate = getCalendar();\n+        if (TestHackHelper.isJUnitTest()) {\n+            currentDate = new Calendar.Builder().setDate(2014, 0, 1).build();\n+        }\n+        try {\n+            if (dateFromDate.after(currentDate)) {\n+                return match;\n+            } else {\n+                return null;\n+            }\n+        } catch (IllegalArgumentException ignore) {\n+            // happens with 'dates' like '32.8.2014' - those should be caught by a different rule\n+            return null;\n+        }\n     }\n-  }\n \n-  private Calendar getDate(Map<String, String> args) {\n-    int year = Integer.parseInt(getRequired(\"year\", args));\n-    int month = getMonthFromArguments(args);\n-    int dayOfMonth = getDayOfMonthFromArguments(args);\n+    private Calendar getDate(Map<String, String> args) {\n+        int year = Integer.parseInt(getRequired(\"year\", args));\n+        int month = getMonthFromArguments(args);\n+        int dayOfMonth = getDayOfMonthFromArguments(args);\n \n-    Calendar calendar = getCalendar();\n-    calendar.setLenient(false);  // be strict about validity of dates\n-    //noinspection MagicConstant\n-    calendar.set(year, month, dayOfMonth, 0, 0, 0);\n-    return calendar;\n-  }\n+        Calendar calendar = getCalendar();\n+        calendar.setLenient(false);  // be strict about validity of dates\n+        //noinspection MagicConstant\n+        calendar.set(year, month, dayOfMonth, 0, 0, 0);\n+        return calendar;\n+    }\n \n-  private int getDayOfMonthFromArguments(Map<String, String> args) {\n-    String dayOfMonthString = getRequired(\"day\", args);\n-    int dayOfMonth;\n-    Matcher matcherDayOfMonth = DAY_OF_MONTH_PATTERN.matcher(dayOfMonthString);\n-    if (matcherDayOfMonth.matches()) {\n-      // The day of the month is a number, possibly with a suffix such\n-      // as \"22nd\" for example.\n-      dayOfMonth = Integer.parseInt(matcherDayOfMonth.group(1));\n-    } else {\n-      // In some languages, the day of the month can also be written with\n-      // letters rather than with digits, so parse localized numbers.\n-      dayOfMonth = getDayOfMonth(dayOfMonthString);\n+    private int getDayOfMonthFromArguments(Map<String, String> args) {\n+        String dayOfMonthString = getRequired(\"day\", args);\n+        int dayOfMonth;\n+        Matcher matcherDayOfMonth = DAY_OF_MONTH_PATTERN.matcher(dayOfMonthString);\n+        if (matcherDayOfMonth.matches()) {\n+            // The day of the month is a number, possibly with a suffix such\n+            // as \"22nd\" for example.\n+            dayOfMonth = Integer.parseInt(matcherDayOfMonth.group(1));\n+        } else {\n+            // In some languages, the day of the month can also be written with\n+            // letters rather than with digits, so parse localized numbers.\n+            dayOfMonth = getDayOfMonth(dayOfMonthString);\n+        }\n+        return dayOfMonth;\n     }\n-    return dayOfMonth;\n-  }\n \n-  private int getMonthFromArguments(Map<String, String> args) {\n-    String monthStr = getRequired(\"month\", args);\n-    int month;\n-    if (StringUtils.isNumeric(monthStr)) {\n-      month = Integer.parseInt(monthStr);\n-    } else {\n-      month = getMonth(monthStr);\n+    private int getMonthFromArguments(Map<String, String> args) {\n+        String monthStr = getRequired(\"month\", args);\n+        int month;\n+        if (StringUtils.isNumeric(monthStr)) {\n+            month = Integer.parseInt(monthStr);\n+        } else {\n+            month = getMonth(monthStr);\n+        }\n+        return month - 1;\n     }\n-    return month - 1;\n-  }\n }\n",
+            "diff_size": 78
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/86/AbstractFutureDateFilter.java\nindex 30b9c060e12..c78cc0d0307 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/86/AbstractFutureDateFilter.java\n@@ -111,4 +111,4 @@ public abstract class AbstractFutureDateFilter extends RuleFilter {\n     }\n     return month - 1;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "62",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/86/AbstractFutureDateFilter.java\nindex 30b9c060e12..d80a3da2975 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/86/AbstractFutureDateFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/86/AbstractFutureDateFilter.java\n@@ -21,7 +21,6 @@ package org.languagetool.rules;\n import org.apache.commons.lang3.StringUtils;\n import org.languagetool.AnalyzedTokenReadings;\n import org.languagetool.rules.patterns.RuleFilter;\n-\n import java.util.Calendar;\n import java.util.Map;\n import java.util.regex.Matcher;\n@@ -32,83 +31,87 @@ import java.util.regex.Pattern;\n  * Used for mismatch detection between verb tense and a given date\n  * @since 4.3\n  */\n+\n+\n public abstract class AbstractFutureDateFilter extends RuleFilter {\n \n-  private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile(\"(\\\\d+).*\");\n+    private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile(\"(\\\\d+).*\");\n   /**\n    * Implement so that \"first\" returns {@code 1}, second returns {@code 2} etc.\n    * @param localizedDayOfMonth name of day of the month or abbreviation thereof\n    */\n-  protected int getDayOfMonth(String localizedDayOfMonth) {\n-    return 0;\n-  }\n+\n+    protected int getDayOfMonth(String localizedDayOfMonth) {\n+        return 0;\n+    }\n \n   /**\n    * Implement so that January returns {@code 1}, February {@code 2} etc.\n    * @param localizedMonth name of a month or abbreviation thereof\n    */\n-  protected abstract int getMonth(String localizedMonth);\n \n-  protected abstract Calendar getCalendar();\n+    protected abstract int getMonth(String localizedMonth);\n+\n+    protected abstract Calendar getCalendar();\n \n   /**\n    * @param args a map with values for {@code year}, {@code month}, {@code day} (day of month), {@code weekDay}\n    */\n-  @Override\n-  public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> args, int patternTokenPos, AnalyzedTokenReadings[] patternTokens) {\n-    Calendar dateFromDate = getDate(args);\n-    Calendar currentDate = getCalendar();\n-    if (TestHackHelper.isJUnitTest()) {\n-      currentDate = new Calendar.Builder().setDate(2014, 0, 1).build();\n-    }\n-    try {\n-      if (dateFromDate.after(currentDate)) {\n-        return match;\n-      } else {\n-        return null;\n-      }\n-    } catch (IllegalArgumentException ignore) {\n+\n+    @Override\n+    public RuleMatch acceptRuleMatch(RuleMatch match, Map<String, String> args, int patternTokenPos, AnalyzedTokenReadings[] patternTokens) {\n+        Calendar dateFromDate = getDate(args);\n+        Calendar currentDate = getCalendar();\n+        if (TestHackHelper.isJUnitTest()) {\n+            currentDate = new Calendar.Builder().setDate(2014, 0, 1).build();\n+        }\n+        try {\n+            if (dateFromDate.after(currentDate)) {\n+                return match;\n+            } else {\n+                return null;\n+            }\n+        } catch (IllegalArgumentException ignore) {\n       // happens with 'dates' like '32.8.2014' - those should be caught by a different rule\n-      return null;\n+          return null;\n+        }\n     }\n-  }\n \n-  private Calendar getDate(Map<String, String> args) {\n+    private Calendar getDate(Map<String, String> args) {\n     int year = Integer.parseInt(getRequired(\"year\", args));\n     int month = getMonthFromArguments(args);\n     int dayOfMonth = getDayOfMonthFromArguments(args);\n-\n     Calendar calendar = getCalendar();\n     calendar.setLenient(false);  // be strict about validity of dates\n     //noinspection MagicConstant\n     calendar.set(year, month, dayOfMonth, 0, 0, 0);\n     return calendar;\n-  }\n+    }\n \n-  private int getDayOfMonthFromArguments(Map<String, String> args) {\n-    String dayOfMonthString = getRequired(\"day\", args);\n-    int dayOfMonth;\n-    Matcher matcherDayOfMonth = DAY_OF_MONTH_PATTERN.matcher(dayOfMonthString);\n-    if (matcherDayOfMonth.matches()) {\n+    private int getDayOfMonthFromArguments(Map<String, String> args) {\n+        String dayOfMonthString = getRequired(\"day\", args);\n+        int dayOfMonth;\n+        Matcher matcherDayOfMonth = DAY_OF_MONTH_PATTERN.matcher(dayOfMonthString);\n+        if (matcherDayOfMonth.matches()) {\n       // The day of the month is a number, possibly with a suffix such\n       // as \"22nd\" for example.\n-      dayOfMonth = Integer.parseInt(matcherDayOfMonth.group(1));\n-    } else {\n+            dayOfMonth = Integer.parseInt(matcherDayOfMonth.group(1));\n+        } else {\n       // In some languages, the day of the month can also be written with\n       // letters rather than with digits, so parse localized numbers.\n-      dayOfMonth = getDayOfMonth(dayOfMonthString);\n+            dayOfMonth = getDayOfMonth(dayOfMonthString);\n+        }\n+        return dayOfMonth;\n     }\n-    return dayOfMonth;\n-  }\n \n-  private int getMonthFromArguments(Map<String, String> args) {\n-    String monthStr = getRequired(\"month\", args);\n-    int month;\n-    if (StringUtils.isNumeric(monthStr)) {\n-      month = Integer.parseInt(monthStr);\n-    } else {\n-      month = getMonth(monthStr);\n+    private int getMonthFromArguments(Map<String, String> args) {\n+        String monthStr = getRequired(\"month\", args);\n+        int month;\n+        if (StringUtils.isNumeric(monthStr)) {\n+            month = Integer.parseInt(monthStr);\n+        } else {\n+            month = getMonth(monthStr);\n+        }\n+        return month - 1;\n     }\n-    return month - 1;\n-  }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 57
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

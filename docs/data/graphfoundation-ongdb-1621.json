@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1621",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "35",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "35",
+                    "column": "49",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "52",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "77",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "63",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "68",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1621/RaftCoreState.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1621/RaftCoreState.java\nindex 6881cde2710..f7a6fbdb1ac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1621/RaftCoreState.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1621/RaftCoreState.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.core.state.snapshot;\n \n import java.io.IOException;\n@@ -29,53 +30,53 @@ import org.neo4j.storageengine.api.WritableChannel;\n \n public class RaftCoreState\n {\n-    private MembershipEntry committed;\n+  private MembershipEntry committed;\n+\n+  public RaftCoreState(MembershipEntry committed)\n+  {\n+    this.committed = committed;\n+  }\n+\n+  public MembershipEntry committed()\n+  {\n+    return committed;\n+  }\n \n-    public RaftCoreState( MembershipEntry committed )\n+  public static class Marshal extends SafeStateMarshal<RaftCoreState>\n+  {\n+    private static MembershipEntry.Marshal membershipMarshal = new MembershipEntry.Marshal();\n+\n+    @Override\n+    public RaftCoreState startState()\n     {\n-        this.committed = committed;\n+      return null;\n     }\n \n-    public MembershipEntry committed()\n+    @Override\n+    public long ordinal(RaftCoreState raftCoreState)\n     {\n-        return committed;\n+      return 0;\n     }\n \n-    public static class Marshal extends SafeStateMarshal<RaftCoreState>\n+    @Override\n+    public void marshal(RaftCoreState raftCoreState, WritableChannel channel) throws IOException\n     {\n-        private static MembershipEntry.Marshal membershipMarshal = new MembershipEntry.Marshal();\n-\n-        @Override\n-        public RaftCoreState startState()\n-        {\n-            return null;\n-        }\n-\n-        @Override\n-        public long ordinal( RaftCoreState raftCoreState )\n-        {\n-            return 0;\n-        }\n \n-        @Override\n-        public void marshal( RaftCoreState raftCoreState, WritableChannel channel ) throws IOException\n-        {\n-\n-            membershipMarshal.marshal( raftCoreState.committed(), channel );\n-        }\n-\n-        @Override\n-        protected RaftCoreState unmarshal0( ReadableChannel channel ) throws IOException, EndOfStreamException\n-        {\n-            return new RaftCoreState( membershipMarshal.unmarshal( channel ) );\n-        }\n+      membershipMarshal.marshal(raftCoreState.committed(), channel);\n     }\n \n     @Override\n-    public String toString()\n+    protected RaftCoreState unmarshal0(ReadableChannel channel) throws IOException, EndOfStreamException\n     {\n-        return \"RaftCoreState{\" +\n-               \"committed=\" + committed +\n-               '}';\n+      return new RaftCoreState(membershipMarshal.unmarshal(channel));\n     }\n+  }\n+\n+  @Override\n+  public String toString()\n+  {\n+    return \"RaftCoreState{\" +\n+        \"committed=\" + committed +\n+        '}';\n+  }\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1621/RaftCoreState.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1621/RaftCoreState.java\nindex 6881cde2710..ce3d1d0136a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1621/RaftCoreState.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1621/RaftCoreState.java\n@@ -60,8 +60,7 @@ public class RaftCoreState\n         @Override\n         public void marshal( RaftCoreState raftCoreState, WritableChannel channel ) throws IOException\n         {\n-\n-            membershipMarshal.marshal( raftCoreState.committed(), channel );\n+    membershipMarshal.marshal( raftCoreState.committed(), channel );\n         }\n \n         @Override\n@@ -74,8 +73,6 @@ public class RaftCoreState\n     @Override\n     public String toString()\n     {\n-        return \"RaftCoreState{\" +\n-               \"committed=\" + committed +\n-               '}';\n+        return \"RaftCoreState{\" + \"committed=\" + committed + '}';\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

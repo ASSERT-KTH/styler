@@ -1,0 +1,78 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "9",
+    "information": {
+        "errors": [
+            {
+                "line": "58",
+                "column": "44",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "                    done = true;\n\n                else if ((char)ch != '\\r') // weird--it used to do \\r\\n translation\n                    r = r + (char) ch;\n            }\n            catch(java.io.IOException e)",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/9/Console.java\nindex 897f2278e8d..c6ae8304176 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/9/Console.java\n@@ -55,8 +55,9 @@ public class Console\n                 if (ch < 0 || (char)ch == '\\n')\n                     done = true;\n \n-                else if ((char)ch != '\\r') // weird--it used to do \\r\\n translation\n-                    r = r + (char) ch;\n+                else if ((char)ch != '\\r')\n+                    // weird--it used to do \\r\\n translation\n+                     r = r + (char) ch;\n             }\n             catch(java.io.IOException e)\n             {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "56",
+                    "column": "47",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/9/Console.java\nindex 897f2278e8d..6e9b4f460de 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/9/Console.java\n@@ -17,49 +17,47 @@\n package com.sun.enterprise.admin.mbeanapi.deployment;\n \n /**\n-   An easy interface to read numbers and strings from\n-   standard input\n-\n-   @version 1.10 10 Mar 1997\n-   @author Cay Horstmann\n-*/\n+ * An easy interface to read numbers and strings from\n+ * standard input\n+ *\n+ * @author Cay Horstmann\n+ * @version 1.10 10 Mar 1997\n+ */\n \n-public class Console\n-{\n-    /** print a prompt on the console but don't print a newline\n-      @param prompt the prompt string to display\n-    */\n+public class Console {\n+    /**\n+     * print a prompt on the console but don't print a newline\n+     *\n+     * @param prompt the prompt string to display\n+     */\n \n-    public static void printPrompt(String prompt)\n-    {\n+    public static void printPrompt(String prompt) {\n         System.out.print(prompt + \" \");\n         System.out.flush();\n     }\n \n-    /** read a string from the console. The string is\n-        terminated by a newline\n-        @return the input string (without the newline)\n-    */\n+    /**\n+     * read a string from the console. The string is\n+     * terminated by a newline\n+     *\n+     * @return the input string (without the newline)\n+     */\n \n-    public static String readLine()\n-    {\n+    public static String readLine() {\n         int ch;\n         String r = \"\";\n         boolean done = false;\n \n-        while (!done)\n-        {\n-            try\n-            {\n+        while (!done) {\n+            try {\n                 ch = System.in.read();\n-                if (ch < 0 || (char)ch == '\\n')\n+                if (ch < 0 || (char) ch == '\\n') {\n                     done = true;\n-\n-                else if ((char)ch != '\\r') // weird--it used to do \\r\\n translation\n+                } else if ((char) ch != '\\r') // weird--it used to do \\r\\n translation\n+                {\n                     r = r + (char) ch;\n-            }\n-            catch(java.io.IOException e)\n-            {\n+                }\n+            } catch (java.io.IOException e) {\n                 done = true;\n             }\n         }\n@@ -67,84 +65,77 @@ public class Console\n         return r;\n     }\n \n-    /**    read a string from the console. The string is\n-        terminated by a newline\n-        @param prompt the prompt string to display\n-        @return the input string (without the newline)\n-    */\n+    /**\n+     * read a string from the console. The string is\n+     * terminated by a newline\n+     *\n+     * @param prompt the prompt string to display\n+     * @return the input string (without the newline)\n+     */\n \n-    public static char getKey(String prompt)\n-    {\n+    public static char getKey(String prompt) {\n         printPrompt(prompt);\n         int ch = '\\n';\n \n-        try\n-        {\n+        try {\n             ch = System.in.read();\n+        } catch (java.io.IOException e) {\n         }\n-        catch(java.io.IOException e)\n-        {\n-        }\n-        return (char)ch;\n+        return (char) ch;\n \n     }\n \n-    /**    read a string from the console. The string is\n-        terminated by a newline\n-        @param prompt the prompt string to display\n-        @return the input string (without the newline)\n-    */\n+    /**\n+     * read a string from the console. The string is\n+     * terminated by a newline\n+     *\n+     * @param prompt the prompt string to display\n+     * @return the input string (without the newline)\n+     */\n \n-    public static String readLine(String prompt)\n-    {\n+    public static String readLine(String prompt) {\n         printPrompt(prompt);\n         return readLine();\n     }\n \n-    /**    read an integer from the console. The input is\n-    terminated by a newline\n-    @param prompt the prompt string to display\n-    @return the input value as an int\n-    @exception NumberFormatException if bad input\n-    */\n-\n-    public static int readInt(String prompt)\n-    {\n-        while(true)\n-        {\n+    /**\n+     * read an integer from the console. The input is\n+     * terminated by a newline\n+     *\n+     * @param prompt the prompt string to display\n+     * @return the input value as an int\n+     * @throws NumberFormatException if bad input\n+     */\n+\n+    public static int readInt(String prompt) {\n+        while (true) {\n             printPrompt(prompt);\n \n-            try\n-            {\n+            try {\n                 return Integer.valueOf\n-                (readLine().trim()).intValue();\n-            }\n-            catch(NumberFormatException e)\n-            {\n+                    (readLine().trim()).intValue();\n+            } catch (NumberFormatException e) {\n                 System.out.println(\"Not an integer. Please try again!\");\n             }\n         }\n     }\n \n-    /** read a floating point number from the console.\n-    The input is terminated by a newline\n-    @param prompt the prompt string to display\n-    @return the input value as a double\n-    @exception NumberFormatException if bad input\n-    */\n-\n-    public static double readDouble(String prompt)\n-    {\n-        while(true)\n-        {\n+    /**\n+     * read a floating point number from the console.\n+     * The input is terminated by a newline\n+     *\n+     * @param prompt the prompt string to display\n+     * @return the input value as a double\n+     * @throws NumberFormatException if bad input\n+     */\n+\n+    public static double readDouble(String prompt) {\n+        while (true) {\n             printPrompt(prompt);\n \n-            try\n-            {\n+            try {\n                 return Double.parseDouble(readLine().trim());\n-            }\n-            catch(NumberFormatException e)\n-            {\n+            } catch (NumberFormatException e) {\n                 System.out.println(\"Not a floating point number. Please try again!\");\n             }\n         }\n",
+            "diff_size": 90
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/9/Console.java\nindex 897f2278e8d..c6ae8304176 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/9/Console.java\n@@ -55,8 +55,9 @@ public class Console\n                 if (ch < 0 || (char)ch == '\\n')\n                     done = true;\n \n-                else if ((char)ch != '\\r') // weird--it used to do \\r\\n translation\n-                    r = r + (char) ch;\n+                else if ((char)ch != '\\r')\n+                    // weird--it used to do \\r\\n translation\n+                     r = r + (char) ch;\n             }\n             catch(java.io.IOException e)\n             {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "60",
+                    "column": "17",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 16, expected level should be 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/9/Console.java\nindex 897f2278e8d..ae0cecf3c9c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/9/Console.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/9/Console.java\n@@ -55,8 +55,9 @@ public class Console\n                 if (ch < 0 || (char)ch == '\\n')\n                     done = true;\n \n-                else if ((char)ch != '\\r') // weird--it used to do \\r\\n translation\n-                    r = r + (char) ch;\n+                else if ((char)ch != '\\r')\n+                // weird--it used to do \\r\\n translation\n+                r = r + (char) ch;\n             }\n             catch(java.io.IOException e)\n             {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

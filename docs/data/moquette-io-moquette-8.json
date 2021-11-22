@@ -1,0 +1,103 @@
+{
+    "project_name": "moquette-io-moquette",
+    "error_id": "8",
+    "information": {
+        "errors": [
+            {
+                "line": "76",
+                "column": "1",
+                "severity": "warning",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "\n    /**\n\t * Validate that the provided message is an MqttMessage and that it does not contain a failed result.\n\t *\n\t * @param message to be validated\n\t * @return the casted provided message",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/8/NettyUtils.java\nindex bbbb8cfa70a..27e85e63481 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/8/NettyUtils.java\n@@ -29,68 +29,68 @@ import io.netty.util.AttributeKey;\n  */\n public final class NettyUtils {\n \n-    public static final String ATTR_USERNAME = \"username\";\n-\n-    private static final String ATTR_CLIENTID = \"ClientID\";\n-    private static final String CLEAN_SESSION = \"removeTemporaryQoS2\";\n-    private static final String KEEP_ALIVE = \"keepAlive\";\n-    private static final AttributeKey<Object> ATTR_KEY_KEEPALIVE = AttributeKey.valueOf(KEEP_ALIVE);\n-    private static final AttributeKey<Object> ATTR_KEY_CLEANSESSION = AttributeKey.valueOf(CLEAN_SESSION);\n-    private static final AttributeKey<Object> ATTR_KEY_CLIENTID = AttributeKey.valueOf(ATTR_CLIENTID);\n-    private static final AttributeKey<Object> ATTR_KEY_USERNAME = AttributeKey.valueOf(ATTR_USERNAME);\n-\n-    public static Object getAttribute(ChannelHandlerContext ctx, AttributeKey<Object> key) {\n-        Attribute<Object> attr = ctx.channel().attr(key);\n-        return attr.get();\n+  public static final String ATTR_USERNAME = \"username\";\n+\n+  private static final String ATTR_CLIENTID = \"ClientID\";\n+  private static final String CLEAN_SESSION = \"removeTemporaryQoS2\";\n+  private static final String KEEP_ALIVE = \"keepAlive\";\n+  private static final AttributeKey<Object> ATTR_KEY_KEEPALIVE = AttributeKey.valueOf(KEEP_ALIVE);\n+  private static final AttributeKey<Object> ATTR_KEY_CLEANSESSION = AttributeKey.valueOf(CLEAN_SESSION);\n+  private static final AttributeKey<Object> ATTR_KEY_CLIENTID = AttributeKey.valueOf(ATTR_CLIENTID);\n+  private static final AttributeKey<Object> ATTR_KEY_USERNAME = AttributeKey.valueOf(ATTR_USERNAME);\n+\n+  public static Object getAttribute(ChannelHandlerContext ctx, AttributeKey<Object> key) {\n+    Attribute<Object> attr = ctx.channel().attr(key);\n+    return attr.get();\n+  }\n+\n+  public static void keepAlive(Channel channel, int keepAlive) {\n+    channel.attr(NettyUtils.ATTR_KEY_KEEPALIVE).set(keepAlive);\n+  }\n+\n+  public static void cleanSession(Channel channel, boolean cleanSession) {\n+    channel.attr(NettyUtils.ATTR_KEY_CLEANSESSION).set(cleanSession);\n+  }\n+\n+  public static boolean cleanSession(Channel channel) {\n+    return (Boolean) channel.attr(NettyUtils.ATTR_KEY_CLEANSESSION).get();\n+  }\n+\n+  public static void clientID(Channel channel, String clientID) {\n+    channel.attr(NettyUtils.ATTR_KEY_CLIENTID).set(clientID);\n+  }\n+\n+  public static String clientID(Channel channel) {\n+    return (String) channel.attr(NettyUtils.ATTR_KEY_CLIENTID).get();\n+  }\n+\n+  public static void userName(Channel channel, String username) {\n+    channel.attr(NettyUtils.ATTR_KEY_USERNAME).set(username);\n+  }\n+\n+  public static String userName(Channel channel) {\n+    return (String) channel.attr(NettyUtils.ATTR_KEY_USERNAME).get();\n+  }\n+\n+  /**\n+   * Validate that the provided message is an MqttMessage and that it does not contain a failed result.\n+   *\n+   * @param message to be validated\n+   * @return the casted provided message\n+   * @throws IOException        in case of an fail message this will wrap the root cause\n+   * @throws ClassCastException if the provided message is no MqttMessage\n+   */\n+  public static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n+    MqttMessage msg = (MqttMessage) message;\n+    if (msg.decoderResult() != null && msg.decoderResult().isFailure()) {\n+      throw new IOException(\"invalid massage\", msg.decoderResult().cause());\n     }\n-\n-    public static void keepAlive(Channel channel, int keepAlive) {\n-        channel.attr(NettyUtils.ATTR_KEY_KEEPALIVE).set(keepAlive);\n-    }\n-\n-    public static void cleanSession(Channel channel, boolean cleanSession) {\n-        channel.attr(NettyUtils.ATTR_KEY_CLEANSESSION).set(cleanSession);\n-    }\n-\n-    public static boolean cleanSession(Channel channel) {\n-        return (Boolean) channel.attr(NettyUtils.ATTR_KEY_CLEANSESSION).get();\n-    }\n-\n-    public static void clientID(Channel channel, String clientID) {\n-        channel.attr(NettyUtils.ATTR_KEY_CLIENTID).set(clientID);\n+    if (msg.fixedHeader() == null) {\n+      throw new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n     }\n+    return msg;\n+  }\n \n-    public static String clientID(Channel channel) {\n-        return (String) channel.attr(NettyUtils.ATTR_KEY_CLIENTID).get();\n-    }\n-\n-    public static void userName(Channel channel, String username) {\n-        channel.attr(NettyUtils.ATTR_KEY_USERNAME).set(username);\n-    }\n-\n-    public static String userName(Channel channel) {\n-        return (String) channel.attr(NettyUtils.ATTR_KEY_USERNAME).get();\n-    }\n-\n-    /**\n-\t * Validate that the provided message is an MqttMessage and that it does not contain a failed result.\n-\t *\n-\t * @param message to be validated\n-\t * @return the casted provided message\n-\t * @throws IOException in case of an fail message this will wrap the root cause\n-\t * @throws ClassCastException if the provided message is no MqttMessage\n-\t */\n-\tpublic static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n-\t\tMqttMessage msg = (MqttMessage) message;\n-\t\tif (msg.decoderResult() != null && msg.decoderResult().isFailure()) {\n-\t\t\tthrow new IOException(\"invalid massage\", msg.decoderResult().cause());\n-\t\t}\n-\t\tif (msg.fixedHeader() == null) {\n-\t\t\tthrow new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n-\t\t}\n-\t\treturn msg;\n-\t}\n-\n-\tprivate NettyUtils() {\n-    }\n+  private NettyUtils() {\n+  }\n }\n",
+            "diff_size": 105
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/8/NettyUtils.java\nindex bbbb8cfa70a..c8e04af93e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/8/NettyUtils.java\n@@ -80,17 +80,17 @@ public final class NettyUtils {\n \t * @throws IOException in case of an fail message this will wrap the root cause\n \t * @throws ClassCastException if the provided message is no MqttMessage\n \t */\n-\tpublic static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n-\t\tMqttMessage msg = (MqttMessage) message;\n+public static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n+    MqttMessage msg = (MqttMessage) message;\n \t\tif (msg.decoderResult() != null && msg.decoderResult().isFailure()) {\n-\t\t\tthrow new IOException(\"invalid massage\", msg.decoderResult().cause());\n-\t\t}\n+    throw new IOException(\"invalid massage\", msg.decoderResult().cause());\n+    }\n \t\tif (msg.fixedHeader() == null) {\n-\t\t\tthrow new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n-\t\t}\n+    throw new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n+    }\n \t\treturn msg;\n-\t}\n+    }\n \n \tprivate NettyUtils() {\n-    }\n }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "warning",
+                    "message": "two or more consecutive empty lines",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpMultilineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/8/NettyUtils.java\nindex bbbb8cfa70a..dc2bcbab21c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/8/NettyUtils.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/8/NettyUtils.java\n@@ -17,7 +17,6 @@\n package io.moquette.broker;\n \n import java.io.IOException;\n-\n import io.netty.channel.Channel;\n import io.netty.channel.ChannelHandlerContext;\n import io.netty.handler.codec.mqtt.MqttMessage;\n@@ -27,10 +26,11 @@ import io.netty.util.AttributeKey;\n /**\n  * Some Netty's channels utilities.\n  */\n+\n+\n public final class NettyUtils {\n \n     public static final String ATTR_USERNAME = \"username\";\n-\n     private static final String ATTR_CLIENTID = \"ClientID\";\n     private static final String CLEAN_SESSION = \"removeTemporaryQoS2\";\n     private static final String KEEP_ALIVE = \"keepAlive\";\n@@ -73,24 +73,26 @@ public final class NettyUtils {\n     }\n \n     /**\n-\t * Validate that the provided message is an MqttMessage and that it does not contain a failed result.\n-\t *\n-\t * @param message to be validated\n-\t * @return the casted provided message\n-\t * @throws IOException in case of an fail message this will wrap the root cause\n-\t * @throws ClassCastException if the provided message is no MqttMessage\n-\t */\n-\tpublic static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n-\t\tMqttMessage msg = (MqttMessage) message;\n-\t\tif (msg.decoderResult() != null && msg.decoderResult().isFailure()) {\n-\t\t\tthrow new IOException(\"invalid massage\", msg.decoderResult().cause());\n-\t\t}\n-\t\tif (msg.fixedHeader() == null) {\n-\t\t\tthrow new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n-\t\t}\n-\t\treturn msg;\n-\t}\n-\n-\tprivate NettyUtils() {\n+     * Validate that the provided message is an MqttMessage and that it does not contain a failed result.\n+     *\n+     * @param message to be validated\n+     * @return the casted provided message\n+     * @throws IOException in case of an fail message this will wrap the root cause\n+     * @throws ClassCastException if the provided message is no MqttMessage\n+     */\n+\n+    public static MqttMessage validateMessage(Object message) throws IOException, ClassCastException {\n+        MqttMessage msg = (MqttMessage) message;\n+        if (msg.decoderResult() != null && msg.decoderResult().isFailure()) {\n+            throw new IOException(\"invalid massage\", msg.decoderResult().cause());\n+        }\n+\n+        if (msg.fixedHeader() == null) {\n+            throw new IOException(\"Unknown packet, no fixedHeader present, no cause provided\");\n+        }\n+        return msg;\n+    }\n+\n+    private NettyUtils() {\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

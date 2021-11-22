@@ -1,0 +1,104 @@
+{
+    "project_name": "Roboy-roboy_dialog",
+    "error_id": "8",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": " * Number ActionFormula) conditional (:if Set ActionFormula) block scoping (:blk\n * ActionFormula)\n * \n * @author sidaw\n */\npublic class ActionFormula extends Formula {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/8/ActionFormula.java\nindex 120493318a7..52858cf5429 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/8/ActionFormula.java\n@@ -13,118 +13,131 @@ import fig.basic.LispTree;\n  * actioname args) sequential (:s ActionFormula ActionFormula ...) repeat (:loop\n  * Number ActionFormula) conditional (:if Set ActionFormula) block scoping (:blk\n  * ActionFormula)\n- * \n+ *\n  * @author sidaw\n  */\n public class ActionFormula extends Formula {\n-  public enum Mode {\n-    primitive(\":\"), // (: remove *)\n-    sequential(\":s\"), // (:s (: add red top) (: remove this))\n-    repeat(\":loop\"), // (:loop (count (has color green)) (: add red top))\n-    conditional(\":if\"), // (:if (count (has color green)) (: add red top))\n-    whileloop(\":while\"), // (:while (count (has color green)) (: add red top))\n-    forset(\":for\"), // (:for (and this (color red)) (:s (: add red top) (: add\n-                    // yellow top) (: remove)))\n-    foreach(\":foreach\"), // (:foreach * (add ((reverse color) this) top))\n-\n-    // primitives for declaring variables\n-    // let(\":let\"), // (:let X *),\n-    // set(\":set\"), // (:set X *)\n-\n-    block(\":blk\"), // start a block of code (like {}) with a new scope\n-    blockr(\":blkr\"), // also return a result after finishing the block\n-    isolate(\":isolate\"), other(\":?\");\n-\n-    private final String value;\n-\n-    Mode(String value) {\n-      this.value = value;\n+    public enum Mode {\n+        primitive(\":\"), // (: remove *)\n+        sequential(\":s\"), // (:s (: add red top) (: remove this))\n+        repeat(\":loop\"), // (:loop (count (has color green)) (: add red top))\n+        conditional(\":if\"), // (:if (count (has color green)) (: add red top))\n+        whileloop(\":while\"), // (:while (count (has color green)) (: add red top))\n+        forset(\":for\"), // (:for (and this (color red)) (:s (: add red top) (: add\n+        // yellow top) (: remove)))\n+        foreach(\":foreach\"), // (:foreach * (add ((reverse color) this) top))\n+\n+        // primitives for declaring variables\n+        // let(\":let\"), // (:let X *),\n+        // set(\":set\"), // (:set X *)\n+\n+        block(\":blk\"), // start a block of code (like {}) with a new scope\n+        blockr(\":blkr\"), // also return a result after finishing the block\n+        isolate(\":isolate\"), other(\":?\");\n+\n+        private final String value;\n+\n+        Mode(String value) {\n+            this.value = value;\n+        }\n+\n+        @Override\n+        public String toString() {\n+            return this.value;\n+        }\n+    }\n+\n+    ;\n+\n+    public final Mode mode;\n+    public final List<Formula> args;\n+\n+    public ActionFormula(Mode mode, List<Formula> args) {\n+        this.mode = mode;\n+        this.args = args;\n+    }\n+\n+    public static Mode parseMode(String mode) {\n+        if (mode == null) {\n+            return null;\n+        }\n+        for (Mode m : Mode.values()) {\n+            // LogInfo.logs(\"mode string %s \\t== %s \\t!= %s\", m.toString(), mode,\n+            // m.name());\n+            if (m.toString().equals(mode)) {\n+                return m;\n+            }\n+        }\n+        if (mode.startsWith(\":\")) {\n+            throw new RuntimeException(\"Unsupported ActionFormula mode\");\n+        }\n+        return null;\n+    }\n+\n+    @Override\n+    public LispTree toLispTree() {\n+        LispTree tree = LispTree.proto.newList();\n+        tree.addChild(this.mode.toString());\n+        for (Formula arg : args) {\n+            tree.addChild(arg.toLispTree());\n+        }\n+        return tree;\n     }\n \n     @Override\n-    public String toString() {\n-      return this.value;\n+    public void forEach(Function<Formula, Boolean> func) {\n+        if (!func.apply(this)) {\n+            for (Formula arg : args) {\n+                arg.forEach(func);\n+            }\n+        }\n     }\n-  };\n-\n-  public final Mode mode;\n-  public final List<Formula> args;\n-\n-  public ActionFormula(Mode mode, List<Formula> args) {\n-    this.mode = mode;\n-    this.args = args;\n-  }\n-\n-  public static Mode parseMode(String mode) {\n-    if (mode == null)\n-      return null;\n-    for (Mode m : Mode.values()) {\n-      // LogInfo.logs(\"mode string %s \\t== %s \\t!= %s\", m.toString(), mode,\n-      // m.name());\n-      if (m.toString().equals(mode))\n-        return m;\n+\n+    @Override\n+    public Formula map(Function<Formula, Formula> transform) {\n+        Formula result = transform.apply(this);\n+        if (result != null) {\n+            return result;\n+        }\n+        List<Formula> newArgs = Lists.newArrayList();\n+        for (Formula arg : args) {\n+            newArgs.add(arg.map(transform));\n+        }\n+        return new ActionFormula(this.mode, newArgs);\n     }\n-    if (mode.startsWith(\":\"))\n-      throw new RuntimeException(\"Unsupported ActionFormula mode\");\n-    return null;\n-  }\n-\n-  @Override\n-  public LispTree toLispTree() {\n-    LispTree tree = LispTree.proto.newList();\n-    tree.addChild(this.mode.toString());\n-    for (Formula arg : args)\n-      tree.addChild(arg.toLispTree());\n-    return tree;\n-  }\n-\n-  @Override\n-  public void forEach(Function<Formula, Boolean> func) {\n-    if (!func.apply(this)) {\n-      for (Formula arg : args)\n-        arg.forEach(func);\n+\n+    @Override\n+    public List<Formula> mapToList(Function<Formula, List<Formula>> transform, boolean alwaysRecurse) {\n+        List<Formula> res = transform.apply(this);\n+        if (res.isEmpty() || alwaysRecurse) {\n+            for (Formula arg : args) {\n+                res.addAll(arg.mapToList(transform, alwaysRecurse));\n+            }\n+        }\n+        return res;\n     }\n-  }\n-\n-  @Override\n-  public Formula map(Function<Formula, Formula> transform) {\n-    Formula result = transform.apply(this);\n-    if (result != null)\n-      return result;\n-    List<Formula> newArgs = Lists.newArrayList();\n-    for (Formula arg : args)\n-      newArgs.add(arg.map(transform));\n-    return new ActionFormula(this.mode, newArgs);\n-  }\n-\n-  @Override\n-  public List<Formula> mapToList(Function<Formula, List<Formula>> transform, boolean alwaysRecurse) {\n-    List<Formula> res = transform.apply(this);\n-    if (res.isEmpty() || alwaysRecurse) {\n-      for (Formula arg : args)\n-        res.addAll(arg.mapToList(transform, alwaysRecurse));\n+\n+    @SuppressWarnings({\"equalshashcode\"})\n+    @Override\n+    public boolean equals(Object thatObj) {\n+        if (!(thatObj instanceof ActionFormula)) {\n+            return false;\n+        }\n+        ActionFormula that = (ActionFormula) thatObj;\n+        if (!this.mode.equals(that.mode)) {\n+            return false;\n+        }\n+        if (!this.args.equals(that.args)) {\n+            return false;\n+        }\n+        return true;\n+    }\n+\n+    @Override\n+    public int computeHashCode() {\n+        int hash = 0x7ed55d16;\n+        hash = hash * 0xd3a2646c + mode.hashCode();\n+        hash = hash * 0xd3a2646c + args.hashCode();\n+        return hash;\n     }\n-    return res;\n-  }\n-\n-  @SuppressWarnings({ \"equalshashcode\" })\n-  @Override\n-  public boolean equals(Object thatObj) {\n-    if (!(thatObj instanceof ActionFormula))\n-      return false;\n-    ActionFormula that = (ActionFormula) thatObj;\n-    if (!this.mode.equals(that.mode))\n-      return false;\n-    if (!this.args.equals(that.args))\n-      return false;\n-    return true;\n-  }\n-\n-  @Override\n-  public int computeHashCode() {\n-    int hash = 0x7ed55d16;\n-    hash = hash * 0xd3a2646c + mode.hashCode();\n-    hash = hash * 0xd3a2646c + args.hashCode();\n-    return hash;\n-  }\n }\n",
+            "diff_size": 155
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/8/ActionFormula.java\nindex 120493318a7..668fd38e3e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/8/ActionFormula.java\n@@ -1,10 +1,8 @@\n package edu.stanford.nlp.sempre;\n \n import java.util.List;\n-\n import com.google.common.base.Function;\n import com.google.common.collect.Lists;\n-\n import fig.basic.LispTree;\n \n /**\n@@ -16,8 +14,11 @@ import fig.basic.LispTree;\n  * \n  * @author sidaw\n  */\n+\n+\n public class ActionFormula extends Formula {\n   public enum Mode {\n+\n     primitive(\":\"), // (: remove *)\n     sequential(\":s\"), // (:s (: add red top) (: remove this))\n     repeat(\":loop\"), // (:loop (count (has color green)) (: add red top))\n@@ -30,10 +31,10 @@ public class ActionFormula extends Formula {\n     // primitives for declaring variables\n     // let(\":let\"), // (:let X *),\n     // set(\":set\"), // (:set X *)\n-\n     block(\":blk\"), // start a block of code (like {}) with a new scope\n     blockr(\":blkr\"), // also return a result after finishing the block\n-    isolate(\":isolate\"), other(\":?\");\n+    isolate(\":isolate\"),\n+    other(\":?\");\n \n     private final String value;\n \n@@ -48,6 +49,7 @@ public class ActionFormula extends Formula {\n   };\n \n   public final Mode mode;\n+\n   public final List<Formula> args;\n \n   public ActionFormula(Mode mode, List<Formula> args) {\n@@ -64,6 +66,7 @@ public class ActionFormula extends Formula {\n       if (m.toString().equals(mode))\n         return m;\n     }\n+\n     if (mode.startsWith(\":\"))\n       throw new RuntimeException(\"Unsupported ActionFormula mode\");\n     return null;\n@@ -91,6 +94,7 @@ public class ActionFormula extends Formula {\n     Formula result = transform.apply(this);\n     if (result != null)\n       return result;\n+\n     List<Formula> newArgs = Lists.newArrayList();\n     for (Formula arg : args)\n       newArgs.add(arg.map(transform));\n@@ -107,11 +111,12 @@ public class ActionFormula extends Formula {\n     return res;\n   }\n \n-  @SuppressWarnings({ \"equalshashcode\" })\n+  @SuppressWarnings({\"equalshashcode\"})\n   @Override\n   public boolean equals(Object thatObj) {\n     if (!(thatObj instanceof ActionFormula))\n       return false;\n+\n     ActionFormula that = (ActionFormula) thatObj;\n     if (!this.mode.equals(that.mode))\n       return false;\n@@ -127,4 +132,4 @@ public class ActionFormula extends Formula {\n     hash = hash * 0xd3a2646c + args.hashCode();\n     return hash;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 14
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "8",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/styler_three_grams/8/ActionFormula.java\nindex 120493318a7..845ae4118d3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/8/ActionFormula.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/styler_three_grams/8/ActionFormula.java\n@@ -5,9 +5,7 @@ import java.util.List;\n import com.google.common.base.Function;\n import com.google.common.collect.Lists;\n \n-import fig.basic.LispTree;\n-\n-/**\n+import fig.basic.LispTree;/**\n  * An ActionFormula represent a compositional action used in the interactive\n  * package : is used as a prefix to denote an ActionFormula primitive (:\n  * actioname args) sequential (:s ActionFormula ActionFormula ...) repeat (:loop\n@@ -16,6 +14,7 @@ import fig.basic.LispTree;\n  * \n  * @author sidaw\n  */\n+\n public class ActionFormula extends Formula {\n   public enum Mode {\n     primitive(\":\"), // (: remove *)\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

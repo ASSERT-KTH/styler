@@ -1,0 +1,161 @@
+{
+    "project_name": "SentinelDataHub-dhus-core",
+    "error_id": "31",
+    "information": {
+        "errors": [
+            {
+                "line": "88",
+                "severity": "error",
+                "message": "Line is longer than 80 characters (found 81).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n   /**\n    * If there is more than one connector, uses the port of the second connector.\n    * Otherwise use the only available connector\n    * @return URL to this instance of Tomcat.\n    */",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "88",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "47",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "89",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 82).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "146",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/31/ServerConfiguration.java\nindex d3015eebb6e..8a9807396ba 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/31/ServerConfiguration.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package fr.gael.dhus.database.object.config.server;\n \n import fr.gael.dhus.server.http.TomcatServer;\n@@ -25,130 +26,132 @@ import fr.gael.dhus.spring.context.ApplicationContextProvider;\n \n public class ServerConfiguration extends AbstractServerConfiguration\n {\n-   private String getProtocol ()\n-   {\n-      return \"http\";\n-   }\n-\n-   private String getLocalHost()\n-   {\n-      return \"localhost\";\n-   }\n-\n-   private int getPort(boolean alt)\n-   {\n-      TomcatServer server =\n-         (TomcatServer) ApplicationContextProvider.getBean (TomcatServer.class);\n-      if (alt)\n-      {\n-         return server.getAltPort();\n-      }\n-      else\n-      {\n-         return server.getPort();\n-      }\n-   }\n-\n-   public String buildUrl(boolean local)\n-   {\n-      String protocol = getProtocol();\n-      int port = getPort(local);\n-      String url = protocol + \"://\" + getLocalHost();\n-\n-      if ((port == 0) ||\n-         ((port == 80)  && (protocol.equalsIgnoreCase(\"http\"))) ||\n-         ((port == 443) && (protocol.equalsIgnoreCase(\"https\"))))\n-      {\n-         url += \"/\";\n-      }\n-      else\n-      {\n-         url += \":\" + port + \"/\";\n-      }\n-\n-      return url;\n-   }\n-   \n-   private boolean hasExternalConf ()\n-   {\n-      return externalServerConfiguration.getHost () != null && \n-               !externalServerConfiguration.getHost ().trim ().isEmpty ();\n-   }\n-\n-   /**\n-    * URL to the default connector (first defined in server.xml)\n-    * @return URL to this instance of Tomcat.\n-    */\n-   public String getUrl()\n-   {\n-      return buildUrl(false);\n-   }\n-\n-   /**\n-    * If there is more than one connector, uses the port of the second connector.\n-    * Otherwise use the only available connector\n-    * @return URL to this instance of Tomcat.\n-    */\n-   public String getLocalUrl()\n-   {\n-      return buildUrl(true);\n-   }\n-\n-   public String getExternalHostname ()\n-   {\n-      String extHost = externalServerConfiguration.getHost ();\n-      extHost = hasExternalConf () ? extHost : getLocalHost ();\n-      return extHost;\n-   }\n-\n-   public String getExternalProtocol ()\n-   {\n-      String extProtocol = externalServerConfiguration.getProtocol ();\n-      extProtocol = hasExternalConf () ? extProtocol : getProtocol ();\n-      return extProtocol;\n-   }\n-   \n-   public int getExternalPort ()\n-   {\n-      int extPort = externalServerConfiguration.getPort ();\n-      extPort = extPort == 0 ? 80 : extPort;\n-      extPort = hasExternalConf() ? extPort : getPort(false);\n-      return extPort;\n-   }\n-   \n-   public String getExternalPath ()\n-   {\n-      String extPath = externalServerConfiguration.getPath ();\n-      extPath = hasExternalConf () ? extPath : \"\";\n-      return extPath;\n-   }\n-\n-   public String getExternalUrl ()\n-   {\n-      String extProtocol = getExternalProtocol ();\n-\n-      int extPort = externalServerConfiguration.getPort();\n-      extPort = (extPort <= 0) ? getPort(false) : extPort;\n-\n-      String extPath = getExternalPath ();\n-\n-      String extHost = getExternalHostname ();\n-\n-      String url = extProtocol + \"://\" + extHost;\n-\n-      if ( (extPort == 0) ||\n-         ( (extPort == 80) && (extProtocol.equalsIgnoreCase (\"http\"))) ||\n-         ( (extPort == 443) && (extProtocol.equalsIgnoreCase (\"https\"))))\n-      {\n-         url += extPath;\n-      }\n-      else\n-         url += \":\" + extPort + extPath;\n-\n-      if (!url.endsWith(\"/\"))\n-      {\n-         url = url + \"/\";\n-      }\n-      return url;\n-   }\n+    private String getProtocol()\n+    {\n+        return \"http\";\n+    }\n+\n+    private String getLocalHost()\n+    {\n+        return \"localhost\";\n+    }\n+\n+    private int getPort(boolean alt)\n+    {\n+        TomcatServer server =\n+            (TomcatServer) ApplicationContextProvider\n+                .getBean(TomcatServer.class);\n+        if (alt)\n+        {\n+            return server.getAltPort();\n+        } else\n+        {\n+            return server.getPort();\n+        }\n+    }\n+\n+    public String buildUrl(boolean local)\n+    {\n+        String protocol = getProtocol();\n+        int port = getPort(local);\n+        String url = protocol + \"://\" + getLocalHost();\n+\n+        if ((port == 0) ||\n+            ((port == 80) && (protocol.equalsIgnoreCase(\"http\"))) ||\n+            ((port == 443) && (protocol.equalsIgnoreCase(\"https\"))))\n+        {\n+            url += \"/\";\n+        } else\n+        {\n+            url += \":\" + port + \"/\";\n+        }\n+\n+        return url;\n+    }\n+\n+    private boolean hasExternalConf()\n+    {\n+        return externalServerConfiguration.getHost() != null &&\n+            !externalServerConfiguration.getHost().trim().isEmpty();\n+    }\n+\n+    /**\n+     * URL to the default connector (first defined in server.xml)\n+     *\n+     * @return URL to this instance of Tomcat.\n+     */\n+    public String getUrl()\n+    {\n+        return buildUrl(false);\n+    }\n+\n+    /**\n+     * If there is more than one connector, uses the port of the second connector.\n+     * Otherwise use the only available connector\n+     *\n+     * @return URL to this instance of Tomcat.\n+     */\n+    public String getLocalUrl()\n+    {\n+        return buildUrl(true);\n+    }\n+\n+    public String getExternalHostname()\n+    {\n+        String extHost = externalServerConfiguration.getHost();\n+        extHost = hasExternalConf() ? extHost : getLocalHost();\n+        return extHost;\n+    }\n+\n+    public String getExternalProtocol()\n+    {\n+        String extProtocol = externalServerConfiguration.getProtocol();\n+        extProtocol = hasExternalConf() ? extProtocol : getProtocol();\n+        return extProtocol;\n+    }\n+\n+    public int getExternalPort()\n+    {\n+        int extPort = externalServerConfiguration.getPort();\n+        extPort = extPort == 0 ? 80 : extPort;\n+        extPort = hasExternalConf() ? extPort : getPort(false);\n+        return extPort;\n+    }\n+\n+    public String getExternalPath()\n+    {\n+        String extPath = externalServerConfiguration.getPath();\n+        extPath = hasExternalConf() ? extPath : \"\";\n+        return extPath;\n+    }\n+\n+    public String getExternalUrl()\n+    {\n+        String extProtocol = getExternalProtocol();\n+\n+        int extPort = externalServerConfiguration.getPort();\n+        extPort = (extPort <= 0) ? getPort(false) : extPort;\n+\n+        String extPath = getExternalPath();\n+\n+        String extHost = getExternalHostname();\n+\n+        String url = extProtocol + \"://\" + extHost;\n+\n+        if ((extPort == 0) ||\n+            ((extPort == 80) && (extProtocol.equalsIgnoreCase(\"http\"))) ||\n+            ((extPort == 443) && (extProtocol.equalsIgnoreCase(\"https\"))))\n+        {\n+            url += extPath;\n+        } else\n+        {\n+            url += \":\" + extPort + extPath;\n+        }\n+\n+        if (!url.endsWith(\"/\"))\n+        {\n+            url = url + \"/\";\n+        }\n+        return url;\n+    }\n }\n",
+            "diff_size": 129
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 105).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "137",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/31/ServerConfiguration.java\nindex d3015eebb6e..1f43e7cb001 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/31/ServerConfiguration.java\n@@ -55,9 +55,8 @@ public class ServerConfiguration extends AbstractServerConfiguration\n       int port = getPort(local);\n       String url = protocol + \"://\" + getLocalHost();\n \n-      if ((port == 0) ||\n-         ((port == 80)  && (protocol.equalsIgnoreCase(\"http\"))) ||\n-         ((port == 443) && (protocol.equalsIgnoreCase(\"https\"))))\n+      if ((port == 0) || ((port == 80)\n+      && (protocol.equalsIgnoreCase(\"http\"))) || ((port == 443) && (protocol.equalsIgnoreCase(\"https\"))))\n       {\n          url += \"/\";\n       }\n@@ -71,8 +70,7 @@ public class ServerConfiguration extends AbstractServerConfiguration\n    \n    private boolean hasExternalConf ()\n    {\n-      return externalServerConfiguration.getHost () != null && \n-               !externalServerConfiguration.getHost ().trim ().isEmpty ();\n+      return externalServerConfiguration.getHost () != null && !externalServerConfiguration.getHost ().trim ().isEmpty ();\n    }\n \n    /**\n@@ -136,9 +134,7 @@ public class ServerConfiguration extends AbstractServerConfiguration\n \n       String url = extProtocol + \"://\" + extHost;\n \n-      if ( (extPort == 0) ||\n-         ( (extPort == 80) && (extProtocol.equalsIgnoreCase (\"http\"))) ||\n-         ( (extPort == 443) && (extProtocol.equalsIgnoreCase (\"https\"))))\n+      if ( (extPort == 0) || ( (extPort == 80) && (extProtocol.equalsIgnoreCase (\"http\"))) || ( (extPort == 443) && (extProtocol.equalsIgnoreCase (\"https\"))))\n       {\n          url += extPath;\n       }\n@@ -151,4 +147,4 @@ public class ServerConfiguration extends AbstractServerConfiguration\n       }\n       return url;\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 99).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 110).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "88",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "137",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 88).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/31/ServerConfiguration.java\nindex d3015eebb6e..2f544c44174 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/31/ServerConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/31/ServerConfiguration.java\n@@ -22,7 +22,6 @@ package fr.gael.dhus.database.object.config.server;\n import fr.gael.dhus.server.http.TomcatServer;\n import fr.gael.dhus.spring.context.ApplicationContextProvider;\n \n-\n public class ServerConfiguration extends AbstractServerConfiguration\n {\n    private String getProtocol ()\n@@ -30,58 +29,59 @@ public class ServerConfiguration extends AbstractServerConfiguration\n       return \"http\";\n    }\n \n-   private String getLocalHost()\n+   private String getLocalHost ()\n    {\n       return \"localhost\";\n    }\n \n-   private int getPort(boolean alt)\n+   private int getPort (boolean alt)\n    {\n-      TomcatServer server =\n-         (TomcatServer) ApplicationContextProvider.getBean (TomcatServer.class);\n+      TomcatServer server = (TomcatServer) ApplicationContextProvider.getBean (TomcatServer.class);\n       if (alt)\n       {\n-         return server.getAltPort();\n+         return server.getAltPort ();\n       }\n       else\n       {\n-         return server.getPort();\n+         return server.getPort ();\n       }\n    }\n \n-   public String buildUrl(boolean local)\n+   public String buildUrl (boolean local)\n    {\n-      String protocol = getProtocol();\n-      int port = getPort(local);\n-      String url = protocol + \"://\" + getLocalHost();\n-\n-      if ((port == 0) ||\n-         ((port == 80)  && (protocol.equalsIgnoreCase(\"http\"))) ||\n-         ((port == 443) && (protocol.equalsIgnoreCase(\"https\"))))\n+      String protocol = getProtocol ();\n+      int port = getPort (local);\n+      String url = protocol +\n+\"://\" +\n+getLocalHost ();\n+      if ((port == 0) || ((port == 80) && (protocol.equalsIgnoreCase (\"http\")))\n+      || ((port == 443) && (protocol.equalsIgnoreCase (\"https\"))))\n       {\n          url += \"/\";\n       }\n       else\n       {\n-         url += \":\" + port + \"/\";\n+         url += \":\" +\n+                port +\n+                   \"/\";\n       }\n-\n       return url;\n    }\n-   \n+\n    private boolean hasExternalConf ()\n    {\n-      return externalServerConfiguration.getHost () != null && \n-               !externalServerConfiguration.getHost ().trim ().isEmpty ();\n+      return externalServerConfiguration.getHost () != null && !externalServerConfiguration.getHost ().trim ()\n+.isEmpty ();\n    }\n \n    /**\n     * URL to the default connector (first defined in server.xml)\n     * @return URL to this instance of Tomcat.\n     */\n-   public String getUrl()\n+\n+   public String getUrl ()\n    {\n-      return buildUrl(false);\n+      return buildUrl (false);\n    }\n \n    /**\n@@ -89,9 +89,10 @@ public class ServerConfiguration extends AbstractServerConfiguration\n     * Otherwise use the only available connector\n     * @return URL to this instance of Tomcat.\n     */\n-   public String getLocalUrl()\n+\n+   public String getLocalUrl ()\n    {\n-      return buildUrl(true);\n+      return buildUrl (true);\n    }\n \n    public String getExternalHostname ()\n@@ -107,15 +108,15 @@ public class ServerConfiguration extends AbstractServerConfiguration\n       extProtocol = hasExternalConf () ? extProtocol : getProtocol ();\n       return extProtocol;\n    }\n-   \n+\n    public int getExternalPort ()\n    {\n       int extPort = externalServerConfiguration.getPort ();\n       extPort = extPort == 0 ? 80 : extPort;\n-      extPort = hasExternalConf() ? extPort : getPort(false);\n+      extPort = hasExternalConf () ? extPort : getPort (false);\n       return extPort;\n    }\n-   \n+\n    public String getExternalPath ()\n    {\n       String extPath = externalServerConfiguration.getPath ();\n@@ -126,29 +127,27 @@ public class ServerConfiguration extends AbstractServerConfiguration\n    public String getExternalUrl ()\n    {\n       String extProtocol = getExternalProtocol ();\n-\n-      int extPort = externalServerConfiguration.getPort();\n-      extPort = (extPort <= 0) ? getPort(false) : extPort;\n-\n+      int extPort = externalServerConfiguration.getPort ();\n+      extPort = (extPort <= 0) ? getPort (false) : extPort;\n       String extPath = getExternalPath ();\n-\n       String extHost = getExternalHostname ();\n-\n-      String url = extProtocol + \"://\" + extHost;\n-\n-      if ( (extPort == 0) ||\n-         ( (extPort == 80) && (extProtocol.equalsIgnoreCase (\"http\"))) ||\n-         ( (extPort == 443) && (extProtocol.equalsIgnoreCase (\"https\"))))\n+      String url = extProtocol +\n+\"://\" +\n+extHost;\n+      if ((extPort == 0) || ((extPort == 80) && (extProtocol.equalsIgnoreCase (\"http\")))\n+      || ((extPort == 443) && (extProtocol.equalsIgnoreCase (\"https\"))))\n       {\n          url += extPath;\n       }\n       else\n-         url += \":\" + extPort + extPath;\n-\n-      if (!url.endsWith(\"/\"))\n+      url += \":\" +\n+             extPort +\n+             extPath;\n+      if (!url.endsWith (\"/\"))\n       {\n-         url = url + \"/\";\n+         url = url +\n+            \"/\";\n       }\n       return url;\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 49
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "88",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "88",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

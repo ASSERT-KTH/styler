@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "164",
+    "information": {
+        "errors": [
+            {
+                "line": "28",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * Hibernate table representing a BPEL scope instance.\n * @hibernate.class table=\"BPEL_SCOPE\"\n * @hibernate.query name=\"SELECT_SCOPE_IDS_BY_INSTANCES\" query=\"select id from HScope as s where s.instance in (:instances)\"\n */\npublic class HScope extends HObject{\n    public final static String SELECT_SCOPE_IDS_BY_INSTANCES = \"SELECT_SCOPE_IDS_BY_INSTANCES\";",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "30",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/164/HScope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/164/HScope.java\nindex dfa11606e49..fb6a96d5823 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/164/HScope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/164/HScope.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.ode.daohib.bpel.hobj;\n \n \n@@ -24,151 +25,174 @@ import java.util.Set;\n \n /**\n  * Hibernate table representing a BPEL scope instance.\n+ *\n  * @hibernate.class table=\"BPEL_SCOPE\"\n  * @hibernate.query name=\"SELECT_SCOPE_IDS_BY_INSTANCES\" query=\"select id from HScope as s where s.instance in (:instances)\"\n  */\n-public class HScope extends HObject{\n-    public final static String SELECT_SCOPE_IDS_BY_INSTANCES = \"SELECT_SCOPE_IDS_BY_INSTANCES\";\n-\n-    /** Process instance to which this scope belongs. */\n-    private HProcessInstance _instance;\n-\n-    /** Correlation set values for csets declared in this scope. */\n-    private Set<HCorrelationSet> _correlationSets = new HashSet<HCorrelationSet>();\n-\n-    /** Variable values for variables declared in this scope. */\n-    private Set<HXmlData> _variables = new HashSet<HXmlData>();\n-\n-    /** Enpoint References for partner links declared in this scope */\n-    private Set<HPartnerLink> _partnerLinks = new HashSet<HPartnerLink>();\n-\n-    /** Parent scope for this scope. */\n-    private HScope _parentScope;\n-\n-    /** State of the scope. */\n-    private String _state;\n-\n-    /** Scope type / name. */\n-    private String _name;\n-\n-    private int _scopeModelId;\n-\n-    public HScope() {}\n-\n-    /**\n-     * @hibernate.set\n-     *    lazy=\"true\"\n-     *    inverse=\"true\"\n-     *    cascade=\"delete\"\n-     * @hibernate.collection-key\n-     *    column=\"SCOPE_ID\" foreign-key=\"none\"\n-     * @hibernate.collection-one-to-many\n-     *    class=\"org.apache.ode.daohib.bpel.hobj.HCorrelationSet\"\n-     */\n-    public Set<HCorrelationSet> getCorrelationSets() {\n-        return _correlationSets;\n-    }\n-\n-    public void setCorrelationSets(Set<HCorrelationSet> correlationSets) {\n-        _correlationSets = correlationSets;\n-    }\n-\n-    /**\n-     * Get the {@link HProcessInstance} to which this scope object belongs.\n-     * @hibernate.many-to-one\n-     *    column=\"PIID\" foreign-key=\"none\"\n-     */\n-    public HProcessInstance getInstance() {\n-        return _instance;\n-    }\n-\n-    /** @see #getInstance() */\n-    public void setInstance(HProcessInstance instance) {\n-        _instance = instance;\n-    }\n-\n-    /**\n-     * Get the \"parent\" {@link HScope} of this scope.\n-     * @hibernate.many-to-one column=\"PARENT_SCOPE_ID\" foreign-key=\"none\"\n-     */\n-    public HScope getParentScope() {\n-        return _parentScope;\n-    }\n-\n-    /** @see #getParentScope() */\n-    public void setParentScope(HScope parentScope) {\n-        _parentScope = parentScope;\n-    }\n-\n-    /**\n-     * @hibernate.property column=\"STATE\" not-null=\"true\"\n-     */\n-    public String getState() {\n-        return _state;\n-    }\n-\n-    /** @see #getState() */\n-    public void setState(String state) {\n-        _state = state;\n-    }\n-\n-    /**\n-     * Get the type (i.e. the name) of the scope.\n-     * @hibernate.property column=\"NAME\" not-null=\"true\"\n-     */\n-    public String getName() {\n-        return _name;\n-    }\n-\n-    /** @see #getName() */\n-    public void setName(String name) {\n-        _name = name;\n-    }\n-\n-    /**\n-     * Get the variable values associated with this scope.\n-     *\n-     * @return {@link Set}&lt;{@link HXmlData}&gt; with variable values\n-     * @hibernate.set lazy=\"true\" inverse=\"true\" cascade=\"delete\"\n-     * @hibernate.collection-key column=\"SCOPE_ID\" foreign-key=\"none\"\n-     * @hibernate.collection-one-to-many class=\"org.apache.ode.daohib.bpel.hobj.HXmlData\"\n-     */\n-    public Set<HXmlData> getVariables() {\n-        return _variables;\n-    }\n-\n-    public void setVariables(Set<HXmlData> variables){\n-        _variables = variables;\n-    }\n-\n-    /**\n-     * Get the endpoint references for partner links roles associated with this scope.\n-     *\n-     * @return {@link Set}&lt;{@link HPartnerLink}&gt; with variable values\n-     * @hibernate.set lazy=\"true\" inverse=\"true\" cascade=\"delete\"\n-     * @hibernate.collection-key column=\"SCOPE\" foreign-key=\"none\"\n-     * @hibernate.collection-one-to-many class=\"org.apache.ode.daohib.bpel.hobj.HPartnerLink\"\n-     */\n-    public Set<HPartnerLink> getPartnerLinks() {\n-        return _partnerLinks;\n-    }\n-\n-    public void setPartnerLinks(Set<HPartnerLink> eprs) {\n-        _partnerLinks = eprs;\n-    }\n-\n-    /**\n-     * @hibernate.property column=\"MODELID\"\n-     */\n-    public int getScopeModelId() {\n-        return _scopeModelId;\n-    }\n-\n-    public void setScopeModelId(int scopeModelId) {\n-        _scopeModelId = scopeModelId;\n-    }\n-\n-    public String toString() {\n-        return \"HScope{id=\"+getId()+\",name=\"+_name+\"}\";\n-    }\n+public class HScope extends HObject {\n+  public final static String SELECT_SCOPE_IDS_BY_INSTANCES = \"SELECT_SCOPE_IDS_BY_INSTANCES\";\n+\n+  /**\n+   * Process instance to which this scope belongs.\n+   */\n+  private HProcessInstance _instance;\n+\n+  /**\n+   * Correlation set values for csets declared in this scope.\n+   */\n+  private Set<HCorrelationSet> _correlationSets = new HashSet<HCorrelationSet>();\n+\n+  /**\n+   * Variable values for variables declared in this scope.\n+   */\n+  private Set<HXmlData> _variables = new HashSet<HXmlData>();\n+\n+  /**\n+   * Enpoint References for partner links declared in this scope\n+   */\n+  private Set<HPartnerLink> _partnerLinks = new HashSet<HPartnerLink>();\n+\n+  /**\n+   * Parent scope for this scope.\n+   */\n+  private HScope _parentScope;\n+\n+  /**\n+   * State of the scope.\n+   */\n+  private String _state;\n+\n+  /**\n+   * Scope type / name.\n+   */\n+  private String _name;\n+\n+  private int _scopeModelId;\n+\n+  public HScope() {\n+  }\n+\n+  /**\n+   * @hibernate.set lazy=\"true\"\n+   * inverse=\"true\"\n+   * cascade=\"delete\"\n+   * @hibernate.collection-key column=\"SCOPE_ID\" foreign-key=\"none\"\n+   * @hibernate.collection-one-to-many class=\"org.apache.ode.daohib.bpel.hobj.HCorrelationSet\"\n+   */\n+  public Set<HCorrelationSet> getCorrelationSets() {\n+    return _correlationSets;\n+  }\n+\n+  public void setCorrelationSets(Set<HCorrelationSet> correlationSets) {\n+    _correlationSets = correlationSets;\n+  }\n+\n+  /**\n+   * Get the {@link HProcessInstance} to which this scope object belongs.\n+   *\n+   * @hibernate.many-to-one column=\"PIID\" foreign-key=\"none\"\n+   */\n+  public HProcessInstance getInstance() {\n+    return _instance;\n+  }\n+\n+  /**\n+   * @see #getInstance()\n+   */\n+  public void setInstance(HProcessInstance instance) {\n+    _instance = instance;\n+  }\n+\n+  /**\n+   * Get the \"parent\" {@link HScope} of this scope.\n+   *\n+   * @hibernate.many-to-one column=\"PARENT_SCOPE_ID\" foreign-key=\"none\"\n+   */\n+  public HScope getParentScope() {\n+    return _parentScope;\n+  }\n+\n+  /**\n+   * @see #getParentScope()\n+   */\n+  public void setParentScope(HScope parentScope) {\n+    _parentScope = parentScope;\n+  }\n+\n+  /**\n+   * @hibernate.property column=\"STATE\" not-null=\"true\"\n+   */\n+  public String getState() {\n+    return _state;\n+  }\n+\n+  /**\n+   * @see #getState()\n+   */\n+  public void setState(String state) {\n+    _state = state;\n+  }\n+\n+  /**\n+   * Get the type (i.e. the name) of the scope.\n+   *\n+   * @hibernate.property column=\"NAME\" not-null=\"true\"\n+   */\n+  public String getName() {\n+    return _name;\n+  }\n+\n+  /**\n+   * @see #getName()\n+   */\n+  public void setName(String name) {\n+    _name = name;\n+  }\n+\n+  /**\n+   * Get the variable values associated with this scope.\n+   *\n+   * @return {@link Set}&lt;{@link HXmlData}&gt; with variable values\n+   * @hibernate.set lazy=\"true\" inverse=\"true\" cascade=\"delete\"\n+   * @hibernate.collection-key column=\"SCOPE_ID\" foreign-key=\"none\"\n+   * @hibernate.collection-one-to-many class=\"org.apache.ode.daohib.bpel.hobj.HXmlData\"\n+   */\n+  public Set<HXmlData> getVariables() {\n+    return _variables;\n+  }\n+\n+  public void setVariables(Set<HXmlData> variables) {\n+    _variables = variables;\n+  }\n+\n+  /**\n+   * Get the endpoint references for partner links roles associated with this scope.\n+   *\n+   * @return {@link Set}&lt;{@link HPartnerLink}&gt; with variable values\n+   * @hibernate.set lazy=\"true\" inverse=\"true\" cascade=\"delete\"\n+   * @hibernate.collection-key column=\"SCOPE\" foreign-key=\"none\"\n+   * @hibernate.collection-one-to-many class=\"org.apache.ode.daohib.bpel.hobj.HPartnerLink\"\n+   */\n+  public Set<HPartnerLink> getPartnerLinks() {\n+    return _partnerLinks;\n+  }\n+\n+  public void setPartnerLinks(Set<HPartnerLink> eprs) {\n+    _partnerLinks = eprs;\n+  }\n+\n+  /**\n+   * @hibernate.property column=\"MODELID\"\n+   */\n+  public int getScopeModelId() {\n+    return _scopeModelId;\n+  }\n+\n+  public void setScopeModelId(int scopeModelId) {\n+    _scopeModelId = scopeModelId;\n+  }\n+\n+  public String toString() {\n+    return \"HScope{id=\" + getId() + \",name=\" + _name + \"}\";\n+  }\n }\n",
+            "diff_size": 168
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/164/HScope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/164/HScope.java\nindex dfa11606e49..141ea5fc814 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/164/HScope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/164/HScope.java\n@@ -171,4 +171,4 @@ public class HScope extends HObject{\n     public String toString() {\n         return \"HScope{id=\"+getId()+\",name=\"+_name+\"}\";\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,68 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "134",
+    "information": {
+        "errors": [
+            {
+                "line": "138",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 122).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                catch (Throwable t)\n                {\n                  // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n                  if (throwException)\n                    throw new WSIException(t.getMessage(), t);\n                }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/134/XMLSchemaProcessor.java\nindex e6e52e15ab4..2c27a09cf8e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/134/XMLSchemaProcessor.java\n@@ -135,7 +135,7 @@ public abstract class XMLSchemaProcessor\n \n                 catch (Throwable t)\n                 {\n-                  // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n+                // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n                   if (throwException)\n                     throw new WSIException(t.getMessage(), t);\n                 }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "126",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/134/XMLSchemaProcessor.java\nindex e6e52e15ab4..f22afe4575d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/134/XMLSchemaProcessor.java\n@@ -8,6 +8,7 @@\n  * Contributors:\n  *   IBM - Initial API and implementation\n  *******************************************************************************/\n+\n package org.eclipse.wst.wsi.internal.core.xml.schema;\n \n import java.util.List;\n@@ -25,14 +26,13 @@ import org.w3c.dom.Node;\n \n /**\n  * This abstract class is used to process an XML Schema.\n- * \n+ *\n  * @author Peter  Brittenham (peterbr@us.ibm.com)\n  * @version 1.0.1\n  */\n public abstract class XMLSchemaProcessor\n   extends XMLDocumentCacheUser\n-  implements XMLTags\n-{\n+  implements XMLTags {\n   protected List returnList = new Vector();\n   protected String context;\n   protected boolean throwException = true;\n@@ -40,24 +40,24 @@ public abstract class XMLSchemaProcessor\n \n   /**\n    * Constructor for XMLSchemaProcessor.\n-   * @param context       document context. \n-   * @param documentList  cache of previously parsed documents.\n+   *\n+   * @param context      document context.\n+   * @param documentList cache of previously parsed documents.\n    */\n-  public XMLSchemaProcessor(String context)\n-  {\n+  public XMLSchemaProcessor(String context) {\n     this(context, true);\n   }\n \n   /**\n    * Constructor for XMLSchemaProcessor.\n-   * @param context        document context. \n+   *\n+   * @param context        document context.\n    * @param documentList   cache of previously parsed documents.\n    * @param throwException indicates if an exception should be thrown if there is a parsing problem.\n    */\n   public XMLSchemaProcessor(\n     String context,\n-    boolean throwException)\n-  {\n+    boolean throwException) {\n     super();\n \n     this.context = context;\n@@ -66,36 +66,32 @@ public abstract class XMLSchemaProcessor\n \n   /**\n    * Search for all schema elements, load the xsd documents, and then process them.\n-   * @param node  node.\n+   *\n+   * @param node node.\n    * @return a list.\n    * @throws WSIException if the XML schema file is not found or if it is not formatted correctly.\n    */\n-  public List processAllSchema(Node node) throws WSIException\n-  {\n+  public List processAllSchema(Node node) throws WSIException {\n     return processAllSchema(node, context);\n   }\n \n   /**\n    * Search for all schema elements, load the xsd documents, and then process them.\n-   * @param node  node.\n+   *\n+   * @param node node.\n    * @return a list.\n    * @throws WSIException if the XML schema file is not found or if it is not formatted correctly.\n    */\n-  private List processAllSchema(Node node, String ctx) throws WSIException\n-  {\n-\tClassLoader currentLoader = Thread.currentThread().getContextClassLoader();   \n-\ttry\n-\t{\n-   \t  Thread.currentThread().setContextClassLoader(XMLSchemaProcessor.class.getClassLoader());   \n+  private List processAllSchema(Node node, String ctx) throws WSIException {\n+    ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();\n+    try {\n+      Thread.currentThread().setContextClassLoader(XMLSchemaProcessor.class.getClassLoader());\n       // Process all nodes\n-      while (node != null)\n-      {\n+      while (node != null) {\n         // If this is an element node, then continue\n-        if (Node.ELEMENT_NODE == node.getNodeType())\n-        {\n+        if (Node.ELEMENT_NODE == node.getNodeType()) {\n           // if xsd:schema element is found -> process schema\n-          if (XMLUtils.equals(node, ELEM_XSD_SCHEMA))\n-          {\n+          if (XMLUtils.equals(node, ELEM_XSD_SCHEMA)) {\n             processSchema((Element) node);\n \n             // Process all children of the schema element\n@@ -103,20 +99,16 @@ public abstract class XMLSchemaProcessor\n           }\n \n           // if xsd:import element is found -> load schema and process schema\n-          else if (XMLUtils.equals(node, ELEM_XSD_IMPORT))\n-          {\n+          else if (XMLUtils.equals(node, ELEM_XSD_IMPORT)) {\n \n             Attr schemaLocation =\n               XMLUtils.getAttribute((Element) node, ATTR_XSD_SCHEMALOCATION);\n \n             // Try to parse imported XSD\n-            if (schemaLocation != null && schemaLocation.getValue() != null)\n-            {\n-          \t  if (!schemaLocations.contains(schemaLocation.getValue()))\n-          \t  {\n-          \t\tschemaLocations.add(schemaLocation.getValue());\n-                try\n-                {\n+            if (schemaLocation != null && schemaLocation.getValue() != null) {\n+              if (!schemaLocations.contains(schemaLocation.getValue())) {\n+                schemaLocations.add(schemaLocation.getValue());\n+                try {\n                   // Read and pParse the XML schema document\n                   Document document =\n                     parseXMLDocumentURL(\n@@ -125,26 +117,20 @@ public abstract class XMLSchemaProcessor\n                       TestUtils.getXMLSchemaLocation());\n \n                   processAllSchema(document.getDocumentElement(),\n-                      XMLUtils.createURLString(schemaLocation.getValue(), ctx));\n-                }\n-                catch (WSIException e)\n-                {\n-                  if (throwException)\n+                    XMLUtils.createURLString(schemaLocation.getValue(), ctx));\n+                } catch (WSIException e) {\n+                  if (throwException) {\n                     throw e;\n-                }\n-\n-                catch (Throwable t)\n-                {\n+                  }\n+                } catch (Throwable t) {\n                   // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n-                  if (throwException)\n+                  if (throwException) {\n                     throw new WSIException(t.getMessage(), t);\n+                  }\n                 }\n               }\n             }\n-          }\n-\n-          else\n-          {\n+          } else {\n             // else iterate element recursively\n             processAllSchema(node.getFirstChild(), ctx);\n           }\n@@ -154,11 +140,9 @@ public abstract class XMLSchemaProcessor\n         node = node.getNextSibling();\n       }\n \n-    }\n-    finally\n-    { \n+    } finally {\n       Thread.currentThread().setContextClassLoader(currentLoader);\n-    }    \n+    }\n \n \n     // Return list created by the class that extends this class\n",
+            "diff_size": 59
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/134/XMLSchemaProcessor.java\nindex e6e52e15ab4..2c27a09cf8e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/134/XMLSchemaProcessor.java\n@@ -135,7 +135,7 @@ public abstract class XMLSchemaProcessor\n \n                 catch (Throwable t)\n                 {\n-                  // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n+                // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n                   if (throwException)\n                     throw new WSIException(t.getMessage(), t);\n                 }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/134/XMLSchemaProcessor.java\nindex e6e52e15ab4..6d75e9ef66a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/134/XMLSchemaProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/134/XMLSchemaProcessor.java\n@@ -135,8 +135,11 @@ public abstract class XMLSchemaProcessor\n \n                 catch (Throwable t)\n                 {\n-                  // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n-                  if (throwException)\n+\n+\n+                // NOTE: An exception will occur if the XML schema file is not found or if it is not formatted correctly\n+                  if\n+                (throwException)\n                     throw new WSIException(t.getMessage(), t);\n                 }\n               }\n",
+            "diff_size": 5
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,233 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "95",
+    "information": {
+        "errors": [
+            {
+                "line": "132",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 137).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    public void insert() {\n        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n    }\n\n    public void done() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "132",
+                    "column": "76",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "85",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "91",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "133",
+                    "column": "19",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "135",
+                    "column": "16",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "135",
+                    "column": "21",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/95/AuthenticationEditor.java\nindex 5e56ecd10c5..2512ce8ac3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/95/AuthenticationEditor.java\n@@ -129,10 +129,10 @@ public class AuthenticationEditor implements Serializable {\n     }\n \n     public void insert() {\n-        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n-    }\n+        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName,password,realm,AuthScheme.\n+        getScheme (\n \n-    public void done() {\n+        scheme),host,port));}public void done() {\n         Set<RequestData> ds = new HashSet<RequestData>();\n         RequestData rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/95/AuthenticationEditor.java\nindex 5e56ecd10c5..d3f114a1a43 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/95/AuthenticationEditor.java\n@@ -39,259 +39,251 @@ import com.intuit.tank.project.ScriptStep;\n @ConversationScoped\n public class AuthenticationEditor implements Serializable {\n \n-    private static final long serialVersionUID = 1L;\n-\n-    @Inject\n-    private ScriptEditor scriptEditor;\n-\n-    @Inject\n-    private Messages messages;\n-\n-    private String userName;\n-    private String password;\n-    private String realm;\n-    private String scheme;\n-    private String host;\n-    private String port;\n-    \n-    private List<String> authSchemes = new ArrayList<String>();\n-\n-    private String buttonLabel = ADD_LABEL;\n-\n-    private ScriptStep step;\n-\n-    private boolean editMode;\n-    \n-    @PostConstruct\n-    public void init() {\n-        for (AuthScheme s : AuthScheme.values()) {\n-            authSchemes.add(s.name());\n-        }\n-    }\n-    \n-    \n-\n-    /**\n-     * @return the authSchemes\n-     */\n-    public List<String> getAuthSchemes() {\n-        return authSchemes;\n-    }\n-\n-\n-\n-    public void editAuthentication(ScriptStep step) {\n-        this.step = step;\n-        this.editMode = true;\n-        for (RequestData requestData : step.getData()) {\n-\n-            if (ScriptConstants.AUTH_USER_NAME.equals(requestData.getKey())) {\n-                userName = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_PASSWORD.equals(requestData.getKey())) {\n-                password = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_REALM.equals(requestData.getKey())) {\n-                realm = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_SCHEME.equals(requestData.getKey())) {\n-                scheme = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_HOST.equals(requestData.getKey())) {\n-                host = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_PORT.equals(requestData.getKey())) {\n-                port = requestData.getValue();\n-            }\n-\n-        }\n-        setButtonLabel(EDIT_LABEL);\n-    }\n-\n-    public void insertAuthentication() {\n-        this.editMode = false;\n-        clear();\n-        setButtonLabel(ADD_LABEL);\n-    }\n-\n-    private void clear() {\n-        userName = null;\n-        password = null;\n-        realm = null;\n-        scheme = AuthScheme.Basic.name();\n-        host = null;\n-        port = null;\n-    }\n-\n-    public void addToScript() {\n-        if (validate()) {\n-            if (editMode) {\n-                done();\n-            } else {\n-                insert();\n-            }\n-        }\n-    }\n-\n-    public void insert() {\n-        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n-    }\n-\n-    public void done() {\n-        Set<RequestData> ds = new HashSet<RequestData>();\n-        RequestData rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_USER_NAME);\n-        rd.setValue(userName);\n-        ds.add(rd);\n-\n-        rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_PASSWORD);\n-        rd.setValue(password);\n-        ds.add(rd);\n-\n-        rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_REALM);\n-        rd.setValue(realm);\n-        ds.add(rd);\n-\n-        rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_SCHEME);\n-        rd.setValue(scheme);\n-        ds.add(rd);\n-\n-        rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_HOST);\n-        rd.setValue(host);\n-        ds.add(rd);\n-\n-        rd = new RequestData();\n-        rd.setType(ScriptConstants.AUTHENTICATION);\n-        rd.setKey(ScriptConstants.AUTH_PORT);\n-        rd.setValue(port);\n-        ds.add(rd);\n-\n-        step.setData(ds);\n-        step.setComments(\"Authenticator \" + scheme + \" \" + host);\n-        ScriptUtil.updateStepLabel(step);\n-        clear();\n-    }\n+  private static final long serialVersionUID = 1L;\n \n-    private boolean validate() {\n-        boolean retVal = true;\n-        if (StringUtils.isBlank(userName)) {\n-            retVal = false;\n-            messages.error(\"User Name is required.\");\n-        }\n-        if (StringUtils.isBlank(password)) {\n-            retVal = false;\n-            messages.error(\"Password is required.\");\n-        }\n-        return retVal;\n-    }\n-\n-    /**\n-     * @return the buttonLabel\n-     */\n-    public String getButtonLabel() {\n-        return buttonLabel;\n-    }\n-\n-    /**\n-     * @param buttonLabel\n-     *            the buttonLabel to set\n-     */\n-    public void setButtonLabel(String buttonLabel) {\n-        this.buttonLabel = buttonLabel;\n-    }\n-\n-    /**\n-     * @return the userName\n-     */\n-    public String getUserName() {\n-        return userName;\n-    }\n+  @Inject\n+  private ScriptEditor scriptEditor;\n \n-    /**\n-     * @param userName\n-     *            the userName to set\n-     */\n-    public void setUserName(String userName) {\n-        this.userName = userName;\n-    }\n+  @Inject\n+  private Messages messages;\n \n-    /**\n-     * @return the password\n-     */\n-    public String getPassword() {\n-        return password;\n-    }\n+  private String userName;\n+  private String password;\n+  private String realm;\n+  private String scheme;\n+  private String host;\n+  private String port;\n \n-    /**\n-     * @param password\n-     *            the password to set\n-     */\n-    public void setPassword(String password) {\n-        this.password = password;\n-    }\n+  private List<String> authSchemes = new ArrayList<String>();\n \n-    /**\n-     * @return the realm\n-     */\n-    public String getRealm() {\n-        return realm;\n-    }\n+  private String buttonLabel = ADD_LABEL;\n \n-    /**\n-     * @param realm\n-     *            the realm to set\n-     */\n-    public void setRealm(String realm) {\n-        this.realm = realm;\n-    }\n+  private ScriptStep step;\n \n-    /**\n-     * @return the scheme\n-     */\n-    public String getScheme() {\n-        return scheme;\n-    }\n+  private boolean editMode;\n \n-    /**\n-     * @param scheme\n-     *            the scheme to set\n-     */\n-    public void setScheme(String scheme) {\n-        this.scheme = scheme;\n+  @PostConstruct\n+  public void init() {\n+    for (AuthScheme s : AuthScheme.values()) {\n+      authSchemes.add(s.name());\n     }\n+  }\n+\n+\n+  /**\n+   * @return the authSchemes\n+   */\n+  public List<String> getAuthSchemes() {\n+    return authSchemes;\n+  }\n+\n+\n+  public void editAuthentication(ScriptStep step) {\n+    this.step = step;\n+    this.editMode = true;\n+    for (RequestData requestData : step.getData()) {\n+\n+      if (ScriptConstants.AUTH_USER_NAME.equals(requestData.getKey())) {\n+        userName = requestData.getValue();\n+      } else if (ScriptConstants.AUTH_PASSWORD.equals(requestData.getKey())) {\n+        password = requestData.getValue();\n+      } else if (ScriptConstants.AUTH_REALM.equals(requestData.getKey())) {\n+        realm = requestData.getValue();\n+      } else if (ScriptConstants.AUTH_SCHEME.equals(requestData.getKey())) {\n+        scheme = requestData.getValue();\n+      } else if (ScriptConstants.AUTH_HOST.equals(requestData.getKey())) {\n+        host = requestData.getValue();\n+      } else if (ScriptConstants.AUTH_PORT.equals(requestData.getKey())) {\n+        port = requestData.getValue();\n+      }\n \n-    /**\n-     * @return the host\n-     */\n-    public String getHost() {\n-        return host;\n     }\n-\n-    /**\n-     * @param host\n-     *            the host to set\n-     */\n-    public void setHost(String host) {\n-        this.host = host;\n+    setButtonLabel(EDIT_LABEL);\n+  }\n+\n+  public void insertAuthentication() {\n+    this.editMode = false;\n+    clear();\n+    setButtonLabel(ADD_LABEL);\n+  }\n+\n+  private void clear() {\n+    userName = null;\n+    password = null;\n+    realm = null;\n+    scheme = AuthScheme.Basic.name();\n+    host = null;\n+    port = null;\n+  }\n+\n+  public void addToScript() {\n+    if (validate()) {\n+      if (editMode) {\n+        done();\n+      } else {\n+        insert();\n+      }\n     }\n-\n-    /**\n-     * @return the port\n-     */\n-    public String getPort() {\n-        return port;\n+  }\n+\n+  public void insert() {\n+    scriptEditor.insert(\n+      ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n+  }\n+\n+  public void done() {\n+    Set<RequestData> ds = new HashSet<RequestData>();\n+    RequestData rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_USER_NAME);\n+    rd.setValue(userName);\n+    ds.add(rd);\n+\n+    rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_PASSWORD);\n+    rd.setValue(password);\n+    ds.add(rd);\n+\n+    rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_REALM);\n+    rd.setValue(realm);\n+    ds.add(rd);\n+\n+    rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_SCHEME);\n+    rd.setValue(scheme);\n+    ds.add(rd);\n+\n+    rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_HOST);\n+    rd.setValue(host);\n+    ds.add(rd);\n+\n+    rd = new RequestData();\n+    rd.setType(ScriptConstants.AUTHENTICATION);\n+    rd.setKey(ScriptConstants.AUTH_PORT);\n+    rd.setValue(port);\n+    ds.add(rd);\n+\n+    step.setData(ds);\n+    step.setComments(\"Authenticator \" + scheme + \" \" + host);\n+    ScriptUtil.updateStepLabel(step);\n+    clear();\n+  }\n+\n+  private boolean validate() {\n+    boolean retVal = true;\n+    if (StringUtils.isBlank(userName)) {\n+      retVal = false;\n+      messages.error(\"User Name is required.\");\n     }\n-\n-    /**\n-     * @param port\n-     *            the port to set\n-     */\n-    public void setPort(String port) {\n-        this.port = port;\n+    if (StringUtils.isBlank(password)) {\n+      retVal = false;\n+      messages.error(\"Password is required.\");\n     }\n+    return retVal;\n+  }\n+\n+  /**\n+   * @return the buttonLabel\n+   */\n+  public String getButtonLabel() {\n+    return buttonLabel;\n+  }\n+\n+  /**\n+   * @param buttonLabel the buttonLabel to set\n+   */\n+  public void setButtonLabel(String buttonLabel) {\n+    this.buttonLabel = buttonLabel;\n+  }\n+\n+  /**\n+   * @return the userName\n+   */\n+  public String getUserName() {\n+    return userName;\n+  }\n+\n+  /**\n+   * @param userName the userName to set\n+   */\n+  public void setUserName(String userName) {\n+    this.userName = userName;\n+  }\n+\n+  /**\n+   * @return the password\n+   */\n+  public String getPassword() {\n+    return password;\n+  }\n+\n+  /**\n+   * @param password the password to set\n+   */\n+  public void setPassword(String password) {\n+    this.password = password;\n+  }\n+\n+  /**\n+   * @return the realm\n+   */\n+  public String getRealm() {\n+    return realm;\n+  }\n+\n+  /**\n+   * @param realm the realm to set\n+   */\n+  public void setRealm(String realm) {\n+    this.realm = realm;\n+  }\n+\n+  /**\n+   * @return the scheme\n+   */\n+  public String getScheme() {\n+    return scheme;\n+  }\n+\n+  /**\n+   * @param scheme the scheme to set\n+   */\n+  public void setScheme(String scheme) {\n+    this.scheme = scheme;\n+  }\n+\n+  /**\n+   * @return the host\n+   */\n+  public String getHost() {\n+    return host;\n+  }\n+\n+  /**\n+   * @param host the host to set\n+   */\n+  public void setHost(String host) {\n+    this.host = host;\n+  }\n+\n+  /**\n+   * @return the port\n+   */\n+  public String getPort() {\n+    return port;\n+  }\n+\n+  /**\n+   * @param port the port to set\n+   */\n+  public void setPort(String port) {\n+    this.port = port;\n+  }\n \n }\n",
+            "diff_size": 437
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "127",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/95/AuthenticationEditor.java\nindex 5e56ecd10c5..b3fd589d03f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/95/AuthenticationEditor.java\n@@ -53,34 +53,29 @@ public class AuthenticationEditor implements Serializable {\n     private String scheme;\n     private String host;\n     private String port;\n-    \n-    private List<String> authSchemes = new ArrayList<String>();\n+private List<String> authSchemes = new ArrayList<String>();\n \n-    private String buttonLabel = ADD_LABEL;\n+private String buttonLabel = ADD_LABEL;\n \n     private ScriptStep step;\n \n     private boolean editMode;\n     \n     @PostConstruct\n-    public void init() {\n+public void init() {\n         for (AuthScheme s : AuthScheme.values()) {\n             authSchemes.add(s.name());\n         }\n     }\n-    \n-    \n \n-    /**\n+/**\n      * @return the authSchemes\n      */\n-    public List<String> getAuthSchemes() {\n+public List<String> getAuthSchemes() {\n         return authSchemes;\n     }\n \n-\n-\n-    public void editAuthentication(ScriptStep step) {\n+public void editAuthentication(ScriptStep step) {\n         this.step = step;\n         this.editMode = true;\n         for (RequestData requestData : step.getData()) {\n@@ -294,4 +289,4 @@ public class AuthenticationEditor implements Serializable {\n         this.port = port;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "128",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/95/AuthenticationEditor.java\nindex 5e56ecd10c5..fc708d6cd7d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/95/AuthenticationEditor.java\n@@ -13,6 +13,8 @@ package com.intuit.tank.script;\n  * #L%\n  */\n \n+\n+\n import static com.intuit.tank.util.ButtonLabel.ADD_LABEL;\n import static com.intuit.tank.util.ButtonLabel.EDIT_LABEL;\n \n@@ -21,15 +23,12 @@ import java.util.ArrayList;\n import java.util.HashSet;\n import java.util.List;\n import java.util.Set;\n-\n import javax.annotation.PostConstruct;\n import javax.enterprise.context.ConversationScoped;\n import javax.inject.Inject;\n import javax.inject.Named;\n-\n import org.apache.commons.lang3.StringUtils;\n import com.intuit.tank.util.Messages;\n-\n import com.intuit.tank.common.ScriptUtil;\n import com.intuit.tank.http.AuthScheme;\n import com.intuit.tank.project.RequestData;\n@@ -46,22 +45,17 @@ public class AuthenticationEditor implements Serializable {\n \n     @Inject\n     private Messages messages;\n-\n     private String userName;\n     private String password;\n     private String realm;\n     private String scheme;\n     private String host;\n     private String port;\n-    \n     private List<String> authSchemes = new ArrayList<String>();\n-\n     private String buttonLabel = ADD_LABEL;\n-\n     private ScriptStep step;\n-\n     private boolean editMode;\n-    \n+\n     @PostConstruct\n     public void init() {\n         for (AuthScheme s : AuthScheme.values()) {\n@@ -74,35 +68,35 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the authSchemes\n      */\n+\n+\n     public List<String> getAuthSchemes() {\n         return authSchemes;\n     }\n \n \n-\n     public void editAuthentication(ScriptStep step) {\n         this.step = step;\n         this.editMode = true;\n         for (RequestData requestData : step.getData()) {\n-\n             if (ScriptConstants.AUTH_USER_NAME.equals(requestData.getKey())) {\n                 userName = requestData.getValue();\n             } else if (ScriptConstants.AUTH_PASSWORD.equals(requestData.getKey())) {\n                 password = requestData.getValue();\n             } else if (ScriptConstants.AUTH_REALM.equals(requestData.getKey())) {\n-                realm = requestData.getValue();\n+                       realm = requestData.getValue();\n             } else if (ScriptConstants.AUTH_SCHEME.equals(requestData.getKey())) {\n-                scheme = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_HOST.equals(requestData.getKey())) {\n-                host = requestData.getValue();\n-            } else if (ScriptConstants.AUTH_PORT.equals(requestData.getKey())) {\n-                port = requestData.getValue();\n-            }\n-\n+                       scheme = requestData.getValue();\n+                   } else if (ScriptConstants.AUTH_HOST.equals(requestData.getKey())) {\n+                       host = requestData.getValue();\n+                   } else if (ScriptConstants.AUTH_PORT.equals(requestData.getKey())) {\n+                              port = requestData.getValue();\n+                          }\n         }\n         setButtonLabel(EDIT_LABEL);\n     }\n \n+\n     public void insertAuthentication() {\n         this.editMode = false;\n         clear();\n@@ -118,6 +112,7 @@ public class AuthenticationEditor implements Serializable {\n         port = null;\n     }\n \n+\n     public void addToScript() {\n         if (validate()) {\n             if (editMode) {\n@@ -128,10 +123,12 @@ public class AuthenticationEditor implements Serializable {\n         }\n     }\n \n+\n     public void insert() {\n         scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n     }\n \n+\n     public void done() {\n         Set<RequestData> ds = new HashSet<RequestData>();\n         RequestData rd = new RequestData();\n@@ -139,37 +136,31 @@ public class AuthenticationEditor implements Serializable {\n         rd.setKey(ScriptConstants.AUTH_USER_NAME);\n         rd.setValue(userName);\n         ds.add(rd);\n-\n         rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n         rd.setKey(ScriptConstants.AUTH_PASSWORD);\n         rd.setValue(password);\n         ds.add(rd);\n-\n         rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n         rd.setKey(ScriptConstants.AUTH_REALM);\n         rd.setValue(realm);\n         ds.add(rd);\n-\n         rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n         rd.setKey(ScriptConstants.AUTH_SCHEME);\n         rd.setValue(scheme);\n         ds.add(rd);\n-\n         rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n         rd.setKey(ScriptConstants.AUTH_HOST);\n         rd.setValue(host);\n         ds.add(rd);\n-\n         rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n         rd.setKey(ScriptConstants.AUTH_PORT);\n         rd.setValue(port);\n         ds.add(rd);\n-\n         step.setData(ds);\n         step.setComments(\"Authenticator \" + scheme + \" \" + host);\n         ScriptUtil.updateStepLabel(step);\n@@ -192,6 +183,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the buttonLabel\n      */\n+\n+\n     public String getButtonLabel() {\n         return buttonLabel;\n     }\n@@ -200,6 +193,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param buttonLabel\n      *            the buttonLabel to set\n      */\n+\n+\n     public void setButtonLabel(String buttonLabel) {\n         this.buttonLabel = buttonLabel;\n     }\n@@ -207,6 +202,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the userName\n      */\n+\n+\n     public String getUserName() {\n         return userName;\n     }\n@@ -215,6 +212,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param userName\n      *            the userName to set\n      */\n+\n+\n     public void setUserName(String userName) {\n         this.userName = userName;\n     }\n@@ -222,6 +221,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the password\n      */\n+\n+\n     public String getPassword() {\n         return password;\n     }\n@@ -230,6 +231,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param password\n      *            the password to set\n      */\n+\n+\n     public void setPassword(String password) {\n         this.password = password;\n     }\n@@ -237,6 +240,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the realm\n      */\n+\n+\n     public String getRealm() {\n         return realm;\n     }\n@@ -245,6 +250,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param realm\n      *            the realm to set\n      */\n+\n+\n     public void setRealm(String realm) {\n         this.realm = realm;\n     }\n@@ -252,6 +259,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the scheme\n      */\n+\n+\n     public String getScheme() {\n         return scheme;\n     }\n@@ -260,6 +269,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param scheme\n      *            the scheme to set\n      */\n+\n+\n     public void setScheme(String scheme) {\n         this.scheme = scheme;\n     }\n@@ -267,6 +278,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the host\n      */\n+\n+\n     public String getHost() {\n         return host;\n     }\n@@ -275,6 +288,8 @@ public class AuthenticationEditor implements Serializable {\n      * @param host\n      *            the host to set\n      */\n+\n+\n     public void setHost(String host) {\n         this.host = host;\n     }\n@@ -282,6 +297,8 @@ public class AuthenticationEditor implements Serializable {\n     /**\n      * @return the port\n      */\n+\n+\n     public String getPort() {\n         return port;\n     }\n@@ -290,8 +307,10 @@ public class AuthenticationEditor implements Serializable {\n      * @param port\n      *            the port to set\n      */\n+\n+\n     public void setPort(String port) {\n         this.port = port;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "132",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "77",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "77",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "87",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "87",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "94",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "94",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "117",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "125",
+                    "severity": "warning",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "126",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/95/AuthenticationEditor.java\nindex 5e56ecd10c5..4c25b5be0d2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/95/AuthenticationEditor.java\n@@ -129,10 +129,13 @@ public class AuthenticationEditor implements Serializable {\n     }\n \n     public void insert() {\n-        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n-    }\n+        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName ,password ,realm ,AuthScheme .getScheme (scheme ),host,\n+    port\n+\n+        ));\n+     }\n \n-    public void done() {\n+     public void done() {\n         Set<RequestData> ds = new HashSet<RequestData>();\n         RequestData rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "132",
+                    "column": "76",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "85",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "91",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "133",
+                    "column": "19",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "135",
+                    "column": "16",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "135",
+                    "column": "21",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/95/AuthenticationEditor.java\nindex 5e56ecd10c5..2512ce8ac3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/95/AuthenticationEditor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/95/AuthenticationEditor.java\n@@ -129,10 +129,10 @@ public class AuthenticationEditor implements Serializable {\n     }\n \n     public void insert() {\n-        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName, password, realm, AuthScheme.getScheme(scheme), host, port));\n-    }\n+        scriptEditor.insert(ScriptStepFactory.createAuthentication(userName,password,realm,AuthScheme.\n+        getScheme (\n \n-    public void done() {\n+        scheme),host,port));}public void done() {\n         Set<RequestData> ds = new HashSet<RequestData>();\n         RequestData rd = new RequestData();\n         rd.setType(ScriptConstants.AUTHENTICATION);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

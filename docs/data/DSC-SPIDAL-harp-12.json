@@ -1,0 +1,90 @@
+{
+    "project_name": "DSC-SPIDAL-harp",
+    "error_id": "12",
+    "information": {
+        "errors": [
+            {
+                "line": "3",
+                "severity": "error",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright 2013-2017 Indiana University\n * \n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/12/XFileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/intellij/12/XFileUtil.java\nindex 8e0a0d45527..86ead59dede 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/12/XFileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/intellij/12/XFileUtil.java\n@@ -1,6 +1,6 @@\n /*\n  * Copyright 2013-2017 Indiana University\n- * \n+ *\n  * Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n@@ -36,110 +36,110 @@ import java.util.Map;\n \n class XFileUtil {\n \n-  static void storeXOnMaster(\n-    Configuration configuration,\n-    Table<DoubleArray> table, int d,\n-    String xOutFile, boolean isMaster)\n-    throws IOException {\n-    if (isMaster) {\n-      Path xOutPath = new Path(xOutFile);\n-      FileSystem fs =\n-        FileSystem.get(configuration);\n-      // fs.delete(xOutPath, true);\n-      FSDataOutputStream out =\n-        fs.create(xOutPath);\n-      PrintWriter writer =\n-        new PrintWriter(new BufferedWriter(\n-          new OutputStreamWriter(out)));\n-      DecimalFormat format =\n-        new DecimalFormat(\"#.##########\");\n-      Partition<DoubleArray> partition = null;\n-      DoubleArray parArray = null;\n-      double[] doubles = null;\n-      for (int id = 0; id < table\n-        .getNumPartitions(); id++) {\n-        partition = table.getPartition(id);\n-        parArray = partition.get();\n-        doubles = parArray.get();\n-        for (int i = 0; i < parArray\n-          .size(); i++) {\n-          if ((i % d) == 0) {\n-            writer.print(id + \"\\t\");// print ID.\n-          }\n-          writer.print(\n-            format.format(doubles[i]) + \"\\t\");\n-          if ((i % d) == (d - 1)) {\n-            writer.println(\"1\");\n-            id++;\n-          }\n+    static void storeXOnMaster(\n+        Configuration configuration,\n+        Table<DoubleArray> table, int d,\n+        String xOutFile, boolean isMaster)\n+        throws IOException {\n+        if (isMaster) {\n+            Path xOutPath = new Path(xOutFile);\n+            FileSystem fs =\n+                FileSystem.get(configuration);\n+            // fs.delete(xOutPath, true);\n+            FSDataOutputStream out =\n+                fs.create(xOutPath);\n+            PrintWriter writer =\n+                new PrintWriter(new BufferedWriter(\n+                    new OutputStreamWriter(out)));\n+            DecimalFormat format =\n+                new DecimalFormat(\"#.##########\");\n+            Partition<DoubleArray> partition = null;\n+            DoubleArray parArray = null;\n+            double[] doubles = null;\n+            for (int id = 0; id < table\n+                .getNumPartitions(); id++) {\n+                partition = table.getPartition(id);\n+                parArray = partition.get();\n+                doubles = parArray.get();\n+                for (int i = 0; i < parArray\n+                    .size(); i++) {\n+                    if ((i % d) == 0) {\n+                        writer.print(id + \"\\t\");// print ID.\n+                    }\n+                    writer.print(\n+                        format.format(doubles[i]) + \"\\t\");\n+                    if ((i % d) == (d - 1)) {\n+                        writer.println(\"1\");\n+                        id++;\n+                    }\n+                }\n+            }\n+            writer.flush();\n+            writer.close();\n         }\n-      }\n-      writer.flush();\n-      writer.close();\n     }\n-  }\n \n-  static void storeXOnMaster(\n-    Configuration configuration,\n-    Table<DoubleArray> table, int d,\n-    String xOutFile, boolean isMaster,\n-    String labelFile) throws IOException {\n-    if (isMaster) {\n-      // Read label file\n-      BufferedReader reader = new BufferedReader(\n-        new FileReader(labelFile));\n-      String line = null;\n-      String parts[] = null;\n-      Map<Integer, Integer> labels =\n-        new HashMap<Integer, Integer>();\n-      while ((line = reader.readLine()) != null) {\n-        parts = line.split(\" \");\n-        if (parts.length < 2) {\n-          // Don't need to throw an error because\n-          // this is the last part of\n-          // the computation\n-        }\n-        labels.put(Integer.parseInt(parts[1]),\n-          Integer.parseInt(parts[1]));\n-      }\n-      reader.close();\n-      Path xOutPath = new Path(xOutFile);\n-      FileSystem fs =\n-        FileSystem.get(configuration);\n-      // fs.delete(xOutPath, true);\n-      FSDataOutputStream out =\n-        fs.create(xOutPath);\n-      PrintWriter writer =\n-        new PrintWriter(new BufferedWriter(\n-          new OutputStreamWriter(out)));\n-      DecimalFormat format =\n-        new DecimalFormat(\"#.##########\");\n-      Partition<DoubleArray> partition = null;\n-      DoubleArray parArray = null;\n-      double[] doubles = null;\n-      for (int id = 0; id < table\n-        .getNumPartitions(); id++) {\n-        partition = table.getPartition(id);\n-        parArray = partition.get();\n-        doubles = parArray.get();\n-        for (int i = 0; i < parArray\n-          .size(); i++) {\n-          if ((i % d) == 0) {\n-            writer.print(id + \"\\t\");// print ID.\n-          }\n-          writer.print(\n-            format.format(doubles[i]) + \"\\t\");\n-          writer.print(String.valueOf(i) + \"\\t\");\n-          if ((i % d) == (d - 1)) {\n-            writer.println(labels.get(id));\n-            // it seems that we need to put id++\n-            // after a line is printed\n-            id++;\n-          }\n+    static void storeXOnMaster(\n+        Configuration configuration,\n+        Table<DoubleArray> table, int d,\n+        String xOutFile, boolean isMaster,\n+        String labelFile) throws IOException {\n+        if (isMaster) {\n+            // Read label file\n+            BufferedReader reader = new BufferedReader(\n+                new FileReader(labelFile));\n+            String line = null;\n+            String parts[] = null;\n+            Map<Integer, Integer> labels =\n+                new HashMap<Integer, Integer>();\n+            while ((line = reader.readLine()) != null) {\n+                parts = line.split(\" \");\n+                if (parts.length < 2) {\n+                    // Don't need to throw an error because\n+                    // this is the last part of\n+                    // the computation\n+                }\n+                labels.put(Integer.parseInt(parts[1]),\n+                    Integer.parseInt(parts[1]));\n+            }\n+            reader.close();\n+            Path xOutPath = new Path(xOutFile);\n+            FileSystem fs =\n+                FileSystem.get(configuration);\n+            // fs.delete(xOutPath, true);\n+            FSDataOutputStream out =\n+                fs.create(xOutPath);\n+            PrintWriter writer =\n+                new PrintWriter(new BufferedWriter(\n+                    new OutputStreamWriter(out)));\n+            DecimalFormat format =\n+                new DecimalFormat(\"#.##########\");\n+            Partition<DoubleArray> partition = null;\n+            DoubleArray parArray = null;\n+            double[] doubles = null;\n+            for (int id = 0; id < table\n+                .getNumPartitions(); id++) {\n+                partition = table.getPartition(id);\n+                parArray = partition.get();\n+                doubles = parArray.get();\n+                for (int i = 0; i < parArray\n+                    .size(); i++) {\n+                    if ((i % d) == 0) {\n+                        writer.print(id + \"\\t\");// print ID.\n+                    }\n+                    writer.print(\n+                        format.format(doubles[i]) + \"\\t\");\n+                    writer.print(String.valueOf(i) + \"\\t\");\n+                    if ((i % d) == (d - 1)) {\n+                        writer.println(labels.get(id));\n+                        // it seems that we need to put id++\n+                        // after a line is printed\n+                        id++;\n+                    }\n+                }\n+            }\n+            writer.flush();\n+            writer.close();\n         }\n-      }\n-      writer.flush();\n-      writer.close();\n     }\n-  }\n }\n",
+            "diff_size": 110
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/12/XFileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/codebuff/12/XFileUtil.java\nindex 8e0a0d45527..b6f36445f51 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/errored/1/12/XFileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DSC-SPIDAL-harp/codebuff/12/XFileUtil.java\n@@ -23,7 +23,6 @@ import org.apache.hadoop.conf.Configuration;\n import org.apache.hadoop.fs.FSDataOutputStream;\n import org.apache.hadoop.fs.FileSystem;\n import org.apache.hadoop.fs.Path;\n-\n import java.io.BufferedReader;\n import java.io.BufferedWriter;\n import java.io.FileReader;\n@@ -34,40 +33,33 @@ import java.text.DecimalFormat;\n import java.util.HashMap;\n import java.util.Map;\n \n-class XFileUtil {\n \n+class XFileUtil {\n   static void storeXOnMaster(\n     Configuration configuration,\n-    Table<DoubleArray> table, int d,\n-    String xOutFile, boolean isMaster)\n-    throws IOException {\n+Table<DoubleArray> table,\n+    int d,\n+String xOutFile, boolean isMaster)\n+throws IOException {\n     if (isMaster) {\n       Path xOutPath = new Path(xOutFile);\n-      FileSystem fs =\n-        FileSystem.get(configuration);\n+      FileSystem fs = FileSystem.get(configuration);\n       // fs.delete(xOutPath, true);\n-      FSDataOutputStream out =\n-        fs.create(xOutPath);\n-      PrintWriter writer =\n-        new PrintWriter(new BufferedWriter(\n-          new OutputStreamWriter(out)));\n-      DecimalFormat format =\n-        new DecimalFormat(\"#.##########\");\n+      FSDataOutputStream out = fs.create(xOutPath);\n+      PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));\n+      DecimalFormat format = new DecimalFormat(\"#.##########\");\n       Partition<DoubleArray> partition = null;\n       DoubleArray parArray = null;\n       double[] doubles = null;\n-      for (int id = 0; id < table\n-        .getNumPartitions(); id++) {\n+      for (int id = 0; id < table.getNumPartitions(); id++) {\n         partition = table.getPartition(id);\n         parArray = partition.get();\n         doubles = parArray.get();\n-        for (int i = 0; i < parArray\n-          .size(); i++) {\n+        for (int i = 0; i < parArray.size(); i++) {\n           if ((i % d) == 0) {\n             writer.print(id + \"\\t\");// print ID.\n           }\n-          writer.print(\n-            format.format(doubles[i]) + \"\\t\");\n+          writer.print(format.format(doubles[i]) + \"\\t\");\n           if ((i % d) == (d - 1)) {\n             writer.println(\"1\");\n             id++;\n@@ -79,19 +71,21 @@ class XFileUtil {\n     }\n   }\n \n+\n   static void storeXOnMaster(\n     Configuration configuration,\n-    Table<DoubleArray> table, int d,\n-    String xOutFile, boolean isMaster,\n-    String labelFile) throws IOException {\n+Table<DoubleArray> table,\n+    int d,\n+String xOutFile,\n+    boolean isMaster,\n+    String labelFile)\n+    throws IOException {\n     if (isMaster) {\n       // Read label file\n-      BufferedReader reader = new BufferedReader(\n-        new FileReader(labelFile));\n+      BufferedReader reader = new BufferedReader(new FileReader(labelFile));\n       String line = null;\n       String parts[] = null;\n-      Map<Integer, Integer> labels =\n-        new HashMap<Integer, Integer>();\n+      Map<Integer, Integer> labels = new HashMap<Integer, Integer>();\n       while ((line = reader.readLine()) != null) {\n         parts = line.split(\" \");\n         if (parts.length < 2) {\n@@ -99,36 +93,27 @@ class XFileUtil {\n           // this is the last part of\n           // the computation\n         }\n-        labels.put(Integer.parseInt(parts[1]),\n-          Integer.parseInt(parts[1]));\n+        labels.put(Integer.parseInt(parts[1]), Integer.parseInt(parts[1]));\n       }\n       reader.close();\n       Path xOutPath = new Path(xOutFile);\n-      FileSystem fs =\n-        FileSystem.get(configuration);\n+      FileSystem fs = FileSystem.get(configuration);\n       // fs.delete(xOutPath, true);\n-      FSDataOutputStream out =\n-        fs.create(xOutPath);\n-      PrintWriter writer =\n-        new PrintWriter(new BufferedWriter(\n-          new OutputStreamWriter(out)));\n-      DecimalFormat format =\n-        new DecimalFormat(\"#.##########\");\n+      FSDataOutputStream out = fs.create(xOutPath);\n+      PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));\n+      DecimalFormat format = new DecimalFormat(\"#.##########\");\n       Partition<DoubleArray> partition = null;\n       DoubleArray parArray = null;\n       double[] doubles = null;\n-      for (int id = 0; id < table\n-        .getNumPartitions(); id++) {\n+      for (int id = 0; id < table.getNumPartitions(); id++) {\n         partition = table.getPartition(id);\n         parArray = partition.get();\n         doubles = parArray.get();\n-        for (int i = 0; i < parArray\n-          .size(); i++) {\n+        for (int i = 0; i < parArray.size(); i++) {\n           if ((i % d) == 0) {\n             writer.print(id + \"\\t\");// print ID.\n           }\n-          writer.print(\n-            format.format(doubles[i]) + \"\\t\");\n+          writer.print(format.format(doubles[i]) + \"\\t\");\n           writer.print(String.valueOf(i) + \"\\t\");\n           if ((i % d) == (d - 1)) {\n             writer.println(labels.get(id));\n@@ -142,4 +127,4 @@ class XFileUtil {\n       writer.close();\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

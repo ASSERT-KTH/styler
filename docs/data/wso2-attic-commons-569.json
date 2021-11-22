@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "569",
+    "information": {
+        "errors": [
+            {
+                "line": "60",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 131).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                streamEvent = new RemoveEvent(((Event) complexEvent), System.currentTimeMillis() + timeToKeep);\n            } else {\n                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).getEvents(), System.currentTimeMillis() + timeToKeep);\n            }\n            if (getWindow().put(streamEvent)) {\n                eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/569/TimeWindowHandler.java\nindex a237bd4c70d..c8b1dc1ffed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/569/TimeWindowHandler.java\n@@ -57,7 +57,8 @@ public class TimeWindowHandler extends WindowHandler implements RunnableHandler\n             if (complexEvent instanceof Event) {\n                 streamEvent = new RemoveEvent(((Event) complexEvent), System.currentTimeMillis() + timeToKeep);\n             } else {\n-                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).getEvents(), System.currentTimeMillis() + timeToKeep);\n+                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).\n+                        getEvents(), System.currentTimeMillis() + timeToKeep);\n             }\n             if (getWindow().put(streamEvent)) {\n                 eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/569/TimeWindowHandler.java\nindex a237bd4c70d..34439d16fb9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/569/TimeWindowHandler.java\n@@ -1,20 +1,21 @@\n /*\n-*  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n-*\n-*  WSO2 Inc. licenses this file to you under the Apache License,\n-*  Version 2.0 (the \"License\"); you may not use this file except\n-*  in compliance with the License.\n-*  You may obtain a copy of the License at\n-*\n-*    http://www.apache.org/licenses/LICENSE-2.0\n-*\n-* Unless required by applicable law or agreed to in writing,\n-* software distributed under the License is distributed on an\n-* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n-* KIND, either express or implied.  See the License for the\n-* specific language governing permissions and limitations\n-* under the License.\n-*/\n+ *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n+ *\n+ *  WSO2 Inc. licenses this file to you under the Apache License,\n+ *  Version 2.0 (the \"License\"); you may not use this file except\n+ *  in compliance with the License.\n+ *  You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing,\n+ * software distributed under the License is distributed on an\n+ * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n+ * KIND, either express or implied.  See the License for the\n+ * specific language governing permissions and limitations\n+ * under the License.\n+ */\n+\n package org.wso2.siddhi.core.query.stream.handler.window;\n \n import org.wso2.siddhi.core.event.ComplexEvent;\n@@ -36,84 +37,85 @@ import java.util.concurrent.TimeUnit;\n \n public class TimeWindowHandler extends WindowHandler implements RunnableHandler {\n \n-    private ScheduledExecutorService eventRemoverScheduler = Executors.newScheduledThreadPool(1);\n-    int timeToKeep;\n+  private ScheduledExecutorService eventRemoverScheduler = Executors.newScheduledThreadPool(1);\n+  int timeToKeep;\n \n \n-    @Override\n-    public void setParameters(Object[] parameters) {\n-        if (parameters[0] instanceof Integer) {\n-            timeToKeep = (Integer) parameters[0];\n-        } else {\n-            timeToKeep = ((IntConstant) parameters[0]).getValue();\n-        }\n+  @Override\n+  public void setParameters(Object[] parameters) {\n+    if (parameters[0] instanceof Integer) {\n+      timeToKeep = (Integer) parameters[0];\n+    } else {\n+      timeToKeep = ((IntConstant) parameters[0]).getValue();\n     }\n+  }\n \n-    @Override\n-    public void process(ComplexEvent complexEvent) {\n-        if (complexEvent instanceof StreamEvent) {\n+  @Override\n+  public void process(ComplexEvent complexEvent) {\n+    if (complexEvent instanceof StreamEvent) {\n //            try {\n-            StreamEvent streamEvent;\n-            if (complexEvent instanceof Event) {\n-                streamEvent = new RemoveEvent(((Event) complexEvent), System.currentTimeMillis() + timeToKeep);\n-            } else {\n-                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).getEvents(), System.currentTimeMillis() + timeToKeep);\n-            }\n-            if (getWindow().put(streamEvent)) {\n-                eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);\n-            }\n+      StreamEvent streamEvent;\n+      if (complexEvent instanceof Event) {\n+        streamEvent = new RemoveEvent(((Event) complexEvent), System.currentTimeMillis() + timeToKeep);\n+      } else {\n+        streamEvent =\n+          new RemoveListEvent(((ListEvent) complexEvent).getEvents(), System.currentTimeMillis() + timeToKeep);\n+      }\n+      if (getWindow().put(streamEvent)) {\n+        eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);\n+      }\n //            } catch (InterruptedException e) {\n //                e.printStackTrace();\n //            }\n-            passToNextStreamProcessor(complexEvent);\n-        }\n+      passToNextStreamProcessor(complexEvent);\n     }\n+  }\n \n \n-    @Override\n-    public void run() {\n-        while (true) {\n-            StreamEvent streamEvent = getWindow().peek();\n-            try {\n-                if (streamEvent == null) {\n-                    break;\n-                }\n-                long timeDiff = ((RemoveStream) streamEvent).getExpiryTime() - System.currentTimeMillis();\n-                if (timeDiff > 0) {\n-                    try {\n-                        eventRemoverScheduler.schedule(this, timeDiff, TimeUnit.MILLISECONDS);\n-                    } finally {\n-                        break;\n-                    }\n-                } else {\n-                    streamEvent = getWindow().poll();\n-                    passToNextStreamProcessor(streamEvent);\n-                }\n-            } catch (Throwable e) {\n-                e.printStackTrace();\n-            }\n+  @Override\n+  public void run() {\n+    while (true) {\n+      StreamEvent streamEvent = getWindow().peek();\n+      try {\n+        if (streamEvent == null) {\n+          break;\n         }\n+        long timeDiff = ((RemoveStream) streamEvent).getExpiryTime() - System.currentTimeMillis();\n+        if (timeDiff > 0) {\n+          try {\n+            eventRemoverScheduler.schedule(this, timeDiff, TimeUnit.MILLISECONDS);\n+          } finally {\n+            break;\n+          }\n+        } else {\n+          streamEvent = getWindow().poll();\n+          passToNextStreamProcessor(streamEvent);\n+        }\n+      } catch (Throwable e) {\n+        e.printStackTrace();\n+      }\n     }\n+  }\n \n-    @Override\n-    public void shutdown() {\n-        eventRemoverScheduler.shutdown();\n-    }\n+  @Override\n+  public void shutdown() {\n+    eventRemoverScheduler.shutdown();\n+  }\n \n-    @Override\n-    public void load(PersistenceManagementEvent persistenceManagementEvent) {\n-        PersistenceObject persistenceObject = persistenceStore.load(persistenceManagementEvent, nodeId);\n-        window = ((SchedulerQueue<StreamEvent>) persistenceObject.getData()[0]);\n-        StreamEvent streamEvent = window.peek();\n-        if (streamEvent != null) {\n+  @Override\n+  public void load(PersistenceManagementEvent persistenceManagementEvent) {\n+    PersistenceObject persistenceObject = persistenceStore.load(persistenceManagementEvent, nodeId);\n+    window = ((SchedulerQueue<StreamEvent>) persistenceObject.getData()[0]);\n+    StreamEvent streamEvent = window.peek();\n+    if (streamEvent != null) {\n \n-            long timeDiff = ((RemoveStream) streamEvent).getExpiryTime() - System.currentTimeMillis();\n-            if (timeDiff > 0) {\n-                eventRemoverScheduler.schedule(this, timeDiff, TimeUnit.MILLISECONDS);\n-            } else {\n-                eventRemoverScheduler.schedule(this, 0, TimeUnit.MILLISECONDS);\n-            }\n-        }\n+      long timeDiff = ((RemoveStream) streamEvent).getExpiryTime() - System.currentTimeMillis();\n+      if (timeDiff > 0) {\n+        eventRemoverScheduler.schedule(this, timeDiff, TimeUnit.MILLISECONDS);\n+      } else {\n+        eventRemoverScheduler.schedule(this, 0, TimeUnit.MILLISECONDS);\n+      }\n     }\n+  }\n }\n \n",
+            "diff_size": 98
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/569/TimeWindowHandler.java\nindex a237bd4c70d..f9e3fe433d3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/569/TimeWindowHandler.java\n@@ -62,6 +62,7 @@ public class TimeWindowHandler extends WindowHandler implements RunnableHandler\n             if (getWindow().put(streamEvent)) {\n                 eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);\n             }\n+\n //            } catch (InterruptedException e) {\n //                e.printStackTrace();\n //            }\n@@ -115,5 +116,4 @@ public class TimeWindowHandler extends WindowHandler implements RunnableHandler\n             }\n         }\n     }\n-}\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/569/TimeWindowHandler.java\nindex a237bd4c70d..c8b1dc1ffed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/569/TimeWindowHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/569/TimeWindowHandler.java\n@@ -57,7 +57,8 @@ public class TimeWindowHandler extends WindowHandler implements RunnableHandler\n             if (complexEvent instanceof Event) {\n                 streamEvent = new RemoveEvent(((Event) complexEvent), System.currentTimeMillis() + timeToKeep);\n             } else {\n-                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).getEvents(), System.currentTimeMillis() + timeToKeep);\n+                streamEvent = new RemoveListEvent(((ListEvent) complexEvent).\n+                        getEvents(), System.currentTimeMillis() + timeToKeep);\n             }\n             if (getWindow().put(streamEvent)) {\n                 eventRemoverScheduler.schedule(this, timeToKeep, TimeUnit.MILLISECONDS);\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

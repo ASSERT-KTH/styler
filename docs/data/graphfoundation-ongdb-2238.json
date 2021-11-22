@@ -1,0 +1,130 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2238",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "94",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "57",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "118",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2238/ListComponentsProcedure.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2238/ListComponentsProcedure.java\nindex dac2929fb2b..d51a8e296f6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2238/ListComponentsProcedure.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2238/ListComponentsProcedure.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.builtinprocs;\n \n import org.neo4j.collection.RawIterator;\n@@ -38,38 +39,38 @@ import static org.neo4j.internal.kernel.api.procs.ProcedureSignature.procedureSi\n  * that this implementation will be replaced once a clean\n  * system for component assembly exists where we could dynamically\n  * get a list of which components are loaded and what versions of them.\n- *\n+ * <p>\n  * This way, it works as a general mechanism into which capabilities\n  * a given Neo4j system has, and which version of those components\n  * are in use.\n- *\n+ * <p>\n  * This would include things like Kernel, Storage Engine, Query Engines,\n  * Bolt protocol versions et cetera.\n  */\n public class ListComponentsProcedure extends CallableProcedure.BasicProcedure\n {\n-    private final String neo4jVersion;\n-    private final String neo4jEdition;\n+  private final String neo4jVersion;\n+  private final String neo4jEdition;\n \n-    public ListComponentsProcedure( QualifiedName name, String neo4jVersion, String neo4jEdition )\n-    {\n-        super( procedureSignature( name )\n-                .out( \"name\", NTString )\n-                // Since Bolt, Cypher and other components support multiple versions\n-                // at the same time, list of versions rather than single version.\n-                .out( \"versions\", NTList( NTString ) )\n-                .out( \"edition\", NTString )\n-                .description( \"List DBMS components and their versions.\" )\n-                .build() );\n-        this.neo4jVersion = neo4jVersion;\n-        this.neo4jEdition = neo4jEdition;\n-    }\n+  public ListComponentsProcedure(QualifiedName name, String neo4jVersion, String neo4jEdition)\n+  {\n+    super(procedureSignature(name)\n+        .out(\"name\", NTString)\n+        // Since Bolt, Cypher and other components support multiple versions\n+        // at the same time, list of versions rather than single version.\n+        .out(\"versions\", NTList(NTString))\n+        .out(\"edition\", NTString)\n+        .description(\"List DBMS components and their versions.\")\n+        .build());\n+    this.neo4jVersion = neo4jVersion;\n+    this.neo4jEdition = neo4jEdition;\n+  }\n \n-    @Override\n-    public RawIterator<Object[],ProcedureException> apply( Context ctx, Object[] input, ResourceTracker resourceTracker )\n-            throws ProcedureException\n-    {\n-        return asRawIterator( singletonList(\n-                new Object[]{\"Neo4j Kernel\", singletonList( neo4jVersion ), neo4jEdition}).iterator() );\n-    }\n+  @Override\n+  public RawIterator<Object[], ProcedureException> apply(Context ctx, Object[] input, ResourceTracker resourceTracker)\n+      throws ProcedureException\n+  {\n+    return asRawIterator(singletonList(\n+        new Object[] {\"Neo4j Kernel\", singletonList(neo4jVersion), neo4jEdition}).iterator());\n+  }\n }\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

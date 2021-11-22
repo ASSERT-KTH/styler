@@ -1,0 +1,152 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "864",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n\nimport gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\nimport gov.hhs.fha.nhinc.common.auditlog.LogEventRequestType;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..65172e184e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n \n import gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..2af7e582e04 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n \n import gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\n@@ -40,54 +41,53 @@ import gov.hhs.fha.nhinc.webserviceproxy.WebServiceProxyHelper;\n import org.apache.log4j.Logger;\n \n /**\n- *\n  * @author akong\n  */\n public class AuditRepositoryProxyWebServiceUnsecuredImpl implements AuditRepositoryProxy {\n \n-    private static final Logger LOG = Logger.getLogger(AuditRepositoryProxyWebServiceUnsecuredImpl.class);\n+  private static final Logger LOG = Logger.getLogger(AuditRepositoryProxyWebServiceUnsecuredImpl.class);\n \n-    private final WebServiceProxyHelper oProxyHelper = new WebServiceProxyHelper();\n+  private final WebServiceProxyHelper oProxyHelper = new WebServiceProxyHelper();\n \n-    private AcknowledgementType result = new AcknowledgementType();\n+  private AcknowledgementType result = new AcknowledgementType();\n \n-    private final String invokeMethodName = \"logEvent\";\n+  private final String invokeMethodName = \"logEvent\";\n \n-    @Override\n-    public AcknowledgementType auditLog(LogEventRequestType request, AssertionType assertion) {\n+  @Override\n+  public AcknowledgementType auditLog(LogEventRequestType request, AssertionType assertion) {\n \n-        if (request.getAuditMessage() == null) {\n-            LOG.error(\"Audit Request Message is null.\");\n-            synchronized (result) {\n-                return result;\n-            }\n-        }\n-\n-        try {\n-            String url = oProxyHelper.getUrlLocalHomeCommunity(NhincConstants.AUDIT_REPO_SERVICE_NAME);\n+    if (request.getAuditMessage() == null) {\n+      LOG.error(\"Audit Request Message is null.\");\n+      synchronized (result) {\n+        return result;\n+      }\n+    }\n \n-            if (NullChecker.isNotNullish(url)) {\n+    try {\n+      String url = oProxyHelper.getUrlLocalHomeCommunity(NhincConstants.AUDIT_REPO_SERVICE_NAME);\n \n-                ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor\n-                    = new AuditRepositoryUnsecuredServicePortDescriptor();\n+      if (NullChecker.isNotNullish(url)) {\n \n-                CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance()\n-                    .getCONNECTClientUnsecured(portDescriptor, url, assertion);\n+        ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor\n+            = new AuditRepositoryUnsecuredServicePortDescriptor();\n \n-                synchronized (result) {\n-                    result = (AcknowledgementType) client.invokePort(AuditRepositoryManagerPortType.class,\n-                        invokeMethodName, request);\n-                }\n+        CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance()\n+            .getCONNECTClientUnsecured(portDescriptor, url, assertion);\n \n-            }\n-        } catch (Exception e) {\n-            LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME\n-                + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n+        synchronized (result) {\n+          result = (AcknowledgementType) client.invokePort(AuditRepositoryManagerPortType.class,\n+              invokeMethodName, request);\n         }\n \n-        LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \"\n-            + \"ConnectionManager to retrieve endpoint.\");\n-\n-        return result;\n+      }\n+    } catch (Exception e) {\n+      LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME\n+          + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n     }\n+\n+    LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \"\n+        + \"ConnectionManager to retrieve endpoint.\");\n+\n+    return result;\n+  }\n }\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "69",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "70",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 151).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "79",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 188).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..000fcf6e9df 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n \n import gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\n@@ -62,32 +63,24 @@ public class AuditRepositoryProxyWebServiceUnsecuredImpl implements AuditReposit\n                 return result;\n             }\n         }\n-\n-        try {\n+try {\n             String url = oProxyHelper.getUrlLocalHomeCommunity(NhincConstants.AUDIT_REPO_SERVICE_NAME);\n-\n-            if (NullChecker.isNotNullish(url)) {\n-\n-                ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor\n-                    = new AuditRepositoryUnsecuredServicePortDescriptor();\n-\n-                CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance()\n-                    .getCONNECTClientUnsecured(portDescriptor, url, assertion);\n+if (NullChecker.isNotNullish(url)) {\n+    ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor = new AuditRepositoryUnsecuredServicePortDescriptor();\n+CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance().getCONNECTClientUnsecured(portDescriptor, url, assertion);\n \n                 synchronized (result) {\n                     result = (AcknowledgementType) client.invokePort(AuditRepositoryManagerPortType.class,\n                         invokeMethodName, request);\n-                }\n+    }\n \n             }\n         } catch (Exception e) {\n-            LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME\n-                + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n-        }\n+            LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n+    }\n \n-        LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \"\n-            + \"ConnectionManager to retrieve endpoint.\");\n+        LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \" + \"ConnectionManager to retrieve endpoint.\");\n \n-        return result;\n+return result;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'synchronized' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 139).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 167).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'synchronized' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "71",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 188).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..6b1b243c00f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -43,51 +43,39 @@ import org.apache.log4j.Logger;\n  *\n  * @author akong\n  */\n+\n+\n public class AuditRepositoryProxyWebServiceUnsecuredImpl implements AuditRepositoryProxy {\n \n     private static final Logger LOG = Logger.getLogger(AuditRepositoryProxyWebServiceUnsecuredImpl.class);\n-\n     private final WebServiceProxyHelper oProxyHelper = new WebServiceProxyHelper();\n-\n     private AcknowledgementType result = new AcknowledgementType();\n-\n     private final String invokeMethodName = \"logEvent\";\n \n+\n     @Override\n     public AcknowledgementType auditLog(LogEventRequestType request, AssertionType assertion) {\n-\n         if (request.getAuditMessage() == null) {\n             LOG.error(\"Audit Request Message is null.\");\n-            synchronized (result) {\n+            synchronized(result) {\n                 return result;\n             }\n         }\n-\n         try {\n             String url = oProxyHelper.getUrlLocalHomeCommunity(NhincConstants.AUDIT_REPO_SERVICE_NAME);\n-\n             if (NullChecker.isNotNullish(url)) {\n-\n-                ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor\n-                    = new AuditRepositoryUnsecuredServicePortDescriptor();\n-\n-                CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance()\n-                    .getCONNECTClientUnsecured(portDescriptor, url, assertion);\n-\n-                synchronized (result) {\n-                    result = (AcknowledgementType) client.invokePort(AuditRepositoryManagerPortType.class,\n-                        invokeMethodName, request);\n+                ServicePortDescriptor<AuditRepositoryManagerPortType> portDescriptor = new AuditRepositoryUnsecuredServicePortDescriptor();\n+                CONNECTClient<AuditRepositoryManagerPortType> client = CONNECTCXFClientFactory.getInstance().getCONNECTClientUnsecured(portDescriptor, url, assertion);\n+                synchronized(result) {\n+                                     result = (AcknowledgementType)\n+                                                  client.invokePort(AuditRepositoryManagerPortType.class, invokeMethodName, request);\n                 }\n-\n             }\n         } catch (Exception e) {\n-            LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME\n-                + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n+            LOG.error(\"Failed to call the web service (\" + NhincConstants.AUDIT_REPO_SERVICE_NAME + \").  An unexpected exception occurred.  \" + \"Exception: \" + e.getLocalizedMessage(), e);\n         }\n-\n-        LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \"\n-            + \"ConnectionManager to retrieve endpoint.\");\n-\n+        LOG.debug(\"In AuditRepositoryProxyWebServiceUnsecuredImpl.auditLog(...) - completed called to \" + \"ConnectionManager to retrieve endpoint.\");\n         return result;\n     }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "'import' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..3f53cf892b0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -25,7 +25,6 @@\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n package gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n-\n import gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\n import gov.hhs.fha.nhinc.common.auditlog.LogEventRequestType;\n import gov.hhs.fha.nhinc.common.nhinccommon.AcknowledgementType;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\nindex cecbd172cdf..65172e184e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/864/AuditRepositoryProxyWebServiceUnsecuredImpl.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.auditrepository.nhinc.proxy;\n \n import gov.hhs.fha.nhinc.auditrepository.nhinc.proxy.service.AuditRepositoryUnsecuredServicePortDescriptor;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

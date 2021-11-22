@@ -1,0 +1,117 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "212",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.spring.boot.actuate.endpoint;\n\nimport java.util.ArrayList;\nimport java.util.Date;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/212/ProcessEngineEndpoint.java\nindex b802c06ffe2..77dd943962c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/212/ProcessEngineEndpoint.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot.actuate.endpoint;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/212/ProcessEngineEndpoint.java\nindex b802c06ffe2..673c26a738c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/212/ProcessEngineEndpoint.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot.actuate.endpoint;\n \n import java.util.ArrayList;\n@@ -50,7 +51,7 @@ public class ProcessEngineEndpoint {\n \n         // Process definitions\n         metrics.put(\"processDefinitionCount\",\n-                    processEngine.getRepositoryService().createProcessDefinitionQuery().count());\n+                processEngine.getRepositoryService().createProcessDefinitionQuery().count());\n \n         // List of all process definitions\n         List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().list();\n@@ -59,44 +60,44 @@ public class ProcessEngineEndpoint {\n             processDefinitionKeys.add(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\");\n         }\n         metrics.put(\"deployedProcessDefinitions\",\n-                    processDefinitionKeys);\n+                processDefinitionKeys);\n \n         // Process instances\n         Map<String, Object> processInstanceCountMap = new HashMap<String, Object>();\n         metrics.put(\"runningProcessInstanceCount\",\n-                    processInstanceCountMap);\n+                processInstanceCountMap);\n         for (ProcessDefinition processDefinition : processDefinitions) {\n             processInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\",\n-                                        processEngine.getRuntimeService().createProcessInstanceQuery().processDefinitionId(processDefinition.getId()).count());\n+                    processEngine.getRuntimeService().createProcessInstanceQuery().processDefinitionId(processDefinition.getId()).count());\n         }\n         Map<String, Object> completedProcessInstanceCountMap = new HashMap<String, Object>();\n         metrics.put(\"completedProcessInstanceCount\",\n-                    completedProcessInstanceCountMap);\n+                completedProcessInstanceCountMap);\n         for (ProcessDefinition processDefinition : processDefinitions) {\n             completedProcessInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\",\n-                                                 processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().processDefinitionId(processDefinition.getId()).count());\n+                    processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().processDefinitionId(processDefinition.getId()).count());\n         }\n \n         // Open tasks\n         metrics.put(\"openTaskCount\",\n-                    processEngine.getTaskService().createTaskQuery().count());\n+                processEngine.getTaskService().createTaskQuery().count());\n         metrics.put(\"completedTaskCount\",\n-                    processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().count());\n+                processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().count());\n \n         // Tasks completed today\n         metrics.put(\"completedTaskCountToday\",\n-                    processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().taskCompletedAfter(\n-                            new Date(System.currentTimeMillis() - secondsForDays(1))).count());\n+                processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().taskCompletedAfter(\n+                        new Date(System.currentTimeMillis() - secondsForDays(1))).count());\n \n         // Process steps\n         metrics.put(\"completedActivities\",\n-                    processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count());\n+                processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count());\n \n         // Process definition cache\n         DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();\n         if (deploymentCache instanceof DefaultDeploymentCache) {\n             metrics.put(\"cachedProcessDefinitionCount\",\n-                        ((DefaultDeploymentCache) deploymentCache).size());\n+                    ((DefaultDeploymentCache) deploymentCache).size());\n         }\n         return metrics;\n     }\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 50.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "52",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 54.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "62",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 64.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "error",
+                    "message": "Line is longer than 240 characters (found 258).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 79.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 84.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 87.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "89",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 8, expected is 4, indentation should be the same level as line 91.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/212/ProcessEngineEndpoint.java\nindex b802c06ffe2..51a0c2df18e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/212/ProcessEngineEndpoint.java\n@@ -17,14 +17,12 @@ import java.util.Date;\n import java.util.HashMap;\n import java.util.List;\n import java.util.Map;\n-\n import org.activiti.engine.ProcessEngine;\n import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;\n import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;\n import org.activiti.engine.impl.persistence.deploy.DeploymentCache;\n import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;\n import org.activiti.engine.repository.ProcessDefinition;\n-\n import org.springframework.boot.actuate.endpoint.annotation.Endpoint;\n import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;\n import org.springframework.boot.context.properties.ConfigurationProperties;\n@@ -33,77 +31,73 @@ import org.springframework.boot.context.properties.ConfigurationProperties;\n  * Registers a Boot Actuator endpoint that provides information on the\n  * running process instance and renders BPMN diagrams of the deployed processes.\n  */\n+\n @ConfigurationProperties(prefix = \"endpoints.activiti\")\n @Endpoint(id = \"activiti\")\n public class ProcessEngineEndpoint {\n \n-    private final ProcessEngine processEngine;\n+  private final ProcessEngine processEngine;\n \n-    public ProcessEngineEndpoint(ProcessEngine processEngine) {\n-        this.processEngine = processEngine;\n-    }\n-\n-    @ReadOperation\n-    public Map<String, Object> invoke() {\n+  public ProcessEngineEndpoint(ProcessEngine processEngine) {\n+    this.processEngine = processEngine;\n+  }\n \n-        Map<String, Object> metrics = new HashMap<String, Object>();\n+  @ReadOperation\n+  public Map<String, Object> invoke() {\n+    Map<String, Object> metrics = new HashMap<String, Object>();\n \n         // Process definitions\n-        metrics.put(\"processDefinitionCount\",\n-                    processEngine.getRepositoryService().createProcessDefinitionQuery().count());\n+    metrics.put(\"processDefinitionCount\", processEngine.getRepositoryService().createProcessDefinitionQuery().count());\n \n         // List of all process definitions\n-        List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().list();\n-        List<String> processDefinitionKeys = new ArrayList<String>();\n-        for (ProcessDefinition processDefinition : processDefinitions) {\n-            processDefinitionKeys.add(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\");\n-        }\n-        metrics.put(\"deployedProcessDefinitions\",\n-                    processDefinitionKeys);\n+\n+    List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().list();\n+    List<String> processDefinitionKeys = new ArrayList<String>();\n+    for (ProcessDefinition processDefinition : processDefinitions) {\n+        processDefinitionKeys.add(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\");\n+    }\n+    metrics.put(\"deployedProcessDefinitions\",\n+                processDefinitionKeys);\n \n         // Process instances\n-        Map<String, Object> processInstanceCountMap = new HashMap<String, Object>();\n-        metrics.put(\"runningProcessInstanceCount\",\n-                    processInstanceCountMap);\n-        for (ProcessDefinition processDefinition : processDefinitions) {\n-            processInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\",\n-                                        processEngine.getRuntimeService().createProcessInstanceQuery().processDefinitionId(processDefinition.getId()).count());\n-        }\n-        Map<String, Object> completedProcessInstanceCountMap = new HashMap<String, Object>();\n-        metrics.put(\"completedProcessInstanceCount\",\n-                    completedProcessInstanceCountMap);\n-        for (ProcessDefinition processDefinition : processDefinitions) {\n-            completedProcessInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\",\n-                                                 processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().processDefinitionId(processDefinition.getId()).count());\n-        }\n+\n+    Map<String, Object> processInstanceCountMap = new HashMap<String, Object>();\n+    metrics.put(\"runningProcessInstanceCount\",\n+                processInstanceCountMap);\n+    for (ProcessDefinition processDefinition : processDefinitions) {\n+        processInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\", processEngine.getRuntimeService().createProcessInstanceQuery().processDefinitionId(processDefinition.getId()).count());\n+    }\n+\n+    Map<String, Object> completedProcessInstanceCountMap = new HashMap<String, Object>();\n+    metrics.put(\"completedProcessInstanceCount\",\n+                completedProcessInstanceCountMap);\n+    for (ProcessDefinition processDefinition : processDefinitions) {\n+        completedProcessInstanceCountMap.put(processDefinition.getKey() + \" (v\" + processDefinition.getVersion() + \")\", processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().processDefinitionId(processDefinition.getId()).count());\n+    }\n \n         // Open tasks\n-        metrics.put(\"openTaskCount\",\n-                    processEngine.getTaskService().createTaskQuery().count());\n-        metrics.put(\"completedTaskCount\",\n-                    processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().count());\n+    metrics.put(\"openTaskCount\",\n+                processEngine.getTaskService().createTaskQuery().count());\n+    metrics.put(\"completedTaskCount\", processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().count());\n \n         // Tasks completed today\n-        metrics.put(\"completedTaskCountToday\",\n-                    processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().taskCompletedAfter(\n-                            new Date(System.currentTimeMillis() - secondsForDays(1))).count());\n+    metrics.put(\"completedTaskCountToday\", processEngine.getHistoryService().createHistoricTaskInstanceQuery().finished().taskCompletedAfter(new Date(System.currentTimeMillis() - secondsForDays(1))).count());\n \n         // Process steps\n-        metrics.put(\"completedActivities\",\n-                    processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count());\n+    metrics.put(\"completedActivities\", processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count());\n \n         // Process definition cache\n-        DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();\n-        if (deploymentCache instanceof DefaultDeploymentCache) {\n-            metrics.put(\"cachedProcessDefinitionCount\",\n-                        ((DefaultDeploymentCache) deploymentCache).size());\n-        }\n-        return metrics;\n-    }\n \n-    private long secondsForDays(int days) {\n-        int hour = 60 * 60 * 1000;\n-        int day = 24 * hour;\n-        return days * day;\n+    DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();\n+    if (deploymentCache instanceof DefaultDeploymentCache) {\n+      metrics.put(\"cachedProcessDefinitionCount\", ((DefaultDeploymentCache) deploymentCache).size());\n     }\n-}\n+    return metrics;\n+  }\n+\n+  private long secondsForDays(int days) {\n+    int hour = 60 * 60 * 1000;\n+    int day = 24 * hour;\n+    return days * day;\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 66
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/212/ProcessEngineEndpoint.java\nindex b802c06ffe2..77dd943962c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/212/ProcessEngineEndpoint.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot.actuate.endpoint;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/212/ProcessEngineEndpoint.java\nindex b802c06ffe2..77dd943962c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/212/ProcessEngineEndpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/212/ProcessEngineEndpoint.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot.actuate.endpoint;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

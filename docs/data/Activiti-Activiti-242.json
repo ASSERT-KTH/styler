@@ -1,0 +1,70 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "242",
+    "information": {
+        "errors": [
+            {
+                "line": "52",
+                "column": "40",
+                "severity": "error",
+                "message": "WhitespaceAround: '{' is not preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n\n    public boolean hasProjectManifest(){\n        return retrieveResource().isPresent();\n    }\n}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/242/ProjectModelService.java\nindex 486bb76f081..6365918dd64 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/242/ProjectModelService.java\n@@ -49,7 +49,7 @@ public class ProjectModelService {\n                             .getInputStream());\n     }\n \n-    public boolean hasProjectManifest(){\n+    public boolean hasProjectManifest() {\n         return retrieveResource().isPresent();\n     }\n }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/242/ProjectModelService.java\nindex 486bb76f081..35a834ff7f6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/242/ProjectModelService.java\n@@ -38,18 +38,18 @@ public class ProjectModelService {\n \n     private ProjectManifest read(InputStream inputStream) throws IOException {\n         return objectMapper.readValue(inputStream,\n-                                      ProjectManifest.class);\n+                ProjectManifest.class);\n     }\n \n     public ProjectManifest loadProjectManifest() throws IOException {\n         Optional<Resource> resourceOptional = retrieveResource();\n \n         return read(resourceOptional\n-                            .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n-                            .getInputStream());\n+                .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n+                .getInputStream());\n     }\n \n-    public boolean hasProjectManifest(){\n+    public boolean hasProjectManifest() {\n         return retrieveResource().isPresent();\n     }\n }\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/242/ProjectModelService.java\nindex 486bb76f081..ae6538b0e93 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/242/ProjectModelService.java\n@@ -4,52 +4,45 @@ import java.io.FileNotFoundException;\n import java.io.IOException;\n import java.io.InputStream;\n import java.util.Optional;\n-\n import com.fasterxml.jackson.databind.ObjectMapper;\n import org.activiti.core.common.project.model.ProjectManifest;\n import org.springframework.core.io.Resource;\n import org.springframework.core.io.support.ResourcePatternResolver;\n \n-public class ProjectModelService {\n-\n-    private String projectManifestFilePath;\n \n-    private final ObjectMapper objectMapper;\n+public class ProjectModelService {\n \n-    private ResourcePatternResolver resourceLoader;\n+  private String projectManifestFilePath;\n \n-    public ProjectModelService(String path,\n-                               ObjectMapper objectMapper,\n-                               ResourcePatternResolver resourceLoader) {\n-        this.projectManifestFilePath = path;\n-        this.objectMapper = objectMapper;\n-        this.resourceLoader = resourceLoader;\n-    }\n+  private final ObjectMapper objectMapper;\n \n-    private Optional<Resource> retrieveResource() {\n+  private ResourcePatternResolver resourceLoader;\n \n-        Resource resource = resourceLoader.getResource(projectManifestFilePath);\n-        if (resource.exists()) {\n-            return Optional.of(resource);\n-        } else {\n-            return Optional.empty();\n-        }\n-    }\n+  public ProjectModelService(String path, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {\n+    this.projectManifestFilePath = path;\n+    this.objectMapper = objectMapper;\n+    this.resourceLoader = resourceLoader;\n+  }\n \n-    private ProjectManifest read(InputStream inputStream) throws IOException {\n-        return objectMapper.readValue(inputStream,\n-                                      ProjectManifest.class);\n+  private Optional<Resource> retrieveResource() {\n+    Resource resource = resourceLoader.getResource(projectManifestFilePath);\n+    if (resource.exists()) {\n+      return Optional.of(resource);\n+    } else {\n+      return Optional.empty();\n     }\n+  }\n \n-    public ProjectManifest loadProjectManifest() throws IOException {\n-        Optional<Resource> resourceOptional = retrieveResource();\n+  private ProjectManifest read(InputStream inputStream) throws IOException {\n+    return objectMapper.readValue(inputStream, ProjectManifest.class);\n+  }\n \n-        return read(resourceOptional\n-                            .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n-                            .getInputStream());\n-    }\n+  public ProjectManifest loadProjectManifest() throws IOException {\n+    Optional<Resource> resourceOptional = retrieveResource();\n+    return read(resourceOptional.orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\")).getInputStream());\n+  }\n \n-    public boolean hasProjectManifest(){\n-        return retrieveResource().isPresent();\n-    }\n-}\n+  public boolean hasProjectManifest() {\n+    return retrieveResource().isPresent();\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 39
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/242/ProjectModelService.java\nindex 486bb76f081..6365918dd64 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/242/ProjectModelService.java\n@@ -49,7 +49,7 @@ public class ProjectModelService {\n                             .getInputStream());\n     }\n \n-    public boolean hasProjectManifest(){\n+    public boolean hasProjectManifest() {\n         return retrieveResource().isPresent();\n     }\n }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/242/ProjectModelService.java\nindex 486bb76f081..6365918dd64 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/242/ProjectModelService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/242/ProjectModelService.java\n@@ -49,7 +49,7 @@ public class ProjectModelService {\n                             .getInputStream());\n     }\n \n-    public boolean hasProjectManifest(){\n+    public boolean hasProjectManifest() {\n         return retrieveResource().isPresent();\n     }\n }\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

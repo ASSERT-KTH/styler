@@ -1,0 +1,96 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "103",
+    "information": {
+        "errors": [
+            {
+                "line": "135",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 141).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    public Integer getApproximateCountSamplingSize() {\n        return getAttributes().containsKey(APPROXIMATE_COUNT_SAMPLING_SIZE) ? getAttributes().getInt(APPROXIMATE_COUNT_SAMPLING_SIZE) : null;\n    }\n\n    public VariantQueryResult<T> setApproximateCountSamplingSize(Integer approximateCountSamplingSize) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "135",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/103/VariantQueryResult.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/103/VariantQueryResult.java\nindex fdf099d8ea1..9826484dafe 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/103/VariantQueryResult.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/103/VariantQueryResult.java\n@@ -32,130 +32,130 @@ import java.util.Map;\n @JsonIgnoreProperties({\"samples\", \"numTotalSamples\", \"numSamples\", \"source\", \"approximateCount\", \"approximateCountSamplingSize\"})\n public class VariantQueryResult<T> extends OpenCGAResult<T> {\n \n-    private static final String SAMPLES = \"samples\";\n-    private static final String NUM_TOTAL_SAMPLES = \"numTotalSamples\";\n-    private static final String NUM_SAMPLES = \"numSamples\";\n-    private static final String SOURCE = \"source\";\n-    private static final String APPROXIMATE_COUNT = \"approximateCount\";\n-    private static final String APPROXIMATE_COUNT_SAMPLING_SIZE = \"approximateCountSamplingSize\";\n-\n-    public VariantQueryResult() {\n-    }\n-\n-    public VariantQueryResult(int dbTime, int numResults, long numMatches, List<Event> events, List<T> result,\n-                              Map<String, List<String>> samples, String source) {\n-        this(dbTime, numResults, numMatches, events, result, samples, source, null, null, null);\n-    }\n-\n-    public VariantQueryResult(int dbTime, int numResults, long numMatches, List<Event> events, List<T> result,\n-                              Map<String, List<String>> samples, String source, Boolean approximateCount,\n-                              Integer approximateCountSamplingSize, Integer numTotalSamples) {\n-        super(dbTime, events, numResults, result, numMatches);\n-        setSamples(samples);\n-        setSource(source);\n-        setApproximateCount(approximateCount);\n-        setApproximateCountSamplingSize(approximateCountSamplingSize);\n-        if (samples != null) {\n-            setNumSamples(samples.values().stream().mapToInt(List::size).sum());\n-        }\n-        setNumTotalSamples(numTotalSamples);\n-    }\n-\n-    public VariantQueryResult(DataResult<T> dataResult) {\n-        super(dataResult.getTime(),\n-                dataResult.getEvents(),\n-                dataResult.getNumMatches(),\n-                dataResult.getNumInserted(),\n-                dataResult.getNumUpdated(),\n-                dataResult.getNumDeleted(),\n-                dataResult.getAttributes());\n-        setResults(dataResult.getResults());\n-        setNumResults(dataResult.getNumResults());\n-    }\n-\n-    public VariantQueryResult(DataResult<T> queryResult, Map<String, List<String>> samples) {\n-        this(queryResult, samples, null);\n-    }\n-\n-    public VariantQueryResult(DataResult<T> dataResult, Map<String, List<String>> samples, String source) {\n-        this(dataResult);\n-        setSamples(samples);\n-        if (getNumMatches() >= 0) {\n-            setApproximateCount(false);\n-        }\n-        if (samples != null) {\n-            this.setNumSamples(samples.values().stream().mapToInt(List::size).sum());\n-        }\n-        this.setNumTotalSamples(getNumSamples());\n-        this.setSource(source);\n-    }\n-\n-    public Map<String, List<String>> getSamples() {\n-        Object o = getAttributes().get(SAMPLES);\n-        if (!(o instanceof Map)) {\n-            return null;\n-        } else {\n-            return ((Map<String, List<String>>) o);\n-        }\n-    }\n-\n-    public VariantQueryResult<T> setSamples(Map<String, List<String>> samples) {\n-        getAttributes().put(SAMPLES, samples);\n-        return this;\n-    }\n-\n-    public Integer getNumTotalSamples() {\n-        return getAttributes().containsKey(NUM_TOTAL_SAMPLES) ? getAttributes().getInt(NUM_TOTAL_SAMPLES) : null;\n-    }\n-\n-    public VariantQueryResult<T> setNumTotalSamples(Integer numTotalSamples) {\n-        getAttributes().put(NUM_TOTAL_SAMPLES, numTotalSamples);\n-        return this;\n-    }\n-\n-    public Integer getNumSamples() {\n-        return getAttributes().containsKey(NUM_SAMPLES) ? getAttributes().getInt(NUM_SAMPLES) : null;\n-    }\n-\n-    public VariantQueryResult<T> setNumSamples(Integer numSamples) {\n-        getAttributes().put(NUM_SAMPLES, numSamples);\n-        return this;\n-    }\n-\n-    public Boolean getApproximateCount() {\n-        return getAttributes().containsKey(APPROXIMATE_COUNT) ? getAttributes().getBoolean(APPROXIMATE_COUNT) : null;\n-    }\n-\n-    public VariantQueryResult<T> setApproximateCount(Boolean approximateCount) {\n-        getAttributes().put(APPROXIMATE_COUNT, approximateCount);\n-        return this;\n-    }\n-\n-    public Integer getApproximateCountSamplingSize() {\n-        return getAttributes().containsKey(APPROXIMATE_COUNT_SAMPLING_SIZE) ? getAttributes().getInt(APPROXIMATE_COUNT_SAMPLING_SIZE) : null;\n-    }\n-\n-    public VariantQueryResult<T> setApproximateCountSamplingSize(Integer approximateCountSamplingSize) {\n-        getAttributes().put(APPROXIMATE_COUNT_SAMPLING_SIZE, approximateCountSamplingSize);\n-        return this;\n-    }\n-\n-    public String getSource() {\n-        return getAttributes().getString(SOURCE);\n-    }\n-\n-    public VariantQueryResult<T> setSource(String source) {\n-        getAttributes().put(SOURCE, source);\n-        return this;\n-    }\n-\n-    @Override\n-    public ObjectMap getAttributes() {\n-        ObjectMap attributes = super.getAttributes();\n-        if (attributes == null) {\n-            attributes = new ObjectMap();\n-            setAttributes(attributes);\n-        }\n-        return attributes;\n-    }\n+  private static final String SAMPLES = \"samples\";\n+  private static final String NUM_TOTAL_SAMPLES = \"numTotalSamples\";\n+  private static final String NUM_SAMPLES = \"numSamples\";\n+  private static final String SOURCE = \"source\";\n+  private static final String APPROXIMATE_COUNT = \"approximateCount\";\n+  private static final String APPROXIMATE_COUNT_SAMPLING_SIZE = \"approximateCountSamplingSize\";\n+\n+  public VariantQueryResult() {\n+  }\n+\n+  public VariantQueryResult(int dbTime, int numResults, long numMatches, List<Event> events, List<T> result,\n+                            Map<String, List<String>> samples, String source) {\n+    this(dbTime, numResults, numMatches, events, result, samples, source, null, null, null);\n+  }\n+\n+  public VariantQueryResult(int dbTime, int numResults, long numMatches, List<Event> events, List<T> result,\n+                            Map<String, List<String>> samples, String source, Boolean approximateCount,\n+                            Integer approximateCountSamplingSize, Integer numTotalSamples) {\n+    super(dbTime, events, numResults, result, numMatches);\n+    setSamples(samples);\n+    setSource(source);\n+    setApproximateCount(approximateCount);\n+    setApproximateCountSamplingSize(approximateCountSamplingSize);\n+    if (samples != null) {\n+      setNumSamples(samples.values().stream().mapToInt(List::size).sum());\n+    }\n+    setNumTotalSamples(numTotalSamples);\n+  }\n+\n+  public VariantQueryResult(DataResult<T> dataResult) {\n+    super(dataResult.getTime(),\n+        dataResult.getEvents(),\n+        dataResult.getNumMatches(),\n+        dataResult.getNumInserted(),\n+        dataResult.getNumUpdated(),\n+        dataResult.getNumDeleted(),\n+        dataResult.getAttributes());\n+    setResults(dataResult.getResults());\n+    setNumResults(dataResult.getNumResults());\n+  }\n+\n+  public VariantQueryResult(DataResult<T> queryResult, Map<String, List<String>> samples) {\n+    this(queryResult, samples, null);\n+  }\n+\n+  public VariantQueryResult(DataResult<T> dataResult, Map<String, List<String>> samples, String source) {\n+    this(dataResult);\n+    setSamples(samples);\n+    if (getNumMatches() >= 0) {\n+      setApproximateCount(false);\n+    }\n+    if (samples != null) {\n+      this.setNumSamples(samples.values().stream().mapToInt(List::size).sum());\n+    }\n+    this.setNumTotalSamples(getNumSamples());\n+    this.setSource(source);\n+  }\n+\n+  public Map<String, List<String>> getSamples() {\n+    Object o = getAttributes().get(SAMPLES);\n+    if (!(o instanceof Map)) {\n+      return null;\n+    } else {\n+      return ((Map<String, List<String>>) o);\n+    }\n+  }\n+\n+  public VariantQueryResult<T> setSamples(Map<String, List<String>> samples) {\n+    getAttributes().put(SAMPLES, samples);\n+    return this;\n+  }\n+\n+  public Integer getNumTotalSamples() {\n+    return getAttributes().containsKey(NUM_TOTAL_SAMPLES) ? getAttributes().getInt(NUM_TOTAL_SAMPLES) : null;\n+  }\n+\n+  public VariantQueryResult<T> setNumTotalSamples(Integer numTotalSamples) {\n+    getAttributes().put(NUM_TOTAL_SAMPLES, numTotalSamples);\n+    return this;\n+  }\n+\n+  public Integer getNumSamples() {\n+    return getAttributes().containsKey(NUM_SAMPLES) ? getAttributes().getInt(NUM_SAMPLES) : null;\n+  }\n+\n+  public VariantQueryResult<T> setNumSamples(Integer numSamples) {\n+    getAttributes().put(NUM_SAMPLES, numSamples);\n+    return this;\n+  }\n+\n+  public Boolean getApproximateCount() {\n+    return getAttributes().containsKey(APPROXIMATE_COUNT) ? getAttributes().getBoolean(APPROXIMATE_COUNT) : null;\n+  }\n+\n+  public VariantQueryResult<T> setApproximateCount(Boolean approximateCount) {\n+    getAttributes().put(APPROXIMATE_COUNT, approximateCount);\n+    return this;\n+  }\n+\n+  public Integer getApproximateCountSamplingSize() {\n+    return getAttributes().containsKey(APPROXIMATE_COUNT_SAMPLING_SIZE) ? getAttributes().getInt(APPROXIMATE_COUNT_SAMPLING_SIZE) : null;\n+  }\n+\n+  public VariantQueryResult<T> setApproximateCountSamplingSize(Integer approximateCountSamplingSize) {\n+    getAttributes().put(APPROXIMATE_COUNT_SAMPLING_SIZE, approximateCountSamplingSize);\n+    return this;\n+  }\n+\n+  public String getSource() {\n+    return getAttributes().getString(SOURCE);\n+  }\n+\n+  public VariantQueryResult<T> setSource(String source) {\n+    getAttributes().put(SOURCE, source);\n+    return this;\n+  }\n+\n+  @Override\n+  public ObjectMap getAttributes() {\n+    ObjectMap attributes = super.getAttributes();\n+    if (attributes == null) {\n+      attributes = new ObjectMap();\n+      setAttributes(attributes);\n+    }\n+    return attributes;\n+  }\n }\n",
+            "diff_size": 126
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 170).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "134",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/103/VariantQueryResult.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/103/VariantQueryResult.java\nindex fdf099d8ea1..d27d85a7031 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/103/VariantQueryResult.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/103/VariantQueryResult.java\n@@ -48,8 +48,7 @@ public class VariantQueryResult<T> extends OpenCGAResult<T> {\n     }\n \n     public VariantQueryResult(int dbTime, int numResults, long numMatches, List<Event> events, List<T> result,\n-                              Map<String, List<String>> samples, String source, Boolean approximateCount,\n-                              Integer approximateCountSamplingSize, Integer numTotalSamples) {\n+                              Map<String, List<String>> samples, String source, Boolean approximateCount, Integer approximateCountSamplingSize, Integer numTotalSamples) {\n         super(dbTime, events, numResults, result, numMatches);\n         setSamples(samples);\n         setSource(source);\n@@ -158,4 +157,4 @@ public class VariantQueryResult<T> extends OpenCGAResult<T> {\n         }\n         return attributes;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "135",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "135",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

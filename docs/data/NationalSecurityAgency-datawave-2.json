@@ -1,0 +1,83 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "9",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.TableNotFoundException;\nimport org.apache.accumulo.core.client.admin.TableOperations;\nimport org.apache.accumulo.core.conf.Property;\nimport org.apache.accumulo.core.iterators.IteratorUtil;\nimport org.apache.hadoop.conf.Configuration;\nimport org.apache.log4j.Logger;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler/2/FacetTableConfigHelper.java\nindex de289fd5624..939f7b124de 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler/2/FacetTableConfigHelper.java\n@@ -6,8 +6,9 @@ import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.TableNotFoundException;\n import org.apache.accumulo.core.client.admin.TableOperations;\n-import org.apache.accumulo.core.conf.Property;\n-import org.apache.accumulo.core.iterators.IteratorUtil;\n+import\n+org.apache.accumulo.core.conf.Property;\n+ import org.apache.accumulo.core.iterators.IteratorUtil;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/2/FacetTableConfigHelper.java\nindex de289fd5624..3fd3d52d3fa 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/2/FacetTableConfigHelper.java\n@@ -12,83 +12,88 @@ import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n public class FacetTableConfigHelper extends AbstractTableConfigHelper {\n-    \n-    protected Logger log;\n-    \n-    public enum FacetTableType {\n-        FACET, HASH, META\n-    }\n-    \n-    protected Configuration conf;\n-    protected String tableName;\n-    protected String facetTableName;\n-    protected String facetMetadataTableName;\n-    protected String facetHashTableName;\n-    protected FacetTableType tableType;\n-    \n-    @Override\n-    public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n-        this.log = log;\n-        this.conf = config;\n-        \n-        facetTableName = conf.get(FacetHandler.FACET_TABLE_NAME, null);\n-        facetMetadataTableName = conf.get(FacetHandler.FACET_METADATA_TABLE_NAME, null);\n-        facetHashTableName = conf.get(FacetHandler.FACET_HASH_TABLE_NAME, null);\n-        \n-        if (facetTableName == null && facetMetadataTableName == null && facetHashTableName == null) {\n-            throw new IllegalArgumentException(\"No Facet Table names are defined\");\n-        }\n-        \n-        // TODO: generic balancer, markings, bloom filters, locality groups.\n-        \n-        if (tableName.equals(facetTableName)) {\n-            this.tableType = FacetTableType.FACET;\n-        } else if (tableName.equals(facetMetadataTableName)) {\n-            this.tableType = FacetTableType.META;\n-        } else if (tableName.equals(facetHashTableName)) {\n-            this.tableType = FacetTableType.HASH;\n-        } else {\n-            throw new IllegalArgumentException(\"Invalid Facet Table Definition Fot: \" + tableName);\n-        }\n-        this.tableName = tableName;\n-    }\n-    \n-    @Override\n-    public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        switch (this.tableType) {\n-            case FACET:\n-                configureFacetTable(tops);\n-                break;\n-            case META:\n-                configureFacetMetadataTable(tops);\n-                break;\n-            case HASH:\n-                configureFacedHashTable(tops);\n-                break;\n-            default:\n-                // Technically, this is dead code. If 'Configure' is called prior to 'Setup'\n-                // tableType is null and throws a NullPointerException in the switch statement.\n-                // If 'Setup' successfully runs to completion then tableType is assigned one\n-                // of the three other values.\n-                throw new TableNotFoundException(null, tableName, \"Table is not a Facet Type Table\");\n-        }\n+\n+  protected Logger log;\n+\n+  public enum FacetTableType {\n+    FACET, HASH, META\n+  }\n+\n+  protected Configuration conf;\n+  protected String tableName;\n+  protected String facetTableName;\n+  protected String facetMetadataTableName;\n+  protected String facetHashTableName;\n+  protected FacetTableType tableType;\n+\n+  @Override\n+  public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n+    this.log = log;\n+    this.conf = config;\n+\n+    facetTableName = conf.get(FacetHandler.FACET_TABLE_NAME, null);\n+    facetMetadataTableName = conf.get(FacetHandler.FACET_METADATA_TABLE_NAME, null);\n+    facetHashTableName = conf.get(FacetHandler.FACET_HASH_TABLE_NAME, null);\n+\n+    if (facetTableName == null && facetMetadataTableName == null && facetHashTableName == null) {\n+      throw new IllegalArgumentException(\"No Facet Table names are defined\");\n     }\n-    \n-    protected void configureFacetTable(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        // Add the facet cardinality aggregator\n-        for (IteratorUtil.IteratorScope scope : IteratorUtil.IteratorScope.values()) {\n-            String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scope.name(), \"UIDAggregator\");\n-            setPropertyIfNecessary(tableName, stem, \"19,datawave.iterators.TotalAggregatingIterator\", tops, log);\n-            stem += \".opt.\";\n-            setPropertyIfNecessary(tableName, stem + \"*\", \"datawave.ingest.table.aggregator.CardinalityAggregator\", tops, log);\n-        }\n+\n+    // TODO: generic balancer, markings, bloom filters, locality groups.\n+\n+    if (tableName.equals(facetTableName)) {\n+      this.tableType = FacetTableType.FACET;\n+    } else if (tableName.equals(facetMetadataTableName)) {\n+      this.tableType = FacetTableType.META;\n+    } else if (tableName.equals(facetHashTableName)) {\n+      this.tableType = FacetTableType.HASH;\n+    } else {\n+      throw new IllegalArgumentException(\"Invalid Facet Table Definition Fot: \" + tableName);\n     }\n-    \n-    protected void configureFacetMetadataTable(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        // TODO:\n+    this.tableName = tableName;\n+  }\n+\n+  @Override\n+  public void configure(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    switch (this.tableType) {\n+      case FACET:\n+        configureFacetTable(tops);\n+        break;\n+      case META:\n+        configureFacetMetadataTable(tops);\n+        break;\n+      case HASH:\n+        configureFacedHashTable(tops);\n+        break;\n+      default:\n+        // Technically, this is dead code. If 'Configure' is called prior to 'Setup'\n+        // tableType is null and throws a NullPointerException in the switch statement.\n+        // If 'Setup' successfully runs to completion then tableType is assigned one\n+        // of the three other values.\n+        throw new TableNotFoundException(null, tableName, \"Table is not a Facet Type Table\");\n     }\n-    \n-    protected void configureFacedHashTable(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        // TODO:\n+  }\n+\n+  protected void configureFacetTable(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    // Add the facet cardinality aggregator\n+    for (IteratorUtil.IteratorScope scope : IteratorUtil.IteratorScope.values()) {\n+      String stem = String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scope.name(), \"UIDAggregator\");\n+      setPropertyIfNecessary(tableName, stem, \"19,datawave.iterators.TotalAggregatingIterator\", tops, log);\n+      stem += \".opt.\";\n+      setPropertyIfNecessary(tableName, stem + \"*\", \"datawave.ingest.table.aggregator.CardinalityAggregator\", tops,\n+          log);\n     }\n+  }\n+\n+  protected void configureFacetMetadataTable(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    // TODO:\n+  }\n+\n+  protected void configureFacedHashTable(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    // TODO:\n+  }\n }\n",
+            "diff_size": 115
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/2/FacetTableConfigHelper.java\nindex de289fd5624..ab2d2471a0c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/2/FacetTableConfigHelper.java\n@@ -91,4 +91,4 @@ public class FacetTableConfigHelper extends AbstractTableConfigHelper {\n     protected void configureFacedHashTable(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         // TODO:\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler_three_grams/2/FacetTableConfigHelper.java\nindex de289fd5624..939f7b124de 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/2/FacetTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler_three_grams/2/FacetTableConfigHelper.java\n@@ -6,8 +6,9 @@ import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.TableNotFoundException;\n import org.apache.accumulo.core.client.admin.TableOperations;\n-import org.apache.accumulo.core.conf.Property;\n-import org.apache.accumulo.core.iterators.IteratorUtil;\n+import\n+org.apache.accumulo.core.conf.Property;\n+ import org.apache.accumulo.core.iterators.IteratorUtil;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

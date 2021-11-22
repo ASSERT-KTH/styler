@@ -1,0 +1,82 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "865",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.spring.autodeployment;\n\nimport java.io.IOException;\nimport java.util.HashMap;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/865/ResourceParentFolderAutoDeploymentStrategy.java\nindex b28a2d633a7..c68875a3373 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/865/ResourceParentFolderAutoDeploymentStrategy.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.spring.autodeployment;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/865/ResourceParentFolderAutoDeploymentStrategy.java\nindex b28a2d633a7..638f53d3c82 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/865/ResourceParentFolderAutoDeploymentStrategy.java\n@@ -32,83 +32,81 @@ import org.springframework.core.io.Resource;\n /**\n  * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of\n  * deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's name is used.\n- *\n-\n  */\n public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {\n \n-  /**\n-   * The deployment mode this strategy handles.\n-   */\n-  public static final String DEPLOYMENT_MODE = \"resource-parent-folder\";\n-\n-  private static final String DEPLOYMENT_NAME_PATTERN = \"%s.%s\";\n+    /**\n+     * The deployment mode this strategy handles.\n+     */\n+    public static final String DEPLOYMENT_MODE = \"resource-parent-folder\";\n \n-  public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {\n-      super(applicationUpgradeContextService);\n-  }\n+    private static final String DEPLOYMENT_NAME_PATTERN = \"%s.%s\";\n \n-  @Override\n-  protected String getDeploymentMode() {\n-    return DEPLOYMENT_MODE;\n-  }\n+    public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {\n+        super(applicationUpgradeContextService);\n+    }\n \n-  @Override\n-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {\n+    @Override\n+    protected String getDeploymentMode() {\n+        return DEPLOYMENT_MODE;\n+    }\n \n-    // Create a deployment for each distinct parent folder using the name\n-    // hint\n-    // as a prefix\n-    final Map<String, Set<Resource>> resourcesMap = createMap(resources);\n+    @Override\n+    public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {\n \n-    for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {\n+        // Create a deployment for each distinct parent folder using the name\n+        // hint\n+        // as a prefix\n+        final Map<String, Set<Resource>> resourcesMap = createMap(resources);\n \n-      final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());\n+        for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {\n \n-      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);\n+            final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());\n \n-      for (final Resource resource : group.getValue()) {\n-        final String resourceName = determineResourceName(resource);\n+            DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);\n \n-        deploymentBuilder.addInputStream(resourceName,\n-                                         resource);\n-      }\n+            for (final Resource resource : group.getValue()) {\n+                final String resourceName = determineResourceName(resource);\n \n-      loadApplicationUpgradeContext(deploymentBuilder).deploy();\n-    }\n+                deploymentBuilder.addInputStream(resourceName,\n+                        resource);\n+            }\n \n-  }\n+            loadApplicationUpgradeContext(deploymentBuilder).deploy();\n+        }\n \n-  private Map<String, Set<Resource>> createMap(final Resource[] resources) {\n-    final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();\n+    }\n \n-    for (final Resource resource : resources) {\n-      final String parentFolderName = determineGroupName(resource);\n-      if (resourcesMap.get(parentFolderName) == null) {\n-        resourcesMap.put(parentFolderName, new HashSet<Resource>());\n-      }\n-      resourcesMap.get(parentFolderName).add(resource);\n+    private Map<String, Set<Resource>> createMap(final Resource[] resources) {\n+        final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();\n+\n+        for (final Resource resource : resources) {\n+            final String parentFolderName = determineGroupName(resource);\n+            if (resourcesMap.get(parentFolderName) == null) {\n+                resourcesMap.put(parentFolderName, new HashSet<Resource>());\n+            }\n+            resourcesMap.get(parentFolderName).add(resource);\n+        }\n+        return resourcesMap;\n     }\n-    return resourcesMap;\n-  }\n-\n-  private String determineGroupName(final Resource resource) {\n-    String result = determineResourceName(resource);\n-    try {\n-      if (resourceParentIsDirectory(resource)) {\n-        result = resource.getFile().getParentFile().getName();\n-      }\n-    } catch (IOException e) {\n-      // no-op, fallback to resource name\n+\n+    private String determineGroupName(final Resource resource) {\n+        String result = determineResourceName(resource);\n+        try {\n+            if (resourceParentIsDirectory(resource)) {\n+                result = resource.getFile().getParentFile().getName();\n+            }\n+        } catch (IOException e) {\n+            // no-op, fallback to resource name\n+        }\n+        return result;\n     }\n-    return result;\n-  }\n \n-  private boolean resourceParentIsDirectory(final Resource resource) throws IOException {\n-    return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();\n-  }\n+    private boolean resourceParentIsDirectory(final Resource resource) throws IOException {\n+        return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();\n+    }\n \n-  private String determineDeploymentName(final String deploymentNameHint, final String groupName) {\n-    return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);\n-  }\n+    private String determineDeploymentName(final String deploymentNameHint, final String groupName) {\n+        return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);\n+    }\n }\n",
+            "diff_size": 71
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/865/ResourceParentFolderAutoDeploymentStrategy.java\nindex b28a2d633a7..a20740f9ec8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/865/ResourceParentFolderAutoDeploymentStrategy.java\n@@ -23,7 +23,6 @@ import java.util.HashSet;\n import java.util.Map;\n import java.util.Map.Entry;\n import java.util.Set;\n-\n import org.activiti.core.common.spring.project.ApplicationUpgradeContextService;\n import org.activiti.engine.RepositoryService;\n import org.activiti.engine.repository.DeploymentBuilder;\n@@ -35,17 +34,20 @@ import org.springframework.core.io.Resource;\n  *\n \n  */\n+\n+\n public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {\n \n   /**\n    * The deployment mode this strategy handles.\n    */\n+\n   public static final String DEPLOYMENT_MODE = \"resource-parent-folder\";\n \n   private static final String DEPLOYMENT_NAME_PATTERN = \"%s.%s\";\n \n   public ResourceParentFolderAutoDeploymentStrategy(ApplicationUpgradeContextService applicationUpgradeContextService) {\n-      super(applicationUpgradeContextService);\n+    super(applicationUpgradeContextService);\n   }\n \n   @Override\n@@ -60,28 +62,19 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl\n     // hint\n     // as a prefix\n     final Map<String, Set<Resource>> resourcesMap = createMap(resources);\n-\n     for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {\n-\n       final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());\n-\n       DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);\n-\n       for (final Resource resource : group.getValue()) {\n         final String resourceName = determineResourceName(resource);\n-\n-        deploymentBuilder.addInputStream(resourceName,\n-                                         resource);\n+        deploymentBuilder.addInputStream(resourceName, resource);\n       }\n-\n       loadApplicationUpgradeContext(deploymentBuilder).deploy();\n     }\n-\n   }\n \n   private Map<String, Set<Resource>> createMap(final Resource[] resources) {\n     final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();\n-\n     for (final Resource resource : resources) {\n       final String parentFolderName = determineGroupName(resource);\n       if (resourcesMap.get(parentFolderName) == null) {\n@@ -100,6 +93,7 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl\n       }\n     } catch (IOException e) {\n       // no-op, fallback to resource name\n+\n     }\n     return result;\n   }\n@@ -109,6 +103,8 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl\n   }\n \n   private String determineDeploymentName(final String deploymentNameHint, final String groupName) {\n-    return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);\n+    return String.format(DEPLOYMENT_NAME_PATTERN,\n+                         deploymentNameHint,\n+                         groupName);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 20
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/865/ResourceParentFolderAutoDeploymentStrategy.java\nindex b28a2d633a7..c68875a3373 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/865/ResourceParentFolderAutoDeploymentStrategy.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.spring.autodeployment;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/865/ResourceParentFolderAutoDeploymentStrategy.java\nindex b28a2d633a7..c68875a3373 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/865/ResourceParentFolderAutoDeploymentStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/865/ResourceParentFolderAutoDeploymentStrategy.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.spring.autodeployment;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

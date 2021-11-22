@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2646",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "107",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "54",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2646/CommandBatcher.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2646/CommandBatcher.java\nindex f17c36f78b6..51a5931e464 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2646/CommandBatcher.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2646/CommandBatcher.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.core.state;\n \n import java.util.ArrayList;\n@@ -27,34 +28,34 @@ import org.neo4j.function.ThrowingBiConsumer;\n \n class CommandBatcher\n {\n-    private List<DistributedOperation> batch;\n-    private int maxBatchSize;\n-    private final ThrowingBiConsumer<Long,List<DistributedOperation>,Exception> applier;\n-    private long lastIndex;\n-\n-    CommandBatcher( int maxBatchSize, ThrowingBiConsumer<Long,List<DistributedOperation>,Exception> applier )\n+  private List<DistributedOperation> batch;\n+  private int maxBatchSize;\n+  private final ThrowingBiConsumer<Long, List<DistributedOperation>, Exception> applier;\n+  private long lastIndex;\n+\n+  CommandBatcher(int maxBatchSize, ThrowingBiConsumer<Long, List<DistributedOperation>, Exception> applier)\n+  {\n+    this.batch = new ArrayList<>(maxBatchSize);\n+    this.maxBatchSize = maxBatchSize;\n+    this.applier = applier;\n+  }\n+\n+  void add(long index, DistributedOperation operation) throws Exception\n+  {\n+    assert batch.size() <= 0 || index == (lastIndex + 1);\n+\n+    batch.add(operation);\n+    lastIndex = index;\n+\n+    if (batch.size() == maxBatchSize)\n     {\n-        this.batch = new ArrayList<>( maxBatchSize );\n-        this.maxBatchSize = maxBatchSize;\n-        this.applier = applier;\n+      flush();\n     }\n+  }\n \n-    void add( long index, DistributedOperation operation ) throws Exception\n-    {\n-        assert batch.size() <= 0 || index == (lastIndex + 1);\n-\n-        batch.add( operation );\n-        lastIndex = index;\n-\n-        if ( batch.size() == maxBatchSize )\n-        {\n-            flush();\n-        }\n-    }\n-\n-    void flush() throws Exception\n-    {\n-        applier.accept( lastIndex, batch );\n-        batch.clear();\n-    }\n+  void flush() throws Exception\n+  {\n+    applier.accept(lastIndex, batch);\n+    batch.clear();\n+  }\n }\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2646/CommandBatcher.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2646/CommandBatcher.java\nindex f17c36f78b6..ac690f90556 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2646/CommandBatcher.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2646/CommandBatcher.java\n@@ -41,9 +41,8 @@ class CommandBatcher\n \n     void add( long index, DistributedOperation operation ) throws Exception\n     {\n-        assert batch.size() <= 0 || index == (lastIndex + 1);\n-\n-        batch.add( operation );\n+        assert batch.size() <= 0 || index == (lastIndex + 1 );\n+batch.add( operation );\n         lastIndex = index;\n \n         if ( batch.size() == maxBatchSize )\n@@ -57,4 +56,4 @@ class CommandBatcher\n         applier.accept( lastIndex, batch );\n         batch.clear();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

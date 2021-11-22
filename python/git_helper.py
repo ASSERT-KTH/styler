@@ -3,7 +3,7 @@ from git import InvalidGitRepositoryError
 
 from core import *
 
-def clone_repo(user, repo_name, https=False):
+def clone_repo(user, repo_name, https=True):
     """
     Clone the repo into the repo_dir location
     """
@@ -29,7 +29,7 @@ def open_repo(user, repo_name):
     dir = get_repo_dir(user, repo_name)
     if os.path.exists(dir):
         try:        
-            return Repo(dir)
+            return Repo(dir), dir
         except InvalidGitRepositoryError:
             logger.debug("Repo %s not found." % dir)
             return None

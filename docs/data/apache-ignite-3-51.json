@@ -1,0 +1,114 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "51",
+    "information": {
+        "errors": [
+            {
+                "line": "125",
+                "column": "9",
+                "severity": "error",
+                "message": "'while' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "        long stop = System.currentTimeMillis() + timeout;\n\n        while(System.currentTimeMillis() < stop) {\n            if (service.topologyService().allMembers().size() == expected)\n                return true;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/51/ITNodeRestartsTest.java\nindex 4905a2ec872..18dc8c47416 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/51/ITNodeRestartsTest.java\n@@ -122,7 +122,7 @@ class ITNodeRestartsTest {\n     protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (service.topologyService().allMembers().size() == expected)\n                 return true;\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/51/ITNodeRestartsTest.java\nindex 4905a2ec872..45c8d9795c9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/51/ITNodeRestartsTest.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.ignite.network.scalecube;\n \n import java.util.ArrayList;\n@@ -34,106 +35,121 @@ import static org.junit.jupiter.api.Assertions.assertTrue;\n  * Tests if a topology size is correct after some nodes are restarted in quick succession.\n  */\n class ITNodeRestartsTest {\n-    /** */\n-    private static final IgniteLogger LOG = IgniteLogger.forClass(ITNodeRestartsTest.class);\n-\n-    /** */\n-    private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n-\n-    /** */\n-    private static final ClusterServiceFactory NETWORK_FACTORY = new TestScaleCubeClusterServiceFactory();\n-\n-    /** */\n-    private List<ClusterService> services;\n-\n-    /** */\n-    @AfterEach\n-    void after() {\n-        for (ClusterService service : services)\n-            service.shutdown();\n+  /**\n+   *\n+   */\n+  private static final IgniteLogger LOG = IgniteLogger.forClass(ITNodeRestartsTest.class);\n+\n+  /**\n+   *\n+   */\n+  private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n+\n+  /**\n+   *\n+   */\n+  private static final ClusterServiceFactory NETWORK_FACTORY = new TestScaleCubeClusterServiceFactory();\n+\n+  /**\n+   *\n+   */\n+  private List<ClusterService> services;\n+\n+  /**\n+   *\n+   */\n+  @AfterEach\n+  void after() {\n+    for (ClusterService service : services) {\n+      service.shutdown();\n     }\n+  }\n \n-    /** */\n-    @Test\n-    public void testRestarts() throws InterruptedException {\n-        final int initPort = 3344;\n-\n-        String addr = \"localhost\";\n-        List<String> addresses = IntStream.range(0, 5).mapToObj(i -> addr + \":\" + (initPort + i)).collect(toList());\n+  /**\n+   *\n+   */\n+  @Test\n+  public void testRestarts() throws InterruptedException {\n+    final int initPort = 3344;\n \n-        services = new ArrayList<>(addresses.size());\n+    String addr = \"localhost\";\n+    List<String> addresses = IntStream.range(0, 5).mapToObj(i -> addr + \":\" + (initPort + i)).collect(toList());\n \n-        for (int i = 0; i < addresses.size(); i++) {\n-            String address = addresses.get(i);\n+    services = new ArrayList<>(addresses.size());\n \n-            ClusterService svc = startNetwork(address, initPort + i, addresses);\n+    for (int i = 0; i < addresses.size(); i++) {\n+      String address = addresses.get(i);\n \n-            services.add(svc);\n-        }\n+      ClusterService svc = startNetwork(address, initPort + i, addresses);\n \n-        for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 5_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n-        }\n+      services.add(svc);\n+    }\n \n-        int idx0 = 0;\n-        int idx1 = 2;\n+    for (ClusterService service : services) {\n+      assertTrue(waitForTopology(service, 5, 5_000), service.topologyService().localMember().toString()\n+          + \", topSize=\" + service.topologyService().allMembers().size());\n+    }\n \n-        LOG.info(\"Shutdown \" + addresses.get(idx0));\n-        services.get(idx0).shutdown();\n+    int idx0 = 0;\n+    int idx1 = 2;\n \n-        LOG.info(\"Shutdown \" + addresses.get(idx1));\n-        services.get(idx1).shutdown();\n+    LOG.info(\"Shutdown \" + addresses.get(idx0));\n+    services.get(idx0).shutdown();\n \n-        LOG.info(\"Starting \" + addresses.get(idx0));\n-        ClusterService svc0 = startNetwork(addresses.get(idx0), initPort + idx0, addresses);\n-        services.set(idx0, svc0);\n+    LOG.info(\"Shutdown \" + addresses.get(idx1));\n+    services.get(idx1).shutdown();\n \n-        LOG.info(\"Starting \" + addresses.get(idx1));\n-        ClusterService svc2 = startNetwork(addresses.get(idx1), initPort + idx1, addresses);\n-        services.set(idx1, svc2);\n+    LOG.info(\"Starting \" + addresses.get(idx0));\n+    ClusterService svc0 = startNetwork(addresses.get(idx0), initPort + idx0, addresses);\n+    services.set(idx0, svc0);\n \n-        for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 10_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n-        }\n+    LOG.info(\"Starting \" + addresses.get(idx1));\n+    ClusterService svc2 = startNetwork(addresses.get(idx1), initPort + idx1, addresses);\n+    services.set(idx1, svc2);\n \n-        LOG.info(\"Reached stable state\");\n+    for (ClusterService service : services) {\n+      assertTrue(waitForTopology(service, 5, 10_000), service.topologyService().localMember().toString()\n+          + \", topSize=\" + service.topologyService().allMembers().size());\n     }\n \n-    /** */\n-    private ClusterService startNetwork(String name, int port, List<String> addresses) {\n-        var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n+    LOG.info(\"Reached stable state\");\n+  }\n \n-        ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n+  /**\n+   *\n+   */\n+  private ClusterService startNetwork(String name, int port, List<String> addresses) {\n+    var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n \n-        clusterService.start();\n+    ClusterService clusterService = NETWORK_FACTORY.createClusterService(context);\n \n-        return clusterService;\n-    }\n+    clusterService.start();\n \n-    /**\n-     * @param service  The service.\n-     * @param expected Expected count.\n-     * @param timeout  The timeout.\n-     * @return Wait status.\n-     */\n-    @SuppressWarnings(\"BusyWait\")\n-    protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n-        long stop = System.currentTimeMillis() + timeout;\n-\n-        while(System.currentTimeMillis() < stop) {\n-            if (service.topologyService().allMembers().size() == expected)\n-                return true;\n-\n-            try {\n-                Thread.sleep(50);\n-            }\n-            catch (InterruptedException e) {\n-                return false;\n-            }\n-        }\n+    return clusterService;\n+  }\n \n+  /**\n+   * @param service  The service.\n+   * @param expected Expected count.\n+   * @param timeout  The timeout.\n+   * @return Wait status.\n+   */\n+  @SuppressWarnings(\"BusyWait\")\n+  protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n+    long stop = System.currentTimeMillis() + timeout;\n+\n+    while (System.currentTimeMillis() < stop) {\n+      if (service.topologyService().allMembers().size() == expected) {\n+        return true;\n+      }\n+\n+      try {\n+        Thread.sleep(50);\n+      } catch (InterruptedException e) {\n         return false;\n+      }\n     }\n+\n+    return false;\n+  }\n }\n",
+            "diff_size": 123
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/51/ITNodeRestartsTest.java\nindex 4905a2ec872..2a2ad506398 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/51/ITNodeRestartsTest.java\n@@ -72,8 +72,7 @@ class ITNodeRestartsTest {\n         }\n \n         for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 5_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n+            assertTrue(waitForTopology(service, 5, 5_000), service.topologyService().localMember().toString() + \", topSize=\" + service.topologyService().allMembers().size());\n         }\n \n         int idx0 = 0;\n@@ -94,8 +93,7 @@ class ITNodeRestartsTest {\n         services.set(idx1, svc2);\n \n         for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 10_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n+            assertTrue(waitForTopology(service, 5, 10_000), service.topologyService().localMember().toString() + \", topSize=\" + service.topologyService().allMembers().size());\n         }\n \n         LOG.info(\"Reached stable state\");\n@@ -122,7 +120,7 @@ class ITNodeRestartsTest {\n     protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (service.topologyService().allMembers().size() == expected)\n                 return true;\n \n@@ -136,4 +134,4 @@ class ITNodeRestartsTest {\n \n         return false;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "45",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "133",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "151",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/51/ITNodeRestartsTest.java\nindex 4905a2ec872..d4cb4626215 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/51/ITNodeRestartsTest.java\n@@ -33,33 +33,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;\n /**\n  * Tests if a topology size is correct after some nodes are restarted in quick succession.\n  */\n+\n class ITNodeRestartsTest {\n     /** */\n+\n     private static final IgniteLogger LOG = IgniteLogger.forClass(ITNodeRestartsTest.class);\n \n     /** */\n+\n+\n     private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n \n     /** */\n+\n+\n     private static final ClusterServiceFactory NETWORK_FACTORY = new TestScaleCubeClusterServiceFactory();\n \n     /** */\n+\n+\n     private List<ClusterService> services;\n \n     /** */\n-    @AfterEach\n-    void after() {\n+\n+\n+    @AfterEach void after() {\n         for (ClusterService service : services)\n             service.shutdown();\n     }\n \n     /** */\n-    @Test\n-    public void testRestarts() throws InterruptedException {\n+\n+\n+    @Test public void testRestarts() throws InterruptedException {\n         final int initPort = 3344;\n \n         String addr = \"localhost\";\n-        List<String> addresses = IntStream.range(0, 5).mapToObj(i -> addr + \":\" + (initPort + i)).collect(toList());\n+\n+        List<String> addresses = IntStream.range(0, 5).mapToObj(i -> addr + \":\" + (initPort + i))\n+                                                      .collect(toList());\n \n         services = new ArrayList<>(addresses.size());\n \n@@ -70,38 +82,54 @@ class ITNodeRestartsTest {\n \n             services.add(svc);\n         }\n-\n         for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 5_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n+            assertTrue(\n+                waitForTopology(service, 5, 5_000),\n+                service.topologyService().localMember()\n+                                         .toString() + \", topSize=\" + service.topologyService().allMembers()\n+                                                                                               .size()\n+            );\n         }\n \n         int idx0 = 0;\n+\n         int idx1 = 2;\n \n         LOG.info(\"Shutdown \" + addresses.get(idx0));\n+\n         services.get(idx0).shutdown();\n \n         LOG.info(\"Shutdown \" + addresses.get(idx1));\n+\n         services.get(idx1).shutdown();\n \n         LOG.info(\"Starting \" + addresses.get(idx0));\n+\n         ClusterService svc0 = startNetwork(addresses.get(idx0), initPort + idx0, addresses);\n+\n         services.set(idx0, svc0);\n \n         LOG.info(\"Starting \" + addresses.get(idx1));\n+\n         ClusterService svc2 = startNetwork(addresses.get(idx1), initPort + idx1, addresses);\n+\n         services.set(idx1, svc2);\n \n         for (ClusterService service : services) {\n-            assertTrue(waitForTopology(service, 5, 10_000), service.topologyService().localMember().toString()\n-                + \", topSize=\" + service.topologyService().allMembers().size());\n+            assertTrue(\n+                waitForTopology(service, 5, 10_000),\n+                service.topologyService().localMember()\n+                                         .toString() + \", topSize=\" + service.topologyService().allMembers()\n+                                                                                               .size()\n+            );\n         }\n \n         LOG.info(\"Reached stable state\");\n     }\n \n     /** */\n+\n+\n     private ClusterService startNetwork(String name, int port, List<String> addresses) {\n         var context = new ClusterLocalConfiguration(name, port, addresses, SERIALIZATION_REGISTRY);\n \n@@ -118,12 +146,14 @@ class ITNodeRestartsTest {\n      * @param timeout  The timeout.\n      * @return Wait status.\n      */\n-    @SuppressWarnings(\"BusyWait\")\n-    protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n+\n+\n+    @SuppressWarnings(\"BusyWait\") protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n-            if (service.topologyService().allMembers().size() == expected)\n+        while (System.currentTimeMillis() < stop) {\n+            if (service.topologyService().allMembers()\n+                                         .size() == expected)\n                 return true;\n \n             try {\n@@ -136,4 +166,4 @@ class ITNodeRestartsTest {\n \n         return false;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/51/ITNodeRestartsTest.java\nindex 4905a2ec872..18dc8c47416 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/51/ITNodeRestartsTest.java\n@@ -122,7 +122,7 @@ class ITNodeRestartsTest {\n     protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (service.topologyService().allMembers().size() == expected)\n                 return true;\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/51/ITNodeRestartsTest.java\nindex 4905a2ec872..18dc8c47416 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/51/ITNodeRestartsTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/51/ITNodeRestartsTest.java\n@@ -122,7 +122,7 @@ class ITNodeRestartsTest {\n     protected boolean waitForTopology(ClusterService service, int expected, long timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (service.topologyService().allMembers().size() == expected)\n                 return true;\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff"
+    ]
+}

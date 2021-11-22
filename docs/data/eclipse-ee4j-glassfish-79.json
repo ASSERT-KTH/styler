@@ -1,0 +1,95 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "79",
+    "information": {
+        "errors": [
+            {
+                "line": "68",
+                "column": "68",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "    public synchronized void init(ProcessingEnvironment processingEnv) {\n        super.init(processingEnv);\n        debug = processingEnv.getOptions().containsKey(\"-Adebug\"); // todo : bad\n        if (debug) {\n            printNote(processingEnv.getOptions().toString());\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "68",
+                    "column": "68",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "67",
+                    "column": "68",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/79/ServiceAnnotationProcessor.java\nindex 36e6528a1c3..202e9936d50 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/79/ServiceAnnotationProcessor.java\n@@ -48,7 +48,6 @@ import java.util.Set;\n  * META-INF/services style text file for each interface annotated with @Contract\n  *\n  * @author Jerome Dochez\n- *\n  * @deprecated Not used.\n  */\n public class ServiceAnnotationProcessor extends AbstractProcessor {\n@@ -82,10 +81,10 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n      */\n     protected void loadExistingMetaInfFiles() {\n         String outDirectory = processingEnv.getOptions().get(\"-s\");\n-        if (outDirectory==null) {\n+        if (outDirectory == null) {\n             outDirectory = System.getProperty(\"user.dir\");\n         }\n-        File outDir = new File(new File(outDirectory),\"META-INF/services\").getAbsoluteFile();\n+        File outDir = new File(new File(outDirectory), \"META-INF/services\").getAbsoluteFile();\n         if (debug) {\n             printNote(\"Output dir is \" + outDir.getAbsolutePath());\n         }\n@@ -94,9 +93,13 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n             return;\n         }\n         File[] listFiles = outDir.listFiles();\n-        if (listFiles == null || listFiles.length == 0) return;\n+        if (listFiles == null || listFiles.length == 0) {\n+            return;\n+        }\n         for (File file : listFiles) {\n-            if(file.isDirectory())  continue;\n+            if (file.isDirectory()) {\n+                continue;\n+            }\n             Set<String> entries = new HashSet<String>();\n             FileReader reader = null;\n             LineNumberReader lineReader = null;\n@@ -112,9 +115,13 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n                 printError(e.getMessage());\n             } finally {\n                 try {\n-                    if (lineReader != null) lineReader.close();\n-                    if (reader != null) reader.close();\n-                } catch(IOException ioe) {\n+                    if (lineReader != null) {\n+                        lineReader.close();\n+                    }\n+                    if (reader != null) {\n+                        reader.close();\n+                    }\n+                } catch (IOException ioe) {\n \n                 }\n             }\n@@ -133,8 +140,9 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n \n         Collection<TypeElement> classes = new ArrayList<TypeElement>();\n         filterClasses(classes, roundEnv.getRootElements());\n-        for (TypeElement typeDecl : classes)\n+        for (TypeElement typeDecl : classes) {\n             typeDecl.accept(listClassVisitor, null);\n+        }\n \n         for (ServiceFileInfo info : serviceFiles.values()) {\n             if (info.isDirty()) {\n@@ -155,7 +163,8 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n         return true;\n     }\n \n-    private void filterClasses(Collection<TypeElement> classes, Collection<? extends Element> elements) {\n+    private void filterClasses(Collection<TypeElement> classes,\n+                               Collection<? extends Element> elements) {\n         for (Element element : elements) {\n             if (element.getKind().equals(ElementKind.CLASS)) {\n                 classes.add((TypeElement) element);\n@@ -167,10 +176,8 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n     /**\n      * Records the contract&lt;->service relationship.\n      *\n-     * @param contractName\n-     *      FQCN of the contract type/annotation.\n-     * @param impl\n-     *      Implementation class.\n+     * @param contractName FQCN of the contract type/annotation.\n+     * @param impl         Implementation class.\n      */\n     private void createContractImplementation(String contractName, TypeElement impl) {\n         ServiceFileInfo info;\n@@ -223,7 +230,7 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n \n                 // look for contract in super classes\n                 TypeElement sd = element;\n-                while(sd.getSuperclass()!=null) {\n+                while (sd.getSuperclass() != null) {\n                     sd = (TypeElement) ((DeclaredType) sd.getSuperclass()).asElement();\n                     checkContract(sd, element);\n                 }\n@@ -242,7 +249,7 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n                             info.getImplementors().remove(implementor);\n                             try {\n                                 info.createFile(processingEnv);\n-                            } catch(IOException ioe) {\n+                            } catch (IOException ioe) {\n                                 printError(ioe.getMessage());\n                             }\n                             return null;\n@@ -255,7 +262,7 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n             for (AnnotationMirror a : element.getAnnotationMirrors()) {\n                 TypeElement atd = (TypeElement) a.getAnnotationType().asElement();\n                 Contract c = atd.getAnnotation(Contract.class);\n-                if(c!=null) {\n+                if (c != null) {\n                     // this is a contract annotation\n                     createContractImplementation(atd.getQualifiedName().toString(), element);\n                 }\n@@ -266,8 +273,9 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n         private void checkContract(TypeElement type, TypeElement impl) {\n             Contract contract = type.getAnnotation(Contract.class);\n \n-            if (contract != null)\n+            if (contract != null) {\n                 createContractImplementation(type.getQualifiedName().toString(), impl);\n+            }\n         }\n     }\n }\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/79/ServiceAnnotationProcessor.java\nindex 36e6528a1c3..21e78408853 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/79/ServiceAnnotationProcessor.java\n@@ -65,7 +65,9 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n     @Override\n     public synchronized void init(ProcessingEnvironment processingEnv) {\n         super.init(processingEnv);\n-        debug = processingEnv.getOptions().containsKey(\"-Adebug\"); // todo : bad\n+        debug = processingEnv.getOptions().containsKey(\"-Adebug\");\n+\n+// todo : bad\n         if (debug) {\n             printNote(processingEnv.getOptions().toString());\n         }\n@@ -96,7 +98,7 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n         File[] listFiles = outDir.listFiles();\n         if (listFiles == null || listFiles.length == 0) return;\n         for (File file : listFiles) {\n-            if(file.isDirectory())  continue;\n+            if(file.isDirectory()) continue;\n             Set<String> entries = new HashSet<String>();\n             FileReader reader = null;\n             LineNumberReader lineReader = null;\n@@ -270,4 +272,4 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n                 createContractImplementation(type.getQualifiedName().toString(), impl);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "68",
+                    "column": "68",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "71",
+                    "column": "10",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 9, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/79/ServiceAnnotationProcessor.java\nindex 36e6528a1c3..14d50f54c3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/79/ServiceAnnotationProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/79/ServiceAnnotationProcessor.java\n@@ -65,8 +65,10 @@ public class ServiceAnnotationProcessor extends AbstractProcessor {\n     @Override\n     public synchronized void init(ProcessingEnvironment processingEnv) {\n         super.init(processingEnv);\n-        debug = processingEnv.getOptions().containsKey(\"-Adebug\"); // todo : bad\n-        if (debug) {\n+        debug = processingEnv.getOptions().containsKey(\"-Adebug\");\n+\n+        // todo : bad\n+         if (debug) {\n             printNote(processingEnv.getOptions().toString());\n         }\n \n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "naturalize"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

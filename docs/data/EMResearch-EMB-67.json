@@ -1,0 +1,175 @@
+{
+    "project_name": "EMResearch-EMB",
+    "error_id": "67",
+    "information": {
+        "errors": [
+            {
+                "line": "153",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 149).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n    if (maxOccurrence < minOccurrence) {\n      throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n    }\n    patternToken.setMinOccurrence(minOccurrence);\n    patternToken.setMaxOccurrence(maxOccurrence);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "153",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "154",
+                    "column": "7",
+                    "severity": "warning",
+                    "message": "'}' at column 7 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "154",
+                    "column": "7",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler/67/PatternTokenBuilder.java\nindex 94f1bae6115..a57a22690fc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler/67/PatternTokenBuilder.java\n@@ -151,8 +151,7 @@ public class PatternTokenBuilder {\n     }\n     if (maxOccurrence < minOccurrence) {\n       throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n-    }\n-    patternToken.setMinOccurrence(minOccurrence);\n+      }patternToken.setMinOccurrence(minOccurrence);\n     patternToken.setMaxOccurrence(maxOccurrence);\n     patternToken.setNegation(negation);\n     patternToken.setSkipNext(skip);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "169",
+                    "column": "108",
+                    "severity": "warning",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/67/PatternTokenBuilder.java\nindex 94f1bae6115..2075ed587a6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/67/PatternTokenBuilder.java\n@@ -1,6 +1,6 @@\n /* LanguageTool, a natural language style checker\n  * Copyright (C) 2015 Daniel Naber (http://www.danielnaber.de)\n- * \n+ *\n  * This library is free software; you can redistribute it and/or\n  * modify it under the terms of the GNU Lesser General Public\n  * License as published by the Free Software Foundation; either\n@@ -16,147 +16,164 @@\n  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301\n  * USA\n  */\n+\n package org.languagetool.rules.patterns;\n \n import java.util.Objects;\n \n /**\n  * Helper to build {@link PatternToken}s.\n+ *\n  * @since 3.1\n  */\n public class PatternTokenBuilder {\n \n-  private String token;\n-  private String posTag;\n-  private boolean marker = true;\n-  private boolean matchInflectedForms = false;\n-  private boolean caseSensitive;\n-  private boolean regexp;\n-  private boolean negation;\n-  private boolean isWhiteSpaceSet = false;\n-  private boolean isWhiteSpaceBefore;\n-  private int minOccurrence = 1;\n-  private int maxOccurrence = 1;\n-  private int skip;\n-\n-  /**\n-   * Add a case-insensitive token. \n-   */\n-  public PatternTokenBuilder token(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    return this;\n-  }\n-\n-  /**\n-   * Add a case-sensitive token. \n-   * @since 3.3 \n-   */\n-  public PatternTokenBuilder csToken(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    caseSensitive = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder tokenRegex(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    regexp = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder csTokenRegex(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    regexp = true;\n-    caseSensitive = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder pos(String posTag) {\n-    return pos(posTag, false);\n-  }\n-\n-  public PatternTokenBuilder posRegex(String posTag) {\n-    return pos(posTag, true);\n-  }\n-\n-  /** @since 4.9 */\n-  public PatternTokenBuilder min(int val) {\n-    if (val < 0) {\n-      throw new IllegalArgumentException(\"minOccurrence must be >= 0: \" + minOccurrence);\n+    private String token;\n+    private String posTag;\n+    private boolean marker = true;\n+    private boolean matchInflectedForms = false;\n+    private boolean caseSensitive;\n+    private boolean regexp;\n+    private boolean negation;\n+    private boolean isWhiteSpaceSet = false;\n+    private boolean isWhiteSpaceBefore;\n+    private int minOccurrence = 1;\n+    private int maxOccurrence = 1;\n+    private int skip;\n+\n+    /**\n+     * Add a case-insensitive token.\n+     */\n+    public PatternTokenBuilder token(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        return this;\n+    }\n+\n+    /**\n+     * Add a case-sensitive token.\n+     *\n+     * @since 3.3\n+     */\n+    public PatternTokenBuilder csToken(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        caseSensitive = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder tokenRegex(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        regexp = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder csTokenRegex(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        regexp = true;\n+        caseSensitive = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder pos(String posTag) {\n+        return pos(posTag, false);\n+    }\n+\n+    public PatternTokenBuilder posRegex(String posTag) {\n+        return pos(posTag, true);\n+    }\n+\n+    /**\n+     * @since 4.9\n+     */\n+    public PatternTokenBuilder min(int val) {\n+        if (val < 0) {\n+            throw new IllegalArgumentException(\"minOccurrence must be >= 0: \" + minOccurrence);\n+        }\n+        minOccurrence = val;\n+        return this;\n+    }\n+\n+    /**\n+     * @since 4.9\n+     */\n+    public PatternTokenBuilder max(int val) {\n+        maxOccurrence = val;\n+        return this;\n+    }\n+\n+    /**\n+     * Corresponds to {@code <marker>...</marker>} in XML. Note that there\n+     * can be more tokens with a mark, but then must all be adjacent.\n+     *\n+     * @since 4.6\n+     */\n+    public PatternTokenBuilder mark(boolean isMarked) {\n+        this.marker = isMarked;\n+        return this;\n+    }\n+\n+    private PatternTokenBuilder pos(String posTag, boolean regexp) {\n+        this.posTag = Objects.requireNonNull(posTag);\n+        this.regexp = regexp;\n+        return this;\n     }\n-    minOccurrence = val;\n-    return this;\n-  }\n-\n-  /** @since 4.9 */\n-  public PatternTokenBuilder max(int val) {\n-    maxOccurrence = val;\n-    return this;\n-  }\n-\n-  /**\n-   * Corresponds to {@code <marker>...</marker>} in XML. Note that there\n-   * can be more tokens with a mark, but then must all be adjacent.\n-   * @since 4.6\n-   */\n-  public PatternTokenBuilder mark(boolean isMarked) {\n-    this.marker = isMarked;\n-    return this;\n-  }\n-\n-  private PatternTokenBuilder pos(String posTag, boolean regexp) {\n-    this.posTag = Objects.requireNonNull(posTag);\n-    this.regexp = regexp;\n-    return this;\n-  }\n-\n-  /** @since 3.3 */\n-  public PatternTokenBuilder negate() {\n-    this.negation = true;\n-    return this;\n-  }\n-\n-  /** @since 4.0 */\n-  public PatternTokenBuilder setSkip(int skip) {\n-    this.skip = skip;\n-    return this;\n-  }\n-\n-  /** @since 4.4 */\n-  public PatternTokenBuilder setIsWhiteSpaceBefore(boolean whiteSpaceBefore) {\n-    this.isWhiteSpaceBefore = whiteSpaceBefore;\n-    this.isWhiteSpaceSet = true;\n-    return this;\n-  }\n-\n-  /**\n-   * Also match inflected forms of the given word - note this will only work when the\n-   * given token actually is a baseform.\n-   * @since 3.8 \n-   */\n-  public PatternTokenBuilder matchInflectedForms() {\n-    matchInflectedForms = true;\n-    return this;\n-  }\n-  \n-  public PatternToken build() {\n-    PatternToken patternToken;\n-    if (posTag != null) {\n-      patternToken = new PatternToken(null, false, false, false);\n-      patternToken.setPosToken(new PatternToken.PosToken(posTag, regexp, false));\n-    } else {\n-      patternToken = new PatternToken(token, caseSensitive, regexp, matchInflectedForms);\n+\n+    /**\n+     * @since 3.3\n+     */\n+    public PatternTokenBuilder negate() {\n+        this.negation = true;\n+        return this;\n+    }\n+\n+    /**\n+     * @since 4.0\n+     */\n+    public PatternTokenBuilder setSkip(int skip) {\n+        this.skip = skip;\n+        return this;\n     }\n-    if (isWhiteSpaceSet) {\n-      patternToken.setWhitespaceBefore(isWhiteSpaceBefore);\n+\n+    /**\n+     * @since 4.4\n+     */\n+    public PatternTokenBuilder setIsWhiteSpaceBefore(boolean whiteSpaceBefore) {\n+        this.isWhiteSpaceBefore = whiteSpaceBefore;\n+        this.isWhiteSpaceSet = true;\n+        return this;\n     }\n-    if (maxOccurrence < minOccurrence) {\n-      throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n+\n+    /**\n+     * Also match inflected forms of the given word - note this will only work when the\n+     * given token actually is a baseform.\n+     *\n+     * @since 3.8\n+     */\n+    public PatternTokenBuilder matchInflectedForms() {\n+        matchInflectedForms = true;\n+        return this;\n+    }\n+\n+    public PatternToken build() {\n+        PatternToken patternToken;\n+        if (posTag != null) {\n+            patternToken = new PatternToken(null, false, false, false);\n+            patternToken.setPosToken(new PatternToken.PosToken(posTag, regexp, false));\n+        } else {\n+            patternToken = new PatternToken(token, caseSensitive, regexp, matchInflectedForms);\n+        }\n+        if (isWhiteSpaceSet) {\n+            patternToken.setWhitespaceBefore(isWhiteSpaceBefore);\n+        }\n+        if (maxOccurrence < minOccurrence) {\n+            throw new IllegalArgumentException(\n+                \"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" +\n+                    maxOccurrence);\n+        }\n+        patternToken.setMinOccurrence(minOccurrence);\n+        patternToken.setMaxOccurrence(maxOccurrence);\n+        patternToken.setNegation(negation);\n+        patternToken.setSkipNext(skip);\n+        patternToken.setInsideMarker(marker);\n+        return patternToken;\n     }\n-    patternToken.setMinOccurrence(minOccurrence);\n-    patternToken.setMaxOccurrence(maxOccurrence);\n-    patternToken.setNegation(negation);\n-    patternToken.setSkipNext(skip);\n-    patternToken.setInsideMarker(marker);\n-    return patternToken;\n-  }\n }\n",
+            "diff_size": 201
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "153",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/67/PatternTokenBuilder.java\nindex 94f1bae6115..4b5c343e3b5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/67/PatternTokenBuilder.java\n@@ -159,4 +159,4 @@ public class PatternTokenBuilder {\n     patternToken.setInsideMarker(marker);\n     return patternToken;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "164",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/67/PatternTokenBuilder.java\nindex 94f1bae6115..d13d1599566 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/67/PatternTokenBuilder.java\n@@ -24,139 +24,152 @@ import java.util.Objects;\n  * Helper to build {@link PatternToken}s.\n  * @since 3.1\n  */\n+\n+\n public class PatternTokenBuilder {\n \n-  private String token;\n-  private String posTag;\n-  private boolean marker = true;\n-  private boolean matchInflectedForms = false;\n-  private boolean caseSensitive;\n-  private boolean regexp;\n-  private boolean negation;\n-  private boolean isWhiteSpaceSet = false;\n-  private boolean isWhiteSpaceBefore;\n-  private int minOccurrence = 1;\n-  private int maxOccurrence = 1;\n-  private int skip;\n+    private String token;\n+    private String posTag;\n+    private boolean marker = true;\n+    private boolean matchInflectedForms = false;\n+    private boolean caseSensitive;\n+    private boolean regexp;\n+    private boolean negation;\n+    private boolean isWhiteSpaceSet = false;\n+    private boolean isWhiteSpaceBefore;\n+    private int minOccurrence = 1;\n+    private int maxOccurrence = 1;\n+    private int skip;\n \n   /**\n    * Add a case-insensitive token. \n    */\n-  public PatternTokenBuilder token(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    return this;\n-  }\n+    public PatternTokenBuilder token(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        return this;\n+    }\n \n   /**\n    * Add a case-sensitive token. \n    * @since 3.3 \n    */\n-  public PatternTokenBuilder csToken(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    caseSensitive = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder tokenRegex(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    regexp = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder csTokenRegex(String token) {\n-    this.token = Objects.requireNonNull(token);\n-    regexp = true;\n-    caseSensitive = true;\n-    return this;\n-  }\n-\n-  public PatternTokenBuilder pos(String posTag) {\n-    return pos(posTag, false);\n-  }\n-\n-  public PatternTokenBuilder posRegex(String posTag) {\n-    return pos(posTag, true);\n-  }\n+\n+    public PatternTokenBuilder csToken(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        caseSensitive = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder tokenRegex(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        regexp = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder csTokenRegex(String token) {\n+        this.token = Objects.requireNonNull(token);\n+        regexp = true;\n+        caseSensitive = true;\n+        return this;\n+    }\n+\n+    public PatternTokenBuilder pos(String posTag) {\n+        return pos(posTag, false);\n+    }\n+\n+    public PatternTokenBuilder posRegex(String posTag) {\n+        return pos(posTag, true);\n+    }\n \n   /** @since 4.9 */\n-  public PatternTokenBuilder min(int val) {\n-    if (val < 0) {\n-      throw new IllegalArgumentException(\"minOccurrence must be >= 0: \" + minOccurrence);\n+\n+    public PatternTokenBuilder min(int val) {\n+        if (val < 0) {\n+            throw new IllegalArgumentException(\"minOccurrence must be >= 0: \"\n+                + minOccurrence);\n+        }\n+        minOccurrence = val;\n+        return this;\n     }\n-    minOccurrence = val;\n-    return this;\n-  }\n \n   /** @since 4.9 */\n-  public PatternTokenBuilder max(int val) {\n-    maxOccurrence = val;\n-    return this;\n-  }\n+\n+    public PatternTokenBuilder max(int val) {\n+        maxOccurrence = val;\n+        return this;\n+    }\n \n   /**\n    * Corresponds to {@code <marker>...</marker>} in XML. Note that there\n    * can be more tokens with a mark, but then must all be adjacent.\n    * @since 4.6\n    */\n-  public PatternTokenBuilder mark(boolean isMarked) {\n-    this.marker = isMarked;\n-    return this;\n-  }\n \n-  private PatternTokenBuilder pos(String posTag, boolean regexp) {\n-    this.posTag = Objects.requireNonNull(posTag);\n-    this.regexp = regexp;\n-    return this;\n-  }\n+    public PatternTokenBuilder mark(boolean isMarked) {\n+        this.marker = isMarked;\n+        return this;\n+    }\n+\n+    private PatternTokenBuilder pos(String posTag, boolean regexp) {\n+        this.posTag = Objects.requireNonNull(posTag);\n+        this.regexp = regexp;\n+        return this;\n+    }\n \n   /** @since 3.3 */\n-  public PatternTokenBuilder negate() {\n-    this.negation = true;\n-    return this;\n-  }\n+\n+    public PatternTokenBuilder negate() {\n+        this.negation = true;\n+        return this;\n+    }\n \n   /** @since 4.0 */\n-  public PatternTokenBuilder setSkip(int skip) {\n-    this.skip = skip;\n-    return this;\n-  }\n+\n+    public PatternTokenBuilder setSkip(int skip) {\n+        this.skip = skip;\n+        return this;\n+    }\n \n   /** @since 4.4 */\n-  public PatternTokenBuilder setIsWhiteSpaceBefore(boolean whiteSpaceBefore) {\n-    this.isWhiteSpaceBefore = whiteSpaceBefore;\n-    this.isWhiteSpaceSet = true;\n-    return this;\n-  }\n+\n+    public PatternTokenBuilder setIsWhiteSpaceBefore(boolean whiteSpaceBefore) {\n+        this.isWhiteSpaceBefore = whiteSpaceBefore;\n+        this.isWhiteSpaceSet = true;\n+        return this;\n+    }\n \n   /**\n    * Also match inflected forms of the given word - note this will only work when the\n    * given token actually is a baseform.\n    * @since 3.8 \n    */\n-  public PatternTokenBuilder matchInflectedForms() {\n-    matchInflectedForms = true;\n-    return this;\n-  }\n-  \n-  public PatternToken build() {\n-    PatternToken patternToken;\n-    if (posTag != null) {\n-      patternToken = new PatternToken(null, false, false, false);\n-      patternToken.setPosToken(new PatternToken.PosToken(posTag, regexp, false));\n-    } else {\n-      patternToken = new PatternToken(token, caseSensitive, regexp, matchInflectedForms);\n-    }\n-    if (isWhiteSpaceSet) {\n-      patternToken.setWhitespaceBefore(isWhiteSpaceBefore);\n+\n+    public PatternTokenBuilder matchInflectedForms() {\n+        matchInflectedForms = true;\n+        return this;\n     }\n-    if (maxOccurrence < minOccurrence) {\n-      throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n+\n+    public PatternToken build() {\n+        PatternToken patternToken;\n+        if (posTag != null) {\n+            patternToken = new PatternToken(null, false, false, false);\n+            patternToken.setPosToken(new PatternToken.PosToken(posTag, regexp, false));\n+        } else {\n+            patternToken = new PatternToken(token, caseSensitive, regexp, matchInflectedForms);\n+        }\n+        if (isWhiteSpaceSet) {\n+            patternToken.setWhitespaceBefore(isWhiteSpaceBefore);\n+        }\n+        if (maxOccurrence < minOccurrence) {\n+            throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \"\n+            + maxOccurrence);\n+        }\n+        patternToken.setMinOccurrence(minOccurrence);\n+        patternToken.setMaxOccurrence(maxOccurrence);\n+        patternToken.setNegation(negation);\n+        patternToken.setSkipNext(skip);\n+        patternToken.setInsideMarker(marker);\n+        return patternToken;\n     }\n-    patternToken.setMinOccurrence(minOccurrence);\n-    patternToken.setMaxOccurrence(maxOccurrence);\n-    patternToken.setNegation(negation);\n-    patternToken.setSkipNext(skip);\n-    patternToken.setInsideMarker(marker);\n-    return patternToken;\n-  }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 136
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "153",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "154",
+                    "column": "7",
+                    "severity": "warning",
+                    "message": "'}' at column 7 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "154",
+                    "column": "7",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_random/67/PatternTokenBuilder.java\nindex 94f1bae6115..a57a22690fc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_random/67/PatternTokenBuilder.java\n@@ -151,8 +151,7 @@ public class PatternTokenBuilder {\n     }\n     if (maxOccurrence < minOccurrence) {\n       throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n-    }\n-    patternToken.setMinOccurrence(minOccurrence);\n+      }patternToken.setMinOccurrence(minOccurrence);\n     patternToken.setMaxOccurrence(maxOccurrence);\n     patternToken.setNegation(negation);\n     patternToken.setSkipNext(skip);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "153",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 206).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "95",
+                    "severity": "warning",
+                    "message": "'+' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "147",
+                    "severity": "warning",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "148",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "149",
+                    "severity": "warning",
+                    "message": "'}' at column 149 should have line break before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "149",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "153",
+                    "column": "149",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_three_grams/67/PatternTokenBuilder.java\nindex 94f1bae6115..f676cd34e3f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/67/PatternTokenBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_three_grams/67/PatternTokenBuilder.java\n@@ -150,9 +150,7 @@ public class PatternTokenBuilder {\n       patternToken.setWhitespaceBefore(isWhiteSpaceBefore);\n     }\n     if (maxOccurrence < minOccurrence) {\n-      throw new IllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" + minOccurrence + \", maxOccurrence \" + maxOccurrence);\n-    }\n-    patternToken.setMinOccurrence(minOccurrence);\n+      throw newIllegalArgumentException(\"minOccurrence must <= maxOccurrence: minOccurrence \" +minOccurrence + \", maxOccurrence \" + maxOccurrence );}patternTokenpatternToken.setMinOccurrence(minOccurrence);\n     patternToken.setMaxOccurrence(maxOccurrence);\n     patternToken.setNegation(negation);\n     patternToken.setSkipNext(skip);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

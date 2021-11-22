@@ -1,0 +1,122 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "6",
+    "information": {
+        "errors": [
+            {
+                "line": "32",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 114).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        TVector row = client.getRow(0);\n        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n\n        startTs = System.currentTimeMillis();\n        SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/6/SparseDoubleTask.java\nindex 1849d77d087..bbfee1aa3c3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/6/SparseDoubleTask.java\n@@ -29,7 +29,7 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n+        + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n \n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/6/SparseDoubleTask.java\nindex 1849d77d087..36b5c3c945a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/6/SparseDoubleTask.java\n@@ -11,29 +11,35 @@ import org.apache.commons.logging.LogFactory;\n \n public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n   private static final Log LOG = LogFactory.getLog(PSFTestTask.class);\n+\n   public SparseDoubleTask(TaskContext taskContext) {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+  public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n+  @Override\n+  public void preProcess(TaskContext taskContext) {\n+  }\n \n \n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+  @Override\n+  public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"sparse_double_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n+            + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" +\n+            sum((SparseDoubleVector) row));\n \n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i += 20) {\n           deltaV.set(i, 1.0);\n         }\n \n@@ -41,13 +47,13 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n         deltaV.setRowId(0);\n \n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n+            + \" train use time=\" + (System.currentTimeMillis() - startTs));\n \n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+            + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -56,9 +62,9 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n   }\n \n   private double sum(SparseDoubleVector row) {\n-    double [] data = row.getValues();\n+    double[] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n \n",
+            "diff_size": 16
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 199).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "44",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/6/SparseDoubleTask.java\nindex 1849d77d087..645dff4046b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/6/SparseDoubleTask.java\n@@ -15,39 +15,38 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n+  @Override\n+public void preProcess(TaskContext taskContext) {}\n \n-\n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+@Override\n+public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"sparse_double_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n \n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i+= 20) {\n           deltaV.set(i, 1.0);\n         }\n \n         deltaV.setMatrixId(client.getMatrixId());\n         deltaV.setRowId(0);\n \n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" train use time=\" + (System.currentTimeMillis() - startTs));\n \n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -58,10 +57,10 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n   private double sum(SparseDoubleVector row) {\n     double [] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n \n     return ret;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 16
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "35",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 200).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 158).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/6/SparseDoubleTask.java\nindex 1849d77d087..804e967a483 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/6/SparseDoubleTask.java\n@@ -10,44 +10,41 @@ import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n \n public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n+\n   private static final Log LOG = LogFactory.getLog(PSFTestTask.class);\n+\n   public SparseDoubleTask(TaskContext taskContext) {\n     super(taskContext);\n   }\n \n-  @Override public Long parse(Long key, Long value) {\n+  @Override\n+  public Long parse(Long key, Long value) {\n     return null;\n   }\n \n-  @Override public void preProcess(TaskContext taskContext) { }\n-\n+  @Override\n+  public void preProcess(TaskContext taskContext) {}\n \n-  @Override public void run(TaskContext taskContext) throws AngelException {\n-    try{\n+  @Override\n+  public void run(TaskContext taskContext) throws AngelException {\n+    try {\n       MatrixClient client = taskContext.getMatrix(\"sparse_double_test\");\n       while (taskContext.getEpoch() < 100) {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n-\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector) row));\n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n-        for(int i = 0; i < 2100000000; i+=20) {\n+        for (int i = 0; i < 2100000000; i += 20) {\n           deltaV.set(i, 1.0);\n         }\n-\n         deltaV.setMatrixId(client.getMatrixId());\n         deltaV.setRowId(0);\n-\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" train use time=\" + (System.currentTimeMillis() - startTs));\n-\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" train use time=\" + (System.currentTimeMillis() - startTs));\n         startTs = System.currentTimeMillis();\n         client.increment(deltaV);\n         client.clock().get();\n-        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n+        LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch() + \" flush use time=\" + (System.currentTimeMillis() - startTs));\n         taskContext.incEpoch();\n       }\n     } catch (Throwable x) {\n@@ -56,12 +53,12 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n   }\n \n   private double sum(SparseDoubleVector row) {\n-    double [] data = row.getValues();\n+    double[] data = row.getValues();\n     double ret = 0.0;\n-    for(int i = 0; i < data.length; i++) {\n+    for (int i = 0; i < data.length; i++) {\n       ret += data[i];\n     }\n-\n     return ret;\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 113).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/6/SparseDoubleTask.java\nindex 1849d77d087..52a16152751 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/6/SparseDoubleTask.java\n@@ -29,8 +29,7 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n-\n+          + \" pull use time=\" + (System.currentTimeMillis()- startTs )+ \", sum=\" + sum((SparseDoubleVector)row));\n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n         for(int i = 0; i < 2100000000; i+=20) {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/6/SparseDoubleTask.java\nindex 1849d77d087..bbfee1aa3c3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/6/SparseDoubleTask.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/6/SparseDoubleTask.java\n@@ -29,7 +29,7 @@ public class SparseDoubleTask extends BaseTask<Long, Long, Long> {\n         long startTs = System.currentTimeMillis();\n         TVector row = client.getRow(0);\n         LOG.info(\"Task \" + taskContext.getTaskId() + \" in iteration \" + taskContext.getEpoch()\n-          + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n+        + \" pull use time=\" + (System.currentTimeMillis() - startTs) + \", sum=\" + sum((SparseDoubleVector)row));\n \n         startTs = System.currentTimeMillis();\n         SparseDoubleVector deltaV = new SparseDoubleVector(2100000000, 150000000);\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

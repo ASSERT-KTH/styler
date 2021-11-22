@@ -1,0 +1,87 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "306",
+    "information": {
+        "errors": [
+            {
+                "line": "66",
+                "column": "69",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "                            }\n                        }\n                        left = newList.size() == 1 ? newList.get(0) //\n                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n                        break;\n                    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/306/NullPredicate.java\nindex b6b760c8dee..9c0b9a96764 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/306/NullPredicate.java\n@@ -63,8 +63,9 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+                        left = newList.size() == 1 ? newList.get(0)\n+                    //\n+                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n                 }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "67",
+                    "column": "57",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/306/NullPredicate.java\nindex b6b760c8dee..bb52621cc71 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/306/NullPredicate.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.expression.condition;\n \n import java.util.ArrayList;\n@@ -24,111 +25,111 @@ import org.h2.value.ValueRow;\n  */\n public class NullPredicate extends SimplePredicate {\n \n-    private boolean optimized;\n+  private boolean optimized;\n \n-    public NullPredicate(Expression left, boolean not) {\n-        super(left, not);\n-    }\n+  public NullPredicate(Expression left, boolean not) {\n+    super(left, not);\n+  }\n \n-    @Override\n-    public StringBuilder getSQL(StringBuilder builder, boolean alwaysQuote) {\n-        return left.getSQL(builder.append('('), alwaysQuote).append(not ? \" IS NOT NULL)\" : \" IS NULL)\");\n-    }\n+  @Override\n+  public StringBuilder getSQL(StringBuilder builder, boolean alwaysQuote) {\n+    return left.getSQL(builder.append('('), alwaysQuote).append(not ? \" IS NOT NULL)\" : \" IS NULL)\");\n+  }\n \n-    @Override\n-    public Expression optimize(Session session) {\n-        if (optimized) {\n-            return this;\n-        }\n-        Expression o = super.optimize(session);\n-        if (o != this) {\n-            return o;\n-        }\n-        optimized = true;\n-        if (left instanceof ExpressionList) {\n-            ExpressionList list = (ExpressionList) left;\n-            if (list.getType().getValueType() == Value.ROW) {\n-                for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n-                    if (list.getSubexpression(i).isNullConstant()) {\n-                        if (not) {\n-                            return ValueExpression.FALSE;\n-                        }\n-                        ArrayList<Expression> newList = new ArrayList<>(count - 1);\n-                        for (int j = 0; j < i; j++) {\n-                            newList.add(list.getSubexpression(j));\n-                        }\n-                        for (int j = i + 1; j < count; j++) {\n-                            Expression e = list.getSubexpression(j);\n-                            if (!e.isNullConstant()) {\n-                                newList.add(e);\n-                            }\n-                        }\n-                        left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n-                        break;\n-                    }\n-                }\n+  @Override\n+  public Expression optimize(Session session) {\n+    if (optimized) {\n+      return this;\n+    }\n+    Expression o = super.optimize(session);\n+    if (o != this) {\n+      return o;\n+    }\n+    optimized = true;\n+    if (left instanceof ExpressionList) {\n+      ExpressionList list = (ExpressionList) left;\n+      if (list.getType().getValueType() == Value.ROW) {\n+        for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n+          if (list.getSubexpression(i).isNullConstant()) {\n+            if (not) {\n+              return ValueExpression.FALSE;\n+            }\n+            ArrayList<Expression> newList = new ArrayList<>(count - 1);\n+            for (int j = 0; j < i; j++) {\n+              newList.add(list.getSubexpression(j));\n+            }\n+            for (int j = i + 1; j < count; j++) {\n+              Expression e = list.getSubexpression(j);\n+              if (!e.isNullConstant()) {\n+                newList.add(e);\n+              }\n             }\n+            left = newList.size() == 1 ? newList.get(0) //\n+                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+            break;\n+          }\n         }\n-        return this;\n+      }\n     }\n+    return this;\n+  }\n \n-    @Override\n-    public Value getValue(Session session) {\n-        Value l = left.getValue(session);\n-        if (l.getType().getValueType() == Value.ROW) {\n-            for (Value v : ((ValueRow) l).getList()) {\n-                if (v != ValueNull.INSTANCE ^ not) {\n-                    return ValueBoolean.FALSE;\n-                }\n-            }\n-            return ValueBoolean.TRUE;\n+  @Override\n+  public Value getValue(Session session) {\n+    Value l = left.getValue(session);\n+    if (l.getType().getValueType() == Value.ROW) {\n+      for (Value v : ((ValueRow) l).getList()) {\n+        if (v != ValueNull.INSTANCE ^ not) {\n+          return ValueBoolean.FALSE;\n         }\n-        return ValueBoolean.get(l == ValueNull.INSTANCE ^ not);\n+      }\n+      return ValueBoolean.TRUE;\n     }\n+    return ValueBoolean.get(l == ValueNull.INSTANCE ^ not);\n+  }\n \n-    @Override\n-    public Expression getNotIfPossible(Session session) {\n-        Expression o = optimize(session);\n-        if (o != this) {\n-            return o.getNotIfPossible(session);\n-        }\n-        switch (left.getType().getValueType()) {\n-        case Value.UNKNOWN:\n-        case Value.ROW:\n-            return null;\n-        }\n-        return new NullPredicate(left, !not);\n+  @Override\n+  public Expression getNotIfPossible(Session session) {\n+    Expression o = optimize(session);\n+    if (o != this) {\n+      return o.getNotIfPossible(session);\n+    }\n+    switch (left.getType().getValueType()) {\n+      case Value.UNKNOWN:\n+      case Value.ROW:\n+        return null;\n     }\n+    return new NullPredicate(left, !not);\n+  }\n \n-    @Override\n-    public void createIndexConditions(Session session, TableFilter filter) {\n-        if (not || !filter.getTable().isQueryComparable()) {\n-            return;\n-        }\n-        if (left instanceof ExpressionColumn) {\n-            createNullIndexCondition(filter, (ExpressionColumn) left);\n-        } else if (left instanceof ExpressionList) {\n-            ExpressionList list = (ExpressionList) left;\n-            if (list.getType().getValueType() == Value.ROW) {\n-                for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n-                    Expression e = list.getSubexpression(i);\n-                    if (e instanceof ExpressionColumn) {\n-                        createNullIndexCondition(filter, (ExpressionColumn) e);\n-                    }\n-                }\n-            }\n+  @Override\n+  public void createIndexConditions(Session session, TableFilter filter) {\n+    if (not || !filter.getTable().isQueryComparable()) {\n+      return;\n+    }\n+    if (left instanceof ExpressionColumn) {\n+      createNullIndexCondition(filter, (ExpressionColumn) left);\n+    } else if (left instanceof ExpressionList) {\n+      ExpressionList list = (ExpressionList) left;\n+      if (list.getType().getValueType() == Value.ROW) {\n+        for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n+          Expression e = list.getSubexpression(i);\n+          if (e instanceof ExpressionColumn) {\n+            createNullIndexCondition(filter, (ExpressionColumn) e);\n+          }\n         }\n+      }\n     }\n+  }\n \n-    private static void createNullIndexCondition(TableFilter filter, ExpressionColumn c) {\n-        /*\n-         * Columns with row value data type aren't valid, but perform such check\n-         * to be sure.\n-         */\n-        if (filter == c.getTableFilter() && c.getType().getValueType() != Value.ROW) {\n-            filter.addIndexCondition(IndexCondition.get(Comparison.EQUAL_NULL_SAFE, c, ValueExpression.NULL));\n-        }\n+  private static void createNullIndexCondition(TableFilter filter, ExpressionColumn c) {\n+    /*\n+     * Columns with row value data type aren't valid, but perform such check\n+     * to be sure.\n+     */\n+    if (filter == c.getTableFilter() && c.getType().getValueType() != Value.ROW) {\n+      filter.addIndexCondition(IndexCondition.get(Comparison.EQUAL_NULL_SAFE, c, ValueExpression.NULL));\n     }\n+  }\n \n }\n",
+            "diff_size": 105
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "66",
+                    "column": "69",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/306/NullPredicate.java\nindex b6b760c8dee..44dd2f13bd1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/306/NullPredicate.java\n@@ -131,4 +131,4 @@ public class NullPredicate extends SimplePredicate {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "66",
+                    "column": "68",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/306/NullPredicate.java\nindex b6b760c8dee..a84184b8105 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/306/NullPredicate.java\n@@ -63,7 +63,7 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n+                        left = newList.size() == 1 ? newList.get(0)//\n                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/306/NullPredicate.java\nindex b6b760c8dee..9c0b9a96764 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/306/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/306/NullPredicate.java\n@@ -63,8 +63,9 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+                        left = newList.size() == 1 ? newList.get(0)\n+                    //\n+                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n                 }\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "638",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.runtime.api.impl;\n\nimport org.activiti.api.process.model.payloads.ReceiveMessagePayload;\nimport org.activiti.engine.ActivitiObjectNotFoundException;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/638/RuntimeReceiveMessagePayloadEventListener.java\nindex 859d29b83d6..daa12327016 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/638/RuntimeReceiveMessagePayloadEventListener.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.impl;\n \n import org.activiti.api.process.model.payloads.ReceiveMessagePayload;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/638/RuntimeReceiveMessagePayloadEventListener.java\nindex 859d29b83d6..eeeac31f13d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/638/RuntimeReceiveMessagePayloadEventListener.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.impl;\n \n import org.activiti.api.process.model.payloads.ReceiveMessagePayload;\n@@ -29,16 +30,15 @@ import java.util.Map;\n import java.util.Objects;\n \n /**\n- * Default implementation of SignalPayloadEventListener that delegates \n- * Spring SignalPayload event into embedded RuntimeService.  \n- * \n+ * Default implementation of SignalPayloadEventListener that delegates\n+ * Spring SignalPayload event into embedded RuntimeService.\n  */\n public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessagePayloadEventListener {\n-    \n+\n     private final RuntimeService runtimeService;\n \n     private final ManagementService managementService;\n-    \n+\n     public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService,\n                                                      ManagementService managementService) {\n         this.runtimeService = runtimeService;\n@@ -49,21 +49,21 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage\n     public void receiveMessage(ReceiveMessagePayload messagePayload) {\n         String messageName = messagePayload.getName();\n         String correlationKey = messagePayload.getCorrelationKey();\n-                \n+\n         EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,\n-                                                                                                                 correlationKey));\n+                correlationKey));\n         if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {\n             Map<String, Object> variables = messagePayload.getVariables();\n             String executionId = subscription.getExecutionId();\n-            \n+\n             runtimeService.messageEventReceived(messageName,\n-                                                executionId,\n-                                                variables);\n+                    executionId,\n+                    variables);\n         } else {\n             throw new ActivitiObjectNotFoundException(\"Message subscription name '\" + messageName + \"' with correlation key '\" + correlationKey + \"' not found.\");\n         }\n     }\n-    \n+\n     static class FindMessageEventSubscription implements Command<EventSubscriptionEntity> {\n \n         private final String messageName;\n@@ -76,9 +76,9 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage\n \n         public EventSubscriptionEntity execute(CommandContext commandContext) {\n             return new EventSubscriptionQueryImpl(commandContext).eventType(\"message\")\n-                                                                 .eventName(messageName)\n-                                                                 .configuration(correlationKey)\n-                                                                 .singleResult();\n+                    .eventName(messageName)\n+                    .configuration(correlationKey)\n+                    .singleResult();\n         }\n     }\n }\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/638/RuntimeReceiveMessagePayloadEventListener.java\nindex 859d29b83d6..106b306cf0d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/638/RuntimeReceiveMessagePayloadEventListener.java\n@@ -24,7 +24,6 @@ import org.activiti.engine.impl.interceptor.Command;\n import org.activiti.engine.impl.interceptor.CommandContext;\n import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;\n import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;\n-\n import java.util.Map;\n import java.util.Objects;\n \n@@ -33,52 +32,47 @@ import java.util.Objects;\n  * Spring SignalPayload event into embedded RuntimeService.  \n  * \n  */\n+\n+\n public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessagePayloadEventListener {\n-    \n-    private final RuntimeService runtimeService;\n \n-    private final ManagementService managementService;\n-    \n-    public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService,\n-                                                     ManagementService managementService) {\n-        this.runtimeService = runtimeService;\n-        this.managementService = managementService;\n-    }\n+  private final RuntimeService runtimeService;\n+\n+  private final ManagementService managementService;\n \n-    @Override\n-    public void receiveMessage(ReceiveMessagePayload messagePayload) {\n-        String messageName = messagePayload.getName();\n-        String correlationKey = messagePayload.getCorrelationKey();\n-                \n-        EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,\n-                                                                                                                 correlationKey));\n-        if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {\n-            Map<String, Object> variables = messagePayload.getVariables();\n-            String executionId = subscription.getExecutionId();\n-            \n-            runtimeService.messageEventReceived(messageName,\n-                                                executionId,\n-                                                variables);\n-        } else {\n-            throw new ActivitiObjectNotFoundException(\"Message subscription name '\" + messageName + \"' with correlation key '\" + correlationKey + \"' not found.\");\n-        }\n+  public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService, ManagementService managementService) {\n+    this.runtimeService = runtimeService;\n+    this.managementService = managementService;\n+  }\n+\n+  @Override\n+  public void receiveMessage(ReceiveMessagePayload messagePayload) {\n+    String messageName = messagePayload.getName();\n+    String correlationKey = messagePayload.getCorrelationKey();\n+    EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName, correlationKey));\n+    if (subscription != null && Objects.equals(correlationKey,\n+                                               subscription.getConfiguration())) {\n+      Map<String, Object> variables = messagePayload.getVariables();\n+      String executionId = subscription.getExecutionId();\n+      runtimeService.messageEventReceived(messageName, executionId, variables);\n+    } else {\n+      throw new ActivitiObjectNotFoundException(\"Message subscription name '\" + messageName + \"' with correlation key '\" + correlationKey + \"' not found.\");\n     }\n-    \n-    static class FindMessageEventSubscription implements Command<EventSubscriptionEntity> {\n+  }\n+\n+  static class FindMessageEventSubscription implements Command<EventSubscriptionEntity> {\n \n-        private final String messageName;\n-        private final String correlationKey;\n+    private final String messageName;\n \n-        public FindMessageEventSubscription(String messageName, String correlationKey) {\n-            this.messageName = messageName;\n-            this.correlationKey = correlationKey;\n-        }\n+    private final String correlationKey;\n+\n+    public FindMessageEventSubscription(String messageName, String correlationKey) {\n+      this.messageName = messageName;\n+      this.correlationKey = correlationKey;\n+    }\n \n-        public EventSubscriptionEntity execute(CommandContext commandContext) {\n-            return new EventSubscriptionQueryImpl(commandContext).eventType(\"message\")\n-                                                                 .eventName(messageName)\n-                                                                 .configuration(correlationKey)\n-                                                                 .singleResult();\n-        }\n+    public EventSubscriptionEntity execute(CommandContext commandContext) {\n+      return new EventSubscriptionQueryImpl(commandContext).eventType(\"message\").eventName(messageName).configuration(correlationKey).singleResult();\n     }\n-}\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/638/RuntimeReceiveMessagePayloadEventListener.java\nindex 859d29b83d6..daa12327016 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/638/RuntimeReceiveMessagePayloadEventListener.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.impl;\n \n import org.activiti.api.process.model.payloads.ReceiveMessagePayload;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/638/RuntimeReceiveMessagePayloadEventListener.java\nindex 859d29b83d6..daa12327016 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/638/RuntimeReceiveMessagePayloadEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/638/RuntimeReceiveMessagePayloadEventListener.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.runtime.api.impl;\n \n import org.activiti.api.process.model.payloads.ReceiveMessagePayload;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

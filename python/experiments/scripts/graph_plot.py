@@ -57,7 +57,7 @@ def violin_plot(plot_data):
     order = tuple(colors.keys())
     print(order)
 
-    fig, axes = plt.subplots(figsize=(7,4))
+    fig, axes = plt.subplots(figsize=(7,3))
 
     parts = axes.violinplot([list(filter(lambda a: a<150, points)) for points in dict_to_list(data, order)], range(len(data)), points=1000, vert=False, widths=0.7,
                           showmeans=False, showextrema=False, showmedians=False,
@@ -80,7 +80,7 @@ def violin_plot(plot_data):
     plt.xlabel(plot_data.get('x_label', ''), fontsize=12)
     plt.ylabel(plot_data.get('y_label', ''), fontsize=12)
     plt.xlim(0,200)
-    plt.subplots_adjust(bottom=0.13, left=0.21, right=0.98, top=0.99)
+    plt.subplots_adjust(bottom=0.17, left=0.21, right=0.98, top=0.99)
     plt.savefig(f'{get_experiment_dir()}/repair_diffs.pdf', format='pdf')
     plt.savefig(f'{get_experiment_dir()}/repair_diffs.png', format='png')
 

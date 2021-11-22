@@ -1,0 +1,145 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3450",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "68",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "115",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "115",
+                    "column": "65",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3450/StorageEngine.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3450/StorageEngine.java\nindex a22e1dc8a54..815d28df764 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3450/StorageEngine.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3450/StorageEngine.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.storageengine.api;\n \n import java.util.Collection;\n@@ -35,109 +36,110 @@ import org.neo4j.storageengine.api.txstate.ReadableTransactionState;\n  */\n public interface StorageEngine\n {\n-    /**\n-     * @return an interface for accessing data previously\n-     * {@link #apply(CommandsToApply, TransactionApplicationMode) applied} to this storage.\n-     */\n-    StoreReadLayer storeReadLayer();\n-\n-    /**\n-     * @return a new {@link CommandCreationContext} meant to be kept for multiple calls to\n-     * {@link #createCommands(Collection, ReadableTransactionState, StorageStatement, ResourceLocker,\n-     * long)}.\n-     * Must be {@link CommandCreationContext#close() closed} after used, before being discarded.\n-     */\n-    CommandCreationContext allocateCommandCreationContext();\n-\n-    /**\n-     * Generates a list of {@link StorageCommand commands} representing the changes in the given transaction state\n-     * ({@code state}.\n-     * The returned commands can be used to form {@link CommandsToApply} batches, which can be applied to this\n-     * storage using {@link #apply(CommandsToApply, TransactionApplicationMode)}.\n-     * The reason this is separated like this is that the generated commands can be used for other things\n-     * than applying to storage, f.ex replicating to another storage engine.\n-     * @param target {@link Collection} to put {@link StorageCommand commands} into.\n-     * @param state {@link ReadableTransactionState} representing logical store changes to generate commands for.\n-     * @param storageStatement {@link StorageStatement} to use for reading store state during creation of commands.\n-     * @param locks {@link ResourceLocker} can grab additional locks.\n-     * This locks client still have the potential to acquire more locks at this point.\n-     * TODO we should try to get rid of this locking mechanism during creation of commands\n-     * The reason it's needed is that some relationship changes in the record storage engine\n-     * needs to lock prev/next relationships and these changes happens when creating commands\n-     * The EntityLocker interface is a subset of Locks.Client interface, just to fit in while it's here.\n-     * @param lastTransactionIdWhenStarted transaction id which was seen as last committed when this\n-     * transaction started, i.e. before any changes were made and before any data was read.\n-     * TODO Transitional (Collection), might be {@link Stream} or whatever.\n-     *\n-     * @throws TransactionFailureException if command generation fails or some prerequisite of some command\n-     * didn't validate, for example if trying to delete a node that still has relationships.\n-     * @throws CreateConstraintFailureException if this transaction was set to create a constraint and that failed.\n-     * @throws ConstraintValidationException if this transaction was set to create a constraint\n-     * and some data violates that constraint.\n-     */\n-    void createCommands(\n-            Collection<StorageCommand> target,\n-            ReadableTransactionState state,\n-            StorageStatement storageStatement,\n-            ResourceLocker locks,\n-            long lastTransactionIdWhenStarted )\n-            throws TransactionFailureException, CreateConstraintFailureException, ConstraintValidationException;\n-\n-    /**\n-     * Apply a batch of groups of commands to this storage.\n-     *\n-     * @param batch batch of groups of commands to apply to storage.\n-     * @param mode {@link TransactionApplicationMode} when applying.\n-     * @throws Exception if an error occurs during application.\n-     */\n-    void apply( CommandsToApply batch, TransactionApplicationMode mode ) throws Exception;\n-\n-    /**\n-     * @return a {@link CommandReaderFactory} capable of returning {@link CommandReader commands readers}\n-     * for specific log entry versions.\n-     */\n-    CommandReaderFactory commandReaderFactory();\n-\n-    /**\n-     * Flushes and forces all changes down to underlying storage. This is a blocking call and when it returns\n-     * all changes applied to this storage engine will be durable.\n-     * @param limiter The {@link IOLimiter} used to moderate the rate of IO caused by the flush process.\n-     */\n-    void flushAndForce( IOLimiter limiter );\n-\n-    /**\n-     * Registers diagnostics about the storage onto {@link DiagnosticsManager}.\n-     *\n-     * @param diagnosticsManager {@link DiagnosticsManager} to register diagnostics at.\n-     */\n-    void registerDiagnostics( DiagnosticsManager diagnosticsManager );\n-\n-    /**\n-     * Force close all opened resources. This may be called during startup if there's a failure\n-     * during recovery or similar.\n-     */\n-    void forceClose();\n-\n-    /**\n-     * Startup process have reached the conclusion that recovery is required. Make the necessary\n-     * preparations to be ready for recovering transactions.\n-     */\n-    void prepareForRecoveryRequired();\n-\n-    /**\n-     * @return a {@link Collection} of {@link StoreFileMetadata} containing metadata about all store files managed by\n-     * this {@link StorageEngine}.\n-     */\n-    Collection<StoreFileMetadata> listStorageFiles();\n-\n-    // ====================================================================\n-    // All these methods below are temporary while in the process of\n-    // creating this API, take little notice to them, as they will go away\n-    // ====================================================================\n-\n-    @Deprecated\n-    void loadSchemaCache();\n-\n-    @Deprecated\n-    void clearBufferedIds();\n+  /**\n+   * @return an interface for accessing data previously\n+   * {@link #apply(CommandsToApply, TransactionApplicationMode) applied} to this storage.\n+   */\n+  StoreReadLayer storeReadLayer();\n+\n+  /**\n+   * @return a new {@link CommandCreationContext} meant to be kept for multiple calls to\n+   * {@link #createCommands(Collection, ReadableTransactionState, StorageStatement, ResourceLocker,\n+   * long)}.\n+   * Must be {@link CommandCreationContext#close() closed} after used, before being discarded.\n+   */\n+  CommandCreationContext allocateCommandCreationContext();\n+\n+  /**\n+   * Generates a list of {@link StorageCommand commands} representing the changes in the given transaction state\n+   * ({@code state}.\n+   * The returned commands can be used to form {@link CommandsToApply} batches, which can be applied to this\n+   * storage using {@link #apply(CommandsToApply, TransactionApplicationMode)}.\n+   * The reason this is separated like this is that the generated commands can be used for other things\n+   * than applying to storage, f.ex replicating to another storage engine.\n+   *\n+   * @param target                       {@link Collection} to put {@link StorageCommand commands} into.\n+   * @param state                        {@link ReadableTransactionState} representing logical store changes to generate commands for.\n+   * @param storageStatement             {@link StorageStatement} to use for reading store state during creation of commands.\n+   * @param locks                        {@link ResourceLocker} can grab additional locks.\n+   *                                     This locks client still have the potential to acquire more locks at this point.\n+   *                                     TODO we should try to get rid of this locking mechanism during creation of commands\n+   *                                     The reason it's needed is that some relationship changes in the record storage engine\n+   *                                     needs to lock prev/next relationships and these changes happens when creating commands\n+   *                                     The EntityLocker interface is a subset of Locks.Client interface, just to fit in while it's here.\n+   * @param lastTransactionIdWhenStarted transaction id which was seen as last committed when this\n+   *                                     transaction started, i.e. before any changes were made and before any data was read.\n+   *                                     TODO Transitional (Collection), might be {@link Stream} or whatever.\n+   * @throws TransactionFailureException      if command generation fails or some prerequisite of some command\n+   *                                          didn't validate, for example if trying to delete a node that still has relationships.\n+   * @throws CreateConstraintFailureException if this transaction was set to create a constraint and that failed.\n+   * @throws ConstraintValidationException    if this transaction was set to create a constraint\n+   *                                          and some data violates that constraint.\n+   */\n+  void createCommands(\n+      Collection<StorageCommand> target,\n+      ReadableTransactionState state,\n+      StorageStatement storageStatement,\n+      ResourceLocker locks,\n+      long lastTransactionIdWhenStarted)\n+      throws TransactionFailureException, CreateConstraintFailureException, ConstraintValidationException;\n+\n+  /**\n+   * Apply a batch of groups of commands to this storage.\n+   *\n+   * @param batch batch of groups of commands to apply to storage.\n+   * @param mode  {@link TransactionApplicationMode} when applying.\n+   * @throws Exception if an error occurs during application.\n+   */\n+  void apply(CommandsToApply batch, TransactionApplicationMode mode) throws Exception;\n+\n+  /**\n+   * @return a {@link CommandReaderFactory} capable of returning {@link CommandReader commands readers}\n+   * for specific log entry versions.\n+   */\n+  CommandReaderFactory commandReaderFactory();\n+\n+  /**\n+   * Flushes and forces all changes down to underlying storage. This is a blocking call and when it returns\n+   * all changes applied to this storage engine will be durable.\n+   *\n+   * @param limiter The {@link IOLimiter} used to moderate the rate of IO caused by the flush process.\n+   */\n+  void flushAndForce(IOLimiter limiter);\n+\n+  /**\n+   * Registers diagnostics about the storage onto {@link DiagnosticsManager}.\n+   *\n+   * @param diagnosticsManager {@link DiagnosticsManager} to register diagnostics at.\n+   */\n+  void registerDiagnostics(DiagnosticsManager diagnosticsManager);\n+\n+  /**\n+   * Force close all opened resources. This may be called during startup if there's a failure\n+   * during recovery or similar.\n+   */\n+  void forceClose();\n+\n+  /**\n+   * Startup process have reached the conclusion that recovery is required. Make the necessary\n+   * preparations to be ready for recovering transactions.\n+   */\n+  void prepareForRecoveryRequired();\n+\n+  /**\n+   * @return a {@link Collection} of {@link StoreFileMetadata} containing metadata about all store files managed by\n+   * this {@link StorageEngine}.\n+   */\n+  Collection<StoreFileMetadata> listStorageFiles();\n+\n+  // ====================================================================\n+  // All these methods below are temporary while in the process of\n+  // creating this API, take little notice to them, as they will go away\n+  // ====================================================================\n+\n+  @Deprecated\n+  void loadSchemaCache();\n+\n+  @Deprecated\n+  void clearBufferedIds();\n }\n",
+            "diff_size": 107
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3450/StorageEngine.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3450/StorageEngine.java\nindex a22e1dc8a54..0b94143d76d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3450/StorageEngine.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3450/StorageEngine.java\n@@ -75,15 +75,13 @@ public interface StorageEngine\n      * @throws ConstraintValidationException if this transaction was set to create a constraint\n      * and some data violates that constraint.\n      */\n-    void createCommands(\n-            Collection<StorageCommand> target,\n+    void createCommands( Collection<StorageCommand> target,\n             ReadableTransactionState state,\n             StorageStatement storageStatement,\n             ResourceLocker locks,\n-            long lastTransactionIdWhenStarted )\n-            throws TransactionFailureException, CreateConstraintFailureException, ConstraintValidationException;\n+            long lastTransactionIdWhenStarted ) throws TransactionFailureException, CreateConstraintFailureException, ConstraintValidationException;\n \n-    /**\n+/**\n      * Apply a batch of groups of commands to this storage.\n      *\n      * @param batch batch of groups of commands to apply to storage.\n@@ -140,4 +138,4 @@ public interface StorageEngine\n \n     @Deprecated\n     void clearBufferedIds();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

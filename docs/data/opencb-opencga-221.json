@@ -1,0 +1,97 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "221",
+    "information": {
+        "errors": [
+            {
+                "line": "83",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 145).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        Files.copy(inputStream, opencgaHome.resolve(\"examples\").resolve(\"20130606_g1k.ped\"), StandardCopyOption.REPLACE_EXISTING);\n\n        inputStream = new FileInputStream(\"../opencga-app/app/examples/1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\");\n        Files.copy(inputStream, opencgaHome.resolve(\"examples\")\n                .resolve(\"1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\"), StandardCopyOption.REPLACE_EXISTING);\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/221/WorkEnvironmentTest.java\nindex 0f1cc3af7bd..42eb05d9205 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/221/WorkEnvironmentTest.java\n@@ -38,71 +38,72 @@ import java.nio.file.StandardCopyOption;\n  */\n public class WorkEnvironmentTest extends ExternalResource {\n \n-    protected OpenCGAClient openCGAClient;\n-    protected Path opencgaHome;\n-    protected CatalogManager catalogManager;\n-    protected ClientConfiguration clientConfiguration;\n-    protected Configuration configuration;\n-    protected StorageConfiguration storageConfiguration;\n-    protected RestServer restServer;\n-\n-    @Override\n-    protected void before() throws Throwable {\n-        super.before();\n-        isolateOpenCGA();\n-    }\n-\n-    private void isolateOpenCGA() throws Exception {\n-        opencgaHome = Paths.get(\"target/test-data\").resolve(\"junit_opencga_home_\" + RandomStringUtils.randomAlphabetic(10));\n-        Files.createDirectories(opencgaHome);\n-        storageConfiguration = StorageConfiguration.load(getClass().getResource(\"/storage-configuration.yml\").openStream());\n-        configuration = Configuration.load(getClass().getResource(\"/configuration-test.yml\").openStream());\n-        configuration.setWorkspace(opencgaHome.resolve(\"sessions\").toUri().toString());\n-\n-        // Copy the conf files\n-        Files.createDirectories(opencgaHome.resolve(\"conf\"));\n+  protected OpenCGAClient openCGAClient;\n+  protected Path opencgaHome;\n+  protected CatalogManager catalogManager;\n+  protected ClientConfiguration clientConfiguration;\n+  protected Configuration configuration;\n+  protected StorageConfiguration storageConfiguration;\n+  protected RestServer restServer;\n+\n+  @Override\n+  protected void before() throws Throwable {\n+    super.before();\n+    isolateOpenCGA();\n+  }\n+\n+  private void isolateOpenCGA() throws Exception {\n+    opencgaHome = Paths.get(\"target/test-data\").resolve(\"junit_opencga_home_\" + RandomStringUtils.randomAlphabetic(10));\n+    Files.createDirectories(opencgaHome);\n+    storageConfiguration = StorageConfiguration.load(getClass().getResource(\"/storage-configuration.yml\").openStream());\n+    configuration = Configuration.load(getClass().getResource(\"/configuration-test.yml\").openStream());\n+    configuration.setWorkspace(opencgaHome.resolve(\"sessions\").toUri().toString());\n+\n+    // Copy the conf files\n+    Files.createDirectories(opencgaHome.resolve(\"conf\"));\n //            InputStream inputStream = getClass().getResource(\"/configuration-test.yml\").openStream();\n //            Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"configuration.yml\"), StandardCopyOption.REPLACE_EXISTING);\n-        configuration.serialize(\n-                new FileOutputStream(opencgaHome.resolve(\"conf\").resolve(\"configuration.yml\").toString()));\n-\n-        InputStream inputStream = getClass().getResource(\"/storage-configuration.yml\").openStream();\n-        Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"storage-configuration.yml\"), StandardCopyOption.REPLACE_EXISTING);\n-\n-        inputStream = getClass().getResource(\"/configuration-test.yml\").openStream();\n-        Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"configuration.yml\"), StandardCopyOption.REPLACE_EXISTING);\n-\n-        inputStream = getClass().getResource(\"/analysis.properties\").openStream();\n-        Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"analysis.properties\"), StandardCopyOption.REPLACE_EXISTING);\n-\n-        // Copy the configuration and example demo files\n-        Files.createDirectories(opencgaHome.resolve(\"examples\"));\n-        inputStream = new FileInputStream(\"../opencga-app/app/examples/20130606_g1k.ped\");\n-        Files.copy(inputStream, opencgaHome.resolve(\"examples\").resolve(\"20130606_g1k.ped\"), StandardCopyOption.REPLACE_EXISTING);\n-\n-        inputStream = new FileInputStream(\"../opencga-app/app/examples/1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\");\n-        Files.copy(inputStream, opencgaHome.resolve(\"examples\")\n-                .resolve(\"1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\"), StandardCopyOption.REPLACE_EXISTING);\n-\n-        CatalogDemo.createDemoDatabase(configuration, \"admin\", true);\n-\n-        restServer = new RestServer(opencgaHome.resolve(\"conf\"));\n-        restServer.start();\n-\n-        catalogManager = new CatalogManager(configuration);\n-        clientConfiguration = ClientConfiguration.load(getClass().getResourceAsStream(\"/client-configuration-test.yml\"));\n-        openCGAClient = new OpenCGAClient(\"user1\", \"user1_pass\", clientConfiguration);\n-    }\n-\n-    @Override\n-    protected void after() {\n-        super.after();\n-        try {\n-            restServer.stop();\n-            catalogManager.close();\n-        } catch (Exception e) {\n-            e.printStackTrace();\n-        }\n+    configuration.serialize(\n+        new FileOutputStream(opencgaHome.resolve(\"conf\").resolve(\"configuration.yml\").toString()));\n+\n+    InputStream inputStream = getClass().getResource(\"/storage-configuration.yml\").openStream();\n+    Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"storage-configuration.yml\"), StandardCopyOption.REPLACE_EXISTING);\n+\n+    inputStream = getClass().getResource(\"/configuration-test.yml\").openStream();\n+    Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"configuration.yml\"), StandardCopyOption.REPLACE_EXISTING);\n+\n+    inputStream = getClass().getResource(\"/analysis.properties\").openStream();\n+    Files.copy(inputStream, opencgaHome.resolve(\"conf\").resolve(\"analysis.properties\"), StandardCopyOption.REPLACE_EXISTING);\n+\n+    // Copy the configuration and example demo files\n+    Files.createDirectories(opencgaHome.resolve(\"examples\"));\n+    inputStream = new FileInputStream(\"../opencga-app/app/examples/20130606_g1k.ped\");\n+    Files.copy(inputStream, opencgaHome.resolve(\"examples\").resolve(\"20130606_g1k.ped\"), StandardCopyOption.REPLACE_EXISTING);\n+\n+    inputStream =\n+        new FileInputStream(\"../opencga-app/app/examples/1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\");\n+    Files.copy(inputStream, opencgaHome.resolve(\"examples\")\n+        .resolve(\"1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\"), StandardCopyOption.REPLACE_EXISTING);\n+\n+    CatalogDemo.createDemoDatabase(configuration, \"admin\", true);\n+\n+    restServer = new RestServer(opencgaHome.resolve(\"conf\"));\n+    restServer.start();\n+\n+    catalogManager = new CatalogManager(configuration);\n+    clientConfiguration = ClientConfiguration.load(getClass().getResourceAsStream(\"/client-configuration-test.yml\"));\n+    openCGAClient = new OpenCGAClient(\"user1\", \"user1_pass\", clientConfiguration);\n+  }\n+\n+  @Override\n+  protected void after() {\n+    super.after();\n+    try {\n+      restServer.stop();\n+      catalogManager.close();\n+    } catch (Exception e) {\n+      e.printStackTrace();\n     }\n+  }\n \n }\n",
+            "diff_size": 64
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/221/WorkEnvironmentTest.java\nindex 0f1cc3af7bd..b6a8841446d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/221/WorkEnvironmentTest.java\n@@ -105,4 +105,4 @@ public class WorkEnvironmentTest extends ExternalResource {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 200).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "146",
+                    "severity": "error",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/221/WorkEnvironmentTest.java\nindex 0f1cc3af7bd..8ddc4b6bf3e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/221/WorkEnvironmentTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/221/WorkEnvironmentTest.java\n@@ -80,8 +80,7 @@ public class WorkEnvironmentTest extends ExternalResource {\n         inputStream = new FileInputStream(\"../opencga-app/app/examples/20130606_g1k.ped\");\n         Files.copy(inputStream, opencgaHome.resolve(\"examples\").resolve(\"20130606_g1k.ped\"), StandardCopyOption.REPLACE_EXISTING);\n \n-        inputStream = new FileInputStream(\"../opencga-app/app/examples/1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\");\n-        Files.copy(inputStream, opencgaHome.resolve(\"examples\")\n+        inputStream = new FileInputStream(\"../opencga-app/app/examples/1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\");Files.copy(inputStream, opencgaHome.resolve(\"examples\")\n                 .resolve(\"1k.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.genotypes.vcf.gz\"), StandardCopyOption.REPLACE_EXISTING);\n \n         CatalogDemo.createDemoDatabase(configuration, \"admin\", true);\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

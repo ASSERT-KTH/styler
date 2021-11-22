@@ -1,0 +1,191 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "95",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "97",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "120",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/95/ElectionMessage.java\nindex 0e590eb391f..a391d5360dc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/95/ElectionMessage.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.cluster.protocol.election;\n \n import java.io.Serializable;\n@@ -30,74 +31,74 @@ import org.neo4j.cluster.com.message.MessageType;\n public enum ElectionMessage\n     implements MessageType\n {\n-    created,join,leave,\n-    demote, performRoleElections, vote, electionTimeout, voted;\n+  created, join, leave,\n+  demote, performRoleElections, vote, electionTimeout, voted;\n+\n+  public static class VotedData\n+      implements Serializable\n+  {\n+    private static final long serialVersionUID = 6115474263667086327L;\n+\n+    private String role;\n+    private InstanceId instanceId;\n+    private ElectionCredentials voteCredentials;\n+\n+    public VotedData(String role, InstanceId instanceId, ElectionCredentials electionCredentials)\n+    {\n+      this.role = role;\n+      this.instanceId = instanceId;\n+      this.voteCredentials = electionCredentials;\n+    }\n+\n+    public String getRole()\n+    {\n+      return role;\n+    }\n+\n+    public InstanceId getInstanceId()\n+    {\n+      return instanceId;\n+    }\n+\n+    public ElectionCredentials getElectionCredentials()\n+    {\n+      return voteCredentials;\n+    }\n+\n+    @Override\n+    public String toString()\n+    {\n+      return getClass().getSimpleName() + \"[role:\" + role + \", instance:\" + instanceId + \", credentials:\" +\n+          voteCredentials + \", \" + getImplementationSpecificDetails() + \"]\";\n+    }\n+\n+    protected String getImplementationSpecificDetails()\n+    {\n+      return \"\";\n+    }\n+  }\n+\n+  public static class VersionedVotedData extends VotedData\n+  {\n+    private static final long serialVersionUID = -3795472557085578559L;\n+\n+    private long version;\n+\n+    public VersionedVotedData(String role, InstanceId instanceId, ElectionCredentials electionCredentials, long version)\n+    {\n+      super(role, instanceId, electionCredentials);\n+      this.version = version;\n+    }\n \n-    public static class VotedData\n-        implements Serializable\n+    public long getVersion()\n     {\n-        private static final long serialVersionUID = 6115474263667086327L;\n-\n-        private String role;\n-        private InstanceId instanceId;\n-        private ElectionCredentials voteCredentials;\n-\n-        public VotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials )\n-        {\n-            this.role = role;\n-            this.instanceId = instanceId;\n-            this.voteCredentials = electionCredentials;\n-        }\n-\n-        public String getRole()\n-        {\n-            return role;\n-        }\n-\n-        public InstanceId getInstanceId()\n-        {\n-            return instanceId;\n-        }\n-\n-        public ElectionCredentials getElectionCredentials()\n-        {\n-            return voteCredentials;\n-        }\n-\n-        @Override\n-        public String toString()\n-        {\n-            return getClass().getSimpleName() + \"[role:\" + role + \", instance:\" + instanceId + \", credentials:\" +\n-                    voteCredentials + \", \" + getImplementationSpecificDetails() + \"]\";\n-        }\n-\n-        protected String getImplementationSpecificDetails()\n-        {\n-            return \"\";\n-        }\n+      return version;\n     }\n \n-    public static class VersionedVotedData extends VotedData\n+    @Override\n+    protected String getImplementationSpecificDetails()\n     {\n-        private static final long serialVersionUID = -3795472557085578559L;\n-\n-        private long version;\n-\n-        public VersionedVotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials, long version )\n-        {\n-            super( role, instanceId, electionCredentials );\n-            this.version = version;\n-        }\n-\n-        public long getVersion()\n-        {\n-            return version;\n-        }\n-\n-        @Override\n-        protected String getImplementationSpecificDetails()\n-        {\n-            return \"version: \" + version;\n-        }\n+      return \"version: \" + version;\n     }\n+  }\n }\n",
+            "diff_size": 123
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 180).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/95/ElectionMessage.java\nindex 0e590eb391f..4128a0df0bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/95/ElectionMessage.java\n@@ -27,15 +27,12 @@ import org.neo4j.cluster.com.message.MessageType;\n /**\n  * Messages used to implement the {@link ElectionState}\n  */\n-public enum ElectionMessage\n-    implements MessageType\n+public enum ElectionMessage implements MessageType\n {\n-    created,join,leave,\n-    demote, performRoleElections, vote, electionTimeout, voted;\n+    created,join,leave, demote, performRoleElections, vote, electionTimeout, voted;\n \n-    public static class VotedData\n-        implements Serializable\n-    {\n+    public static class VotedData implements Serializable\n+{\n         private static final long serialVersionUID = 6115474263667086327L;\n \n         private String role;\n@@ -67,9 +64,8 @@ public enum ElectionMessage\n         @Override\n         public String toString()\n         {\n-            return getClass().getSimpleName() + \"[role:\" + role + \", instance:\" + instanceId + \", credentials:\" +\n-                    voteCredentials + \", \" + getImplementationSpecificDetails() + \"]\";\n-        }\n+            return getClass().getSimpleName() + \"[role:\" + role + \", instance:\" + instanceId + \", credentials:\" + voteCredentials + \", \" + getImplementationSpecificDetails() + \"]\";\n+    }\n \n         protected String getImplementationSpecificDetails()\n         {\n@@ -100,4 +96,4 @@ public enum ElectionMessage\n             return \"version: \" + version;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 186).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "65",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 260).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "147",
+                    "severity": "error",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "175",
+                    "severity": "error",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "211",
+                    "severity": "error",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "79",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 209).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/95/ElectionMessage.java\nindex 0e590eb391f..8fe065b1442 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/95/ElectionMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/95/ElectionMessage.java\n@@ -20,84 +20,78 @@\n package org.neo4j.cluster.protocol.election;\n \n import java.io.Serializable;\n-\n import org.neo4j.cluster.InstanceId;\n import org.neo4j.cluster.com.message.MessageType;\n \n /**\n  * Messages used to implement the {@link ElectionState}\n  */\n-public enum ElectionMessage\n-    implements MessageType\n-{\n-    created,join,leave,\n-    demote, performRoleElections, vote, electionTimeout, voted;\n-\n-    public static class VotedData\n-        implements Serializable\n-    {\n-        private static final long serialVersionUID = 6115474263667086327L;\n-\n-        private String role;\n-        private InstanceId instanceId;\n-        private ElectionCredentials voteCredentials;\n-\n-        public VotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials )\n-        {\n-            this.role = role;\n-            this.instanceId = instanceId;\n-            this.voteCredentials = electionCredentials;\n-        }\n-\n-        public String getRole()\n-        {\n-            return role;\n-        }\n-\n-        public InstanceId getInstanceId()\n-        {\n-            return instanceId;\n-        }\n-\n-        public ElectionCredentials getElectionCredentials()\n-        {\n-            return voteCredentials;\n-        }\n-\n-        @Override\n-        public String toString()\n-        {\n-            return getClass().getSimpleName() + \"[role:\" + role + \", instance:\" + instanceId + \", credentials:\" +\n-                    voteCredentials + \", \" + getImplementationSpecificDetails() + \"]\";\n-        }\n-\n-        protected String getImplementationSpecificDetails()\n-        {\n-            return \"\";\n-        }\n-    }\n-\n-    public static class VersionedVotedData extends VotedData\n-    {\n-        private static final long serialVersionUID = -3795472557085578559L;\n-\n-        private long version;\n-\n-        public VersionedVotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials, long version )\n-        {\n-            super( role, instanceId, electionCredentials );\n-            this.version = version;\n-        }\n-\n-        public long getVersion()\n-        {\n-            return version;\n-        }\n \n-        @Override\n-        protected String getImplementationSpecificDetails()\n-        {\n-            return \"version: \" + version;\n-        }\n-    }\n-}\n+public enum ElectionMessage implements MessageType\n+{ created, join, leave, demote, performRoleElections, vote, electionTimeout, voted ;\n+\n+                                                                                       public static class VotedData implements Serializable\n+                                                                                       {\n+                                                                                           private static final long serialVersionUID = 6115474263667086327L;\n+                                                                                           private String role;\n+                                                                                           private InstanceId instanceId;\n+                                                                                           private ElectionCredentials voteCredentials;\n+\n+                                                                                           public VotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials )\n+                                                                                           {\n+                                                                                               this.role = role;\n+                                                                                               this.instanceId = instanceId;\n+                                                                                               this.voteCredentials = electionCredentials;\n+                                                                                           }\n+\n+                                                                                           public String getRole()\n+                                                                                           {\n+                                                                                               return role;\n+                                                                                           }\n+\n+                                                                                           public InstanceId getInstanceId()\n+                                                                                           {\n+                                                                                               return instanceId;\n+                                                                                           }\n+\n+                                                                                           public ElectionCredentials getElectionCredentials()\n+                                                                                           {\n+                                                                                               return voteCredentials;\n+                                                                                           }\n+\n+                                                                                           @Override\n+                                                                                           public String toString()\n+                                                                                           {\n+                                                                                               return getClass().getSimpleName() + \"[role:\" + role+ \", instance:\" + instanceId+ \", credentials:\" + voteCredentials+ \", \" + getImplementationSpecificDetails() + \"]\";\n+                                                                                           }\n+\n+                                                                                           protected String getImplementationSpecificDetails()\n+                                                                                           {\n+                                                                                               return \"\";\n+                                                                                           }\n+                                                                                       }\n+\n+                                                                                       public static class VersionedVotedData extends VotedData\n+                                                                                       {\n+                                                                                           private static final long serialVersionUID = - 3795472557085578559L;\n+                                                                                           private long version;\n+\n+                                                                                           public VersionedVotedData( String role, InstanceId instanceId, ElectionCredentials electionCredentials, long version )\n+                                                                                           {\n+                                                                                               super( role, instanceId, electionCredentials );\n+                                                                                               this.version = version;\n+                                                                                           }\n+\n+                                                                                           public long getVersion()\n+                                                                                           {\n+                                                                                               return version;\n+                                                                                           }\n+\n+                                                                                           @Override\n+                                                                                           protected String getImplementationSpecificDetails()\n+                                                                                           {\n+                                                                                               return \"version: \" + version;\n+                                                                                           }\n+                                                                                       }\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 135
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "152",
+    "information": {
+        "errors": [
+            {
+                "line": "81",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 123).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "     * (non-Javadoc)\n     * \n     * @see org.apache.ode.bpel.engine.rapi.OdeRuntime#createInstance(org.apache.ode.bpel.engine.rapi.OdeRTInstanceContext)\n     */\n    public OdeRTInstance newInstance(Object state) {\n        return new RuntimeInstanceImpl(this, (ExecutionQueueImpl) state);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/152/RuntimeImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/152/RuntimeImpl.java\nindex e971a7ad81c..026c809d29c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/152/RuntimeImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/152/RuntimeImpl.java\n@@ -24,133 +24,139 @@ import javax.xml.namespace.QName;\n \n public class RuntimeImpl implements OdeRuntime {\n \n-    private static final Log __log = LogFactory.getLog(RuntimeImpl.class);\n-    private static final Messages __msgs = MessageBundle.getMessages(Messages.class);\n-\n-    ProcessConf _pconf;\n-    OProcess _oprocess;\n-    Set<String> _mustUnderstandExtensions;\n-    ReplacementMap _replacementMap;\n-    ExpressionLanguageRuntimeRegistry _expLangRuntimeRegistry;\n-    Map<String, ExtensionBundleRuntime> _extensionRegistry;\n-\n-    /**\n-     * Initialize according to process configuration.\n-     */\n-    public void init(ProcessConf pconf, ProcessModel pmodel) {\n-        _pconf = pconf;\n-        _oprocess = (OProcess) pmodel;\n-\n-        _replacementMap = new ReplacementMapImpl(_oprocess);\n-\n-        // Create an expression language registry for this process\n-        ExpressionLanguageRuntimeRegistry elangRegistry = new ExpressionLanguageRuntimeRegistry();\n-        for (OExpressionLanguage elang : _oprocess.expressionLanguages) {\n-            try {\n-                elangRegistry.registerRuntime(elang);\n-            } catch (ConfigurationException e) {\n-                String msg = __msgs.msgExpLangRegistrationError(elang.expressionLanguageUri, elang.properties);\n-                __log.error(msg, e);\n-                throw new BpelEngineException(msg, e);\n-            }\n-        }\n-        _expLangRuntimeRegistry = elangRegistry;\n-\n-        // Checking for registered extension bundles, throw an exception when\n-        // a \"mustUnderstand\" extension is not available\n-        _mustUnderstandExtensions = new HashSet<String>();\n-        for (OProcess.OExtension extension : _oprocess.declaredExtensions) {\n-            if (extension.mustUnderstand) {\n-                if (_extensionRegistry.get(extension.namespaceURI) == null) {\n-                    String msg = __msgs.msgExtensionMustUnderstandError(_pconf.getProcessId(), extension.namespaceURI);\n-                    __log.error(msg);\n-                    throw new BpelEngineException(msg);\n-                } else {\n-                    _mustUnderstandExtensions.add(extension.namespaceURI);\n-                }\n-            } else {\n-                __log.warn(\"The process declares the extension namespace \" + extension.namespaceURI\n-                        + \" that is unkown to the engine\");\n-            }\n-        }\n-    }\n-\n-    /*\n-     * (non-Javadoc)\n-     * \n-     * @see org.apache.ode.bpel.engine.rapi.OdeRuntime#createInstance(org.apache.ode.bpel.engine.rapi.OdeRTInstanceContext)\n-     */\n-    public OdeRTInstance newInstance(Object state) {\n-        return new RuntimeInstanceImpl(this, (ExecutionQueueImpl) state);\n-    }\n-\n-    public ReplacementMap getReplacementMap(QName processName) {\n-        if (_pconf.getProcessId().equals(processName))\n-            return new ReplacementMapImpl(_oprocess);\n-        else throw new UnsupportedOperationException(\"Implement the creation of replacement map for other version.\");\n+  private static final Log __log = LogFactory.getLog(RuntimeImpl.class);\n+  private static final Messages __msgs = MessageBundle.getMessages(Messages.class);\n+\n+  ProcessConf _pconf;\n+  OProcess _oprocess;\n+  Set<String> _mustUnderstandExtensions;\n+  ReplacementMap _replacementMap;\n+  ExpressionLanguageRuntimeRegistry _expLangRuntimeRegistry;\n+  Map<String, ExtensionBundleRuntime> _extensionRegistry;\n+\n+  /**\n+   * Initialize according to process configuration.\n+   */\n+  public void init(ProcessConf pconf, ProcessModel pmodel) {\n+    _pconf = pconf;\n+    _oprocess = (OProcess) pmodel;\n+\n+    _replacementMap = new ReplacementMapImpl(_oprocess);\n+\n+    // Create an expression language registry for this process\n+    ExpressionLanguageRuntimeRegistry elangRegistry = new ExpressionLanguageRuntimeRegistry();\n+    for (OExpressionLanguage elang : _oprocess.expressionLanguages) {\n+      try {\n+        elangRegistry.registerRuntime(elang);\n+      } catch (ConfigurationException e) {\n+        String msg = __msgs.msgExpLangRegistrationError(elang.expressionLanguageUri, elang.properties);\n+        __log.error(msg, e);\n+        throw new BpelEngineException(msg, e);\n+      }\n     }\n-\n-    public ProcessModel getModel() {\n-        return _oprocess;\n-    }\n-\n-    /**\n-     * Extract the value of a BPEL property from a BPEL messsage variable.\n-     *\n-     * @param msgData message variable data\n-     * @param aliasModel alias to apply\n-     * @param target description of the data (for error logging only)\n-     * @return value of the property\n-     * @throws org.apache.ode.bpel.common.FaultException\n-     */\n-    public String extractProperty(Element msgData, PropertyAliasModel aliasModel, String target) throws FaultException {\n-        OProcess.OPropertyAlias alias = (OProcess.OPropertyAlias) aliasModel;\n-        PropertyAliasEvaluationContext ectx = new PropertyAliasEvaluationContext(msgData, alias);\n-        Node lValue = ectx.getRootNode();\n-\n-        if (alias.location != null)\n-            lValue = _expLangRuntimeRegistry.evaluateNode(alias.location, ectx);\n-\n-        if (lValue == null) {\n-            String errmsg = __msgs.msgPropertyAliasReturnedNullSet(alias.getDescription(), target);\n-            if (__log.isErrorEnabled()) __log.error(errmsg);\n-            throw new FaultException(_oprocess.constants.qnSelectionFailure, errmsg);\n+    _expLangRuntimeRegistry = elangRegistry;\n+\n+    // Checking for registered extension bundles, throw an exception when\n+    // a \"mustUnderstand\" extension is not available\n+    _mustUnderstandExtensions = new HashSet<String>();\n+    for (OProcess.OExtension extension : _oprocess.declaredExtensions) {\n+      if (extension.mustUnderstand) {\n+        if (_extensionRegistry.get(extension.namespaceURI) == null) {\n+          String msg = __msgs.msgExtensionMustUnderstandError(_pconf.getProcessId(), extension.namespaceURI);\n+          __log.error(msg);\n+          throw new BpelEngineException(msg);\n+        } else {\n+          _mustUnderstandExtensions.add(extension.namespaceURI);\n         }\n-\n-        if (lValue.getNodeType() == Node.ELEMENT_NODE) {\n-            // This is a bit hokey, we concatenate all the children's values; we really should be\n-            // checking to make sure that we are only dealing with text and attribute nodes.\n-            StringBuffer val = new StringBuffer();\n-            NodeList nl = lValue.getChildNodes();\n-            for (int i = 0; i < nl.getLength(); ++i) {\n-                Node n = nl.item(i);\n-                val.append(n.getNodeValue());\n-            }\n-            return val.toString();\n-        } else if (lValue.getNodeType() == Node.TEXT_NODE) {\n-            return ((Text) lValue).getWholeText();\n-        } else\n-            return null;\n+      } else {\n+        __log.warn(\"The process declares the extension namespace \" + extension.namespaceURI\n+          + \" that is unkown to the engine\");\n+      }\n     }\n-\n-    public String extractMatch(Element msgData, PropertyExtractor extractor) throws FaultException {\n-        OExpression expr = (OExpression) extractor;\n-        BoundVariableEvaluationContext ctx = new BoundVariableEvaluationContext();\n-        ctx.addBoundVariable(extractor.getMessageVariableName(), msgData);\n-        return ((Text)_expLangRuntimeRegistry.evaluateNode(expr, ctx)).getWholeText();\n+  }\n+\n+  /*\n+   * (non-Javadoc)\n+   *\n+   * @see org.apache.ode.bpel.engine.rapi.OdeRuntime#createInstance(org.apache.ode.bpel.engine.rapi.OdeRTInstanceContext)\n+   */\n+  public OdeRTInstance newInstance(Object state) {\n+    return new RuntimeInstanceImpl(this, (ExecutionQueueImpl) state);\n+  }\n+\n+  public ReplacementMap getReplacementMap(QName processName) {\n+    if (_pconf.getProcessId().equals(processName)) {\n+      return new ReplacementMapImpl(_oprocess);\n+    } else {\n+      throw new UnsupportedOperationException(\"Implement the creation of replacement map for other version.\");\n+    }\n+  }\n+\n+  public ProcessModel getModel() {\n+    return _oprocess;\n+  }\n+\n+  /**\n+   * Extract the value of a BPEL property from a BPEL messsage variable.\n+   *\n+   * @param msgData    message variable data\n+   * @param aliasModel alias to apply\n+   * @param target     description of the data (for error logging only)\n+   * @return value of the property\n+   * @throws org.apache.ode.bpel.common.FaultException\n+   */\n+  public String extractProperty(Element msgData, PropertyAliasModel aliasModel, String target) throws FaultException {\n+    OProcess.OPropertyAlias alias = (OProcess.OPropertyAlias) aliasModel;\n+    PropertyAliasEvaluationContext ectx = new PropertyAliasEvaluationContext(msgData, alias);\n+    Node lValue = ectx.getRootNode();\n+\n+    if (alias.location != null) {\n+      lValue = _expLangRuntimeRegistry.evaluateNode(alias.location, ectx);\n     }\n \n-    public void clear() {\n-        _pconf = null;\n-        _oprocess = null;\n-        _mustUnderstandExtensions = null;\n-        _replacementMap = null;\n-        _expLangRuntimeRegistry = null;\n-        _extensionRegistry = null;\n+    if (lValue == null) {\n+      String errmsg = __msgs.msgPropertyAliasReturnedNullSet(alias.getDescription(), target);\n+      if (__log.isErrorEnabled()) {\n+        __log.error(errmsg);\n+      }\n+      throw new FaultException(_oprocess.constants.qnSelectionFailure, errmsg);\n     }\n \n-    public void setExtensionRegistry(Map<String, ExtensionBundleRuntime> extensionRegistry) {\n-        _extensionRegistry = extensionRegistry;\n+    if (lValue.getNodeType() == Node.ELEMENT_NODE) {\n+      // This is a bit hokey, we concatenate all the children's values; we really should be\n+      // checking to make sure that we are only dealing with text and attribute nodes.\n+      StringBuffer val = new StringBuffer();\n+      NodeList nl = lValue.getChildNodes();\n+      for (int i = 0; i < nl.getLength(); ++i) {\n+        Node n = nl.item(i);\n+        val.append(n.getNodeValue());\n+      }\n+      return val.toString();\n+    } else if (lValue.getNodeType() == Node.TEXT_NODE) {\n+      return ((Text) lValue).getWholeText();\n+    } else {\n+      return null;\n     }\n+  }\n+\n+  public String extractMatch(Element msgData, PropertyExtractor extractor) throws FaultException {\n+    OExpression expr = (OExpression) extractor;\n+    BoundVariableEvaluationContext ctx = new BoundVariableEvaluationContext();\n+    ctx.addBoundVariable(extractor.getMessageVariableName(), msgData);\n+    return ((Text) _expLangRuntimeRegistry.evaluateNode(expr, ctx)).getWholeText();\n+  }\n+\n+  public void clear() {\n+    _pconf = null;\n+    _oprocess = null;\n+    _mustUnderstandExtensions = null;\n+    _replacementMap = null;\n+    _expLangRuntimeRegistry = null;\n+    _extensionRegistry = null;\n+  }\n+\n+  public void setExtensionRegistry(Map<String, ExtensionBundleRuntime> extensionRegistry) {\n+    _extensionRegistry = extensionRegistry;\n+  }\n \n }\n",
+            "diff_size": 186
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/152/RuntimeImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/152/RuntimeImpl.java\nindex e971a7ad81c..4a0e2bb3055 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/152/RuntimeImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/152/RuntimeImpl.java\n@@ -87,7 +87,8 @@ public class RuntimeImpl implements OdeRuntime {\n     public ReplacementMap getReplacementMap(QName processName) {\n         if (_pconf.getProcessId().equals(processName))\n             return new ReplacementMapImpl(_oprocess);\n-        else throw new UnsupportedOperationException(\"Implement the creation of replacement map for other version.\");\n+        else\n+    throw new UnsupportedOperationException(\"Implement the creation of replacement map for other version.\");\n     }\n \n     public ProcessModel getModel() {\n@@ -153,4 +154,4 @@ public class RuntimeImpl implements OdeRuntime {\n         _extensionRegistry = extensionRegistry;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

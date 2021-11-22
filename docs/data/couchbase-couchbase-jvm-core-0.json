@@ -1,0 +1,177 @@
+{
+    "project_name": "couchbase-couchbase-jvm-core",
+    "error_id": "0",
+    "information": {
+        "errors": [
+            {
+                "line": "91",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 128).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n        UpsertResponse foo = cluster()\n                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n                .toBlocking()\n                .single();\n        assertEquals(ResponseStatus.SUCCESS, foo.status());",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "'CharsetUtil' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/0/DCPMessageTest.java\nindex bdf9f35cbb8..023db3f3f09 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/0/DCPMessageTest.java\n@@ -88,8 +88,9 @@ public class DCPMessageTest extends ClusterDependentTest {\n         });\n \n         UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n-                .toBlocking()\n+            .<UpsertResponse>send(new UpsertRequest(\"foo\" ,Unpooled.copiedBuffer(\"bar\",\n+    CharsetUtil .UTF_8), 1, 0, bucket()))\n+                 .toBlocking()\n                 .single();\n         assertEquals(ResponseStatus.SUCCESS, foo.status());\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/0/DCPMessageTest.java\nindex bdf9f35cbb8..076915cc5a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/0/DCPMessageTest.java\n@@ -1,16 +1,16 @@\n /**\n  * Copyright (C) 2014 Couchbase, Inc.\n- *\n+ * <p>\n  * Permission is hereby granted, free of charge, to any person obtaining a copy\n  * of this software and associated documentation files (the \"Software\"), to deal\n  * in the Software without restriction, including without limitation the rights\n  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n  * copies of the Software, and to permit persons to whom the Software is\n  * furnished to do so, subject to the following conditions:\n- *\n+ * <p>\n  * The above copyright notice and this permission notice shall be included in\n  * all copies or substantial portions of the Software.\n- *\n+ * <p>\n  * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n@@ -19,6 +19,7 @@\n  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALING\n  * IN THE SOFTWARE.\n  */\n+\n package com.couchbase.client.core.cluster;\n \n import com.couchbase.client.core.config.CouchbaseBucketConfig;\n@@ -66,17 +67,17 @@ public class DCPMessageTest extends ClusterDependentTest {\n     @Test\n     public void shouldRequestStream() throws Exception {\n         List<OpenConnectionResponse> open = cluster()\n-                .<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket()))\n-                .toList()\n-                .toBlocking()\n-                .single();\n+            .<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket()))\n+            .toList()\n+            .toBlocking()\n+            .single();\n         for (OpenConnectionResponse response : open) {\n             assertEquals(ResponseStatus.SUCCESS, response.status());\n         }\n         StreamRequestResponse addStream = cluster()\n-                .<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket()))\n-                .toBlocking()\n-                .single();\n+            .<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket()))\n+            .toBlocking()\n+            .single();\n         assertEquals(ResponseStatus.SUCCESS, addStream.status());\n \n         final List<DCPRequest> items = new ArrayList<DCPRequest>();\n@@ -88,15 +89,16 @@ public class DCPMessageTest extends ClusterDependentTest {\n         });\n \n         UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n-                .toBlocking()\n-                .single();\n+            .<UpsertResponse>send(\n+                new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n+            .toBlocking()\n+            .single();\n         assertEquals(ResponseStatus.SUCCESS, foo.status());\n \n         Thread.sleep(1100);\n         addStream.stream()\n-                .take(Math.max(0, 4 - items.size()))\n-                .toList().toBlocking().single();\n+            .take(Math.max(0, 4 - items.size()))\n+            .toList().toBlocking().single();\n \n         assertEquals(4, items.size());\n         assertTrue(items.get(0) instanceof SnapshotMarkerMessage);\n@@ -109,7 +111,7 @@ public class DCPMessageTest extends ClusterDependentTest {\n \n     private short calculateVBucketForKey(String key) {\n         GetClusterConfigResponse res = cluster()\n-                .<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n+            .<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n         CouchbaseBucketConfig config = (CouchbaseBucketConfig) res.config().bucketConfig(bucket());\n         CRC32 crc32 = new CRC32();\n         try {\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "69",
+                    "severity": "warning",
+                    "message": "'.' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "warning",
+                    "message": "'for' has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "warning",
+                    "message": "'.' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "91",
+                    "severity": "warning",
+                    "message": "'.' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "94",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "99",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "110",
+                    "severity": "warning",
+                    "message": "'.' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "111",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/0/DCPMessageTest.java\nindex bdf9f35cbb8..44d2ad2f802 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/0/DCPMessageTest.java\n@@ -66,18 +66,18 @@ public class DCPMessageTest extends ClusterDependentTest {\n     @Test\n     public void shouldRequestStream() throws Exception {\n         List<OpenConnectionResponse> open = cluster()\n-                .<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket()))\n+    .<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket()))\n                 .toList()\n                 .toBlocking()\n                 .single();\n-        for (OpenConnectionResponse response : open) {\n+for (OpenConnectionResponse response : open) {\n             assertEquals(ResponseStatus.SUCCESS, response.status());\n         }\n         StreamRequestResponse addStream = cluster()\n-                .<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket()))\n+    .<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket()))\n                 .toBlocking()\n                 .single();\n-        assertEquals(ResponseStatus.SUCCESS, addStream.status());\n+assertEquals(ResponseStatus.SUCCESS, addStream.status());\n \n         final List<DCPRequest> items = new ArrayList<DCPRequest>();\n         addStream.stream().subscribe(new Action1<DCPRequest>() {\n@@ -88,17 +88,15 @@ public class DCPMessageTest extends ClusterDependentTest {\n         });\n \n         UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n+    .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n                 .toBlocking()\n                 .single();\n-        assertEquals(ResponseStatus.SUCCESS, foo.status());\n+assertEquals(ResponseStatus.SUCCESS, foo.status());\n \n         Thread.sleep(1100);\n-        addStream.stream()\n-                .take(Math.max(0, 4 - items.size()))\n+        addStream.stream().take(Math.max(0, 4 - items.size()))\n                 .toList().toBlocking().single();\n-\n-        assertEquals(4, items.size());\n+assertEquals(4, items.size());\n         assertTrue(items.get(0) instanceof SnapshotMarkerMessage);\n         MutationMessage mutation = (MutationMessage) items.get(1);\n         assertEquals(\"foo\", mutation.key());\n@@ -109,8 +107,8 @@ public class DCPMessageTest extends ClusterDependentTest {\n \n     private short calculateVBucketForKey(String key) {\n         GetClusterConfigResponse res = cluster()\n-                .<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n-        CouchbaseBucketConfig config = (CouchbaseBucketConfig) res.config().bucketConfig(bucket());\n+    .<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n+CouchbaseBucketConfig config = (CouchbaseBucketConfig) res.config().bucketConfig(bucket());\n         CRC32 crc32 = new CRC32();\n         try {\n             crc32.update(key.getBytes(\"UTF-8\"));\n@@ -120,4 +118,4 @@ public class DCPMessageTest extends ClusterDependentTest {\n         long rv = (crc32.getValue() >> 16) & 0x7fff;\n         return (short) ((int) rv & config.numberOfPartitions() - 1);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "warning",
+                    "message": "'import' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "69",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 160).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 169).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 173).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "96",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/0/DCPMessageTest.java\nindex bdf9f35cbb8..612788d1b3d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/0/DCPMessageTest.java\n@@ -42,13 +42,12 @@ import org.junit.Assume;\n import org.junit.Before;\n import org.junit.Test;\n import rx.functions.Action1;\n-\n import java.io.UnsupportedEncodingException;\n import java.util.ArrayList;\n import java.util.List;\n import java.util.zip.CRC32;\n-\n import static org.junit.Assert.assertEquals;\n+\n import static org.junit.Assert.assertTrue;\n \n /**\n@@ -57,28 +56,22 @@ import static org.junit.Assert.assertTrue;\n  * @author Sergey Avseyev\n  * @since 1.1.0\n  */\n+\n public class DCPMessageTest extends ClusterDependentTest {\n     @Before\n     public void checkIfDCPEnabled() {\n         Assume.assumeTrue(env().dcpEnabled());\n     }\n \n+\n     @Test\n     public void shouldRequestStream() throws Exception {\n-        List<OpenConnectionResponse> open = cluster()\n-                .<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket()))\n-                .toList()\n-                .toBlocking()\n-                .single();\n+        List<OpenConnectionResponse> open = cluster().<OpenConnectionResponse>send(new OpenConnectionRequest(\"hello\", bucket())).toList().toBlocking().single();\n         for (OpenConnectionResponse response : open) {\n             assertEquals(ResponseStatus.SUCCESS, response.status());\n         }\n-        StreamRequestResponse addStream = cluster()\n-                .<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket()))\n-                .toBlocking()\n-                .single();\n+        StreamRequestResponse addStream = cluster().<StreamRequestResponse>send(new StreamRequestRequest(calculateVBucketForKey(\"foo\"), bucket())).toBlocking().single();\n         assertEquals(ResponseStatus.SUCCESS, addStream.status());\n-\n         final List<DCPRequest> items = new ArrayList<DCPRequest>();\n         addStream.stream().subscribe(new Action1<DCPRequest>() {\n             @Override\n@@ -86,18 +79,10 @@ public class DCPMessageTest extends ClusterDependentTest {\n                 items.add(dcpRequest);\n             }\n         });\n-\n-        UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n-                .toBlocking()\n-                .single();\n+        UpsertResponse foo = cluster().<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket())).toBlocking().single();\n         assertEquals(ResponseStatus.SUCCESS, foo.status());\n-\n         Thread.sleep(1100);\n-        addStream.stream()\n-                .take(Math.max(0, 4 - items.size()))\n-                .toList().toBlocking().single();\n-\n+        addStream.stream().take(Math.max(0, 4 - items.size())).toList().toBlocking().single();\n         assertEquals(4, items.size());\n         assertTrue(items.get(0) instanceof SnapshotMarkerMessage);\n         MutationMessage mutation = (MutationMessage) items.get(1);\n@@ -108,8 +93,7 @@ public class DCPMessageTest extends ClusterDependentTest {\n     }\n \n     private short calculateVBucketForKey(String key) {\n-        GetClusterConfigResponse res = cluster()\n-                .<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n+        GetClusterConfigResponse res = cluster().<GetClusterConfigResponse>send(new GetClusterConfigRequest()).toBlocking().single();\n         CouchbaseBucketConfig config = (CouchbaseBucketConfig) res.config().bucketConfig(bucket());\n         CRC32 crc32 = new CRC32();\n         try {\n@@ -117,7 +101,8 @@ public class DCPMessageTest extends ClusterDependentTest {\n         } catch (UnsupportedEncodingException e) {\n             e.printStackTrace();\n         }\n+\n         long rv = (crc32.getValue() >> 16) & 0x7fff;\n         return (short) ((int) rv & config.numberOfPartitions() - 1);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "'CharsetUtil' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_random/0/DCPMessageTest.java\nindex bdf9f35cbb8..023db3f3f09 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_random/0/DCPMessageTest.java\n@@ -88,8 +88,9 @@ public class DCPMessageTest extends ClusterDependentTest {\n         });\n \n         UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n-                .toBlocking()\n+            .<UpsertResponse>send(new UpsertRequest(\"foo\" ,Unpooled.copiedBuffer(\"bar\",\n+    CharsetUtil .UTF_8), 1, 0, bucket()))\n+                 .toBlocking()\n                 .single();\n         assertEquals(ResponseStatus.SUCCESS, foo.status());\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "',' has incorrect indentation level 8, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "',' should be on the previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.SeparatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/0/DCPMessageTest.java\nindex bdf9f35cbb8..be029a722f4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/0/DCPMessageTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/0/DCPMessageTest.java\n@@ -88,8 +88,8 @@ public class DCPMessageTest extends ClusterDependentTest {\n         });\n \n         UpsertResponse foo = cluster()\n-                .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\", CharsetUtil.UTF_8), 1, 0, bucket()))\n-                .toBlocking()\n+            .<UpsertResponse>send(new UpsertRequest(\"foo\", Unpooled.copiedBuffer(\"bar\" ,CharsetUtil .UTF_8)\n+        ,1,0 ,bucket() )).toBlocking()\n                 .single();\n         assertEquals(ResponseStatus.SUCCESS, foo.status());\n \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

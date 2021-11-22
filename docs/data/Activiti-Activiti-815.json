@@ -1,0 +1,87 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "815",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.application;\n\nimport java.io.IOException;\nimport java.io.InputStream;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/815/ApplicationReader.java\nindex e4eafc80580..620d62eb64d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/815/ApplicationReader.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.application;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/815/ApplicationReader.java\nindex e4eafc80580..9445263c166 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/815/ApplicationReader.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.application;\n \n import java.io.IOException;\n@@ -43,13 +44,13 @@ public class ApplicationReader {\n                         .ifPresent(\n                                 applicationEntryDiscovery ->\n                                         application.add(new ApplicationEntry(applicationEntryDiscovery.getEntryType(),\n-                                                                             new FileContent(currentEntry.getName(),\n-                                                                                             readBytes(zipInputStream\n-                                                                                             )))));\n+                                                new FileContent(currentEntry.getName(),\n+                                                        readBytes(zipInputStream\n+                                                        )))));\n             }\n         } catch (IOException e) {\n             throw new ApplicationLoadException(\"Unable to read zip file\",\n-                                              e);\n+                    e);\n         }\n         return application;\n     }\n@@ -59,7 +60,7 @@ public class ApplicationReader {\n             return StreamUtils.copyToByteArray(zipInputStream);\n         } catch (IOException e) {\n             throw new ApplicationLoadException(\"Unable to read zip file\",\n-                                              e);\n+                    e);\n         }\n     }\n }\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "Line is longer than 240 characters (found 319).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 240 characters (found 326).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/815/ApplicationReader.java\nindex e4eafc80580..cbc2e4fe8ed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/815/ApplicationReader.java\n@@ -22,44 +22,35 @@ import java.util.zip.ZipEntry;\n import java.util.zip.ZipInputStream;\n import org.springframework.util.StreamUtils;\n \n+\n public class ApplicationReader {\n \n-    private List<ApplicationEntryDiscovery> applicationEntryDiscoveries;\n+  private List<ApplicationEntryDiscovery> applicationEntryDiscoveries;\n \n-    public ApplicationReader(List<ApplicationEntryDiscovery> applicationEntryDiscoveries) {\n-        this.applicationEntryDiscoveries = applicationEntryDiscoveries;\n-    }\n+  public ApplicationReader(List<ApplicationEntryDiscovery> applicationEntryDiscoveries) {\n+    this.applicationEntryDiscoveries = applicationEntryDiscoveries;\n+  }\n \n-    public ApplicationContent read(InputStream inputStream) {\n-        ApplicationContent application = new ApplicationContent();\n-        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {\n-            ZipEntry zipEntry;\n-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {\n-                ZipEntry currentEntry = zipEntry;\n-                applicationEntryDiscoveries\n-                        .stream()\n-                        .filter(applicationEntryDiscovery -> applicationEntryDiscovery.filter(currentEntry).test(currentEntry))\n-                        .findFirst()\n-                        .ifPresent(\n-                                applicationEntryDiscovery ->\n-                                        application.add(new ApplicationEntry(applicationEntryDiscovery.getEntryType(),\n-                                                                             new FileContent(currentEntry.getName(),\n-                                                                                             readBytes(zipInputStream\n-                                                                                             )))));\n-            }\n-        } catch (IOException e) {\n-            throw new ApplicationLoadException(\"Unable to read zip file\",\n-                                              e);\n+  public ApplicationContent read(InputStream inputStream) {\n+    ApplicationContent application = new ApplicationContent();\n+    try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {\n+        ZipEntry zipEntry;\n+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {\n+          ZipEntry currentEntry = zipEntry;\n+          applicationEntryDiscoveries.stream().filter(applicationEntryDiscovery -> applicationEntryDiscovery.filter(currentEntry).test(currentEntry)).findFirst().ifPresent(applicationEntryDiscovery -> application.add(new ApplicationEntry(applicationEntryDiscovery.getEntryType(), new FileContent(currentEntry.getName(),\n+                                                                                                                                                                                                                                                                                                        readBytes(zipInputStream)))));\n         }\n-        return application;\n+    } catch (IOException e) {\n+        throw new ApplicationLoadException(\"Unable to read zip file\", e);\n     }\n+    return application;\n+  }\n \n-    private byte[] readBytes(ZipInputStream zipInputStream) {\n-        try {\n-            return StreamUtils.copyToByteArray(zipInputStream);\n-        } catch (IOException e) {\n-            throw new ApplicationLoadException(\"Unable to read zip file\",\n-                                              e);\n-        }\n+  private byte[] readBytes(ZipInputStream zipInputStream) {\n+    try {\n+      return StreamUtils.copyToByteArray(zipInputStream);\n+    } catch (IOException e) {\n+      throw new ApplicationLoadException(\"Unable to read zip file\", e);\n     }\n-}\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/815/ApplicationReader.java\nindex e4eafc80580..620d62eb64d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/815/ApplicationReader.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.application;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/815/ApplicationReader.java\nindex e4eafc80580..620d62eb64d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/815/ApplicationReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/815/ApplicationReader.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.application;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

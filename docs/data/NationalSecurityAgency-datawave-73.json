@@ -1,0 +1,91 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "73",
+    "information": {
+        "errors": [
+            {
+                "line": "9",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.TableNotFoundException;\nimport org.apache.accumulo.core.client.admin.TableOperations;\nimport org.apache.accumulo.core.conf.Property;\nimport org.apache.accumulo.core.iterators.IteratorUtil;\nimport org.apache.hadoop.conf.Configuration;\nimport org.apache.log4j.Logger;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler/73/MetricsSummaryTableConfigHelper.java\nindex 517ce0b99ac..08f83f5e378 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler/73/MetricsSummaryTableConfigHelper.java\n@@ -6,8 +6,9 @@ import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.TableNotFoundException;\n import org.apache.accumulo.core.client.admin.TableOperations;\n-import org.apache.accumulo.core.conf.Property;\n-import org.apache.accumulo.core.iterators.IteratorUtil;\n+import\n+org.apache.accumulo.core.conf.Property;\n+ import org.apache.accumulo.core.iterators.IteratorUtil;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/73/MetricsSummaryTableConfigHelper.java\nindex 517ce0b99ac..08c616e1d58 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/73/MetricsSummaryTableConfigHelper.java\n@@ -12,49 +12,55 @@ import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n public class MetricsSummaryTableConfigHelper extends AbstractTableConfigHelper {\n-    protected Logger mLog;\n-    \n-    protected Configuration mConf;\n-    protected String mTableName;\n-    \n-    public static final String ENABLE_BLOOM_FILTERS = MetricsSummaryDataTypeHandler.METRICS_SUMMARY_PROP_PREFIX + \"summary.enable.bloom.filters\";\n-    protected boolean mEnableBloomFilters = false;\n-    \n-    @Override\n-    public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n-        mLog = log;\n-        mConf = config;\n-        mTableName = tableName;\n-        \n-        String mMetricsSummaryTableName = mConf.get(MetricsSummaryDataTypeHandler.METRICS_SUMMARY_TABLE_NAME);\n-        \n-        if (mMetricsSummaryTableName == null) {\n-            throw new IllegalArgumentException(\"Metrics Summary Table is not defined in the Configuration.\");\n-        }\n-        \n-        mEnableBloomFilters = mConf.getBoolean(ENABLE_BLOOM_FILTERS, false);\n-        \n-        if (!mTableName.equals(mMetricsSummaryTableName)) {\n-            throw new IllegalArgumentException(\"Invalid Metrics Summary Table Definition For: \" + mTableName);\n-        }\n+  protected Logger mLog;\n+\n+  protected Configuration mConf;\n+  protected String mTableName;\n+\n+  public static final String ENABLE_BLOOM_FILTERS =\n+      MetricsSummaryDataTypeHandler.METRICS_SUMMARY_PROP_PREFIX + \"summary.enable.bloom.filters\";\n+  protected boolean mEnableBloomFilters = false;\n+\n+  @Override\n+  public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n+    mLog = log;\n+    mConf = config;\n+    mTableName = tableName;\n+\n+    String mMetricsSummaryTableName = mConf.get(MetricsSummaryDataTypeHandler.METRICS_SUMMARY_TABLE_NAME);\n+\n+    if (mMetricsSummaryTableName == null) {\n+      throw new IllegalArgumentException(\"Metrics Summary Table is not defined in the Configuration.\");\n     }\n-    \n-    @Override\n-    public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n-        // add the SummingCombiner Iterator for each iterator scope (majc, minc, scan)\n-        for (IteratorUtil.IteratorScope scope : IteratorUtil.IteratorScope.values()) {\n-            final StringBuilder propName = new StringBuilder(String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scope.name(), \"sum\"));\n-            setPropertyIfNecessary(mTableName, propName.toString(), \"19,org.apache.accumulo.core.iterators.user.SummingCombiner\", tops, mLog);\n-            propName.append(\".opt.\");\n-            setPropertyIfNecessary(mTableName, propName + \"all\", \"true\", tops, mLog);\n-            setPropertyIfNecessary(mTableName, propName + \"lossy\", \"FALSE\", tops, mLog);\n-            setPropertyIfNecessary(mTableName, propName + \"type\", \"STRING\", tops, mLog);\n-        }\n-        \n-        // enable bloom filters if necessary.\n-        if (mEnableBloomFilters) {\n-            setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_KEY_FUNCTOR.getKey(), ShardIndexKeyFunctor.class.getName(), tops, mLog);\n-        }\n-        setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_ENABLED.getKey(), Boolean.toString(mEnableBloomFilters), tops, mLog);\n+\n+    mEnableBloomFilters = mConf.getBoolean(ENABLE_BLOOM_FILTERS, false);\n+\n+    if (!mTableName.equals(mMetricsSummaryTableName)) {\n+      throw new IllegalArgumentException(\"Invalid Metrics Summary Table Definition For: \" + mTableName);\n+    }\n+  }\n+\n+  @Override\n+  public void configure(TableOperations tops)\n+      throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n+    // add the SummingCombiner Iterator for each iterator scope (majc, minc, scan)\n+    for (IteratorUtil.IteratorScope scope : IteratorUtil.IteratorScope.values()) {\n+      final StringBuilder propName =\n+          new StringBuilder(String.format(\"%s%s.%s\", Property.TABLE_ITERATOR_PREFIX, scope.name(), \"sum\"));\n+      setPropertyIfNecessary(mTableName, propName.toString(),\n+          \"19,org.apache.accumulo.core.iterators.user.SummingCombiner\", tops, mLog);\n+      propName.append(\".opt.\");\n+      setPropertyIfNecessary(mTableName, propName + \"all\", \"true\", tops, mLog);\n+      setPropertyIfNecessary(mTableName, propName + \"lossy\", \"FALSE\", tops, mLog);\n+      setPropertyIfNecessary(mTableName, propName + \"type\", \"STRING\", tops, mLog);\n+    }\n+\n+    // enable bloom filters if necessary.\n+    if (mEnableBloomFilters) {\n+      setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_KEY_FUNCTOR.getKey(),\n+          ShardIndexKeyFunctor.class.getName(), tops, mLog);\n     }\n+    setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_ENABLED.getKey(), Boolean.toString(mEnableBloomFilters),\n+        tops, mLog);\n+  }\n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/73/MetricsSummaryTableConfigHelper.java\nindex 517ce0b99ac..858226008c9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/73/MetricsSummaryTableConfigHelper.java\n@@ -57,4 +57,4 @@ public class MetricsSummaryTableConfigHelper extends AbstractTableConfigHelper {\n         }\n         setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_ENABLED.getKey(), Boolean.toString(mEnableBloomFilters), tops, mLog);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/73/MetricsSummaryTableConfigHelper.java\nindex 517ce0b99ac..dd179e720ae 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/73/MetricsSummaryTableConfigHelper.java\n@@ -11,34 +11,32 @@ import org.apache.accumulo.core.iterators.IteratorUtil;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n+\n public class MetricsSummaryTableConfigHelper extends AbstractTableConfigHelper {\n+\n     protected Logger mLog;\n-    \n     protected Configuration mConf;\n     protected String mTableName;\n-    \n+\n     public static final String ENABLE_BLOOM_FILTERS = MetricsSummaryDataTypeHandler.METRICS_SUMMARY_PROP_PREFIX + \"summary.enable.bloom.filters\";\n     protected boolean mEnableBloomFilters = false;\n-    \n+\n     @Override\n     public void setup(String tableName, Configuration config, Logger log) throws IllegalArgumentException {\n         mLog = log;\n         mConf = config;\n         mTableName = tableName;\n-        \n+\n         String mMetricsSummaryTableName = mConf.get(MetricsSummaryDataTypeHandler.METRICS_SUMMARY_TABLE_NAME);\n-        \n         if (mMetricsSummaryTableName == null) {\n             throw new IllegalArgumentException(\"Metrics Summary Table is not defined in the Configuration.\");\n         }\n-        \n         mEnableBloomFilters = mConf.getBoolean(ENABLE_BLOOM_FILTERS, false);\n-        \n         if (!mTableName.equals(mMetricsSummaryTableName)) {\n             throw new IllegalArgumentException(\"Invalid Metrics Summary Table Definition For: \" + mTableName);\n         }\n     }\n-    \n+\n     @Override\n     public void configure(TableOperations tops) throws AccumuloException, AccumuloSecurityException, TableNotFoundException {\n         // add the SummingCombiner Iterator for each iterator scope (majc, minc, scan)\n@@ -52,9 +50,11 @@ public class MetricsSummaryTableConfigHelper extends AbstractTableConfigHelper {\n         }\n         \n         // enable bloom filters if necessary.\n+\n+\n         if (mEnableBloomFilters) {\n             setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_KEY_FUNCTOR.getKey(), ShardIndexKeyFunctor.class.getName(), tops, mLog);\n         }\n         setPropertyIfNecessary(mTableName, Property.TABLE_BLOOM_ENABLED.getKey(), Boolean.toString(mEnableBloomFilters), tops, mLog);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler_three_grams/73/MetricsSummaryTableConfigHelper.java\nindex 517ce0b99ac..08f83f5e378 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/73/MetricsSummaryTableConfigHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/styler_three_grams/73/MetricsSummaryTableConfigHelper.java\n@@ -6,8 +6,9 @@ import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.TableNotFoundException;\n import org.apache.accumulo.core.client.admin.TableOperations;\n-import org.apache.accumulo.core.conf.Property;\n-import org.apache.accumulo.core.iterators.IteratorUtil;\n+import\n+org.apache.accumulo.core.conf.Property;\n+ import org.apache.accumulo.core.iterators.IteratorUtil;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n \n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

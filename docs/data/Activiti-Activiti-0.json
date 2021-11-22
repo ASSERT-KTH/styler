@@ -1,0 +1,69 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "0",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.calendar;\n\nimport java.util.Date;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/0/CycleBusinessCalendar.java\nindex f889b0dcc72..b10fa0c5a00 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/0/CycleBusinessCalendar.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.calendar;\n \n import java.util.Date;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/0/CycleBusinessCalendar.java\nindex f889b0dcc72..ca98afaa9ca 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/0/CycleBusinessCalendar.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.calendar;\n \n import java.util.Date;\n@@ -21,43 +22,43 @@ import org.activiti.engine.runtime.ClockReader;\n @Internal\n public class CycleBusinessCalendar extends BusinessCalendarImpl {\n \n-  public static String NAME = \"cycle\";\n+    public static String NAME = \"cycle\";\n+\n+    public CycleBusinessCalendar(ClockReader clockReader) {\n+        super(clockReader);\n+    }\n \n-  public CycleBusinessCalendar(ClockReader clockReader) {\n-    super(clockReader);\n-  }\n+    public Date resolveDuedate(String duedateDescription, int maxIterations) {\n+        try {\n+            if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n+                return new DurationHelper(duedateDescription, maxIterations, clockReader).getDateAfter();\n+            } else {\n+                CronExpression ce = new CronExpression(duedateDescription, clockReader);\n+                return ce.getTimeAfter(clockReader.getCurrentTime());\n+            }\n \n-  public Date resolveDuedate(String duedateDescription, int maxIterations) {\n-    try {\n-      if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n-        return new DurationHelper(duedateDescription, maxIterations, clockReader).getDateAfter();\n-      } else {\n-        CronExpression ce = new CronExpression(duedateDescription, clockReader);\n-        return ce.getTimeAfter(clockReader.getCurrentTime());\n-      }\n+        } catch (Exception e) {\n+            throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n+        }\n \n-    } catch (Exception e) {\n-      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n     }\n \n-  }\n+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {\n+        if (endDate != null) {\n+            return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);\n+        }\n+        // end date could be part of the chron expression\n+        try {\n+            if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n+                return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);\n+            } else {\n+                return true;\n+            }\n \n-  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {\n-    if (endDate != null) {\n-      return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);\n-    }\n-    // end date could be part of the chron expression\n-    try {\n-      if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n-        return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);\n-      } else {\n-        return true;\n-      }\n-\n-    } catch (Exception e) {\n-      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n-    }\n+        } catch (Exception e) {\n+            throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n+        }\n \n-  }\n+    }\n \n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/0/CycleBusinessCalendar.java\nindex f889b0dcc72..9e6f5c4316e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/0/CycleBusinessCalendar.java\n@@ -13,7 +13,6 @@\n package org.activiti.engine.impl.calendar;\n \n import java.util.Date;\n-\n import org.activiti.engine.ActivitiException;\n import org.activiti.engine.api.internal.Internal;\n import org.activiti.engine.runtime.ClockReader;\n@@ -30,34 +29,39 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {\n   public Date resolveDuedate(String duedateDescription, int maxIterations) {\n     try {\n       if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n-        return new DurationHelper(duedateDescription, maxIterations, clockReader).getDateAfter();\n+        return new DurationHelper(duedateDescription,\n+                                  maxIterations,\n+                                  clockReader).getDateAfter();\n       } else {\n         CronExpression ce = new CronExpression(duedateDescription, clockReader);\n         return ce.getTimeAfter(clockReader.getCurrentTime());\n       }\n-\n     } catch (Exception e) {\n-      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n+      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription,\n+                                  e);\n     }\n-\n   }\n \n   public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {\n     if (endDate != null) {\n-      return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);\n+      return super.validateDuedate(duedateDescription,\n+                                   maxIterations,\n+                                   endDate,\n+                                   newTimer);\n     }\n     // end date could be part of the chron expression\n+\n     try {\n       if (duedateDescription != null && duedateDescription.startsWith(\"R\")) {\n-        return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);\n+        return new DurationHelper(duedateDescription,\n+                                  maxIterations,\n+                                  clockReader).isValidDate(newTimer);\n       } else {\n         return true;\n       }\n-\n     } catch (Exception e) {\n-      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription, e);\n+      throw new ActivitiException(\"Failed to parse cron expression: \" + duedateDescription,\n+                                  e);\n     }\n-\n   }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/0/CycleBusinessCalendar.java\nindex f889b0dcc72..b10fa0c5a00 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/0/CycleBusinessCalendar.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.calendar;\n \n import java.util.Date;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/0/CycleBusinessCalendar.java\nindex f889b0dcc72..b10fa0c5a00 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/0/CycleBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/0/CycleBusinessCalendar.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.calendar;\n \n import java.util.Date;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

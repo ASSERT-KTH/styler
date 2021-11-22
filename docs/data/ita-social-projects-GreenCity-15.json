@@ -1,0 +1,82 @@
+{
+    "project_name": "ita-social-projects-GreenCity",
+    "error_id": "15",
+    "information": {
+        "errors": [
+            {
+                "line": "61",
+                "severity": "error",
+                "message": "Comment has incorrect indentation level 0, expected is 8, indentation should be the same level as line 62.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+            }
+        ]
+    },
+    "source_code": "        EcoNews toSave = modelMapper.map(addEcoNewsDtoRequest, EcoNews.class);\n        toSave.setAuthor(userService.findByEmail(email));\n//        toSave.setImagePath(fileService.upload(image).toString());\n        toSave.setImagePath(\" \");\n\n        toSave.setTags(addEcoNewsDtoRequest.getTags()",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler/15/EcoNewsServiceImpl.java\nindex edae77c67a6..61d8899bbab 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler/15/EcoNewsServiceImpl.java\n@@ -58,7 +58,7 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n                                       MultipartFile image, String email) {\n         EcoNews toSave = modelMapper.map(addEcoNewsDtoRequest, EcoNews.class);\n         toSave.setAuthor(userService.findByEmail(email));\n-//        toSave.setImagePath(fileService.upload(image).toString());\n+        //        toSave.setImagePath(fileService.upload(image).toString());\n         toSave.setImagePath(\" \");\n \n         toSave.setTags(addEcoNewsDtoRequest.getTags()\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 0, expected is 8, indentation should be the same level as line 62.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "55",
+                    "severity": "error",
+                    "message": "Comment has incorrect indentation level 0, expected is 8, indentation should be the same level as line 56.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "135",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/codebuff/15/EcoNewsServiceImpl.java\nindex edae77c67a6..d21b448ea31 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/codebuff/15/EcoNewsServiceImpl.java\n@@ -32,19 +32,12 @@ import org.springframework.web.multipart.MultipartFile;\n public class EcoNewsServiceImpl implements EcoNewsService {\n     @Value(\"${messaging.rabbit.email.topic}\")\n     private String sendEmailTopic;\n-\n     private final EcoNewsRepo ecoNewsRepo;\n-\n     private final UserService userService;\n-\n     private final ModelMapper modelMapper;\n-\n     private final RabbitTemplate rabbitTemplate;\n-\n     private final NewsSubscriberService newsSubscriberService;\n-\n     private final TagService tagService;\n-\n     private final FileService fileService;\n \n     /**\n@@ -52,6 +45,7 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Yuriy Olkhovskyi.\n      */\n+\n     @CacheEvict(value = CacheConstants.NEWEST_ECO_NEWS_CACHE_NAME, allEntries = true)\n     @Override\n     public AddEcoNewsDtoResponse save(AddEcoNewsDtoRequest addEcoNewsDtoRequest,\n@@ -60,22 +54,18 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n         toSave.setAuthor(userService.findByEmail(email));\n //        toSave.setImagePath(fileService.upload(image).toString());\n         toSave.setImagePath(\" \");\n-\n-        toSave.setTags(addEcoNewsDtoRequest.getTags()\n-            .stream()\n-            .map(tagService::findByName)\n-            .collect(Collectors.toList())\n-        );\n-\n+        toSave.setTags(addEcoNewsDtoRequest.getTags().stream()\n+                                                     .map(tagService::findByName)\n+                                                     .collect(Collectors.toList()));\n         try {\n             ecoNewsRepo.save(toSave);\n         } catch (DataIntegrityViolationException e) {\n             throw new NotSavedException(ErrorMessage.ECO_NEWS_NOT_SAVED);\n         }\n-\n-        rabbitTemplate.convertAndSend(sendEmailTopic, RabbitConstants.ADD_ECO_NEWS_ROUTING_KEY,\n+        rabbitTemplate.convertAndSend(\n+            sendEmailTopic,\n+            RabbitConstants.ADD_ECO_NEWS_ROUTING_KEY,\n             buildAddEcoNewsMessage(toSave));\n-\n         return modelMapper.map(toSave, AddEcoNewsDtoResponse.class);\n     }\n \n@@ -84,19 +74,17 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Yuriy Olkhovskyi.\n      */\n+\n+\n     @Cacheable(value = CacheConstants.NEWEST_ECO_NEWS_CACHE_NAME)\n     @Override\n     public List<EcoNewsDto> getThreeLastEcoNews() {\n         List<EcoNews> ecoNewsList = ecoNewsRepo.getThreeLastEcoNews();\n-\n         if (ecoNewsList.isEmpty()) {\n             throw new NotFoundException(ErrorMessage.ECO_NEWS_NOT_FOUND);\n         }\n-\n-        return ecoNewsList\n-            .stream()\n-            .map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n-            .collect(Collectors.toList());\n+        return ecoNewsList.stream().map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n+                                   .collect(Collectors.toList());\n     }\n \n     /**\n@@ -104,19 +92,17 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Kovaliv Taras.\n      */\n+\n+\n     @Override\n     public PageableDto<EcoNewsDto> findAll(Pageable page) {\n         Page<EcoNews> pages = ecoNewsRepo.findAllByOrderByCreationDateDesc(page);\n-        List<EcoNewsDto> ecoNewsDtos = pages\n-            .stream()\n-            .map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n-            .collect(Collectors.toList());\n-\n+        List<EcoNewsDto> ecoNewsDtos = pages.stream().map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n+                                                     .collect(Collectors.toList());\n         return new PageableDto<>(\n             ecoNewsDtos,\n             pages.getTotalElements(),\n-            pages.getPageable().getPageNumber()\n-        );\n+            pages.getPageable().getPageNumber());\n     }\n \n     /**\n@@ -124,19 +110,17 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Kovaliv Taras.\n      */\n+\n+\n     @Override\n     public PageableDto<EcoNewsDto> find(Pageable page, List<String> tags) {\n         Page<EcoNews> pages = ecoNewsRepo.find(page, tags);\n-\n-        List<EcoNewsDto> ecoNewsDtos = pages.stream()\n-            .map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n-            .collect(Collectors.toList());\n-\n+        List<EcoNewsDto> ecoNewsDtos = pages.stream().map(ecoNews -> modelMapper.map(ecoNews, EcoNewsDto.class))\n+                                                     .collect(Collectors.toList());\n         return new PageableDto<>(\n             ecoNewsDtos,\n             pages.getTotalElements(),\n-            pages.getPageable().getPageNumber()\n-        );\n+            pages.getPageable().getPageNumber());\n     }\n \n     /**\n@@ -144,11 +128,11 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Yuriy Olkhovskyi.\n      */\n+\n+\n     @Override\n     public EcoNews findById(Long id) {\n-        return ecoNewsRepo\n-            .findById(id)\n-            .orElseThrow(() -> new NotFoundException(ErrorMessage.ECO_NEWS_NOT_FOUND_BY_ID + id));\n+        return ecoNewsRepo.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.ECO_NEWS_NOT_FOUND_BY_ID + id));\n     }\n \n     /**\n@@ -156,10 +140,11 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Kovaliv Taras.\n      */\n+\n+\n     @Override\n     public EcoNewsDto findDtoById(Long id) {\n         EcoNews ecoNews = findById(id);\n-\n         return modelMapper.map(ecoNews, EcoNewsDto.class);\n     }\n \n@@ -168,6 +153,8 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      *\n      * @author Yuriy Olkhovskyi.\n      */\n+\n+\n     @CacheEvict(value = CacheConstants.NEWEST_ECO_NEWS_CACHE_NAME, allEntries = true)\n     @Override\n     public void delete(Long id) {\n@@ -180,9 +167,9 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n      * @param ecoNews {@link EcoNews} which was added.\n      * @return {@link AddEcoNewsMessage} which contains needed info about {@link EcoNews} and subscribers.\n      */\n+\n     private AddEcoNewsMessage buildAddEcoNewsMessage(EcoNews ecoNews) {\n         AddEcoNewsDtoResponse addEcoNewsDtoResponse = modelMapper.map(ecoNews, AddEcoNewsDtoResponse.class);\n-\n         return new AddEcoNewsMessage(newsSubscriberService.findAll(), addEcoNewsDtoResponse);\n     }\n }\n\\ No newline at end of file\n",
+            "diff_size": 57
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_random/15/EcoNewsServiceImpl.java\nindex edae77c67a6..61d8899bbab 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_random/15/EcoNewsServiceImpl.java\n@@ -58,7 +58,7 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n                                       MultipartFile image, String email) {\n         EcoNews toSave = modelMapper.map(addEcoNewsDtoRequest, EcoNews.class);\n         toSave.setAuthor(userService.findByEmail(email));\n-//        toSave.setImagePath(fileService.upload(image).toString());\n+        //        toSave.setImagePath(fileService.upload(image).toString());\n         toSave.setImagePath(\" \");\n \n         toSave.setTags(addEcoNewsDtoRequest.getTags()\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_three_grams/15/EcoNewsServiceImpl.java\nindex edae77c67a6..d1d9fac41bd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/15/EcoNewsServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_three_grams/15/EcoNewsServiceImpl.java\n@@ -58,7 +58,8 @@ public class EcoNewsServiceImpl implements EcoNewsService {\n                                       MultipartFile image, String email) {\n         EcoNews toSave = modelMapper.map(addEcoNewsDtoRequest, EcoNews.class);\n         toSave.setAuthor(userService.findByEmail(email));\n-//        toSave.setImagePath(fileService.upload(image).toString());\n+\n+        //        toSave.setImagePath(fileService.upload(image).toString());\n         toSave.setImagePath(\" \");\n \n         toSave.setTags(addEcoNewsDtoRequest.getTags()\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

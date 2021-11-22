@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "573",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/573/HighestSelectionStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/573/HighestSelectionStrategy.java\nindex bc5c950007b..2300e5e226e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/573/HighestSelectionStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/573/HighestSelectionStrategy.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.extension.dependency;\n \n import java.util.List;\n@@ -37,26 +38,26 @@ import static org.neo4j.kernel.extension.KernelExtensionUtil.servicesClassPathEn\n  */\n public class HighestSelectionStrategy implements DependencyResolver.SelectionStrategy\n {\n-    public static final DependencyResolver.SelectionStrategy INSTANCE = new HighestSelectionStrategy();\n+  public static final DependencyResolver.SelectionStrategy INSTANCE = new HighestSelectionStrategy();\n \n-    private HighestSelectionStrategy()\n-    {\n-    }\n+  private HighestSelectionStrategy()\n+  {\n+  }\n+\n+  @SuppressWarnings(\"unchecked\")\n+  @Override\n+  public <T> T select(Class<T> type, Iterable<? extends T> candidates) throws IllegalArgumentException\n+  {\n+    List<T> sorted = (List<T>) StreamSupport.stream(candidates.spliterator(), false)\n+        .map(ts -> (Comparable<T>) ts)\n+        .sorted()\n+        .collect(Collectors.toList());\n \n-    @SuppressWarnings( \"unchecked\" )\n-    @Override\n-    public <T> T select( Class<T> type, Iterable<? extends T> candidates ) throws IllegalArgumentException\n+    if (sorted.isEmpty())\n     {\n-        List<T> sorted = (List<T>) StreamSupport.stream( candidates.spliterator(), false )\n-                .map( ts -> (Comparable<T>) ts )\n-                .sorted()\n-                .collect( Collectors.toList() );\n-\n-        if ( sorted.isEmpty() )\n-        {\n-            throw new IllegalArgumentException( \"Could not resolve dependency of type: \" +\n-                    type.getName() + \". \" + servicesClassPathEntryInformation() );\n-        }\n-        return sorted.get( sorted.size() - 1 );\n+      throw new IllegalArgumentException(\"Could not resolve dependency of type: \" +\n+          type.getName() + \". \" + servicesClassPathEntryInformation());\n     }\n+    return sorted.get(sorted.size() - 1);\n+  }\n }\n",
+            "diff_size": 30
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/573/HighestSelectionStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/573/HighestSelectionStrategy.java\nindex bc5c950007b..ef32b4daa7a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/573/HighestSelectionStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/573/HighestSelectionStrategy.java\n@@ -47,16 +47,13 @@ public class HighestSelectionStrategy implements DependencyResolver.SelectionStr\n     @Override\n     public <T> T select( Class<T> type, Iterable<? extends T> candidates ) throws IllegalArgumentException\n     {\n-        List<T> sorted = (List<T>) StreamSupport.stream( candidates.spliterator(), false )\n-                .map( ts -> (Comparable<T>) ts )\n-                .sorted()\n-                .collect( Collectors.toList() );\n-\n-        if ( sorted.isEmpty() )\n+        List<T> sorted = (List<T>) StreamSupport.stream( candidates.spliterator(), false ).map( ts -> (Comparable<T>) ts )\n+                .sorted().collect( Collectors.toList() );\n+if ( sorted.isEmpty() )\n         {\n-            throw new IllegalArgumentException( \"Could not resolve dependency of type: \" +\n-                    type.getName() + \". \" + servicesClassPathEntryInformation() );\n+            throw new IllegalArgumentException( \"Could not resolve dependency of type: \" + type.getName() + \". \" + servicesClassPathEntryInformation() );\n         }\n-        return sorted.get( sorted.size() - 1 );\n+\n+return sorted.get( sorted.size() - 1 );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,70 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "66",
+                "column": "30",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "\n            if (!StringUtils.ok(elementName))\n                return true; // famous last words:  \"this can never happen\" ;-)\n\n            // possibly filter out from these 3 kinds of elements\n            if (elementName.equals(SERVER))",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/2/InstanceReaderFilter.java\nindex 0138a2cd437..448820809ff 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/2/InstanceReaderFilter.java\n@@ -63,8 +63,8 @@ class InstanceReaderFilter extends ServerReaderFilter {\n             String elementName = reader.getLocalName();\n \n             if (!StringUtils.ok(elementName))\n-                return true; // famous last words:  \"this can never happen\" ;-)\n-\n+                return true;\n+            // famous last words:  \"this can never happen\" ;-)\n             // possibly filter out from these 3 kinds of elements\n             if (elementName.equals(SERVER))\n                 return handleServer(reader);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "66",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/2/InstanceReaderFilter.java\nindex 0138a2cd437..a5ce5e40b16 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/2/InstanceReaderFilter.java\n@@ -41,7 +41,7 @@ import static org.glassfish.config.support.Constants.*;\n class InstanceReaderFilter extends ServerReaderFilter {\n \n     InstanceReaderFilter(String theServerName, URL theDomainXml, XMLInputFactory theXif)\n-            throws XMLStreamException, DomainXmlPreParserException {\n+        throws XMLStreamException, DomainXmlPreParserException {\n \n         super(theDomainXml, theXif);\n         instanceName = theServerName;\n@@ -62,25 +62,30 @@ class InstanceReaderFilter extends ServerReaderFilter {\n             XMLStreamReader reader = getParent();\n             String elementName = reader.getLocalName();\n \n-            if (!StringUtils.ok(elementName))\n+            if (!StringUtils.ok(elementName)) {\n                 return true; // famous last words:  \"this can never happen\" ;-)\n+            }\n \n             // possibly filter out from these 3 kinds of elements\n-            if (elementName.equals(SERVER))\n+            if (elementName.equals(SERVER)) {\n                 return handleServer(reader);\n+            }\n \n-            if (elementName.equals(CONFIG))\n+            if (elementName.equals(CONFIG)) {\n                 return handleConfig(reader);\n+            }\n \n-            if (elementName.equals(CLUSTER))\n+            if (elementName.equals(CLUSTER)) {\n                 return handleCluster(reader);\n+            }\n \n             // keep everything else\n             return false;\n         } catch (Exception e) {\n             // I don't trust the XML parser code in the JDK -- it likes to throw\n             // unchecked exceptions!!\n-            throw new XMLStreamException(Strings.get(\"InstanceReaderFilter.UnknownException\", e.toString()), e);\n+            throw new XMLStreamException(\n+                Strings.get(\"InstanceReaderFilter.UnknownException\", e.toString()), e);\n         }\n     }\n \n@@ -96,8 +101,9 @@ class InstanceReaderFilter extends ServerReaderFilter {\n     private boolean handleServer(XMLStreamReader r) {\n         String name = r.getAttributeValue(null, NAME);\n \n-        if (StringUtils.ok(name) && dxpp.getServerNames().contains(name))\n+        if (StringUtils.ok(name) && dxpp.getServerNames().contains(name)) {\n             return false;\n+        }\n \n         return true;\n     }\n@@ -108,8 +114,9 @@ class InstanceReaderFilter extends ServerReaderFilter {\n     private boolean handleConfig(XMLStreamReader reader) {\n         String name = reader.getAttributeValue(null, NAME);\n \n-        if (dxpp.getConfigName().equals(name))\n+        if (dxpp.getConfigName().equals(name)) {\n             return false;\n+        }\n \n         return true;\n     }\n@@ -123,8 +130,9 @@ class InstanceReaderFilter extends ServerReaderFilter {\n         String name = reader.getAttributeValue(null, NAME);\n         String myCluster = dxpp.getClusterName();\n \n-        if (StringUtils.ok(myCluster) && myCluster.equals(name))\n+        if (StringUtils.ok(myCluster) && myCluster.equals(name)) {\n             return false;\n+        }\n \n         return true;\n     }\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/2/InstanceReaderFilter.java\nindex 0138a2cd437..448820809ff 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/2/InstanceReaderFilter.java\n@@ -63,8 +63,8 @@ class InstanceReaderFilter extends ServerReaderFilter {\n             String elementName = reader.getLocalName();\n \n             if (!StringUtils.ok(elementName))\n-                return true; // famous last words:  \"this can never happen\" ;-)\n-\n+                return true;\n+            // famous last words:  \"this can never happen\" ;-)\n             // possibly filter out from these 3 kinds of elements\n             if (elementName.equals(SERVER))\n                 return handleServer(reader);\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/2/InstanceReaderFilter.java\nindex 0138a2cd437..e9bc71ff1f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/2/InstanceReaderFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/2/InstanceReaderFilter.java\n@@ -63,9 +63,10 @@ class InstanceReaderFilter extends ServerReaderFilter {\n             String elementName = reader.getLocalName();\n \n             if (!StringUtils.ok(elementName))\n-                return true; // famous last words:  \"this can never happen\" ;-)\n+                return true;\n \n-            // possibly filter out from these 3 kinds of elements\n+            // famous last words:  \"this can never happen\" ;-)\n+                // possibly filter out from these 3 kinds of elements\n             if (elementName.equals(SERVER))\n                 return handleServer(reader);\n \n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,96 @@
+{
+    "project_name": "RWTH-i5-IDSG-steve",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "70",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 121).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    @PostConstruct\n    public void init() {\n        List<Interceptor<? extends Message>> interceptors = asList(new MessageIdInterceptor(), messageHeaderInterceptor);\n        List<Feature> logging = singletonList(LoggingFeatureProxy.INSTANCE.get());\n\n        createOcppService(ocpp12Server, \"/CentralSystemServiceOCPP12\", interceptors, logging);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "70",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/2/OcppConfiguration.java\nindex 74cc1b6125d..051b921f321 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/2/OcppConfiguration.java\n@@ -16,6 +16,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <https://www.gnu.org/licenses/>.\n  */\n+\n package de.rwth.idsg.steve.config;\n \n import de.rwth.idsg.steve.ocpp.soap.LoggingFeatureProxy;\n@@ -53,48 +54,51 @@ import static java.util.Collections.singletonList;\n @Configuration\n public class OcppConfiguration {\n \n-    static {\n-        LogUtils.setLoggerClass(Slf4jLogger.class);\n-    }\n+  static {\n+    LogUtils.setLoggerClass(Slf4jLogger.class);\n+  }\n \n-    @Autowired private ocpp.cs._2010._08.CentralSystemService ocpp12Server;\n-    @Autowired private ocpp.cs._2012._06.CentralSystemService ocpp15Server;\n-    @Autowired private ocpp.cs._2015._10.CentralSystemService ocpp16Server;\n+  @Autowired\n+  private ocpp.cs._2010._08.CentralSystemService ocpp12Server;\n+  @Autowired\n+  private ocpp.cs._2012._06.CentralSystemService ocpp15Server;\n+  @Autowired\n+  private ocpp.cs._2015._10.CentralSystemService ocpp16Server;\n \n-    @Autowired\n-    @Qualifier(\"MessageHeaderInterceptor\")\n-    private PhaseInterceptor<Message> messageHeaderInterceptor;\n+  @Autowired\n+  @Qualifier(\"MessageHeaderInterceptor\")\n+  private PhaseInterceptor<Message> messageHeaderInterceptor;\n \n-    @PostConstruct\n-    public void init() {\n-        List<Interceptor<? extends Message>> interceptors = asList(new MessageIdInterceptor(), messageHeaderInterceptor);\n-        List<Feature> logging = singletonList(LoggingFeatureProxy.INSTANCE.get());\n+  @PostConstruct\n+  public void init() {\n+    List<Interceptor<? extends Message>> interceptors = asList(new MessageIdInterceptor(), messageHeaderInterceptor);\n+    List<Feature> logging = singletonList(LoggingFeatureProxy.INSTANCE.get());\n \n-        createOcppService(ocpp12Server, \"/CentralSystemServiceOCPP12\", interceptors, logging);\n-        createOcppService(ocpp15Server, \"/CentralSystemServiceOCPP15\", interceptors, logging);\n-        createOcppService(ocpp16Server, \"/CentralSystemServiceOCPP16\", interceptors, logging);\n+    createOcppService(ocpp12Server, \"/CentralSystemServiceOCPP12\", interceptors, logging);\n+    createOcppService(ocpp15Server, \"/CentralSystemServiceOCPP15\", interceptors, logging);\n+    createOcppService(ocpp16Server, \"/CentralSystemServiceOCPP16\", interceptors, logging);\n \n-        // Just a dummy service to route incoming messages to the appropriate service version. This should be the last\n-        // one to be created, since in MediatorInInterceptor we go over created/registered services and build a map.\n-        //\n-        List<Interceptor<? extends Message>> mediator = singletonList(new MediatorInInterceptor(springBus()));\n-        createOcppService(ocpp12Server, CONFIG.getRouterEndpointPath(), mediator, Collections.emptyList());\n-    }\n+    // Just a dummy service to route incoming messages to the appropriate service version. This should be the last\n+    // one to be created, since in MediatorInInterceptor we go over created/registered services and build a map.\n+    //\n+    List<Interceptor<? extends Message>> mediator = singletonList(new MediatorInInterceptor(springBus()));\n+    createOcppService(ocpp12Server, CONFIG.getRouterEndpointPath(), mediator, Collections.emptyList());\n+  }\n \n-    @Bean(name = Bus.DEFAULT_BUS_ID, destroyMethod = \"shutdown\")\n-    public SpringBus springBus() {\n-        return new SpringBus();\n-    }\n+  @Bean(name = Bus.DEFAULT_BUS_ID, destroyMethod = \"shutdown\")\n+  public SpringBus springBus() {\n+    return new SpringBus();\n+  }\n \n-    private void createOcppService(Object serviceBean, String address,\n-                                   List<Interceptor<? extends Message>> interceptors,\n-                                   Collection<? extends Feature> features) {\n-        JaxWsServerFactoryBean f = new JaxWsServerFactoryBean();\n-        f.setBus(springBus());\n-        f.setServiceBean(serviceBean);\n-        f.setAddress(address);\n-        f.getFeatures().addAll(features);\n-        f.getInInterceptors().addAll(interceptors);\n-        f.create();\n-    }\n+  private void createOcppService(Object serviceBean, String address,\n+                                 List<Interceptor<? extends Message>> interceptors,\n+                                 Collection<? extends Feature> features) {\n+    JaxWsServerFactoryBean f = new JaxWsServerFactoryBean();\n+    f.setBus(springBus());\n+    f.setServiceBean(serviceBean);\n+    f.setAddress(address);\n+    f.getFeatures().addAll(features);\n+    f.getInInterceptors().addAll(interceptors);\n+    f.create();\n+  }\n }\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "69",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/naturalize/2/OcppConfiguration.java\nindex 74cc1b6125d..27bb189385a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/naturalize/2/OcppConfiguration.java\n@@ -15,8 +15,7 @@\n  *\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <https://www.gnu.org/licenses/>.\n- */\n-package de.rwth.idsg.steve.config;\n+ */package de.rwth.idsg.steve.config;\n \n import de.rwth.idsg.steve.ocpp.soap.LoggingFeatureProxy;\n import de.rwth.idsg.steve.ocpp.soap.MediatorInInterceptor;\n@@ -89,7 +88,7 @@ public class OcppConfiguration {\n     private void createOcppService(Object serviceBean, String address,\n                                    List<Interceptor<? extends Message>> interceptors,\n                                    Collection<? extends Feature> features) {\n-        JaxWsServerFactoryBean f = new JaxWsServerFactoryBean();\n+    JaxWsServerFactoryBean f = new JaxWsServerFactoryBean();\n         f.setBus(springBus());\n         f.setServiceBean(serviceBean);\n         f.setAddress(address);\n@@ -97,4 +96,4 @@ public class OcppConfiguration {\n         f.getInInterceptors().addAll(interceptors);\n         f.create();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "69",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "90",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/codebuff/2/OcppConfiguration.java\nindex 74cc1b6125d..2aeec59808b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/2/OcppConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/codebuff/2/OcppConfiguration.java\n@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;\n import org.springframework.beans.factory.annotation.Qualifier;\n import org.springframework.context.annotation.Bean;\n import org.springframework.context.annotation.Configuration;\n-\n import javax.annotation.PostConstruct;\n import java.util.Collection;\n import java.util.Collections;\n@@ -50,26 +49,25 @@ import static java.util.Collections.singletonList;\n  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>\n  * @since 18.11.2014\n  */\n+\n+\n @Configuration\n public class OcppConfiguration {\n \n     static {\n-        LogUtils.setLoggerClass(Slf4jLogger.class);\n+           LogUtils.setLoggerClass(Slf4jLogger.class);\n     }\n \n     @Autowired private ocpp.cs._2010._08.CentralSystemService ocpp12Server;\n     @Autowired private ocpp.cs._2012._06.CentralSystemService ocpp15Server;\n     @Autowired private ocpp.cs._2015._10.CentralSystemService ocpp16Server;\n-\n     @Autowired\n     @Qualifier(\"MessageHeaderInterceptor\")\n     private PhaseInterceptor<Message> messageHeaderInterceptor;\n-\n     @PostConstruct\n     public void init() {\n         List<Interceptor<? extends Message>> interceptors = asList(new MessageIdInterceptor(), messageHeaderInterceptor);\n         List<Feature> logging = singletonList(LoggingFeatureProxy.INSTANCE.get());\n-\n         createOcppService(ocpp12Server, \"/CentralSystemServiceOCPP12\", interceptors, logging);\n         createOcppService(ocpp15Server, \"/CentralSystemServiceOCPP15\", interceptors, logging);\n         createOcppService(ocpp16Server, \"/CentralSystemServiceOCPP16\", interceptors, logging);\n@@ -77,6 +75,7 @@ public class OcppConfiguration {\n         // Just a dummy service to route incoming messages to the appropriate service version. This should be the last\n         // one to be created, since in MediatorInInterceptor we go over created/registered services and build a map.\n         //\n+\n         List<Interceptor<? extends Message>> mediator = singletonList(new MediatorInInterceptor(springBus()));\n         createOcppService(ocpp12Server, CONFIG.getRouterEndpointPath(), mediator, Collections.emptyList());\n     }\n@@ -86,9 +85,9 @@ public class OcppConfiguration {\n         return new SpringBus();\n     }\n \n-    private void createOcppService(Object serviceBean, String address,\n-                                   List<Interceptor<? extends Message>> interceptors,\n-                                   Collection<? extends Feature> features) {\n+    private void createOcppService(Object serviceBean,\n+                                   String address,\n+                                   List<Interceptor<? extends Message>> interceptors, Collection<? extends Feature> features) {\n         JaxWsServerFactoryBean f = new JaxWsServerFactoryBean();\n         f.setBus(springBus());\n         f.setServiceBean(serviceBean);\n@@ -97,4 +96,4 @@ public class OcppConfiguration {\n         f.getInInterceptors().addAll(interceptors);\n         f.create();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "70",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

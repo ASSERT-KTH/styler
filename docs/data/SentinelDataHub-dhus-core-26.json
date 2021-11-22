@@ -1,0 +1,114 @@
+{
+    "project_name": "SentinelDataHub-dhus-core",
+    "error_id": "26",
+    "information": {
+        "errors": [
+            {
+                "line": "51",
+                "severity": "error",
+                "message": "Line is longer than 80 characters (found 93).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      Trigger trigger = TriggerBuilder.newTrigger()\n            .withIdentity(eviction.getName() + \"Trigger\", \"EvictionTrigger\")\n            .withSchedule(CronScheduleBuilder.cronSchedule(eviction.getCron().getSchedule()))\n            .build();\n\n      // remove existing job if exists",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/26/EvictionScheduler.java\nindex a3e76c243ae..f5c689608ef 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/26/EvictionScheduler.java\n@@ -48,7 +48,8 @@ public class EvictionScheduler\n \n       Trigger trigger = TriggerBuilder.newTrigger()\n             .withIdentity(eviction.getName() + \"Trigger\", \"EvictionTrigger\")\n-            .withSchedule(CronScheduleBuilder.cronSchedule(eviction.getCron().getSchedule()))\n+            .withSchedule(CronScheduleBuilder.cronSchedule(\n+                  eviction.getCron().getSchedule()))\n             .build();\n \n       // remove existing job if exists\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/26/EvictionScheduler.java\nindex a3e76c243ae..d0915cb6aa9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/26/EvictionScheduler.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package fr.gael.dhus.service.eviction;\n \n import fr.gael.dhus.database.object.config.eviction.Eviction;\n@@ -32,50 +33,53 @@ import org.quartz.impl.StdSchedulerFactory;\n \n public class EvictionScheduler\n {\n-   /** Scheduler used to handle eviction CRONS */\n-   private final Scheduler scheduler;\n+    /**\n+     * Scheduler used to handle eviction CRONS\n+     */\n+    private final Scheduler scheduler;\n \n-   public EvictionScheduler() throws SchedulerException\n-   {\n-      scheduler = StdSchedulerFactory.getDefaultScheduler();\n-   }\n+    public EvictionScheduler() throws SchedulerException\n+    {\n+        scheduler = StdSchedulerFactory.getDefaultScheduler();\n+    }\n \n-   public void scheduleEviction(Eviction eviction) throws SchedulerException\n-   {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n+    public void scheduleEviction(Eviction eviction) throws SchedulerException\n+    {\n+        JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n             .withIdentity(eviction.getName(), \"Eviction\")\n             .build();\n \n-      Trigger trigger = TriggerBuilder.newTrigger()\n+        Trigger trigger = TriggerBuilder.newTrigger()\n             .withIdentity(eviction.getName() + \"Trigger\", \"EvictionTrigger\")\n-            .withSchedule(CronScheduleBuilder.cronSchedule(eviction.getCron().getSchedule()))\n+            .withSchedule(CronScheduleBuilder\n+                .cronSchedule(eviction.getCron().getSchedule()))\n             .build();\n \n-      // remove existing job if exists\n-      if (scheduler.checkExists(jobDetail.getKey()))\n-      {\n-         scheduler.deleteJob(jobDetail.getKey());\n-      }\n-      // schedule job\n-      scheduler.scheduleJob(jobDetail, trigger);\n-   }\n+        // remove existing job if exists\n+        if (scheduler.checkExists(jobDetail.getKey()))\n+        {\n+            scheduler.deleteJob(jobDetail.getKey());\n+        }\n+        // schedule job\n+        scheduler.scheduleJob(jobDetail, trigger);\n+    }\n \n-   public void unscheduleEviction(Eviction eviction) throws SchedulerException\n-   {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n+    public void unscheduleEviction(Eviction eviction) throws SchedulerException\n+    {\n+        JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n             .withIdentity(eviction.getName(), \"Eviction\")\n             .build();\n \n-      // remove existing job if exists\n-      if (scheduler.checkExists(jobDetail.getKey()))\n-      {\n-         scheduler.deleteJob(jobDetail.getKey());\n-      }\n-   }\n+        // remove existing job if exists\n+        if (scheduler.checkExists(jobDetail.getKey()))\n+        {\n+            scheduler.deleteJob(jobDetail.getKey());\n+        }\n+    }\n \n-   public void start() throws SchedulerException\n-   {\n-      scheduler.start();\n-   }\n+    public void start() throws SchedulerException\n+    {\n+        scheduler.start();\n+    }\n \n }\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "50",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 93).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "64",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/26/EvictionScheduler.java\nindex a3e76c243ae..1e0ce9273c6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/26/EvictionScheduler.java\n@@ -42,8 +42,7 @@ public class EvictionScheduler\n \n    public void scheduleEviction(Eviction eviction) throws SchedulerException\n    {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n-            .withIdentity(eviction.getName(), \"Eviction\")\n+      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class).withIdentity(eviction.getName(), \"Eviction\")\n             .build();\n \n       Trigger trigger = TriggerBuilder.newTrigger()\n@@ -62,8 +61,7 @@ public class EvictionScheduler\n \n    public void unscheduleEviction(Eviction eviction) throws SchedulerException\n    {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n-            .withIdentity(eviction.getName(), \"Eviction\")\n+      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class).withIdentity(eviction.getName(), \"Eviction\")\n             .build();\n \n       // remove existing job if exists\n@@ -78,4 +76,4 @@ public class EvictionScheduler\n       scheduler.start();\n    }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 88).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 85).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/26/EvictionScheduler.java\nindex a3e76c243ae..10674eef1cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/26/EvictionScheduler.java\n@@ -20,7 +20,6 @@\n package fr.gael.dhus.service.eviction;\n \n import fr.gael.dhus.database.object.config.eviction.Eviction;\n-\n import org.quartz.CronScheduleBuilder;\n import org.quartz.JobBuilder;\n import org.quartz.JobDetail;\n@@ -35,47 +34,45 @@ public class EvictionScheduler\n    /** Scheduler used to handle eviction CRONS */\n    private final Scheduler scheduler;\n \n-   public EvictionScheduler() throws SchedulerException\n+   public EvictionScheduler ()\n+      throws SchedulerException\n    {\n-      scheduler = StdSchedulerFactory.getDefaultScheduler();\n+      scheduler = StdSchedulerFactory.getDefaultScheduler ();\n    }\n \n-   public void scheduleEviction(Eviction eviction) throws SchedulerException\n+   public void scheduleEviction (Eviction eviction) throws SchedulerException\n    {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n-            .withIdentity(eviction.getName(), \"Eviction\")\n-            .build();\n-\n-      Trigger trigger = TriggerBuilder.newTrigger()\n-            .withIdentity(eviction.getName() + \"Trigger\", \"EvictionTrigger\")\n-            .withSchedule(CronScheduleBuilder.cronSchedule(eviction.getCron().getSchedule()))\n-            .build();\n+      JobDetail jobDetail = JobBuilder.newJob (EvictionJob.class).withIdentity (eviction.getName (), \"Eviction\")\n+.build ();\n+      Trigger trigger = TriggerBuilder.newTrigger ().withIdentity (eviction.getName () +\n+         \"Trigger\", \"EvictionTrigger\")\n+.withSchedule (CronScheduleBuilder.cronSchedule (eviction.getCron ().getSchedule ()))\n+.build ();\n \n       // remove existing job if exists\n-      if (scheduler.checkExists(jobDetail.getKey()))\n+      if (scheduler.checkExists (jobDetail.getKey ()))\n       {\n-         scheduler.deleteJob(jobDetail.getKey());\n+         scheduler.deleteJob(jobDetail.getKey ());\n       }\n       // schedule job\n-      scheduler.scheduleJob(jobDetail, trigger);\n+      scheduler.scheduleJob (jobDetail, trigger);\n    }\n \n-   public void unscheduleEviction(Eviction eviction) throws SchedulerException\n+   public void unscheduleEviction (Eviction eviction) throws SchedulerException\n    {\n-      JobDetail jobDetail = JobBuilder.newJob(EvictionJob.class)\n-            .withIdentity(eviction.getName(), \"Eviction\")\n-            .build();\n+      JobDetail jobDetail = JobBuilder.newJob (EvictionJob.class).withIdentity (eviction.getName (), \"Eviction\")\n+.build ();\n \n       // remove existing job if exists\n-      if (scheduler.checkExists(jobDetail.getKey()))\n+      if (scheduler.checkExists (jobDetail.getKey ()))\n       {\n-         scheduler.deleteJob(jobDetail.getKey());\n+         scheduler.deleteJob(jobDetail.getKey ());\n       }\n    }\n \n-   public void start() throws SchedulerException\n+   public void start () throws SchedulerException\n    {\n       scheduler.start();\n    }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 24
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 93).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/26/EvictionScheduler.java\nindex a3e76c243ae..f5c689608ef 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/26/EvictionScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/26/EvictionScheduler.java\n@@ -48,7 +48,8 @@ public class EvictionScheduler\n \n       Trigger trigger = TriggerBuilder.newTrigger()\n             .withIdentity(eviction.getName() + \"Trigger\", \"EvictionTrigger\")\n-            .withSchedule(CronScheduleBuilder.cronSchedule(eviction.getCron().getSchedule()))\n+            .withSchedule(CronScheduleBuilder.cronSchedule(\n+                  eviction.getCron().getSchedule()))\n             .build();\n \n       // remove existing job if exists\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

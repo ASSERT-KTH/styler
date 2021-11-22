@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "369",
+    "information": {
+        "errors": [
+            {
+                "line": "110",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 129).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    /**\n     * Scan the directory for new (or removed) files (called mainly from {@link PollingThread}) and calls whoever is in charge of\n     * the actual deployment (or undeployment).\n     */\n    private void check() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "110",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "118",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/369/DeploymentPoller.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/369/DeploymentPoller.java\nindex bd62c41dd33..1ca624231f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/369/DeploymentPoller.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/369/DeploymentPoller.java\n@@ -54,170 +54,182 @@ import java.util.Collection;\n  */\n public class DeploymentPoller {\n \n-    private static Log __log = LogFactory.getLog(DeploymentPoller.class);\n-\n-    /** The polling interval. */\n-    private static final long POLL_TIME = 3000;\n-\n-    private File _deployDir;\n-\n-    private PollingThread _poller;\n-\n-    private ODEServer _odeServer;\n-\n-    private boolean _onHold = false;\n-\n-    /** Filter accepting directories containing a .odedd file. */\n-    private static final FileFilter _fileFilter = new FileFilter() {\n-        public boolean accept(File path) {\n-            if (path.isDirectory()) {\n-                return path.listFiles(new FilenameFilter() {\n-                    public boolean accept(File dir, String name) {\n-                        return name.toLowerCase().equals(\"deploy.xml\");\n-                    }\n-                }).length == 1;\n-            } else\n-                return false;\n-        }\n-    };\n-\n-    /** Filter accepting *.deployed files. */\n-    private static final FileFilter _deployedFilter = new FileFilter() {\n-        public boolean accept(File path) {\n-            return path.isFile() && path.getName().endsWith(\".deployed\");\n-        }\n-    };\n-\n-    public DeploymentPoller(File deployDir, ODEServer odeServer) {\n-        _odeServer = odeServer;\n-        _deployDir = deployDir;\n-        if (!_deployDir.exists())\n-            _deployDir.mkdir();\n+  private static Log __log = LogFactory.getLog(DeploymentPoller.class);\n+\n+  /**\n+   * The polling interval.\n+   */\n+  private static final long POLL_TIME = 3000;\n+\n+  private File _deployDir;\n+\n+  private PollingThread _poller;\n+\n+  private ODEServer _odeServer;\n+\n+  private boolean _onHold = false;\n+\n+  /**\n+   * Filter accepting directories containing a .odedd file.\n+   */\n+  private static final FileFilter _fileFilter = new FileFilter() {\n+    public boolean accept(File path) {\n+      if (path.isDirectory()) {\n+        return path.listFiles(new FilenameFilter() {\n+          public boolean accept(File dir, String name) {\n+            return name.toLowerCase().equals(\"deploy.xml\");\n+          }\n+        }).length == 1;\n+      } else {\n+        return false;\n+      }\n     }\n-\n-    public void start() {\n-        _poller = new PollingThread();\n-        _poller.start();\n-        __log.info(\"Poller started.\");\n+  };\n+\n+  /**\n+   * Filter accepting *.deployed files.\n+   */\n+  private static final FileFilter _deployedFilter = new FileFilter() {\n+    public boolean accept(File path) {\n+      return path.isFile() && path.getName().endsWith(\".deployed\");\n     }\n+  };\n \n-    public void stop() {\n-        _poller.kill();\n-        _poller = null;\n+  public DeploymentPoller(File deployDir, ODEServer odeServer) {\n+    _odeServer = odeServer;\n+    _deployDir = deployDir;\n+    if (!_deployDir.exists()) {\n+      _deployDir.mkdir();\n+    }\n+  }\n+\n+  public void start() {\n+    _poller = new PollingThread();\n+    _poller.start();\n+    __log.info(\"Poller started.\");\n+  }\n+\n+  public void stop() {\n+    _poller.kill();\n+    _poller = null;\n+  }\n+\n+  /**\n+   * Scan the directory for new (or removed) files (called mainly from {@link PollingThread}) and calls whoever is in charge of\n+   * the actual deployment (or undeployment).\n+   */\n+  private void check() {\n+    File[] files = _deployDir.listFiles(_fileFilter);\n+\n+    // Checking for new deployment directories\n+    for (File file : files) {\n+      File deployXml = new File(file, \"deploy.xml\");\n+      File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n+\n+      if (!deployXml.exists()) {\n+        // Skip if deploy.xml is abset\n+        __log.debug(\"Not deploying \" + file + \" (missing deploy.xml)\");\n+      }\n+\n+      if (deployedMarker.exists()) {\n+        continue;\n+      }\n+\n+      try {\n+        deployedMarker.createNewFile();\n+      } catch (IOException e1) {\n+        __log.error(\"Error creating deployed marker file, \" + file + \" will not be deployed\");\n+        continue;\n+      }\n+\n+      try {\n+        _odeServer.getProcessStore().undeploy(file);\n+      } catch (Exception ex) {\n+        __log.error(\"Error undeploying \" + file.getName());\n+      }\n+\n+      try {\n+        Collection<QName> deployed = _odeServer.getProcessStore().deploy(file);\n+        __log.info(\"Deployment of artifact \" + file.getName() + \" successful: \" + deployed);\n+      } catch (Exception e) {\n+        __log.error(\"Deployment of \" + file.getName() + \" failed, aborting for now.\", e);\n+      }\n     }\n \n-    /**\n-     * Scan the directory for new (or removed) files (called mainly from {@link PollingThread}) and calls whoever is in charge of\n-     * the actual deployment (or undeployment).\n-     */\n-    private void check() {\n-        File[] files = _deployDir.listFiles(_fileFilter);\n-\n-        // Checking for new deployment directories\n-        for (File file : files) {\n-            File deployXml = new File(file, \"deploy.xml\");\n-            File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n-\n-            if (!deployXml.exists()) {\n-                // Skip if deploy.xml is abset\n-                __log.debug(\"Not deploying \" + file + \" (missing deploy.xml)\");\n-            }\n-\n-            if (deployedMarker.exists()) {\n-                continue;\n-            }\n-\n-            try {\n-                deployedMarker.createNewFile();\n-            } catch (IOException e1) {\n-                __log.error(\"Error creating deployed marker file, \" + file + \" will not be deployed\");\n-                continue;\n-            }\n-\n-            try {\n-                _odeServer.getProcessStore().undeploy(file);\n-            } catch (Exception ex) {\n-                __log.error(\"Error undeploying \" + file.getName());\n-            }\n-\n-            try {\n-                Collection<QName> deployed = _odeServer.getProcessStore().deploy(file);\n-                __log.info(\"Deployment of artifact \" + file.getName() + \" successful: \" + deployed );\n-            } catch (Exception e) {\n-                __log.error(\"Deployment of \" + file.getName() + \" failed, aborting for now.\", e);\n-            }\n-        }\n-\n-        // Removing deployments that disappeared\n-        File[] deployed = _deployDir.listFiles(_deployedFilter);\n-        for (File file : deployed) {\n-            String pkg = file.getName().substring(0, file.getName().length() - \".deployed\".length());\n-            File deployDir = new File(_deployDir, pkg);\n-            if (!deployDir.exists()) {\n-                Collection<QName> undeployed = _odeServer.getProcessStore().undeploy(deployDir);\n-                file.delete();\n-                if (undeployed.size() > 0)\n-                    __log.info(\"Successfully undeployed \" + pkg);\n-            }\n+    // Removing deployments that disappeared\n+    File[] deployed = _deployDir.listFiles(_deployedFilter);\n+    for (File file : deployed) {\n+      String pkg = file.getName().substring(0, file.getName().length() - \".deployed\".length());\n+      File deployDir = new File(_deployDir, pkg);\n+      if (!deployDir.exists()) {\n+        Collection<QName> undeployed = _odeServer.getProcessStore().undeploy(deployDir);\n+        file.delete();\n+        if (undeployed.size() > 0) {\n+          __log.info(\"Successfully undeployed \" + pkg);\n         }\n+      }\n     }\n+  }\n+\n+  /**\n+   * Thread that does the actual polling for new files.\n+   */\n+  private class PollingThread extends Thread {\n+    private boolean _active = true;\n \n     /**\n-     * Thread that does the actual polling for new files.\n+     * Stop this poller, and block until it terminates.\n      */\n-    private class PollingThread extends Thread {\n-        private boolean _active = true;\n-\n-        /** Stop this poller, and block until it terminates. */\n-        void kill() {\n-            synchronized (this) {\n-                _active = false;\n-                this.notifyAll();\n-            }\n-            try {\n-                join();\n-            } catch (InterruptedException ie) {\n-                __log.fatal(\"Thread unexpectedly interrupted.\", ie);\n-            }\n-        }\n+    void kill() {\n+      synchronized (this) {\n+        _active = false;\n+        this.notifyAll();\n+      }\n+      try {\n+        join();\n+      } catch (InterruptedException ie) {\n+        __log.fatal(\"Thread unexpectedly interrupted.\", ie);\n+      }\n+    }\n \n-        public void run() {\n+    public void run() {\n+      try {\n+        while (_active) {\n+          if (!_onHold) {\n+            check();\n+          }\n+          synchronized (this) {\n             try {\n-                while (_active) {\n-                    if (!_onHold)\n-                        check();\n-                    synchronized (this) {\n-                        try {\n-                            this.wait(POLL_TIME);\n-                        } catch (InterruptedException e) {\n-                        }\n-                    }\n-                }\n-            } catch (Throwable t) {\n-                __log.fatal(\"Encountered an unexpected error.  Exiting poller...\", t);\n+              this.wait(POLL_TIME);\n+            } catch (InterruptedException e) {\n             }\n+          }\n         }\n+      } catch (Throwable t) {\n+        __log.fatal(\"Encountered an unexpected error.  Exiting poller...\", t);\n+      }\n     }\n-\n-    public void hold() {\n-        _onHold = true;\n+  }\n+\n+  public void hold() {\n+    _onHold = true;\n+  }\n+\n+  public void release() {\n+    _onHold = false;\n+  }\n+\n+  public void markAsDeployed(File file) {\n+    File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n+    try {\n+      deployedMarker.createNewFile();\n+    } catch (IOException e) {\n+      __log.error(\"Couldn't create marker file for \" + file.getName());\n     }\n+  }\n \n-    public void release() {\n-        _onHold = false;\n-    }\n-\n-    public void markAsDeployed(File file) {\n-        File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n-        try {\n-            deployedMarker.createNewFile();\n-        } catch (IOException e) {\n-            __log.error(\"Couldn't create marker file for \" + file.getName());\n-        }\n-    }\n-\n-    public void markAsUndeployed(File file) {\n-        File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n-        deployedMarker.delete();\n-    }\n+  public void markAsUndeployed(File file) {\n+    File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n+    deployedMarker.delete();\n+  }\n }\n",
+            "diff_size": 241
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "110",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/369/DeploymentPoller.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/369/DeploymentPoller.java\nindex bd62c41dd33..745d0cd0186 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/369/DeploymentPoller.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/369/DeploymentPoller.java\n@@ -220,4 +220,4 @@ public class DeploymentPoller {\n         File deployedMarker = new File(_deployDir, file.getName() + \".deployed\");\n         deployedMarker.delete();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "110",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "110",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

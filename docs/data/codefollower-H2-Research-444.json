@@ -1,0 +1,78 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "444",
+    "information": {
+        "errors": [
+            {
+                "line": "14",
+                "column": "24",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": " * (bottom up path).\n */\npublic class CursorPos //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n{\n    /**\n     * The page at the current level.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/444/CursorPos.java\nindex 7aee96e5eb2..cfba80f106a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/444/CursorPos.java\n@@ -11,7 +11,9 @@ package org.h2.mvstore;\n  * fom a specific (target) key within a leaf node all the way up to te root\n  * (bottom up path).\n  */\n-public class CursorPos //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n+public class CursorPos\n+\n+    //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n {\n     /**\n      * The page at the current level.\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "15",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/444/CursorPos.java\nindex 7aee96e5eb2..bfd173a3fcd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/444/CursorPos.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.mvstore;\n \n /**\n@@ -13,67 +14,67 @@ package org.h2.mvstore;\n  */\n public class CursorPos //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n {\n-    /**\n-     * The page at the current level.\n-     */\n-    public Page page;\n+  /**\n+   * The page at the current level.\n+   */\n+  public Page page;\n \n-    /**\n-     * Index of the key (within page above) used to go down to a lower level\n-     * in case of intermediate nodes, or index of the target key for leaf a node.\n-     * In a later case, it could be negative, if the key is not present.\n-     */\n-    public int index;\n+  /**\n+   * Index of the key (within page above) used to go down to a lower level\n+   * in case of intermediate nodes, or index of the target key for leaf a node.\n+   * In a later case, it could be negative, if the key is not present.\n+   */\n+  public int index;\n \n-    /**\n-     * Next node in the linked list, representing the position within parent level,\n-     * or null, if we are at the root level already.\n-     */\n-    public CursorPos parent;\n+  /**\n+   * Next node in the linked list, representing the position within parent level,\n+   * or null, if we are at the root level already.\n+   */\n+  public CursorPos parent;\n \n \n-    public CursorPos(Page page, int index, CursorPos parent) {\n-        this.page = page;\n-        this.index = index;\n-        this.parent = parent;\n-    }\n+  public CursorPos(Page page, int index, CursorPos parent) {\n+    this.page = page;\n+    this.index = index;\n+    this.parent = parent;\n+  }\n \n-    /**\n-     * Searches for a given key and creates a breadcrumb trail through a B-tree rooted at a given Page.\n-     * Resulting path starts at \"insertion point\" for a given key and goes back to the root.\n-     *\n-     * @param page      root of the tree\n-     * @param key       the key to search for\n-     * @return head of the CursorPos chain (insertion point)\n-     */\n-    public static CursorPos traverseDown(Page page, Object key) {\n-        CursorPos cursorPos = null;\n-        while (!page.isLeaf()) {\n-            int index = page.binarySearch(key) + 1;\n-            if (index < 0) {\n-                index = -index;\n-            }\n-            cursorPos = new CursorPos(page, index, cursorPos);\n-            page = page.getChildPage(index);\n-        }\n-        return new CursorPos(page, page.binarySearch(key), cursorPos);\n+  /**\n+   * Searches for a given key and creates a breadcrumb trail through a B-tree rooted at a given Page.\n+   * Resulting path starts at \"insertion point\" for a given key and goes back to the root.\n+   *\n+   * @param page root of the tree\n+   * @param key  the key to search for\n+   * @return head of the CursorPos chain (insertion point)\n+   */\n+  public static CursorPos traverseDown(Page page, Object key) {\n+    CursorPos cursorPos = null;\n+    while (!page.isLeaf()) {\n+      int index = page.binarySearch(key) + 1;\n+      if (index < 0) {\n+        index = -index;\n+      }\n+      cursorPos = new CursorPos(page, index, cursorPos);\n+      page = page.getChildPage(index);\n     }\n+    return new CursorPos(page, page.binarySearch(key), cursorPos);\n+  }\n \n-    int processRemovalInfo(long version) {\n-        int unsavedMemory = 0;\n-        for (CursorPos head = this; head != null; head = head.parent) {\n-            unsavedMemory += head.page.removePage(version);\n-        }\n-        return unsavedMemory;\n+  int processRemovalInfo(long version) {\n+    int unsavedMemory = 0;\n+    for (CursorPos head = this; head != null; head = head.parent) {\n+      unsavedMemory += head.page.removePage(version);\n     }\n+    return unsavedMemory;\n+  }\n \n-    @Override\n-    public String toString() {\n-        return \"CursorPos{\" +\n-                \"page=\" + page +\n-                \", index=\" + index +\n-                \", parent=\" + parent +\n-                '}';\n-    }\n+  @Override\n+  public String toString() {\n+    return \"CursorPos{\" +\n+        \"page=\" + page +\n+        \", index=\" + index +\n+        \", parent=\" + parent +\n+        '}';\n+  }\n }\n \n",
+            "diff_size": 58
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "14",
+                    "column": "23",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/444/CursorPos.java\nindex 7aee96e5eb2..a8c96ae1538 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/444/CursorPos.java\n@@ -11,7 +11,7 @@ package org.h2.mvstore;\n  * fom a specific (target) key within a leaf node all the way up to te root\n  * (bottom up path).\n  */\n-public class CursorPos //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n+public class CursorPos//\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n {\n     /**\n      * The page at the current level.\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/444/CursorPos.java\nindex 7aee96e5eb2..cfba80f106a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/444/CursorPos.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/444/CursorPos.java\n@@ -11,7 +11,9 @@ package org.h2.mvstore;\n  * fom a specific (target) key within a leaf node all the way up to te root\n  * (bottom up path).\n  */\n-public class CursorPos //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n+public class CursorPos\n+\n+    //\u904d\u5386B-Tree\u65f6\u901a\u8fc7\u5b83\u80fd\u5411\u4e0a\u6216\u5411\u53f3\u6307\u5b9a\u8282\u70b9\n {\n     /**\n      * The page at the current level.\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

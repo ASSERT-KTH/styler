@@ -1,0 +1,179 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1862",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "83",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "51",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1862/TransactionChecksumLookup.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1862/TransactionChecksumLookup.java\nindex 22053ab8764..87294064b9d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1862/TransactionChecksumLookup.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1862/TransactionChecksumLookup.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.ha;\n \n import java.io.IOException;\n@@ -37,49 +38,48 @@ import static org.neo4j.helpers.Exceptions.withMessage;\n  */\n public class TransactionChecksumLookup\n {\n-    private final TransactionIdStore transactionIdStore;\n-    private final LogicalTransactionStore logicalTransactionStore;\n-    private TransactionId upgradeTransaction;\n+  private final TransactionIdStore transactionIdStore;\n+  private final LogicalTransactionStore logicalTransactionStore;\n+  private TransactionId upgradeTransaction;\n+\n+  public TransactionChecksumLookup(TransactionIdStore transactionIdStore,\n+                                   LogicalTransactionStore logicalTransactionStore)\n+  {\n+    this.transactionIdStore = transactionIdStore;\n+    this.logicalTransactionStore = logicalTransactionStore;\n+    this.upgradeTransaction = transactionIdStore.getUpgradeTransaction();\n+  }\n \n-    public TransactionChecksumLookup( TransactionIdStore transactionIdStore,\n-            LogicalTransactionStore logicalTransactionStore )\n+  public long lookup(long txId) throws IOException\n+  {\n+    // First off see if the requested txId is in fact the last committed transaction.\n+    // If so then we can extract the checksum directly from the transaction id store.\n+    TransactionId lastCommittedTransaction = transactionIdStore.getLastCommittedTransaction();\n+    if (lastCommittedTransaction.transactionId() == txId)\n     {\n-        this.transactionIdStore = transactionIdStore;\n-        this.logicalTransactionStore = logicalTransactionStore;\n-        this.upgradeTransaction = transactionIdStore.getUpgradeTransaction();\n+      return lastCommittedTransaction.checksum();\n     }\n \n-    public long lookup( long txId ) throws IOException\n+    // Check if the requested txId is upgrade transaction\n+    // if so then use checksum form transaction id store.\n+    // That checksum can take specific values that should not be re-evaluated.\n+    if (upgradeTransaction.transactionId() == txId)\n     {\n-        // First off see if the requested txId is in fact the last committed transaction.\n-        // If so then we can extract the checksum directly from the transaction id store.\n-        TransactionId lastCommittedTransaction = transactionIdStore.getLastCommittedTransaction();\n-        if ( lastCommittedTransaction.transactionId() == txId )\n-        {\n-            return lastCommittedTransaction.checksum();\n-        }\n-\n-        // Check if the requested txId is upgrade transaction\n-        // if so then use checksum form transaction id store.\n-        // That checksum can take specific values that should not be re-evaluated.\n-        if ( upgradeTransaction.transactionId() == txId )\n-        {\n-            return upgradeTransaction.checksum();\n-        }\n+      return upgradeTransaction.checksum();\n+    }\n \n-        // It wasn't, so go look for it in the transaction store.\n-        // Intentionally let potentially thrown IOException (and NoSuchTransactionException) be thrown\n-        // from this call below, it's part of the contract of this method.\n-        try\n-        {\n-            return logicalTransactionStore.getMetadataFor( txId ).getChecksum();\n-        }\n-        catch ( NoSuchTransactionException e )\n-        {\n-            // So we truly couldn't find the checksum for this txId, go ahead and throw\n-            throw withMessage( e, e.getMessage() + \" | transaction id store says last transaction is \" +\n-                    lastCommittedTransaction + \" and last upgrade transaction is \" +\n-                    upgradeTransaction );\n-        }\n+    // It wasn't, so go look for it in the transaction store.\n+    // Intentionally let potentially thrown IOException (and NoSuchTransactionException) be thrown\n+    // from this call below, it's part of the contract of this method.\n+    try\n+    {\n+      return logicalTransactionStore.getMetadataFor(txId).getChecksum();\n+    } catch (NoSuchTransactionException e)\n+    {\n+      // So we truly couldn't find the checksum for this txId, go ahead and throw\n+      throw withMessage(e, e.getMessage() + \" | transaction id store says last transaction is \" +\n+          lastCommittedTransaction + \" and last upgrade transaction is \" +\n+          upgradeTransaction);\n     }\n+  }\n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 191).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1862/TransactionChecksumLookup.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1862/TransactionChecksumLookup.java\nindex 22053ab8764..4638d7fbd53 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1862/TransactionChecksumLookup.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1862/TransactionChecksumLookup.java\n@@ -77,9 +77,7 @@ public class TransactionChecksumLookup\n         catch ( NoSuchTransactionException e )\n         {\n             // So we truly couldn't find the checksum for this txId, go ahead and throw\n-            throw withMessage( e, e.getMessage() + \" | transaction id store says last transaction is \" +\n-                    lastCommittedTransaction + \" and last upgrade transaction is \" +\n-                    upgradeTransaction );\n-        }\n+            throw withMessage( e, e.getMessage() + \" | transaction id store says last transaction is \" + lastCommittedTransaction + \" and last upgrade transaction is \" + upgradeTransaction );\n+    }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

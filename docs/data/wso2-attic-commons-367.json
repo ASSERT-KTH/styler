@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "367",
+    "information": {
+        "errors": [
+            {
+                "line": "121",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            processor.onScheduledJob(ji);\n        } catch (Exception jpe) {\n            throw new RuntimeException(\"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n        }\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/367/MockScheduler.java\nindex 25f73f87049..71933107dc7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/367/MockScheduler.java\n@@ -118,7 +118,8 @@ public class MockScheduler implements Scheduler {\n         try {\n             processor.onScheduledJob(ji);\n         } catch (Exception jpe) {\n-            throw new RuntimeException(\"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n+            throw new RuntimeException(\n+                    \"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n         }\n     }\n \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/367/MockScheduler.java\nindex 25f73f87049..887ba704cc6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/367/MockScheduler.java\n@@ -39,94 +39,94 @@ import org.apache.ode.bpel.iapi.Scheduler;\n import org.apache.ode.utils.GUID;\n \n /**\n- * \n  * @author Matthieu Riou <mriou at apache dot org>\n- * \n- * - BART refactor: Removed transaction management logic. \n- * @author Maciej Szefler <mszefler at gmail dot com> \n+ * <p>\n+ * - BART refactor: Removed transaction management logic.\n+ * @author Maciej Szefler <mszefler at gmail dot com>\n  */\n public class MockScheduler implements Scheduler {\n \n-    private static final Log __log = LogFactory.getLog(MockScheduler.class);\n+  private static final Log __log = LogFactory.getLog(MockScheduler.class);\n \n-    private JobProcessor _processor;\n-    private Timer _timer = new Timer(false);\n+  private JobProcessor _processor;\n+  private Timer _timer = new Timer(false);\n \n-    private ScheduledExecutorService _exec;\n+  private ScheduledExecutorService _exec;\n \n-    private TransactionManager _txm;\n+  private TransactionManager _txm;\n \n-    public MockScheduler(TransactionManager txm) {\n-        _txm = txm;\n-        _exec = Executors.newSingleThreadScheduledExecutor();\n-    }\n+  public MockScheduler(TransactionManager txm) {\n+    _txm = txm;\n+    _exec = Executors.newSingleThreadScheduledExecutor();\n+  }\n \n-    ThreadLocal<List<Synchronization>> _synchros = new ThreadLocal<List<Synchronization>>() {\n-        @Override\n-        protected List<Synchronization> initialValue() {\n-            return new ArrayList<Synchronization>();\n-        }\n-    };\n-\n-    public String schedulePersistedJob(final Map<String, Object> detail, Date dt) throws ContextException {\n-        final Date date = dt == null ? new Date() : dt;\n-        registerSynchronizer(new Synchronization() {\n-            public void afterCompletion(int status) {\n-                long delay = Math.max(0, date.getTime() - System.currentTimeMillis());\n-                _exec.schedule(new Callable<Void>() {\n-                    public Void call() throws Exception {\n-                        JobInfo ji = new JobInfo(\"job\" + System.currentTimeMillis(), detail, 0);\n-                        doExecute(ji);\n-                        return null;\n-                    }\n-                }, delay, TimeUnit.MILLISECONDS);\n-            }\n-\n-            public void beforeCompletion() {\n-            }\n-        });\n-        return new GUID().toString();\n+  ThreadLocal<List<Synchronization>> _synchros = new ThreadLocal<List<Synchronization>>() {\n+    @Override\n+    protected List<Synchronization> initialValue() {\n+      return new ArrayList<Synchronization>();\n     }\n-\n-    public void cancelJob(String arg0) throws ContextException {\n-        \n+  };\n+\n+  public String schedulePersistedJob(final Map<String, Object> detail, Date dt) throws ContextException {\n+    final Date date = dt == null ? new Date() : dt;\n+    registerSynchronizer(new Synchronization() {\n+      public void afterCompletion(int status) {\n+        long delay = Math.max(0, date.getTime() - System.currentTimeMillis());\n+        _exec.schedule(new Callable<Void>() {\n+          public Void call() throws Exception {\n+            JobInfo ji = new JobInfo(\"job\" + System.currentTimeMillis(), detail, 0);\n+            doExecute(ji);\n+            return null;\n+          }\n+        }, delay, TimeUnit.MILLISECONDS);\n+      }\n+\n+      public void beforeCompletion() {\n+      }\n+    });\n+    return new GUID().toString();\n+  }\n+\n+  public void cancelJob(String arg0) throws ContextException {\n+\n+  }\n+\n+  public void start() {\n+  }\n+\n+  public void stop() {\n+  }\n+\n+  public void shutdown() {\n+  }\n+\n+  private void registerSynchronizer(final Synchronization synch) throws ContextException {\n+    try {\n+      _txm.getTransaction().registerSynchronization(synch);\n+    } catch (Exception e) {\n+      __log.error(\"Exception in mock scheduler sync registration.\", e);\n+      throw new RuntimeException(e);\n     }\n+  }\n \n-    public void start() {\n-    }\n \n-    public void stop() {\n+  private void doExecute(JobInfo ji) {\n+    JobProcessor processor = _processor;\n+    if (processor == null) {\n+      throw new RuntimeException(\"No processor.\");\n     }\n-\n-    public void shutdown() {\n+    try {\n+      processor.onScheduledJob(ji);\n+    } catch (Exception jpe) {\n+      throw new RuntimeException(\"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n     }\n+  }\n \n-    private void registerSynchronizer(final Synchronization synch) throws ContextException {\n-        try {\n-            _txm.getTransaction().registerSynchronization(synch);\n-        } catch (Exception e) {\n-            __log.error(\"Exception in mock scheduler sync registration.\", e);\n-            throw new RuntimeException(e);\n-        }\n-    }\n+  public void setJobProcessor(JobProcessor processor) throws ContextException {\n+    _processor = processor;\n+  }\n \n+  public void jobCompleted(String jobId) {\n \n-    private void doExecute(JobInfo ji) {\n-        JobProcessor processor = _processor;\n-        if (processor == null)\n-            throw new RuntimeException(\"No processor.\");\n-        try {\n-            processor.onScheduledJob(ji);\n-        } catch (Exception jpe) {\n-            throw new RuntimeException(\"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n-        }\n-    }\n-\n-    public void setJobProcessor(JobProcessor processor) throws ContextException {\n-        _processor = processor;\n-    }\n-\n-    public void jobCompleted(String jobId) {\n-\n-    }\n+  }\n }\n",
+            "diff_size": 118
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "121",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/367/MockScheduler.java\nindex 25f73f87049..a1f62af2c34 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/367/MockScheduler.java\n@@ -129,4 +129,4 @@ public class MockScheduler implements Scheduler {\n     public void jobCompleted(String jobId) {\n \n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "121",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/367/MockScheduler.java\nindex 25f73f87049..71933107dc7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/367/MockScheduler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/367/MockScheduler.java\n@@ -118,7 +118,8 @@ public class MockScheduler implements Scheduler {\n         try {\n             processor.onScheduledJob(ji);\n         } catch (Exception jpe) {\n-            throw new RuntimeException(\"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n+            throw new RuntimeException(\n+                    \"Scheduled transaction failed unexpectedly: transaction will not be retried!.\", jpe);\n         }\n     }\n \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

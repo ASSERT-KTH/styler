@@ -1,0 +1,75 @@
+{
+    "project_name": "griddynamics-jagger",
+    "error_id": "189",
+    "information": {
+        "errors": [
+            {
+                "line": "55",
+                "severity": "warning",
+                "message": "'ExtensionRegistry' has incorrect indentation level 4, expected level should be 12.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "    \n    private\n    ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n    private ExtensionRegistry<MappedReportProvider> mappedProviderRegistry =\n            new ExtensionRegistry<>(MappedReportProvider.class);\n    ",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler/189/ReportingContext.java\nindex 62d7df3700c..70228404697 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler/189/ReportingContext.java\n@@ -51,8 +51,7 @@ public class ReportingContext implements ApplicationContextAware {\n     private PlotsReporter plotsReporter;\n     private BaselineSessionProvider baselineSessionProvider;\n     \n-    private\n-    ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n+    private ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n     private ExtensionRegistry<MappedReportProvider> mappedProviderRegistry =\n             new ExtensionRegistry<>(MappedReportProvider.class);\n     \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "55",
+                    "severity": "warning",
+                    "message": "'ExtensionRegistry' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/189/ReportingContext.java\nindex 62d7df3700c..b8f96dfc2ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/189/ReportingContext.java\n@@ -42,24 +42,24 @@ import java.util.HashMap;\n import java.util.Map;\n \n public class ReportingContext implements ApplicationContextAware {\n-    \n+\n     public static final String CONTEXT_NAME = \"context\";\n-    \n+\n     private ResourceLoader resourceLoader;\n     private String rootPath = \"\";\n     private SummaryReporter summaryReporter;\n     private PlotsReporter plotsReporter;\n     private BaselineSessionProvider baselineSessionProvider;\n-    \n+\n     private\n     ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n     private ExtensionRegistry<MappedReportProvider> mappedProviderRegistry =\n             new ExtensionRegistry<>(MappedReportProvider.class);\n-    \n+\n     private Map<String, Object> parameters = Maps.newHashMap();\n-    \n+\n     private boolean removeFrame = true;\n-    \n+\n     public InputStream getResource(String location) {\n         try {\n             return resourceLoader.getResource(getPath(location)).getInputStream();\n@@ -67,25 +67,25 @@ public class ReportingContext implements ApplicationContextAware {\n             throw new TechnicalException(e);\n         }\n     }\n-    \n+\n     public Map<String, ReportingContext> getAsMap() {\n         Map<String, ReportingContext> map = new HashMap<>();\n         map.put(CONTEXT_NAME, this);\n         return map;\n     }\n-    \n+\n     public ReportProvider getProvider(String name) {\n         return providerRegistry.getExtension(name);\n     }\n-    \n+\n     public MappedReportProvider getMappedProvider(String name) {\n         return mappedProviderRegistry.getExtension(name);\n     }\n-    \n+\n     public Map<String, Object> getParameters() {\n         return parameters;\n     }\n-    \n+\n     public JasperReport getReport(String location) {\n         try {\n             return JasperCompileManager.compileReport(\n@@ -96,70 +96,70 @@ public class ReportingContext implements ApplicationContextAware {\n             throw new TechnicalException(e);\n         }\n     }\n-    \n+\n     //------------------------------------------------------------------------------------------------------------------\n-    \n+\n     public void setProviderRegistry(ExtensionRegistry<ReportProvider> providerRegistry) {\n         for (ReportProvider reportProvider : providerRegistry.getExtensions().values()) {\n             reportProvider.setContext(this);\n         }\n         this.providerRegistry = providerRegistry;\n     }\n-    \n+\n     public void setMappedProviderRegistry(ExtensionRegistry<MappedReportProvider> providerRegistry) {\n         for (MappedReportProvider reportProvider : providerRegistry.getExtensions().values()) {\n             reportProvider.setContext(this);\n         }\n         this.mappedProviderRegistry = providerRegistry;\n     }\n-    \n+\n     @Override\n     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {\n         resourceLoader = applicationContext;\n     }\n-    \n+\n     public boolean isRemoveFrame() {\n         return removeFrame;\n     }\n-    \n+\n     public void setRemoveFrame(boolean removeFrame) {\n         this.removeFrame = removeFrame;\n     }\n-    \n+\n     public String getRootPath() {\n         return rootPath;\n     }\n-    \n+\n     public void setRootPath(String rootPath) {\n         this.rootPath = rootPath;\n     }\n-    \n+\n     private String getPath(String relativePath) {\n         return rootPath + relativePath;\n     }\n-    \n+\n     public SummaryReporter getSummaryReporter() {\n         return summaryReporter;\n     }\n-    \n+\n     @Required\n     public void setSummaryReporter(SummaryReporter summaryReporter) {\n         this.summaryReporter = summaryReporter;\n     }\n-    \n+\n     public PlotsReporter getPlotsReporter() {\n         return plotsReporter;\n     }\n-    \n+\n     @Required\n     public void setPlotsReporter(PlotsReporter plotsReporter) {\n         this.plotsReporter = plotsReporter;\n     }\n-    \n+\n     public BaselineSessionProvider getBaselineSessionProvider() {\n         return baselineSessionProvider;\n     }\n-    \n+\n     @Required\n     public void setBaselineSessionProvider(BaselineSessionProvider baselineSessionProvider) {\n         this.baselineSessionProvider = baselineSessionProvider;\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_random/189/ReportingContext.java\nindex 62d7df3700c..70228404697 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/189/ReportingContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/styler_random/189/ReportingContext.java\n@@ -51,8 +51,7 @@ public class ReportingContext implements ApplicationContextAware {\n     private PlotsReporter plotsReporter;\n     private BaselineSessionProvider baselineSessionProvider;\n     \n-    private\n-    ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n+    private ExtensionRegistry<ReportProvider> providerRegistry = new ExtensionRegistry<>(ReportProvider.class);\n     private ExtensionRegistry<MappedReportProvider> mappedProviderRegistry =\n             new ExtensionRegistry<>(MappedReportProvider.class);\n     \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "55",
+                    "severity": "warning",
+                    "message": "'ExtensionRegistry' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,79 @@
+{
+    "project_name": "findbugsproject-findbugs",
+    "error_id": "99",
+    "information": {
+        "errors": [
+            {
+                "line": "12",
+                "column": "17",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    public void testA() {\n        synchronized (this) {\n            x++;\t//Warning -- False Positive!\n        }\n    }\n    public void testB() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "18",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/99/Bug3477699.java\nindex 741634228f6..31bde553dde 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/99/Bug3477699.java\n@@ -9,7 +9,7 @@ public class Bug3477699 {\n \n     public void testA() {\n         synchronized (this) {\n-            x++;\t//Warning -- False Positive!\n+            x++;//Warning -- False Positive!\n         }\n     }\n     public void testB() {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/99/Bug3477699.java\nindex 741634228f6..35f3d92bbfe 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/99/Bug3477699.java\n@@ -9,23 +9,25 @@ public class Bug3477699 {\n \n     public void testA() {\n         synchronized (this) {\n-            x++;\t//Warning -- False Positive!\n+            x++;    //Warning -- False Positive!\n         }\n     }\n+\n     public void testB() {\n         l.lock();\n         try {\n-            x++;\t//Warning -- False Positive!\n+            x++;    //Warning -- False Positive!\n         } finally {\n             l.unlock();\n         }\n     }\n+\n     public void testC() {\n \n         Foo f = new Foo();\n         f.lock();\n         try {\n-            f.x++;\t//Warning -- False Positive!\n+            f.x++;    //Warning -- False Positive!\n         } finally {\n             f.unlock();\n         }\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/99/Bug3477699.java\nindex 741634228f6..5efdf91c2ff 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/99/Bug3477699.java\n@@ -9,23 +9,27 @@ public class Bug3477699 {\n \n     public void testA() {\n         synchronized (this) {\n-            x++;\t//Warning -- False Positive!\n+            x++; //Warning -- False Positive!\n         }\n     }\n-    public void testB() {\n+\n+public void testB() {\n         l.lock();\n         try {\n-            x++;\t//Warning -- False Positive!\n+            x++;\n+    //Warning -- False Positive!\n         } finally {\n             l.unlock();\n         }\n     }\n-    public void testC() {\n+\n+public void testC() {\n \n         Foo f = new Foo();\n         f.lock();\n         try {\n-            f.x++;\t//Warning -- False Positive!\n+            f.x++;\n+    //Warning -- False Positive!\n         } finally {\n             f.unlock();\n         }\n@@ -34,4 +38,4 @@ public class Bug3477699 {\n     private class Foo extends ReentrantLock {\n         volatile int x = 0;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/99/Bug3477699.java\nindex 741634228f6..12e8dc1e2cc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/99/Bug3477699.java\n@@ -3,35 +3,38 @@ package sfBugs;\n import java.util.concurrent.locks.ReentrantLock;\n \n public class Bug3477699 {\n-\n     private volatile int x = 0;\n+\n     private ReentrantLock l = new ReentrantLock();\n \n     public void testA() {\n         synchronized (this) {\n-            x++;\t//Warning -- False Positive!\n+            x++;    //Warning -- False Positive!\n         }\n     }\n+\n     public void testB() {\n         l.lock();\n         try {\n-            x++;\t//Warning -- False Positive!\n+            x++;    //Warning -- False Positive!\n         } finally {\n             l.unlock();\n         }\n     }\n-    public void testC() {\n \n+    public void testC() {\n         Foo f = new Foo();\n         f.lock();\n         try {\n-            f.x++;\t//Warning -- False Positive!\n+            f.x++;  //Warning -- False Positive!\n         } finally {\n             f.unlock();\n         }\n     }\n \n+\n     private class Foo extends ReentrantLock {\n+\n         volatile int x = 0;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "18",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/99/Bug3477699.java\nindex 741634228f6..31bde553dde 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/99/Bug3477699.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/99/Bug3477699.java\n@@ -9,7 +9,7 @@ public class Bug3477699 {\n \n     public void testA() {\n         synchronized (this) {\n-            x++;\t//Warning -- False Positive!\n+            x++;//Warning -- False Positive!\n         }\n     }\n     public void testB() {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,90 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "559",
+    "information": {
+        "errors": [
+            {
+                "line": "68",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 130).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                .append(\"@\").append(CARBON_CLIENT_ID)\n                .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n                .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n                .toString();\n    }\n}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/559/DurableTopicPublisher.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/559/DurableTopicPublisher.java\nindex a54cf0874bd..55acd792826 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/559/DurableTopicPublisher.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/559/DurableTopicPublisher.java\n@@ -12,60 +12,62 @@ import javax.naming.Context;\n import javax.naming.InitialContext;\n import javax.naming.NamingException;\n import java.util.Properties;\n- \n+\n public class DurableTopicPublisher {\n-    public static final String QPID_ICF = \"org.wso2.andes.jndi.PropertiesFileInitialContextFactory\";\n-    private static final String CF_NAME_PREFIX = \"connectionfactory.\";\n-    private static final String CF_NAME = \"qpidConnectionfactory\";\n-    String userName = \"admin\";\n-    String password = \"admin\";\n-    private static String CARBON_CLIENT_ID = \"carbon\";\n-    private static String CARBON_VIRTUAL_HOST_NAME = \"carbon\";\n-    private static String CARBON_DEFAULT_HOSTNAME = \"204.13.85.3\";\n-    private static String CARBON_DEFAULT_PORT = \"5672\";\n-    String topicName = \"lanka\";\n- \n-    public static void main(String[] args) throws NamingException, JMSException {\t\n-    \tDurableTopicPublisher topicPublisher = new DurableTopicPublisher();\n-        topicPublisher.publishMessage();\n-    }\n-    public void publishMessage() throws NamingException, JMSException {\n-        Properties properties = new Properties();\n-        properties.put(Context.INITIAL_CONTEXT_FACTORY, QPID_ICF);\n-        properties.put(CF_NAME_PREFIX + CF_NAME, getTCPConnectionURL(userName, password));\n-        System.out.println(\"getTCPConnectionURL(userName,password) = \" + getTCPConnectionURL(userName, password));\n-        InitialContext ctx = new InitialContext(properties);\n-        // Lookup connection factory\n-        TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(CF_NAME);\n-        TopicConnection topicConnection = connFactory.createTopicConnection();\n-        topicConnection.start();\n-        TopicSession topicSession =\n-                topicConnection.createTopicSession(false, QueueSession.AUTO_ACKNOWLEDGE);\n-        // Send message\n-        Topic topic = topicSession.createTopic(topicName);\n-\t\n-\tfor(int i=1;i<=2000;i=i+1){\n+  public static final String QPID_ICF = \"org.wso2.andes.jndi.PropertiesFileInitialContextFactory\";\n+  private static final String CF_NAME_PREFIX = \"connectionfactory.\";\n+  private static final String CF_NAME = \"qpidConnectionfactory\";\n+  String userName = \"admin\";\n+  String password = \"admin\";\n+  private static String CARBON_CLIENT_ID = \"carbon\";\n+  private static String CARBON_VIRTUAL_HOST_NAME = \"carbon\";\n+  private static String CARBON_DEFAULT_HOSTNAME = \"204.13.85.3\";\n+  private static String CARBON_DEFAULT_PORT = \"5672\";\n+  String topicName = \"lanka\";\n+\n+  public static void main(String[] args) throws NamingException, JMSException {\n+    DurableTopicPublisher topicPublisher = new DurableTopicPublisher();\n+    topicPublisher.publishMessage();\n+  }\n+\n+  public void publishMessage() throws NamingException, JMSException {\n+    Properties properties = new Properties();\n+    properties.put(Context.INITIAL_CONTEXT_FACTORY, QPID_ICF);\n+    properties.put(CF_NAME_PREFIX + CF_NAME, getTCPConnectionURL(userName, password));\n+    System.out.println(\"getTCPConnectionURL(userName,password) = \" + getTCPConnectionURL(userName, password));\n+    InitialContext ctx = new InitialContext(properties);\n+    // Lookup connection factory\n+    TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(CF_NAME);\n+    TopicConnection topicConnection = connFactory.createTopicConnection();\n+    topicConnection.start();\n+    TopicSession topicSession =\n+      topicConnection.createTopicSession(false, QueueSession.AUTO_ACKNOWLEDGE);\n+    // Send message\n+    Topic topic = topicSession.createTopic(topicName);\n+\n+    for (int i = 1; i <= 2000; i = i + 1) {\n+\n+      // create the message to send\n+      TextMessage message = topicSession.createTextMessage(\"Test Message..........\" + i);\n+\n+      javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n+\n+      topicPublisher.publish(message);\n \n-        // create the message to send\n-        TextMessage message = topicSession.createTextMessage(\"Test Message..........\"+i);\n-       \n-        javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n-       \n-        topicPublisher.publish(message);\n-                    \n-        \t\n-\t}\n \n-        topicSession.close();\n-        topicConnection.close();\n-    }\n-    public String getTCPConnectionURL(String username, String password) {\n-        // amqp://{username}:{password}@carbon/carbon?brokerlist='tcp://{hostname}:{port}'\n-        return new StringBuffer()\n-                .append(\"amqp://\").append(username).append(\":\").append(password)\n-                .append(\"@\").append(CARBON_CLIENT_ID)\n-                .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n-                .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n-                .toString();\n     }\n+\n+    topicSession.close();\n+    topicConnection.close();\n+  }\n+\n+  public String getTCPConnectionURL(String username, String password) {\n+    // amqp://{username}:{password}@carbon/carbon?brokerlist='tcp://{hostname}:{port}'\n+    return new StringBuffer()\n+      .append(\"amqp://\").append(username).append(\":\").append(password)\n+      .append(\"@\").append(CARBON_CLIENT_ID)\n+      .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n+      .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n+      .toString();\n+  }\n }\n",
+            "diff_size": 74
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "62",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/559/DurableTopicPublisher.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/559/DurableTopicPublisher.java\nindex a54cf0874bd..acbd6629983 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/559/DurableTopicPublisher.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/559/DurableTopicPublisher.java\n@@ -12,8 +12,9 @@ import javax.naming.Context;\n import javax.naming.InitialContext;\n import javax.naming.NamingException;\n import java.util.Properties;\n- \n+\n public class DurableTopicPublisher {\n+\n     public static final String QPID_ICF = \"org.wso2.andes.jndi.PropertiesFileInitialContextFactory\";\n     private static final String CF_NAME_PREFIX = \"connectionfactory.\";\n     private static final String CF_NAME = \"qpidConnectionfactory\";\n@@ -24,10 +25,9 @@ public class DurableTopicPublisher {\n     private static String CARBON_DEFAULT_HOSTNAME = \"204.13.85.3\";\n     private static String CARBON_DEFAULT_PORT = \"5672\";\n     String topicName = \"lanka\";\n- \n-    public static void main(String[] args) throws NamingException, JMSException {\t\n-    \tDurableTopicPublisher topicPublisher = new DurableTopicPublisher();\n-        topicPublisher.publishMessage();\n+public static void main(String[] args) throws NamingException, JMSException {\n+DurableTopicPublisher topicPublisher = new DurableTopicPublisher();\n+topicPublisher.publishMessage();\n     }\n     public void publishMessage() throws NamingException, JMSException {\n         Properties properties = new Properties();\n@@ -43,20 +43,14 @@ public class DurableTopicPublisher {\n                 topicConnection.createTopicSession(false, QueueSession.AUTO_ACKNOWLEDGE);\n         // Send message\n         Topic topic = topicSession.createTopic(topicName);\n-\t\n-\tfor(int i=1;i<=2000;i=i+1){\n-\n-        // create the message to send\n+for(int i=1;i<=2000;i=i+1){\n+    // create the message to send\n         TextMessage message = topicSession.createTextMessage(\"Test Message..........\"+i);\n-       \n-        javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n+javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n        \n         topicPublisher.publish(message);\n-                    \n-        \t\n-\t}\n-\n-        topicSession.close();\n+    }\n+topicSession.close();\n         topicConnection.close();\n     }\n     public String getTCPConnectionURL(String username, String password) {\n@@ -68,4 +62,4 @@ public class DurableTopicPublisher {\n                 .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n                 .toString();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

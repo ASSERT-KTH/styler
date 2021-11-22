@@ -7,6 +7,7 @@ import subprocess
 import shutil
 import glob
 import uuid
+import shlex
 from datetime import datetime
 from datetime import timedelta
 from tqdm import tqdm
@@ -118,25 +119,31 @@ def get_model(name, protocol):
     elif protocol == 'three_grams' and 'MODEL_PATH_THREE_GRAMS' in os.environ:
         model_path = os.environ['MODEL_PATH_THREE_GRAMS']
     elif protocol == 'random':
-        model_path = 'random-mlp-1-512-512-model_step_20000.pt'
+        model_path = 'random-general-2-512-512-model_step_5000.pt'
     else:
-        model_path = 'three_grams-general-2-512-256-model_step_20000.pt'
+        model_path = 'three_grams-general-1-512-512-model_step_10000.pt'
     return os.path.join(get_project_dir(name), __models_dir, model_path)
 
 def get_real_dataset_dir(name):
     return os.path.join(get_project_dir(name), __real_dataset_dir)
 
-def open_file(file):
-    """Open a file and read the content
+def open_file(file_path):
     """
-    if not file:
-        return ''
-    content = ''
-    try:
-        with open(file, 'r+', encoding="utf-8") as f:
-            content = f.read()
-    except Exception as err:
-        logger.debug('Something wrong happened while trying to open the file ' + file)
+    Opens the file and reads its content
+    """
+    content = None
+    if file_path:
+        try:
+            with open(file_path, 'r+', encoding='utf-8') as file:
+                content = file.read()
+        except Exception as err:
+            try:
+                with open(file_path, 'r+', encoding='ISO-8859-1') as file:
+                    content = file.read()
+            except Exception as err2:
+                my_print(f'[Exception] The file {file_path} cannot be read.')
+                my_print(f'Detail of the first exception: {err}')
+                my_print(f'Detail of the second exception: {err2}')
     return content
 
 

@@ -1,0 +1,63 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "101",
+    "information": {
+        "errors": [
+            {
+                "line": "92",
+                "column": "5",
+                "severity": "warning",
+                "message": "'throws' has incorrect indentation level 4, expected level should be 8.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "            OutputStream pOut, boolean pClose,\n            byte[] pBuffer)\n    throws IOException {\n        OutputStream out = pOut;\n        InputStream in = pIn;\n        try {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/101/Streams.java\nindex 64e758d7105..e95efafbe76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/101/Streams.java\n@@ -89,7 +89,7 @@ final class Streams {\n     public static long copy(InputStream pIn,\n             OutputStream pOut, boolean pClose,\n             byte[] pBuffer)\n-    throws IOException {\n+        throws IOException {\n         OutputStream out = pOut;\n         InputStream in = pIn;\n         try {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/101/Streams.java\nindex 64e758d7105..a29976ff5b7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/101/Streams.java\n@@ -26,7 +26,8 @@ import java.io.InputStream;\n import java.io.OutputStream;\n \n \n-/** Utility class for working with streams.\n+/**\n+ * Utility class for working with streams.\n  */\n final class Streams {\n     /**\n@@ -49,52 +50,53 @@ final class Streams {\n      * <pre>\n      *   copy(pInputStream, pOutputStream, new byte[8192]);\n      * </pre>\n-     * @param pInputStream The input stream, which is being read.\n-     * It is guaranteed, that {@link InputStream#close()} is called\n-     * on the stream.\n-     * @param pOutputStream The output stream, to which data should\n-     * be written. May be null, in which case the input streams\n-     * contents are simply discarded.\n-     * @param pClose True guarantees, that {@link OutputStream#close()}\n-     * is called on the stream. False indicates, that only\n-     * {@link OutputStream#flush()} should be called finally.\n      *\n+     * @param pInputStream  The input stream, which is being read.\n+     *                      It is guaranteed, that {@link InputStream#close()} is called\n+     *                      on the stream.\n+     * @param pOutputStream The output stream, to which data should\n+     *                      be written. May be null, in which case the input streams\n+     *                      contents are simply discarded.\n+     * @param pClose        True guarantees, that {@link OutputStream#close()}\n+     *                      is called on the stream. False indicates, that only\n+     *                      {@link OutputStream#flush()} should be called finally.\n      * @return Number of bytes, which have been copied.\n      * @throws IOException An I/O error occurred.\n      */\n     public static long copy(InputStream pInputStream,\n-            OutputStream pOutputStream, boolean pClose)\n-            throws IOException {\n+                            OutputStream pOutputStream, boolean pClose)\n+        throws IOException {\n         return copy(pInputStream, pOutputStream, pClose,\n-                new byte[DEFAULT_BUFFER_SIZE]);\n+            new byte[DEFAULT_BUFFER_SIZE]);\n     }\n \n     /**\n      * Copies the contents of the given {@link InputStream}\n      * to the given {@link OutputStream}.\n-     * @param pIn The input stream, which is being read.\n-     *   It is guaranteed, that {@link InputStream#close()} is called\n-     *   on the stream.\n-     * @param pOut The output stream, to which data should\n-     *   be written. May be null, in which case the input streams\n-     *   contents are simply discarded.\n-     * @param pClose True guarantees, that {@link OutputStream#close()}\n-     *   is called on the stream. False indicates, that only\n-     *   {@link OutputStream#flush()} should be called finally.\n+     *\n+     * @param pIn     The input stream, which is being read.\n+     *                It is guaranteed, that {@link InputStream#close()} is called\n+     *                on the stream.\n+     * @param pOut    The output stream, to which data should\n+     *                be written. May be null, in which case the input streams\n+     *                contents are simply discarded.\n+     * @param pClose  True guarantees, that {@link OutputStream#close()}\n+     *                is called on the stream. False indicates, that only\n+     *                {@link OutputStream#flush()} should be called finally.\n      * @param pBuffer Temporary buffer, which is to be used for\n-     *   copying data.\n+     *                copying data.\n      * @return Number of bytes, which have been copied.\n      * @throws IOException An I/O error occurred.\n      */\n     public static long copy(InputStream pIn,\n-            OutputStream pOut, boolean pClose,\n-            byte[] pBuffer)\n-    throws IOException {\n+                            OutputStream pOut, boolean pClose,\n+                            byte[] pBuffer)\n+        throws IOException {\n         OutputStream out = pOut;\n         InputStream in = pIn;\n         try {\n             long total = 0;\n-            for (;;) {\n+            for (; ; ) {\n                 int res = in.read(pBuffer);\n                 if (res == -1) {\n                     break;\n@@ -125,7 +127,7 @@ final class Streams {\n                     /* Ignore me */\n                 }\n             }\n-            if (pClose  &&  out != null) {\n+            if (pClose && out != null) {\n                 try {\n                     out.close();\n                 } catch (Throwable t) {\n@@ -139,10 +141,11 @@ final class Streams {\n      * This convenience method allows to read a Stream\n      * content into a string. The platform's default character encoding\n      * is used for converting bytes into characters.\n+     *\n      * @param pStream The input stream to read.\n-     * @see #asString(InputStream, String)\n      * @return The streams contents, as a string.\n      * @throws IOException An I/O error occurred.\n+     * @see #asString(InputStream, String)\n      */\n     public static String asString(InputStream pStream) throws IOException {\n         ByteArrayOutputStream baos = new ByteArrayOutputStream();\n@@ -153,14 +156,15 @@ final class Streams {\n     /**\n      * This convenience method allows to read a Stream\n      * content into a string, using the given character encoding.\n-     * @param pStream The input stream to read.\n+     *\n+     * @param pStream   The input stream to read.\n      * @param pEncoding The character encoding, typically \"UTF-8\".\n-     * @see #asString(InputStream)\n      * @return The streams contents, as a string.\n      * @throws IOException An I/O error occurred.\n+     * @see #asString(InputStream)\n      */\n     public static String asString(InputStream pStream, String pEncoding)\n-            throws IOException {\n+        throws IOException {\n         ByteArrayOutputStream baos = new ByteArrayOutputStream();\n         copy(pStream, baos, true);\n         return baos.toString(pEncoding);\n",
+            "diff_size": 47
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/101/Streams.java\nindex 64e758d7105..97828585fd1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/101/Streams.java\n@@ -87,9 +87,7 @@ final class Streams {\n      * @throws IOException An I/O error occurred.\n      */\n     public static long copy(InputStream pIn,\n-            OutputStream pOut, boolean pClose,\n-            byte[] pBuffer)\n-    throws IOException {\n+            OutputStream pOut, boolean pClose, byte[] pBuffer) throws IOException {\n         OutputStream out = pOut;\n         InputStream in = pIn;\n         try {\n@@ -125,7 +123,7 @@ final class Streams {\n                     /* Ignore me */\n                 }\n             }\n-            if (pClose  &&  out != null) {\n+            if (pClose &&  out != null) {\n                 try {\n                     out.close();\n                 } catch (Throwable t) {\n@@ -165,4 +163,4 @@ final class Streams {\n         copy(pStream, baos, true);\n         return baos.toString(pEncoding);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/101/Streams.java\nindex 64e758d7105..e95efafbe76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/101/Streams.java\n@@ -89,7 +89,7 @@ final class Streams {\n     public static long copy(InputStream pIn,\n             OutputStream pOut, boolean pClose,\n             byte[] pBuffer)\n-    throws IOException {\n+        throws IOException {\n         OutputStream out = pOut;\n         InputStream in = pIn;\n         try {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/101/Streams.java\nindex 64e758d7105..e95efafbe76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/101/Streams.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/101/Streams.java\n@@ -89,7 +89,7 @@ final class Streams {\n     public static long copy(InputStream pIn,\n             OutputStream pOut, boolean pClose,\n             byte[] pBuffer)\n-    throws IOException {\n+        throws IOException {\n         OutputStream out = pOut;\n         InputStream in = pIn;\n         try {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff"
+    ]
+}

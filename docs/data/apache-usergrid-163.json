@@ -1,0 +1,86 @@
+{
+    "project_name": "apache-usergrid",
+    "error_id": "163",
+    "information": {
+        "errors": [
+            {
+                "line": "62",
+                "column": "30",
+                "severity": "warning",
+                "message": "'{' is not preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Override\n    public boolean hasPages(){\n        return results != null && results.hasCursor();\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler/163/PagingResultsIterator.java\nindex 2ec96a856bd..55ae6155950 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler/163/PagingResultsIterator.java\n@@ -59,7 +59,7 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     }\n \n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "58",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'}' at column 13 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "110",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "125",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/163/PagingResultsIterator.java\nindex 2ec96a856bd..cd37c5828eb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/163/PagingResultsIterator.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.usergrid.persistence;\n \n \n@@ -21,24 +22,28 @@ import java.util.Iterator;\n import java.util.List;\n \n \n-/** iterates over a Results object, crossing page boundaries automatically */\n+/**\n+ * iterates over a Results object, crossing page boundaries automatically\n+ */\n public class PagingResultsIterator implements ResultsIterator, Iterable {\n \n     private Results results;\n+\n     private Iterator currentPageIterator;\n+\n     private Results.Level level;\n \n \n-    public PagingResultsIterator( Results results ) {\n-        this( results, results.level );\n+    public PagingResultsIterator(Results results) {\n+        this(results, results.level);\n     }\n \n \n     /**\n      * @param level overrides the default level from the Results - in case you want to return, say, UUIDs where the\n-     * Query was set for Entities\n+     *              Query was set for Entities\n      */\n-    public PagingResultsIterator( Results results, Results.Level level ) {\n+    public PagingResultsIterator(Results results, Results.Level level) {\n         this.results = results;\n         this.level = level;\n         initCurrentPageIterator();\n@@ -47,11 +52,10 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n \n     @Override\n     public boolean hasNext() {\n-        if ( currentPageIterator != null ) {\n-            if ( currentPageIterator.hasNext() ) {\n+        if (currentPageIterator != null) {\n+            if (currentPageIterator.hasNext()) {\n                 return true;\n-            }\n-            else {\n+            } else {\n                 return loadNextPage();\n             }\n         }\n@@ -59,19 +63,23 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     }\n \n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n \n-    /** @return the next object (type varies according the Results.Level) */\n+    /**\n+     * @return the next object (type varies according the Results.Level)\n+     */\n     @Override\n     public Object next() {\n         return currentPageIterator.next();\n     }\n \n \n-    /** not supported */\n+    /**\n+     * not supported\n+     */\n     @Override\n     public void remove() {\n         throw new UnsupportedOperationException();\n@@ -85,8 +93,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n      */\n     private boolean initCurrentPageIterator() {\n         List currentPage;\n-        if ( results != null ) {\n-            switch ( level ) {\n+        if (results != null) {\n+            switch (level) {\n                 case IDS:\n                     currentPage = results.getIds();\n                     break;\n@@ -96,11 +104,10 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n                 default:\n                     currentPage = results.getEntities();\n             }\n-            if ( currentPage.size() > 0 ) {\n+            if (currentPage.size() > 0) {\n                 currentPageIterator = currentPage.iterator();\n             }\n-        }\n-        else {\n+        } else {\n             currentPageIterator = null;\n         }\n         return currentPageIterator != null && currentPageIterator.hasNext();\n@@ -115,9 +122,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     private boolean loadNextPage() {\n         try {\n             results = results.getNextPageResults();\n-        }\n-        catch ( Exception e ) {\n-            throw new RuntimeException( e );\n+        } catch (Exception e) {\n+            throw new RuntimeException(e);\n         }\n         return initCurrentPageIterator();\n     }\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/naturalize/163/PagingResultsIterator.java\nindex 2ec96a856bd..2aea8456b62 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/naturalize/163/PagingResultsIterator.java\n@@ -59,7 +59,7 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     }\n \n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n@@ -127,4 +127,4 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     public Iterator iterator() {\n         return this;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/codebuff/163/PagingResultsIterator.java\nindex 2ec96a856bd..0fcb4cc2751 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/codebuff/163/PagingResultsIterator.java\n@@ -22,6 +22,8 @@ import java.util.List;\n \n \n /** iterates over a Results object, crossing page boundaries automatically */\n+\n+\n public class PagingResultsIterator implements ResultsIterator, Iterable {\n \n     private Results results;\n@@ -38,6 +40,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n      * @param level overrides the default level from the Results - in case you want to return, say, UUIDs where the\n      * Query was set for Entities\n      */\n+\n+\n     public PagingResultsIterator( Results results, Results.Level level ) {\n         this.results = results;\n         this.level = level;\n@@ -58,13 +62,16 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n         return false;\n     }\n \n+\n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n \n     /** @return the next object (type varies according the Results.Level) */\n+\n+\n     @Override\n     public Object next() {\n         return currentPageIterator.next();\n@@ -72,6 +79,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n \n \n     /** not supported */\n+\n+\n     @Override\n     public void remove() {\n         throw new UnsupportedOperationException();\n@@ -83,6 +92,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n      *\n      * @return true if the iterator has more results\n      */\n+\n+\n     private boolean initCurrentPageIterator() {\n         List currentPage;\n         if ( results != null ) {\n@@ -112,6 +123,8 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n      *\n      * @return true if loaded there are more results\n      */\n+\n+\n     private boolean loadNextPage() {\n         try {\n             results = results.getNextPageResults();\n@@ -127,4 +140,4 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     public Iterator iterator() {\n         return this;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_random/163/PagingResultsIterator.java\nindex 2ec96a856bd..55ae6155950 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_random/163/PagingResultsIterator.java\n@@ -59,7 +59,7 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     }\n \n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_three_grams/163/PagingResultsIterator.java\nindex 2ec96a856bd..55ae6155950 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/163/PagingResultsIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_three_grams/163/PagingResultsIterator.java\n@@ -59,7 +59,7 @@ public class PagingResultsIterator implements ResultsIterator, Iterable {\n     }\n \n     @Override\n-    public boolean hasPages(){\n+    public boolean hasPages() {\n         return results != null && results.hasCursor();\n     }\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij"
+    ]
+}

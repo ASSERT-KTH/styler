@@ -1,0 +1,96 @@
+{
+    "project_name": "TIBCOSoftware-genxdm",
+    "error_id": "400",
+    "information": {
+        "errors": [
+            {
+                "line": "33",
+                "column": "1",
+                "severity": "warning",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    implements NodeIterator<N>\n{\n\tprivate int pos = 0;\n\tprivate int lastPos = 0;\n\tprivate NodeIterator<N> iter;\n\tprivate final Model<N> m_model;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler/400/FilterNodeIterator.java\nindex ad2f576d491..86d0afa6889 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler/400/FilterNodeIterator.java\n@@ -30,7 +30,7 @@ public final class FilterNodeIterator<N>\n     extends DelegateExprContext<N> \r\n     implements NodeIterator<N>\r\n {\r\n-\tprivate int pos = 0;\r\n+private int pos = 0;\r\n \tprivate int lastPos = 0;\r\n \tprivate NodeIterator<N> iter;\r\n \tprivate final Model<N> m_model;\r\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/intellij/400/FilterNodeIterator.java\nindex ad2f576d491..add6de29265 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/intellij/400/FilterNodeIterator.java\n@@ -3,7 +3,7 @@\n  * license details\r\n  * Portions copyright (c) 2002, Bill Lindsey : see copying.txt for license\r\n  * details\r\n- * \r\n+ *\r\n  * Portions copyright (c) 2009-2011 TIBCO Software Inc.\r\n  *\r\n  * Licensed under the Apache License, Version 2.0 (the \"License\");\r\n@@ -18,6 +18,7 @@\n  * See the License for the specific language governing permissions and\r\n  * limitations under the License.\r\n  */\r\n+\r\n package org.genxdm.processor.xpath.v10.iterators;\r\n \r\n import org.genxdm.Model;\r\n@@ -26,76 +27,68 @@ import org.genxdm.xpath.v10.BooleanExpr;\n import org.genxdm.xpath.v10.NodeDynamicContext;\r\n import org.genxdm.xpath.v10.NodeIterator;\r\n \r\n-public final class FilterNodeIterator<N> \r\n-    extends DelegateExprContext<N> \r\n-    implements NodeIterator<N>\r\n-{\r\n-\tprivate int pos = 0;\r\n-\tprivate int lastPos = 0;\r\n-\tprivate NodeIterator<N> iter;\r\n-\tprivate final Model<N> m_model;\r\n-\tprivate final BooleanExpr predicate;\r\n+public final class FilterNodeIterator<N>\r\n+    extends DelegateExprContext<N>\r\n+    implements NodeIterator<N> {\r\n+    private int pos = 0;\r\n+\r\n+    private int lastPos = 0;\r\n+\r\n+    private NodeIterator<N> iter;\r\n+\r\n+    private final Model<N> m_model;\r\n+\r\n+    private final BooleanExpr predicate;\r\n \r\n-\tpublic FilterNodeIterator(Model<N> model, final NodeIterator<N> iter, final NodeDynamicContext<N> dynEnv, final BooleanExpr predicate)\r\n-\t{\r\n-\t\tsuper(dynEnv);\r\n-\t\tthis.iter = iter;\r\n-\t\tthis.m_model = model;\r\n-\t\tthis.predicate = predicate;\r\n-\t}\r\n+    public FilterNodeIterator(Model<N> model, final NodeIterator<N> iter,\r\n+                              final NodeDynamicContext<N> dynEnv, final BooleanExpr predicate) {\r\n+        super(dynEnv);\r\n+        this.iter = iter;\r\n+        this.m_model = model;\r\n+        this.predicate = predicate;\r\n+    }\r\n \r\n-\tpublic N next()\r\n-\t{\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN tem = iter.next();\r\n-\t\t\tif (tem == null)\r\n-\t\t\t{\r\n-\t\t\t\tbreak;\r\n-\t\t\t}\r\n-\t\t\t++pos;\r\n-\t\t\tif (predicate.booleanFunction(this.m_model, tem, this))\r\n-\t\t\t{\r\n-\t\t\t\treturn tem;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn null;\r\n-\t}\r\n+    public N next() {\r\n+        for (; ; ) {\r\n+            N tem = iter.next();\r\n+            if (tem == null) {\r\n+                break;\r\n+            }\r\n+            ++pos;\r\n+            if (predicate.booleanFunction(this.m_model, tem, this)) {\r\n+                return tem;\r\n+            }\r\n+        }\r\n+        return null;\r\n+    }\r\n \r\n-\t@Override\r\n-\tpublic int getContextPosition()\r\n-\t{\r\n-\t\treturn pos;\r\n-\t}\r\n+    @Override\r\n+    public int getContextPosition() {\r\n+        return pos;\r\n+    }\r\n \r\n-\t@SuppressWarnings(\"unchecked\")\r\n-\t@Override\r\n-\tpublic int getContextSize() {\r\n-\t\tif (lastPos == 0)\r\n-\t\t{\r\n-\t\t\tCloneableNodeIterator<N> cloneIter;\r\n-\t\t\tif (iter instanceof CloneableNodeIterator)\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = (CloneableNodeIterator<N>)iter;\r\n-\t\t\t}\r\n-\t\t\telse\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\r\n-\t\t\t}\r\n-\t\t\titer = (NodeIterator<N>)cloneIter.clone();\r\n-\t\t\tint savePosition = pos;\r\n-\t\t\ttry\r\n-\t\t\t{\r\n-\t\t\t\twhile (next() != null)\r\n-\t\t\t\t\t;\r\n-\t\t\t\tlastPos = pos;\r\n-\t\t\t}\r\n-\t\t\tfinally\r\n-\t\t\t{\r\n-\t\t\t\tpos = savePosition;\r\n-\t\t\t\titer = cloneIter;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn lastPos;\r\n-\t}\r\n+    @SuppressWarnings(\"unchecked\")\r\n+    @Override\r\n+    public int getContextSize() {\r\n+        if (lastPos == 0) {\r\n+            CloneableNodeIterator<N> cloneIter;\r\n+            if (iter instanceof CloneableNodeIterator) {\r\n+                cloneIter = (CloneableNodeIterator<N>) iter;\r\n+            } else {\r\n+                cloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\r\n+            }\r\n+            iter = (NodeIterator<N>) cloneIter.clone();\r\n+            int savePosition = pos;\r\n+            try {\r\n+                while (next() != null) {\r\n+                    ;\r\n+                }\r\n+                lastPos = pos;\r\n+            } finally {\r\n+                pos = savePosition;\r\n+                iter = cloneIter;\r\n+            }\r\n+        }\r\n+        return lastPos;\r\n+    }\r\n }\r\n",
+            "diff_size": 73
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/naturalize/400/FilterNodeIterator.java\nindex ad2f576d491..8086d01a28f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/naturalize/400/FilterNodeIterator.java\n@@ -29,73 +29,72 @@ import org.genxdm.xpath.v10.NodeIterator;\n public final class FilterNodeIterator<N> \r\n     extends DelegateExprContext<N> \r\n     implements NodeIterator<N>\r\n-{\r\n-\tprivate int pos = 0;\r\n+{\n+    private int pos = 0;\r\n \tprivate int lastPos = 0;\r\n \tprivate NodeIterator<N> iter;\r\n \tprivate final Model<N> m_model;\r\n \tprivate final BooleanExpr predicate;\r\n \r\n \tpublic FilterNodeIterator(Model<N> model, final NodeIterator<N> iter, final NodeDynamicContext<N> dynEnv, final BooleanExpr predicate)\r\n-\t{\r\n-\t\tsuper(dynEnv);\r\n+\t{\n+    super(dynEnv);\r\n \t\tthis.iter = iter;\r\n \t\tthis.m_model = model;\r\n-\t\tthis.predicate = predicate;\r\n-\t}\r\n+\t\tthis.predicate = predicate;\n+    }\r\n \r\n \tpublic N next()\r\n-\t{\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN tem = iter.next();\r\n+\t{\n+    for (;;)\r\n+\t\t{\n+    N tem = iter.next();\r\n \t\t\tif (tem == null)\r\n-\t\t\t{\r\n-\t\t\t\tbreak;\r\n-\t\t\t}\r\n+\t\t\t{\n+    break;\n+    }\r\n \t\t\t++pos;\r\n \t\t\tif (predicate.booleanFunction(this.m_model, tem, this))\r\n-\t\t\t{\r\n-\t\t\t\treturn tem;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn null;\r\n-\t}\r\n+\t\t\t{\n+    return tem;\n+    }\n+    }\r\n+\t\treturn null;\n+    }\r\n \r\n \t@Override\r\n \tpublic int getContextPosition()\r\n-\t{\r\n-\t\treturn pos;\r\n-\t}\r\n+\t{\n+    return pos;\n+    }\r\n \r\n \t@SuppressWarnings(\"unchecked\")\r\n \t@Override\r\n-\tpublic int getContextSize() {\r\n-\t\tif (lastPos == 0)\r\n-\t\t{\r\n-\t\t\tCloneableNodeIterator<N> cloneIter;\r\n+\tpublic int getContextSize() {\n+    if (lastPos == 0)\r\n+\t\t{\n+    CloneableNodeIterator<N> cloneIter;\r\n \t\t\tif (iter instanceof CloneableNodeIterator)\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = (CloneableNodeIterator<N>)iter;\r\n-\t\t\t}\r\n+\t\t\t{\n+    cloneIter = (CloneableNodeIterator<N>)iter;\n+    }\r\n \t\t\telse\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\r\n-\t\t\t}\r\n+\t\t\t{\n+    cloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\n+    }\r\n \t\t\titer = (NodeIterator<N>)cloneIter.clone();\r\n \t\t\tint savePosition = pos;\r\n \t\t\ttry\r\n-\t\t\t{\r\n-\t\t\t\twhile (next() != null)\r\n-\t\t\t\t\t;\r\n-\t\t\t\tlastPos = pos;\r\n-\t\t\t}\r\n+\t\t\t{\n+    while (next() != null);\n+lastPos = pos;\n+    }\r\n \t\t\tfinally\r\n-\t\t\t{\r\n-\t\t\t\tpos = savePosition;\r\n-\t\t\t\titer = cloneIter;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn lastPos;\r\n-\t}\r\n-}\r\n+\t\t\t{\n+    pos = savePosition;\r\n+\t\t\t\titer = cloneIter;\n+    }\n+    }\r\n+\t\treturn lastPos;\n+    }\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 45
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/codebuff/400/FilterNodeIterator.java\nindex ad2f576d491..414543e996c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/codebuff/400/FilterNodeIterator.java\n@@ -18,84 +18,86 @@\n  * See the License for the specific language governing permissions and\r\n  * limitations under the License.\r\n  */\r\n-package org.genxdm.processor.xpath.v10.iterators;\r\n-\r\n-import org.genxdm.Model;\r\n-import org.genxdm.processor.xpath.v10.expressions.DelegateExprContext;\r\n-import org.genxdm.xpath.v10.BooleanExpr;\r\n-import org.genxdm.xpath.v10.NodeDynamicContext;\r\n-import org.genxdm.xpath.v10.NodeIterator;\r\n-\r\n-public final class FilterNodeIterator<N> \r\n-    extends DelegateExprContext<N> \r\n-    implements NodeIterator<N>\r\n-{\r\n-\tprivate int pos = 0;\r\n-\tprivate int lastPos = 0;\r\n-\tprivate NodeIterator<N> iter;\r\n-\tprivate final Model<N> m_model;\r\n-\tprivate final BooleanExpr predicate;\r\n-\r\n-\tpublic FilterNodeIterator(Model<N> model, final NodeIterator<N> iter, final NodeDynamicContext<N> dynEnv, final BooleanExpr predicate)\r\n-\t{\r\n-\t\tsuper(dynEnv);\r\n-\t\tthis.iter = iter;\r\n-\t\tthis.m_model = model;\r\n-\t\tthis.predicate = predicate;\r\n-\t}\r\n-\r\n-\tpublic N next()\r\n-\t{\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN tem = iter.next();\r\n-\t\t\tif (tem == null)\r\n-\t\t\t{\r\n-\t\t\t\tbreak;\r\n-\t\t\t}\r\n-\t\t\t++pos;\r\n-\t\t\tif (predicate.booleanFunction(this.m_model, tem, this))\r\n-\t\t\t{\r\n-\t\t\t\treturn tem;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn null;\r\n-\t}\r\n-\r\n-\t@Override\r\n-\tpublic int getContextPosition()\r\n-\t{\r\n-\t\treturn pos;\r\n-\t}\r\n-\r\n-\t@SuppressWarnings(\"unchecked\")\r\n-\t@Override\r\n-\tpublic int getContextSize() {\r\n-\t\tif (lastPos == 0)\r\n-\t\t{\r\n-\t\t\tCloneableNodeIterator<N> cloneIter;\r\n-\t\t\tif (iter instanceof CloneableNodeIterator)\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = (CloneableNodeIterator<N>)iter;\r\n-\t\t\t}\r\n-\t\t\telse\r\n-\t\t\t{\r\n-\t\t\t\tcloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\r\n-\t\t\t}\r\n-\t\t\titer = (NodeIterator<N>)cloneIter.clone();\r\n-\t\t\tint savePosition = pos;\r\n-\t\t\ttry\r\n-\t\t\t{\r\n-\t\t\t\twhile (next() != null)\r\n-\t\t\t\t\t;\r\n-\t\t\t\tlastPos = pos;\r\n-\t\t\t}\r\n-\t\t\tfinally\r\n-\t\t\t{\r\n-\t\t\t\tpos = savePosition;\r\n-\t\t\t\titer = cloneIter;\r\n-\t\t\t}\r\n-\t\t}\r\n-\t\treturn lastPos;\r\n-\t}\r\n-}\r\n+package org.genxdm.processor.xpath.v10.iterators;\n+\n+import org.genxdm.Model;\n+import org.genxdm.processor.xpath.v10.expressions.DelegateExprContext;\n+import org.genxdm.xpath.v10.BooleanExpr;\n+import org.genxdm.xpath.v10.NodeDynamicContext;\n+import org.genxdm.xpath.v10.NodeIterator;\n+\n+public final class FilterNodeIterator<N>\n+    extends DelegateExprContext<N>\n+                   implements NodeIterator<N>\n+{\n+    private int pos = 0;\n+    private int lastPos = 0;\n+    private NodeIterator<N> iter;\n+    private final Model<N> m_model;\n+    private final BooleanExpr predicate;\n+\n+    public FilterNodeIterator(Model<N> model, final NodeIterator<N> iter, final NodeDynamicContext<N> dynEnv, final BooleanExpr predicate)\n+    {\n+        super(dynEnv);\n+        this.iter = iter;\n+        this.m_model = model;\n+        this.predicate = predicate;\n+    }\n+\n+    public N next()\n+    {\n+        for (;;)\n+        {\n+            N tem = iter.next();\n+            if (tem == null)\n+            {\n+                break;\n+            }\n+            ++pos;\n+            if (predicate.booleanFunction(this.m_model, tem, this))\n+            {\n+                return tem;\n+            }\n+        }\n+        return null;\n+    }\n+\n+    @Override\n+    public int getContextPosition()\n+    {\n+        return pos;\n+    }\n+\n+    @SuppressWarnings(\"unchecked\")\n+    @Override\n+    public int getContextSize()\n+    {\n+        if (lastPos == 0)\n+        {\n+            CloneableNodeIterator<N> cloneIter;\n+            if (iter instanceof CloneableNodeIterator)\n+            {\n+                cloneIter = (CloneableNodeIterator<N>)iter;\n+            }\n+            else\n+            {\n+                cloneIter = new CloneableNodeIteratorImpl<N>(iter, m_model);\n+            }\n+            iter = (NodeIterator<N>)cloneIter.clone();\n+\n+            int savePosition = pos;\n+            try\n+            {\n+                while (next() != null)\n+                ;\n+                lastPos = pos;\n+            }\n+            finally\n+            {\n+                pos = savePosition;\n+                iter = cloneIter;\n+            }\n+        }\n+        return lastPos;\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 83
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_random/400/FilterNodeIterator.java\nindex ad2f576d491..86d0afa6889 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_random/400/FilterNodeIterator.java\n@@ -30,7 +30,7 @@ public final class FilterNodeIterator<N>\n     extends DelegateExprContext<N> \r\n     implements NodeIterator<N>\r\n {\r\n-\tprivate int pos = 0;\r\n+private int pos = 0;\r\n \tprivate int lastPos = 0;\r\n \tprivate NodeIterator<N> iter;\r\n \tprivate final Model<N> m_model;\r\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_three_grams/400/FilterNodeIterator.java\nindex ad2f576d491..d805748ba0b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/400/FilterNodeIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_three_grams/400/FilterNodeIterator.java\n@@ -30,7 +30,7 @@ public final class FilterNodeIterator<N>\n     extends DelegateExprContext<N> \r\n     implements NodeIterator<N>\r\n {\r\n-\tprivate int pos = 0;\r\n+    private int pos = 0;\r\n \tprivate int lastPos = 0;\r\n \tprivate NodeIterator<N> iter;\r\n \tprivate final Model<N> m_model;\r\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,204 @@
+{
+    "project_name": "spark-root-laurelin",
+    "error_id": "27",
+    "information": {
+        "errors": [
+            {
+                "line": "50",
+                "column": "40",
+                "severity": "warning",
+                "message": "'new' has incorrect indentation level 39, expected level should be 40.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "                                    .maximumSize(100)\n                                    .build(\n                                       new CacheLoader<DataSourceReaderKey,\n                                                       DataSourceReader>() {\n                                            @Override\n                                            public DataSourceReader load(DataSourceReaderKey key) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/27/Root.java\nindex db14bf7c924..c4a4caff929 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/27/Root.java\n@@ -47,7 +47,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n                                     .softValues()\n                                     .maximumSize(100)\n                                     .build(\n-                                       new CacheLoader<DataSourceReaderKey,\n+                                        new CacheLoader<DataSourceReaderKey,\n                                                        DataSourceReader>() {\n                                             @Override\n                                             public DataSourceReader load(DataSourceReaderKey key) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/27/Root.java\nindex db14bf7c924..926452f845d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/27/Root.java\n@@ -22,7 +22,8 @@ import com.google.common.cache.LoadingCache;\n import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.Event;\n import edu.vanderbilt.accre.laurelin.spark_ttree.Reader;\n \n-public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, SessionConfigSupport {\n+public class Root implements DataSourceV2, ReadSupport, DataSourceRegister,\n+    SessionConfigSupport {\n     static final Logger logger = LogManager.getLogger();\n \n     /**\n@@ -42,28 +43,31 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n      * eagerly garbage collected\n      */\n     private static LoadingCache<DataSourceReaderKey,\n-                                DataSourceReader> dedupDataSource =\n-                                    CacheBuilder.newBuilder()\n-                                    .softValues()\n-                                    .maximumSize(100)\n-                                    .build(\n-                                       new CacheLoader<DataSourceReaderKey,\n-                                                       DataSourceReader>() {\n-                                            @Override\n-                                            public DataSourceReader load(DataSourceReaderKey key) {\n-                                                logger.trace(\"Construct new reader\");\n-                                                DataSourceOptions options = new DataSourceOptions(key.options);\n-                                                boolean traceIO = key.traceIO;\n-                                                SparkContext context = key.context;\n-                                                if ((traceIO) && (context != null)) {\n-                                                    synchronized (Root.class) {\n-                                                        ioAccum = new CollectionAccumulator<Event.Storage>();\n-                                                        context.register(ioAccum, \"edu.vanderbilt.accre.laurelin.ioprofile\");\n-                                                    }\n-                                                }\n-                                                return new Reader(options, context, ioAccum);\n-                                            }\n-                                            });\n+        DataSourceReader> dedupDataSource =\n+        CacheBuilder.newBuilder()\n+            .softValues()\n+            .maximumSize(100)\n+            .build(\n+                new CacheLoader<DataSourceReaderKey,\n+                    DataSourceReader>() {\n+                    @Override\n+                    public DataSourceReader load(DataSourceReaderKey key) {\n+                        logger.trace(\"Construct new reader\");\n+                        DataSourceOptions options =\n+                            new DataSourceOptions(key.options);\n+                        boolean traceIO = key.traceIO;\n+                        SparkContext context = key.context;\n+                        if ((traceIO) && (context != null)) {\n+                            synchronized (Root.class) {\n+                                ioAccum =\n+                                    new CollectionAccumulator<Event.Storage>();\n+                                context.register(ioAccum,\n+                                    \"edu.vanderbilt.accre.laurelin.ioprofile\");\n+                            }\n+                        }\n+                        return new Reader(options, context, ioAccum);\n+                    }\n+                });\n \n     static class DataSourceReaderKey {\n         @Override\n@@ -75,10 +79,11 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n         public boolean equals(Object obj) {\n             DataSourceReaderKey other = (DataSourceReaderKey) obj;\n             return (context == other.context) && options.equals(other.options)\n-                    && traceIO == other.traceIO;\n+                && traceIO == other.traceIO;\n         }\n \n-        public DataSourceReaderKey(DataSourceOptions options, SparkContext context, boolean traceIO) {\n+        public DataSourceReaderKey(DataSourceOptions options,\n+                                   SparkContext context, boolean traceIO) {\n             this.traceIO = traceIO;\n             this.context = context;\n             this.options = options.asMap();\n@@ -93,6 +98,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n     /**\n      * This is called by Spark, unlike the following function that accepts a\n      * SparkContext\n+     *\n      * @param options DS options\n      */\n     @Override\n@@ -102,14 +108,18 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n \n     /**\n      * Used for unit-tests when there is no current spark context\n+     *\n      * @param options DS options\n      * @param context spark context to use\n      * @param traceIO whether or not to trace the IO operations\n      * @return new reader\n      */\n-    public DataSourceReader createReader(DataSourceOptions options, SparkContext context, boolean traceIO) {\n+    public DataSourceReader createReader(DataSourceOptions options,\n+                                         SparkContext context,\n+                                         boolean traceIO) {\n         try {\n-            return dedupDataSource.get(new DataSourceReaderKey(options, context, traceIO));\n+            return dedupDataSource\n+                .get(new DataSourceReaderKey(options, context, traceIO));\n         } catch (ExecutionException e) {\n             throw new RuntimeException(\"Could not load DataSourceReader\", e);\n         }\n",
+            "diff_size": 37
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "23",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'ReadSupport' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'DataSourceRegister' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "25",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'SessionConfigSupport' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 0, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'synchronized' has incorrect indentation level 7, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: 'synchronized' is not followed by whitespace. Empty blocks may only be represented as {} when not part of a multi-block statement (4.1.3)",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "32",
+                    "severity": "warning",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "34",
+                    "severity": "warning",
+                    "message": "'synchronized' child has incorrect indentation level 33, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "34",
+                    "severity": "warning",
+                    "message": "'synchronized' child has incorrect indentation level 33, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'synchronized rcurly' has incorrect indentation level 7, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "57",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 3, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "152",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 151, expected level should be one of the following: 4, 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'CLASS_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/27/Root.java\nindex db14bf7c924..75bbc625515 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/27/Root.java\n@@ -3,7 +3,6 @@ package edu.vanderbilt.accre.laurelin;\n import java.util.Map;\n import java.util.Objects;\n import java.util.concurrent.ExecutionException;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n import org.apache.spark.SparkContext;\n@@ -14,15 +13,16 @@ import org.apache.spark.sql.sources.v2.ReadSupport;\n import org.apache.spark.sql.sources.v2.SessionConfigSupport;\n import org.apache.spark.sql.sources.v2.reader.DataSourceReader;\n import org.apache.spark.util.CollectionAccumulator;\n-\n import com.google.common.cache.CacheBuilder;\n import com.google.common.cache.CacheLoader;\n import com.google.common.cache.LoadingCache;\n-\n import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.Event;\n import edu.vanderbilt.accre.laurelin.spark_ttree.Reader;\n \n-public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, SessionConfigSupport {\n+public class Root implements DataSourceV2,\n+ReadSupport,\n+DataSourceRegister,\n+SessionConfigSupport {\n     static final Logger logger = LogManager.getLogger();\n \n     /**\n@@ -41,30 +41,22 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n      * are transient, we need to make these soft references so they're not\n      * eagerly garbage collected\n      */\n-    private static LoadingCache<DataSourceReaderKey,\n-                                DataSourceReader> dedupDataSource =\n-                                    CacheBuilder.newBuilder()\n-                                    .softValues()\n-                                    .maximumSize(100)\n-                                    .build(\n-                                       new CacheLoader<DataSourceReaderKey,\n-                                                       DataSourceReader>() {\n-                                            @Override\n-                                            public DataSourceReader load(DataSourceReaderKey key) {\n-                                                logger.trace(\"Construct new reader\");\n-                                                DataSourceOptions options = new DataSourceOptions(key.options);\n-                                                boolean traceIO = key.traceIO;\n-                                                SparkContext context = key.context;\n-                                                if ((traceIO) && (context != null)) {\n-                                                    synchronized (Root.class) {\n-                                                        ioAccum = new CollectionAccumulator<Event.Storage>();\n-                                                        context.register(ioAccum, \"edu.vanderbilt.accre.laurelin.ioprofile\");\n-                                                    }\n-                                                }\n-                                                return new Reader(options, context, ioAccum);\n-                                            }\n-                                            });\n-\n+    private static LoadingCache<DataSourceReaderKey, DataSourceReader> dedupDataSource = CacheBuilder.newBuilder().softValues().maximumSize(100).build(new CacheLoader<DataSourceReaderKey, DataSourceReader>() {\n+@Override\n+public DataSourceReader load(DataSourceReaderKey key) {\n+   logger.trace(\"Construct new reader\");\n+   DataSourceOptions options = new DataSourceOptions(key.options);\n+   boolean traceIO = key.traceIO;\n+   SparkContext context = key.context;\n+   if ((traceIO) && (context != null)) {\n+       synchronized(Root.class ) {\n+                                 ioAccum = new CollectionAccumulator<Event.Storage>();\n+                                 context.register(ioAccum, \"edu.vanderbilt.accre.laurelin.ioprofile\");\n+       }\n+   }\n+   return new Reader(options, context, ioAccum);\n+}\n+                                                                                                                                                       });\n     static class DataSourceReaderKey {\n         @Override\n         public int hashCode() {\n@@ -73,21 +65,20 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n \n         @Override\n         public boolean equals(Object obj) {\n-            DataSourceReaderKey other = (DataSourceReaderKey) obj;\n-            return (context == other.context) && options.equals(other.options)\n-                    && traceIO == other.traceIO;\n+            DataSourceReaderKey other = (DataSourceReaderKey)obj;\n+            return (context == other.context) && options.equals(other.options) && traceIO == other.traceIO;\n         }\n \n         public DataSourceReaderKey(DataSourceOptions options, SparkContext context, boolean traceIO) {\n             this.traceIO = traceIO;\n             this.context = context;\n             this.options = options.asMap();\n-\n         }\n \n         boolean traceIO;\n         SparkContext context;\n         Map<String, String> options;\n+\n     }\n \n     /**\n@@ -95,6 +86,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n      * SparkContext\n      * @param options DS options\n      */\n+\n     @Override\n     public DataSourceReader createReader(DataSourceOptions options) {\n         return createReader(options, SparkContext.getOrCreate(), false);\n@@ -107,6 +99,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n      * @param traceIO whether or not to trace the IO operations\n      * @return new reader\n      */\n+\n     public DataSourceReader createReader(DataSourceOptions options, SparkContext context, boolean traceIO) {\n         try {\n             return dedupDataSource.get(new DataSourceReaderKey(options, context, traceIO));\n@@ -116,15 +109,16 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n     }\n \n     // So you can use .format('root')\n+\n     @Override\n     public String shortName() {\n         return \"root\";\n     }\n \n     // So you can use .setConfig('spark.datasource.laurelin.XXX', \"foo\")\n+\n     @Override\n     public String keyPrefix() {\n         return \"laurelin\";\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 42
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/27/Root.java\nindex db14bf7c924..c4a4caff929 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/27/Root.java\n@@ -47,7 +47,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n                                     .softValues()\n                                     .maximumSize(100)\n                                     .build(\n-                                       new CacheLoader<DataSourceReaderKey,\n+                                        new CacheLoader<DataSourceReaderKey,\n                                                        DataSourceReader>() {\n                                             @Override\n                                             public DataSourceReader load(DataSourceReaderKey key) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/27/Root.java\nindex db14bf7c924..c4a4caff929 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/27/Root.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/27/Root.java\n@@ -47,7 +47,7 @@ public class Root implements DataSourceV2, ReadSupport, DataSourceRegister, Sess\n                                     .softValues()\n                                     .maximumSize(100)\n                                     .build(\n-                                       new CacheLoader<DataSourceReaderKey,\n+                                        new CacheLoader<DataSourceReaderKey,\n                                                        DataSourceReader>() {\n                                             @Override\n                                             public DataSourceReader load(DataSourceReaderKey key) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

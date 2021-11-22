@@ -1,0 +1,76 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "397",
+    "information": {
+        "errors": [
+            {
+                "line": "74",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 143).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                }\n            }\n            System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n        }\n    }\n}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/397/ToolsCommandExecutor.java\nindex 7af9e075c7e..5152f82c078 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/397/ToolsCommandExecutor.java\n@@ -71,7 +71,9 @@ public class ToolsCommandExecutor extends InternalCommandExecutor {\n                     continue;\n                 }\n             }\n-            System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n+            System.out.println(\n+        StringUtils\n+        .rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n         }\n     }\n }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/397/ToolsCommandExecutor.java\nindex 7af9e075c7e..bc3bd7eb450 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/397/ToolsCommandExecutor.java\n@@ -16,62 +16,62 @@ import java.util.Collection;\n \n public class ToolsCommandExecutor extends InternalCommandExecutor {\n \n-    private final ToolsCommandOptions toolCommandOptions;\n-    private ToolRunner toolRunner;\n+  private final ToolsCommandOptions toolCommandOptions;\n+  private ToolRunner toolRunner;\n \n-    public ToolsCommandExecutor(ToolsCommandOptions toolCommandOptions) {\n-        super(toolCommandOptions.commonCommandOptions);\n-        this.toolCommandOptions = toolCommandOptions;\n+  public ToolsCommandExecutor(ToolsCommandOptions toolCommandOptions) {\n+    super(toolCommandOptions.commonCommandOptions);\n+    this.toolCommandOptions = toolCommandOptions;\n \n-        this.logger = LoggerFactory.getLogger(ToolsCommandExecutor.class);\n-    }\n+    this.logger = LoggerFactory.getLogger(ToolsCommandExecutor.class);\n+  }\n \n-    @Override\n-    public void execute() throws Exception {\n-        logger.debug(\"Executing tool command line\");\n+  @Override\n+  public void execute() throws Exception {\n+    logger.debug(\"Executing tool command line\");\n \n-        String subCommandString = getParsedSubCommand(toolCommandOptions.jCommander);\n-        configure();\n-        toolRunner = new ToolRunner(appHome, catalogManager, storageEngineFactory);\n-        switch (subCommandString) {\n-            case \"execute-tool\":\n-                executeTool();\n-                break;\n-            case \"execute-job\":\n-                executeJob();\n-                break;\n-            case \"list\":\n-                listTools();\n-                break;\n-            default:\n-                logger.error(\"Subcommand not valid\");\n-                break;\n+    String subCommandString = getParsedSubCommand(toolCommandOptions.jCommander);\n+    configure();\n+    toolRunner = new ToolRunner(appHome, catalogManager, storageEngineFactory);\n+    switch (subCommandString) {\n+      case \"execute-tool\":\n+        executeTool();\n+        break;\n+      case \"execute-job\":\n+        executeJob();\n+        break;\n+      case \"list\":\n+        listTools();\n+        break;\n+      default:\n+        logger.error(\"Subcommand not valid\");\n+        break;\n \n-        }\n     }\n+  }\n \n-    private void executeTool() throws ToolException {\n-        ToolsCommandOptions.ExecuteToolCommandOptions cliOptions = this.toolCommandOptions.executeToolCommandOptions;\n-        toolRunner.execute(cliOptions.toolId, new ObjectMap(cliOptions.params), Paths.get(cliOptions.outDir), sessionId);\n-    }\n+  private void executeTool() throws ToolException {\n+    ToolsCommandOptions.ExecuteToolCommandOptions cliOptions = this.toolCommandOptions.executeToolCommandOptions;\n+    toolRunner.execute(cliOptions.toolId, new ObjectMap(cliOptions.params), Paths.get(cliOptions.outDir), sessionId);\n+  }\n \n-    private void executeJob() throws CatalogException, ToolException {\n-        ToolsCommandOptions.ExecuteJobCommandOptions cliOptions = this.toolCommandOptions.executeJobCommandOptions;\n-        toolRunner.execute(cliOptions.job, sessionId);\n-    }\n+  private void executeJob() throws CatalogException, ToolException {\n+    ToolsCommandOptions.ExecuteJobCommandOptions cliOptions = this.toolCommandOptions.executeJobCommandOptions;\n+    toolRunner.execute(cliOptions.job, sessionId);\n+  }\n \n-    private void listTools() {\n-        Collection<Class<? extends OpenCgaTool>> tools = new ToolFactory().getTools();\n-        int toolIdSize = tools.stream().mapToInt(c -> c.getAnnotation(Tool.class).id().length()).max().orElse(0);\n-        System.out.println(StringUtils.rightPad(\"#Tool\", toolIdSize) + \"\\tType\\tDescription\");\n-        for (Class<? extends OpenCgaTool> tool : tools) {\n-            Tool annotation = tool.getAnnotation(Tool.class);\n-            if (toolCommandOptions.listToolCommandOptions.type != null) {\n-                if (!annotation.type().equals(toolCommandOptions.listToolCommandOptions.type)) {\n-                    continue;\n-                }\n-            }\n-            System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n+  private void listTools() {\n+    Collection<Class<? extends OpenCgaTool>> tools = new ToolFactory().getTools();\n+    int toolIdSize = tools.stream().mapToInt(c -> c.getAnnotation(Tool.class).id().length()).max().orElse(0);\n+    System.out.println(StringUtils.rightPad(\"#Tool\", toolIdSize) + \"\\tType\\tDescription\");\n+    for (Class<? extends OpenCgaTool> tool : tools) {\n+      Tool annotation = tool.getAnnotation(Tool.class);\n+      if (toolCommandOptions.listToolCommandOptions.type != null) {\n+        if (!annotation.type().equals(toolCommandOptions.listToolCommandOptions.type)) {\n+          continue;\n         }\n+      }\n+      System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n     }\n+  }\n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "74",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 143).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/397/ToolsCommandExecutor.java\nindex 7af9e075c7e..17fd90a3526 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/397/ToolsCommandExecutor.java\n@@ -74,4 +74,4 @@ public class ToolsCommandExecutor extends InternalCommandExecutor {\n             System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "74",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 143).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/397/ToolsCommandExecutor.java\nindex 7af9e075c7e..5152f82c078 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/397/ToolsCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/397/ToolsCommandExecutor.java\n@@ -71,7 +71,9 @@ public class ToolsCommandExecutor extends InternalCommandExecutor {\n                     continue;\n                 }\n             }\n-            System.out.println(StringUtils.rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n+            System.out.println(\n+        StringUtils\n+        .rightPad(annotation.id(), toolIdSize) + \"\\t\" + annotation.type() + \"\\t\" + annotation.description());\n         }\n     }\n }\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

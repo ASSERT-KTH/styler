@@ -1,0 +1,76 @@
+{
+    "project_name": "vostok-hercules",
+    "error_id": "60",
+    "information": {
+        "errors": [
+            {
+                "line": "65",
+                "severity": "warning",
+                "message": "Line is longer than 160 characters (found 216).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        CONTAINER_WRITER.write(encoder, container);\n\n        return new Event(buffer.array(), version, timestamp, uuid, container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n    }\n\n    public static EventBuilder create() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler/60/EventBuilder.java\nindex 0a681d07900..6374d2ef5a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler/60/EventBuilder.java\n@@ -62,7 +62,8 @@ public class EventBuilder {\n \n         CONTAINER_WRITER.write(encoder, container);\n \n-        return new Event(buffer.array(), version, timestamp, uuid, container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n+        return new Event ( buffer.array(),version,timestamp,uuid\n+        , container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n     }\n \n     public static EventBuilder create() {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/intellij/60/EventBuilder.java\nindex 0a681d07900..0309569dbc9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/intellij/60/EventBuilder.java\n@@ -12,72 +12,73 @@ import java.util.UUID;\n  * @author Gregory Koshelev\n  */\n public class EventBuilder {\n-    private static final int SIZE_OF_VERSION = 1;\n-    private static final int SIZE_OF_TIMESTAMP = 8;\n+  private static final int SIZE_OF_VERSION = 1;\n+  private static final int SIZE_OF_TIMESTAMP = 8;\n \n-    private static final ContainerWriter CONTAINER_WRITER = new ContainerWriter();\n+  private static final ContainerWriter CONTAINER_WRITER = new ContainerWriter();\n \n-    private long timestamp;\n-    private UUID uuid;\n-    private int version = 1;// Version is 1\n+  private long timestamp;\n+  private UUID uuid;\n+  private int version = 1;// Version is 1\n \n-    private Container.ContainerBuilder containerBuilder = Container.builder();\n+  private Container.ContainerBuilder containerBuilder = Container.builder();\n \n-    private EventBuilder() {\n-    }\n+  private EventBuilder() {\n+  }\n \n-    public EventBuilder timestamp(long timestamp) {\n-        this.timestamp = timestamp;\n-        return this;\n-    }\n+  public EventBuilder timestamp(long timestamp) {\n+    this.timestamp = timestamp;\n+    return this;\n+  }\n \n-    public EventBuilder uuid(UUID uuid) {\n-        this.uuid = uuid;\n-        return this;\n-    }\n+  public EventBuilder uuid(UUID uuid) {\n+    this.uuid = uuid;\n+    return this;\n+  }\n \n-    public EventBuilder version(int version) {\n-        this.version = version;\n-        return this;\n-    }\n+  public EventBuilder version(int version) {\n+    this.version = version;\n+    return this;\n+  }\n \n-    public EventBuilder tag(TinyString key, Variant value) {\n-        this.containerBuilder.tag(key, value);\n-        return this;\n-    }\n+  public EventBuilder tag(TinyString key, Variant value) {\n+    this.containerBuilder.tag(key, value);\n+    return this;\n+  }\n \n-    public EventBuilder tag(String key, Variant value) {\n-        return tag(TinyString.of(key), value);\n-    }\n+  public EventBuilder tag(String key, Variant value) {\n+    return tag(TinyString.of(key), value);\n+  }\n \n-    public Event build() {\n-        Container container = containerBuilder.build();\n+  public Event build() {\n+    Container container = containerBuilder.build();\n \n-        ByteBuffer buffer = ByteBuffer.allocate(Sizes.sizeOfVersion() + Sizes.sizeOfTimestamp() + Sizes.SIZE_OF_UUID + container.sizeOf());\n-        Encoder encoder = new Encoder(buffer);\n+    ByteBuffer buffer = ByteBuffer.allocate(Sizes.sizeOfVersion() + Sizes.sizeOfTimestamp() + Sizes.SIZE_OF_UUID + container.sizeOf());\n+    Encoder encoder = new Encoder(buffer);\n \n-        encoder.writeUnsignedByte(version);\n-        encoder.writeLong(timestamp);\n-        encoder.writeUuid(uuid);\n+    encoder.writeUnsignedByte(version);\n+    encoder.writeLong(timestamp);\n+    encoder.writeUuid(uuid);\n \n-        CONTAINER_WRITER.write(encoder, container);\n+    CONTAINER_WRITER.write(encoder, container);\n \n-        return new Event(buffer.array(), version, timestamp, uuid, container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n-    }\n+    return new Event(buffer.array(), version, timestamp, uuid,\n+      container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n+  }\n \n-    public static EventBuilder create() {\n-        return new EventBuilder();\n-    }\n+  public static EventBuilder create() {\n+    return new EventBuilder();\n+  }\n \n-    public static EventBuilder create(final long timestamp, final UUID uuid) {\n-        return new EventBuilder()\n-                .timestamp(timestamp)\n-                .uuid(uuid);\n-    }\n+  public static EventBuilder create(final long timestamp, final UUID uuid) {\n+    return new EventBuilder()\n+      .timestamp(timestamp)\n+      .uuid(uuid);\n+  }\n \n-    public static EventBuilder create(final long timestamp, final String uuidString) {\n-        return new EventBuilder()\n-                .timestamp(timestamp)\n-                .uuid(UUID.fromString(uuidString));\n-    }\n+  public static EventBuilder create(final long timestamp, final String uuidString) {\n+    return new EventBuilder()\n+      .timestamp(timestamp)\n+      .uuid(UUID.fromString(uuidString));\n+  }\n }\n",
+            "diff_size": 52
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 216).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/naturalize/60/EventBuilder.java\nindex 0a681d07900..ebc8b80de7f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/naturalize/60/EventBuilder.java\n@@ -80,4 +80,4 @@ public class EventBuilder {\n                 .timestamp(timestamp)\n                 .uuid(UUID.fromString(uuidString));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 216).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/codebuff/60/EventBuilder.java\nindex 0a681d07900..33762b4a615 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/codebuff/60/EventBuilder.java\n@@ -2,7 +2,6 @@ package ru.kontur.vostok.hercules.protocol;\n \n import ru.kontur.vostok.hercules.protocol.encoder.ContainerWriter;\n import ru.kontur.vostok.hercules.protocol.encoder.Encoder;\n-\n import java.nio.ByteBuffer;\n import java.util.UUID;\n \n@@ -11,16 +10,16 @@ import java.util.UUID;\n  *\n  * @author Gregory Koshelev\n  */\n+\n+\n public class EventBuilder {\n+\n     private static final int SIZE_OF_VERSION = 1;\n     private static final int SIZE_OF_TIMESTAMP = 8;\n-\n     private static final ContainerWriter CONTAINER_WRITER = new ContainerWriter();\n-\n     private long timestamp;\n     private UUID uuid;\n     private int version = 1;// Version is 1\n-\n     private Container.ContainerBuilder containerBuilder = Container.builder();\n \n     private EventBuilder() {\n@@ -52,16 +51,12 @@ public class EventBuilder {\n \n     public Event build() {\n         Container container = containerBuilder.build();\n-\n         ByteBuffer buffer = ByteBuffer.allocate(Sizes.sizeOfVersion() + Sizes.sizeOfTimestamp() + Sizes.SIZE_OF_UUID + container.sizeOf());\n         Encoder encoder = new Encoder(buffer);\n-\n         encoder.writeUnsignedByte(version);\n         encoder.writeLong(timestamp);\n         encoder.writeUuid(uuid);\n-\n         CONTAINER_WRITER.write(encoder, container);\n-\n         return new Event(buffer.array(), version, timestamp, uuid, container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n     }\n \n@@ -71,13 +66,13 @@ public class EventBuilder {\n \n     public static EventBuilder create(final long timestamp, final UUID uuid) {\n         return new EventBuilder()\n-                .timestamp(timestamp)\n-                .uuid(uuid);\n+            .timestamp(timestamp)\n+            .uuid(uuid);\n     }\n \n     public static EventBuilder create(final long timestamp, final String uuidString) {\n         return new EventBuilder()\n-                .timestamp(timestamp)\n-                .uuid(UUID.fromString(uuidString));\n+            .timestamp(timestamp)\n+            .uuid(UUID.fromString(uuidString));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 16
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler_three_grams/60/EventBuilder.java\nindex 0a681d07900..6374d2ef5a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/60/EventBuilder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler_three_grams/60/EventBuilder.java\n@@ -62,7 +62,8 @@ public class EventBuilder {\n \n         CONTAINER_WRITER.write(encoder, container);\n \n-        return new Event(buffer.array(), version, timestamp, uuid, container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n+        return new Event ( buffer.array(),version,timestamp,uuid\n+        , container);//FIXME: If we want to reuse buffers, then we should not use buffer.array() to prevent it leaking. Also, buffer may be greater than event.\n     }\n \n     public static EventBuilder create() {\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

@@ -1,0 +1,66 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "98",
+    "information": {
+        "errors": [
+            {
+                "line": "36",
+                "column": "1",
+                "severity": "warning",
+                "message": "';' is preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+            }
+        ]
+    },
+    "source_code": "import software.amazon.awssdk.services.s3.model.PutObjectRequest;\nimport software.amazon.awssdk.services.s3.model.S3Exception;\n;\nimport java.io.IOException;\nimport java.io.InputStream;\nimport java.util.HashMap;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "36",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/98/AmazonS3.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/98/AmazonS3.java\nindex 31e2c4e7da6..763154f5df6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/98/AmazonS3.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/98/AmazonS3.java\n@@ -41,110 +41,102 @@ import java.util.Map;\n import java.util.Map.Entry;\n \n public class AmazonS3 {\n-    private static final Logger LOG = LogManager.getLogger(AmazonS3.class);\n+  private static final Logger LOG = LogManager.getLogger(AmazonS3.class);\n \n-    private S3Client s3Client;\n+  private S3Client s3Client;\n \n-    /**\n-     * \n-     */\n-    public AmazonS3() {\n+  /**\n+   *\n+   */\n+  public AmazonS3() {\n \n+    try {\n+      CloudCredentials creds = new TankConfig().getVmManagerConfig().getCloudCredentials(CloudProvider.amazon);\n+      ApacheHttpClient.Builder httpClientBuilder = ApacheHttpClient.builder();\n+      if (StringUtils.isNotBlank(System.getProperty(\"http.proxyHost\"))) {\n         try {\n-            CloudCredentials creds = new TankConfig().getVmManagerConfig().getCloudCredentials(CloudProvider.amazon);\n-            ApacheHttpClient.Builder httpClientBuilder = ApacheHttpClient.builder();\n-            if (StringUtils.isNotBlank(System.getProperty(\"http.proxyHost\"))) {\n-                try {\n-                    URIBuilder uriBuilder = new URIBuilder().setHost(System.getProperty(\"http.proxyHost\"));\n-                    if (StringUtils.isNotBlank(System.getProperty(\"http.proxyPort\"))) {\n-                        uriBuilder.setPort(Integer.parseInt(System.getProperty(\"http.proxyPort\")));\n-                    }\n-                    httpClientBuilder.proxyConfiguration(\n-                            ProxyConfiguration.builder().endpoint(uriBuilder.build()).build());\n-                } catch (NumberFormatException e) {\n-                    LOG.error(\"invalid proxy setup.\");\n-                }\n-            }\n-            if (StringUtils.isNotBlank(creds.getKeyId()) && StringUtils.isNotBlank(creds.getKey())) {\n-                AwsCredentials credentials = AwsBasicCredentials.create(creds.getKeyId(), creds.getKey());\n-                this.s3Client = S3Client.builder()\n-                        .credentialsProvider(StaticCredentialsProvider.create(credentials))\n-                        .httpClientBuilder(httpClientBuilder)\n-                        .build();\n-            } else {\n-                this.s3Client = S3Client.builder()\n-                        .httpClientBuilder(httpClientBuilder)\n-                        .build();\n-            }\n-        } catch (Exception ex) {\n-            LOG.error(ex.getMessage());\n-            throw new RuntimeException(ex);\n+          URIBuilder uriBuilder = new URIBuilder().setHost(System.getProperty(\"http.proxyHost\"));\n+          if (StringUtils.isNotBlank(System.getProperty(\"http.proxyPort\"))) {\n+            uriBuilder.setPort(Integer.parseInt(System.getProperty(\"http.proxyPort\")));\n+          }\n+          httpClientBuilder.proxyConfiguration(\n+            ProxyConfiguration.builder().endpoint(uriBuilder.build()).build());\n+        } catch (NumberFormatException e) {\n+          LOG.error(\"invalid proxy setup.\");\n         }\n+      }\n+      if (StringUtils.isNotBlank(creds.getKeyId()) && StringUtils.isNotBlank(creds.getKey())) {\n+        AwsCredentials credentials = AwsBasicCredentials.create(creds.getKeyId(), creds.getKey());\n+        this.s3Client = S3Client.builder()\n+          .credentialsProvider(StaticCredentialsProvider.create(credentials))\n+          .httpClientBuilder(httpClientBuilder)\n+          .build();\n+      } else {\n+        this.s3Client = S3Client.builder()\n+          .httpClientBuilder(httpClientBuilder)\n+          .build();\n+      }\n+    } catch (Exception ex) {\n+      LOG.error(ex.getMessage());\n+      throw new RuntimeException(ex);\n     }\n+  }\n \n-    public void createBucket(String bucketName) {\n-        try {\n-            s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());\n-            LOG.info(\"Created bucket \" + bucketName + \" at \" + \"now\");\n-        } catch (S3Exception e) {\n-            LOG.error(\"Error creating bucket: \" + e, e);\n-        }\n+  public void createBucket(String bucketName) {\n+    try {\n+      s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());\n+      LOG.info(\"Created bucket \" + bucketName + \" at \" + \"now\");\n+    } catch (S3Exception e) {\n+      LOG.error(\"Error creating bucket: \" + e, e);\n     }\n+  }\n \n-    /**\n-     *\n-     * @param bucketName\n-     *            the base bucketname\n-     * @param key\n-     *            the object location\n-     */\n-    public void storeFile(String bucketName, String key, Map<String, String> metaMap, InputStream in) {\n-        try {\n-            s3Client.putObject(\n-                    PutObjectRequest.builder().bucket(bucketName).key(key).metadata(metaMap).build(),\n-                    RequestBody.fromInputStream(in, in.available()));\n-        } catch (IOException e) {\n-            LOG.error(\"IO Error putting stream into bucket: \" + e, e);\n-    }\n+  /**\n+   * @param bucketName the base bucketname\n+   * @param key        the object location\n+   */\n+  public void storeFile(String bucketName, String key, Map<String, String> metaMap, InputStream in) {\n+    try {\n+      s3Client.putObject(\n+        PutObjectRequest.builder().bucket(bucketName).key(key).metadata(metaMap).build(),\n+        RequestBody.fromInputStream(in, in.available()));\n+    } catch (IOException e) {\n+      LOG.error(\"IO Error putting stream into bucket: \" + e, e);\n     }\n+  }\n \n-    /**\n-     *\n-     * @param bucketName\n-     *            the base bucketname\n-     * @param key\n-     *            the object location\n-     * @return\n-     */\n-    public InputStream getStream(String bucketName, String key) {\n-        return s3Client\n-                .getObject(GetObjectRequest.builder().bucket(bucketName).key(key).build());\n-    }\n+  /**\n+   * @param bucketName the base bucketname\n+   * @param key        the object location\n+   * @return\n+   */\n+  public InputStream getStream(String bucketName, String key) {\n+    return s3Client\n+      .getObject(GetObjectRequest.builder().bucket(bucketName).key(key).build());\n+  }\n \n-    /**\n-     * gets the metadata associated with the file\n-     * \n-     * @param bucketName\n-     *            the base bucketname\n-     * @param key\n-     *            the object location\n-     * @return\n-     */\n-    public Map<String, String> getFileMetaData(String bucketName, String key) {\n-        Map<String, String> ret = new HashMap<String, String>();\n-        try {\n-            HeadObjectResponse response = s3Client\n-                    .headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());\n-            if (response.metadata() != null) {\n-                for (Entry<String, String> entry : response.metadata().entrySet()) {\n-                    ret.put(entry.getKey(), entry.getValue());\n-                }\n-            }\n-        } catch (Exception e) {\n-            LOG.error(\"Error getting MetaData: \" + e, e);\n-            throw new RuntimeException(e);\n+  /**\n+   * gets the metadata associated with the file\n+   *\n+   * @param bucketName the base bucketname\n+   * @param key        the object location\n+   * @return\n+   */\n+  public Map<String, String> getFileMetaData(String bucketName, String key) {\n+    Map<String, String> ret = new HashMap<String, String>();\n+    try {\n+      HeadObjectResponse response = s3Client\n+        .headObject(HeadObjectRequest.builder().bucket(bucketName).key(key).build());\n+      if (response.metadata() != null) {\n+        for (Entry<String, String> entry : response.metadata().entrySet()) {\n+          ret.put(entry.getKey(), entry.getValue());\n         }\n-        return ret;\n+      }\n+    } catch (Exception e) {\n+      LOG.error(\"Error getting MetaData: \" + e, e);\n+      throw new RuntimeException(e);\n     }\n+    return ret;\n+  }\n \n }\n",
+            "diff_size": 118
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

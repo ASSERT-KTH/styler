@@ -1,0 +1,138 @@
+{
+    "project_name": "neo4j-neo4j",
+    "error_id": "1499",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "79",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "14",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "67",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "80",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "80",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1499/BoltStateMachineV43.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/1499/BoltStateMachineV43.java\nindex 7564ce18369..a2e723ad2cc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1499/BoltStateMachineV43.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/1499/BoltStateMachineV43.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.bolt.v43;\n \n import java.time.Clock;\n@@ -38,44 +39,44 @@ import org.neo4j.kernel.database.DefaultDatabaseResolver;\n  */\n public class BoltStateMachineV43 extends AbstractBoltStateMachine\n {\n-    public BoltStateMachineV43( BoltStateMachineSPI boltSPI, BoltChannel boltChannel, Clock clock,\n-                               DefaultDatabaseResolver defaultDatabaseResolver )\n+    public BoltStateMachineV43(BoltStateMachineSPI boltSPI, BoltChannel boltChannel, Clock clock,\n+                               DefaultDatabaseResolver defaultDatabaseResolver)\n     {\n-        super( boltSPI, boltChannel, clock, defaultDatabaseResolver );\n+        super(boltSPI, boltChannel, clock, defaultDatabaseResolver);\n     }\n \n     @Override\n     protected States buildStates()\n     {\n         var connected = new ConnectedState(); //v4.1\n-        var ready = RouteMessageHandleStateDecorator.decorate( new ReadyState() ); // v4\n+        var ready = RouteMessageHandleStateDecorator.decorate(new ReadyState()); // v4\n         var autoCommitState = new AutoCommitState(); // v4\n         var inTransaction = new InTransactionState(); // v4\n         var failed = new FailedState(); // v4\n         var interrupted = new InterruptedState(); // v3\n \n-        connected.setReadyState( ready );\n+        connected.setReadyState(ready);\n \n-        ready.apply( it ->\n-                     {\n-                         it.setTransactionReadyState( inTransaction );\n-                         it.setStreamingState( autoCommitState );\n-                         it.setFailedState( failed );\n-                         it.setInterruptedState( interrupted );\n-                     } );\n+        ready.apply(it ->\n+        {\n+            it.setTransactionReadyState(inTransaction);\n+            it.setStreamingState(autoCommitState);\n+            it.setFailedState(failed);\n+            it.setInterruptedState(interrupted);\n+        });\n \n-        autoCommitState.setReadyState( ready );\n-        autoCommitState.setFailedState( failed );\n-        autoCommitState.setInterruptedState( interrupted );\n+        autoCommitState.setReadyState(ready);\n+        autoCommitState.setFailedState(failed);\n+        autoCommitState.setInterruptedState(interrupted);\n \n-        inTransaction.setReadyState( ready );\n-        inTransaction.setFailedState( failed );\n-        inTransaction.setInterruptedState( interrupted );\n+        inTransaction.setReadyState(ready);\n+        inTransaction.setFailedState(failed);\n+        inTransaction.setInterruptedState(interrupted);\n \n-        failed.setInterruptedState( interrupted );\n+        failed.setInterruptedState(interrupted);\n \n-        interrupted.setReadyState( ready );\n+        interrupted.setReadyState(ready);\n \n-        return new States( connected, failed );\n+        return new States(connected, failed);\n     }\n }\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1499/BoltStateMachineV43.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/naturalize/1499/BoltStateMachineV43.java\nindex 7564ce18369..af286406caf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/1499/BoltStateMachineV43.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/naturalize/1499/BoltStateMachineV43.java\n@@ -38,8 +38,7 @@ import org.neo4j.kernel.database.DefaultDatabaseResolver;\n  */\n public class BoltStateMachineV43 extends AbstractBoltStateMachine\n {\n-    public BoltStateMachineV43( BoltStateMachineSPI boltSPI, BoltChannel boltChannel, Clock clock,\n-                               DefaultDatabaseResolver defaultDatabaseResolver )\n+    public BoltStateMachineV43( BoltStateMachineSPI boltSPI, BoltChannel boltChannel, Clock clock, DefaultDatabaseResolver defaultDatabaseResolver )\n     {\n         super( boltSPI, boltChannel, clock, defaultDatabaseResolver );\n     }\n@@ -63,8 +62,7 @@ public class BoltStateMachineV43 extends AbstractBoltStateMachine\n                          it.setFailedState( failed );\n                          it.setInterruptedState( interrupted );\n                      } );\n-\n-        autoCommitState.setReadyState( ready );\n+autoCommitState.setReadyState( ready );\n         autoCommitState.setFailedState( failed );\n         autoCommitState.setInterruptedState( interrupted );\n \n@@ -78,4 +76,4 @@ public class BoltStateMachineV43 extends AbstractBoltStateMachine\n \n         return new States( connected, failed );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

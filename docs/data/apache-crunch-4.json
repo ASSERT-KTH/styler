@@ -1,0 +1,92 @@
+{
+    "project_name": "apache-crunch",
+    "error_id": "4",
+    "information": {
+        "errors": [
+            {
+                "line": "95",
+                "column": "58",
+                "severity": "warning",
+                "message": "'||' should be on a new line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+            }
+        ]
+    },
+    "source_code": "    conf = new Configuration(conf);\n    inputBundle.configure(conf);\n    if (conf.get(HFileInputFormat.START_ROW_KEY) != null ||\n        conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n      throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler/4/HFileSource.java\nindex 2240b9c797f..dd5c1ddaadd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler/4/HFileSource.java\n@@ -92,8 +92,7 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n   public Iterable<KeyValue> read(Configuration conf) throws IOException {\n     conf = new Configuration(conf);\n     inputBundle.configure(conf);\n-    if (conf.get(HFileInputFormat.START_ROW_KEY) != null ||\n-        conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n+    if (conf.get(HFileInputFormat.START_ROW_KEY) != null || conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n       throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n     }\n     return read(conf, new HFileReaderFactory());\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "96",
+                    "column": "58",
+                    "severity": "warning",
+                    "message": "'||' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/intellij/4/HFileSource.java\nindex 2240b9c797f..cb0a3762166 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/intellij/4/HFileSource.java\n@@ -6,15 +6,16 @@\n  * to you under the Apache License, Version 2.0 (the\n  * \"License\"); you may not use this file except in compliance\n  * with the License.  You may obtain a copy of the License at\n- *\n- *     http://www.apache.org/licenses/LICENSE-2.0\n- *\n+ * <p>\n+ * http://www.apache.org/licenses/LICENSE-2.0\n+ * <p>\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.crunch.io.hbase;\n \n import com.google.common.base.Objects;\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "95",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 2, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/naturalize/4/HFileSource.java\nindex 2240b9c797f..5a7e4ce4dbb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/naturalize/4/HFileSource.java\n@@ -62,8 +62,7 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n   // Package-local. Don't want it to be too open, because we only support limited filters yet\n   // (namely start/stop row). Users who need advanced filters should use HFileUtils#scanHFiles.\n   HFileSource(List<Path> paths, Scan scan) {\n-    super(paths, KEY_VALUE_PTYPE, createInputFormatBundle(scan)\n-        // \"combine file\" is not supported by HFileInputFormat, as it overrides listStatus().\n+    super(paths, KEY_VALUE_PTYPE, createInputFormatBundle(scan) // \"combine file\" is not supported by HFileInputFormat, as it overrides listStatus().\n         .set(RuntimeParameters.DISABLE_COMBINE_FILE, \"true\"));\n   }\n \n@@ -92,9 +91,8 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n   public Iterable<KeyValue> read(Configuration conf) throws IOException {\n     conf = new Configuration(conf);\n     inputBundle.configure(conf);\n-    if (conf.get(HFileInputFormat.START_ROW_KEY) != null ||\n-        conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n-      throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n+    if (conf.get(HFileInputFormat.START_ROW_KEY) != null || conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n+  throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n     }\n     return read(conf, new HFileReaderFactory());\n   }\n@@ -145,4 +143,4 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n     }\n     return sum;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler_random/4/HFileSource.java\nindex 2240b9c797f..dd5c1ddaadd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler_random/4/HFileSource.java\n@@ -92,8 +92,7 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n   public Iterable<KeyValue> read(Configuration conf) throws IOException {\n     conf = new Configuration(conf);\n     inputBundle.configure(conf);\n-    if (conf.get(HFileInputFormat.START_ROW_KEY) != null ||\n-        conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n+    if (conf.get(HFileInputFormat.START_ROW_KEY) != null || conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n       throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n     }\n     return read(conf, new HFileReaderFactory());\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "95",
+                    "column": "57",
+                    "severity": "warning",
+                    "message": "'||' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler_three_grams/4/HFileSource.java\nindex 2240b9c797f..3d8bf1b0f59 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/errored/1/4/HFileSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-crunch/styler_three_grams/4/HFileSource.java\n@@ -92,8 +92,7 @@ public class HFileSource extends FileSourceImpl<KeyValue> implements ReadableSou\n   public Iterable<KeyValue> read(Configuration conf) throws IOException {\n     conf = new Configuration(conf);\n     inputBundle.configure(conf);\n-    if (conf.get(HFileInputFormat.START_ROW_KEY) != null ||\n-        conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n+    if (conf.get(HFileInputFormat.START_ROW_KEY) != null|| conf.get(HFileInputFormat.STOP_ROW_KEY) != null) {\n       throw new IllegalStateException(\"Cannot filter row ranges in HFileSource.read\");\n     }\n     return read(conf, new HFileReaderFactory());\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

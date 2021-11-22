@@ -1,0 +1,96 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "346",
+    "information": {
+        "errors": [
+            {
+                "line": "21",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 108).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "  private IElement[] values;\n\n  public RangeViewIntKeysAnyValuesPart(int rowId, int[] keys, IElement[] values, int startPos, int endPos) {\n    super(rowId, startPos, endPos);\n    this.keys = keys;\n    this.values = values;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/346/RangeViewIntKeysAnyValuesPart.java\nindex 013e22e2706..e476b400489 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/346/RangeViewIntKeysAnyValuesPart.java\n@@ -18,7 +18,8 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n    */\n   private IElement[] values;\n \n-  public RangeViewIntKeysAnyValuesPart(int rowId, int[] keys, IElement[] values, int startPos, int endPos) {\n+  public RangeViewIntKeysAnyValuesPart(int rowId, int [] keys ,IElement\n+  [] values, int startPos, int endPos) {\n     super(rowId, startPos, endPos);\n     this.keys = keys;\n     this.values = values;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/346/RangeViewIntKeysAnyValuesPart.java\nindex 013e22e2706..573d3023b5c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/346/RangeViewIntKeysAnyValuesPart.java\n@@ -18,7 +18,8 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n    */\n   private IElement[] values;\n \n-  public RangeViewIntKeysAnyValuesPart(int rowId, int[] keys, IElement[] values, int startPos, int endPos) {\n+  public RangeViewIntKeysAnyValuesPart(int rowId, int[] keys, IElement[] values, int startPos,\n+                                       int endPos) {\n     super(rowId, startPos, endPos);\n     this.keys = keys;\n     this.values = values;\n@@ -55,7 +56,7 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n \n   @Override\n   public int size() {\n-    if(endPos != -1) {\n+    if (endPos != -1) {\n       return endPos - startPos;\n     } else {\n       return keys.length;\n@@ -71,10 +72,10 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public void serialize(ByteBuf output) {\n     super.serialize(output);\n     ByteBufSerdeUtils.serializeInt(output, endPos - startPos);\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       ByteBufSerdeUtils.serializeUTF8(output, values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         ByteBufSerdeUtils.serializeInt(output, keys[i]);\n         values[i].serialize(output);\n       }\n@@ -85,13 +86,13 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public void deserialize(ByteBuf input) {\n     super.deserialize(input);\n     int len = ByteBufSerdeUtils.deserializeInt(input);\n-    if(len > 0) {\n+    if (len > 0) {\n       keys = new int[len];\n       values = new IElement[len];\n       try {\n         String valueClassName = ByteBufSerdeUtils.deserializeUTF8(input);\n         Class valueClass = Class.forName(valueClassName);\n-        for(int i = 0; i < len; i++) {\n+        for (int i = 0; i < len; i++) {\n           keys[i] = ByteBufSerdeUtils.deserializeInt(input);\n           values[i] = (IElement) valueClass.newInstance();\n           values[i].deserialize(input);\n@@ -106,10 +107,10 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public int bufferLen() {\n     int len = super.bufferLen();\n     len += ByteBufSerdeUtils.INT_LENGTH;\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       len += ByteBufSerdeUtils.serializedUTF8Len(values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         len += ByteBufSerdeUtils.INT_LENGTH;\n         len += values[i].bufferLen();\n       }\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "20",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 108).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/346/RangeViewIntKeysAnyValuesPart.java\nindex 013e22e2706..d1fb7b342f7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/346/RangeViewIntKeysAnyValuesPart.java\n@@ -6,8 +6,7 @@ import com.tencent.angel.ps.storage.vector.element.IElement;\n import com.tencent.angel.psagent.matrix.transport.router.operator.IIntKeyAnyValuePartOp;\n import io.netty.buffer.ByteBuf;\n \n-public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n-    IIntKeyAnyValuePartOp {\n+public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements IIntKeyAnyValuePartOp {\n   /**\n    * Whole key array before serialization, sorted by asc\n    */\n@@ -71,10 +70,10 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public void serialize(ByteBuf output) {\n     super.serialize(output);\n     ByteBufSerdeUtils.serializeInt(output, endPos - startPos);\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       ByteBufSerdeUtils.serializeUTF8(output, values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         ByteBufSerdeUtils.serializeInt(output, keys[i]);\n         values[i].serialize(output);\n       }\n@@ -85,13 +84,13 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public void deserialize(ByteBuf input) {\n     super.deserialize(input);\n     int len = ByteBufSerdeUtils.deserializeInt(input);\n-    if(len > 0) {\n+    if (len > 0) {\n       keys = new int[len];\n       values = new IElement[len];\n       try {\n         String valueClassName = ByteBufSerdeUtils.deserializeUTF8(input);\n         Class valueClass = Class.forName(valueClassName);\n-        for(int i = 0; i < len; i++) {\n+        for (int i = 0; i < len; i++) {\n           keys[i] = ByteBufSerdeUtils.deserializeInt(input);\n           values[i] = (IElement) valueClass.newInstance();\n           values[i].deserialize(input);\n@@ -106,14 +105,14 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public int bufferLen() {\n     int len = super.bufferLen();\n     len += ByteBufSerdeUtils.INT_LENGTH;\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       len += ByteBufSerdeUtils.serializedUTF8Len(values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         len += ByteBufSerdeUtils.INT_LENGTH;\n         len += values[i].bufferLen();\n       }\n     }\n     return len;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "9",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 108).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/346/RangeViewIntKeysAnyValuesPart.java\nindex 013e22e2706..92dd325206d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/346/RangeViewIntKeysAnyValuesPart.java\n@@ -6,11 +6,11 @@ import com.tencent.angel.ps.storage.vector.element.IElement;\n import com.tencent.angel.psagent.matrix.transport.router.operator.IIntKeyAnyValuePartOp;\n import io.netty.buffer.ByteBuf;\n \n-public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n-    IIntKeyAnyValuePartOp {\n+public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements IIntKeyAnyValuePartOp {\n   /**\n    * Whole key array before serialization, sorted by asc\n    */\n+\n   private int[] keys;\n \n   /**\n@@ -28,7 +28,6 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n     this(-1, keys, values, startPos, endPos);\n   }\n \n-\n   public RangeViewIntKeysAnyValuesPart() {\n     this(-1, null, null, -1, -1);\n   }\n@@ -55,7 +54,7 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n \n   @Override\n   public int size() {\n-    if(endPos != -1) {\n+    if (endPos != -1) {\n       return endPos - startPos;\n     } else {\n       return keys.length;\n@@ -71,10 +70,10 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public void serialize(ByteBuf output) {\n     super.serialize(output);\n     ByteBufSerdeUtils.serializeInt(output, endPos - startPos);\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       ByteBufSerdeUtils.serializeUTF8(output, values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         ByteBufSerdeUtils.serializeInt(output, keys[i]);\n         values[i].serialize(output);\n       }\n@@ -84,14 +83,15 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   @Override\n   public void deserialize(ByteBuf input) {\n     super.deserialize(input);\n+\n     int len = ByteBufSerdeUtils.deserializeInt(input);\n-    if(len > 0) {\n+    if (len > 0) {\n       keys = new int[len];\n       values = new IElement[len];\n       try {\n         String valueClassName = ByteBufSerdeUtils.deserializeUTF8(input);\n         Class valueClass = Class.forName(valueClassName);\n-        for(int i = 0; i < len; i++) {\n+        for (int i = 0; i < len; i++) {\n           keys[i] = ByteBufSerdeUtils.deserializeInt(input);\n           values[i] = (IElement) valueClass.newInstance();\n           values[i].deserialize(input);\n@@ -106,14 +106,15 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n   public int bufferLen() {\n     int len = super.bufferLen();\n     len += ByteBufSerdeUtils.INT_LENGTH;\n-    if(endPos - startPos > 0) {\n+    if (endPos - startPos > 0) {\n       // IElement class name\n       len += ByteBufSerdeUtils.serializedUTF8Len(values[startPos].getClass().getName());\n-      for(int i = startPos; i < endPos; i++) {\n+      for (int i = startPos; i < endPos; i++) {\n         len += ByteBufSerdeUtils.INT_LENGTH;\n         len += values[i].bufferLen();\n       }\n     }\n     return len;\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 14
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 108).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/346/RangeViewIntKeysAnyValuesPart.java\nindex 013e22e2706..e476b400489 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/346/RangeViewIntKeysAnyValuesPart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/346/RangeViewIntKeysAnyValuesPart.java\n@@ -18,7 +18,8 @@ public class RangeViewIntKeysAnyValuesPart extends RangeKeyValuePart implements\n    */\n   private IElement[] values;\n \n-  public RangeViewIntKeysAnyValuesPart(int rowId, int[] keys, IElement[] values, int startPos, int endPos) {\n+  public RangeViewIntKeysAnyValuesPart(int rowId, int [] keys ,IElement\n+  [] values, int startPos, int endPos) {\n     super(rowId, startPos, endPos);\n     this.keys = keys;\n     this.values = values;\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

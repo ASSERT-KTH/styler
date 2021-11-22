@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "135",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 125).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n        // Add Jencks to Geronimo's root classloader to avoid InvalidAccessError\n        AbstractNameQuery abstractNameQuery = new AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n        Set set = kernel.listGBeans(abstractNameQuery);\n        for (Iterator iterator = set.iterator(); iterator.hasNext();) {\n            AbstractName abstractName = (AbstractName) iterator.next();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/135/GeronimoFactory.java\nindex d1b52f9a37c..5f04cff494c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/135/GeronimoFactory.java\n@@ -56,8 +56,9 @@ public class GeronimoFactory {\n         MultiParentClassLoader loader = (MultiParentClassLoader) ctxManager.getClass().getClassLoader();\n \n         // Add Jencks to Geronimo's root classloader to avoid InvalidAccessError\n-        AbstractNameQuery abstractNameQuery = new AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n-        Set set = kernel.listGBeans(abstractNameQuery);\n+        AbstractNameQuery abstractNameQuery = new\n+                     AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n+         Set set = kernel.listGBeans(abstractNameQuery);\n         for (Iterator iterator = set.iterator(); iterator.hasNext();) {\n             AbstractName abstractName = (AbstractName) iterator.next();\n             File f = null;\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/135/GeronimoFactory.java\nindex d1b52f9a37c..2cf59ea94d6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/135/GeronimoFactory.java\n@@ -39,41 +39,42 @@ import java.util.Set;\n \n public class GeronimoFactory {\n \n-    /* Public no-arg contructor is required */\n-    public GeronimoFactory() {\n-    }\n-\n-    public TransactionManager getTransactionManager() {\n-        Kernel kernel = KernelRegistry.getSingleKernel();\n-        TransactionContextManager ctxManager = null;\n+  /* Public no-arg contructor is required */\n+  public GeronimoFactory() {\n+  }\n \n-        try {\n-            ctxManager = (TransactionContextManager) kernel.getGBean(TransactionContextManager.class);\n-        } catch (GBeanNotFoundException except) {\n-            throw new RuntimeException( \"Can't lookup GBean: \" + TransactionContextManager.class, except);\n-        }\n+  public TransactionManager getTransactionManager() {\n+    Kernel kernel = KernelRegistry.getSingleKernel();\n+    TransactionContextManager ctxManager = null;\n \n-        MultiParentClassLoader loader = (MultiParentClassLoader) ctxManager.getClass().getClassLoader();\n+    try {\n+      ctxManager = (TransactionContextManager) kernel.getGBean(TransactionContextManager.class);\n+    } catch (GBeanNotFoundException except) {\n+      throw new RuntimeException(\"Can't lookup GBean: \" + TransactionContextManager.class, except);\n+    }\n \n-        // Add Jencks to Geronimo's root classloader to avoid InvalidAccessError\n-        AbstractNameQuery abstractNameQuery = new AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n-        Set set = kernel.listGBeans(abstractNameQuery);\n-        for (Iterator iterator = set.iterator(); iterator.hasNext();) {\n-            AbstractName abstractName = (AbstractName) iterator.next();\n-            File f = null;\n-            try {\n-                Repository repo = (Repository) kernel.getGBean(abstractName);\n-                f = repo.getLocation(new Artifact(\"org.jencks\", \"jencks\", \"1.3\", \"jar\"));\n-                loader.addURL(f.toURL());\n-            } catch (GBeanNotFoundException except) {\n-                throw new RuntimeException(\"Can't lookup GBean: \" + abstractName, except);\n-            } catch (MalformedURLException except) {\n-                throw new RuntimeException(\"Invalid URL for jencks: \" + f, except);\n-            }\n-        }\n+    MultiParentClassLoader loader = (MultiParentClassLoader) ctxManager.getClass().getClassLoader();\n \n-        // Use Jenck to wrap TransactionContextManager back to TransactionManager\n-        return new GeronimoTransactionManager(ctxManager);\n+    // Add Jencks to Geronimo's root classloader to avoid InvalidAccessError\n+    AbstractNameQuery abstractNameQuery =\n+      new AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n+    Set set = kernel.listGBeans(abstractNameQuery);\n+    for (Iterator iterator = set.iterator(); iterator.hasNext(); ) {\n+      AbstractName abstractName = (AbstractName) iterator.next();\n+      File f = null;\n+      try {\n+        Repository repo = (Repository) kernel.getGBean(abstractName);\n+        f = repo.getLocation(new Artifact(\"org.jencks\", \"jencks\", \"1.3\", \"jar\"));\n+        loader.addURL(f.toURL());\n+      } catch (GBeanNotFoundException except) {\n+        throw new RuntimeException(\"Can't lookup GBean: \" + abstractName, except);\n+      } catch (MalformedURLException except) {\n+        throw new RuntimeException(\"Invalid URL for jencks: \" + f, except);\n+      }\n     }\n \n+    // Use Jenck to wrap TransactionContextManager back to TransactionManager\n+    return new GeronimoTransactionManager(ctxManager);\n+  }\n+\n }\n",
+            "diff_size": 53
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/135/GeronimoFactory.java\nindex d1b52f9a37c..b67dd9fc05c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/135/GeronimoFactory.java\n@@ -76,4 +76,4 @@ public class GeronimoFactory {\n         return new GeronimoTransactionManager(ctxManager);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/135/GeronimoFactory.java\nindex d1b52f9a37c..5f04cff494c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/135/GeronimoFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/135/GeronimoFactory.java\n@@ -56,8 +56,9 @@ public class GeronimoFactory {\n         MultiParentClassLoader loader = (MultiParentClassLoader) ctxManager.getClass().getClassLoader();\n \n         // Add Jencks to Geronimo's root classloader to avoid InvalidAccessError\n-        AbstractNameQuery abstractNameQuery = new AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n-        Set set = kernel.listGBeans(abstractNameQuery);\n+        AbstractNameQuery abstractNameQuery = new\n+                     AbstractNameQuery(null, Collections.EMPTY_MAP, Repository.class.getName());\n+         Set set = kernel.listGBeans(abstractNameQuery);\n         for (Iterator iterator = set.iterator(); iterator.hasNext();) {\n             AbstractName abstractName = (AbstractName) iterator.next();\n             File f = null;\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

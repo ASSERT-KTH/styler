@@ -1,0 +1,82 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "595",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.engine.impl.variable;\n\nimport com.fasterxml.jackson.core.JsonProcessingException;\nimport com.fasterxml.jackson.databind.JsonNode;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/595/LongJsonType.java\nindex 77ca68b709a..7d03c697aac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/595/LongJsonType.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.variable;\n \n import com.fasterxml.jackson.core.JsonProcessingException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/595/LongJsonType.java\nindex 77ca68b709a..4558b976967 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/595/LongJsonType.java\n@@ -31,66 +31,66 @@ public class LongJsonType extends SerializableType {\n     public static final String LONG_JSON = \"longJson\";\n \n     private final int minLength;\n-  private ObjectMapper objectMapper;\n-  private boolean serializePOJOsInVariablesToJson;\n-  private JsonTypeConverter jsonTypeConverter;\n+    private ObjectMapper objectMapper;\n+    private boolean serializePOJOsInVariablesToJson;\n+    private JsonTypeConverter jsonTypeConverter;\n \n-  public LongJsonType(int minLength, ObjectMapper objectMapper,\n-      boolean serializePOJOsInVariablesToJson,\n-      JsonTypeConverter jsonTypeConverter) {\n-    this.minLength = minLength;\n-    this.objectMapper = objectMapper;\n-    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;\n-    this.jsonTypeConverter = jsonTypeConverter;\n-  }\n-\n-  public String getTypeName() {\n-    return LONG_JSON;\n-  }\n-\n-  public boolean isAbleToStore(Object value) {\n-    if (value == null) {\n-      return true;\n+    public LongJsonType(int minLength, ObjectMapper objectMapper,\n+                        boolean serializePOJOsInVariablesToJson,\n+                        JsonTypeConverter jsonTypeConverter) {\n+        this.minLength = minLength;\n+        this.objectMapper = objectMapper;\n+        this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;\n+        this.jsonTypeConverter = jsonTypeConverter;\n     }\n \n-    if (JsonNode.class.isAssignableFrom(value.getClass()) ||\n-        (objectMapper.canSerialize(value.getClass()) &&\n-            serializePOJOsInVariablesToJson)) {\n-      try {\n-        return objectMapper.writeValueAsString(value).length() >= minLength;\n-      } catch (JsonProcessingException e) {\n-        logger.error(\"Error writing json variable of type \" + value.getClass(), e);\n-      }\n+    public String getTypeName() {\n+        return LONG_JSON;\n     }\n \n-    return false;\n-  }\n+    public boolean isAbleToStore(Object value) {\n+        if (value == null) {\n+            return true;\n+        }\n \n-  public byte[] serialize(Object value, ValueFields valueFields) {\n-    if (value == null) {\n-      return null;\n-    }\n-    String json = null;\n-    try {\n-      json = objectMapper.writeValueAsString(value);\n-    } catch (JsonProcessingException e) {\n-      logger.error(\"Error writing long json variable \" + valueFields.getName(), e);\n+        if (JsonNode.class.isAssignableFrom(value.getClass()) ||\n+                (objectMapper.canSerialize(value.getClass()) &&\n+                        serializePOJOsInVariablesToJson)) {\n+            try {\n+                return objectMapper.writeValueAsString(value).length() >= minLength;\n+            } catch (JsonProcessingException e) {\n+                logger.error(\"Error writing json variable of type \" + value.getClass(), e);\n+            }\n+        }\n+\n+        return false;\n     }\n-    try {\n-      valueFields.setTextValue2(value.getClass().getName());\n-      return json.getBytes(StandardCharsets.UTF_8);\n-    } catch (Exception e) {\n-      throw new ActivitiException(\"Error getting bytes from json variable\", e);\n+\n+    public byte[] serialize(Object value, ValueFields valueFields) {\n+        if (value == null) {\n+            return null;\n+        }\n+        String json = null;\n+        try {\n+            json = objectMapper.writeValueAsString(value);\n+        } catch (JsonProcessingException e) {\n+            logger.error(\"Error writing long json variable \" + valueFields.getName(), e);\n+        }\n+        try {\n+            valueFields.setTextValue2(value.getClass().getName());\n+            return json.getBytes(StandardCharsets.UTF_8);\n+        } catch (Exception e) {\n+            throw new ActivitiException(\"Error getting bytes from json variable\", e);\n+        }\n     }\n-  }\n \n-  public Object deserialize(byte[] bytes, ValueFields valueFields) {\n-    Object jsonValue = null;\n-      try {\n-        jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);\n-      } catch (Exception e) {\n-        logger.error(\"Error reading json variable \" + valueFields.getName(), e);\n-      }\n-    return jsonValue;\n-  }\n+    public Object deserialize(byte[] bytes, ValueFields valueFields) {\n+        Object jsonValue = null;\n+        try {\n+            jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);\n+        } catch (Exception e) {\n+            logger.error(\"Error reading json variable \" + valueFields.getName(), e);\n+        }\n+        return jsonValue;\n+    }\n }\n",
+            "diff_size": 69
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "29",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/595/LongJsonType.java\nindex 77ca68b709a..85e6879bcbe 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/595/LongJsonType.java\n@@ -25,19 +25,23 @@ import org.activiti.engine.ActivitiException;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n \n+\n public class LongJsonType extends SerializableType {\n \n-    private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);\n-    public static final String LONG_JSON = \"longJson\";\n+  private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);\n+  public static final String LONG_JSON = \"longJson\";\n+\n+  private final int minLength;\n \n-    private final int minLength;\n   private ObjectMapper objectMapper;\n+\n   private boolean serializePOJOsInVariablesToJson;\n+\n   private JsonTypeConverter jsonTypeConverter;\n \n-  public LongJsonType(int minLength, ObjectMapper objectMapper,\n-      boolean serializePOJOsInVariablesToJson,\n-      JsonTypeConverter jsonTypeConverter) {\n+  public LongJsonType(int minLength,\n+                      ObjectMapper objectMapper,\n+                      boolean serializePOJOsInVariablesToJson, JsonTypeConverter jsonTypeConverter) {\n     this.minLength = minLength;\n     this.objectMapper = objectMapper;\n     this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;\n@@ -52,17 +56,14 @@ public class LongJsonType extends SerializableType {\n     if (value == null) {\n       return true;\n     }\n-\n-    if (JsonNode.class.isAssignableFrom(value.getClass()) ||\n-        (objectMapper.canSerialize(value.getClass()) &&\n-            serializePOJOsInVariablesToJson)) {\n+    if (JsonNode.class.isAssignableFrom(value.getClass()) || (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)) {\n       try {\n         return objectMapper.writeValueAsString(value).length() >= minLength;\n       } catch (JsonProcessingException e) {\n-        logger.error(\"Error writing json variable of type \" + value.getClass(), e);\n+        logger.error(\"Error writing json variable of type \" + value.getClass(),\n+                     e);\n       }\n     }\n-\n     return false;\n   }\n \n@@ -70,27 +71,32 @@ public class LongJsonType extends SerializableType {\n     if (value == null) {\n       return null;\n     }\n+\n     String json = null;\n     try {\n       json = objectMapper.writeValueAsString(value);\n     } catch (JsonProcessingException e) {\n-      logger.error(\"Error writing long json variable \" + valueFields.getName(), e);\n+      logger.error(\"Error writing long json variable \" + valueFields.getName(),\n+                   e);\n     }\n+\n     try {\n       valueFields.setTextValue2(value.getClass().getName());\n       return json.getBytes(StandardCharsets.UTF_8);\n     } catch (Exception e) {\n-      throw new ActivitiException(\"Error getting bytes from json variable\", e);\n+      throw new ActivitiException(\"Error getting bytes from json variable\",\n+                                  e);\n     }\n   }\n \n   public Object deserialize(byte[] bytes, ValueFields valueFields) {\n     Object jsonValue = null;\n-      try {\n-        jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);\n-      } catch (Exception e) {\n-        logger.error(\"Error reading json variable \" + valueFields.getName(), e);\n-      }\n+    try {\n+      jsonValue = jsonTypeConverter.convertToValue(objectMapper.readTree(bytes), valueFields);\n+    } catch (Exception e) {\n+      logger.error(\"Error reading json variable \" + valueFields.getName(),\n+                   e);\n+    }\n     return jsonValue;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/595/LongJsonType.java\nindex 77ca68b709a..7d03c697aac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/595/LongJsonType.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.variable;\n \n import com.fasterxml.jackson.core.JsonProcessingException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/595/LongJsonType.java\nindex 77ca68b709a..7d03c697aac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/595/LongJsonType.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/595/LongJsonType.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.variable;\n \n import com.fasterxml.jackson.core.JsonProcessingException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

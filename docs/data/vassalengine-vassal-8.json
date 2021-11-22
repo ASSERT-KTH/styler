@@ -1,0 +1,62 @@
+{
+    "project_name": "vassalengine-vassal",
+    "error_id": "8",
+    "information": {
+        "errors": [
+            {
+                "line": "435",
+                "column": "24",
+                "severity": "error",
+                "message": "',' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+            }
+        ]
+    },
+    "source_code": "        }\n      }\n      mapMenu.show(this,0, 0);\n    }\n\n    private void setOwnerValue(String value) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler/8/ReturnToDeck.java\nindex dfc9dfa7c3b..06fe152e2b6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler/8/ReturnToDeck.java\n@@ -432,7 +432,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n           mapMenu.add(deckMenu);\n         }\n       }\n-      mapMenu.show(this,0, 0);\n+      mapMenu.show(this, 0, 0);\n     }\n \n     private void setOwnerValue(String value) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/intellij/8/ReturnToDeck.java\nindex dfc9dfa7c3b..3e07eeddd9c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/intellij/8/ReturnToDeck.java\n@@ -15,6 +15,7 @@\n  * License along with this library; if not, copies are available\n  * at http://www.opensource.org.\n  */\n+\n package VASSAL.counters;\n \n import VASSAL.build.BadDataReport;\n@@ -97,9 +98,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n       myCommand = new KeyCommand(returnCommand, returnKey, Decorator.getOutermost(this), this);\n       if (returnCommand.length() > 0 && returnKey != null && !returnKey.isNull()) {\n         commands =\n-            new KeyCommand[]{myCommand};\n-      }\n-      else {\n+          new KeyCommand[] {myCommand};\n+      } else {\n         commands = KeyCommand.NONE;\n       }\n     }\n@@ -136,14 +136,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n             final String name = p.getConfigureName();\n             if (name != null) {\n               deckExpression.setFormat(name);\n-            }\n-            else {\n+            } else {\n               deckExpression.setFormat(deckId);\n             }\n           }\n         }\n-      }\n-      else {\n+      } else {\n         deckSelect = st.nextBoolean(true);\n         deckExpression.setFormat(st.nextToken(\"\"));\n       }\n@@ -168,7 +166,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n   @Override\n   public String myGetType() {\n     final SequenceEncoder se = new SequenceEncoder(';');\n-    return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).append(description).append(RtDversion).append(deckSelect).append(deckExpression.getFormat()).getValue();\n+    return ID +\n+      se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).append(description).append(RtDversion)\n+        .append(deckSelect).append(deckExpression.getFormat()).getValue();\n   }\n \n   @Override\n@@ -180,12 +180,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n \n       if (deckSelect) {\n         pile = promptForDrawPile();\n-      }\n-      else {\n+      } else {\n         final String evalName = deckExpression.getText(this);\n         pile = DrawPile.findDrawPile(evalName);\n         if (pile == null) {\n-          ErrorDialog.dataWarning(new BadDataReport(\"Deck Not Found for Return-to-Deck trait: \" + evalName, deckExpression.getFormat())); //NON-NLS\n+          ErrorDialog.dataWarning(\n+            new BadDataReport(\"Deck Not Found for Return-to-Deck trait: \" + evalName, deckExpression.getFormat())); //NON-NLS\n         }\n       }\n \n@@ -257,8 +257,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n \n     final AvailableDeck[] decks = new AvailableDeck[piles.size()];\n     int i = 0;\n-    for (final DrawPile p : piles)\n+    for (final DrawPile p : piles) {\n       decks[i++] = new AvailableDeck(p);\n+    }\n \n     final JList<AvailableDeck> list = new JList<>(decks);\n     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);\n@@ -271,8 +272,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n     JButton b = new JButton(Resources.getString(Resources.OK));\n     b.addActionListener(e -> {\n       final AvailableDeck selection = list.getSelectedValue();\n-      if (selection != null)\n+      if (selection != null) {\n         deck = selection.pile;\n+      }\n       d.dispose();\n     });\n     box.add(b);\n@@ -315,13 +317,25 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n \n   @Override\n   public boolean testEquals(Object o) {\n-    if (! (o instanceof ReturnToDeck)) return false;\n+    if (!(o instanceof ReturnToDeck)) {\n+      return false;\n+    }\n     final ReturnToDeck c = (ReturnToDeck) o;\n-    if (! Objects.equals(returnCommand, c.returnCommand)) return false;\n-    if (! Objects.equals(returnKey, c.returnKey)) return false;\n-    if (! Objects.equals(deckExpression, c.deckExpression)) return false;\n-    if (! Objects.equals(deckSelect, c.deckSelect)) return false;\n-    if (! Objects.equals(deckId, c.deckId)) return false;\n+    if (!Objects.equals(returnCommand, c.returnCommand)) {\n+      return false;\n+    }\n+    if (!Objects.equals(returnKey, c.returnKey)) {\n+      return false;\n+    }\n+    if (!Objects.equals(deckExpression, c.deckExpression)) {\n+      return false;\n+    }\n+    if (!Objects.equals(deckSelect, c.deckSelect)) {\n+      return false;\n+    }\n+    if (!Objects.equals(deckId, c.deckId)) {\n+      return false;\n+    }\n     return Objects.equals(selectDeckPrompt, c.selectDeckPrompt);\n   }\n \n@@ -421,7 +435,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n     @Override\n     public void actionPerformed(ActionEvent e) {\n       final JPopupMenu mapMenu = new JPopupMenu();\n-      for (Map m: GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {\n+      for (Map m : GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {\n         final JMenu deckMenu = new JMenu(m.getMapName());\n         for (DrawPile d : m.getAllDescendantComponentsOf(DrawPile.class)) {\n           final JMenuItem item = new JMenuItem(d.getConfigureName());\n@@ -432,7 +446,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n           mapMenu.add(deckMenu);\n         }\n       }\n-      mapMenu.show(this,0, 0);\n+      mapMenu.show(this, 0, 0);\n     }\n \n     private void setOwnerValue(String value) {\n@@ -440,6 +454,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n     }\n \n   }\n+\n   /**\n    * @return a list of any Property Names referenced in the Decorator, if any (for search)\n    */\n",
+            "diff_size": 40
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_random/8/ReturnToDeck.java\nindex dfc9dfa7c3b..06fe152e2b6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_random/8/ReturnToDeck.java\n@@ -432,7 +432,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n           mapMenu.add(deckMenu);\n         }\n       }\n-      mapMenu.show(this,0, 0);\n+      mapMenu.show(this, 0, 0);\n     }\n \n     private void setOwnerValue(String value) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_three_grams/8/ReturnToDeck.java\nindex dfc9dfa7c3b..06fe152e2b6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/8/ReturnToDeck.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_three_grams/8/ReturnToDeck.java\n@@ -432,7 +432,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {\n           mapMenu.add(deckMenu);\n         }\n       }\n-      mapMenu.show(this,0, 0);\n+      mapMenu.show(this, 0, 0);\n     }\n \n     private void setOwnerValue(String value) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

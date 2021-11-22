@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "525",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.persistence.entity;\n\nimport java.io.Serializable;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/525/ByteArrayRef.java\nindex 45dd6c89ed8..5620028b565 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/525/ByteArrayRef.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.persistence.entity;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/525/ByteArrayRef.java\nindex 45dd6c89ed8..bc40577a455 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/525/ByteArrayRef.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.persistence.entity;\n \n import java.io.Serializable;\n@@ -23,93 +24,91 @@ import org.activiti.engine.impl.context.Context;\n  * <p>\n  * Encapsulates the logic for transparently working with {@link ByteArrayEntity} .\n  * </p>\n- * \n-\n  */\n public class ByteArrayRef implements Serializable {\n \n-  private static final long serialVersionUID = 1L;\n-\n-  private String id;\n-  private String name;\n-  private ByteArrayEntity entity;\n-  protected boolean deleted;\n-\n-  public ByteArrayRef() {\n-  }\n-\n-  // Only intended to be used by ByteArrayRefTypeHandler\n-  public ByteArrayRef(String id) {\n-    this.id = id;\n-  }\n-\n-  public String getId() {\n-    return id;\n-  }\n-\n-  public String getName() {\n-    return name;\n-  }\n-\n-  public byte[] getBytes() {\n-    ensureInitialized();\n-    return (entity != null ? entity.getBytes() : null);\n-  }\n-\n-  public void setValue(String name, byte[] bytes) {\n-    this.name = name;\n-    setBytes(bytes);\n-  }\n-\n-  private void setBytes(byte[] bytes) {\n-    if (id == null) {\n-      if (bytes != null) {\n-        ByteArrayEntityManager byteArrayEntityManager = Context.getCommandContext().getByteArrayEntityManager();\n-        entity = byteArrayEntityManager.create();\n-        entity.setName(name);\n-        entity.setBytes(bytes);\n-        byteArrayEntityManager.insert(entity);\n-        id = entity.getId();\n-      }\n-    } else {\n-      ensureInitialized();\n-      entity.setBytes(bytes);\n+    private static final long serialVersionUID = 1L;\n+\n+    private String id;\n+    private String name;\n+    private ByteArrayEntity entity;\n+    protected boolean deleted;\n+\n+    public ByteArrayRef() {\n     }\n-  }\n-\n-  public ByteArrayEntity getEntity() {\n-    ensureInitialized();\n-    return entity;\n-  }\n-\n-  public void delete() {\n-    if (!deleted && id != null) {\n-      if (entity != null) {\n-        // if the entity has been loaded already,\n-        // we might as well use the safer optimistic locking delete.\n-        Context.getCommandContext().getByteArrayEntityManager().delete(entity);\n-      } else {\n-        Context.getCommandContext().getByteArrayEntityManager().deleteByteArrayById(id);\n-      }\n-      entity = null;\n-      id = null;\n-      deleted = true;\n+\n+    // Only intended to be used by ByteArrayRefTypeHandler\n+    public ByteArrayRef(String id) {\n+        this.id = id;\n     }\n-  }\n \n-  private void ensureInitialized() {\n-    if (id != null && entity == null) {\n-      entity = Context.getCommandContext().getByteArrayEntityManager().findById(id);\n-      name = entity.getName();\n+    public String getId() {\n+        return id;\n     }\n-  }\n \n-  public boolean isDeleted() {\n-    return deleted;\n-  }\n+    public String getName() {\n+        return name;\n+    }\n \n-  @Override\n-  public String toString() {\n-    return \"ByteArrayRef[id=\" + id + \", name=\" + name + \", entity=\" + entity + (deleted ? \", deleted]\" : \"]\");\n-  }\n+    public byte[] getBytes() {\n+        ensureInitialized();\n+        return (entity != null ? entity.getBytes() : null);\n+    }\n+\n+    public void setValue(String name, byte[] bytes) {\n+        this.name = name;\n+        setBytes(bytes);\n+    }\n+\n+    private void setBytes(byte[] bytes) {\n+        if (id == null) {\n+            if (bytes != null) {\n+                ByteArrayEntityManager byteArrayEntityManager = Context.getCommandContext().getByteArrayEntityManager();\n+                entity = byteArrayEntityManager.create();\n+                entity.setName(name);\n+                entity.setBytes(bytes);\n+                byteArrayEntityManager.insert(entity);\n+                id = entity.getId();\n+            }\n+        } else {\n+            ensureInitialized();\n+            entity.setBytes(bytes);\n+        }\n+    }\n+\n+    public ByteArrayEntity getEntity() {\n+        ensureInitialized();\n+        return entity;\n+    }\n+\n+    public void delete() {\n+        if (!deleted && id != null) {\n+            if (entity != null) {\n+                // if the entity has been loaded already,\n+                // we might as well use the safer optimistic locking delete.\n+                Context.getCommandContext().getByteArrayEntityManager().delete(entity);\n+            } else {\n+                Context.getCommandContext().getByteArrayEntityManager().deleteByteArrayById(id);\n+            }\n+            entity = null;\n+            id = null;\n+            deleted = true;\n+        }\n+    }\n+\n+    private void ensureInitialized() {\n+        if (id != null && entity == null) {\n+            entity = Context.getCommandContext().getByteArrayEntityManager().findById(id);\n+            name = entity.getName();\n+        }\n+    }\n+\n+    public boolean isDeleted() {\n+        return deleted;\n+    }\n+\n+    @Override\n+    public String toString() {\n+        return \"ByteArrayRef[id=\" + id + \", name=\" + name + \", entity=\" + entity + (deleted ? \", deleted]\" : \"]\");\n+    }\n }\n",
+            "diff_size": 138
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "30",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/525/ByteArrayRef.java\nindex 45dd6c89ed8..244e57db519 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/525/ByteArrayRef.java\n@@ -16,7 +16,6 @@\n package org.activiti.engine.impl.persistence.entity;\n \n import java.io.Serializable;\n-\n import org.activiti.engine.impl.context.Context;\n \n /**\n@@ -26,12 +25,16 @@ import org.activiti.engine.impl.context.Context;\n  * \n \n  */\n+\n+\n public class ByteArrayRef implements Serializable {\n \n   private static final long serialVersionUID = 1L;\n \n   private String id;\n+\n   private String name;\n+\n   private ByteArrayEntity entity;\n   protected boolean deleted;\n \n@@ -39,6 +42,7 @@ public class ByteArrayRef implements Serializable {\n   }\n \n   // Only intended to be used by ByteArrayRefTypeHandler\n+\n   public ByteArrayRef(String id) {\n     this.id = id;\n   }\n@@ -112,4 +116,5 @@ public class ByteArrayRef implements Serializable {\n   public String toString() {\n     return \"ByteArrayRef[id=\" + id + \", name=\" + name + \", entity=\" + entity + (deleted ? \", deleted]\" : \"]\");\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/525/ByteArrayRef.java\nindex 45dd6c89ed8..5620028b565 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/525/ByteArrayRef.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.persistence.entity;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/525/ByteArrayRef.java\nindex 45dd6c89ed8..5620028b565 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/525/ByteArrayRef.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/525/ByteArrayRef.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.persistence.entity;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

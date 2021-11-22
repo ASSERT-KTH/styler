@@ -1,0 +1,110 @@
+{
+    "project_name": "actiontech-txle",
+    "error_id": "4",
+    "information": {
+        "errors": [
+            {
+                "line": "194",
+                "column": "3",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "            return originalDataList;\n        } finally {\n//\t\t\ttry {\n//\t\t\t\tif (connection != null) {\n//\t\t\t\t\tconnection.close();\n//\t\t\t\t}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "194",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "194",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "194",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "194",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/4/MySqlUpdateHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/4/MySqlUpdateHandler.java\nindex 24375af6002..e8eb04e3ec0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/4/MySqlUpdateHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/4/MySqlUpdateHandler.java\n@@ -191,12 +191,8 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n             }\n             return originalDataList;\n         } finally {\n-//\t\t\ttry {\n-//\t\t\t\tif (connection != null) {\n-//\t\t\t\t\tconnection.close();\n-//\t\t\t\t}\n-//\t\t\t} finally {\n-            if (preparedStatement != null) {\n+//\t\t\ttry \n+if (preparedStatement != null) {\n                 preparedStatement.close();\n             }\n //\t\t\t}\n@@ -219,4 +215,4 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n         return originalDataList;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/4/MySqlUpdateHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/4/MySqlUpdateHandler.java\nindex 24375af6002..9e81f63d302 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/4/MySqlUpdateHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/4/MySqlUpdateHandler.java\n@@ -16,12 +16,11 @@ import org.apache.servicecomb.saga.omega.context.ApplicationContextUtil;\n import org.apache.servicecomb.saga.omega.transaction.monitor.AutoCompensableSqlMetrics;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import java.sql.*;\n import java.util.*;\n \n-public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n \n+public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n     private static volatile MySqlUpdateHandler mySqlUpdateHandler = null;\n     private static final Logger LOG = LoggerFactory.getLogger(MySqlUpdateHandler.class);\n \n@@ -52,7 +51,11 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n             SQLExpr where = updateStatement.getWhere();\n             // It doesn't matter, even though the 'where-sql' contains a line break.\n             String whereSql = where.toString();\n-            LOG.debug(TxleConstants.logDebugPrefixWithTime() + \"currentThreadId: [{}] - table: [{}] - where: [{}].\", Thread.currentThread().getId(), tableName, whereSql);\n+            LOG.debug(\n+                TxleConstants.logDebugPrefixWithTime() + \"currentThreadId: [{}] - table: [{}] - where: [{}].\",\n+                Thread.currentThread().getId(),\n+                tableName,\n+                whereSql);\n \n             // 3.take primary-key name\n             String primaryKeyColumnName = this.parsePrimaryKeyColumnName(delegate, sqlStatement, tableName);\n@@ -81,7 +84,6 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n                 }\n             });\n             standbyParams.put(\"ids\", ids);\n-\n             String originalDataJson = JSON.toJSONString(originalDataList);\n \n             // PS: Do not joint the conditions of 'executeSql' to 'compensateSql' immediately, because the result may not be same to execute a SQL twice at different time.\n@@ -109,19 +111,16 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n         if (newDataList == null || newDataList.isEmpty()) {\n             throw new SQLException(TxleConstants.LOG_ERROR_PREFIX + \"Could not get the original data when constructed the 'compensateSql' for executing update SQL.\");\n         }\n-\n         List<SQLUpdateSetItem> updateSetItemList = updateStatement.getItems();\n         if (updateSetItemList == null || updateSetItemList.isEmpty()) {\n             throw new SQLException(TxleConstants.LOG_ERROR_PREFIX + \"Had no set-item for update SQL.\");\n         }\n-\n         Map<String, String> columnNameType = this.selectColumnNameType(delegate, tableName);\n         StringBuffer compensateSqls = new StringBuffer();\n         for (Map<String, Object> dataMap : newDataList) {\n             this.resetColumnValueByDBType(columnNameType, dataMap);\n             String setColumns = constructSetColumns(updateSetItemList, dataMap);\n             String whereSqlForCompensation = this.constructWhereSqlForCompensation(dataMap);\n-\n             String compensateSql = String.format(\"UPDATE %s SET %s WHERE %s\" + TxleConstants.ACTION_SQL + \";\", tableName, setColumns, whereSqlForCompensation);\n             if (compensateSqls.length() == 0) {\n                 compensateSqls.append(compensateSql);\n@@ -129,7 +128,6 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n                 compensateSqls.append(\"\\n\" + compensateSql);\n             }\n         }\n-\n         return compensateSqls.toString();\n     }\n \n@@ -154,7 +152,6 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n             if (updateSetItemList == null || updateSetItemList.isEmpty()) {\n                 throw new SQLException(\"Have no set-item for update SQL.\");\n             }\n-\n             StringBuffer newColumnValues = new StringBuffer();\n             for (SQLUpdateSetItem setItem : updateSetItemList) {\n                 String columnValue = setItem.getValue().toString();\n@@ -170,7 +167,6 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n \n             // start to mark duration for business sql By Gannalyo.\n             ApplicationContextUtil.getApplicationContext().getBean(AutoCompensableSqlMetrics.class).startMarkSQLDurationAndCount(originalDataSql, false);\n-\n             connection = delegate.getConnection();\n             preparedStatement = connection.prepareStatement(originalDataSql);\n             List<Map<String, Object>> originalDataList = new ArrayList<Map<String, Object>>();\n@@ -178,7 +174,6 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n \n             // end mark duration for maintaining sql By Gannalyo.\n             ApplicationContextUtil.getApplicationContext().getBean(AutoCompensableSqlMetrics.class).endMarkSQLDuration();\n-\n             while (dataResultSet.next()) {\n                 Map<String, Object> dataMap = new HashMap<String, Object>();\n                 ResultSetMetaData metaData = dataResultSet.getMetaData();\n@@ -186,20 +181,19 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n                     String column = metaData.getColumnName(i);\n                     dataMap.put(column, dataResultSet.getObject(column));\n                 }\n-\n                 originalDataList.add(dataMap);\n             }\n             return originalDataList;\n         } finally {\n-//\t\t\ttry {\n-//\t\t\t\tif (connection != null) {\n-//\t\t\t\t\tconnection.close();\n-//\t\t\t\t}\n-//\t\t\t} finally {\n+//          try {\n+//              if (connection != null) {\n+//                  connection.close();\n+//              }\n+//          } finally {\n             if (preparedStatement != null) {\n                 preparedStatement.close();\n             }\n-//\t\t\t}\n+//          }\n         }\n     }\n \n@@ -218,5 +212,4 @@ public class MySqlUpdateHandler extends AutoCompensateUpdateHandler {\n         }\n         return originalDataList;\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "194",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "194",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

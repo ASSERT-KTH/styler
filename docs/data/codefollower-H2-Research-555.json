@@ -1,0 +1,79 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "555",
+    "information": {
+        "errors": [
+            {
+                "line": "67",
+                "column": "28",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "        setCurrentRowNumber(1);\n        Value v = expression.getValue(session);\n        if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n            v = v.convertTo(Value.RESULT_SET);\n            ResultSet rs = v.getResultSet();\n            return LocalResultFactory.read(session, rs, maxrows);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/555/Call.java\nindex 65525a4162f..31184246109 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/555/Call.java\n@@ -64,8 +64,9 @@ public class Call extends Prepared {\n     public ResultInterface query(int maxrows) {\n         setCurrentRowNumber(1);\n         Value v = expression.getValue(session);\n-        if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n-            v = v.convertTo(Value.RESULT_SET);\n+        if (isResultSet) {\n+            //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n+        v = v.convertTo(Value.RESULT_SET);\n             ResultSet rs = v.getResultSet();\n             return LocalResultFactory.read(session, rs, maxrows);\n         }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "69",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/555/Call.java\nindex 65525a4162f..b52af30aef0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/555/Call.java\n@@ -3,9 +3,11 @@\n  * and the EPL 1.0 (http://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.command.dml;\n \n import java.sql.ResultSet;\n+\n import org.h2.command.CommandInterface;\n import org.h2.command.Prepared;\n import org.h2.engine.Session;\n@@ -22,98 +24,98 @@ import org.h2.value.Value;\n  */\n public class Call extends Prepared {\n \n-    private boolean isResultSet;\n-    private Expression expression;\n-    private Expression[] expressions;\n-\n-    public Call(Session session) {\n-        super(session);\n+  private boolean isResultSet;\n+  private Expression expression;\n+  private Expression[] expressions;\n+\n+  public Call(Session session) {\n+    super(session);\n+  }\n+\n+  @Override\n+  public ResultInterface queryMeta() {\n+    LocalResult result;\n+    if (isResultSet) {\n+      Expression[] expr = expression.getExpressionColumns(session);\n+      result = session.getDatabase().getResultFactory().create(session, expr, expr.length);\n+    } else {\n+      result = session.getDatabase().getResultFactory().create(session, expressions, 1);\n     }\n-\n-    @Override\n-    public ResultInterface queryMeta() {\n-        LocalResult result;\n-        if (isResultSet) {\n-            Expression[] expr = expression.getExpressionColumns(session);\n-            result = session.getDatabase().getResultFactory().create(session, expr, expr.length);\n-        } else {\n-            result = session.getDatabase().getResultFactory().create(session, expressions, 1);\n-        }\n-        result.done();\n-        return result;\n+    result.done();\n+    return result;\n+  }\n+\n+  @Override\n+  public int update() {\n+    Value v = expression.getValue(session);\n+    int type = v.getType();\n+    switch (type) {\n+      case Value.RESULT_SET:\n+        // this will throw an exception\n+        // methods returning a result set may not be called like this.\n+        return super.update();\n+      case Value.UNKNOWN:\n+      case Value.NULL:\n+        return 0;\n+      default:\n+        return v.getInt();\n     }\n-\n-    @Override\n-    public int update() {\n-        Value v = expression.getValue(session);\n-        int type = v.getType();\n-        switch (type) {\n-        case Value.RESULT_SET:\n-            // this will throw an exception\n-            // methods returning a result set may not be called like this.\n-            return super.update();\n-        case Value.UNKNOWN:\n-        case Value.NULL:\n-            return 0;\n-        default:\n-            return v.getInt();\n-        }\n-    }\n-\n-    @Override\n-    public ResultInterface query(int maxrows) {\n-        setCurrentRowNumber(1);\n-        Value v = expression.getValue(session);\n-        if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n-            v = v.convertTo(Value.RESULT_SET);\n-            ResultSet rs = v.getResultSet();\n-            return LocalResultFactory.read(session, rs, maxrows);\n-        }\n-        LocalResult result = session.getDatabase().getResultFactory().create(session, expressions, 1);\n-        Value[] row = { v };\n-        result.addRow(row);\n-        result.done();\n-        return result;\n+  }\n+\n+  @Override\n+  public ResultInterface query(int maxrows) {\n+    setCurrentRowNumber(1);\n+    Value v = expression.getValue(session);\n+    if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n+      v = v.convertTo(Value.RESULT_SET);\n+      ResultSet rs = v.getResultSet();\n+      return LocalResultFactory.read(session, rs, maxrows);\n     }\n-\n-    @Override\n-    public void prepare() {\n-        expression = expression.optimize(session);\n-        expressions = new Expression[] { expression };\n-        isResultSet = expression.getType() == Value.RESULT_SET;\n-        if (isResultSet) {\n-            prepareAlways = true;\n-        }\n+    LocalResult result = session.getDatabase().getResultFactory().create(session, expressions, 1);\n+    Value[] row = {v};\n+    result.addRow(row);\n+    result.done();\n+    return result;\n+  }\n+\n+  @Override\n+  public void prepare() {\n+    expression = expression.optimize(session);\n+    expressions = new Expression[] {expression};\n+    isResultSet = expression.getType() == Value.RESULT_SET;\n+    if (isResultSet) {\n+      prepareAlways = true;\n     }\n+  }\n \n-    public void setExpression(Expression expression) {\n-        this.expression = expression;\n-    }\n+  public void setExpression(Expression expression) {\n+    this.expression = expression;\n+  }\n \n-    @Override\n-    public boolean isQuery() {\n-        return true;\n-    }\n+  @Override\n+  public boolean isQuery() {\n+    return true;\n+  }\n \n-    @Override\n-    public boolean isTransactional() {\n-        return true;\n-    }\n+  @Override\n+  public boolean isTransactional() {\n+    return true;\n+  }\n \n-    @Override\n-    public boolean isReadOnly() {\n-        return expression.isEverything(ExpressionVisitor.READONLY_VISITOR);\n+  @Override\n+  public boolean isReadOnly() {\n+    return expression.isEverything(ExpressionVisitor.READONLY_VISITOR);\n \n-    }\n+  }\n \n-    @Override\n-    public int getType() {\n-        return CommandInterface.CALL;\n-    }\n+  @Override\n+  public int getType() {\n+    return CommandInterface.CALL;\n+  }\n \n-    @Override\n-    public boolean isCacheable() {\n-        return !isResultSet;\n-    }\n+  @Override\n+  public boolean isCacheable() {\n+    return !isResultSet;\n+  }\n \n }\n",
+            "diff_size": 106
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "69",
+                    "column": "28",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/555/Call.java\nindex 65525a4162f..956348e049f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/555/Call.java\n@@ -20,6 +20,8 @@ import org.h2.value.Value;\n  * This class represents the statement\n  * CALL.\n  */\n+\n+\n public class Call extends Prepared {\n \n     private boolean isResultSet;\n@@ -86,6 +88,7 @@ public class Call extends Prepared {\n         }\n     }\n \n+\n     public void setExpression(Expression expression) {\n         this.expression = expression;\n     }\n@@ -103,7 +106,6 @@ public class Call extends Prepared {\n     @Override\n     public boolean isReadOnly() {\n         return expression.isEverything(ExpressionVisitor.READONLY_VISITOR);\n-\n     }\n \n     @Override\n@@ -116,4 +118,4 @@ public class Call extends Prepared {\n         return !isResultSet;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/555/Call.java\nindex 65525a4162f..31184246109 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/555/Call.java\n@@ -64,8 +64,9 @@ public class Call extends Prepared {\n     public ResultInterface query(int maxrows) {\n         setCurrentRowNumber(1);\n         Value v = expression.getValue(session);\n-        if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n-            v = v.convertTo(Value.RESULT_SET);\n+        if (isResultSet) {\n+            //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n+        v = v.convertTo(Value.RESULT_SET);\n             ResultSet rs = v.getResultSet();\n             return LocalResultFactory.read(session, rs, maxrows);\n         }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/555/Call.java\nindex 65525a4162f..55ca34f9a01 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/555/Call.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/555/Call.java\n@@ -64,8 +64,9 @@ public class Call extends Prepared {\n     public ResultInterface query(int maxrows) {\n         setCurrentRowNumber(1);\n         Value v = expression.getValue(session);\n-        if (isResultSet) { //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n-            v = v.convertTo(Value.RESULT_SET);\n+        if (isResultSet) {\n+    //\u4f8b\u5982 \"CALL TABLE(ID INT=(1, 2), NAME VARCHAR=('Hello', 'World'))\"\n+        v = v.convertTo(Value.RESULT_SET);\n             ResultSet rs = v.getResultSet();\n             return LocalResultFactory.read(session, rs, maxrows);\n         }\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

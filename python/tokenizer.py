@@ -169,6 +169,29 @@ def tokenize_file_to_repair(file_path, error):
 
     return tokens_errored, info
 
+def tokenize_errored_file_model2(file, file_orig, error):
+    tokens_errored, info = tokenize_file_to_repair(file, error)
+
+    tokens_errored_in_tag = info['tokens_errored_in_tag']
+    violation_beginning_token = info['violation_beginning_token']
+    violation_end_token = info['violation_end_token']
+
+    spaces, tokens = tokenize_with_white_space(open_file(file_orig))
+    tokens_correct = []
+
+    for token, space in zip(tokens[violation_beginning_token:violation_end_token], spaces[violation_beginning_token:violation_end_token]):
+        tokens_correct.append(get_token_value(token))
+        tokens_correct.append(get_space_value(space))
+
+    if len(tokens_errored_in_tag) != len(tokens_correct):
+        print("WHAAAAATT")
+    info['count_diff'] = 0
+    for t_A, t_B in zip(tokens_errored_in_tag, tokens_correct):
+        if t_A != t_B:
+            info['count_diff'] += 1
+
+    return tokens_errored, tokens_correct, tokens_errored_in_tag, info
+
 def de_tokenize(errored_source, error_info, new_tokens, only_formatting=False):
     errored_whitespace, tokens = tokenize_with_white_space(errored_source)
     whitespace = copy.deepcopy(errored_whitespace)
@@ -215,22 +238,27 @@ def compute_abs_char_position(source, tokens, error_info):
 
     # where the change starts
     change_start_line = file_lines[violation_beginning_token_position[0] - 1]
-    change_start_line = change_start_line[violation_beginning_token_position[1] + len(violation_beginning_token.value) - 1:]
+    end_line = len(change_start_line) 
+    if violation_beginning_token_position[0] == violation_end_token_position[0]:
+        # all the fix will be copied
+        end_line = violation_end_token_position[1] - 1
+    change_start_line = change_start_line[violation_beginning_token_position[1] + len(violation_beginning_token.value) - 1:end_line]
     output_source += change_start_line
 
     # copy all full line changes in the line before the change
     output_source += ''.join(file_lines[violation_beginning_token_position[0]:violation_end_token_position[0] - 1])
 
-    # copy the partial line where the chyange stops
-    change_end_line = file_lines[violation_end_token_position[0] - 1]
-    change_end_line = change_end_line[0:violation_end_token_position[1] + len(violation_end_token.value) - 1]
-    output_source += change_end_line
+    if violation_beginning_token_position[0] != violation_end_token_position[0]:
+        # copy the partial line where the change stops if the changes are spread on more than one line
+        change_end_line = file_lines[violation_end_token_position[0] - 1]
+        change_end_line = change_end_line[0:violation_end_token_position[1] - 1]
+        output_source += change_end_line
 
     index_end_changes = len(output_source)
 
-    # where the change starts
+    # where the change end
     change_end_line = file_lines[violation_end_token_position[0] - 1]
-    change_end_line = change_end_line[violation_end_token_position[1] + len(violation_end_token.value) - 1:]
+    change_end_line = change_end_line[violation_end_token_position[1] - 1:]
     output_source += change_end_line
 
     # copy all full line changes in the line before the change

@@ -1,0 +1,133 @@
+{
+    "project_name": "RWTH-i5-IDSG-steve",
+    "error_id": "84",
+    "information": {
+        "errors": [
+            {
+                "line": "49",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 123).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    @Autowired private Ocpp16WebSocketEndpoint ocpp16WebSocketEndpoint;\n\n    private final UnidentifiedIncomingObjectService unknownChargePointService = new UnidentifiedIncomingObjectService(100);\n\n    @Override\n    public Statistics getStats() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/84/ChargePointHelperServiceImpl.java\nindex 6e597de0396..026a8fde42a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/84/ChargePointHelperServiceImpl.java\n@@ -36,114 +36,120 @@ import java.util.stream.Collectors;\n @Service\n public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n \n-    @Autowired private GenericRepository genericRepository;\n-\n-    // SOAP-based charge points are stored in DB with an endpoint address\n-    @Autowired private ChargePointRepository chargePointRepository;\n-\n-    // For WebSocket-based charge points, the active sessions are stored in memory\n-    @Autowired private Ocpp12WebSocketEndpoint ocpp12WebSocketEndpoint;\n-    @Autowired private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n-    @Autowired private Ocpp16WebSocketEndpoint ocpp16WebSocketEndpoint;\n-\n-    private final UnidentifiedIncomingObjectService unknownChargePointService = new UnidentifiedIncomingObjectService(100);\n-\n-    @Override\n-    public Statistics getStats() {\n-        Statistics stats = genericRepository.getStats();\n-        stats.setNumOcpp12JChargeBoxes(ocpp12WebSocketEndpoint.getNumberOfChargeBoxes());\n-        stats.setNumOcpp15JChargeBoxes(ocpp15WebSocketEndpoint.getNumberOfChargeBoxes());\n-        stats.setNumOcpp16JChargeBoxes(ocpp16WebSocketEndpoint.getNumberOfChargeBoxes());\n-\n-        List<ConnectorStatus> latestList = chargePointRepository.getChargePointConnectorStatus();\n-        stats.setStatusCountMap(ConnectorStatusCountFilter.getStatusCountMap(latestList));\n-\n-        return stats;\n-    }\n-\n-    @Override\n-    public List<OcppJsonStatus> getOcppJsonStatus() {\n-        Map<String, Deque<SessionContext>> ocpp12Map = ocpp12WebSocketEndpoint.getACopy();\n-        Map<String, Deque<SessionContext>> ocpp15Map = ocpp15WebSocketEndpoint.getACopy();\n-        Map<String, Deque<SessionContext>> ocpp16Map = ocpp16WebSocketEndpoint.getACopy();\n-\n-        List<String> idList = extractIds(Arrays.asList(ocpp12Map, ocpp15Map, ocpp16Map));\n-        Map<String, Integer> primaryKeyLookup = chargePointRepository.getChargeBoxIdPkPair(idList);\n-\n-        DateTime now = DateTime.now();\n-        List<OcppJsonStatus> returnList = new ArrayList<>();\n-\n-        appendList(ocpp12Map, returnList, now, OcppVersion.V_12, primaryKeyLookup);\n-        appendList(ocpp15Map, returnList, now, OcppVersion.V_15, primaryKeyLookup);\n-        appendList(ocpp16Map, returnList, now, OcppVersion.V_16, primaryKeyLookup);\n-        return returnList;\n-    }\n-\n-    @Override\n-    public List<ChargePointSelect> getChargePointsV12() {\n-        return getChargePoints(OcppProtocol.V_12_SOAP, ocpp12WebSocketEndpoint);\n-    }\n-\n-    @Override\n-    public List<ChargePointSelect> getChargePointsV15() {\n-        return getChargePoints(OcppProtocol.V_15_SOAP, ocpp15WebSocketEndpoint);\n+  @Autowired\n+  private GenericRepository genericRepository;\n+\n+  // SOAP-based charge points are stored in DB with an endpoint address\n+  @Autowired\n+  private ChargePointRepository chargePointRepository;\n+\n+  // For WebSocket-based charge points, the active sessions are stored in memory\n+  @Autowired\n+  private Ocpp12WebSocketEndpoint ocpp12WebSocketEndpoint;\n+  @Autowired\n+  private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n+  @Autowired\n+  private Ocpp16WebSocketEndpoint ocpp16WebSocketEndpoint;\n+\n+  private final UnidentifiedIncomingObjectService unknownChargePointService =\n+    new UnidentifiedIncomingObjectService(100);\n+\n+  @Override\n+  public Statistics getStats() {\n+    Statistics stats = genericRepository.getStats();\n+    stats.setNumOcpp12JChargeBoxes(ocpp12WebSocketEndpoint.getNumberOfChargeBoxes());\n+    stats.setNumOcpp15JChargeBoxes(ocpp15WebSocketEndpoint.getNumberOfChargeBoxes());\n+    stats.setNumOcpp16JChargeBoxes(ocpp16WebSocketEndpoint.getNumberOfChargeBoxes());\n+\n+    List<ConnectorStatus> latestList = chargePointRepository.getChargePointConnectorStatus();\n+    stats.setStatusCountMap(ConnectorStatusCountFilter.getStatusCountMap(latestList));\n+\n+    return stats;\n+  }\n+\n+  @Override\n+  public List<OcppJsonStatus> getOcppJsonStatus() {\n+    Map<String, Deque<SessionContext>> ocpp12Map = ocpp12WebSocketEndpoint.getACopy();\n+    Map<String, Deque<SessionContext>> ocpp15Map = ocpp15WebSocketEndpoint.getACopy();\n+    Map<String, Deque<SessionContext>> ocpp16Map = ocpp16WebSocketEndpoint.getACopy();\n+\n+    List<String> idList = extractIds(Arrays.asList(ocpp12Map, ocpp15Map, ocpp16Map));\n+    Map<String, Integer> primaryKeyLookup = chargePointRepository.getChargeBoxIdPkPair(idList);\n+\n+    DateTime now = DateTime.now();\n+    List<OcppJsonStatus> returnList = new ArrayList<>();\n+\n+    appendList(ocpp12Map, returnList, now, OcppVersion.V_12, primaryKeyLookup);\n+    appendList(ocpp15Map, returnList, now, OcppVersion.V_15, primaryKeyLookup);\n+    appendList(ocpp16Map, returnList, now, OcppVersion.V_16, primaryKeyLookup);\n+    return returnList;\n+  }\n+\n+  @Override\n+  public List<ChargePointSelect> getChargePointsV12() {\n+    return getChargePoints(OcppProtocol.V_12_SOAP, ocpp12WebSocketEndpoint);\n+  }\n+\n+  @Override\n+  public List<ChargePointSelect> getChargePointsV15() {\n+    return getChargePoints(OcppProtocol.V_15_SOAP, ocpp15WebSocketEndpoint);\n+  }\n+\n+  @Override\n+  public List<ChargePointSelect> getChargePointsV16() {\n+    return getChargePoints(OcppProtocol.V_16_SOAP, ocpp16WebSocketEndpoint);\n+  }\n+\n+  @Override\n+  public void rememberNewUnknown(String chargeBoxId) {\n+    unknownChargePointService.processNewUnidentified(chargeBoxId);\n+  }\n+\n+  @Override\n+  public List<UnidentifiedIncomingObject> getUnknownChargePoints() {\n+    return unknownChargePointService.getObjects();\n+  }\n+\n+  // -------------------------------------------------------------------------\n+  // Helpers\n+  // -------------------------------------------------------------------------\n+\n+  private List<ChargePointSelect> getChargePoints(OcppProtocol forSoap, AbstractWebSocketEndpoint jsonEndpoint) {\n+    List<ChargePointSelect> returnList = chargePointRepository.getChargePointSelect(forSoap);\n+    for (String chargeBoxId : jsonEndpoint.getChargeBoxIdList()) {\n+      returnList.add(new ChargePointSelect(OcppTransport.JSON, chargeBoxId));\n     }\n-\n-    @Override\n-    public List<ChargePointSelect> getChargePointsV16() {\n-        return getChargePoints(OcppProtocol.V_16_SOAP, ocpp16WebSocketEndpoint);\n-    }\n-\n-    @Override\n-    public void rememberNewUnknown(String chargeBoxId) {\n-        unknownChargePointService.processNewUnidentified(chargeBoxId);\n-    }\n-\n-    @Override\n-    public List<UnidentifiedIncomingObject> getUnknownChargePoints() {\n-        return unknownChargePointService.getObjects();\n-    }\n-\n-    // -------------------------------------------------------------------------\n-    // Helpers\n-    // -------------------------------------------------------------------------\n-\n-    private List<ChargePointSelect> getChargePoints(OcppProtocol forSoap, AbstractWebSocketEndpoint jsonEndpoint) {\n-        List<ChargePointSelect> returnList = chargePointRepository.getChargePointSelect(forSoap);\n-        for (String chargeBoxId : jsonEndpoint.getChargeBoxIdList()) {\n-            returnList.add(new ChargePointSelect(OcppTransport.JSON, chargeBoxId));\n-        }\n-        return returnList;\n-    }\n-\n-    private static List<String> extractIds(List<Map<String, Deque<SessionContext>>> ocppMaps) {\n-        return ocppMaps.stream()\n-                       .map(Map::keySet)\n-                       .flatMap(Collection::stream)\n-                       .collect(Collectors.toList());\n-    }\n-\n-    private static void appendList(Map<String, Deque<SessionContext>> map, List<OcppJsonStatus> returnList,\n-                                   DateTime now, OcppVersion version, Map<String, Integer> primaryKeyLookup) {\n-\n-        for (Map.Entry<String, Deque<SessionContext>> entry : map.entrySet()) {\n-            String chargeBoxId = entry.getKey();\n-            Deque<SessionContext> endpointDeque = entry.getValue();\n-\n-            for (SessionContext ctx : endpointDeque) {\n-                DateTime openSince = ctx.getOpenSince();\n-\n-                OcppJsonStatus status = OcppJsonStatus.builder()\n-                                                      .chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n-                                                      .chargeBoxId(chargeBoxId)\n-                                                      .connectedSinceDT(openSince)\n-                                                      .connectedSince(DateTimeUtils.humanize(openSince))\n-                                                      .connectionDuration(DateTimeUtils.timeElapsed(openSince, now))\n-                                                      .version(version)\n-                                                      .build();\n-\n-                returnList.add(status);\n-            }\n-        }\n+    return returnList;\n+  }\n+\n+  private static List<String> extractIds(List<Map<String, Deque<SessionContext>>> ocppMaps) {\n+    return ocppMaps.stream()\n+      .map(Map::keySet)\n+      .flatMap(Collection::stream)\n+      .collect(Collectors.toList());\n+  }\n+\n+  private static void appendList(Map<String, Deque<SessionContext>> map, List<OcppJsonStatus> returnList,\n+                                 DateTime now, OcppVersion version, Map<String, Integer> primaryKeyLookup) {\n+\n+    for (Map.Entry<String, Deque<SessionContext>> entry : map.entrySet()) {\n+      String chargeBoxId = entry.getKey();\n+      Deque<SessionContext> endpointDeque = entry.getValue();\n+\n+      for (SessionContext ctx : endpointDeque) {\n+        DateTime openSince = ctx.getOpenSince();\n+\n+        OcppJsonStatus status = OcppJsonStatus.builder()\n+          .chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n+          .chargeBoxId(chargeBoxId)\n+          .connectedSinceDT(openSince)\n+          .connectedSince(DateTimeUtils.humanize(openSince))\n+          .connectionDuration(DateTimeUtils.timeElapsed(openSince, now))\n+          .version(version)\n+          .build();\n+\n+        returnList.add(status);\n+      }\n     }\n+  }\n }\n",
+            "diff_size": 140
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/naturalize/84/ChargePointHelperServiceImpl.java\nindex 6e597de0396..b069f739042 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/naturalize/84/ChargePointHelperServiceImpl.java\n@@ -117,33 +117,29 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n     }\n \n     private static List<String> extractIds(List<Map<String, Deque<SessionContext>>> ocppMaps) {\n-        return ocppMaps.stream()\n-                       .map(Map::keySet)\n+        return ocppMaps.stream().map(Map::keySet)\n                        .flatMap(Collection::stream)\n                        .collect(Collectors.toList());\n     }\n \n     private static void appendList(Map<String, Deque<SessionContext>> map, List<OcppJsonStatus> returnList,\n                                    DateTime now, OcppVersion version, Map<String, Integer> primaryKeyLookup) {\n-\n-        for (Map.Entry<String, Deque<SessionContext>> entry : map.entrySet()) {\n+    for (Map.Entry<String, Deque<SessionContext>> entry : map.entrySet()) {\n             String chargeBoxId = entry.getKey();\n             Deque<SessionContext> endpointDeque = entry.getValue();\n \n             for (SessionContext ctx : endpointDeque) {\n                 DateTime openSince = ctx.getOpenSince();\n \n-                OcppJsonStatus status = OcppJsonStatus.builder()\n-                                                      .chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n+                OcppJsonStatus status = OcppJsonStatus.builder().chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n                                                       .chargeBoxId(chargeBoxId)\n                                                       .connectedSinceDT(openSince)\n                                                       .connectedSince(DateTimeUtils.humanize(openSince))\n                                                       .connectionDuration(DateTimeUtils.timeElapsed(openSince, now))\n                                                       .version(version)\n                                                       .build();\n-\n-                returnList.add(status);\n+returnList.add(status);\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/codebuff/84/ChargePointHelperServiceImpl.java\nindex 6e597de0396..dbb793b7f6a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/codebuff/84/ChargePointHelperServiceImpl.java\n@@ -20,7 +20,6 @@ import de.rwth.idsg.steve.web.dto.Statistics;\n import org.joda.time.DateTime;\n import org.springframework.beans.factory.annotation.Autowired;\n import org.springframework.stereotype.Service;\n-\n import java.util.ArrayList;\n import java.util.Arrays;\n import java.util.Collection;\n@@ -33,6 +32,8 @@ import java.util.stream.Collectors;\n  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>\n  * @since 24.03.2015\n  */\n+\n+\n @Service\n public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n \n@@ -45,9 +46,7 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n     @Autowired private Ocpp12WebSocketEndpoint ocpp12WebSocketEndpoint;\n     @Autowired private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n     @Autowired private Ocpp16WebSocketEndpoint ocpp16WebSocketEndpoint;\n-\n     private final UnidentifiedIncomingObjectService unknownChargePointService = new UnidentifiedIncomingObjectService(100);\n-\n     @Override\n     public Statistics getStats() {\n         Statistics stats = genericRepository.getStats();\n@@ -57,7 +56,6 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n \n         List<ConnectorStatus> latestList = chargePointRepository.getChargePointConnectorStatus();\n         stats.setStatusCountMap(ConnectorStatusCountFilter.getStatusCountMap(latestList));\n-\n         return stats;\n     }\n \n@@ -66,13 +64,10 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n         Map<String, Deque<SessionContext>> ocpp12Map = ocpp12WebSocketEndpoint.getACopy();\n         Map<String, Deque<SessionContext>> ocpp15Map = ocpp15WebSocketEndpoint.getACopy();\n         Map<String, Deque<SessionContext>> ocpp16Map = ocpp16WebSocketEndpoint.getACopy();\n-\n         List<String> idList = extractIds(Arrays.asList(ocpp12Map, ocpp15Map, ocpp16Map));\n         Map<String, Integer> primaryKeyLookup = chargePointRepository.getChargeBoxIdPkPair(idList);\n-\n         DateTime now = DateTime.now();\n         List<OcppJsonStatus> returnList = new ArrayList<>();\n-\n         appendList(ocpp12Map, returnList, now, OcppVersion.V_12, primaryKeyLookup);\n         appendList(ocpp15Map, returnList, now, OcppVersion.V_15, primaryKeyLookup);\n         appendList(ocpp16Map, returnList, now, OcppVersion.V_16, primaryKeyLookup);\n@@ -110,6 +105,7 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n \n     private List<ChargePointSelect> getChargePoints(OcppProtocol forSoap, AbstractWebSocketEndpoint jsonEndpoint) {\n         List<ChargePointSelect> returnList = chargePointRepository.getChargePointSelect(forSoap);\n+\n         for (String chargeBoxId : jsonEndpoint.getChargeBoxIdList()) {\n             returnList.add(new ChargePointSelect(OcppTransport.JSON, chargeBoxId));\n         }\n@@ -118,32 +114,31 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n \n     private static List<String> extractIds(List<Map<String, Deque<SessionContext>>> ocppMaps) {\n         return ocppMaps.stream()\n-                       .map(Map::keySet)\n-                       .flatMap(Collection::stream)\n-                       .collect(Collectors.toList());\n+            .map(Map::keySet)\n+            .flatMap(Collection::stream)\n+            .collect(Collectors.toList());\n     }\n \n-    private static void appendList(Map<String, Deque<SessionContext>> map, List<OcppJsonStatus> returnList,\n-                                   DateTime now, OcppVersion version, Map<String, Integer> primaryKeyLookup) {\n-\n+    private static void appendList(Map<String, Deque<SessionContext>> map,\n+                                   List<OcppJsonStatus> returnList,\n+                                   DateTime now,\n+                                   OcppVersion version, Map<String, Integer> primaryKeyLookup) {\n         for (Map.Entry<String, Deque<SessionContext>> entry : map.entrySet()) {\n             String chargeBoxId = entry.getKey();\n             Deque<SessionContext> endpointDeque = entry.getValue();\n \n             for (SessionContext ctx : endpointDeque) {\n                 DateTime openSince = ctx.getOpenSince();\n-\n                 OcppJsonStatus status = OcppJsonStatus.builder()\n-                                                      .chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n-                                                      .chargeBoxId(chargeBoxId)\n-                                                      .connectedSinceDT(openSince)\n-                                                      .connectedSince(DateTimeUtils.humanize(openSince))\n-                                                      .connectionDuration(DateTimeUtils.timeElapsed(openSince, now))\n-                                                      .version(version)\n-                                                      .build();\n-\n+                    .chargeBoxPk(primaryKeyLookup.get(chargeBoxId))\n+                    .chargeBoxId(chargeBoxId)\n+                    .connectedSinceDT(openSince)\n+                    .connectedSince(DateTimeUtils.humanize(openSince))\n+                    .connectionDuration(DateTimeUtils.timeElapsed(openSince, now))\n+                    .version(version)\n+                    .build();\n                 returnList.add(status);\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 27
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 123).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 138).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "119",
+                    "severity": "error",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "119",
+                    "severity": "error",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "125",
+                    "severity": "error",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "127",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "129",
+                    "severity": "error",
+                    "message": "'@' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/styler_three_grams/84/ChargePointHelperServiceImpl.java\nindex 6e597de0396..af784af0720 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/84/ChargePointHelperServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/styler_three_grams/84/ChargePointHelperServiceImpl.java\n@@ -46,9 +46,7 @@ public class ChargePointHelperServiceImpl implements ChargePointHelperService {\n     @Autowired private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n     @Autowired private Ocpp16WebSocketEndpoint ocpp16WebSocketEndpoint;\n \n-    private final UnidentifiedIncomingObjectService unknownChargePointService = new UnidentifiedIncomingObjectService(100);\n-\n-    @Override\n+    private final UnidentifiedIncomingObjectService unknownChargePointService = new UnidentifiedIncomingObjectService ( 100 ) ; @ Override\n     public Statistics getStats() {\n         Statistics stats = genericRepository.getStats();\n         stats.setNumOcpp12JChargeBoxes(ocpp12WebSocketEndpoint.getNumberOfChargeBoxes());\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

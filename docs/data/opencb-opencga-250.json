@@ -1,0 +1,90 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "250",
+    "information": {
+        "errors": [
+            {
+                "line": "45",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 236).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n//    @Deprecated\n//    public InterpretationAnalysis(String clinicalAnalysisId, Map<String, ClinicalProperty.RoleInCancer> roleInCancer, Map<String, List<String>> actionableVariants, ObjectMap config, String opencgaHome, String studyStr, String token) {\n//        super(clinicalAnalysisId, roleInCancer, actionableVariants, config, opencgaHome, studyStr, token);\n//    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 236).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 236).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/250/InterpretationAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/250/InterpretationAnalysis.java\nindex 996d47afe83..31e063dae24 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/250/InterpretationAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/250/InterpretationAnalysis.java\n@@ -37,9 +37,9 @@ import java.util.stream.Collectors;\n \n public abstract class InterpretationAnalysis extends OpenCgaClinicalAnalysis {\n \n-    public InterpretationAnalysis(String clinicalAnalysisId, String studyId, ObjectMap options, String opencgaHome, String sessionId) {\n-        super(clinicalAnalysisId, studyId, options, opencgaHome, sessionId);\n-    }\n+  public InterpretationAnalysis(String clinicalAnalysisId, String studyId, ObjectMap options, String opencgaHome, String sessionId) {\n+    super(clinicalAnalysisId, studyId, options, opencgaHome, sessionId);\n+  }\n \n //    @Deprecated\n //    public InterpretationAnalysis(String clinicalAnalysisId, Map<String, ClinicalProperty.RoleInCancer> roleInCancer, Map<String, List<String>> actionableVariants, ObjectMap config, String opencgaHome, String studyStr, String token) {\n@@ -47,33 +47,32 @@ public abstract class InterpretationAnalysis extends OpenCgaClinicalAnalysis {\n //    }\n \n \n-\n-    protected List<ReportedVariant> getSecondaryFindings(ClinicalAnalysis clinicalAnalysis, List<String> sampleNames,\n-                                                         ReportedVariantCreator creator) throws Exception {\n-        List<ReportedVariant> secondaryFindings = null;\n-        if (clinicalAnalysis.getConsent() != null\n-                && clinicalAnalysis.getConsent().getSecondaryFindings() == ClinicalConsent.ConsentStatus.YES) {\n+  protected List<ReportedVariant> getSecondaryFindings(ClinicalAnalysis clinicalAnalysis, List<String> sampleNames,\n+                                                       ReportedVariantCreator creator) throws Exception {\n+    List<ReportedVariant> secondaryFindings = null;\n+    if (clinicalAnalysis.getConsent() != null\n+        && clinicalAnalysis.getConsent().getSecondaryFindings() == ClinicalConsent.ConsentStatus.YES) {\n //            List<Variant> findings = ClinicalUtils.secondaryFindings(studyId, sampleNames, actionableVariants.keySet(),\n //                    excludeIds, variantStorageManager, token);\n-            SecondaryFindingsAnalysis secondaryFindingsAnalysis = new SecondaryFindingsAnalysis(sampleNames.get(0), clinicalAnalysisId,\n-                    studyId, null, opencgaHome, sessionId);\n-            List<Variant> variants = secondaryFindingsAnalysis.compute().getResult();\n-            if (CollectionUtils.isNotEmpty(variants)) {\n-                secondaryFindings = creator.createSecondaryFindings(variants);\n-            }\n-        }\n-        return secondaryFindings;\n+      SecondaryFindingsAnalysis secondaryFindingsAnalysis = new SecondaryFindingsAnalysis(sampleNames.get(0), clinicalAnalysisId,\n+          studyId, null, opencgaHome, sessionId);\n+      List<Variant> variants = secondaryFindingsAnalysis.compute().getResult();\n+      if (CollectionUtils.isNotEmpty(variants)) {\n+        secondaryFindings = creator.createSecondaryFindings(variants);\n+      }\n     }\n+    return secondaryFindings;\n+  }\n \n-    protected void addGenotypeFilter(Map<String, List<String>> genotypes, Map<String, String> sampleMap, Query query) {\n-        String genotypeString = StringUtils.join(genotypes.entrySet().stream()\n-                .filter(entry -> sampleMap.containsKey(entry.getKey()))\n-                .filter(entry -> ListUtils.isNotEmpty(entry.getValue()))\n-                .map(entry -> sampleMap.get(entry.getKey()) + \":\" + StringUtils.join(entry.getValue(), VariantQueryUtils.OR))\n-                .collect(Collectors.toList()), \";\");\n-        if (StringUtils.isNotEmpty(genotypeString)) {\n-            query.put(VariantQueryParam.GENOTYPE.key(), genotypeString);\n-        }\n-        logger.debug(\"Query: {}\", query.toJson());\n+  protected void addGenotypeFilter(Map<String, List<String>> genotypes, Map<String, String> sampleMap, Query query) {\n+    String genotypeString = StringUtils.join(genotypes.entrySet().stream()\n+        .filter(entry -> sampleMap.containsKey(entry.getKey()))\n+        .filter(entry -> ListUtils.isNotEmpty(entry.getValue()))\n+        .map(entry -> sampleMap.get(entry.getKey()) + \":\" + StringUtils.join(entry.getValue(), VariantQueryUtils.OR))\n+        .collect(Collectors.toList()), \";\");\n+    if (StringUtils.isNotEmpty(genotypeString)) {\n+      query.put(VariantQueryParam.GENOTYPE.key(), genotypeString);\n     }\n+    logger.debug(\"Query: {}\", query.toJson());\n+  }\n }\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/250/InterpretationAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/250/InterpretationAnalysis.java\nindex 996d47afe83..a951f64247e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/250/InterpretationAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/250/InterpretationAnalysis.java\n@@ -41,12 +41,7 @@ public abstract class InterpretationAnalysis extends OpenCgaClinicalAnalysis {\n         super(clinicalAnalysisId, studyId, options, opencgaHome, sessionId);\n     }\n \n-//    @Deprecated\n-//    public InterpretationAnalysis(String clinicalAnalysisId, Map<String, ClinicalProperty.RoleInCancer> roleInCancer, Map<String, List<String>> actionableVariants, ObjectMap config, String opencgaHome, String studyStr, String token) {\n-//        super(clinicalAnalysisId, roleInCancer, actionableVariants, config, opencgaHome, studyStr, token);\n-//    }\n-\n-\n+//    @\n \n     protected List<ReportedVariant> getSecondaryFindings(ClinicalAnalysis clinicalAnalysis, List<String> sampleNames,\n                                                          ReportedVariantCreator creator) throws Exception {\n@@ -76,4 +71,4 @@ public abstract class InterpretationAnalysis extends OpenCgaClinicalAnalysis {\n         }\n         logger.debug(\"Query: {}\", query.toJson());\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 236).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 236).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "naturalize"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

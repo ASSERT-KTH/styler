@@ -1,0 +1,122 @@
+{
+    "project_name": "dzhw-metadatamanagement",
+    "error_id": "56",
+    "information": {
+        "errors": [
+            {
+                "line": "73",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 112).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      Task task = taskService.createTask(taskId);\n      // fill the data with data and store the template into mongodb / gridfs\n      dataSetReportService.generateReport(zipTmpFilePath, multiPartFile.getOriginalFilename(), dataSetId, task);\n      return ResponseEntity.accepted().location(pollUri).body(task);\n    } else {\n      // Return bad request, if file is empty.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/56/DataSetsReportResource.java\nindex 97d52e23312..4d2d8275d63 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/56/DataSetsReportResource.java\n@@ -26,9 +26,8 @@ import lombok.extern.slf4j.Slf4j;\n \n /**\n  * This Resource handles the upload of tex templates for the variable report.\n- * \n- * @author Daniel Katzberg\n  *\n+ * @author Daniel Katzberg\n  */\n @Controller\n @RequestMapping(\"/api\")\n@@ -46,16 +45,16 @@ public class DataSetsReportResource {\n \n   /**\n    * Accept latex templates under the given request mapping.\n-   * \n+   *\n    * @param multiPartFile The latex template as multipart file\n-   * @param dataSetId the id of the data set, from where the file was uploaded\n-   * @throws IOException Handles io exception for the template. (Freemarker Templates)\n+   * @param dataSetId     the id of the data set, from where the file was uploaded\n+   * @throws IOException       Handles io exception for the template. (Freemarker Templates)\n    * @throws TemplateException Handles template exceptions. (Freemarker Templates)\n    */\n   @PostMapping(value = \"/data-sets/report\")\n   @Secured(value = {AuthoritiesConstants.PUBLISHER, AuthoritiesConstants.DATA_PROVIDER})\n   public ResponseEntity<Task> uploadFile(@RequestParam(\"file\") MultipartFile multiPartFile,\n-      @RequestParam(\"id\") String dataSetId)\n+                                         @RequestParam(\"id\") String dataSetId)\n       throws IOException, TemplateException, TemplateIncompleteException {\n \n     // Handles no empty latex templates\n@@ -64,13 +63,14 @@ public class DataSetsReportResource {\n       File zipTmpFile = zipTmpFilePath.toFile();\n       multiPartFile.transferTo(zipTmpFile);\n       zipTmpFile.setWritable(true);\n-      \n+\n       URI pollUri;\n       String taskId = Long.toString(counterService.getNextSequence(Task.class.getName()));\n       pollUri = URI.create(\"/api/tasks/\" + taskId);\n       Task task = taskService.createTask(taskId);\n       // fill the data with data and store the template into mongodb / gridfs\n-      dataSetReportService.generateReport(zipTmpFilePath, multiPartFile.getOriginalFilename(), dataSetId, task);\n+      dataSetReportService\n+          .generateReport(zipTmpFilePath, multiPartFile.getOriginalFilename(), dataSetId, task);\n       return ResponseEntity.accepted().location(pollUri).body(task);\n     } else {\n       // Return bad request, if file is empty.\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/56/DataSetsReportResource.java\nindex 97d52e23312..9c6062f82a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/56/DataSetsReportResource.java\n@@ -64,8 +64,8 @@ public class DataSetsReportResource {\n       File zipTmpFile = zipTmpFilePath.toFile();\n       multiPartFile.transferTo(zipTmpFile);\n       zipTmpFile.setWritable(true);\n-      \n-      URI pollUri;\n+\n+URI pollUri;\n       String taskId = Long.toString(counterService.getNextSequence(Task.class.getName()));\n       pollUri = URI.create(\"/api/tasks/\" + taskId);\n       Task task = taskService.createTask(taskId);\n@@ -76,6 +76,5 @@ public class DataSetsReportResource {\n       // Return bad request, if file is empty.\n       return ResponseEntity.badRequest().body(null);\n     }\n-\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "'@' has incorrect indentation level 4, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 110).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "69",
+                    "severity": "error",
+                    "message": "'.' has incorrect indentation level 8, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "74",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/56/DataSetsReportResource.java\nindex 97d52e23312..14070f3d75c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/56/DataSetsReportResource.java\n@@ -5,7 +5,6 @@ import java.io.IOException;\n import java.net.URI;\n import java.nio.file.Files;\n import java.nio.file.Path;\n-\n import org.springframework.beans.factory.annotation.Autowired;\n import org.springframework.http.ResponseEntity;\n import org.springframework.security.access.annotation.Secured;\n@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;\n import org.springframework.web.bind.annotation.RequestMapping;\n import org.springframework.web.bind.annotation.RequestParam;\n import org.springframework.web.multipart.MultipartFile;\n-\n import eu.dzhw.fdz.metadatamanagement.common.domain.Task;\n import eu.dzhw.fdz.metadatamanagement.common.service.CounterService;\n import eu.dzhw.fdz.metadatamanagement.common.service.TaskService;\n@@ -30,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;\n  * @author Daniel Katzberg\n  *\n  */\n+\n+\n @Controller\n @RequestMapping(\"/api\")\n @Slf4j\n@@ -40,8 +40,8 @@ public class DataSetsReportResource {\n \n   @Autowired\n   private CounterService counterService;\n-  @Autowired\n-  TaskService taskService;\n+\n+  @Autowired TaskService taskService;\n \n \n   /**\n@@ -52,11 +52,11 @@ public class DataSetsReportResource {\n    * @throws IOException Handles io exception for the template. (Freemarker Templates)\n    * @throws TemplateException Handles template exceptions. (Freemarker Templates)\n    */\n+\n   @PostMapping(value = \"/data-sets/report\")\n   @Secured(value = {AuthoritiesConstants.PUBLISHER, AuthoritiesConstants.DATA_PROVIDER})\n   public ResponseEntity<Task> uploadFile(@RequestParam(\"file\") MultipartFile multiPartFile,\n-      @RequestParam(\"id\") String dataSetId)\n-      throws IOException, TemplateException, TemplateIncompleteException {\n+    @RequestParam(\"id\") String dataSetId) throws IOException, TemplateException, TemplateIncompleteException {\n \n     // Handles no empty latex templates\n     if (!multiPartFile.isEmpty()) {\n@@ -64,18 +64,19 @@ public class DataSetsReportResource {\n       File zipTmpFile = zipTmpFilePath.toFile();\n       multiPartFile.transferTo(zipTmpFile);\n       zipTmpFile.setWritable(true);\n-      \n       URI pollUri;\n-      String taskId = Long.toString(counterService.getNextSequence(Task.class.getName()));\n-      pollUri = URI.create(\"/api/tasks/\" + taskId);\n+      String taskId = Long.toString(counterService.getNextSequence(Task.class\n+        .getName()));\n+      pollUri = URI.create(\"/api/tasks/\"\n+        + taskId);\n       Task task = taskService.createTask(taskId);\n       // fill the data with data and store the template into mongodb / gridfs\n       dataSetReportService.generateReport(zipTmpFilePath, multiPartFile.getOriginalFilename(), dataSetId, task);\n-      return ResponseEntity.accepted().location(pollUri).body(task);\n+      return ResponseEntity.accepted().location(pollUri)\n+                                      .body(task);\n     } else {\n       // Return bad request, if file is empty.\n       return ResponseEntity.badRequest().body(null);\n     }\n-\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 112).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/styler_three_grams/56/DataSetsReportResource.java\nindex 97d52e23312..64dff967616 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/56/DataSetsReportResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/styler_three_grams/56/DataSetsReportResource.java\n@@ -70,7 +70,7 @@ public class DataSetsReportResource {\n       pollUri = URI.create(\"/api/tasks/\" + taskId);\n       Task task = taskService.createTask(taskId);\n       // fill the data with data and store the template into mongodb / gridfs\n-      dataSetReportService.generateReport(zipTmpFilePath, multiPartFile.getOriginalFilename(), dataSetId, task);\n+      dataSetReportService.generateReport(zipTmpFilePath ,multiPartFile.getOriginalFilename(), dataSetId, task);\n       return ResponseEntity.accepted().location(pollUri).body(task);\n     } else {\n       // Return bad request, if file is empty.\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

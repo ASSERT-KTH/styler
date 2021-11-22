@@ -1,0 +1,104 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "9",
+    "information": {
+        "errors": [
+            {
+                "line": "11",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 103).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * https://opensource.org/licenses/BSD-3-Clause\n *\n * Unless required by applicable law or agreed to in writing, software distributed under the License is\n * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n * either express or implied. See the License for the specific language governing permissions and\n * limitations under the License.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/9/CompSparseDoubleVectorTest.java\nindex 1e2a05c622e..9c812cd65b1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/9/CompSparseDoubleVectorTest.java\n@@ -30,28 +30,29 @@ import static junit.framework.Assert.assertEquals;\n public class CompSparseDoubleVectorTest {\n   private static final Log LOG = LogFactory.getLog(CompSparseDoubleVectorTest.class);\n   private final int dim = 10000;\n+\n   @Test\n-  public void testBaseOp(){\n+  public void testBaseOp() {\n     CompSparseDoubleVector vector = initVector();\n     HashSet<Integer> indexSet = new HashSet<Integer>();\n     Random r = new Random();\n     int sampleNum = 100;\n-    while(true) {\n+    while (true) {\n       indexSet.add(r.nextInt(dim));\n-      if(indexSet.size() >= sampleNum) {\n+      if (indexSet.size() >= sampleNum) {\n         break;\n       }\n     }\n-    int [] indexes = new int[sampleNum];\n+    int[] indexes = new int[sampleNum];\n     int index = 0;\n-    for(int item:indexSet) {\n+    for (int item : indexSet) {\n       indexes[index++] = item;\n     }\n \n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       vector.plusBy(indexes[i], 1.0);\n     }\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 1.0);\n     }\n \n@@ -62,60 +63,60 @@ public class CompSparseDoubleVectorTest {\n     assertEquals(vector.sum(), Double.valueOf(sampleNum) * 2);\n \n     CompSparseDoubleVector addVector = initVector();\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector.plusBy(indexes[i], 1.0);\n     }\n \n     vector.plusBy(addVector);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 3.0);\n     }\n \n     assertEquals(addVector.dot(vector), Double.valueOf(sampleNum) * 3);\n \n     SparseDummyVector addVector1 = new SparseDummyVector(dim);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector1.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 4.0);\n     }\n \n-    double [] values = new double[sampleNum];\n-    for(int i = 0; i < values.length; i++) {\n+    double[] values = new double[sampleNum];\n+    for (int i = 0; i < values.length; i++) {\n       values[i] = 1.0;\n     }\n-    Sort.quickSort(indexes, values, 0, sampleNum -  1);\n+    Sort.quickSort(indexes, values, 0, sampleNum - 1);\n     SparseDoubleSortedVector addVector2 = new SparseDoubleSortedVector(dim, indexes, values);\n     vector.plusBy(addVector2);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 5.0);\n     }\n \n     SparseDoubleVector addVector3 = new SparseDoubleVector(-1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector3.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector3);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 6.0);\n     }\n \n-    CompSparseDoubleVector clonedVector = (CompSparseDoubleVector)vector.clone();\n-    for(int i = 0; i < indexes.length; i++) {\n+    CompSparseDoubleVector clonedVector = (CompSparseDoubleVector) vector.clone();\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(clonedVector.get(indexes[i]), 6.0);\n     }\n   }\n \n-  private CompSparseDoubleVector initVector(){\n+  private CompSparseDoubleVector initVector() {\n     PartitionKey[] partKeys = new PartitionKey[4];\n-    TDoubleVector [] vectors = new TDoubleVector[4];\n+    TDoubleVector[] vectors = new TDoubleVector[4];\n     long blockCol = dim / 4;\n-    partKeys[0] = new PartitionKey(0, 0, 0, 0 , 0, blockCol);\n-    partKeys[1] = new PartitionKey(0, 0, 0,  blockCol , 0, blockCol * 2);\n-    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2 , 0, blockCol * 3);\n-    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3 , 0, dim);\n+    partKeys[0] = new PartitionKey(0, 0, 0, 0, 0, blockCol);\n+    partKeys[1] = new PartitionKey(0, 0, 0, blockCol, 0, blockCol * 2);\n+    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2, 0, blockCol * 3);\n+    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3, 0, dim);\n \n     vectors[0] = new SparseDoubleVector(dim);\n     vectors[1] = new SparseDoubleVector(dim);\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/9/CompSparseDoubleVectorTest.java\nindex 1e2a05c622e..7b6372223ed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/9/CompSparseDoubleVectorTest.java\n@@ -31,27 +31,27 @@ public class CompSparseDoubleVectorTest {\n   private static final Log LOG = LogFactory.getLog(CompSparseDoubleVectorTest.class);\n   private final int dim = 10000;\n   @Test\n-  public void testBaseOp(){\n+  public void testBaseOp() {\n     CompSparseDoubleVector vector = initVector();\n     HashSet<Integer> indexSet = new HashSet<Integer>();\n     Random r = new Random();\n     int sampleNum = 100;\n     while(true) {\n       indexSet.add(r.nextInt(dim));\n-      if(indexSet.size() >= sampleNum) {\n+      if (indexSet.size() >= sampleNum) {\n         break;\n       }\n     }\n-    int [] indexes = new int[sampleNum];\n+    int[] indexes = new int[sampleNum];\n     int index = 0;\n-    for(int item:indexSet) {\n+    for (int item: indexSet) {\n       indexes[index++] = item;\n     }\n \n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       vector.plusBy(indexes[i], 1.0);\n     }\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 1.0);\n     }\n \n@@ -62,60 +62,60 @@ public class CompSparseDoubleVectorTest {\n     assertEquals(vector.sum(), Double.valueOf(sampleNum) * 2);\n \n     CompSparseDoubleVector addVector = initVector();\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector.plusBy(indexes[i], 1.0);\n     }\n \n     vector.plusBy(addVector);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 3.0);\n     }\n \n     assertEquals(addVector.dot(vector), Double.valueOf(sampleNum) * 3);\n \n     SparseDummyVector addVector1 = new SparseDummyVector(dim);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector1.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 4.0);\n     }\n \n     double [] values = new double[sampleNum];\n-    for(int i = 0; i < values.length; i++) {\n+    for (int i = 0; i < values.length; i++) {\n       values[i] = 1.0;\n     }\n-    Sort.quickSort(indexes, values, 0, sampleNum -  1);\n+    Sort.quickSort(indexes, values, 0, sampleNum - 1);\n     SparseDoubleSortedVector addVector2 = new SparseDoubleSortedVector(dim, indexes, values);\n     vector.plusBy(addVector2);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 5.0);\n     }\n \n     SparseDoubleVector addVector3 = new SparseDoubleVector(-1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector3.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector3);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 6.0);\n     }\n \n     CompSparseDoubleVector clonedVector = (CompSparseDoubleVector)vector.clone();\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(clonedVector.get(indexes[i]), 6.0);\n     }\n   }\n \n-  private CompSparseDoubleVector initVector(){\n+  private CompSparseDoubleVector initVector() {\n     PartitionKey[] partKeys = new PartitionKey[4];\n-    TDoubleVector [] vectors = new TDoubleVector[4];\n+    TDoubleVector[] vectors = new TDoubleVector[4];\n     long blockCol = dim / 4;\n-    partKeys[0] = new PartitionKey(0, 0, 0, 0 , 0, blockCol);\n-    partKeys[1] = new PartitionKey(0, 0, 0,  blockCol , 0, blockCol * 2);\n-    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2 , 0, blockCol * 3);\n-    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3 , 0, dim);\n+    partKeys[0] = new PartitionKey(0, 0, 0, 0, 0, blockCol);\n+    partKeys[1] = new PartitionKey(0, 0, 0, blockCol, 0, blockCol * 2);\n+    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2, 0, blockCol * 3);\n+    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3, 0, dim);\n \n     vectors[0] = new SparseDoubleVector(dim);\n     vectors[1] = new SparseDoubleVector(dim);\n@@ -124,4 +124,4 @@ public class CompSparseDoubleVectorTest {\n \n     return new CompSparseDoubleVector(0, 0, dim, partKeys, vectors);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/9/CompSparseDoubleVectorTest.java\nindex 1e2a05c622e..8c83bb7e4fc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/9/CompSparseDoubleVectorTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/9/CompSparseDoubleVectorTest.java\n@@ -21,107 +21,103 @@ import com.tencent.angel.utils.Sort;\n import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n import org.junit.Test;\n-\n import java.util.HashSet;\n import java.util.Random;\n-\n import static junit.framework.Assert.assertEquals;\n \n public class CompSparseDoubleVectorTest {\n+\n   private static final Log LOG = LogFactory.getLog(CompSparseDoubleVectorTest.class);\n   private final int dim = 10000;\n+\n   @Test\n-  public void testBaseOp(){\n+  public void testBaseOp() {\n     CompSparseDoubleVector vector = initVector();\n     HashSet<Integer> indexSet = new HashSet<Integer>();\n     Random r = new Random();\n     int sampleNum = 100;\n-    while(true) {\n+    while (true) {\n       indexSet.add(r.nextInt(dim));\n-      if(indexSet.size() >= sampleNum) {\n+      if (indexSet.size() >= sampleNum) {\n         break;\n       }\n     }\n-    int [] indexes = new int[sampleNum];\n+\n+    int[] indexes = new int[sampleNum];\n     int index = 0;\n-    for(int item:indexSet) {\n+    for (int item : indexSet) {\n       indexes[index++] = item;\n     }\n \n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       vector.plusBy(indexes[i], 1.0);\n     }\n-    for(int i = 0; i < indexes.length; i++) {\n+\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 1.0);\n     }\n-\n     assertEquals(vector.sum(), Double.valueOf(sampleNum));\n     assertEquals(vector.nonZeroNumber(), sampleNum);\n     assertEquals(vector.squaredNorm(), Double.valueOf(sampleNum));\n     vector.timesBy(2.0);\n     assertEquals(vector.sum(), Double.valueOf(sampleNum) * 2);\n-\n     CompSparseDoubleVector addVector = initVector();\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector.plusBy(indexes[i], 1.0);\n     }\n-\n     vector.plusBy(addVector);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 3.0);\n     }\n-\n     assertEquals(addVector.dot(vector), Double.valueOf(sampleNum) * 3);\n-\n     SparseDummyVector addVector1 = new SparseDummyVector(dim);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector1.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 4.0);\n     }\n \n-    double [] values = new double[sampleNum];\n-    for(int i = 0; i < values.length; i++) {\n+    double[] values = new double[sampleNum];\n+    for (int i = 0; i < values.length; i++) {\n       values[i] = 1.0;\n     }\n-    Sort.quickSort(indexes, values, 0, sampleNum -  1);\n+    Sort.quickSort(indexes, values, 0, sampleNum - 1);\n     SparseDoubleSortedVector addVector2 = new SparseDoubleSortedVector(dim, indexes, values);\n     vector.plusBy(addVector2);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 5.0);\n     }\n \n     SparseDoubleVector addVector3 = new SparseDoubleVector(-1);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       addVector3.set(indexes[i], 1.0);\n     }\n     vector.plusBy(addVector3);\n-    for(int i = 0; i < indexes.length; i++) {\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(vector.get(indexes[i]), 6.0);\n     }\n \n-    CompSparseDoubleVector clonedVector = (CompSparseDoubleVector)vector.clone();\n-    for(int i = 0; i < indexes.length; i++) {\n+    CompSparseDoubleVector clonedVector = (CompSparseDoubleVector) vector.clone();\n+    for (int i = 0; i < indexes.length; i++) {\n       assertEquals(clonedVector.get(indexes[i]), 6.0);\n     }\n   }\n \n-  private CompSparseDoubleVector initVector(){\n+  private CompSparseDoubleVector initVector() {\n     PartitionKey[] partKeys = new PartitionKey[4];\n-    TDoubleVector [] vectors = new TDoubleVector[4];\n+    TDoubleVector[] vectors = new TDoubleVector[4];\n     long blockCol = dim / 4;\n-    partKeys[0] = new PartitionKey(0, 0, 0, 0 , 0, blockCol);\n-    partKeys[1] = new PartitionKey(0, 0, 0,  blockCol , 0, blockCol * 2);\n-    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2 , 0, blockCol * 3);\n-    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3 , 0, dim);\n-\n+    partKeys[0] = new PartitionKey(0, 0, 0, 0, 0, blockCol);\n+    partKeys[1] = new PartitionKey(0, 0, 0, blockCol, 0, blockCol * 2);\n+    partKeys[2] = new PartitionKey(0, 0, 0, blockCol * 2, 0, blockCol * 3);\n+    partKeys[3] = new PartitionKey(0, 0, 0, blockCol * 3, 0, dim);\n     vectors[0] = new SparseDoubleVector(dim);\n     vectors[1] = new SparseDoubleVector(dim);\n     vectors[2] = new SparseDoubleVector(dim);\n     vectors[3] = new SparseDoubleVector(dim);\n-\n     return new CompSparseDoubleVector(0, 0, dim, partKeys, vectors);\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 40
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

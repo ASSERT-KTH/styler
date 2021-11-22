@@ -1,0 +1,98 @@
+{
+    "project_name": "Roboy-roboy_dialog",
+    "error_id": "25",
+    "information": {
+        "errors": [
+            {
+                "line": "26",
+                "severity": "error",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": " * Tracks rule usage via a citation system. A rule is cited when a user makes\n * use of that rule in a derivation.\n * \n * @author sidaw\n */\npublic class CitationTracker {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/25/CitationTracker.java\nindex 4151002c83c..fec96a2c3a9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/25/CitationTracker.java\n@@ -23,144 +23,148 @@ import edu.stanford.nlp.sempre.roboy.utils.logging.LogInfoToggle;\n /**\n  * Tracks rule usage via a citation system. A rule is cited when a user makes\n  * use of that rule in a derivation.\n- * \n+ *\n  * @author sidaw\n  */\n public class CitationTracker {\n-  public static final String IDPrefix = \"id:\";\n-  public static final String HeadPrefix = \"head:\";\n-  public static final String BodyPrefix = \"body:\";\n-  String uid = \"undefined\";\n-  Example ex;\n-\n-  public CitationTracker(String uid, Example ex) {\n-    this.uid = uid;\n-    this.ex = ex;\n-  }\n-\n-  public synchronized void citeRule(Rule rule) {\n-    writeLog(rule);\n-    writeSummary(rule);\n-  }\n-\n-  // The summary is ONE SINGLE line of json, has cite, self, and head\n-  private synchronized void writeSummary(Rule rule) {\n-    String author = getAuthor(rule);\n-    String summaryPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(getHead(rule)) + \".json\")\n-        .toString();\n-    File file = new File(summaryPath);\n-    file.getParentFile().mkdirs();\n-\n-    Map<String, Object> summary;\n-    try {\n-      String line = IOUtils.readLineEasy(summaryPath);\n-      if (line == null)\n-        summary = defaultMap(rule);\n-      else\n-        summary = Json.readMapHard(line);\n-\n-      boolean selfcite = author.equals(uid);\n-      if (!selfcite) {\n-        summary.put(\"cite\", (Integer) summary.get(\"cite\") + 1);\n-        rule.source.cite++;\n-      } else {\n-        summary.put(\"self\", (Integer) summary.get(\"self\") + 1);\n-        rule.source.self++;\n-      }\n-\n-    } catch (Exception e) {\n-      summary = defaultMap(rule);\n-      e.printStackTrace();\n+    public static final String IDPrefix = \"id:\";\n+    public static final String HeadPrefix = \"head:\";\n+    public static final String BodyPrefix = \"body:\";\n+    String uid = \"undefined\";\n+    Example ex;\n+\n+    public CitationTracker(String uid, Example ex) {\n+        this.uid = uid;\n+        this.ex = ex;\n     }\n-    String jsonStr = Json.writeValueAsStringHard(summary);\n-    PrintWriter out = IOUtils.openOutHard(file);\n-    out.println(jsonStr);\n-    out.close();\n-  }\n-\n-  private Map<String, Object> defaultMap(Rule rule) {\n-    Map<String, Object> summary = new LinkedHashMap<>();\n-    summary.put(\"cite\", 0);\n-    summary.put(\"self\", 0);\n-    summary.put(\"private\", true);\n-    summary.put(\"head\", getHead(rule));\n-    summary.put(\"body\", getBody(rule));\n-    return summary;\n-  }\n-\n-  private synchronized void writeLog(Rule rule) {\n-    String head = getHead(rule);\n-    String author = getAuthor(rule);\n-    String logPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(head) + \".json.log\")\n-        .toString();\n-    File file = new File(logPath);\n-    file.getParentFile().mkdirs();\n-\n-    Map<String, Object> jsonMap = new LinkedHashMap<>();\n-    jsonMap.put(\"user\", this.uid);\n-    // jsonMap.put(\"body\", decode(getBody(rule)));\n-    jsonMap.put(\"time\", LocalDateTime.now().toString());\n-    jsonMap.put(\"tokens\", ex.getTokens());\n-    // jsonMap.put(\"head\", decode(headCode));\n-    jsonMap.put(\"author\", author);\n-\n-    String jsonStr = Json.writeValueAsStringHard(jsonMap);\n-    PrintWriter out = IOUtils.openOutAppendHard(file);\n-    out.println(jsonStr);\n-    out.close();\n-  }\n-\n-  public void citeAll(Derivation deriv) {\n-    if (deriv.rule != null && deriv.rule.isInduced()) {\n-      LogInfoToggle.logs(\"CitationTracker: user %s is citing rule: %s\", this.uid, deriv.rule.toString());\n-      citeRule(deriv.rule);\n+\n+    public synchronized void citeRule(Rule rule) {\n+        writeLog(rule);\n+        writeSummary(rule);\n+    }\n+\n+    // The summary is ONE SINGLE line of json, has cite, self, and head\n+    private synchronized void writeSummary(Rule rule) {\n+        String author = getAuthor(rule);\n+        String summaryPath =\n+            Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(getHead(rule)) + \".json\")\n+                .toString();\n+        File file = new File(summaryPath);\n+        file.getParentFile().mkdirs();\n+\n+        Map<String, Object> summary;\n+        try {\n+            String line = IOUtils.readLineEasy(summaryPath);\n+            if (line == null) {\n+                summary = defaultMap(rule);\n+            } else {\n+                summary = Json.readMapHard(line);\n+            }\n+\n+            boolean selfcite = author.equals(uid);\n+            if (!selfcite) {\n+                summary.put(\"cite\", (Integer) summary.get(\"cite\") + 1);\n+                rule.source.cite++;\n+            } else {\n+                summary.put(\"self\", (Integer) summary.get(\"self\") + 1);\n+                rule.source.self++;\n+            }\n+\n+        } catch (Exception e) {\n+            summary = defaultMap(rule);\n+            e.printStackTrace();\n+        }\n+        String jsonStr = Json.writeValueAsStringHard(summary);\n+        PrintWriter out = IOUtils.openOutHard(file);\n+        out.println(jsonStr);\n+        out.close();\n     }\n \n-    if (deriv.children == null)\n-      return;\n-    for (Derivation d : deriv.children) {\n-      citeAll(d);\n+    private Map<String, Object> defaultMap(Rule rule) {\n+        Map<String, Object> summary = new LinkedHashMap<>();\n+        summary.put(\"cite\", 0);\n+        summary.put(\"self\", 0);\n+        summary.put(\"private\", true);\n+        summary.put(\"head\", getHead(rule));\n+        summary.put(\"body\", getBody(rule));\n+        return summary;\n     }\n-  }\n-\n-  static String getAuthor(Rule rule) {\n-    try {\n-      String author = rule.source.uid;\n-      if (Strings.isNullOrEmpty(author))\n-        return \"__noname__\";\n-      else\n-        return author;\n-    } catch (Exception e) {\n-      e.printStackTrace();\n-      return \"__noname__\";\n+\n+    private synchronized void writeLog(Rule rule) {\n+        String head = getHead(rule);\n+        String author = getAuthor(rule);\n+        String logPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(head) + \".json.log\")\n+            .toString();\n+        File file = new File(logPath);\n+        file.getParentFile().mkdirs();\n+\n+        Map<String, Object> jsonMap = new LinkedHashMap<>();\n+        jsonMap.put(\"user\", this.uid);\n+        // jsonMap.put(\"body\", decode(getBody(rule)));\n+        jsonMap.put(\"time\", LocalDateTime.now().toString());\n+        jsonMap.put(\"tokens\", ex.getTokens());\n+        // jsonMap.put(\"head\", decode(headCode));\n+        jsonMap.put(\"author\", author);\n+\n+        String jsonStr = Json.writeValueAsStringHard(jsonMap);\n+        PrintWriter out = IOUtils.openOutAppendHard(file);\n+        out.println(jsonStr);\n+        out.close();\n     }\n-  }\n \n-  static String getHead(Rule rule) {\n-    return rule.source.head;\n-  }\n+    public void citeAll(Derivation deriv) {\n+        if (deriv.rule != null && deriv.rule.isInduced()) {\n+            LogInfoToggle.logs(\"CitationTracker: user %s is citing rule: %s\", this.uid, deriv.rule.toString());\n+            citeRule(deriv.rule);\n+        }\n+\n+        if (deriv.children == null) {\n+            return;\n+        }\n+        for (Derivation d : deriv.children) {\n+            citeAll(d);\n+        }\n+    }\n \n-  static String getBody(Rule rule) {\n-    return String.join(\". \", rule.source.body);\n-  }\n+    static String getAuthor(Rule rule) {\n+        try {\n+            String author = rule.source.uid;\n+            if (Strings.isNullOrEmpty(author)) {\n+                return \"__noname__\";\n+            } else {\n+                return author;\n+            }\n+        } catch (Exception e) {\n+            e.printStackTrace();\n+            return \"__noname__\";\n+        }\n+    }\n \n-  public static String encode(String utt) {\n-    try {\n-      return URLEncoder.encode(utt, \"UTF-8\");\n-    } catch (UnsupportedEncodingException e) {\n-      e.printStackTrace();\n+    static String getHead(Rule rule) {\n+        return rule.source.head;\n     }\n-    return Base64.getUrlEncoder().encodeToString(utt.getBytes());\n-    // return Base64.getUrlEncoder().encodeToString(utt.getBytes());\n-  }\n-\n-  public static String decode(String code) {\n-    try {\n-      return URLDecoder.decode(code, \"UTF-8\");\n-    } catch (UnsupportedEncodingException e) {\n-      e.printStackTrace();\n+\n+    static String getBody(Rule rule) {\n+        return String.join(\". \", rule.source.body);\n+    }\n+\n+    public static String encode(String utt) {\n+        try {\n+            return URLEncoder.encode(utt, \"UTF-8\");\n+        } catch (UnsupportedEncodingException e) {\n+            e.printStackTrace();\n+        }\n+        return Base64.getUrlEncoder().encodeToString(utt.getBytes());\n+        // return Base64.getUrlEncoder().encodeToString(utt.getBytes());\n+    }\n+\n+    public static String decode(String code) {\n+        try {\n+            return URLDecoder.decode(code, \"UTF-8\");\n+        } catch (UnsupportedEncodingException e) {\n+            e.printStackTrace();\n+        }\n+        return Base64.getUrlDecoder().decode(code).toString();\n     }\n-    return Base64.getUrlDecoder().decode(code).toString();\n-  }\n \n }\n",
+            "diff_size": 172
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/naturalize/25/CitationTracker.java\nindex 4151002c83c..24a872bbc29 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/naturalize/25/CitationTracker.java\n@@ -163,4 +163,4 @@ public class CitationTracker {\n     return Base64.getUrlDecoder().decode(code).toString();\n   }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/25/CitationTracker.java\nindex 4151002c83c..adb5c34b937 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/25/CitationTracker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/25/CitationTracker.java\n@@ -10,9 +10,7 @@ import java.time.LocalDateTime;\n import java.util.Base64;\n import java.util.LinkedHashMap;\n import java.util.Map;\n-\n import com.google.common.base.Strings;\n-\n import edu.stanford.nlp.sempre.Derivation;\n import edu.stanford.nlp.sempre.Example;\n import edu.stanford.nlp.sempre.Json;\n@@ -26,9 +24,13 @@ import edu.stanford.nlp.sempre.roboy.utils.logging.LogInfoToggle;\n  * \n  * @author sidaw\n  */\n+\n+\n public class CitationTracker {\n   public static final String IDPrefix = \"id:\";\n+\n   public static final String HeadPrefix = \"head:\";\n+\n   public static final String BodyPrefix = \"body:\";\n   String uid = \"undefined\";\n   Example ex;\n@@ -44,10 +46,10 @@ public class CitationTracker {\n   }\n \n   // The summary is ONE SINGLE line of json, has cite, self, and head\n+\n   private synchronized void writeSummary(Rule rule) {\n     String author = getAuthor(rule);\n-    String summaryPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(getHead(rule)) + \".json\")\n-        .toString();\n+    String summaryPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(getHead(rule)) + \".json\").toString();\n     File file = new File(summaryPath);\n     file.getParentFile().mkdirs();\n \n@@ -67,11 +69,11 @@ public class CitationTracker {\n         summary.put(\"self\", (Integer) summary.get(\"self\") + 1);\n         rule.source.self++;\n       }\n-\n     } catch (Exception e) {\n       summary = defaultMap(rule);\n       e.printStackTrace();\n     }\n+\n     String jsonStr = Json.writeValueAsStringHard(summary);\n     PrintWriter out = IOUtils.openOutHard(file);\n     out.println(jsonStr);\n@@ -91,8 +93,7 @@ public class CitationTracker {\n   private synchronized void writeLog(Rule rule) {\n     String head = getHead(rule);\n     String author = getAuthor(rule);\n-    String logPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(head) + \".json.log\")\n-        .toString();\n+    String logPath = Paths.get(InteractiveUtils.opts.citationPath, encode(author), encode(head) + \".json.log\").toString();\n     File file = new File(logPath);\n     file.getParentFile().mkdirs();\n \n@@ -160,7 +161,7 @@ public class CitationTracker {\n     } catch (UnsupportedEncodingException e) {\n       e.printStackTrace();\n     }\n-    return Base64.getUrlDecoder().decode(code).toString();\n+    return Base64.getUrlDecoder().decode(code)\n+                                 .toString();\n   }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

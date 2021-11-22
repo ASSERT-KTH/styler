@@ -1,0 +1,185 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1163",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "79",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "67",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "80",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "117",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "117",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "117",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "160",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "160",
+                    "column": "56",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1163/GetServersProcedureForSingleDC.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1163/GetServersProcedureForSingleDC.java\nindex 371706837fc..1c55e1640cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1163/GetServersProcedureForSingleDC.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1163/GetServersProcedureForSingleDC.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.routing.load_balancing.procedure;\n \n import java.util.Collection;\n@@ -57,114 +58,113 @@ import static org.neo4j.causalclustering.routing.load_balancing.procedure.Proced\n \n /**\n  * Returns endpoints and their capabilities.\n- *\n+ * <p>\n  * GetServersV2 extends upon V1 by allowing a client context consisting of\n  * key-value pairs to be supplied to and used by the concrete load\n  * balancing strategies.\n  */\n public class GetServersProcedureForSingleDC implements CallableProcedure\n {\n-    private final String DESCRIPTION = \"Returns cluster endpoints and their capabilities for single data center setup.\";\n-\n-    private final ProcedureSignature procedureSignature =\n-            ProcedureSignature.procedureSignature( GET_SERVERS_V2.fullyQualifiedProcedureName() )\n-                    .in( CONTEXT.parameterName(), Neo4jTypes.NTMap )\n-                    .out( TTL.parameterName(), Neo4jTypes.NTInteger )\n-                    .out( SERVERS.parameterName(), Neo4jTypes.NTList( Neo4jTypes.NTMap ) )\n-                    .description( DESCRIPTION )\n-                    .build();\n-\n-    private final TopologyService topologyService;\n-    private final LeaderLocator leaderLocator;\n-    private final Config config;\n-    private final Log log;\n-\n-    public GetServersProcedureForSingleDC( TopologyService topologyService, LeaderLocator leaderLocator,\n-            Config config, LogProvider logProvider )\n-    {\n-        this.topologyService = topologyService;\n-        this.leaderLocator = leaderLocator;\n-        this.config = config;\n-        this.log = logProvider.getLog( getClass() );\n-    }\n-\n-    @Override\n-    public ProcedureSignature signature()\n+  private final String DESCRIPTION = \"Returns cluster endpoints and their capabilities for single data center setup.\";\n+\n+  private final ProcedureSignature procedureSignature =\n+      ProcedureSignature.procedureSignature(GET_SERVERS_V2.fullyQualifiedProcedureName())\n+          .in(CONTEXT.parameterName(), Neo4jTypes.NTMap)\n+          .out(TTL.parameterName(), Neo4jTypes.NTInteger)\n+          .out(SERVERS.parameterName(), Neo4jTypes.NTList(Neo4jTypes.NTMap))\n+          .description(DESCRIPTION)\n+          .build();\n+\n+  private final TopologyService topologyService;\n+  private final LeaderLocator leaderLocator;\n+  private final Config config;\n+  private final Log log;\n+\n+  public GetServersProcedureForSingleDC(TopologyService topologyService, LeaderLocator leaderLocator,\n+                                        Config config, LogProvider logProvider)\n+  {\n+    this.topologyService = topologyService;\n+    this.leaderLocator = leaderLocator;\n+    this.config = config;\n+    this.log = logProvider.getLog(getClass());\n+  }\n+\n+  @Override\n+  public ProcedureSignature signature()\n+  {\n+    return procedureSignature;\n+  }\n+\n+  @Override\n+  public RawIterator<Object[], ProcedureException> apply(\n+      Context ctx, Object[] input, ResourceTracker resourceTracker)\n+  {\n+    List<Endpoint> routeEndpoints = routeEndpoints();\n+    List<Endpoint> writeEndpoints = writeEndpoints();\n+    List<Endpoint> readEndpoints = readEndpoints();\n+\n+    return RawIterator.<Object[], ProcedureException>of(ResultFormatV1.build(\n+        new LoadBalancingResult(routeEndpoints, writeEndpoints, readEndpoints,\n+            config.get(CausalClusteringSettings.cluster_routing_ttl).toMillis())));\n+  }\n+\n+  private Optional<AdvertisedSocketAddress> leaderBoltAddress()\n+  {\n+    MemberId leader;\n+    try\n     {\n-        return procedureSignature;\n-    }\n-\n-    @Override\n-    public RawIterator<Object[],ProcedureException> apply(\n-            Context ctx, Object[] input, ResourceTracker resourceTracker )\n+      leader = leaderLocator.getLeader();\n+    } catch (NoLeaderFoundException e)\n     {\n-        List<Endpoint> routeEndpoints = routeEndpoints();\n-        List<Endpoint> writeEndpoints = writeEndpoints();\n-        List<Endpoint> readEndpoints = readEndpoints();\n-\n-        return RawIterator.<Object[],ProcedureException>of( ResultFormatV1.build(\n-                new LoadBalancingResult( routeEndpoints, writeEndpoints, readEndpoints,\n-                        config.get( CausalClusteringSettings.cluster_routing_ttl ).toMillis() ) ) );\n+      log.debug(\"No leader server found. This can happen during a leader switch. No write end points available\");\n+      return Optional.empty();\n     }\n \n-    private Optional<AdvertisedSocketAddress> leaderBoltAddress()\n+    return topologyService.localCoreServers().find(leader).map(extractBoltAddress());\n+  }\n+\n+  private List<Endpoint> routeEndpoints()\n+  {\n+    Stream<AdvertisedSocketAddress> routers = topologyService.localCoreServers()\n+        .members().values().stream().map(extractBoltAddress());\n+    List<Endpoint> routeEndpoints = routers.map(Endpoint::route).collect(toList());\n+    Collections.shuffle(routeEndpoints);\n+    return routeEndpoints;\n+  }\n+\n+  private List<Endpoint> writeEndpoints()\n+  {\n+    return asList(leaderBoltAddress().map(Endpoint::write));\n+  }\n+\n+  private List<Endpoint> readEndpoints()\n+  {\n+    List<AdvertisedSocketAddress> readReplicas = topologyService.localReadReplicas().allMemberInfo().stream()\n+        .map(extractBoltAddress()).collect(toList());\n+    boolean addFollowers = readReplicas.isEmpty() || config.get(cluster_allow_reads_on_followers);\n+    Stream<AdvertisedSocketAddress> readCore = addFollowers ? coreReadEndPoints() : Stream.empty();\n+    List<Endpoint> readEndPoints =\n+        concat(readReplicas.stream(), readCore).map(Endpoint::read).collect(toList());\n+    Collections.shuffle(readEndPoints);\n+    return readEndPoints;\n+  }\n+\n+  private Stream<AdvertisedSocketAddress> coreReadEndPoints()\n+  {\n+    Optional<AdvertisedSocketAddress> leader = leaderBoltAddress();\n+    Collection<CoreServerInfo> coreServerInfo = topologyService.localCoreServers().members().values();\n+    Stream<AdvertisedSocketAddress> boltAddresses = topologyService.localCoreServers()\n+        .members().values().stream().map(extractBoltAddress());\n+\n+    // if the leader is present and it is not alone filter it out from the read end points\n+    if (leader.isPresent() && coreServerInfo.size() > 1)\n     {\n-        MemberId leader;\n-        try\n-        {\n-            leader = leaderLocator.getLeader();\n-        }\n-        catch ( NoLeaderFoundException e )\n-        {\n-            log.debug( \"No leader server found. This can happen during a leader switch. No write end points available\" );\n-            return Optional.empty();\n-        }\n-\n-        return topologyService.localCoreServers().find( leader ).map( extractBoltAddress() );\n+      AdvertisedSocketAddress advertisedSocketAddress = leader.get();\n+      return boltAddresses.filter(address -> !advertisedSocketAddress.equals(address));\n     }\n \n-    private List<Endpoint> routeEndpoints()\n-    {\n-        Stream<AdvertisedSocketAddress> routers = topologyService.localCoreServers()\n-                .members().values().stream().map( extractBoltAddress() );\n-        List<Endpoint> routeEndpoints = routers.map( Endpoint::route ).collect( toList() );\n-        Collections.shuffle( routeEndpoints );\n-        return routeEndpoints;\n-    }\n-\n-    private List<Endpoint> writeEndpoints()\n-    {\n-        return asList( leaderBoltAddress().map( Endpoint::write ) );\n-    }\n-\n-    private List<Endpoint> readEndpoints()\n-    {\n-        List<AdvertisedSocketAddress> readReplicas = topologyService.localReadReplicas().allMemberInfo().stream()\n-                .map( extractBoltAddress() ).collect( toList() );\n-        boolean addFollowers = readReplicas.isEmpty() || config.get( cluster_allow_reads_on_followers );\n-        Stream<AdvertisedSocketAddress> readCore = addFollowers ? coreReadEndPoints() : Stream.empty();\n-        List<Endpoint> readEndPoints =\n-                concat( readReplicas.stream(), readCore ).map( Endpoint::read ).collect( toList() );\n-        Collections.shuffle( readEndPoints );\n-        return readEndPoints;\n-    }\n-\n-    private Stream<AdvertisedSocketAddress> coreReadEndPoints()\n-    {\n-        Optional<AdvertisedSocketAddress> leader = leaderBoltAddress();\n-        Collection<CoreServerInfo> coreServerInfo = topologyService.localCoreServers().members().values();\n-        Stream<AdvertisedSocketAddress> boltAddresses = topologyService.localCoreServers()\n-                .members().values().stream().map( extractBoltAddress() );\n-\n-        // if the leader is present and it is not alone filter it out from the read end points\n-        if ( leader.isPresent() && coreServerInfo.size() > 1 )\n-        {\n-            AdvertisedSocketAddress advertisedSocketAddress = leader.get();\n-            return boltAddresses.filter( address -> !advertisedSocketAddress.equals( address ) );\n-        }\n-\n-        // if there is only the leader return it as read end point\n-        // or if we cannot locate the leader return all cores as read end points\n-        return boltAddresses;\n-    }\n+    // if there is only the leader return it as read end point\n+    // or if we cannot locate the leader return all cores as read end points\n+    return boltAddresses;\n+  }\n }\n",
+            "diff_size": 156
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 333).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "96",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "'>' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "131",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 162).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1163/GetServersProcedureForSingleDC.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1163/GetServersProcedureForSingleDC.java\nindex 371706837fc..71f7987619d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1163/GetServersProcedureForSingleDC.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1163/GetServersProcedureForSingleDC.java\n@@ -65,16 +65,9 @@ import static org.neo4j.causalclustering.routing.load_balancing.procedure.Proced\n public class GetServersProcedureForSingleDC implements CallableProcedure\n {\n     private final String DESCRIPTION = \"Returns cluster endpoints and their capabilities for single data center setup.\";\n-\n-    private final ProcedureSignature procedureSignature =\n-            ProcedureSignature.procedureSignature( GET_SERVERS_V2.fullyQualifiedProcedureName() )\n-                    .in( CONTEXT.parameterName(), Neo4jTypes.NTMap )\n-                    .out( TTL.parameterName(), Neo4jTypes.NTInteger )\n-                    .out( SERVERS.parameterName(), Neo4jTypes.NTList( Neo4jTypes.NTMap ) )\n-                    .description( DESCRIPTION )\n+private final ProcedureSignature procedureSignature = ProcedureSignature.procedureSignature( GET_SERVERS_V2.fullyQualifiedProcedureName() ).in( CONTEXT.parameterName(), Neo4jTypes.NTMap ).out( TTL.parameterName(), Neo4jTypes.NTInteger ).out( SERVERS.parameterName(), Neo4jTypes.NTList( Neo4jTypes.NTMap ) ).description( DESCRIPTION )\n                     .build();\n-\n-    private final TopologyService topologyService;\n+private final TopologyService topologyService;\n     private final LeaderLocator leaderLocator;\n     private final Config config;\n     private final Log log;\n@@ -95,15 +88,12 @@ public class GetServersProcedureForSingleDC implements CallableProcedure\n     }\n \n     @Override\n-    public RawIterator<Object[],ProcedureException> apply(\n-            Context ctx, Object[] input, ResourceTracker resourceTracker )\n+    public RawIterator<Object[],ProcedureException> apply( Context ctx, Object[] input, ResourceTracker resourceTracker )\n     {\n         List<Endpoint> routeEndpoints = routeEndpoints();\n         List<Endpoint> writeEndpoints = writeEndpoints();\n         List<Endpoint> readEndpoints = readEndpoints();\n-\n-        return RawIterator.<Object[],ProcedureException>of( ResultFormatV1.build(\n-                new LoadBalancingResult( routeEndpoints, writeEndpoints, readEndpoints,\n+return RawIterator.<Object[],ProcedureException> of( ResultFormatV1.build( new LoadBalancingResult( routeEndpoints, writeEndpoints, readEndpoints,\n                         config.get( CausalClusteringSettings.cluster_routing_ttl ).toMillis() ) ) );\n     }\n \n@@ -125,9 +115,8 @@ public class GetServersProcedureForSingleDC implements CallableProcedure\n \n     private List<Endpoint> routeEndpoints()\n     {\n-        Stream<AdvertisedSocketAddress> routers = topologyService.localCoreServers()\n-                .members().values().stream().map( extractBoltAddress() );\n-        List<Endpoint> routeEndpoints = routers.map( Endpoint::route ).collect( toList() );\n+        Stream<AdvertisedSocketAddress> routers = topologyService.localCoreServers().members().values().stream().map( extractBoltAddress() );\n+List<Endpoint> routeEndpoints = routers.map( Endpoint::route ).collect( toList() );\n         Collections.shuffle( routeEndpoints );\n         return routeEndpoints;\n     }\n@@ -139,13 +128,11 @@ public class GetServersProcedureForSingleDC implements CallableProcedure\n \n     private List<Endpoint> readEndpoints()\n     {\n-        List<AdvertisedSocketAddress> readReplicas = topologyService.localReadReplicas().allMemberInfo().stream()\n-                .map( extractBoltAddress() ).collect( toList() );\n-        boolean addFollowers = readReplicas.isEmpty() || config.get( cluster_allow_reads_on_followers );\n+        List<AdvertisedSocketAddress> readReplicas = topologyService.localReadReplicas().allMemberInfo().stream().map( extractBoltAddress() ).collect( toList() );\n+    boolean addFollowers = readReplicas.isEmpty() || config.get( cluster_allow_reads_on_followers );\n         Stream<AdvertisedSocketAddress> readCore = addFollowers ? coreReadEndPoints() : Stream.empty();\n-        List<Endpoint> readEndPoints =\n-                concat( readReplicas.stream(), readCore ).map( Endpoint::read ).collect( toList() );\n-        Collections.shuffle( readEndPoints );\n+        List<Endpoint> readEndPoints = concat( readReplicas.stream(), readCore ).map( Endpoint::read ).collect( toList() );\n+Collections.shuffle( readEndPoints );\n         return readEndPoints;\n     }\n \n@@ -153,10 +140,8 @@ public class GetServersProcedureForSingleDC implements CallableProcedure\n     {\n         Optional<AdvertisedSocketAddress> leader = leaderBoltAddress();\n         Collection<CoreServerInfo> coreServerInfo = topologyService.localCoreServers().members().values();\n-        Stream<AdvertisedSocketAddress> boltAddresses = topologyService.localCoreServers()\n-                .members().values().stream().map( extractBoltAddress() );\n-\n-        // if the leader is present and it is not alone filter it out from the read end points\n+        Stream<AdvertisedSocketAddress> boltAddresses = topologyService.localCoreServers().members().values().stream().map( extractBoltAddress() );\n+    // if the leader is present and it is not alone filter it out from the read end points\n         if ( leader.isPresent() && coreServerInfo.size() > 1 )\n         {\n             AdvertisedSocketAddress advertisedSocketAddress = leader.get();\n@@ -167,4 +152,4 @@ public class GetServersProcedureForSingleDC implements CallableProcedure\n         // or if we cannot locate the leader return all cores as read end points\n         return boltAddresses;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 28
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

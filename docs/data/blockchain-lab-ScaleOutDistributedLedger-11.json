@@ -1,0 +1,2300 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "11",
+    "information": {
+        "errors": [
+            {
+                "line": "28",
+                "column": "9",
+                "severity": "warning",
+                "message": "'if' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\t\tthis.chain = chain;\n\t\tthis.updates = updates;\n\t\tif(this.updates == null) this.updates = new ArrayList<>();\n\t}\n\t\n\t/**",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "28",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/11/ChainView.java\nindex 471c862e580..4569f9504cc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/11/ChainView.java\n@@ -6,299 +6,288 @@ import java.util.ListIterator;\n \n /**\n  * Class which provides a view of a chain.\n- * \n+ *\n  * <p>NOTE: this implementation assumes that a chain is append only.\n  */\n public class ChainView implements Iterable<Block> {\n \n-\t//TODO If the chain is updated after validation, the validation needs to be done again. if (valid) then valid = null;\n-\tprivate Chain chain;\n-\tprivate List<Block> updates;\n-\tprivate Boolean valid;\n-\t\n-\t/**\n-\t * @param chain\n-\t * \t\tthe chain\n-\t * @param updates\n-\t * \t\tthe blocks of this chain that were sent with the proof\n-\t */\n-\tpublic ChainView(Chain chain, List<Block> updates) {\n-\t\tthis.chain = chain;\n-\t\tthis.updates = updates;\n-\t\tif(this.updates == null) this.updates = new ArrayList<>();\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ttrue if this view is valid, false otherwise\n-\t */\n-\tpublic boolean isValid() {\n-\t\tif (this.valid != null) return this.valid.booleanValue();\n-\t\t\n-\t\treturn checkIntegrity();\n-\t}\n-\t\n-\t/**\n-\t * If this ChainView was previously marked as valid, then it's validation will be cleared.\n-\t * <br><b>A ChainView that was previously marked as invalid will remain invalid.</b>\n-\t * \n-\t * <p>This method needs to be called if the chain is updated after validation.\n-\t */\n-\tpublic void resetValidation() {\n-\t\tif (this.valid != null && this.valid) {\n-\t\t\tthis.valid = null;\n-\t\t}\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ttrue if this ChainView is either invalid or doesn't contain any updates,\n-\t * \t\tfalse otherwise\n-\t */\n-\tpublic boolean isRedundant() {\n-\t\treturn !isValid() || updates.isEmpty();\n-\t}\n-\t\n-\t/**\n-\t * Checks the integrity of this chain view.\n-\t * \n-\t * <p>If this method returns true, that means that the current state of the chain combined with\n-\t * the set of updates is consistent and that there are no gaps in the block numbers.\n-\t * \n-\t * <p>Any overlapping parts are first checked to be consistent and are then removed.\n-\t * \n-\t * @return\n-\t * \t\ttrue if this ChainView is valid, false otherwise\n-\t */\n-\tprivate boolean checkIntegrity() {\n-\t\t//No updates --> valid\n-\t\tif (updates.isEmpty()) {\n-\t\t\tthis.valid = true;\n-\t\t\treturn true;\n-\t\t}\n-\t\t\n-\t\t//If we had no blocks, then we only need to check for gaps\n-\t\tList<Block> blocks = chain.getBlocks();\n-\t\tint firstUpdateNumber = updates.get(0).getNumber();\n-\t\tif (blocks.isEmpty()) {\n-\t\t\treturn checkNoGaps(1, firstUpdateNumber);\n-\t\t}\n-\t\t\n-\t\tint lastOwnNumber = blocks.get(blocks.size() - 1).getNumber();\n-\t\tif (firstUpdateNumber - lastOwnNumber > 1) {\n-\t\t\t//We are missing blocks between what we know and what we were sent! Can never happen with an honest node.\n-\t\t\tthis.valid = false;\n-\t\t\treturn false;\n-\t\t} else if (lastOwnNumber >= firstUpdateNumber) {\n-\t\t\t//There is overlap, check if exactly matches our view\n-\t\t\t//At the same time, we will remove the overlapping elements\n-\t\t\tint overlap = lastOwnNumber + 1 - firstUpdateNumber;\n-\t\t\tint baseI = blocks.size() - overlap;\n-\t\t\tfor (int i = 0; i < overlap && !updates.isEmpty(); i++) {\n-\t\t\t\tBlock ownBlock = blocks.get(baseI + i);\n-\t\t\t\tBlock updatedBlock = updates.get(0);\n-\t\t\t\t\n-\t\t\t\t//TODO we might need a special equality check\n-\t\t\t\tif (!ownBlock.equals(updatedBlock)) {\n-\t\t\t\t\tthis.valid = false;\n-\t\t\t\t\treturn false;\n-\t\t\t\t}\n-\t\t\t\t\n-\t\t\t\tupdates.remove(0);\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn checkNoGaps(0, lastOwnNumber);\n-\t\t} else {\n-\t\t\t//The first updated block number follows directly after the last block we knew about.\n-\t\t\treturn checkNoGaps(0, lastOwnNumber);\n-\t\t}\n-\t}\n-\t\n-\t/**\n-\t * Checks that there are no gaps between the blocks received (updates).\n-\t * This method changes this.valid to either true or false.\n-\t * \n-\t * @param startIndex\n-\t * \t\tthe index to start checking\n-\t * @param previousNr\n-\t * \t\tthe number of the previous block\n-\t * \n-\t * @return\n-\t * \t\ttrue if there are no gaps, false otherwise\n-\t */\n-\tprivate boolean checkNoGaps(int startIndex, int previousNr) {\n-\t\tfor (int i = startIndex; i < updates.size(); i++) {\n-\t\t\tif (updates.get(i).getNumber() - previousNr != 1) {\n-\t\t\t\tthis.valid = false;\n-\t\t\t\treturn false;\n-\t\t\t}\n-\t\t\tpreviousNr++;\n-\t\t}\n-\t\t\n-\t\tthis.valid = true;\n-\t\treturn true;\n-\t}\n-\t\n-\t/**\n-\t * @param number\n-\t * \t\tthe number\n-\t * \n-\t * @return\n-\t * \t\tthe block with the given number\n-\t * \n-\t * @throws IndexOutOfBoundsException\n-\t * \t\tIf the block with the given number does not exist (yet).\n-\t * @throws IllegalStateException\n-\t * \t\tIf this ChainView is invalid and the block with the given number is in the invalid part\n-\t * \t\tof this ChainView.\n-\t */\n-\tpublic Block getBlock(int number) {\n-\t\tif (number < chain.getBlocks().size()) {\n-\t\t\treturn chain.getBlocks().get(number);\n-\t\t} else if (isValid()) {\n-\t\t\tint index = number - chain.getBlocks().size();\n-\t\t\treturn updates.get(index);\n-\t\t} else {\n-\t\t\tthrow new IllegalStateException(\n-\t\t\t\t\t\"This ChainView is invalid. The block with number \" + number + \" is not in the valid part of this ChainView.\");\n-\t\t}\n-\t}\n-\t\n-\t@Override\n-\tpublic ListIterator<Block> iterator() {\n-\t\treturn listIterator();\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ta ListIterator over this ChainView\n-\t */\n-\tpublic ListIterator<Block> listIterator() {\n-\t\treturn new ChainViewIterator();\n-\t}\n-\t\n-\t/**\n-\t * @param number\n-\t * \t\tthe number of the block to start at\n-\t * \n-\t * @return\n-\t * \t\ta ListIterator starting at the block with the given number\n-\t */\n-\tpublic ListIterator<Block> listIterator(int number) {\n-\t\treturn new ChainViewIterator(number);\n-\t}\n-\t\n-\t/**\n-\t * ListIterator for ChainViews.\n-\t */\n-\tprivate class ChainViewIterator implements ListIterator<Block> {\n-\t\tprivate ListIterator<Block> chainIterator;\n-\t\tprivate ListIterator<Block> updatesIterator;\n-\t\tprivate boolean updatesReached;\n-\t\tprivate int currentIndex;\n-\t\t\n-\t\tChainViewIterator() {\n-\t\t\tchainIterator = chain.getBlocks().listIterator();\n-\t\t\tupdatesIterator = updates.listIterator();\n-\t\t\tcurrentIndex = -1;\n-\t\t}\n-\t\t\n-\t\tChainViewIterator(int number) {\n-\t\t\tint chainLength = chain.getBlocks().size();\n-\t\t\tif (number < chainLength) {\n-\t\t\t\tchainIterator = chain.getBlocks().listIterator(number);\n-\t\t\t\tupdatesIterator = updates.listIterator();\n-\t\t\t} else {\n-\t\t\t\tint index = number - chainLength;\n-\t\t\t\tupdatesIterator = updates.listIterator(index);\n-\t\t\t\tchainIterator = chain.getBlocks().listIterator(chainLength);\n-\t\t\t\tupdatesReached = true;\n-\t\t\t}\n-\t\t\t\n-\t\t\tcurrentIndex = number - 1;\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic boolean hasNext() {\n-\t\t\tif (!updatesReached) {\n-\t\t\t\tif (chainIterator.hasNext()) return true;\n-\t\t\t\tupdatesReached = true;\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn updatesIterator.hasNext();\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic boolean hasPrevious() {\n-\t\t\tif (updatesReached) {\n-\t\t\t\tif (updatesIterator.hasPrevious()) return true;\n-\t\t\t\tupdatesReached = false;\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn chainIterator.hasPrevious();\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic Block next() {\n-\t\t\tListIterator<Block> it;\n-\t\t\tif (!updatesReached) {\n-\t\t\t\tif (chainIterator.hasNext()) {\n-\t\t\t\t\tit = chainIterator;\n-\t\t\t\t} else {\n-\t\t\t\t\tupdatesReached = true;\n-\t\t\t\t\tit = updatesIterator;\n-\t\t\t\t}\n-\t\t\t} else {\n-\t\t\t\tit = updatesIterator;\n-\t\t\t}\n-\t\t\t\n-\t\t\tBlock current = it.next();\n-\t\t\tcurrentIndex = current.getNumber();\n-\t\t\treturn current;\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic Block previous() {\n-\t\t\tListIterator<Block> it;\n-\t\t\tif (updatesReached) {\n-\t\t\t\tif (updatesIterator.hasPrevious()) {\n-\t\t\t\t\tit = updatesIterator;\n-\t\t\t\t} else {\n-\t\t\t\t\tupdatesReached = false;\n-\t\t\t\t\tit = chainIterator;\n-\t\t\t\t}\n-\t\t\t} else {\n-\t\t\t\tit = chainIterator;\n-\t\t\t}\n-\t\t\t\n-\t\t\tBlock current = it.previous();\n-\t\t\tcurrentIndex = current.getNumber() - 1;\n-\t\t\treturn current;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic int nextIndex() {\n-\t\t\treturn currentIndex + 1;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic int previousIndex() {\n-\t\t\treturn currentIndex;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic void remove() {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic void set(Block e) {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic void add(Block e) {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n-\t}\n+    //TODO If the chain is updated after validation, the validation needs to be done again. if (valid) then valid = null;\n+    private Chain chain;\n+    private List<Block> updates;\n+    private Boolean valid;\n+\n+    /**\n+     * @param chain   the chain\n+     * @param updates the blocks of this chain that were sent with the proof\n+     */\n+    public ChainView(Chain chain, List<Block> updates) {\n+        this.chain = chain;\n+        this.updates = updates;\n+        if (this.updates == null) {\n+            this.updates = new ArrayList<>();\n+        }\n+    }\n+\n+    /**\n+     * @return true if this view is valid, false otherwise\n+     */\n+    public boolean isValid() {\n+        if (this.valid != null) {\n+            return this.valid.booleanValue();\n+        }\n+\n+        return checkIntegrity();\n+    }\n+\n+    /**\n+     * If this ChainView was previously marked as valid, then it's validation will be cleared.\n+     * <br><b>A ChainView that was previously marked as invalid will remain invalid.</b>\n+     *\n+     * <p>This method needs to be called if the chain is updated after validation.\n+     */\n+    public void resetValidation() {\n+        if (this.valid != null && this.valid) {\n+            this.valid = null;\n+        }\n+    }\n+\n+    /**\n+     * @return true if this ChainView is either invalid or doesn't contain any updates,\n+     * false otherwise\n+     */\n+    public boolean isRedundant() {\n+        return !isValid() || updates.isEmpty();\n+    }\n+\n+    /**\n+     * Checks the integrity of this chain view.\n+     *\n+     * <p>If this method returns true, that means that the current state of the chain combined with\n+     * the set of updates is consistent and that there are no gaps in the block numbers.\n+     *\n+     * <p>Any overlapping parts are first checked to be consistent and are then removed.\n+     *\n+     * @return true if this ChainView is valid, false otherwise\n+     */\n+    private boolean checkIntegrity() {\n+        //No updates --> valid\n+        if (updates.isEmpty()) {\n+            this.valid = true;\n+            return true;\n+        }\n+\n+        //If we had no blocks, then we only need to check for gaps\n+        List<Block> blocks = chain.getBlocks();\n+        int firstUpdateNumber = updates.get(0).getNumber();\n+        if (blocks.isEmpty()) {\n+            return checkNoGaps(1, firstUpdateNumber);\n+        }\n+\n+        int lastOwnNumber = blocks.get(blocks.size() - 1).getNumber();\n+        if (firstUpdateNumber - lastOwnNumber > 1) {\n+            //We are missing blocks between what we know and what we were sent! Can never happen with an honest node.\n+            this.valid = false;\n+            return false;\n+        } else if (lastOwnNumber >= firstUpdateNumber) {\n+            //There is overlap, check if exactly matches our view\n+            //At the same time, we will remove the overlapping elements\n+            int overlap = lastOwnNumber + 1 - firstUpdateNumber;\n+            int baseI = blocks.size() - overlap;\n+            for (int i = 0; i < overlap && !updates.isEmpty(); i++) {\n+                Block ownBlock = blocks.get(baseI + i);\n+                Block updatedBlock = updates.get(0);\n+\n+                //TODO we might need a special equality check\n+                if (!ownBlock.equals(updatedBlock)) {\n+                    this.valid = false;\n+                    return false;\n+                }\n+\n+                updates.remove(0);\n+            }\n+\n+            return checkNoGaps(0, lastOwnNumber);\n+        } else {\n+            //The first updated block number follows directly after the last block we knew about.\n+            return checkNoGaps(0, lastOwnNumber);\n+        }\n+    }\n+\n+    /**\n+     * Checks that there are no gaps between the blocks received (updates).\n+     * This method changes this.valid to either true or false.\n+     *\n+     * @param startIndex the index to start checking\n+     * @param previousNr the number of the previous block\n+     * @return true if there are no gaps, false otherwise\n+     */\n+    private boolean checkNoGaps(int startIndex, int previousNr) {\n+        for (int i = startIndex; i < updates.size(); i++) {\n+            if (updates.get(i).getNumber() - previousNr != 1) {\n+                this.valid = false;\n+                return false;\n+            }\n+            previousNr++;\n+        }\n+\n+        this.valid = true;\n+        return true;\n+    }\n+\n+    /**\n+     * @param number the number\n+     * @return the block with the given number\n+     * @throws IndexOutOfBoundsException If the block with the given number does not exist (yet).\n+     * @throws IllegalStateException     If this ChainView is invalid and the block with the given number is in the invalid part\n+     *                                   of this ChainView.\n+     */\n+    public Block getBlock(int number) {\n+        if (number < chain.getBlocks().size()) {\n+            return chain.getBlocks().get(number);\n+        } else if (isValid()) {\n+            int index = number - chain.getBlocks().size();\n+            return updates.get(index);\n+        } else {\n+            throw new IllegalStateException(\n+                \"This ChainView is invalid. The block with number \" + number + \" is not in the valid part of this ChainView.\");\n+        }\n+    }\n+\n+    @Override\n+    public ListIterator<Block> iterator() {\n+        return listIterator();\n+    }\n+\n+    /**\n+     * @return a ListIterator over this ChainView\n+     */\n+    public ListIterator<Block> listIterator() {\n+        return new ChainViewIterator();\n+    }\n+\n+    /**\n+     * @param number the number of the block to start at\n+     * @return a ListIterator starting at the block with the given number\n+     */\n+    public ListIterator<Block> listIterator(int number) {\n+        return new ChainViewIterator(number);\n+    }\n+\n+    /**\n+     * ListIterator for ChainViews.\n+     */\n+    private class ChainViewIterator implements ListIterator<Block> {\n+        private ListIterator<Block> chainIterator;\n+        private ListIterator<Block> updatesIterator;\n+        private boolean updatesReached;\n+        private int currentIndex;\n+\n+        ChainViewIterator() {\n+            chainIterator = chain.getBlocks().listIterator();\n+            updatesIterator = updates.listIterator();\n+            currentIndex = -1;\n+        }\n+\n+        ChainViewIterator(int number) {\n+            int chainLength = chain.getBlocks().size();\n+            if (number < chainLength) {\n+                chainIterator = chain.getBlocks().listIterator(number);\n+                updatesIterator = updates.listIterator();\n+            } else {\n+                int index = number - chainLength;\n+                updatesIterator = updates.listIterator(index);\n+                chainIterator = chain.getBlocks().listIterator(chainLength);\n+                updatesReached = true;\n+            }\n+\n+            currentIndex = number - 1;\n+        }\n+\n+        @Override\n+        public boolean hasNext() {\n+            if (!updatesReached) {\n+                if (chainIterator.hasNext()) {\n+                    return true;\n+                }\n+                updatesReached = true;\n+            }\n+\n+            return updatesIterator.hasNext();\n+        }\n+\n+        @Override\n+        public boolean hasPrevious() {\n+            if (updatesReached) {\n+                if (updatesIterator.hasPrevious()) {\n+                    return true;\n+                }\n+                updatesReached = false;\n+            }\n+\n+            return chainIterator.hasPrevious();\n+        }\n+\n+        @Override\n+        public Block next() {\n+            ListIterator<Block> it;\n+            if (!updatesReached) {\n+                if (chainIterator.hasNext()) {\n+                    it = chainIterator;\n+                } else {\n+                    updatesReached = true;\n+                    it = updatesIterator;\n+                }\n+            } else {\n+                it = updatesIterator;\n+            }\n+\n+            Block current = it.next();\n+            currentIndex = current.getNumber();\n+            return current;\n+        }\n+\n+        @Override\n+        public Block previous() {\n+            ListIterator<Block> it;\n+            if (updatesReached) {\n+                if (updatesIterator.hasPrevious()) {\n+                    it = updatesIterator;\n+                } else {\n+                    updatesReached = false;\n+                    it = chainIterator;\n+                }\n+            } else {\n+                it = chainIterator;\n+            }\n+\n+            Block current = it.previous();\n+            currentIndex = current.getNumber() - 1;\n+            return current;\n+        }\n+\n+        @Override\n+        public int nextIndex() {\n+            return currentIndex + 1;\n+        }\n+\n+        @Override\n+        public int previousIndex() {\n+            return currentIndex;\n+        }\n+\n+        @Override\n+        public void remove() {\n+            throw new UnsupportedOperationException();\n+        }\n+\n+        @Override\n+        public void set(Block e) {\n+            throw new UnsupportedOperationException();\n+        }\n+\n+        @Override\n+        public void add(Block e) {\n+            throw new UnsupportedOperationException();\n+        }\n+    }\n }\n",
+            "diff_size": 291
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "column": "62",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "1",
+                    "column": "89",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "1",
+                    "column": "89",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "1",
+                    "column": "111",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "1",
+                    "column": "111",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "1",
+                    "column": "141",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "9",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "12",
+                    "column": "38",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "12",
+                    "column": "54",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "12",
+                    "column": "77",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 164).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "25",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "44",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "62",
+                    "severity": "warning",
+                    "message": "'{' at column 62 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "74",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "95",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "104",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "106",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "108",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "122",
+                    "severity": "warning",
+                    "message": "'==' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "143",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "163",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "163",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "163",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "19",
+                    "column": "164",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "34",
+                    "severity": "warning",
+                    "message": "'{' at column 34 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "38",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "50",
+                    "severity": "warning",
+                    "message": "'!=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "92",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "118",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "118",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "118",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "24",
+                    "column": "119",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "'{' at column 39 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "55",
+                    "severity": "warning",
+                    "message": "'!=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "62",
+                    "severity": "warning",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "77",
+                    "severity": "warning",
+                    "message": "'{' at column 77 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "89",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "95",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "96",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "32",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 888).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "38",
+                    "severity": "warning",
+                    "message": "'{' at column 38 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "47",
+                    "severity": "warning",
+                    "message": "'!' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "80",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "80",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "81",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "53",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 334).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "54",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 196).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "56",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 291).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 202).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 1,560).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 253).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "70",
+                    "severity": "warning",
+                    "message": "'{' at column 70 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "72",
+                    "severity": "warning",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "75",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "82",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "97",
+                    "severity": "warning",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "120",
+                    "severity": "warning",
+                    "message": "'{' at column 120 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "122",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "124",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "137",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "166",
+                    "severity": "warning",
+                    "message": "'!=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "172",
+                    "severity": "warning",
+                    "message": "'{' at column 172 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "184",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "205",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "205",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "206",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "220",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "220",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "221",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "233",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "239",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "252",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "252",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "253",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 372).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "'{' at column 43 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "45",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "47",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "55",
+                    "severity": "warning",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "83",
+                    "severity": "warning",
+                    "message": "'{' at column 83 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "113",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "123",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "123",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "124",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "124",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "125",
+                    "severity": "warning",
+                    "message": "'else' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "130",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "132",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "145",
+                    "severity": "warning",
+                    "message": "'{' at column 145 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "156",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "164",
+                    "severity": "warning",
+                    "message": "'-' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "191",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "191",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "211",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "220",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "220",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "220",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "221",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "221",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "222",
+                    "severity": "warning",
+                    "message": "'else' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "227",
+                    "severity": "warning",
+                    "message": "'{' at column 227 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "260",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "313",
+                    "severity": "warning",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "321",
+                    "severity": "warning",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "371",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "371",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "371",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "372",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "88",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 2,684).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "2639",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "2659",
+                    "severity": "warning",
+                    "message": "'{' at column 2,659 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "2683",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "2683",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "2684",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "28",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "52",
+                    "severity": "warning",
+                    "message": "'{' at column 52 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "85",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "85",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "86",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "28",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "62",
+                    "severity": "warning",
+                    "message": "'{' at column 62 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "92",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "102",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "102",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "103",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "105",
+                    "column": "64",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "106",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 4,390).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3209",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3253",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3277",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3309",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3335",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3357",
+                    "severity": "warning",
+                    "message": "'{' at column 3,357 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3372",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3407",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3407",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3424",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3449",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3449",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3463",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3465",
+                    "severity": "warning",
+                    "message": "'-' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3468",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3468",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3469",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3488",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3502",
+                    "severity": "warning",
+                    "message": "'{' at column 3,502 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3519",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3546",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3546",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3548",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3550",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3558",
+                    "severity": "warning",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3573",
+                    "severity": "warning",
+                    "message": "'{' at column 3,573 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3588",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3620",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3630",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3630",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3647",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3672",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3672",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3672",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3673",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3673",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3674",
+                    "severity": "warning",
+                    "message": "'else' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3679",
+                    "severity": "warning",
+                    "message": "'{' at column 3,679 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3690",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3698",
+                    "severity": "warning",
+                    "message": "'-' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3711",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3728",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3750",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3759",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3759",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3774",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3806",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3821",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3821",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3837",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3843",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3843",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3844",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3858",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3866",
+                    "severity": "warning",
+                    "message": "'-' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3869",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3869",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3870",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3908",
+                    "severity": "warning",
+                    "message": "'{' at column 3,908 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3910",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3912",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3914",
+                    "severity": "warning",
+                    "message": "'!' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3932",
+                    "severity": "warning",
+                    "message": "'{' at column 3,932 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3934",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3936",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3974",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3990",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3996",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3996",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "3997",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4032",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4032",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4032",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4033",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4075",
+                    "severity": "warning",
+                    "message": "'{' at column 4,075 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4077",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4079",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4097",
+                    "severity": "warning",
+                    "message": "'{' at column 4,097 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4099",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4101",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4145",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4161",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4168",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4168",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4169",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4206",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4206",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4206",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4207",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4240",
+                    "severity": "warning",
+                    "message": "'{' at column 4,240 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4254",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4265",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4267",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4269",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4271",
+                    "severity": "warning",
+                    "message": "'!' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4289",
+                    "severity": "warning",
+                    "message": "'{' at column 4,289 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4291",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4293",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4320",
+                    "severity": "warning",
+                    "message": "'{' at column 4,320 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4324",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4339",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4339",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4340",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4340",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4341",
+                    "severity": "warning",
+                    "message": "'else' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4346",
+                    "severity": "warning",
+                    "message": "'{' at column 4,346 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4362",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4368",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4372",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4389",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4389",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "4390",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 4,590).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4296",
+                    "severity": "warning",
+                    "message": "'{' at column 4,296 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4300",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4317",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4318",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4333",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4345",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4345",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4359",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4381",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4381",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4397",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4397",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4398",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4435",
+                    "severity": "warning",
+                    "message": "'{' at column 4,435 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4449",
+                    "severity": "warning",
+                    "message": "'<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4460",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4462",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4464",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4482",
+                    "severity": "warning",
+                    "message": "'{' at column 4,482 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4484",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4486",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4519",
+                    "severity": "warning",
+                    "message": "'{' at column 4,519 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4523",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4540",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4540",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4541",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4541",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4542",
+                    "severity": "warning",
+                    "message": "'else' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4547",
+                    "severity": "warning",
+                    "message": "'{' at column 4,547 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4563",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4570",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4574",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4589",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4589",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "4590",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 4,964).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4489",
+                    "severity": "warning",
+                    "message": "'{' at column 4,489 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4493",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4508",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4509",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4524",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4540",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4540",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4554",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4579",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4595",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4595",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4596",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4632",
+                    "severity": "warning",
+                    "message": "'{' at column 4,632 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4653",
+                    "severity": "warning",
+                    "message": "'+' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4656",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4656",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4657",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4697",
+                    "severity": "warning",
+                    "message": "'{' at column 4,697 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4718",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4718",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4719",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4753",
+                    "severity": "warning",
+                    "message": "'{' at column 4,753 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4797",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4797",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4797",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4798",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4836",
+                    "severity": "warning",
+                    "message": "'{' at column 4,836 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4880",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4880",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4880",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4881",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4919",
+                    "severity": "warning",
+                    "message": "'{' at column 4,919 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4963",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4963",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4963",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "4964",
+                    "severity": "warning",
+                    "message": "'}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "109",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 3,185).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/codebuff/11/ChainView.java\nindex 471c862e580..dfd277bff44 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/codebuff/11/ChainView.java\n@@ -1,304 +1,110 @@\n-package nl.tudelft.blockchain.scaleoutdistributedledger.model;\n-\n-import java.util.ArrayList;\n-import java.util.List;\n-import java.util.ListIterator;\n+package nl.tudelft.blockchain.scaleoutdistributedledger.model;import java.util.ArrayList;import java.util.List;import java.util.ListIterator;\n \n /**\n  * Class which provides a view of a chain.\n  * \n  * <p>NOTE: this implementation assumes that a chain is append only.\n  */\n-public class ChainView implements Iterable<Block> {\n-\n-\t//TODO If the chain is updated after validation, the validation needs to be done again. if (valid) then valid = null;\n-\tprivate Chain chain;\n-\tprivate List<Block> updates;\n-\tprivate Boolean valid;\n-\t\n-\t/**\n-\t * @param chain\n-\t * \t\tthe chain\n-\t * @param updates\n-\t * \t\tthe blocks of this chain that were sent with the proof\n-\t */\n-\tpublic ChainView(Chain chain, List<Block> updates) {\n-\t\tthis.chain = chain;\n-\t\tthis.updates = updates;\n-\t\tif(this.updates == null) this.updates = new ArrayList<>();\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ttrue if this view is valid, false otherwise\n-\t */\n-\tpublic boolean isValid() {\n-\t\tif (this.valid != null) return this.valid.booleanValue();\n-\t\t\n-\t\treturn checkIntegrity();\n-\t}\n-\t\n-\t/**\n-\t * If this ChainView was previously marked as valid, then it's validation will be cleared.\n-\t * <br><b>A ChainView that was previously marked as invalid will remain invalid.</b>\n-\t * \n-\t * <p>This method needs to be called if the chain is updated after validation.\n-\t */\n-\tpublic void resetValidation() {\n-\t\tif (this.valid != null && this.valid) {\n-\t\t\tthis.valid = null;\n-\t\t}\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ttrue if this ChainView is either invalid or doesn't contain any updates,\n-\t * \t\tfalse otherwise\n-\t */\n-\tpublic boolean isRedundant() {\n-\t\treturn !isValid() || updates.isEmpty();\n-\t}\n-\t\n-\t/**\n-\t * Checks the integrity of this chain view.\n-\t * \n-\t * <p>If this method returns true, that means that the current state of the chain combined with\n-\t * the set of updates is consistent and that there are no gaps in the block numbers.\n-\t * \n-\t * <p>Any overlapping parts are first checked to be consistent and are then removed.\n-\t * \n-\t * @return\n-\t * \t\ttrue if this ChainView is valid, false otherwise\n-\t */\n-\tprivate boolean checkIntegrity() {\n-\t\t//No updates --> valid\n-\t\tif (updates.isEmpty()) {\n-\t\t\tthis.valid = true;\n-\t\t\treturn true;\n-\t\t}\n-\t\t\n-\t\t//If we had no blocks, then we only need to check for gaps\n-\t\tList<Block> blocks = chain.getBlocks();\n-\t\tint firstUpdateNumber = updates.get(0).getNumber();\n-\t\tif (blocks.isEmpty()) {\n-\t\t\treturn checkNoGaps(1, firstUpdateNumber);\n-\t\t}\n-\t\t\n-\t\tint lastOwnNumber = blocks.get(blocks.size() - 1).getNumber();\n-\t\tif (firstUpdateNumber - lastOwnNumber > 1) {\n-\t\t\t//We are missing blocks between what we know and what we were sent! Can never happen with an honest node.\n-\t\t\tthis.valid = false;\n-\t\t\treturn false;\n-\t\t} else if (lastOwnNumber >= firstUpdateNumber) {\n-\t\t\t//There is overlap, check if exactly matches our view\n-\t\t\t//At the same time, we will remove the overlapping elements\n-\t\t\tint overlap = lastOwnNumber + 1 - firstUpdateNumber;\n-\t\t\tint baseI = blocks.size() - overlap;\n-\t\t\tfor (int i = 0; i < overlap && !updates.isEmpty(); i++) {\n-\t\t\t\tBlock ownBlock = blocks.get(baseI + i);\n-\t\t\t\tBlock updatedBlock = updates.get(0);\n-\t\t\t\t\n-\t\t\t\t//TODO we might need a special equality check\n-\t\t\t\tif (!ownBlock.equals(updatedBlock)) {\n-\t\t\t\t\tthis.valid = false;\n-\t\t\t\t\treturn false;\n-\t\t\t\t}\n-\t\t\t\t\n-\t\t\t\tupdates.remove(0);\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn checkNoGaps(0, lastOwnNumber);\n-\t\t} else {\n-\t\t\t//The first updated block number follows directly after the last block we knew about.\n-\t\t\treturn checkNoGaps(0, lastOwnNumber);\n-\t\t}\n-\t}\n-\t\n-\t/**\n-\t * Checks that there are no gaps between the blocks received (updates).\n-\t * This method changes this.valid to either true or false.\n-\t * \n-\t * @param startIndex\n-\t * \t\tthe index to start checking\n-\t * @param previousNr\n-\t * \t\tthe number of the previous block\n-\t * \n-\t * @return\n-\t * \t\ttrue if there are no gaps, false otherwise\n-\t */\n-\tprivate boolean checkNoGaps(int startIndex, int previousNr) {\n-\t\tfor (int i = startIndex; i < updates.size(); i++) {\n-\t\t\tif (updates.get(i).getNumber() - previousNr != 1) {\n-\t\t\t\tthis.valid = false;\n-\t\t\t\treturn false;\n-\t\t\t}\n-\t\t\tpreviousNr++;\n-\t\t}\n-\t\t\n-\t\tthis.valid = true;\n-\t\treturn true;\n-\t}\n-\t\n-\t/**\n-\t * @param number\n-\t * \t\tthe number\n-\t * \n-\t * @return\n-\t * \t\tthe block with the given number\n-\t * \n-\t * @throws IndexOutOfBoundsException\n-\t * \t\tIf the block with the given number does not exist (yet).\n-\t * @throws IllegalStateException\n-\t * \t\tIf this ChainView is invalid and the block with the given number is in the invalid part\n-\t * \t\tof this ChainView.\n-\t */\n-\tpublic Block getBlock(int number) {\n-\t\tif (number < chain.getBlocks().size()) {\n-\t\t\treturn chain.getBlocks().get(number);\n-\t\t} else if (isValid()) {\n-\t\t\tint index = number - chain.getBlocks().size();\n-\t\t\treturn updates.get(index);\n-\t\t} else {\n-\t\t\tthrow new IllegalStateException(\n-\t\t\t\t\t\"This ChainView is invalid. The block with number \" + number + \" is not in the valid part of this ChainView.\");\n-\t\t}\n-\t}\n-\t\n-\t@Override\n-\tpublic ListIterator<Block> iterator() {\n-\t\treturn listIterator();\n-\t}\n-\t\n-\t/**\n-\t * @return\n-\t * \t\ta ListIterator over this ChainView\n-\t */\n-\tpublic ListIterator<Block> listIterator() {\n-\t\treturn new ChainViewIterator();\n-\t}\n-\t\n-\t/**\n-\t * @param number\n-\t * \t\tthe number of the block to start at\n-\t * \n-\t * @return\n-\t * \t\ta ListIterator starting at the block with the given number\n-\t */\n-\tpublic ListIterator<Block> listIterator(int number) {\n-\t\treturn new ChainViewIterator(number);\n-\t}\n-\t\n-\t/**\n-\t * ListIterator for ChainViews.\n-\t */\n-\tprivate class ChainViewIterator implements ListIterator<Block> {\n-\t\tprivate ListIterator<Block> chainIterator;\n-\t\tprivate ListIterator<Block> updatesIterator;\n-\t\tprivate boolean updatesReached;\n-\t\tprivate int currentIndex;\n-\t\t\n-\t\tChainViewIterator() {\n-\t\t\tchainIterator = chain.getBlocks().listIterator();\n-\t\t\tupdatesIterator = updates.listIterator();\n-\t\t\tcurrentIndex = -1;\n-\t\t}\n-\t\t\n-\t\tChainViewIterator(int number) {\n-\t\t\tint chainLength = chain.getBlocks().size();\n-\t\t\tif (number < chainLength) {\n-\t\t\t\tchainIterator = chain.getBlocks().listIterator(number);\n-\t\t\t\tupdatesIterator = updates.listIterator();\n-\t\t\t} else {\n-\t\t\t\tint index = number - chainLength;\n-\t\t\t\tupdatesIterator = updates.listIterator(index);\n-\t\t\t\tchainIterator = chain.getBlocks().listIterator(chainLength);\n-\t\t\t\tupdatesReached = true;\n-\t\t\t}\n-\t\t\t\n-\t\t\tcurrentIndex = number - 1;\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic boolean hasNext() {\n-\t\t\tif (!updatesReached) {\n-\t\t\t\tif (chainIterator.hasNext()) return true;\n-\t\t\t\tupdatesReached = true;\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn updatesIterator.hasNext();\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic boolean hasPrevious() {\n-\t\t\tif (updatesReached) {\n-\t\t\t\tif (updatesIterator.hasPrevious()) return true;\n-\t\t\t\tupdatesReached = false;\n-\t\t\t}\n-\t\t\t\n-\t\t\treturn chainIterator.hasPrevious();\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic Block next() {\n-\t\t\tListIterator<Block> it;\n-\t\t\tif (!updatesReached) {\n-\t\t\t\tif (chainIterator.hasNext()) {\n-\t\t\t\t\tit = chainIterator;\n-\t\t\t\t} else {\n-\t\t\t\t\tupdatesReached = true;\n-\t\t\t\t\tit = updatesIterator;\n-\t\t\t\t}\n-\t\t\t} else {\n-\t\t\t\tit = updatesIterator;\n-\t\t\t}\n-\t\t\t\n-\t\t\tBlock current = it.next();\n-\t\t\tcurrentIndex = current.getNumber();\n-\t\t\treturn current;\n-\t\t}\n-\t\t\n-\t\t@Override\n-\t\tpublic Block previous() {\n-\t\t\tListIterator<Block> it;\n-\t\t\tif (updatesReached) {\n-\t\t\t\tif (updatesIterator.hasPrevious()) {\n-\t\t\t\t\tit = updatesIterator;\n-\t\t\t\t} else {\n-\t\t\t\t\tupdatesReached = false;\n-\t\t\t\t\tit = chainIterator;\n-\t\t\t\t}\n-\t\t\t} else {\n-\t\t\t\tit = chainIterator;\n-\t\t\t}\n-\t\t\t\n-\t\t\tBlock current = it.previous();\n-\t\t\tcurrentIndex = current.getNumber() - 1;\n-\t\t\treturn current;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic int nextIndex() {\n-\t\t\treturn currentIndex + 1;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic int previousIndex() {\n-\t\t\treturn currentIndex;\n-\t\t}\n-\n-\t\t@Override\n-\t\tpublic void remove() {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n \n-\t\t@Override\n-\t\tpublic void set(Block e) {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n+public class ChainView implements Iterable< Block> {\n \n-\t\t@Override\n-\t\tpublic void add(Block e) {\n-\t\t\tthrow new UnsupportedOperationException();\n-\t\t}\n-\t}\n-}\n+    //TODO If the chain is updated after validation, the validation needs to be done again. if (valid) then valid = null;\n+    private Chain chain; private List< Block> updates; private Boolean valid;\n+    \n+    /**\n+     * @param chain\n+     *      the chain\n+     * @param updates\n+     *      the blocks of this chain that were sent with the proof\n+     */ public ChainView( Chain chain, List< Block> updates) { this.chain= chain; this.updates= updates; if( this.updates== null) this.updates= new ArrayList<>() ;}\n+    \n+    /**\n+     * @return\n+     *      true if this view is valid, false otherwise\n+     */ public boolean isValid() { if( this.valid!= null) return this.valid.booleanValue() ; return checkIntegrity() ;}\n+    \n+    /**\n+     * If this ChainView was previously marked as valid, then it's validation will be cleared.\n+     * <br><b>A ChainView that was previously marked as invalid will remain invalid.</b>\n+     * \n+     * <p>This method needs to be called if the chain is updated after validation.\n+     */ public void resetValidation() { if( this.valid!= null&& this.valid) { this.valid= null;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }\n+    \n+    /**\n+     * @return\n+     *      true if this ChainView is either invalid or doesn't contain any updates,\n+     *      false otherwise\n+     */ public boolean isRedundant() { return ! isValid() || updates.isEmpty() ;}\n+    \n+    /**\n+     * Checks the integrity of this chain view.\n+     * \n+     * <p>If this method returns true, that means that the current state of the chain combined with\n+     * the set of updates is consistent and that there are no gaps in the block numbers.\n+     * \n+     * <p>Any overlapping parts are first checked to be consistent and are then removed.\n+     * \n+     * @return\n+     *      true if this ChainView is valid, false otherwise\n+     */ private boolean checkIntegrity() {\n+        //No updates --> valid if( updates.isEmpty()) { this.valid= true; return true;}\n+        \n+        //If we had no blocks, then we only need to check for gaps List< Block> blocks= chain.getBlocks() ; int firstUpdateNumber= updates.get( 0).getNumber() ; if( blocks.isEmpty()) { return checkNoGaps(1,firstUpdateNumber) ;} int lastOwnNumber= blocks.get( blocks.size() - 1).getNumber() ; if( firstUpdateNumber- lastOwnNumber> 1) {\n+            //We are missing blocks between what we know and what we were sent! Can never happen with an honest node. this.valid= false; return false;}else if( lastOwnNumber>= firstUpdateNumber) {\n+            //There is overlap, check if exactly matches our view\n+            //At the same time, we will remove the overlapping elements int overlap= lastOwnNumber+ 1- firstUpdateNumber; int baseI= blocks.size() - overlap; for( int i= 0; i< overlap&& ! updates.isEmpty(); i++) { Block ownBlock= blocks.get( baseI+ i) ; Block updatedBlock= updates.get( 0) ;\n+                \n+                //TODO we might need a special equality check if( ! ownBlock.equals( updatedBlock)) { this.valid= false; return false;} updates.remove( 0) ;} return checkNoGaps(0,lastOwnNumber) ;}else {\n+            //The first updated block number follows directly after the last block we knew about. return checkNoGaps(0,lastOwnNumber) ;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       }\n+    \n+    /**\n+     * Checks that there are no gaps between the blocks received (updates).\n+     * This method changes this.valid to either true or false.\n+     * \n+     * @param startIndex\n+     *      the index to start checking\n+     * @param previousNr\n+     *      the number of the previous block\n+     * \n+     * @return\n+     *      true if there are no gaps, false otherwise\n+     */ private boolean checkNoGaps( int startIndex, int previousNr) { for( int i= startIndex; i< updates.size(); i++) { if( updates.get( i).getNumber() - previousNr!= 1) { this.valid= false; return false;} previousNr++;} this.valid= true; return true;}\n+    \n+    /**\n+     * @param number\n+     *      the number\n+     * \n+     * @return\n+     *      the block with the given number\n+     * \n+     * @throws IndexOutOfBoundsException\n+     *      If the block with the given number does not exist (yet).\n+     * @throws IllegalStateException\n+     *      If this ChainView is invalid and the block with the given number is in the invalid part\n+     *      of this ChainView.\n+     */ public Block getBlock(int number) { if( number< chain.getBlocks().size()) { return chain.getBlocks().get( number) ;}else if( isValid()) { int index= number- chain.getBlocks().size() ; return updates.get( index) ;}else { throw new IllegalStateException( \"This ChainView is invalid. The block with number \"+ number+ \" is not in the valid part of this ChainView.\") ;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              } @ Override public ListIterator< Block> iterator() { return listIterator() ;}\n+    \n+    /**\n+     * @return\n+     *      a ListIterator over this ChainView\n+     */ public ListIterator< Block> listIterator() { return new ChainViewIterator() ;}\n+    \n+    /**\n+     * @param number\n+     *      the number of the block to start at\n+     * \n+     * @return\n+     *      a ListIterator starting at the block with the given number\n+     */ public ListIterator< Block> listIterator(int number) { return new ChainViewIterator( number) ;}\n+    \n+    /**\n+     * ListIterator for ChainViews.\n+     */ private class ChainViewIterator implements ListIterator< Block> {\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    private ListIterator< Block> chainIterator; private ListIterator< Block> updatesIterator; private boolean updatesReached; private int currentIndex; ChainViewIterator() { chainIterator= chain.getBlocks().listIterator() ; updatesIterator= updates.listIterator() ; currentIndex= - 1;} ChainViewIterator( int number) { int chainLength= chain.getBlocks().size() ; if( number< chainLength) { chainIterator= chain.getBlocks().listIterator( number) ; updatesIterator= updates.listIterator() ;}else { int index= number- chainLength; updatesIterator= updates.listIterator( index) ; chainIterator= chain.getBlocks().listIterator( chainLength) ; updatesReached= true;} currentIndex= number- 1;} @ Override public boolean hasNext() { if( ! updatesReached) { if( chainIterator.hasNext()) return true; updatesReached= true;} return updatesIterator.hasNext() ;} @ Override public boolean hasPrevious() { if( updatesReached) { if( updatesIterator.hasPrevious()) return true; updatesReached= false;} return chainIterator.hasPrevious() ;} @ Override public Block next() { ListIterator< Block> it; if( ! updatesReached) { if( chainIterator.hasNext()) { it= chainIterator;}else { updatesReached= true; it= updatesIterator;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } else { it= updatesIterator;} Block current= it.next() ; currentIndex= current.getNumber() ; return current;} @ Override public Block previous() { ListIterator< Block> it; if( updatesReached) { if( updatesIterator.hasPrevious()) { it= updatesIterator;}else { updatesReached= false; it= chainIterator;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 } else { it= chainIterator;} Block current= it.previous() ; currentIndex= current.getNumber() - 1; return current;} @ Override public int nextIndex() { return currentIndex+ 1;} @ Override public int previousIndex() { return currentIndex;} @ Override public void remove() { throw new UnsupportedOperationException() ;} @ Override public void set(Block e) { throw new UnsupportedOperationException() ;} @ Override public void add(Block e) { throw new UnsupportedOperationException() ;}\n+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 390
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "28",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/11/ChainView.java\nindex 471c862e580..0abfdd301af 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/11/ChainView.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/11/ChainView.java\n@@ -25,7 +25,9 @@ public class ChainView implements Iterable<Block> {\n \tpublic ChainView(Chain chain, List<Block> updates) {\n \t\tthis.chain = chain;\n \t\tthis.updates = updates;\n-\t\tif(this.updates == null) this.updates = new ArrayList<>();\n+\t\tif(\n+  this\n+  .updates == null) this.updates = new ArrayList<>();\n \t}\n \t\n \t/**\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "28",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

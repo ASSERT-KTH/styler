@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "469",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "34",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "34",
+                    "column": "85",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "18",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/469/NodeUpdatesIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/469/NodeUpdatesIterator.java\nindex 96b701f51b5..f9f31a44bc7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/469/NodeUpdatesIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/469/NodeUpdatesIterator.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.api.index;\n \n import java.util.Iterator;\n@@ -26,45 +27,45 @@ import org.neo4j.collection.primitive.PrimitiveLongIterator;\n class NodeUpdatesIterator implements Iterator<NodeUpdates>\n {\n \n-    private final IndexStoreView storeView;\n-    private final PrimitiveLongIterator nodeIdIterator;\n-    private NodeUpdates nextUpdate;\n+  private final IndexStoreView storeView;\n+  private final PrimitiveLongIterator nodeIdIterator;\n+  private NodeUpdates nextUpdate;\n \n-    NodeUpdatesIterator( IndexStoreView storeView, PrimitiveLongIterator nodeIdIterator )\n-    {\n-        this.storeView = storeView;\n-        this.nodeIdIterator = nodeIdIterator;\n-    }\n+  NodeUpdatesIterator(IndexStoreView storeView, PrimitiveLongIterator nodeIdIterator)\n+  {\n+    this.storeView = storeView;\n+    this.nodeIdIterator = nodeIdIterator;\n+  }\n \n-    @Override\n-    public boolean hasNext()\n+  @Override\n+  public boolean hasNext()\n+  {\n+    if (nextUpdate == null)\n     {\n-        if ( nextUpdate == null )\n+      while (nodeIdIterator.hasNext())\n+      {\n+        long nodeId = nodeIdIterator.next();\n+        NodeUpdates updates = storeView.nodeAsUpdates(nodeId);\n+        if (updates != null)\n         {\n-            while ( nodeIdIterator.hasNext() )\n-            {\n-                long nodeId = nodeIdIterator.next();\n-                NodeUpdates updates = storeView.nodeAsUpdates( nodeId );\n-                if ( updates != null )\n-                {\n-                    nextUpdate = updates;\n-                    return true;\n-                }\n-            }\n-            return false;\n+          nextUpdate = updates;\n+          return true;\n         }\n-        return true;\n+      }\n+      return false;\n     }\n+    return true;\n+  }\n \n-    @Override\n-    public NodeUpdates next()\n+  @Override\n+  public NodeUpdates next()\n+  {\n+    NodeUpdates update = null;\n+    if (hasNext())\n     {\n-        NodeUpdates update = null;\n-        if ( hasNext() )\n-        {\n-            update = this.nextUpdate;\n-            this.nextUpdate = null;\n-        }\n-        return update;\n+      update = this.nextUpdate;\n+      this.nextUpdate = null;\n     }\n+    return update;\n+  }\n }\n",
+            "diff_size": 47
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/469/NodeUpdatesIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/469/NodeUpdatesIterator.java\nindex 96b701f51b5..7c78b0a1886 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/469/NodeUpdatesIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/469/NodeUpdatesIterator.java\n@@ -25,7 +25,6 @@ import org.neo4j.collection.primitive.PrimitiveLongIterator;\n \n class NodeUpdatesIterator implements Iterator<NodeUpdates>\n {\n-\n     private final IndexStoreView storeView;\n     private final PrimitiveLongIterator nodeIdIterator;\n     private NodeUpdates nextUpdate;\n@@ -65,6 +64,7 @@ class NodeUpdatesIterator implements Iterator<NodeUpdates>\n             update = this.nextUpdate;\n             this.nextUpdate = null;\n         }\n-        return update;\n+\n+return update;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

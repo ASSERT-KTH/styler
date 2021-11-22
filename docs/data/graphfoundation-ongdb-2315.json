@@ -1,0 +1,144 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2315",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "105",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "43",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "64",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "66",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "104",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2315/ExactDepthPathFinder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2315/ExactDepthPathFinder.java\nindex 9902ef1fe41..2991fbdfaca 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2315/ExactDepthPathFinder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2315/ExactDepthPathFinder.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.graphalgo.impl.path;\n \n import org.neo4j.graphalgo.impl.util.LiteDepthFirstSelector;\n@@ -44,31 +45,31 @@ import static org.neo4j.graphdb.traversal.Evaluators.toDepth;\n  */\n public class ExactDepthPathFinder extends TraversalPathFinder\n {\n-    private final PathExpander expander;\n-    private final int onDepth;\n-    private final int startThreshold;\n-    private final Uniqueness uniqueness;\n+  private final PathExpander expander;\n+  private final int onDepth;\n+  private final int startThreshold;\n+  private final Uniqueness uniqueness;\n \n-    public ExactDepthPathFinder( PathExpander expander, int onDepth, int startThreshold, boolean allowLoops )\n-    {\n-        this.expander = expander;\n-        this.onDepth = onDepth;\n-        this.startThreshold = startThreshold;\n-        this.uniqueness = allowLoops ? Uniqueness.RELATIONSHIP_GLOBAL : Uniqueness.NODE_PATH;\n-    }\n+  public ExactDepthPathFinder(PathExpander expander, int onDepth, int startThreshold, boolean allowLoops)\n+  {\n+    this.expander = expander;\n+    this.onDepth = onDepth;\n+    this.startThreshold = startThreshold;\n+    this.uniqueness = allowLoops ? Uniqueness.RELATIONSHIP_GLOBAL : Uniqueness.NODE_PATH;\n+  }\n \n-    @Override\n-    protected Traverser instantiateTraverser( Node start, Node end )\n-    {\n-        GraphDatabaseService db = start.getGraphDatabase();\n-        TraversalDescription side =\n-                db.traversalDescription().breadthFirst().uniqueness( uniqueness ).order(\n-                        ( startSource, expander ) -> new LiteDepthFirstSelector( startSource, startThreshold, expander ) );\n-        return db.bidirectionalTraversalDescription().startSide( side.expand( expander ).evaluator( toDepth( onDepth / 2 ) ) )\n-                .endSide( side.expand( expander.reverse() ).evaluator( toDepth( onDepth - onDepth / 2 ) ) )\n-                .collisionEvaluator( atDepth( onDepth ) )\n-                // TODO Level side selector will make the traversal return wrong result, why?\n-                //                .sideSelector( SideSelectorPolicies.LEVEL, onDepth )\n-                .traverse( start, end );\n-    }\n+  @Override\n+  protected Traverser instantiateTraverser(Node start, Node end)\n+  {\n+    GraphDatabaseService db = start.getGraphDatabase();\n+    TraversalDescription side =\n+        db.traversalDescription().breadthFirst().uniqueness(uniqueness).order(\n+            (startSource, expander) -> new LiteDepthFirstSelector(startSource, startThreshold, expander));\n+    return db.bidirectionalTraversalDescription().startSide(side.expand(expander).evaluator(toDepth(onDepth / 2)))\n+        .endSide(side.expand(expander.reverse()).evaluator(toDepth(onDepth - onDepth / 2)))\n+        .collisionEvaluator(atDepth(onDepth))\n+        // TODO Level side selector will make the traversal return wrong result, why?\n+        //                .sideSelector( SideSelectorPolicies.LEVEL, onDepth )\n+        .traverse(start, end);\n+  }\n }\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,110 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "857",
+    "information": {
+        "errors": [
+            {
+                "line": "6",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 102).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in\n * compliance with the License. You may obtain a copy of the License at\n *\n * https://opensource.org/licenses/Apache-2.0",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/857/PartInitOutDegreeParam.java\nindex 8f87a93de4a..e68eea149a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/857/PartInitOutDegreeParam.java\n@@ -14,6 +14,7 @@\n  * the License.\n  *\n  */\n+\n package com.tencent.angel.graph.psf.clusterrank;\n \n import com.tencent.angel.PartitionKey;\n@@ -24,82 +25,83 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;\n \n public class PartInitOutDegreeParam extends PartitionUpdateParam {\n \n-    private Long2IntMap nodeIdToOutDegree;\n-\n-    private long[] nodeIds;\n-    private transient int startIndex;\n-    private transient int endIndex;\n-\n-    public PartInitOutDegreeParam(int matrixId, PartitionKey partKey,\n-            Long2IntMap nodeIdToOutDegree, long[] nodeIds, int startIndex, int endIndex) {\n-        super(matrixId, partKey);\n-        this.nodeIdToOutDegree = nodeIdToOutDegree;\n-        this.nodeIds = nodeIds;\n-        this.startIndex = startIndex;\n-        this.endIndex = endIndex;\n+  private Long2IntMap nodeIdToOutDegree;\n+\n+  private long[] nodeIds;\n+  private transient int startIndex;\n+  private transient int endIndex;\n+\n+  public PartInitOutDegreeParam(int matrixId, PartitionKey partKey,\n+                                Long2IntMap nodeIdToOutDegree, long[] nodeIds, int startIndex,\n+                                int endIndex) {\n+    super(matrixId, partKey);\n+    this.nodeIdToOutDegree = nodeIdToOutDegree;\n+    this.nodeIds = nodeIds;\n+    this.startIndex = startIndex;\n+    this.endIndex = endIndex;\n+  }\n+\n+  public PartInitOutDegreeParam() {\n+    this(0, null, null, null, 0, 0);\n+  }\n+\n+  public Long2IntMap getNodeIdToOutDegree() {\n+    return nodeIdToOutDegree;\n+  }\n+\n+  public long[] getNodeIds() {\n+    return nodeIds;\n+  }\n+\n+  private void clear() {\n+    nodeIdToOutDegree = null;\n+    nodeIds = null;\n+    startIndex = -1;\n+    endIndex = -1;\n+  }\n+\n+  @Override\n+  public void serialize(ByteBuf buf) {\n+    super.serialize(buf);\n+    long nodeId;\n+    int degree;\n+    int writeIndex = buf.writerIndex();\n+    int writeNum = 0;\n+    buf.writeInt(0);\n+    for (int i = startIndex; i < endIndex; i++) {\n+      nodeId = nodeIds[i];\n+      degree = nodeIdToOutDegree.get(nodeId);\n+      buf.writeLong(nodeId);\n+      buf.writeInt(degree);\n+      writeNum++;\n     }\n+    buf.setInt(writeIndex, writeNum);\n \n-    public PartInitOutDegreeParam() {\n-        this(0, null, null, null, 0, 0);\n-    }\n+    clear();\n+  }\n \n-    public Long2IntMap getNodeIdToOutDegree() {\n-        return nodeIdToOutDegree;\n-    }\n-\n-    public long[] getNodeIds() {\n-        return nodeIds;\n-    }\n-\n-    private void clear() {\n-        nodeIdToOutDegree = null;\n-        nodeIds = null;\n-        startIndex = -1;\n-        endIndex = -1;\n-    }\n-\n-    @Override\n-    public void serialize(ByteBuf buf) {\n-        super.serialize(buf);\n-        long nodeId;\n-        int degree;\n-        int writeIndex = buf.writerIndex();\n-        int writeNum = 0;\n-        buf.writeInt(0);\n-        for (int i = startIndex; i < endIndex; i++) {\n-            nodeId = nodeIds[i];\n-            degree = nodeIdToOutDegree.get(nodeId);\n-            buf.writeLong(nodeId);\n-            buf.writeInt(degree);\n-            writeNum++;\n-        }\n-        buf.setInt(writeIndex, writeNum);\n-\n-        clear();\n-    }\n-\n-    @Override\n-    public void deserialize(ByteBuf buf) {\n-        super.deserialize(buf);\n-        int len = buf.readInt();\n-        nodeIdToOutDegree = new Long2IntOpenHashMap(len);\n-\n-        for (int i = 0; i < len; i++) {\n-            long nodeId = buf.readLong();\n-            int degree = buf.readInt();\n-            nodeIdToOutDegree.put(nodeId, degree);\n-        }\n-    }\n+  @Override\n+  public void deserialize(ByteBuf buf) {\n+    super.deserialize(buf);\n+    int len = buf.readInt();\n+    nodeIdToOutDegree = new Long2IntOpenHashMap(len);\n \n-    @Override\n-    public int bufferLen() {\n-        int len = super.bufferLen();\n-        len += 4;\n-        int numItem = nodeIdToOutDegree.size();\n-        len += 8 * numItem; // key\n-        len += 4 * numItem; // value\n-        return len;\n+    for (int i = 0; i < len; i++) {\n+      long nodeId = buf.readLong();\n+      int degree = buf.readInt();\n+      nodeIdToOutDegree.put(nodeId, degree);\n     }\n+  }\n+\n+  @Override\n+  public int bufferLen() {\n+    int len = super.bufferLen();\n+    len += 4;\n+    int numItem = nodeIdToOutDegree.size();\n+    len += 8 * numItem; // key\n+    len += 4 * numItem; // value\n+    return len;\n+  }\n \n \n }\n",
+            "diff_size": 120
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 148).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/857/PartInitOutDegreeParam.java\nindex 8f87a93de4a..ebc4e5dfd86 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/857/PartInitOutDegreeParam.java\n@@ -23,36 +23,34 @@ import it.unimi.dsi.fastutil.longs.Long2IntMap;\n import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;\n \n public class PartInitOutDegreeParam extends PartitionUpdateParam {\n-\n-    private Long2IntMap nodeIdToOutDegree;\n+  private Long2IntMap nodeIdToOutDegree;\n \n     private long[] nodeIds;\n     private transient int startIndex;\n     private transient int endIndex;\n \n-    public PartInitOutDegreeParam(int matrixId, PartitionKey partKey,\n-            Long2IntMap nodeIdToOutDegree, long[] nodeIds, int startIndex, int endIndex) {\n-        super(matrixId, partKey);\n+    public PartInitOutDegreeParam(int matrixId, PartitionKey partKey, Long2IntMap nodeIdToOutDegree, long[] nodeIds, int startIndex, int endIndex) {\n+  super(matrixId, partKey);\n         this.nodeIdToOutDegree = nodeIdToOutDegree;\n         this.nodeIds = nodeIds;\n         this.startIndex = startIndex;\n         this.endIndex = endIndex;\n-    }\n+  }\n \n     public PartInitOutDegreeParam() {\n-        this(0, null, null, null, 0, 0);\n+  this(0, null, null, null, 0, 0);\n     }\n \n     public Long2IntMap getNodeIdToOutDegree() {\n-        return nodeIdToOutDegree;\n-    }\n+  return nodeIdToOutDegree;\n+  }\n \n     public long[] getNodeIds() {\n-        return nodeIds;\n-    }\n+  return nodeIds;\n+  }\n \n     private void clear() {\n-        nodeIdToOutDegree = null;\n+  nodeIdToOutDegree = null;\n         nodeIds = null;\n         startIndex = -1;\n         endIndex = -1;\n@@ -60,14 +58,14 @@ public class PartInitOutDegreeParam extends PartitionUpdateParam {\n \n     @Override\n     public void serialize(ByteBuf buf) {\n-        super.serialize(buf);\n+  super.serialize(buf);\n         long nodeId;\n         int degree;\n         int writeIndex = buf.writerIndex();\n         int writeNum = 0;\n         buf.writeInt(0);\n         for (int i = startIndex; i < endIndex; i++) {\n-            nodeId = nodeIds[i];\n+  nodeId = nodeIds[i];\n             degree = nodeIdToOutDegree.get(nodeId);\n             buf.writeLong(nodeId);\n             buf.writeInt(degree);\n@@ -80,26 +78,24 @@ public class PartInitOutDegreeParam extends PartitionUpdateParam {\n \n     @Override\n     public void deserialize(ByteBuf buf) {\n-        super.deserialize(buf);\n+  super.deserialize(buf);\n         int len = buf.readInt();\n         nodeIdToOutDegree = new Long2IntOpenHashMap(len);\n \n         for (int i = 0; i < len; i++) {\n-            long nodeId = buf.readLong();\n+  long nodeId = buf.readLong();\n             int degree = buf.readInt();\n             nodeIdToOutDegree.put(nodeId, degree);\n         }\n-    }\n+  }\n \n     @Override\n     public int bufferLen() {\n-        int len = super.bufferLen();\n+  int len = super.bufferLen();\n         len += 4;\n         int numItem = nodeIdToOutDegree.size();\n         len += 8 * numItem; // key\n         len += 4 * numItem; // value\n         return len;\n     }\n-\n-\n-}\n+  }\n\\ No newline at end of file\n",
+            "diff_size": 21
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/857/PartInitOutDegreeParam.java\nindex 8f87a93de4a..84055082448 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/857/PartInitOutDegreeParam.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/857/PartInitOutDegreeParam.java\n@@ -24,82 +24,82 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;\n \n public class PartInitOutDegreeParam extends PartitionUpdateParam {\n \n-    private Long2IntMap nodeIdToOutDegree;\n-\n-    private long[] nodeIds;\n-    private transient int startIndex;\n-    private transient int endIndex;\n-\n-    public PartInitOutDegreeParam(int matrixId, PartitionKey partKey,\n-            Long2IntMap nodeIdToOutDegree, long[] nodeIds, int startIndex, int endIndex) {\n-        super(matrixId, partKey);\n-        this.nodeIdToOutDegree = nodeIdToOutDegree;\n-        this.nodeIds = nodeIds;\n-        this.startIndex = startIndex;\n-        this.endIndex = endIndex;\n-    }\n-\n-    public PartInitOutDegreeParam() {\n-        this(0, null, null, null, 0, 0);\n-    }\n-\n-    public Long2IntMap getNodeIdToOutDegree() {\n-        return nodeIdToOutDegree;\n+  private Long2IntMap nodeIdToOutDegree;\n+  private long[] nodeIds;\n+  private transient int startIndex;\n+  private transient int endIndex;\n+\n+  public PartInitOutDegreeParam(int matrixId,\n+                                PartitionKey partKey,\n+                                Long2IntMap nodeIdToOutDegree,\n+                                long[] nodeIds, int startIndex, int endIndex) {\n+    super(matrixId, partKey);\n+    this.nodeIdToOutDegree = nodeIdToOutDegree;\n+    this.nodeIds = nodeIds;\n+    this.startIndex = startIndex;\n+    this.endIndex = endIndex;\n+  }\n+\n+  public PartInitOutDegreeParam() {\n+    this(0, null, null, null, 0, 0);\n+  }\n+\n+  public Long2IntMap getNodeIdToOutDegree() {\n+    return nodeIdToOutDegree;\n+  }\n+\n+  public long[] getNodeIds() {\n+    return nodeIds;\n+  }\n+\n+  private void clear() {\n+    nodeIdToOutDegree = null;\n+    nodeIds = null;\n+    startIndex = -1;\n+    endIndex = -1;\n+  }\n+\n+  @Override\n+  public void serialize(ByteBuf buf) {\n+    super.serialize(buf);\n+\n+    long nodeId;\n+    int degree;\n+    int writeIndex = buf.writerIndex();\n+    int writeNum = 0;\n+    buf.writeInt(0);\n+    for (int i = startIndex; i < endIndex; i++) {\n+      nodeId = nodeIds[i];\n+      degree = nodeIdToOutDegree.get(nodeId);\n+      buf.writeLong(nodeId);\n+      buf.writeInt(degree);\n+      writeNum++;\n     }\n-\n-    public long[] getNodeIds() {\n-        return nodeIds;\n+    buf.setInt(writeIndex, writeNum);\n+    clear();\n+  }\n+\n+  @Override\n+  public void deserialize(ByteBuf buf) {\n+    super.deserialize(buf);\n+\n+    int len = buf.readInt();\n+    nodeIdToOutDegree = new Long2IntOpenHashMap(len);\n+    for (int i = 0; i < len; i++) {\n+      long nodeId = buf.readLong();\n+      int degree = buf.readInt();\n+      nodeIdToOutDegree.put(nodeId, degree);\n     }\n-\n-    private void clear() {\n-        nodeIdToOutDegree = null;\n-        nodeIds = null;\n-        startIndex = -1;\n-        endIndex = -1;\n-    }\n-\n-    @Override\n-    public void serialize(ByteBuf buf) {\n-        super.serialize(buf);\n-        long nodeId;\n-        int degree;\n-        int writeIndex = buf.writerIndex();\n-        int writeNum = 0;\n-        buf.writeInt(0);\n-        for (int i = startIndex; i < endIndex; i++) {\n-            nodeId = nodeIds[i];\n-            degree = nodeIdToOutDegree.get(nodeId);\n-            buf.writeLong(nodeId);\n-            buf.writeInt(degree);\n-            writeNum++;\n-        }\n-        buf.setInt(writeIndex, writeNum);\n-\n-        clear();\n-    }\n-\n-    @Override\n-    public void deserialize(ByteBuf buf) {\n-        super.deserialize(buf);\n-        int len = buf.readInt();\n-        nodeIdToOutDegree = new Long2IntOpenHashMap(len);\n-\n-        for (int i = 0; i < len; i++) {\n-            long nodeId = buf.readLong();\n-            int degree = buf.readInt();\n-            nodeIdToOutDegree.put(nodeId, degree);\n-        }\n-    }\n-\n-    @Override\n-    public int bufferLen() {\n-        int len = super.bufferLen();\n-        len += 4;\n-        int numItem = nodeIdToOutDegree.size();\n-        len += 8 * numItem; // key\n-        len += 4 * numItem; // value\n-        return len;\n-    }\n-\n-\n-}\n+  }\n+\n+  @Override\n+  public int bufferLen() {\n+    int len = super.bufferLen();\n+    len += 4;\n+\n+    int numItem = nodeIdToOutDegree.size();\n+    len += 8 * numItem; // key\n+    len += 4 * numItem; // value\n+    return len;\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 117
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

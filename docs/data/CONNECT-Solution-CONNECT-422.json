@@ -1,0 +1,128 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "422",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.event.builder;\n\nimport com.google.common.base.Function;\nimport com.google.common.base.Optional;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/422/PayloadTypeExtractor.java\nindex d2c54121dfe..5e573a8139f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/422/PayloadTypeExtractor.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.event.builder;\n \n import com.google.common.base.Function;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/422/PayloadTypeExtractor.java\nindex d2c54121dfe..712a13fdc8d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/422/PayloadTypeExtractor.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.event.builder;\n \n import com.google.common.base.Function;\n@@ -41,44 +42,43 @@ import org.slf4j.LoggerFactory;\n \n /**\n  * Extracts the payload type off an Extrinsic Object.\n- *\n+ * <p>\n  * ExtrinsicObject/Classification[@nodeRepresentation=\"formatCode\"]/Slot[@name=\"codingScheme\"]/ValueList/Value[0]\n- *\n  */\n public class PayloadTypeExtractor implements Function<JAXBElement<? extends IdentifiableType>, Optional<String>> {\n \n-    private static final Logger LOG = LoggerFactory.getLogger(PayloadTypeExtractor.class);\n+  private static final Logger LOG = LoggerFactory.getLogger(PayloadTypeExtractor.class);\n \n-    @Override\n-    public Optional<String> apply(JAXBElement<? extends IdentifiableType> jaxbElement) {\n-        Optional<String> payloadType = Optional.absent();\n+  @Override\n+  public Optional<String> apply(JAXBElement<? extends IdentifiableType> jaxbElement) {\n+    Optional<String> payloadType = Optional.absent();\n \n-        IdentifiableType value = jaxbElement.getValue();\n-        if (value instanceof ExtrinsicObjectType) {\n-            ExtrinsicObjectType extrinsicObjectType = (ExtrinsicObjectType) value;\n+    IdentifiableType value = jaxbElement.getValue();\n+    if (value instanceof ExtrinsicObjectType) {\n+      ExtrinsicObjectType extrinsicObjectType = (ExtrinsicObjectType) value;\n \n-            Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType,\n-                    DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n-            if (classificationType.isPresent()) {\n-                payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(),\n-                        DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n-            }\n-        } else {\n-            LOG.warn(\"Passed in element has an unexpected type.  Expecting ExtrinsicObjectType.  Returning as absent.\");\n-        }\n-\n-        return payloadType;\n+      Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType,\n+          DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n+      if (classificationType.isPresent()) {\n+        payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(),\n+            DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n+      }\n+    } else {\n+      LOG.warn(\"Passed in element has an unexpected type.  Expecting ExtrinsicObjectType.  Returning as absent.\");\n     }\n \n-    private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType,\n-            final String expectedType) {\n-        Predicate<ClassificationType> typePredicate = new Predicate<ClassificationType>() {\n-            @Override\n-            public boolean apply(ClassificationType type) {\n-                return expectedType.equals(type.getNodeRepresentation());\n-            }\n-        };\n-        return Iterables.tryFind(extrinsicObjectType.getClassification(), typePredicate);\n-    }\n+    return payloadType;\n+  }\n+\n+  private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType,\n+                                                              final String expectedType) {\n+    Predicate<ClassificationType> typePredicate = new Predicate<ClassificationType>() {\n+      @Override\n+      public boolean apply(ClassificationType type) {\n+        return expectedType.equals(type.getNodeRepresentation());\n+      }\n+    };\n+    return Iterables.tryFind(extrinsicObjectType.getClassification(), typePredicate);\n+  }\n \n }\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 172).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "72",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/422/PayloadTypeExtractor.java\nindex d2c54121dfe..8bc7f8b61fe 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/422/PayloadTypeExtractor.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.event.builder;\n \n import com.google.common.base.Function;\n@@ -57,12 +58,10 @@ public class PayloadTypeExtractor implements Function<JAXBElement<? extends Iden\n         if (value instanceof ExtrinsicObjectType) {\n             ExtrinsicObjectType extrinsicObjectType = (ExtrinsicObjectType) value;\n \n-            Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType,\n-                    DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n-            if (classificationType.isPresent()) {\n-                payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(),\n-                        DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n-            }\n+            Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType, DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n+if (classificationType.isPresent()) {\n+                payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(), DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n+    }\n         } else {\n             LOG.warn(\"Passed in element has an unexpected type.  Expecting ExtrinsicObjectType.  Returning as absent.\");\n         }\n@@ -70,9 +69,8 @@ public class PayloadTypeExtractor implements Function<JAXBElement<? extends Iden\n         return payloadType;\n     }\n \n-    private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType,\n-            final String expectedType) {\n-        Predicate<ClassificationType> typePredicate = new Predicate<ClassificationType>() {\n+    private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType, final String expectedType) {\n+    Predicate<ClassificationType> typePredicate = new Predicate<ClassificationType>() {\n             @Override\n             public boolean apply(ClassificationType type) {\n                 return expectedType.equals(type.getNodeRepresentation());\n@@ -81,4 +79,4 @@ public class PayloadTypeExtractor implements Function<JAXBElement<? extends Iden\n         return Iterables.tryFind(extrinsicObjectType.getClassification(), typePredicate);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "62",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 172).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "64",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/422/PayloadTypeExtractor.java\nindex d2c54121dfe..e688f9ff17f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/422/PayloadTypeExtractor.java\n@@ -45,40 +45,43 @@ import org.slf4j.LoggerFactory;\n  * ExtrinsicObject/Classification[@nodeRepresentation=\"formatCode\"]/Slot[@name=\"codingScheme\"]/ValueList/Value[0]\n  *\n  */\n+\n+\n public class PayloadTypeExtractor implements Function<JAXBElement<? extends IdentifiableType>, Optional<String>> {\n \n     private static final Logger LOG = LoggerFactory.getLogger(PayloadTypeExtractor.class);\n \n+\n     @Override\n     public Optional<String> apply(JAXBElement<? extends IdentifiableType> jaxbElement) {\n         Optional<String> payloadType = Optional.absent();\n-\n         IdentifiableType value = jaxbElement.getValue();\n-        if (value instanceof ExtrinsicObjectType) {\n-            ExtrinsicObjectType extrinsicObjectType = (ExtrinsicObjectType) value;\n-\n-            Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType,\n-                    DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n+        if(value instanceof ExtrinsicObjectType) {\n+            ExtrinsicObjectType extrinsicObjectType = (ExtrinsicObjectType)\n+                                                          value;\n+            Optional<ClassificationType> classificationType = findClassificationType(extrinsicObjectType, DocumentConstants.EBXML_RESPONSE_NODE_REPRESENTATION_FORMAT_CODE);\n             if (classificationType.isPresent()) {\n-                payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(),\n-                        DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n+                payloadType = JaxbDocumentUtils.findSlotType(classificationType.get().getSlot(), DocumentConstants.EBXML_RESPONSE_CODE_CODESCHEME_SLOTNAME);\n             }\n-        } else {\n-            LOG.warn(\"Passed in element has an unexpected type.  Expecting ExtrinsicObjectType.  Returning as absent.\");\n         }\n \n+\n+else {\n+            LOG.warn(\"Passed in element has an unexpected type.  Expecting ExtrinsicObjectType.  Returning as absent.\");\n+        }\n         return payloadType;\n     }\n \n-    private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType,\n-            final String expectedType) {\n+    private Optional<ClassificationType> findClassificationType(ExtrinsicObjectType extrinsicObjectType, final String expectedType) {\n         Predicate<ClassificationType> typePredicate = new Predicate<ClassificationType>() {\n-            @Override\n-            public boolean apply(ClassificationType type) {\n-                return expectedType.equals(type.getNodeRepresentation());\n-            }\n-        };\n+\n+\n+                                                          @Override\n+                                                          public boolean apply(ClassificationType type) {\n+                                                              return expectedType.equals(type.getNodeRepresentation());\n+                                                          }\n+                                                      };\n         return Iterables.tryFind(extrinsicObjectType.getClassification(), typePredicate);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 27
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/422/PayloadTypeExtractor.java\nindex d2c54121dfe..5e573a8139f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/422/PayloadTypeExtractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/422/PayloadTypeExtractor.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.event.builder;\n \n import com.google.common.base.Function;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

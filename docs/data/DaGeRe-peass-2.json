@@ -1,0 +1,90 @@
+{
+    "project_name": "DaGeRe-peass",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "25",
+                "severity": "error",
+                "message": "Line is longer than 200 characters (found 208).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "   private final DependencyReader reader;\n\n   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n      this.minimumCommit = minimumCommit;\n      this.currentOutFile = currentOutFile;\n      this.reserveIterator = reserveIterator;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 229).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/2/OneReader.java\nindex 7e86582bb70..4e85a4137e3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/2/OneReader.java\n@@ -22,7 +22,7 @@ public final class OneReader implements Runnable {\n    final FirstRunningVersionFinder firstRunningVersionFinder;\n    private final DependencyReader reader;\n \n-   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n+\t\t\tpublic OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n       this.minimumCommit = minimumCommit;\n       this.currentOutFile = currentOutFile;\n       this.reserveIterator = reserveIterator;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/2/OneReader.java\nindex 7e86582bb70..c65a873b1da 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/2/OneReader.java\n@@ -14,54 +14,55 @@ import de.dagere.peass.vcs.VersionIterator;\n \n public final class OneReader implements Runnable {\n \n-   private static final Logger LOG = LogManager.getLogger(OneReader.class);\n+  private static final Logger LOG = LogManager.getLogger(OneReader.class);\n \n-   private final GitCommit minimumCommit;\n-   private final File currentOutFile;\n-   private final VersionIterator reserveIterator;\n-   final FirstRunningVersionFinder firstRunningVersionFinder;\n-   private final DependencyReader reader;\n+  private final GitCommit minimumCommit;\n+  private final File currentOutFile;\n+  private final VersionIterator reserveIterator;\n+  final FirstRunningVersionFinder firstRunningVersionFinder;\n+  private final DependencyReader reader;\n \n-   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n-      this.minimumCommit = minimumCommit;\n-      this.currentOutFile = currentOutFile;\n-      this.reserveIterator = reserveIterator;\n-      this.firstRunningVersionFinder = firstRunningVersionFinder;\n-      this.reader = reader;\n-   }\n+  public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader,\n+                   final FirstRunningVersionFinder firstRunningVersionFinder) {\n+    this.minimumCommit = minimumCommit;\n+    this.currentOutFile = currentOutFile;\n+    this.reserveIterator = reserveIterator;\n+    this.firstRunningVersionFinder = firstRunningVersionFinder;\n+    this.reader = reader;\n+  }\n \n-   @Override\n-   public void run() {\n-      try {\n-         boolean init = firstRunningVersionFinder.searchFirstRunningCommit();\n-         if (init) {\n-            LOG.debug(\"Reader initalized: \" + currentOutFile + \" This: \" + this);\n-            if (!reader.readInitialVersion()) {\n-               LOG.error(\"Analyzing first version was not possible\");\n-            } else {\n-               final boolean readingSuccess = reader.readDependencies();\n-               if (readingSuccess) {\n-                  readRemaining(reader);\n-               }\n-            }\n-         }\n-      } catch (final Throwable e) {\n-         e.printStackTrace();\n+  @Override\n+  public void run() {\n+    try {\n+      boolean init = firstRunningVersionFinder.searchFirstRunningCommit();\n+      if (init) {\n+        LOG.debug(\"Reader initalized: \" + currentOutFile + \" This: \" + this);\n+        if (!reader.readInitialVersion()) {\n+          LOG.error(\"Analyzing first version was not possible\");\n+        } else {\n+          final boolean readingSuccess = reader.readDependencies();\n+          if (readingSuccess) {\n+            readRemaining(reader);\n+          }\n+        }\n       }\n-   }\n+    } catch (final Throwable e) {\n+      e.printStackTrace();\n+    }\n+  }\n \n-   private void readRemaining(final DependencyReader reader) {\n-      String newest = reader.getDependencies().getNewestVersion();\n-      reader.setIterator(reserveIterator);\n-      while (reserveIterator.hasNextCommit() && VersionComparator.isBefore(newest, minimumCommit.getTag())) {\n-         reserveIterator.goToNextCommit();\n-         LOG.debug(\"Remaining: {} This: {}\", reserveIterator.getTag(), this);\n-         try {\n-            reader.readVersion();\n-         } catch (final IOException e) {\n-            e.printStackTrace();\n-         }\n-         newest = reader.getDependencies().getNewestVersion();\n+  private void readRemaining(final DependencyReader reader) {\n+    String newest = reader.getDependencies().getNewestVersion();\n+    reader.setIterator(reserveIterator);\n+    while (reserveIterator.hasNextCommit() && VersionComparator.isBefore(newest, minimumCommit.getTag())) {\n+      reserveIterator.goToNextCommit();\n+      LOG.debug(\"Remaining: {} This: {}\", reserveIterator.getTag(), this);\n+      try {\n+        reader.readVersion();\n+      } catch (final IOException e) {\n+        e.printStackTrace();\n       }\n-   }\n+      newest = reader.getDependencies().getNewestVersion();\n+    }\n+  }\n }\n\\ No newline at end of file\n",
+            "diff_size": 50
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "22",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 206).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/2/OneReader.java\nindex 7e86582bb70..f8740be8633 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/2/OneReader.java\n@@ -2,66 +2,64 @@ package de.dagere.peass.dependency.parallel;\n \n import java.io.File;\n import java.io.IOException;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import de.dagere.peass.dependency.reader.DependencyReader;\n import de.dagere.peass.dependency.reader.FirstRunningVersionFinder;\n import de.dagere.peass.dependencyprocessors.VersionComparator;\n import de.dagere.peass.vcs.GitCommit;\n import de.dagere.peass.vcs.VersionIterator;\n \n-public final class OneReader implements Runnable {\n \n-   private static final Logger LOG = LogManager.getLogger(OneReader.class);\n+public final class OneReader implements Runnable {\n+ private static final Logger LOG = LogManager.getLogger(OneReader.class);\n+ private final GitCommit minimumCommit;\n+ private final File currentOutFile;\n+ private final VersionIterator reserveIterator;\n+ final FirstRunningVersionFinder firstRunningVersionFinder;\n+ private final DependencyReader reader;\n \n-   private final GitCommit minimumCommit;\n-   private final File currentOutFile;\n-   private final VersionIterator reserveIterator;\n-   final FirstRunningVersionFinder firstRunningVersionFinder;\n-   private final DependencyReader reader;\n+ public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n+  this.minimumCommit = minimumCommit;\n+  this.currentOutFile = currentOutFile;\n+  this.reserveIterator = reserveIterator;\n+  this.firstRunningVersionFinder = firstRunningVersionFinder;\n+  this.reader = reader;\n+ }\n \n-   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n-      this.minimumCommit = minimumCommit;\n-      this.currentOutFile = currentOutFile;\n-      this.reserveIterator = reserveIterator;\n-      this.firstRunningVersionFinder = firstRunningVersionFinder;\n-      this.reader = reader;\n+ @Override\n+ public void run() {\n+  try {\n+   boolean init = firstRunningVersionFinder.searchFirstRunningCommit();\n+   if (init) {\n+    LOG.debug(\"Reader initalized: \" + currentOutFile + \" This: \" + this);\n+    if (!reader.readInitialVersion()) {\n+     LOG.error(\"Analyzing first version was not possible\");\n+    } else {\n+     final boolean readingSuccess = reader.readDependencies();\n+     if (readingSuccess) {\n+      readRemaining(reader);\n+     }\n+    }\n    }\n+  } catch (final Throwable e) {\n+   e.printStackTrace();\n+  }\n+ }\n \n-   @Override\n-   public void run() {\n-      try {\n-         boolean init = firstRunningVersionFinder.searchFirstRunningCommit();\n-         if (init) {\n-            LOG.debug(\"Reader initalized: \" + currentOutFile + \" This: \" + this);\n-            if (!reader.readInitialVersion()) {\n-               LOG.error(\"Analyzing first version was not possible\");\n-            } else {\n-               final boolean readingSuccess = reader.readDependencies();\n-               if (readingSuccess) {\n-                  readRemaining(reader);\n-               }\n-            }\n-         }\n-      } catch (final Throwable e) {\n-         e.printStackTrace();\n-      }\n+ private void readRemaining(final DependencyReader reader) {\n+  String newest = reader.getDependencies().getNewestVersion();\n+  reader.setIterator(reserveIterator);\n+  while (reserveIterator.hasNextCommit() && VersionComparator.isBefore(newest, minimumCommit.getTag())) {\n+   reserveIterator.goToNextCommit();\n+   LOG.debug(\"Remaining: {} This: {}\", reserveIterator.getTag(), this);\n+   try {\n+    reader.readVersion();\n+   } catch (final IOException e) {\n+    e.printStackTrace();\n    }\n+   newest = reader.getDependencies().getNewestVersion();\n+  }\n+ }\n \n-   private void readRemaining(final DependencyReader reader) {\n-      String newest = reader.getDependencies().getNewestVersion();\n-      reader.setIterator(reserveIterator);\n-      while (reserveIterator.hasNextCommit() && VersionComparator.isBefore(newest, minimumCommit.getTag())) {\n-         reserveIterator.goToNextCommit();\n-         LOG.debug(\"Remaining: {} This: {}\", reserveIterator.getTag(), this);\n-         try {\n-            reader.readVersion();\n-         } catch (final IOException e) {\n-            e.printStackTrace();\n-         }\n-         newest = reader.getDependencies().getNewestVersion();\n-      }\n-   }\n }\n\\ No newline at end of file\n",
+            "diff_size": 70
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 229).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/2/OneReader.java\nindex 7e86582bb70..4e85a4137e3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/2/OneReader.java\n@@ -22,7 +22,7 @@ public final class OneReader implements Runnable {\n    final FirstRunningVersionFinder firstRunningVersionFinder;\n    private final DependencyReader reader;\n \n-   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n+\t\t\tpublic OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n       this.minimumCommit = minimumCommit;\n       this.currentOutFile = currentOutFile;\n       this.reserveIterator = reserveIterator;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 237).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/2/OneReader.java\nindex 7e86582bb70..fa2d6355b3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/2/OneReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/2/OneReader.java\n@@ -21,8 +21,7 @@ public final class OneReader implements Runnable {\n    private final VersionIterator reserveIterator;\n    final FirstRunningVersionFinder firstRunningVersionFinder;\n    private final DependencyReader reader;\n-\n-   public OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n+\t\t\t\tpublic OneReader(final GitCommit minimumCommit, final File currentOutFile, final VersionIterator reserveIterator, final DependencyReader reader, final FirstRunningVersionFinder firstRunningVersionFinder) {\n       this.minimumCommit = minimumCommit;\n       this.currentOutFile = currentOutFile;\n       this.reserveIterator = reserveIterator;\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

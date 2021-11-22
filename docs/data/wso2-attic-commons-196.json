@@ -1,0 +1,69 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "196",
+    "information": {
+        "errors": [
+            {
+                "line": "15",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 125).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " */\nclass BpelInstanceWorkerCache {\n    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n    private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n    \n    private ODEProcess _process;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/196/BpelInstanceWorkerCache.java\nindex 797b58b4877..ab40ea13557 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/196/BpelInstanceWorkerCache.java\n@@ -12,7 +12,8 @@ import java.util.HashMap;\n  *\n  */\n class BpelInstanceWorkerCache {\n-    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n+    private HashMap<Long, WeakReference<BpelInstanceWorker>\n+    > _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n     private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n     \n     private ODEProcess _process;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/196/BpelInstanceWorkerCache.java\nindex 797b58b4877..8d19d386c69 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/196/BpelInstanceWorkerCache.java\n@@ -6,50 +6,50 @@ import java.lang.ref.WeakReference;\n import java.util.HashMap;\n \n /**\n- * A cache of {@link BpelInstanceWorker} objects. \n- * \n- * @author Maciej Szefler <mszefler at gmail dot com>\n+ * A cache of {@link BpelInstanceWorker} objects.\n  *\n+ * @author Maciej Szefler <mszefler at gmail dot com>\n  */\n class BpelInstanceWorkerCache {\n-    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n-    private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n-    \n-    private ODEProcess _process;\n-    \n-    public BpelInstanceWorkerCache(ODEProcess process) {\n-        _process = process;\n-    }\n-    \n-    synchronized BpelInstanceWorker get(long iid) {\n-        expungeStaleEntries();\n-        WeakReference<BpelInstanceWorker> wref = _cache.get(iid);\n-        BpelInstanceWorker worker;\n-        \n-        // Case: not in cache.\n-        if (wref == null) {\n-            worker = new BpelInstanceWorker(_process, iid);\n-            wref = new WeakReference<BpelInstanceWorker>(worker,_refQ);\n-            _cache.put(iid, wref);\n-        } else {\n-            worker = wref.get();\n-            \n-            // Case: garbage collected\n-            if (worker == null) {\n-                worker = new BpelInstanceWorker(_process, iid);\n-                wref = new WeakReference<BpelInstanceWorker>(worker,_refQ);\n-                _cache.put(iid, wref); \n-            }\n-        }\n-\n-        return worker;\n+  private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache =\n+    new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n+  private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n+\n+  private ODEProcess _process;\n+\n+  public BpelInstanceWorkerCache(ODEProcess process) {\n+    _process = process;\n+  }\n+\n+  synchronized BpelInstanceWorker get(long iid) {\n+    expungeStaleEntries();\n+    WeakReference<BpelInstanceWorker> wref = _cache.get(iid);\n+    BpelInstanceWorker worker;\n+\n+    // Case: not in cache.\n+    if (wref == null) {\n+      worker = new BpelInstanceWorker(_process, iid);\n+      wref = new WeakReference<BpelInstanceWorker>(worker, _refQ);\n+      _cache.put(iid, wref);\n+    } else {\n+      worker = wref.get();\n+\n+      // Case: garbage collected\n+      if (worker == null) {\n+        worker = new BpelInstanceWorker(_process, iid);\n+        wref = new WeakReference<BpelInstanceWorker>(worker, _refQ);\n+        _cache.put(iid, wref);\n+      }\n     }\n-    \n-    \n-    private void expungeStaleEntries() {\n-        Reference<? extends BpelInstanceWorker> x;\n-        while ((x=_refQ.poll()) != null){\n-            _cache.values().remove(x);\n-        }\n+\n+    return worker;\n+  }\n+\n+\n+  private void expungeStaleEntries() {\n+    Reference<? extends BpelInstanceWorker> x;\n+    while ((x = _refQ.poll()) != null) {\n+      _cache.values().remove(x);\n     }\n+  }\n }\n",
+            "diff_size": 45
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "15",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/196/BpelInstanceWorkerCache.java\nindex 797b58b4877..8d50aa29076 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/196/BpelInstanceWorkerCache.java\n@@ -20,8 +20,7 @@ class BpelInstanceWorkerCache {\n     public BpelInstanceWorkerCache(ODEProcess process) {\n         _process = process;\n     }\n-    \n-    synchronized BpelInstanceWorker get(long iid) {\n+synchronized BpelInstanceWorker get(long iid) {\n         expungeStaleEntries();\n         WeakReference<BpelInstanceWorker> wref = _cache.get(iid);\n         BpelInstanceWorker worker;\n@@ -52,4 +51,4 @@ class BpelInstanceWorkerCache {\n             _cache.values().remove(x);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/196/BpelInstanceWorkerCache.java\nindex 797b58b4877..ab40ea13557 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/196/BpelInstanceWorkerCache.java\n@@ -12,7 +12,8 @@ import java.util.HashMap;\n  *\n  */\n class BpelInstanceWorkerCache {\n-    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n+    private HashMap<Long, WeakReference<BpelInstanceWorker>\n+    > _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n     private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n     \n     private ODEProcess _process;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/196/BpelInstanceWorkerCache.java\nindex 797b58b4877..699f9310423 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/196/BpelInstanceWorkerCache.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/196/BpelInstanceWorkerCache.java\n@@ -12,8 +12,9 @@ import java.util.HashMap;\n  *\n  */\n class BpelInstanceWorkerCache {\n-    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n-    private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n+    private HashMap<Long, WeakReference<BpelInstanceWorker>> _cache\n+        = new HashMap<Long, WeakReference<BpelInstanceWorker>>();\n+     private ReferenceQueue<BpelInstanceWorker> _refQ = new ReferenceQueue<BpelInstanceWorker>();\n     \n     private ODEProcess _process;\n     \n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,108 @@
+{
+    "project_name": "spark-root-laurelin",
+    "error_id": "11",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "column": "5",
+                "severity": "warning",
+                "message": "'ENUM_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "public class AsDtype implements Interpretation {\n    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n    public enum Dtype {\n        BOOL,\n        INT1,\n        INT2,",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/11/AsDtype.java\nindex df01f8a9207..43ac0988ff4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/11/AsDtype.java\n@@ -13,6 +13,7 @@ import edu.vanderbilt.accre.laurelin.array.RawArray;\n \n public class AsDtype implements Interpretation {\n     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n+\n     public enum Dtype {\n         BOOL,\n         INT1,\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/11/AsDtype.java\nindex df01f8a9207..26e09d579de 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/11/AsDtype.java\n@@ -12,7 +12,9 @@ import edu.vanderbilt.accre.laurelin.array.PrimitiveArray;\n import edu.vanderbilt.accre.laurelin.array.RawArray;\n \n public class AsDtype implements Interpretation {\n-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n+    private static final org.apache.logging.log4j.Logger logger =\n+        LogManager.getLogger();\n+\n     public enum Dtype {\n         BOOL,\n         INT1,\n@@ -150,7 +152,8 @@ public class AsDtype implements Interpretation {\n     public int numitems(int numbytes, int numentries) {\n         if (numbytes % this.disk_itemsize() != 0) {\n             throw new AssertionError(\n-                    String.format(\"%d byte buffer does not divide evenly into %s\", numbytes, this.dtype.toString()));\n+                String.format(\"%d byte buffer does not divide evenly into %s\",\n+                    numbytes, this.dtype.toString()));\n         }\n         return numbytes / this.disk_itemsize();\n     }\n@@ -161,12 +164,14 @@ public class AsDtype implements Interpretation {\n     }\n \n     @Override\n-    public Array fromroot(RawArray bytedata, PrimitiveArray.Int4 byteoffsets, int local_entrystart, int local_entrystop) {\n+    public Array fromroot(RawArray bytedata, PrimitiveArray.Int4 byteoffsets,\n+                          int local_entrystart, int local_entrystop) {\n         if (byteoffsets != null) {\n             throw new AssertionError(\"byteoffsets must be null for AsDtype\");\n         }\n         int entrysize = this.multiplicity() * this.memory_itemsize();\n-        RawArray sliced = bytedata.slice(local_entrystart * entrysize, local_entrystop * entrysize);\n+        RawArray sliced = bytedata\n+            .slice(local_entrystart * entrysize, local_entrystop * entrysize);\n         switch (this.dtype) {\n             case BOOL:\n                 return new PrimitiveArray.Bool(this, sliced);\n@@ -199,7 +204,9 @@ public class AsDtype implements Interpretation {\n     public Array destination(int numitems, int numentries) {\n         if (numitems % this.multiplicity() != 0) {\n             throw new AssertionError(\n-                    String.format(\"%d items do not divide evenly into multiplicity %d\", numitems, this.multiplicity()));\n+                String.format(\n+                    \"%d items do not divide evenly into multiplicity %d\",\n+                    numitems, this.multiplicity()));\n         }\n         int length = numitems / this.multiplicity();\n         switch (this.dtype) {\n@@ -284,7 +291,8 @@ public class AsDtype implements Interpretation {\n     }\n \n     @Override\n-    public PrimitiveArray.Int4 convertOffsetDiskToMemory(PrimitiveArray.Int4 source) {\n+    public PrimitiveArray.Int4 convertOffsetDiskToMemory(\n+        PrimitiveArray.Int4 source) {\n         PrimitiveArray.Int4 converted;\n         switch (this.dtype) {\n             case UINT1:\n@@ -306,8 +314,10 @@ public class AsDtype implements Interpretation {\n     }\n \n     @Override\n-    public void fill(Array source, Array destination, int itemstart, int itemstop, int entrystart, int entrystop) {\n-        ((PrimitiveArray) destination).copyitems((PrimitiveArray) source, itemstart, itemstop);\n+    public void fill(Array source, Array destination, int itemstart,\n+                     int itemstop, int entrystart, int entrystop) {\n+        ((PrimitiveArray) destination)\n+            .copyitems((PrimitiveArray) source, itemstart, itemstop);\n     }\n \n     @Override\n@@ -323,7 +333,8 @@ public class AsDtype implements Interpretation {\n     @Override\n     public Interpretation subarray() {\n         if (this.dims.size() == 0) {\n-            throw new IllegalArgumentException(\"trying to take the subarray of a scalar type\");\n+            throw new IllegalArgumentException(\n+                \"trying to take the subarray of a scalar type\");\n         }\n         return new AsDtype(this.dtype, this.dims.subList(1, this.dims.size()));\n     }\n",
+            "diff_size": 20
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "16",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'ENUM_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "291",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'case' child has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "292",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'case' child has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/11/AsDtype.java\nindex df01f8a9207..5587b644b00 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/11/AsDtype.java\n@@ -288,8 +288,8 @@ public class AsDtype implements Interpretation {\n         PrimitiveArray.Int4 converted;\n         switch (this.dtype) {\n             case UINT1:\n-            case UINT2:\n-            case UINT4:\n+    case UINT2:\n+    case UINT4:\n                 /*\n                  * The offsets are byte-indexed so if we make the type larger,\n                  * we need to also re-point the offsets\n@@ -327,4 +327,4 @@ public class AsDtype implements Interpretation {\n         }\n         return new AsDtype(this.dtype, this.dims.subList(1, this.dims.size()));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "15",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '{' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "16",
+                    "column": "81",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "17",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/11/AsDtype.java\nindex df01f8a9207..ada1ca952a6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/11/AsDtype.java\n@@ -4,29 +4,16 @@ import java.nio.ByteBuffer;\n import java.util.Arrays;\n import java.util.Collections;\n import java.util.List;\n-\n import org.apache.logging.log4j.LogManager;\n-\n import edu.vanderbilt.accre.laurelin.array.Array;\n import edu.vanderbilt.accre.laurelin.array.PrimitiveArray;\n import edu.vanderbilt.accre.laurelin.array.RawArray;\n \n public class AsDtype implements Interpretation {\n     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n-    public enum Dtype {\n-        BOOL,\n-        INT1,\n-        INT2,\n-        INT4,\n-        INT8,\n-        UINT1,\n-        UINT2,\n-        UINT4,\n-        UINT8,\n-        FLOAT4,\n-        FLOAT8\n-    }\n \n+    public enum Dtype{\n+        BOOL, INT1, INT2, INT4, INT8, UINT1, UINT2, UINT4, UINT8, FLOAT4, FLOAT8}\n     Dtype dtype;\n     List<Integer> dims;\n \n@@ -50,7 +37,7 @@ public class AsDtype implements Interpretation {\n \n     public int multiplicity() {\n         int out = 1;\n-        for (Integer i : this.dims) {\n+        for (Integer i: this.dims) {\n             out *= i;\n         }\n         return out;\n@@ -149,15 +136,14 @@ public class AsDtype implements Interpretation {\n     @Override\n     public int numitems(int numbytes, int numentries) {\n         if (numbytes % this.disk_itemsize() != 0) {\n-            throw new AssertionError(\n-                    String.format(\"%d byte buffer does not divide evenly into %s\", numbytes, this.dtype.toString()));\n+            throw new AssertionError(String.format(\"%d byte buffer does not divide evenly into %s\", numbytes, this.dtype.toString()));\n         }\n         return numbytes / this.disk_itemsize();\n     }\n \n     @Override\n     public int source_numitems(Array source) {\n-        return ((PrimitiveArray) source).numitems();\n+        return ((PrimitiveArray)source).numitems();\n     }\n \n     @Override\n@@ -165,6 +151,7 @@ public class AsDtype implements Interpretation {\n         if (byteoffsets != null) {\n             throw new AssertionError(\"byteoffsets must be null for AsDtype\");\n         }\n+\n         int entrysize = this.multiplicity() * this.memory_itemsize();\n         RawArray sliced = bytedata.slice(local_entrystart * entrysize, local_entrystop * entrysize);\n         switch (this.dtype) {\n@@ -198,9 +185,9 @@ public class AsDtype implements Interpretation {\n     @Override\n     public Array destination(int numitems, int numentries) {\n         if (numitems % this.multiplicity() != 0) {\n-            throw new AssertionError(\n-                    String.format(\"%d items do not divide evenly into multiplicity %d\", numitems, this.multiplicity()));\n+            throw new AssertionError(String.format(\"%d items do not divide evenly into multiplicity %d\", numitems, this.multiplicity()));\n         }\n+\n         int length = numitems / this.multiplicity();\n         switch (this.dtype) {\n             case BOOL:\n@@ -247,7 +234,7 @@ public class AsDtype implements Interpretation {\n                  * ByteBuffers are always initialized to zero\n                  */\n                 converted = ByteBuffer.allocate(source.length() * 2);\n-                for (int i = 0; i < source.length(); i += 1) {\n+                for (int i = 0;  i < source.length();  i += 1) {\n                     converted.put((i * 2) + 1, source.getByte(i));\n                 }\n                 return new RawArray(converted);\n@@ -258,7 +245,7 @@ public class AsDtype implements Interpretation {\n                  * dest:  00 00 11 22 00 00 33 44\n                  */\n                 converted = ByteBuffer.allocate(source.length() * 2);\n-                for (int i = 0; i < source.length(); i += 2) {\n+                for (int i = 0;  i < source.length();  i += 2) {\n                     converted.put((i * 2) + 2, source.getByte(i));\n                     converted.put((i * 2) + 3, source.getByte(i + 1));\n                 }\n@@ -270,7 +257,7 @@ public class AsDtype implements Interpretation {\n                  * dest:  00 00 11 22 00 00 33 44\n                  */\n                 converted = ByteBuffer.allocate(source.length() * 2);\n-                for (int i = 0; i < source.length(); i += 4) {\n+                for (int i = 0;  i < source.length();  i += 4) {\n                     converted.put((i * 2) + 4, source.getByte(i));\n                     converted.put((i * 2) + 5, source.getByte(i + 1));\n                     converted.put((i * 2) + 6, source.getByte(i + 2));\n@@ -295,7 +282,7 @@ public class AsDtype implements Interpretation {\n                  * we need to also re-point the offsets\n                  */\n                 converted = new PrimitiveArray.Int4(source.length());\n-                for (int i = 0; i < source.length(); i += 1) {\n+                for (int i = 0;  i < source.length();  i += 1) {\n                     converted.put(i, source.get(i) * 2);\n                 }\n                 return converted;\n@@ -307,7 +294,7 @@ public class AsDtype implements Interpretation {\n \n     @Override\n     public void fill(Array source, Array destination, int itemstart, int itemstop, int entrystart, int entrystop) {\n-        ((PrimitiveArray) destination).copyitems((PrimitiveArray) source, itemstart, itemstop);\n+        ((PrimitiveArray)destination).copyitems((PrimitiveArray)source, itemstart, itemstop);\n     }\n \n     @Override\n@@ -327,4 +314,4 @@ public class AsDtype implements Interpretation {\n         }\n         return new AsDtype(this.dtype, this.dims.subList(1, this.dims.size()));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/11/AsDtype.java\nindex df01f8a9207..43ac0988ff4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/11/AsDtype.java\n@@ -13,6 +13,7 @@ import edu.vanderbilt.accre.laurelin.array.RawArray;\n \n public class AsDtype implements Interpretation {\n     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n+\n     public enum Dtype {\n         BOOL,\n         INT1,\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/11/AsDtype.java\nindex df01f8a9207..43ac0988ff4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/11/AsDtype.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/11/AsDtype.java\n@@ -13,6 +13,7 @@ import edu.vanderbilt.accre.laurelin.array.RawArray;\n \n public class AsDtype implements Interpretation {\n     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger();\n+\n     public enum Dtype {\n         BOOL,\n         INT1,\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

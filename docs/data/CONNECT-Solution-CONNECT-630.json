@@ -1,0 +1,270 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "630",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.mpi.adapter.component;\n\nimport gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\nimport gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201306;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/630/PatientDbChecker.java\nindex 118746f47d3..89ef251b33f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/630/PatientDbChecker.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.mpi.adapter.component;\n \n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/630/PatientDbChecker.java\nindex 118746f47d3..e2137959c78 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/630/PatientDbChecker.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.mpi.adapter.component;\n \n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\n@@ -41,98 +42,96 @@ import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n \n /**\n- *\n  * @author richard.ettema\n  */\n public class PatientDbChecker implements AdapterComponentMpiChecker {\n \n-    private static final Logger LOG = LoggerFactory.getLogger(PatientDbChecker.class);\n-\n-    @Override\n-    public PRPAIN201306UV02 findPatient(PRPAIN201305UV02 query) {\n-        LOG.trace(\"Entering PatientDbChecker.FindPatient method...\");\n-        PRPAIN201306UV02 result;\n-\n-        PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n-        List<Patient> filteredPatients = new ArrayList<>();\n-\n-        if (queryParams == null) {\n-            LOG.error(\"no query parameters were supplied\");\n-        } else {\n-            Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n-\n-            // Perform find\n-            PatientService patientService = PatientService.getPatientService();\n-            List<Patient> patientList = patientService.findPatients(sourcePatient);\n-\n-            if (patientList != null && patientList.size() > 0) {\n-\n-                List<String> dupOrgIds = new ArrayList<>();\n-                for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n-                        for (Patient tempPatient : filteredPatients) {\n-                            if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient\n-                                    .getIdentifiers().get(0).getOrganizationId())) {\n-                                dupOrgIds.add(patient.getIdentifiers().get(0).getOrganizationId());\n-                            }\n-                        }\n-                        filteredPatients.add(patient);\n-                    }\n-                }\n-\n-                if ((dupOrgIds != null) && (dupOrgIds.size() > 0)) {\n-                    HashSet<String> hashSet = new HashSet<>(dupOrgIds);\n-                    dupOrgIds = new ArrayList<>(hashSet);\n-                    LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \"\n-                            + dupOrgIds.size());\n-                }\n-\n-                for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n-                        for (String str : dupOrgIds) {\n-                            if ((patient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(str)) {\n-                                filteredPatients.remove(patient);\n-                            }\n-                        }\n-                    }\n-                }\n-                LOG.debug(\"After duplicates removed - filteredPatients.size(): \" + filteredPatients.size());\n-            } else {\n-                // No matches found, generate appropriate empty response\n-                LOG.debug(\"No matches found, generate appropriate empty response\");\n+  private static final Logger LOG = LoggerFactory.getLogger(PatientDbChecker.class);\n+\n+  @Override\n+  public PRPAIN201306UV02 findPatient(PRPAIN201305UV02 query) {\n+    LOG.trace(\"Entering PatientDbChecker.FindPatient method...\");\n+    PRPAIN201306UV02 result;\n+\n+    PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n+    List<Patient> filteredPatients = new ArrayList<>();\n+\n+    if (queryParams == null) {\n+      LOG.error(\"no query parameters were supplied\");\n+    } else {\n+      Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n+\n+      // Perform find\n+      PatientService patientService = PatientService.getPatientService();\n+      List<Patient> patientList = patientService.findPatients(sourcePatient);\n+\n+      if (patientList != null && patientList.size() > 0) {\n+\n+        List<String> dupOrgIds = new ArrayList<>();\n+        for (Patient patient : patientList) {\n+          if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n+              && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n+\n+            for (Patient tempPatient : filteredPatients) {\n+              if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient\n+                  .getIdentifiers().get(0).getOrganizationId())) {\n+                dupOrgIds.add(patient.getIdentifiers().get(0).getOrganizationId());\n+              }\n             }\n+            filteredPatients.add(patient);\n+          }\n         }\n \n-        result = HL7DbParser201306.buildMessageFromMpiPatients(filteredPatients, query);\n+        if ((dupOrgIds != null) && (dupOrgIds.size() > 0)) {\n+          HashSet<String> hashSet = new HashSet<>(dupOrgIds);\n+          dupOrgIds = new ArrayList<>(hashSet);\n+          LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \"\n+              + dupOrgIds.size());\n+        }\n \n-        LOG.trace(\"Exiting PatientDbChecker.FindPatient method...\");\n-        return result;\n-    }\n+        for (Patient patient : patientList) {\n+          if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n+              && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n \n-    /**\n-     *\n-     * @param query the PRPAIN201305UV02 object\n-     * @return true - minimum params found; false - not found\n-     */\n-    @Override\n-    public boolean isNhinRequiredParamsFound(PRPAIN201305UV02 query) {\n-        boolean result = false;\n-\n-        PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n-        Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n-\n-        if (sourcePatient != null && sourcePatient.getPersonnames() != null\n-                && sourcePatient.getPersonnames().size() > 0 && sourcePatient.getPersonnames().get(0) != null\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName())\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName())\n-                && NullChecker.isNotNullish(sourcePatient.getGender()) && sourcePatient.getDateOfBirth() != null) {\n-            result = true;\n+            for (String str : dupOrgIds) {\n+              if ((patient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(str)) {\n+                filteredPatients.remove(patient);\n+              }\n+            }\n+          }\n         }\n+        LOG.debug(\"After duplicates removed - filteredPatients.size(): \" + filteredPatients.size());\n+      } else {\n+        // No matches found, generate appropriate empty response\n+        LOG.debug(\"No matches found, generate appropriate empty response\");\n+      }\n+    }\n \n-        return result;\n+    result = HL7DbParser201306.buildMessageFromMpiPatients(filteredPatients, query);\n+\n+    LOG.trace(\"Exiting PatientDbChecker.FindPatient method...\");\n+    return result;\n+  }\n+\n+  /**\n+   * @param query the PRPAIN201305UV02 object\n+   * @return true - minimum params found; false - not found\n+   */\n+  @Override\n+  public boolean isNhinRequiredParamsFound(PRPAIN201305UV02 query) {\n+    boolean result = false;\n+\n+    PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n+    Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n+\n+    if (sourcePatient != null && sourcePatient.getPersonnames() != null\n+        && sourcePatient.getPersonnames().size() > 0 && sourcePatient.getPersonnames().get(0) != null\n+        && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName())\n+        && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName())\n+        && NullChecker.isNotNullish(sourcePatient.getGender()) && sourcePatient.getDateOfBirth() != null) {\n+      result = true;\n     }\n+\n+    return result;\n+  }\n }\n",
+            "diff_size": 121
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "70",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 167).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "72",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 162).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 167).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "119",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 424).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/630/PatientDbChecker.java\nindex 118746f47d3..5530ad920b2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/630/PatientDbChecker.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.mpi.adapter.component;\n \n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\n@@ -55,8 +56,7 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n \n         PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n         List<Patient> filteredPatients = new ArrayList<>();\n-\n-        if (queryParams == null) {\n+if (queryParams == null) {\n             LOG.error(\"no query parameters were supplied\");\n         } else {\n             Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n@@ -64,36 +64,27 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n             // Perform find\n             PatientService patientService = PatientService.getPatientService();\n             List<Patient> patientList = patientService.findPatients(sourcePatient);\n-\n-            if (patientList != null && patientList.size() > 0) {\n-\n-                List<String> dupOrgIds = new ArrayList<>();\n+if (patientList != null && patientList.size() > 0) {\n+    List<String> dupOrgIds = new ArrayList<>();\n                 for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n-                        for (Patient tempPatient : filteredPatients) {\n-                            if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient\n-                                    .getIdentifiers().get(0).getOrganizationId())) {\n+                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0) && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n+    for (Patient tempPatient : filteredPatients) {\n+                            if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient.getIdentifiers().get(0).getOrganizationId())) {\n                                 dupOrgIds.add(patient.getIdentifiers().get(0).getOrganizationId());\n                             }\n                         }\n                         filteredPatients.add(patient);\n                     }\n                 }\n-\n-                if ((dupOrgIds != null) && (dupOrgIds.size() > 0)) {\n+if ((dupOrgIds != null) && (dupOrgIds.size() > 0)) {\n                     HashSet<String> hashSet = new HashSet<>(dupOrgIds);\n                     dupOrgIds = new ArrayList<>(hashSet);\n-                    LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \"\n-                            + dupOrgIds.size());\n-                }\n+                    LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \" + dupOrgIds.size());\n+    }\n \n                 for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n-                        for (String str : dupOrgIds) {\n+                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0) && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n+    for (String str : dupOrgIds) {\n                             if ((patient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(str)) {\n                                 filteredPatients.remove(patient);\n                             }\n@@ -110,7 +101,8 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n         result = HL7DbParser201306.buildMessageFromMpiPatients(filteredPatients, query);\n \n         LOG.trace(\"Exiting PatientDbChecker.FindPatient method...\");\n-        return result;\n+\n+return result;\n     }\n \n     /**\n@@ -124,15 +116,10 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n \n         PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n         Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n-\n-        if (sourcePatient != null && sourcePatient.getPersonnames() != null\n-                && sourcePatient.getPersonnames().size() > 0 && sourcePatient.getPersonnames().get(0) != null\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName())\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName())\n-                && NullChecker.isNotNullish(sourcePatient.getGender()) && sourcePatient.getDateOfBirth() != null) {\n+if (sourcePatient != null && sourcePatient.getPersonnames() != null && sourcePatient.getPersonnames().size() > 0 && sourcePatient.getPersonnames().get(0) != null && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName()) && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName()) && NullChecker.isNotNullish(sourcePatient.getGender()) && sourcePatient.getDateOfBirth() != null) {\n             result = true;\n         }\n \n         return result;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "74",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 164).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "59",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "94",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "98",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "76",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 162).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "61",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "89",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 164).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "59",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "94",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "98",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "98",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "123",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 426).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "116",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "168",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "249",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "329",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "383",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/630/PatientDbChecker.java\nindex 118746f47d3..351be5a679f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/630/PatientDbChecker.java\n@@ -44,55 +44,49 @@ import org.slf4j.LoggerFactory;\n  *\n  * @author richard.ettema\n  */\n+\n+\n public class PatientDbChecker implements AdapterComponentMpiChecker {\n \n     private static final Logger LOG = LoggerFactory.getLogger(PatientDbChecker.class);\n \n+\n     @Override\n     public PRPAIN201306UV02 findPatient(PRPAIN201305UV02 query) {\n         LOG.trace(\"Entering PatientDbChecker.FindPatient method...\");\n         PRPAIN201306UV02 result;\n-\n         PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n         List<Patient> filteredPatients = new ArrayList<>();\n-\n-        if (queryParams == null) {\n+        if(queryParams == null) {\n             LOG.error(\"no query parameters were supplied\");\n-        } else {\n+        }\n+\n+\n+else {\n             Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n \n             // Perform find\n             PatientService patientService = PatientService.getPatientService();\n             List<Patient> patientList = patientService.findPatients(sourcePatient);\n-\n-            if (patientList != null && patientList.size() > 0) {\n-\n+            if(patientList != null && patientList.size()> 0) {\n                 List<String> dupOrgIds = new ArrayList<>();\n                 for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n+                    if ((patient.getIdentifiers() != null)&& (patient.getIdentifiers().size()> 0)&& (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n                         for (Patient tempPatient : filteredPatients) {\n-                            if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient\n-                                    .getIdentifiers().get(0).getOrganizationId())) {\n+                            if ((tempPatient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(patient.getIdentifiers().get(0).getOrganizationId())) {\n                                 dupOrgIds.add(patient.getIdentifiers().get(0).getOrganizationId());\n                             }\n                         }\n                         filteredPatients.add(patient);\n                     }\n                 }\n-\n-                if ((dupOrgIds != null) && (dupOrgIds.size() > 0)) {\n+                if ((dupOrgIds != null) && (dupOrgIds.size()> 0)) {\n                     HashSet<String> hashSet = new HashSet<>(dupOrgIds);\n                     dupOrgIds = new ArrayList<>(hashSet);\n-                    LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \"\n-                            + dupOrgIds.size());\n+                    LOG.debug(\"More than one matching patient found in some organizations. dupOrgIds.size(): \" + dupOrgIds.size());\n                 }\n-\n                 for (Patient patient : patientList) {\n-                    if ((patient.getIdentifiers() != null) && (patient.getIdentifiers().size() > 0)\n-                            && (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n-\n+                    if ((patient.getIdentifiers() != null)&& (patient.getIdentifiers().size()> 0)&& (patient.getIdentifiers().get(0).getOrganizationId() != null)) {\n                         for (String str : dupOrgIds) {\n                             if ((patient.getIdentifiers().get(0).getOrganizationId()).equalsIgnoreCase(str)) {\n                                 filteredPatients.remove(patient);\n@@ -101,14 +95,15 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n                     }\n                 }\n                 LOG.debug(\"After duplicates removed - filteredPatients.size(): \" + filteredPatients.size());\n-            } else {\n+            }\n+\n+\n+else {\n                 // No matches found, generate appropriate empty response\n                 LOG.debug(\"No matches found, generate appropriate empty response\");\n             }\n         }\n-\n         result = HL7DbParser201306.buildMessageFromMpiPatients(filteredPatients, query);\n-\n         LOG.trace(\"Exiting PatientDbChecker.FindPatient method...\");\n         return result;\n     }\n@@ -118,21 +113,17 @@ public class PatientDbChecker implements AdapterComponentMpiChecker {\n      * @param query the PRPAIN201305UV02 object\n      * @return true - minimum params found; false - not found\n      */\n+\n+\n     @Override\n     public boolean isNhinRequiredParamsFound(PRPAIN201305UV02 query) {\n         boolean result = false;\n-\n         PRPAMT201306UV02ParameterList queryParams = HL7DbParser201305.extractHL7QueryParamsFromMessage(query);\n         Patient sourcePatient = HL7DbParser201305.extractMpiPatientFromQueryParams(queryParams);\n-\n-        if (sourcePatient != null && sourcePatient.getPersonnames() != null\n-                && sourcePatient.getPersonnames().size() > 0 && sourcePatient.getPersonnames().get(0) != null\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName())\n-                && NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName())\n-                && NullChecker.isNotNullish(sourcePatient.getGender()) && sourcePatient.getDateOfBirth() != null) {\n+        if (sourcePatient != null && sourcePatient.getPersonnames() != null&& sourcePatient.getPersonnames().size()> 0 && sourcePatient.getPersonnames().get(0) != null&& NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getFirstName())&& NullChecker.isNotNullish(sourcePatient.getPersonnames().get(0).getLastName())&& NullChecker.isNotNullish(sourcePatient.getGender())&& sourcePatient.getDateOfBirth() != null) {\n             result = true;\n         }\n-\n         return result;\n     }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 44
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "'import' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/630/PatientDbChecker.java\nindex 118746f47d3..626160b0e94 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/630/PatientDbChecker.java\n@@ -25,7 +25,6 @@\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n package gov.hhs.fha.nhinc.mpi.adapter.component;\n-\n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201306;\n import gov.hhs.fha.nhinc.nhinclib.NullChecker;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/630/PatientDbChecker.java\nindex 118746f47d3..89ef251b33f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/630/PatientDbChecker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/630/PatientDbChecker.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.mpi.adapter.component;\n \n import gov.hhs.fha.nhinc.mpi.adapter.component.hl7parsers.HL7DbParser201305;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

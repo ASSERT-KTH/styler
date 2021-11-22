@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1525",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "101",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "43",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "58",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "59",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "93",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1525/Heart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1525/Heart.java\nindex 839b481bcae..50b45a3db7c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1525/Heart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1525/Heart.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.core.consensus.roles;\n \n import java.io.IOException;\n@@ -28,30 +29,30 @@ import org.neo4j.logging.Log;\n \n class Heart\n {\n-    private Heart()\n+  private Heart()\n+  {\n+  }\n+\n+  static void beat(ReadableRaftState state, Outcome outcome, RaftMessages.Heartbeat request, Log log)\n+      throws IOException\n+  {\n+    if (request.leaderTerm() < state.term())\n     {\n+      return;\n     }\n \n-    static void beat( ReadableRaftState state, Outcome outcome, RaftMessages.Heartbeat request, Log log )\n-            throws IOException\n+    outcome.setPreElection(false);\n+    outcome.setNextTerm(request.leaderTerm());\n+    outcome.setLeader(request.from());\n+    outcome.setLeaderCommit(request.commitIndex());\n+    outcome.addOutgoingMessage(new RaftMessages.Directed(request.from(),\n+        new RaftMessages.HeartbeatResponse(state.myself())));\n+\n+    if (!Follower.logHistoryMatches(state, request.commitIndex(), request.commitIndexTerm()))\n     {\n-        if ( request.leaderTerm() < state.term() )\n-        {\n-            return;\n-        }\n-\n-        outcome.setPreElection( false );\n-        outcome.setNextTerm( request.leaderTerm() );\n-        outcome.setLeader( request.from() );\n-        outcome.setLeaderCommit( request.commitIndex() );\n-        outcome.addOutgoingMessage( new RaftMessages.Directed( request.from(),\n-                new RaftMessages.HeartbeatResponse( state.myself() ) ) );\n-\n-        if ( !Follower.logHistoryMatches( state, request.commitIndex(), request.commitIndexTerm() ) )\n-        {\n-            return;\n-        }\n-\n-        Follower.commitToLogOnUpdate( state, request.commitIndex(), request.commitIndex(), outcome );\n+      return;\n     }\n+\n+    Follower.commitToLogOnUpdate(state, request.commitIndex(), request.commitIndex(), outcome);\n+  }\n }\n",
+            "diff_size": 39
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1525/Heart.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1525/Heart.java\nindex 839b481bcae..258c604d30f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1525/Heart.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1525/Heart.java\n@@ -32,9 +32,8 @@ class Heart\n     {\n     }\n \n-    static void beat( ReadableRaftState state, Outcome outcome, RaftMessages.Heartbeat request, Log log )\n-            throws IOException\n-    {\n+    static void beat( ReadableRaftState state, Outcome outcome, RaftMessages.Heartbeat request, Log log ) throws IOException\n+{\n         if ( request.leaderTerm() < state.term() )\n         {\n             return;\n@@ -44,14 +43,12 @@ class Heart\n         outcome.setNextTerm( request.leaderTerm() );\n         outcome.setLeader( request.from() );\n         outcome.setLeaderCommit( request.commitIndex() );\n-        outcome.addOutgoingMessage( new RaftMessages.Directed( request.from(),\n-                new RaftMessages.HeartbeatResponse( state.myself() ) ) );\n-\n-        if ( !Follower.logHistoryMatches( state, request.commitIndex(), request.commitIndexTerm() ) )\n+        outcome.addOutgoingMessage( new RaftMessages.Directed( request.from(), new RaftMessages.HeartbeatResponse( state.myself() ) ) );\n+if ( !Follower.logHistoryMatches( state, request.commitIndex(), request.commitIndexTerm() ) )\n         {\n             return;\n         }\n \n         Follower.commitToLogOnUpdate( state, request.commitIndex(), request.commitIndex(), outcome );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

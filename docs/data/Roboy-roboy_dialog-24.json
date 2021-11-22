@@ -1,0 +1,82 @@
+{
+    "project_name": "Roboy-roboy_dialog",
+    "error_id": "24",
+    "information": {
+        "errors": [
+            {
+                "line": "22",
+                "severity": "error",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": " * sequence, no scoping block: basic scoping block blockr: returns selected\n * isolate: scopes allItems instead of selected\n * \n * @author sidaw\n */\npublic class BlockFn extends SemanticFn {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "22",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/24/BlockFn.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/24/BlockFn.java\nindex fe3c80bbdd5..a2d5da36513 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/24/BlockFn.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/intellij/24/BlockFn.java\n@@ -19,88 +19,96 @@ import fig.basic.Option;\n  * Generates formula scoped in various modes sequential: just perform in\n  * sequence, no scoping block: basic scoping block blockr: returns selected\n  * isolate: scopes allItems instead of selected\n- * \n+ *\n  * @author sidaw\n  */\n public class BlockFn extends SemanticFn {\n-  public static class Options {\n-    @Option(gloss = \"verbosity\")\n-    public int verbose = 0;\n-  }\n+    public static class Options {\n+        @Option(gloss = \"verbosity\")\n+        public int verbose = 0;\n+    }\n \n-  public static Options opts = new Options();\n+    public static Options opts = new Options();\n \n-  List<ActionFormula.Mode> scopingModes = Lists.newArrayList(ActionFormula.Mode.block, ActionFormula.Mode.blockr,\n-      ActionFormula.Mode.isolate);\n-  ActionFormula.Mode mode = ActionFormula.Mode.block;\n-  boolean optional = true;\n+    List<ActionFormula.Mode> scopingModes = Lists.newArrayList(ActionFormula.Mode.block, ActionFormula.Mode.blockr,\n+        ActionFormula.Mode.isolate);\n+    ActionFormula.Mode mode = ActionFormula.Mode.block;\n+    boolean optional = true;\n \n-  @Override\n-  public void init(LispTree tree) {\n-    super.init(tree);\n-    if (tree.child(1).value.equals(\"sequential\"))\n-      mode = ActionFormula.Mode.sequential;\n-    else if (tree.child(1).value.equals(\"block\"))\n-      mode = ActionFormula.Mode.block;\n-    else if (tree.child(1).value.equals(\"blockr\"))\n-      mode = ActionFormula.Mode.blockr;\n-    else if (tree.child(1).value.equals(\"isolate\"))\n-      mode = ActionFormula.Mode.isolate;\n-    else\n-      mode = ActionFormula.Mode.sequential;\n-  }\n+    @Override\n+    public void init(LispTree tree) {\n+        super.init(tree);\n+        if (tree.child(1).value.equals(\"sequential\")) {\n+            mode = ActionFormula.Mode.sequential;\n+        } else if (tree.child(1).value.equals(\"block\")) {\n+            mode = ActionFormula.Mode.block;\n+        } else if (tree.child(1).value.equals(\"blockr\")) {\n+            mode = ActionFormula.Mode.blockr;\n+        } else if (tree.child(1).value.equals(\"isolate\")) {\n+            mode = ActionFormula.Mode.isolate;\n+        } else {\n+            mode = ActionFormula.Mode.sequential;\n+        }\n+    }\n \n-  public BlockFn(ActionFormula.Mode mode) {\n-    this.mode = mode;\n-  }\n+    public BlockFn(ActionFormula.Mode mode) {\n+        this.mode = mode;\n+    }\n \n-  public BlockFn() {\n-    this.mode = ActionFormula.Mode.sequential;\n-  }\n+    public BlockFn() {\n+        this.mode = ActionFormula.Mode.sequential;\n+    }\n \n-  @Override\n-  public DerivationStream call(final Example ex, final Callable c) {\n-    return new SingleDerivationStream() {\n-      @Override\n-      public Derivation createDerivation() {\n-        List<Derivation> args = c.getChildren();\n-        if (args.size() == 1) {\n-          Derivation onlyChild = args.get(0);\n-          // LogInfoToggle.logs(\"1 BlockFn %s : %s Example.size=%d, callInfo(%d,%d)\",\n-          // onlyChild, mode, ex.getTokens().size(), onlyChild.getStart(),\n-          // onlyChild.getEnd());\n+    @Override\n+    public DerivationStream call(final Example ex, final Callable c) {\n+        return new SingleDerivationStream() {\n+            @Override\n+            public Derivation createDerivation() {\n+                List<Derivation> args = c.getChildren();\n+                if (args.size() == 1) {\n+                    Derivation onlyChild = args.get(0);\n+                    // LogInfoToggle.logs(\"1 BlockFn %s : %s Example.size=%d, callInfo(%d,%d)\",\n+                    // onlyChild, mode, ex.getTokens().size(), onlyChild.getStart(),\n+                    // onlyChild.getEnd());\n \n-          if (onlyChild == null)\n-            return null;\n-          if (onlyChild.getStart() != 0 || onlyChild.getEnd() != ex.getTokens().size())\n-            return null;\n-          // do not do anything to the core language\n-          if (onlyChild.allAnchored())\n-            return null;\n-          // if (!ILUtils.stripBlock(onlyChild).rule.isInduced()) return null;\n+                    if (onlyChild == null) {\n+                        return null;\n+                    }\n+                    if (onlyChild.getStart() != 0 || onlyChild.getEnd() != ex.getTokens().size()) {\n+                        return null;\n+                    }\n+                    // do not do anything to the core language\n+                    if (onlyChild.allAnchored()) {\n+                        return null;\n+                    }\n+                    // if (!ILUtils.stripBlock(onlyChild).rule.isInduced()) return null;\n \n-          // if already blocked explicitly, do not do anything\n-          if (scopingModes.contains(((ActionFormula) onlyChild.formula).mode))\n-            return null;\n+                    // if already blocked explicitly, do not do anything\n+                    if (scopingModes.contains(((ActionFormula) onlyChild.formula).mode)) {\n+                        return null;\n+                    }\n \n-          // do not repeat any blocks\n-          if (((ActionFormula) onlyChild.formula).mode == BlockFn.this.mode)\n-            return null;\n+                    // do not repeat any blocks\n+                    if (((ActionFormula) onlyChild.formula).mode == BlockFn.this.mode) {\n+                        return null;\n+                    }\n \n-          FeatureVector features = new FeatureVector();\n-          if (FeatureExtractor.containsDomain(\":scope\")) {\n-            features.add(\":scope\",\n-                BlockFn.this.mode.toString() + \"::\" + !InteractiveUtils.stripBlock(onlyChild).rule.isInduced());\n-            features.add(\":scope\", BlockFn.this.mode.toString() + \"::\" + ex.id);\n-          }\n+                    FeatureVector features = new FeatureVector();\n+                    if (FeatureExtractor.containsDomain(\":scope\")) {\n+                        features.add(\":scope\",\n+                            BlockFn.this.mode.toString() + \"::\" +\n+                                !InteractiveUtils.stripBlock(onlyChild).rule.isInduced());\n+                        features.add(\":scope\", BlockFn.this.mode.toString() + \"::\" + ex.id);\n+                    }\n \n-          Derivation deriv = new Derivation.Builder()\n-              .formula(new ActionFormula(mode, Lists.newArrayList(onlyChild.formula))).withCallable(c)\n-              .localFeatureVector(features).createDerivation();\n-          return deriv;\n-        } else\n-          return null;\n-      }\n-    };\n-  }\n+                    Derivation deriv = new Derivation.Builder()\n+                        .formula(new ActionFormula(mode, Lists.newArrayList(onlyChild.formula))).withCallable(c)\n+                        .localFeatureVector(features).createDerivation();\n+                    return deriv;\n+                } else {\n+                    return null;\n+                }\n+            }\n+        };\n+    }\n }\n",
+            "diff_size": 78
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "20",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/24/BlockFn.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/24/BlockFn.java\nindex fe3c80bbdd5..1a1e090789b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/errored/1/24/BlockFn.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Roboy-roboy_dialog/codebuff/24/BlockFn.java\n@@ -1,9 +1,7 @@\n package edu.stanford.nlp.sempre.interactive;\n \n import java.util.List;\n-\n import org.testng.collections.Lists;\n-\n import edu.stanford.nlp.sempre.ActionFormula;\n import edu.stanford.nlp.sempre.Derivation;\n import edu.stanford.nlp.sempre.DerivationStream;\n@@ -22,6 +20,8 @@ import fig.basic.Option;\n  * \n  * @author sidaw\n  */\n+\n+\n public class BlockFn extends SemanticFn {\n   public static class Options {\n     @Option(gloss = \"verbosity\")\n@@ -29,12 +29,9 @@ public class BlockFn extends SemanticFn {\n   }\n \n   public static Options opts = new Options();\n-\n-  List<ActionFormula.Mode> scopingModes = Lists.newArrayList(ActionFormula.Mode.block, ActionFormula.Mode.blockr,\n-      ActionFormula.Mode.isolate);\n+  List<ActionFormula.Mode> scopingModes = Lists.newArrayList(ActionFormula.Mode.block, ActionFormula.Mode.blockr, ActionFormula.Mode.isolate);\n   ActionFormula.Mode mode = ActionFormula.Mode.block;\n   boolean optional = true;\n-\n   @Override\n   public void init(LispTree tree) {\n     super.init(tree);\n@@ -69,7 +66,6 @@ public class BlockFn extends SemanticFn {\n           // LogInfoToggle.logs(\"1 BlockFn %s : %s Example.size=%d, callInfo(%d,%d)\",\n           // onlyChild, mode, ex.getTokens().size(), onlyChild.getStart(),\n           // onlyChild.getEnd());\n-\n           if (onlyChild == null)\n             return null;\n           if (onlyChild.getStart() != 0 || onlyChild.getEnd() != ex.getTokens().size())\n@@ -90,17 +86,19 @@ public class BlockFn extends SemanticFn {\n           FeatureVector features = new FeatureVector();\n           if (FeatureExtractor.containsDomain(\":scope\")) {\n             features.add(\":scope\",\n-                BlockFn.this.mode.toString() + \"::\" + !InteractiveUtils.stripBlock(onlyChild).rule.isInduced());\n+                         BlockFn.this.mode.toString() + \"::\" + !InteractiveUtils.stripBlock(onlyChild).rule.isInduced());\n             features.add(\":scope\", BlockFn.this.mode.toString() + \"::\" + ex.id);\n           }\n \n           Derivation deriv = new Derivation.Builder()\n-              .formula(new ActionFormula(mode, Lists.newArrayList(onlyChild.formula))).withCallable(c)\n-              .localFeatureVector(features).createDerivation();\n+            .formula(new ActionFormula(mode, Lists.newArrayList(onlyChild.formula)))\n+            .withCallable(c)\n+            .localFeatureVector(features)\n+            .createDerivation();\n           return deriv;\n         } else\n           return null;\n       }\n     };\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "22",
+                    "severity": "error",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

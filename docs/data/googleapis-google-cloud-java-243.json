@@ -1,0 +1,508 @@
+{
+    "project_name": "googleapis-google-cloud-java",
+    "error_id": "243",
+    "information": {
+        "errors": [
+            {
+                "line": "272",
+                "column": "5",
+                "severity": "warning",
+                "message": "'}' at column 5 should be alone on a line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+            }
+        ]
+    },
+    "source_code": "      }\n      mark = index + 1;\n    } while (index != -1);\n    if (!mutated) {\n      return this;\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler/243/UnixPath.java\nindex 85474ac2d92..160c3928ca9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler/243/UnixPath.java\n@@ -269,7 +269,8 @@ final class UnixPath implements CharSequence {\n           }\n       }\n       mark = index + 1;\n-    } while (index != -1);\n+    }\n+    while (index != -1);\n     if (!mutated) {\n       return this;\n     }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "282",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/intellij/243/UnixPath.java\nindex 85474ac2d92..05b9fbb9706 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/intellij/243/UnixPath.java\n@@ -57,7 +57,9 @@ final class UnixPath implements CharSequence {\n     this.permitEmptyComponents = permitEmptyComponents;\n   }\n \n-  /** Returns new UnixPath of {@code first}. */\n+  /**\n+   * Returns new UnixPath of {@code first}.\n+   */\n   public static UnixPath getPath(boolean permitEmptyComponents, String path) {\n     if (path.isEmpty()) {\n       return EMPTY_PATH;\n@@ -99,7 +101,9 @@ final class UnixPath implements CharSequence {\n     return new UnixPath(permitEmptyComponents, builder.toString());\n   }\n \n-  /** Returns {@code true} consists only of {@code separator}. */\n+  /**\n+   * Returns {@code true} consists only of {@code separator}.\n+   */\n   public boolean isRoot() {\n     return isRootInternal(path);\n   }\n@@ -108,7 +112,9 @@ final class UnixPath implements CharSequence {\n     return path.length() == 1 && path.charAt(0) == SEPARATOR;\n   }\n \n-  /** Returns {@code true} if path starts with {@code separator}. */\n+  /**\n+   * Returns {@code true} if path starts with {@code separator}.\n+   */\n   public boolean isAbsolute() {\n     return isAbsoluteInternal(path);\n   }\n@@ -117,7 +123,9 @@ final class UnixPath implements CharSequence {\n     return !path.isEmpty() && path.charAt(0) == SEPARATOR;\n   }\n \n-  /** Returns {@code true} if path ends with {@code separator}. */\n+  /**\n+   * Returns {@code true} if path ends with {@code separator}.\n+   */\n   public boolean hasTrailingSeparator() {\n     return hasTrailingSeparatorInternal(path);\n   }\n@@ -126,7 +134,9 @@ final class UnixPath implements CharSequence {\n     return path.length() != 0 && path.charAt(path.length() - 1) == SEPARATOR;\n   }\n \n-  /** Returns {@code true} if path ends with a trailing slash, or would after normalization. */\n+  /**\n+   * Returns {@code true} if path ends with a trailing slash, or would after normalization.\n+   */\n   public boolean seemsLikeADirectory() {\n     int length = path.length();\n     return path.isEmpty()\n@@ -397,28 +407,38 @@ final class UnixPath implements CharSequence {\n     return ORDERING.compare(getParts(), other.getParts());\n   }\n \n-  /** Converts relative path to an absolute path. */\n+  /**\n+   * Converts relative path to an absolute path.\n+   */\n   public UnixPath toAbsolutePath(UnixPath currentWorkingDirectory) {\n     checkArgument(currentWorkingDirectory.isAbsolute());\n     return isAbsolute() ? this : currentWorkingDirectory.resolve(this);\n   }\n \n-  /** Returns {@code toAbsolutePath(ROOT_PATH)}. */\n+  /**\n+   * Returns {@code toAbsolutePath(ROOT_PATH)}.\n+   */\n   public UnixPath toAbsolutePath() {\n     return toAbsolutePath(ROOT_PATH);\n   }\n \n-  /** Removes beginning separator from path, if an absolute path. */\n+  /**\n+   * Removes beginning separator from path, if an absolute path.\n+   */\n   public UnixPath removeBeginningSeparator() {\n     return isAbsolute() ? new UnixPath(permitEmptyComponents, path.substring(1)) : this;\n   }\n \n-  /** Adds trailing separator to path, if it isn't present. */\n+  /**\n+   * Adds trailing separator to path, if it isn't present.\n+   */\n   public UnixPath addTrailingSeparator() {\n     return hasTrailingSeparator() ? this : new UnixPath(permitEmptyComponents, path + SEPARATOR);\n   }\n \n-  /** Removes trailing separator from path, unless it's root. */\n+  /**\n+   * Removes trailing separator from path, unless it's root.\n+   */\n   public UnixPath removeTrailingSeparator() {\n     if (!isRoot() && hasTrailingSeparator()) {\n       return new UnixPath(permitEmptyComponents, path.substring(0, path.length() - 1));\n@@ -427,12 +447,16 @@ final class UnixPath implements CharSequence {\n     }\n   }\n \n-  /** Splits path into components, excluding separators and empty strings. */\n+  /**\n+   * Splits path into components, excluding separators and empty strings.\n+   */\n   public Iterator<String> split() {\n     return getParts().iterator();\n   }\n \n-  /** Splits path into components in reverse, excluding separators and empty strings. */\n+  /**\n+   * Splits path into components in reverse, excluding separators and empty strings.\n+   */\n   public Iterator<String> splitReverse() {\n     return Lists.reverse(getParts()).iterator();\n   }\n@@ -449,7 +473,9 @@ final class UnixPath implements CharSequence {\n     return path.hashCode();\n   }\n \n-  /** Returns path as a string. */\n+  /**\n+   * Returns path as a string.\n+   */\n   @Override\n   public String toString() {\n     return path;\n@@ -470,17 +496,21 @@ final class UnixPath implements CharSequence {\n     return path.subSequence(start, end);\n   }\n \n-  /** Returns {@code true} if this path is an empty string. */\n+  /**\n+   * Returns {@code true} if this path is an empty string.\n+   */\n   public boolean isEmpty() {\n     return path.isEmpty();\n   }\n \n-  /** Returns list of path components, excluding slashes. */\n+  /**\n+   * Returns list of path components, excluding slashes.\n+   */\n   private List<String> getParts() {\n     List<String> result = lazyStringParts;\n     return result != null\n         ? result : (lazyStringParts = path.isEmpty() || isRoot()\n-            ? Collections.<String>emptyList() : createParts());\n+        ? Collections.<String>emptyList() : createParts());\n   }\n \n   private List<String> createParts() {\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "133",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 207).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "267",
+                    "severity": "warning",
+                    "message": "'switch rcurly' has incorrect indentation level 2, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "270",
+                    "severity": "warning",
+                    "message": "'do..while while' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "478",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "483",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 114).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "484",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 2, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/naturalize/243/UnixPath.java\nindex 85474ac2d92..131319a711f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/naturalize/243/UnixPath.java\n@@ -130,9 +130,7 @@ final class UnixPath implements CharSequence {\n   public boolean seemsLikeADirectory() {\n     int length = path.length();\n     return path.isEmpty()\n-        || path.charAt(length - 1) == SEPARATOR\n-        || path.endsWith(\".\") && (length == 1 || path.charAt(length - 2) == SEPARATOR)\n-        || path.endsWith(\"..\") && (length == 2 || path.charAt(length - 3) == SEPARATOR);\n+        || path.charAt(length - 1) == SEPARATOR || path.endsWith(\".\") && (length == 1 || path.charAt(length - 2) == SEPARATOR) || path.endsWith(\"..\") && (length == 2 || path.charAt(length - 3) == SEPARATOR);\n   }\n \n   /**\n@@ -164,8 +162,7 @@ final class UnixPath implements CharSequence {\n     if (path.isEmpty() || isRoot()) {\n       return null;\n     }\n-    int index = hasTrailingSeparator()\n-        ? path.lastIndexOf(SEPARATOR, path.length() - 2)\n+    int index = hasTrailingSeparator() ? path.lastIndexOf(SEPARATOR, path.length() - 2)\n         : path.lastIndexOf(SEPARATOR);\n     if (index == -1) {\n       return isAbsolute() ? ROOT_PATH : null;\n@@ -267,9 +264,10 @@ final class UnixPath implements CharSequence {\n           } else {\n             mutated = true;\n           }\n-      }\n+  }\n       mark = index + 1;\n-    } while (index != -1);\n+    }\n+while (index != -1);\n     if (!mutated) {\n       return this;\n     }\n@@ -440,8 +438,7 @@ final class UnixPath implements CharSequence {\n   @Override\n   public boolean equals(@Nullable Object other) {\n     return this == other\n-        || other instanceof UnixPath\n-        && path.equals(((UnixPath) other).path);\n+        || other instanceof UnixPath && path.equals(((UnixPath) other).path);\n   }\n \n   @Override\n@@ -478,17 +475,14 @@ final class UnixPath implements CharSequence {\n   /** Returns list of path components, excluding slashes. */\n   private List<String> getParts() {\n     List<String> result = lazyStringParts;\n-    return result != null\n-        ? result : (lazyStringParts = path.isEmpty() || isRoot()\n-            ? Collections.<String>emptyList() : createParts());\n+    return result != null ? result : (lazyStringParts = path.isEmpty() || isRoot() ? Collections.<String>emptyList() : createParts());\n   }\n \n   private List<String> createParts() {\n     if (permitEmptyComponents) {\n-      return SPLITTER_PERMIT_EMPTY_COMPONENTS\n-          .splitToList(path.charAt(0) == SEPARATOR ? path.substring(1) : path);\n-    } else {\n+      return SPLITTER_PERMIT_EMPTY_COMPONENTS.splitToList(path.charAt(0) == SEPARATOR ? path.substring(1) : path);\n+  } else {\n       return SPLITTER.splitToList(path);\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "69",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "70",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "71",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "93",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 17, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "94",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "95",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 17, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "96",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "97",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "98",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "99",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 20, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "100",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "101",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 22, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "102",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "158",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "159",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "160",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "161",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "162",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "162",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 110).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "177",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 118).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "204",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 4, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "227",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "228",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "229",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "265",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: 'switch' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "267",
+                    "severity": "warning",
+                    "message": "'block' child has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "268",
+                    "severity": "warning",
+                    "message": "'block' child has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "270",
+                    "severity": "warning",
+                    "message": "'block' child has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "271",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "272",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 23, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "273",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "274",
+                    "severity": "warning",
+                    "message": "'block' child has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "276",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "277",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 23, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "278",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 23, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "279",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "280",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 23, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "281",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 21, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "281",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'}' at column 22 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "281",
+                    "column": "23",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "281",
+                    "column": "23",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "284",
+                    "severity": "warning",
+                    "message": "'do..while while' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "284",
+                    "column": "6",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: 'while' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "305",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "306",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "307",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 20, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "308",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 18, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "309",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 20, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "310",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "374",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "375",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "376",
+                    "severity": "warning",
+                    "message": "'&&' has incorrect indentation level 13, expected level should be 15.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "377",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 20, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "378",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 18, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "403",
+                    "severity": "warning",
+                    "message": "'&&' has incorrect indentation level 6, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "404",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 13, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "405",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 11, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "406",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 20, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "408",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 18, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "451",
+                    "severity": "warning",
+                    "message": "'&&' has incorrect indentation level 6, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "512",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "517",
+                    "severity": "warning",
+                    "message": "Line is longer than 100 characters (found 114).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/codebuff/243/UnixPath.java\nindex 85474ac2d92..1d04cb4a618 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/codebuff/243/UnixPath.java\n@@ -9,12 +9,10 @@ import com.google.common.collect.Iterators;\n import com.google.common.collect.Lists;\n import com.google.common.collect.Ordering;\n import com.google.common.collect.PeekingIterator;\n-\n import java.util.ArrayList;\n import java.util.Collections;\n import java.util.Iterator;\n import java.util.List;\n-\n import javax.annotation.Nullable;\n import javax.annotation.concurrent.Immutable;\n \n@@ -32,22 +30,27 @@ import javax.annotation.concurrent.Immutable;\n  * <a href=\"http://docs.oracle.com/javase/tutorial/i18n/text/supplementaryChars.html\">Supplementary\n  * Characters as Surrogates</a>.\n  */\n-@Immutable\n-final class UnixPath implements CharSequence {\n+\n+\n+@Immutable final class UnixPath implements CharSequence {\n \n   public static final char DOT = '.';\n+\n   public static final char SEPARATOR = '/';\n+\n   public static final String ROOT = \"\" + SEPARATOR;\n+\n   public static final String CURRENT_DIR = \"\" + DOT;\n+\n   public static final String PARENT_DIR = \"\" + DOT + DOT;\n+\n   public static final UnixPath EMPTY_PATH = new UnixPath(false, \"\");\n-  public static final UnixPath ROOT_PATH = new UnixPath(false, ROOT);\n \n+  public static final UnixPath ROOT_PATH = new UnixPath(false, ROOT);\n   private static final Splitter SPLITTER = Splitter.on(SEPARATOR).omitEmptyStrings();\n   private static final Splitter SPLITTER_PERMIT_EMPTY_COMPONENTS = Splitter.on(SEPARATOR);\n   private static final Joiner JOINER = Joiner.on(SEPARATOR);\n   private static final Ordering<Iterable<String>> ORDERING = Ordering.natural().lexicographical();\n-\n   private final String path;\n   private List<String> lazyStringParts;\n   private final boolean permitEmptyComponents;\n@@ -58,13 +61,14 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Returns new UnixPath of {@code first}. */\n+\n   public static UnixPath getPath(boolean permitEmptyComponents, String path) {\n     if (path.isEmpty()) {\n       return EMPTY_PATH;\n     } else if (isRootInternal(path)) {\n-      return ROOT_PATH;\n-    } else {\n-      return new UnixPath(permitEmptyComponents, path);\n+             return ROOT_PATH;\n+           } else {\n+             return new UnixPath(permitEmptyComponents, path);\n     }\n   }\n \n@@ -74,6 +78,7 @@ final class UnixPath implements CharSequence {\n    * @see #resolve(UnixPath)\n    * @see java.nio.file.FileSystem#getPath(String, String...)\n    */\n+\n   public static UnixPath getPath(boolean permitEmptyComponents, String first, String... more) {\n     if (more.length == 0) {\n       return getPath(permitEmptyComponents, first);\n@@ -84,22 +89,23 @@ final class UnixPath implements CharSequence {\n       if (part.isEmpty()) {\n         continue;\n       } else if (isAbsoluteInternal(part)) {\n-        if (i == more.length - 1) {\n-          return new UnixPath(permitEmptyComponents, part);\n-        } else {\n-          builder.replace(0, builder.length(), part);\n-        }\n-      } else if (hasTrailingSeparatorInternal(builder)) {\n-        builder.append(part);\n-      } else {\n-        builder.append(SEPARATOR);\n-        builder.append(part);\n-      }\n+               if (i == more.length - 1) {\n+                 return new UnixPath(permitEmptyComponents, part);\n+               } else {\n+                 builder.replace(0, builder.length(), part);\n+               }\n+             } else if (hasTrailingSeparatorInternal(builder)) {\n+                      builder.append(part);\n+                    } else {\n+                      builder.append(SEPARATOR);\n+                      builder.append(part);\n+             }\n     }\n     return new UnixPath(permitEmptyComponents, builder.toString());\n   }\n \n   /** Returns {@code true} consists only of {@code separator}. */\n+\n   public boolean isRoot() {\n     return isRootInternal(path);\n   }\n@@ -109,15 +115,18 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Returns {@code true} if path starts with {@code separator}. */\n+\n   public boolean isAbsolute() {\n     return isAbsoluteInternal(path);\n   }\n \n   private static boolean isAbsoluteInternal(String path) {\n-    return !path.isEmpty() && path.charAt(0) == SEPARATOR;\n+    return !path.isEmpty()\n+      && path.charAt(0) == SEPARATOR;\n   }\n \n   /** Returns {@code true} if path ends with {@code separator}. */\n+\n   public boolean hasTrailingSeparator() {\n     return hasTrailingSeparatorInternal(path);\n   }\n@@ -127,12 +136,12 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Returns {@code true} if path ends with a trailing slash, or would after normalization. */\n+\n   public boolean seemsLikeADirectory() {\n     int length = path.length();\n-    return path.isEmpty()\n-        || path.charAt(length - 1) == SEPARATOR\n-        || path.endsWith(\".\") && (length == 1 || path.charAt(length - 2) == SEPARATOR)\n-        || path.endsWith(\"..\") && (length == 2 || path.charAt(length - 3) == SEPARATOR);\n+    return path.isEmpty() || path.charAt(length - 1) == SEPARATOR || path.endsWith(\".\")\n+      && (length == 1 || path.charAt(length - 2) == SEPARATOR) || path.endsWith(\"..\")\n+        && (length == 2 || path.charAt(length - 3) == SEPARATOR);\n   }\n \n   /**\n@@ -140,17 +149,17 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#getFileName()\n    */\n+\n   @Nullable\n   public UnixPath getFileName() {\n     if (path.isEmpty()) {\n       return EMPTY_PATH;\n     } else if (isRoot()) {\n-      return null;\n-    } else {\n-      List<String> parts = getParts();\n-      String last = parts.get(parts.size() - 1);\n-      return parts.size() == 1 && path.equals(last)\n-          ? this : new UnixPath(permitEmptyComponents, last);\n+             return null;\n+           } else {\n+             List<String> parts = getParts();\n+             String last = parts.get(parts.size() - 1);\n+             return parts.size() == 1 && path.equals(last) ? this : new UnixPath(permitEmptyComponents, last);\n     }\n   }\n \n@@ -159,14 +168,13 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#getParent()\n    */\n+\n   @Nullable\n   public UnixPath getParent() {\n     if (path.isEmpty() || isRoot()) {\n       return null;\n     }\n-    int index = hasTrailingSeparator()\n-        ? path.lastIndexOf(SEPARATOR, path.length() - 2)\n-        : path.lastIndexOf(SEPARATOR);\n+    int index = hasTrailingSeparator() ? path.lastIndexOf(SEPARATOR, path.length() - 2) : path.lastIndexOf(SEPARATOR);\n     if (index == -1) {\n       return isAbsolute() ? ROOT_PATH : null;\n     } else {\n@@ -179,6 +187,7 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#getRoot()\n    */\n+\n   @Nullable\n   public UnixPath getRoot() {\n     return isAbsolute() ? ROOT_PATH : null;\n@@ -189,8 +198,10 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#subpath(int, int)\n    */\n+\n   public UnixPath subpath(int beginIndex, int endIndex) {\n-    if (path.isEmpty() && beginIndex == 0 && endIndex == 1) {\n+    if (path.isEmpty()\n+    && beginIndex == 0 && endIndex == 1) {\n       return this;\n     }\n     checkArgument(beginIndex >= 0 && endIndex > beginIndex);\n@@ -208,13 +219,14 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#getNameCount()\n    */\n+\n   public int getNameCount() {\n     if (path.isEmpty()) {\n       return 1;\n     } else if (isRoot()) {\n-      return 0;\n-    } else {\n-      return getParts().size();\n+             return 0;\n+           } else {\n+             return getParts().size();\n     }\n   }\n \n@@ -223,6 +235,7 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#getName(int)\n    */\n+\n   public UnixPath getName(int index) {\n     if (path.isEmpty()) {\n       return this;\n@@ -239,6 +252,7 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#normalize()\n    */\n+\n   public UnixPath normalize() {\n     List<String> parts = new ArrayList<>();\n     boolean mutated = false;\n@@ -248,28 +262,26 @@ final class UnixPath implements CharSequence {\n     do {\n       index = path.indexOf(SEPARATOR, mark);\n       String part = path.substring(mark, index == -1 ? path.length() : index + 1);\n-      switch (part) {\n-        case CURRENT_DIR:\n-        case CURRENT_DIR + SEPARATOR:\n-          mutated = true;\n-          break;\n-        case PARENT_DIR:\n-        case PARENT_DIR + SEPARATOR:\n-          mutated = true;\n-          if (!parts.isEmpty()) {\n-            resultLength -= parts.remove(parts.size() - 1).length();\n-          }\n-          break;\n+      switch(part) {\n+        case CURRENT_DIR: case CURRENT_DIR + SEPARATOR:\n+                     mutated = true;\n+                     break;\n+        case PARENT_DIR: case PARENT_DIR + SEPARATOR:\n+                     mutated = true;\n+                     if (!parts.isEmpty()) {\n+                       resultLength -= parts.remove(parts.size() - 1).length();\n+                     }\n+                     break;\n         default:\n-          if (index != mark || index == 0) {\n-            parts.add(part);\n-            resultLength = part.length();\n-          } else {\n-            mutated = true;\n-          }\n-      }\n+                     if (index != mark || index == 0) {\n+                       parts.add(part);\n+                       resultLength = part.length();\n+                     } else {\n+                       mutated = true;\n+                     }}\n       mark = index + 1;\n-    } while (index != -1);\n+    }\n+while(index != -1);\n     if (!mutated) {\n       return this;\n     }\n@@ -285,16 +297,17 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#resolve(java.nio.file.Path)\n    */\n+\n   public UnixPath resolve(UnixPath other) {\n     if (other.path.isEmpty()) {\n       return this;\n     } else if (other.isAbsolute()) {\n-      return other;\n-    } else if (hasTrailingSeparator()) {\n-      return new UnixPath(permitEmptyComponents, path + other.path);\n-    } else {\n-      return new UnixPath(permitEmptyComponents, path + SEPARATOR + other.path);\n-    }\n+             return other;\n+           } else if (hasTrailingSeparator()) {\n+                    return new UnixPath(permitEmptyComponents, path + other.path);\n+                  } else {\n+                    return new UnixPath(permitEmptyComponents, path + SEPARATOR + other.path);\n+           }\n   }\n \n   /**\n@@ -302,6 +315,7 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#resolveSibling(java.nio.file.Path)\n    */\n+\n   public UnixPath resolveSibling(UnixPath other) {\n     checkNotNull(other);\n     UnixPath parent = getParent();\n@@ -313,6 +327,7 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#relativize(java.nio.file.Path)\n    */\n+\n   public UnixPath relativize(UnixPath other) {\n     checkArgument(isAbsolute() == other.isAbsolute(), \"'other' is different type of Path\");\n     if (path.isEmpty()) {\n@@ -320,7 +335,8 @@ final class UnixPath implements CharSequence {\n     }\n     PeekingIterator<String> left = Iterators.peekingIterator(split());\n     PeekingIterator<String> right = Iterators.peekingIterator(other.split());\n-    while (left.hasNext() && right.hasNext()) {\n+    while (left.hasNext()\n+      && right.hasNext()) {\n       if (!left.peek().equals(right.peek())) {\n         break;\n       }\n@@ -348,16 +364,18 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#startsWith(java.nio.file.Path)\n    */\n+\n   public boolean startsWith(UnixPath other) {\n     UnixPath me = removeTrailingSeparator();\n     other = other.removeTrailingSeparator();\n     if (other.path.length() > me.path.length()) {\n       return false;\n     } else if (me.isAbsolute() != other.isAbsolute()) {\n-      return false;\n-    } else if (!me.path.isEmpty() && other.path.isEmpty()) {\n-      return false;\n-    }\n+             return false;\n+           } else if (!me.path.isEmpty()\n+             && other.path.isEmpty()) {\n+                    return false;\n+                  }\n     return startsWith(split(), other.split());\n   }\n \n@@ -375,16 +393,19 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#endsWith(java.nio.file.Path)\n    */\n+\n   public boolean endsWith(UnixPath other) {\n     UnixPath me = removeTrailingSeparator();\n     other = other.removeTrailingSeparator();\n     if (other.path.length() > me.path.length()) {\n       return false;\n-    } else if (!me.path.isEmpty() && other.path.isEmpty()) {\n-      return false;\n-    } else if (other.isAbsolute()) {\n-      return me.isAbsolute() && me.path.equals(other.path);\n-    }\n+    } else if (!me.path.isEmpty()\n+      && other.path.isEmpty()) {\n+             return false;\n+           } else if (other.isAbsolute()) {\n+                    return me.isAbsolute()\n+                      && me.path.equals(other.path);\n+                  }\n     return startsWith(me.splitReverse(), other.splitReverse());\n   }\n \n@@ -393,34 +414,41 @@ final class UnixPath implements CharSequence {\n    *\n    * @see java.nio.file.Path#compareTo(java.nio.file.Path)\n    */\n+\n   public int compareTo(UnixPath other) {\n     return ORDERING.compare(getParts(), other.getParts());\n   }\n \n   /** Converts relative path to an absolute path. */\n+\n   public UnixPath toAbsolutePath(UnixPath currentWorkingDirectory) {\n     checkArgument(currentWorkingDirectory.isAbsolute());\n     return isAbsolute() ? this : currentWorkingDirectory.resolve(this);\n   }\n \n   /** Returns {@code toAbsolutePath(ROOT_PATH)}. */\n+\n   public UnixPath toAbsolutePath() {\n     return toAbsolutePath(ROOT_PATH);\n   }\n \n   /** Removes beginning separator from path, if an absolute path. */\n+\n   public UnixPath removeBeginningSeparator() {\n     return isAbsolute() ? new UnixPath(permitEmptyComponents, path.substring(1)) : this;\n   }\n \n   /** Adds trailing separator to path, if it isn't present. */\n+\n   public UnixPath addTrailingSeparator() {\n     return hasTrailingSeparator() ? this : new UnixPath(permitEmptyComponents, path + SEPARATOR);\n   }\n \n   /** Removes trailing separator from path, unless it's root. */\n+\n   public UnixPath removeTrailingSeparator() {\n-    if (!isRoot() && hasTrailingSeparator()) {\n+    if (!isRoot()\n+      && hasTrailingSeparator()) {\n       return new UnixPath(permitEmptyComponents, path.substring(0, path.length() - 1));\n     } else {\n       return this;\n@@ -428,20 +456,20 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Splits path into components, excluding separators and empty strings. */\n+\n   public Iterator<String> split() {\n     return getParts().iterator();\n   }\n \n   /** Splits path into components in reverse, excluding separators and empty strings. */\n+\n   public Iterator<String> splitReverse() {\n     return Lists.reverse(getParts()).iterator();\n   }\n \n   @Override\n   public boolean equals(@Nullable Object other) {\n-    return this == other\n-        || other instanceof UnixPath\n-        && path.equals(((UnixPath) other).path);\n+    return this == other || other instanceof UnixPath && path.equals(((UnixPath) other).path);\n   }\n \n   @Override\n@@ -450,6 +478,7 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Returns path as a string. */\n+\n   @Override\n   public String toString() {\n     return path;\n@@ -471,24 +500,23 @@ final class UnixPath implements CharSequence {\n   }\n \n   /** Returns {@code true} if this path is an empty string. */\n+\n   public boolean isEmpty() {\n     return path.isEmpty();\n   }\n \n   /** Returns list of path components, excluding slashes. */\n+\n   private List<String> getParts() {\n     List<String> result = lazyStringParts;\n-    return result != null\n-        ? result : (lazyStringParts = path.isEmpty() || isRoot()\n-            ? Collections.<String>emptyList() : createParts());\n+    return result != null ? result : (lazyStringParts = path.isEmpty() || isRoot() ? Collections.<String>emptyList() : createParts());\n   }\n \n   private List<String> createParts() {\n     if (permitEmptyComponents) {\n-      return SPLITTER_PERMIT_EMPTY_COMPONENTS\n-          .splitToList(path.charAt(0) == SEPARATOR ? path.substring(1) : path);\n+      return SPLITTER_PERMIT_EMPTY_COMPONENTS.splitToList(path.charAt(0) == SEPARATOR ? path.substring(1) : path);\n     } else {\n       return SPLITTER.splitToList(path);\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 128
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler_random/243/UnixPath.java\nindex 85474ac2d92..160c3928ca9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler_random/243/UnixPath.java\n@@ -269,7 +269,8 @@ final class UnixPath implements CharSequence {\n           }\n       }\n       mark = index + 1;\n-    } while (index != -1);\n+    }\n+    while (index != -1);\n     if (!mutated) {\n       return this;\n     }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "271",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "'}' at column 24 should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "271",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "WhitespaceAround: '}' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler_three_grams/243/UnixPath.java\nindex 85474ac2d92..f2cdf44e239 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/errored/1/243/UnixPath.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/googleapis-google-cloud-java/styler_three_grams/243/UnixPath.java\n@@ -268,8 +268,8 @@ final class UnixPath implements CharSequence {\n             mutated = true;\n           }\n       }\n-      mark = index + 1;\n-    } while (index != -1);\n+      mark = index + 1;}\n+    while (index != -1);\n     if (!mutated) {\n       return this;\n     }\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

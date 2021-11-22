@@ -1,0 +1,111 @@
+{
+    "project_name": "DaGeRe-peass",
+    "error_id": "32",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "column": "4",
+                "severity": "error",
+                "message": "';' is preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+            }
+        ]
+    },
+    "source_code": "\npublic enum ContinuousFolderUtil {\n   ;\n\n   private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/32/ContinuousFolderUtil.java\nindex 375a84a4b93..92c4ff527f8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/32/ContinuousFolderUtil.java\n@@ -10,7 +10,7 @@ import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n public enum ContinuousFolderUtil {\n-   ;\n+\t\t;\n \n    private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "3",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/32/ContinuousFolderUtil.java\nindex 375a84a4b93..fa78631755c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/32/ContinuousFolderUtil.java\n@@ -10,42 +10,42 @@ import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n public enum ContinuousFolderUtil {\n-   ;\n-\n-   private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n-\n-   public static File getLocalFolder(final File projectFolder) {\n-      return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n-   }\n-\n-   public static String getSubFolderPath(final File projectFolder) throws IOException {\n-      File vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n-      if (vcsFolder != null) {\n-         String projectCanonicalPath = projectFolder.getCanonicalPath();\n-         String vcsCanonicalPath = vcsFolder.getCanonicalPath();\n-         if (projectCanonicalPath.length() > vcsCanonicalPath.length()) {\n-            String localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n-            return vcsFolder.getName() + File.separator + localSuffix;\n-         } else {\n-            return vcsFolder.getName();\n-         }\n+  ;\n+\n+  private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n+\n+  public static File getLocalFolder(final File projectFolder) {\n+    return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n+  }\n+\n+  public static String getSubFolderPath(final File projectFolder) throws IOException {\n+    File vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n+    if (vcsFolder != null) {\n+      String projectCanonicalPath = projectFolder.getCanonicalPath();\n+      String vcsCanonicalPath = vcsFolder.getCanonicalPath();\n+      if (projectCanonicalPath.length() > vcsCanonicalPath.length()) {\n+        String localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n+        return vcsFolder.getName() + File.separator + localSuffix;\n       } else {\n-         return null;\n+        return vcsFolder.getName();\n       }\n-   }\n-\n-   public static void cloneProject(final File cloneProjectFolder, final File localFolder) throws InterruptedException, IOException {\n-      localFolder.mkdirs();\n-      File originalVcsFolder = VersionControlSystem.findVCSFolder(cloneProjectFolder);\n-      if (originalVcsFolder != null && originalVcsFolder.exists()) {\n-         LOG.info(\"Cloning using git clone\");\n-         final ProcessBuilder builder = new ProcessBuilder(\"git\", \"clone\", originalVcsFolder.getAbsolutePath());\n-         builder.directory(localFolder);\n-         StreamGobbler.showFullProcess(builder.start());\n-      } else {\n-         throw new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \"\n-               + \"currently, only git projects are supported\");\n-      }\n-   }\n+    } else {\n+      return null;\n+    }\n+  }\n+\n+  public static void cloneProject(final File cloneProjectFolder, final File localFolder) throws InterruptedException, IOException {\n+    localFolder.mkdirs();\n+    File originalVcsFolder = VersionControlSystem.findVCSFolder(cloneProjectFolder);\n+    if (originalVcsFolder != null && originalVcsFolder.exists()) {\n+      LOG.info(\"Cloning using git clone\");\n+      final ProcessBuilder builder = new ProcessBuilder(\"git\", \"clone\", originalVcsFolder.getAbsolutePath());\n+      builder.directory(localFolder);\n+      StreamGobbler.showFullProcess(builder.start());\n+    } else {\n+      throw new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \"\n+          + \"currently, only git projects are supported\");\n+    }\n+  }\n \n }\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "12",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/naturalize/32/ContinuousFolderUtil.java\nindex 375a84a4b93..ad1f59992e4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/naturalize/32/ContinuousFolderUtil.java\n@@ -9,43 +9,41 @@ import org.apache.logging.log4j.Logger;\n import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n-public enum ContinuousFolderUtil {\n-   ;\n+public enum ContinuousFolderUtil {;\n \n    private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n \n    public static File getLocalFolder(final File projectFolder) {\n-      return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n-   }\n+\treturn new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n+\t}\n \n    public static String getSubFolderPath(final File projectFolder) throws IOException {\n-      File vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n+\tFile vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n       if (vcsFolder != null) {\n-         String projectCanonicalPath = projectFolder.getCanonicalPath();\n+\tString projectCanonicalPath = projectFolder.getCanonicalPath();\n          String vcsCanonicalPath = vcsFolder.getCanonicalPath();\n          if (projectCanonicalPath.length() > vcsCanonicalPath.length()) {\n-            String localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n+\tString localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n             return vcsFolder.getName() + File.separator + localSuffix;\n-         } else {\n-            return vcsFolder.getName();\n-         }\n-      } else {\n-         return null;\n-      }\n-   }\n+\t} else {\n+\treturn vcsFolder.getName();\n+\t}\n+\t} else {\n+\treturn null;\n+\t}\n+\t}\n \n    public static void cloneProject(final File cloneProjectFolder, final File localFolder) throws InterruptedException, IOException {\n-      localFolder.mkdirs();\n+\tlocalFolder.mkdirs();\n       File originalVcsFolder = VersionControlSystem.findVCSFolder(cloneProjectFolder);\n       if (originalVcsFolder != null && originalVcsFolder.exists()) {\n-         LOG.info(\"Cloning using git clone\");\n+\tLOG.info(\"Cloning using git clone\");\n          final ProcessBuilder builder = new ProcessBuilder(\"git\", \"clone\", originalVcsFolder.getAbsolutePath());\n          builder.directory(localFolder);\n          StreamGobbler.showFullProcess(builder.start());\n-      } else {\n-         throw new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \"\n-               + \"currently, only git projects are supported\");\n-      }\n-   }\n-\n-}\n+\t} else {\n+\tthrow new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \"\n++ \"currently, only git projects are supported\");\n+\t}\n+\t}\n+\t}\n\\ No newline at end of file\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "12",
+                    "column": "2",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/32/ContinuousFolderUtil.java\nindex 375a84a4b93..f345e666189 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/32/ContinuousFolderUtil.java\n@@ -2,50 +2,49 @@ package de.peass.ci;\n \n import java.io.File;\n import java.io.IOException;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n-public enum ContinuousFolderUtil {\n-   ;\n-\n-   private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n-\n-   public static File getLocalFolder(final File projectFolder) {\n-      return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n-   }\n-\n-   public static String getSubFolderPath(final File projectFolder) throws IOException {\n-      File vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n-      if (vcsFolder != null) {\n-         String projectCanonicalPath = projectFolder.getCanonicalPath();\n-         String vcsCanonicalPath = vcsFolder.getCanonicalPath();\n-         if (projectCanonicalPath.length() > vcsCanonicalPath.length()) {\n-            String localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n-            return vcsFolder.getName() + File.separator + localSuffix;\n-         } else {\n-            return vcsFolder.getName();\n-         }\n-      } else {\n-         return null;\n-      }\n-   }\n \n-   public static void cloneProject(final File cloneProjectFolder, final File localFolder) throws InterruptedException, IOException {\n-      localFolder.mkdirs();\n-      File originalVcsFolder = VersionControlSystem.findVCSFolder(cloneProjectFolder);\n-      if (originalVcsFolder != null && originalVcsFolder.exists()) {\n-         LOG.info(\"Cloning using git clone\");\n-         final ProcessBuilder builder = new ProcessBuilder(\"git\", \"clone\", originalVcsFolder.getAbsolutePath());\n-         builder.directory(localFolder);\n-         StreamGobbler.showFullProcess(builder.start());\n-      } else {\n-         throw new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \"\n-               + \"currently, only git projects are supported\");\n-      }\n+public enum ContinuousFolderUtil {\n+ ;\n+\n+ private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n+\n+ public static File getLocalFolder(final File projectFolder) {\n+  return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n+ }\n+\n+ public static String getSubFolderPath(final File projectFolder) throws IOException {\n+  File vcsFolder = VersionControlSystem.findVCSFolder(projectFolder);\n+  if (vcsFolder != null) {\n+   String projectCanonicalPath = projectFolder.getCanonicalPath();\n+   String vcsCanonicalPath = vcsFolder.getCanonicalPath();\n+   if (projectCanonicalPath.length() > vcsCanonicalPath.length()) {\n+    String localSuffix = projectCanonicalPath.substring(vcsCanonicalPath.length() + 1);\n+    return vcsFolder.getName() + File.separator + localSuffix;\n+   } else {\n+    return vcsFolder.getName();\n    }\n-\n-}\n+  } else {\n+   return null;\n+  }\n+ }\n+\n+ public static void cloneProject(final File cloneProjectFolder, final File localFolder) throws InterruptedException, IOException {\n+  localFolder.mkdirs();\n+\n+  File originalVcsFolder = VersionControlSystem.findVCSFolder(cloneProjectFolder);\n+  if (originalVcsFolder != null && originalVcsFolder.exists()) {\n+   LOG.info(\"Cloning using git clone\");\n+\n+   final ProcessBuilder builder = new ProcessBuilder(\"git\", \"clone\", originalVcsFolder.getAbsolutePath());\n+   builder.directory(localFolder);\n+   StreamGobbler.showFullProcess(builder.start());\n+  } else {\n+   throw new RuntimeException(\"No git folder in \" + cloneProjectFolder.getAbsolutePath() + \" (or parent) present - \" + \"currently, only git projects are supported\");\n+  }\n+ }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 65
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "13",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/32/ContinuousFolderUtil.java\nindex 375a84a4b93..92c4ff527f8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/32/ContinuousFolderUtil.java\n@@ -10,7 +10,7 @@ import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n public enum ContinuousFolderUtil {\n-   ;\n+\t\t;\n \n    private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "12",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/32/ContinuousFolderUtil.java\nindex 375a84a4b93..50a7b4b335c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/32/ContinuousFolderUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/32/ContinuousFolderUtil.java\n@@ -9,10 +9,9 @@ import org.apache.logging.log4j.Logger;\n import de.peass.utils.StreamGobbler;\n import de.peass.vcs.VersionControlSystem;\n \n-public enum ContinuousFolderUtil {\n-   ;\n+public enum ContinuousFolderUtil {;\n \n-   private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n+private static final Logger LOG = LogManager.getLogger(ContinuousExecutor.class);\n \n    public static File getLocalFolder(final File projectFolder) {\n       return new File(projectFolder, \"..\" + File.separator + projectFolder.getName() + \"_fullPeass\");\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,186 @@
+{
+    "project_name": "SentinelDataHub-dhus-core",
+    "error_id": "34",
+    "information": {
+        "errors": [
+            {
+                "line": "72",
+                "severity": "error",
+                "message": "Line is longer than 80 characters (found 82).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            SQLException\n         {\n            String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n            Query query = session.createSQLQuery (sql);\n            query.setParameter(0, search.getUUID(), StandardBasicTypes.STRING);\n            query.executeUpdate ();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/34/SearchDao.java\nindex b43b2940d21..66ffc852960 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/34/SearchDao.java\n@@ -69,8 +69,9 @@ public class SearchDao extends HibernateDao<Search, String>\n          public Void doInHibernate (Session session) throws HibernateException,\n             SQLException\n          {\n-            String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n-            Query query = session.createSQLQuery (sql);\n+            String sql =\n+                  \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n+             Query query = session.createSQLQuery (sql);\n             query.setParameter(0, search.getUUID(), StandardBasicTypes.STRING);\n             query.executeUpdate ();\n             return null;\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/34/SearchDao.java\nindex b43b2940d21..0ee1b2402fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/34/SearchDao.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package fr.gael.dhus.database.dao;\n \n import java.sql.SQLException;\n@@ -36,64 +37,69 @@ import fr.gael.dhus.database.object.User;\n @Repository\n public class SearchDao extends HibernateDao<Search, String>\n {\n-   public List<Search> scrollSearchesOfUser (final User user, final int skip,\n-      final int top)\n-   {\n-      return getHibernateTemplate ().execute (\n-         new HibernateCallback<List<Search>> ()\n-         {\n+    public List<Search> scrollSearchesOfUser(final User user, final int skip,\n+                                             final int top)\n+    {\n+        return getHibernateTemplate().execute(\n+            new HibernateCallback<List<Search>>()\n+            {\n+                @Override\n+                @SuppressWarnings(\"unchecked\")\n+                public List<Search> doInHibernate(Session session)\n+                    throws HibernateException, SQLException\n+                {\n+                    String hql =\n+                        \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \"\n+                            + \"LEFT OUTER JOIN p.searches s \"\n+                            + \"WHERE u.uuid like ? ORDER BY s.value\";\n+                    Query query = session.createQuery(hql).setReadOnly(true);\n+                    query.setParameter(0, user.getUUID(),\n+                        StandardBasicTypes.STRING);\n+                    query.setFirstResult(skip);\n+                    query.setMaxResults(top);\n+                    return (List<Search>) query.list();\n+                }\n+            });\n+    }\n+\n+    @Override\n+    public void delete(final Search search)\n+    {\n+        getHibernateTemplate().execute(new HibernateCallback<Void>()\n+        {\n             @Override\n-            @SuppressWarnings (\"unchecked\")\n-            public List<Search> doInHibernate (Session session)\n-               throws HibernateException, SQLException\n+            public Void doInHibernate(Session session)\n+                throws HibernateException,\n+                SQLException\n             {\n-               String hql =\n-                  \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \"\n-                     + \"LEFT OUTER JOIN p.searches s \"\n-                     + \"WHERE u.uuid like ? ORDER BY s.value\";\n-               Query query = session.createQuery (hql).setReadOnly (true);\n-               query.setParameter(0, user.getUUID(), StandardBasicTypes.STRING);\n-               query.setFirstResult (skip);\n-               query.setMaxResults (top);\n-               return (List<Search>) query.list ();\n+                String sql =\n+                    \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n+                Query query = session.createSQLQuery(sql);\n+                query.setParameter(0, search.getUUID(),\n+                    StandardBasicTypes.STRING);\n+                query.executeUpdate();\n+                return null;\n             }\n-         });\n-   }\n-\n-   @Override\n-   public void delete (final Search search)\n-   {\n-      getHibernateTemplate ().execute (new HibernateCallback<Void>()\n-      {\n-         @Override\n-         public Void doInHibernate (Session session) throws HibernateException,\n-            SQLException\n-         {\n-            String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n-            Query query = session.createSQLQuery (sql);\n-            query.setParameter(0, search.getUUID(), StandardBasicTypes.STRING);\n-            query.executeUpdate ();\n-            return null;\n-         }\n-      });\n-      super.delete (search);\n-   }\n+        });\n+        super.delete(search);\n+    }\n \n-   /**\n-    * Inactive all saved search notifications of users.\n-    */\n-   public void disableAllSearchNotifications ()\n-   {\n-      getHibernateTemplate ().execute (new HibernateCallback<Void> ()\n-      {\n-         @Override\n-         public Void doInHibernate (Session session) throws HibernateException,\n-               SQLException\n-         {\n-            String query = \"UPDATE SEARCHES SET NOTIFY = false\";\n-            session.createSQLQuery (query).executeUpdate ();\n-            return null;\n-         }\n-      });\n-   }\n+    /**\n+     * Inactive all saved search notifications of users.\n+     */\n+    public void disableAllSearchNotifications()\n+    {\n+        getHibernateTemplate().execute(new HibernateCallback<Void>()\n+        {\n+            @Override\n+            public Void doInHibernate(Session session)\n+                throws HibernateException,\n+                SQLException\n+            {\n+                String query = \"UPDATE SEARCHES SET NOTIFY = false\";\n+                session.createSQLQuery(query).executeUpdate();\n+                return null;\n+            }\n+        });\n+    }\n }\n",
+            "diff_size": 82
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 92).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "50",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 107).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "70",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 82).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/34/SearchDao.java\nindex b43b2940d21..75f10e8a806 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/34/SearchDao.java\n@@ -36,8 +36,7 @@ import fr.gael.dhus.database.object.User;\n @Repository\n public class SearchDao extends HibernateDao<Search, String>\n {\n-   public List<Search> scrollSearchesOfUser (final User user, final int skip,\n-      final int top)\n+   public List<Search> scrollSearchesOfUser (final User user, final int skip, final int top)\n    {\n       return getHibernateTemplate ().execute (\n          new HibernateCallback<List<Search>> ()\n@@ -48,8 +47,7 @@ public class SearchDao extends HibernateDao<Search, String>\n                throws HibernateException, SQLException\n             {\n                String hql =\n-                  \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \"\n-                     + \"LEFT OUTER JOIN p.searches s \"\n+                  \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \" + \"LEFT OUTER JOIN p.searches s \"\n                      + \"WHERE u.uuid like ? ORDER BY s.value\";\n                Query query = session.createQuery (hql).setReadOnly (true);\n                query.setParameter(0, user.getUUID(), StandardBasicTypes.STRING);\n@@ -96,4 +94,4 @@ public class SearchDao extends HibernateDao<Search, String>\n          }\n       });\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 92).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 84).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 140).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "45",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "46",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 82).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 91).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 111).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 119).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "52",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 88).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "65",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 115).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "66",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 88).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "67",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 114).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "84",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 97).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "87",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 93).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/34/SearchDao.java\nindex b43b2940d21..f16395bc1d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/34/SearchDao.java\n@@ -21,14 +21,12 @@ package fr.gael.dhus.database.dao;\n \n import java.sql.SQLException;\n import java.util.List;\n-\n import org.hibernate.HibernateException;\n import org.hibernate.Query;\n import org.hibernate.Session;\n import org.hibernate.type.StandardBasicTypes;\n import org.springframework.orm.hibernate3.HibernateCallback;\n import org.springframework.stereotype.Repository;\n-\n import fr.gael.dhus.database.dao.interfaces.HibernateDao;\n import fr.gael.dhus.database.object.Search;\n import fr.gael.dhus.database.object.User;\n@@ -36,64 +34,59 @@ import fr.gael.dhus.database.object.User;\n @Repository\n public class SearchDao extends HibernateDao<Search, String>\n {\n-   public List<Search> scrollSearchesOfUser (final User user, final int skip,\n-      final int top)\n+   public List<Search> scrollSearchesOfUser (final User user, final int skip, final int top)\n    {\n-      return getHibernateTemplate ().execute (\n-         new HibernateCallback<List<Search>> ()\n-         {\n-            @Override\n-            @SuppressWarnings (\"unchecked\")\n-            public List<Search> doInHibernate (Session session)\n-               throws HibernateException, SQLException\n-            {\n-               String hql =\n-                  \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \"\n-                     + \"LEFT OUTER JOIN p.searches s \"\n-                     + \"WHERE u.uuid like ? ORDER BY s.value\";\n-               Query query = session.createQuery (hql).setReadOnly (true);\n-               query.setParameter(0, user.getUUID(), StandardBasicTypes.STRING);\n-               query.setFirstResult (skip);\n-               query.setMaxResults (top);\n-               return (List<Search>) query.list ();\n-            }\n-         });\n+      return getHibernateTemplate ().execute (new HibernateCallback<List<Search>> ()\n+                                              {\n+                                                 @Override\n+                                                 @SuppressWarnings (\"unchecked\")\n+                                                 public List<Search> doInHibernate (Session session) throws HibernateException, SQLException\n+                                                 {\n+                                                    String hql = \"SELECT s FROM User u LEFT OUTER JOIN u.preferences p \" +\n+                                                 \"LEFT OUTER JOIN p.searches s \" +\n+                                                    \"WHERE u.uuid like ? ORDER BY s.value\";\n+                                                    Query query = session.createQuery (hql).setReadOnly (true);\n+                                                    query.setParameter (0, user.getUUID (), StandardBasicTypes.STRING);\n+                                                    query.setFirstResult(skip);\n+                                                    query.setMaxResults(top);\n+                                                    return (List<Search>) query.list ();\n+                                                 }\n+                                              });\n    }\n \n    @Override\n    public void delete (final Search search)\n    {\n-      getHibernateTemplate ().execute (new HibernateCallback<Void>()\n-      {\n-         @Override\n-         public Void doInHibernate (Session session) throws HibernateException,\n-            SQLException\n-         {\n-            String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n-            Query query = session.createSQLQuery (sql);\n-            query.setParameter(0, search.getUUID(), StandardBasicTypes.STRING);\n-            query.executeUpdate ();\n-            return null;\n-         }\n-      });\n+      getHibernateTemplate ().execute (new HibernateCallback<Void> ()\n+                                       {\n+                                          @Override\n+                                          public Void doInHibernate (Session session) throws HibernateException, SQLException\n+                                          {\n+                                             String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n+                                             Query query = session.createSQLQuery (sql);\n+                                             query.setParameter (0, search.getUUID (), StandardBasicTypes.STRING);\n+                                             query.executeUpdate();\n+                                             return null;\n+                                          }\n+                                       });\n       super.delete (search);\n    }\n \n    /**\n     * Inactive all saved search notifications of users.\n     */\n+\n    public void disableAllSearchNotifications ()\n    {\n       getHibernateTemplate ().execute (new HibernateCallback<Void> ()\n-      {\n-         @Override\n-         public Void doInHibernate (Session session) throws HibernateException,\n-               SQLException\n-         {\n-            String query = \"UPDATE SEARCHES SET NOTIFY = false\";\n-            session.createSQLQuery (query).executeUpdate ();\n-            return null;\n-         }\n-      });\n+                                       {\n+                                          @Override\n+                                          public Void doInHibernate (Session session) throws HibernateException, SQLException\n+                                          {\n+                                             String query = \"UPDATE SEARCHES SET NOTIFY = false\";\n+                                             session.createSQLQuery (query).executeUpdate ();\n+                                             return null;\n+                                          }\n+                                       });\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "72",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 82).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/34/SearchDao.java\nindex b43b2940d21..66ffc852960 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/34/SearchDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/34/SearchDao.java\n@@ -69,8 +69,9 @@ public class SearchDao extends HibernateDao<Search, String>\n          public Void doInHibernate (Session session) throws HibernateException,\n             SQLException\n          {\n-            String sql = \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n-            Query query = session.createSQLQuery (sql);\n+            String sql =\n+                  \"DELETE FROM SEARCH_PREFERENCES WHERE SEARCHES_UUID = ?\";\n+             Query query = session.createSQLQuery (sql);\n             query.setParameter(0, search.getUUID(), StandardBasicTypes.STRING);\n             query.executeUpdate ();\n             return null;\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

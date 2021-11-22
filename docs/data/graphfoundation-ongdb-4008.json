@@ -1,0 +1,153 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4008",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "72",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "95",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4008/DatabaseAvailability.java\nindex 4fbc274497c..a7734125949 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4008/DatabaseAvailability.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel;\n \n import java.time.Clock;\n@@ -37,57 +38,57 @@ import static org.neo4j.kernel.AvailabilityGuard.availabilityRequirement;\n  */\n public class DatabaseAvailability implements Lifecycle\n {\n-    private static final AvailabilityRequirement AVAILABILITY_REQUIREMENT = availabilityRequirement( \"Database available\" );\n-    private final AvailabilityGuard availabilityGuard;\n-    private final TransactionStats transactionMonitor;\n-    private final long awaitActiveTransactionDeadlineMillis;\n+  private static final AvailabilityRequirement AVAILABILITY_REQUIREMENT = availabilityRequirement(\"Database available\");\n+  private final AvailabilityGuard availabilityGuard;\n+  private final TransactionStats transactionMonitor;\n+  private final long awaitActiveTransactionDeadlineMillis;\n \n-    public DatabaseAvailability( AvailabilityGuard availabilityGuard, TransactionStats transactionMonitor,\n-            long awaitActiveTransactionDeadlineMillis )\n-    {\n-        this.availabilityGuard = availabilityGuard;\n-        this.transactionMonitor = transactionMonitor;\n-        this.awaitActiveTransactionDeadlineMillis = awaitActiveTransactionDeadlineMillis;\n+  public DatabaseAvailability(AvailabilityGuard availabilityGuard, TransactionStats transactionMonitor,\n+                              long awaitActiveTransactionDeadlineMillis)\n+  {\n+    this.availabilityGuard = availabilityGuard;\n+    this.transactionMonitor = transactionMonitor;\n+    this.awaitActiveTransactionDeadlineMillis = awaitActiveTransactionDeadlineMillis;\n \n-        // On initial setup, deny availability\n-        availabilityGuard.require( AVAILABILITY_REQUIREMENT );\n-    }\n+    // On initial setup, deny availability\n+    availabilityGuard.require(AVAILABILITY_REQUIREMENT);\n+  }\n \n-    @Override\n-    public void init()\n-    {\n-    }\n+  @Override\n+  public void init()\n+  {\n+  }\n \n-    @Override\n-    public void start()\n-    {\n-        availabilityGuard.fulfill( AVAILABILITY_REQUIREMENT );\n-    }\n+  @Override\n+  public void start()\n+  {\n+    availabilityGuard.fulfill(AVAILABILITY_REQUIREMENT);\n+  }\n \n-    @Override\n-    public void stop()\n-    {\n-        // Database is no longer available for use\n-        // Deny beginning new transactions\n-        availabilityGuard.require( AVAILABILITY_REQUIREMENT );\n+  @Override\n+  public void stop()\n+  {\n+    // Database is no longer available for use\n+    // Deny beginning new transactions\n+    availabilityGuard.require(AVAILABILITY_REQUIREMENT);\n \n-        // Await transactions stopped\n-        awaitTransactionsClosedWithinTimeout();\n-    }\n+    // Await transactions stopped\n+    awaitTransactionsClosedWithinTimeout();\n+  }\n \n-    private void awaitTransactionsClosedWithinTimeout()\n+  private void awaitTransactionsClosedWithinTimeout()\n+  {\n+    Clock clock = Clocks.systemClock();\n+    long deadline = clock.millis() + awaitActiveTransactionDeadlineMillis;\n+    while (transactionMonitor.getNumberOfActiveTransactions() > 0 && clock.millis() < deadline)\n     {\n-        Clock clock = Clocks.systemClock();\n-        long deadline = clock.millis() + awaitActiveTransactionDeadlineMillis;\n-        while ( transactionMonitor.getNumberOfActiveTransactions() > 0 && clock.millis() < deadline )\n-        {\n-            parkNanos( MILLISECONDS.toNanos( 10 ) );\n-        }\n+      parkNanos(MILLISECONDS.toNanos(10));\n     }\n+  }\n \n-    @Override\n-    public void shutdown()\n-    {\n-        // TODO: Starting database. Make sure none can access it through lock or CAS\n-    }\n+  @Override\n+  public void shutdown()\n+  {\n+    // TODO: Starting database. Make sure none can access it through lock or CAS\n+  }\n }\n",
+            "diff_size": 49
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4008/DatabaseAvailability.java\nindex 4fbc274497c..916b8fcb441 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4008/DatabaseAvailability.java\n@@ -90,4 +90,4 @@ public class DatabaseAvailability implements Lifecycle\n     {\n         // TODO: Starting database. Make sure none can access it through lock or CAS\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'while' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "98",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/4008/DatabaseAvailability.java\nindex 4fbc274497c..a79d8e3a8c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4008/DatabaseAvailability.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/4008/DatabaseAvailability.java\n@@ -20,14 +20,15 @@\n package org.neo4j.kernel;\n \n import java.time.Clock;\n-\n import org.neo4j.kernel.impl.transaction.TransactionStats;\n import org.neo4j.kernel.lifecycle.Lifecycle;\n import org.neo4j.time.Clocks;\n-\n import static java.util.concurrent.TimeUnit.MILLISECONDS;\n+\n import static java.util.concurrent.locks.LockSupport.parkNanos;\n+\n import static org.neo4j.kernel.AvailabilityGuard.AvailabilityRequirement;\n+\n import static org.neo4j.kernel.AvailabilityGuard.availabilityRequirement;\n \n /**\n@@ -35,6 +36,7 @@ import static org.neo4j.kernel.AvailabilityGuard.availabilityRequirement;\n  * As it runs as the last service in the lifecycle list, the stop() is called first\n  * on stop, shutdown or restart, and thus blocks access to everything else for outsiders.\n  */\n+\n public class DatabaseAvailability implements Lifecycle\n {\n     private static final AvailabilityRequirement AVAILABILITY_REQUIREMENT = availabilityRequirement( \"Database available\" );\n@@ -42,8 +44,7 @@ public class DatabaseAvailability implements Lifecycle\n     private final TransactionStats transactionMonitor;\n     private final long awaitActiveTransactionDeadlineMillis;\n \n-    public DatabaseAvailability( AvailabilityGuard availabilityGuard, TransactionStats transactionMonitor,\n-            long awaitActiveTransactionDeadlineMillis )\n+    public DatabaseAvailability( AvailabilityGuard availabilityGuard, TransactionStats transactionMonitor, long awaitActiveTransactionDeadlineMillis )\n     {\n         this.availabilityGuard = availabilityGuard;\n         this.transactionMonitor = transactionMonitor;\n@@ -79,7 +80,7 @@ public class DatabaseAvailability implements Lifecycle\n     {\n         Clock clock = Clocks.systemClock();\n         long deadline = clock.millis() + awaitActiveTransactionDeadlineMillis;\n-        while ( transactionMonitor.getNumberOfActiveTransactions() > 0 && clock.millis() < deadline )\n+        while( transactionMonitor.getNumberOfActiveTransactions() > 0&& clock.millis() < deadline)\n         {\n             parkNanos( MILLISECONDS.toNanos( 10 ) );\n         }\n@@ -90,4 +91,4 @@ public class DatabaseAvailability implements Lifecycle\n     {\n         // TODO: Starting database. Make sure none can access it through lock or CAS\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

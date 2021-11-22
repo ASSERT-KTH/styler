@@ -1,0 +1,86 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "24",
+    "information": {
+        "errors": [
+            {
+                "line": "171",
+                "column": "4",
+                "severity": "warning",
+                "message": "'method def rcurly' has incorrect indentation level 3, expected level should be 4.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "            Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n        }\n   }\n}\n\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/24/BootAMX.java\nindex 556fb705dc1..5df1b5bb718 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/24/BootAMX.java\n@@ -168,7 +168,7 @@ final class BootAMX implements BootAMXMBean\n         {\n             Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n         }\n-   }\n+    }\n }\n \n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/24/BootAMX.java\nindex 556fb705dc1..2d8f5024af4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/24/BootAMX.java\n@@ -29,12 +29,11 @@ import org.glassfish.hk2.api.ServiceLocator;\n import org.glassfish.logging.annotation.LogMessageInfo;\n \n /**\n-The MBean implementation for BootAMXMBean.\n-\n-Public API is the name of the booter MBean eg {@link BootAMXMBean.OBJECT_NAME}\n+ * The MBean implementation for BootAMXMBean.\n+ * <p>\n+ * Public API is the name of the booter MBean eg {@link BootAMXMBean.OBJECT_NAME}\n  */\n-final class BootAMX implements BootAMXMBean\n-{\n+final class BootAMX implements BootAMXMBean {\n     private static final Logger JMX_LOGGER = Util.JMX_LOGGER;\n \n     private final MBeanServer mMBeanServer;\n@@ -43,52 +42,45 @@ final class BootAMX implements BootAMXMBean\n     private ObjectName mDomainRootObjectName;\n \n \n-    private static void debug(final String s)\n-    {\n+    private static void debug(final String s) {\n         System.out.println(s);\n     }\n \n \n     private BootAMX(\n         final ServiceLocator habitat,\n-        final MBeanServer mbeanServer)\n-    {\n+        final MBeanServer mbeanServer) {\n         mHabitat = habitat;\n         mMBeanServer = mbeanServer;\n         mObjectName = getBootAMXMBeanObjectName();\n         mDomainRootObjectName = null;\n \n-        if (mMBeanServer.isRegistered(mObjectName))\n-        {\n-            throw new IllegalStateException(\"AMX Booter MBean is already registered: \" + mObjectName);\n+        if (mMBeanServer.isRegistered(mObjectName)) {\n+            throw new IllegalStateException(\n+                \"AMX Booter MBean is already registered: \" + mObjectName);\n         }\n     }\n \n-    public static ObjectName getBootAMXMBeanObjectName()\n-    {\n+    public static ObjectName getBootAMXMBeanObjectName() {\n         return AMXGlassfish.DEFAULT.getBootAMXMBeanObjectName();\n     }\n \n \n     /**\n-    Create an instance of the booter.\n+     * Create an instance of the booter.\n      */\n-    public static synchronized BootAMX create(final ServiceLocator habitat, final MBeanServer server)\n-    {\n+    public static synchronized BootAMX create(final ServiceLocator habitat,\n+                                              final MBeanServer server) {\n         final BootAMX booter = new BootAMX(habitat, server);\n         final ObjectName objectName = getBootAMXMBeanObjectName();\n \n-        try\n-        {\n+        try {\n             final StandardMBean mbean = new StandardMBean(booter, BootAMXMBean.class);\n \n-            if (!server.registerMBean(mbean, objectName).getObjectName().equals(objectName))\n-            {\n+            if (!server.registerMBean(mbean, objectName).getObjectName().equals(objectName)) {\n                 throw new IllegalStateException();\n             }\n-        }\n-        catch (JMException e)\n-        {\n+        } catch (JMException e) {\n             e.printStackTrace();\n             throw new IllegalStateException(e);\n         }\n@@ -96,14 +88,10 @@ final class BootAMX implements BootAMXMBean\n     }\n \n \n-    AMXStartupServiceMBean getLoader()\n-    {\n-        try\n-        {\n+    AMXStartupServiceMBean getLoader() {\n+        try {\n             return mHabitat.getService(AMXStartupServiceMBean.class);\n-        }\n-        catch (Throwable t)\n-        {\n+        } catch (Throwable t) {\n             t.printStackTrace();\n             throw new RuntimeException(t);\n         }\n@@ -111,31 +99,26 @@ final class BootAMX implements BootAMXMBean\n \n \n     /**\n-    We need to dynamically load the AMX module.  HOW?  we can't depend on the amx-impl module.\n-\n-    For now though, assume that a well-known MBean is available through other means via\n-    the amx-impl module.\n+     * We need to dynamically load the AMX module.  HOW?  we can't depend on the amx-impl module.\n+     * <p>\n+     * For now though, assume that a well-known MBean is available through other means via\n+     * the amx-impl module.\n      */\n-    public synchronized ObjectName bootAMX()\n-    {\n-        if (mDomainRootObjectName == null)\n-        {\n+    public synchronized ObjectName bootAMX() {\n+        if (mDomainRootObjectName == null) {\n             getLoader();\n             final ObjectName startupON = AMXStartupServiceMBean.OBJECT_NAME;\n-            if (!mMBeanServer.isRegistered(startupON))\n-            {\n+            if (!mMBeanServer.isRegistered(startupON)) {\n                 //debug(\"Booter.bootAMX(): AMX MBean not yet available: \" + startupON);\n                 throw new IllegalStateException(\"AMX MBean not yet available: \" + startupON);\n             }\n \n-            try\n-            {\n+            try {\n                 //debug( \"Booter.bootAMX: invoking loadAMXMBeans() on \" + startupON);\n-                mDomainRootObjectName = (ObjectName) mMBeanServer.invoke(startupON, \"loadAMXMBeans\", null, null);\n+                mDomainRootObjectName =\n+                    (ObjectName) mMBeanServer.invoke(startupON, \"loadAMXMBeans\", null, null);\n                 //debug( \"Booter.bootAMX: domainRoot = \" + mDomainRootObjectName);\n-            }\n-            catch (final JMException e)\n-            {\n+            } catch (final JMException e) {\n                 e.printStackTrace();\n                 throw new RuntimeException(e);\n             }\n@@ -146,29 +129,24 @@ final class BootAMX implements BootAMXMBean\n \n \n     /**\n-    Return the JMXServiceURLs for all connectors we've loaded.\n+     * Return the JMXServiceURLs for all connectors we've loaded.\n      */\n-    public JMXServiceURL[] getJMXServiceURLs()\n-    {\n+    public JMXServiceURL[] getJMXServiceURLs() {\n         return JMXStartupService.getJMXServiceURLs(mMBeanServer);\n     }\n \n     @LogMessageInfo(\n-            message = \"Error while shutting down AMX\",\n-            level = \"WARNING\")\n+        message = \"Error while shutting down AMX\",\n+        level = \"WARNING\")\n     static final String errorDuringShutdown = Util.LOG_PREFIX + \"-00008\";\n \n-    public void shutdown()\n-    {\n-        try\n-        {\n+    public void shutdown() {\n+        try {\n             mMBeanServer.unregisterMBean(getBootAMXMBeanObjectName());\n-        }\n-        catch( final Exception e )\n-        {\n+        } catch (final Exception e) {\n             Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n         }\n-   }\n+    }\n }\n \n \n",
+            "diff_size": 61
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "171",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'class def rcurly' has incorrect indentation level 7, expected level should be 0.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/24/BootAMX.java\nindex 556fb705dc1..b6517b4a422 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/24/BootAMX.java\n@@ -51,8 +51,7 @@ final class BootAMX implements BootAMXMBean\n \n     private BootAMX(\n         final ServiceLocator habitat,\n-        final MBeanServer mbeanServer)\n-    {\n+        final MBeanServer mbeanServer) {\n         mHabitat = habitat;\n         mMBeanServer = mbeanServer;\n         mObjectName = getBootAMXMBeanObjectName();\n@@ -156,7 +155,7 @@ final class BootAMX implements BootAMXMBean\n     @LogMessageInfo(\n             message = \"Error while shutting down AMX\",\n             level = \"WARNING\")\n-    static final String errorDuringShutdown = Util.LOG_PREFIX + \"-00008\";\n+static final String errorDuringShutdown = Util.LOG_PREFIX + \"-00008\";\n \n     public void shutdown()\n     {\n@@ -168,23 +167,5 @@ final class BootAMX implements BootAMXMBean\n         {\n             Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n         }\n-   }\n-}\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n-\n+    }\n+       }\n\\ No newline at end of file\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/24/BootAMX.java\nindex 556fb705dc1..5df1b5bb718 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/24/BootAMX.java\n@@ -168,7 +168,7 @@ final class BootAMX implements BootAMXMBean\n         {\n             Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n         }\n-   }\n+    }\n }\n \n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "171",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "172",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'class def rcurly' has incorrect indentation level 4, expected level should be 0.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/24/BootAMX.java\nindex 556fb705dc1..b42e1f0be21 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/24/BootAMX.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/24/BootAMX.java\n@@ -168,8 +168,8 @@ final class BootAMX implements BootAMXMBean\n         {\n             Util.getLogger().log(java.util.logging.Level.WARNING, errorDuringShutdown, e);\n         }\n-   }\n }\n+    }\n \n \n \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

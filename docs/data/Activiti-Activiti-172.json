@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "172",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.spring.boot;\n\nimport java.util.HashSet;\nimport java.util.List;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/172/AbstractProcessEngineAutoConfiguration.java\nindex 2244e15b617..d57eab6d711 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/172/AbstractProcessEngineAutoConfiguration.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot;\n \n import java.util.HashSet;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/172/AbstractProcessEngineAutoConfiguration.java\nindex 2244e15b617..75b4ded5414 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/172/AbstractProcessEngineAutoConfiguration.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot;\n \n import java.util.HashSet;\n@@ -36,91 +37,90 @@ import org.springframework.core.task.TaskExecutor;\n \n /**\n  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.\n- *\n  */\n public abstract class AbstractProcessEngineAutoConfiguration\n         extends AbstractProcessEngineConfiguration {\n \n-  @Bean\n-  public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {\n-    return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());\n-  }\n-  \n-  @Bean \n-  public SpringRejectedJobsHandler springRejectedJobsHandler() {\n-    return new SpringCallerRunsRejectedJobsHandler();\n-  }\n-\n-  protected Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {\n-    Set<Class<?>> mybatisMappers = new HashSet<>();\n-    for (String customMybatisMapperClassName : customMyBatisMappers) {\n-      try {\n-        Class customMybatisClass = Class.forName(customMybatisMapperClassName);\n-        mybatisMappers.add(customMybatisClass);\n-      } catch (ClassNotFoundException e) {\n-        throw new IllegalArgumentException(\"Class \" + customMybatisMapperClassName + \" has not been found.\", e);\n-      }\n+    @Bean\n+    public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {\n+        return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());\n+    }\n+\n+    @Bean\n+    public SpringRejectedJobsHandler springRejectedJobsHandler() {\n+        return new SpringCallerRunsRejectedJobsHandler();\n+    }\n+\n+    protected Set<Class<?>> getCustomMybatisMapperClasses(List<String> customMyBatisMappers) {\n+        Set<Class<?>> mybatisMappers = new HashSet<>();\n+        for (String customMybatisMapperClassName : customMyBatisMappers) {\n+            try {\n+                Class customMybatisClass = Class.forName(customMybatisMapperClassName);\n+                mybatisMappers.add(customMybatisClass);\n+            } catch (ClassNotFoundException e) {\n+                throw new IllegalArgumentException(\"Class \" + customMybatisMapperClassName + \" has not been found.\", e);\n+            }\n+        }\n+        return mybatisMappers;\n+    }\n+\n+    @Bean\n+    public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) {\n+        return super.springProcessEngineBean(configuration);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public RuntimeService runtimeServiceBean(ProcessEngine processEngine) {\n+        return super.runtimeServiceBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {\n+        return super.repositoryServiceBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public TaskService taskServiceBean(ProcessEngine processEngine) {\n+        return super.taskServiceBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public HistoryService historyServiceBean(ProcessEngine processEngine) {\n+        return super.historyServiceBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {\n+        return super.managementServiceBeanBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    public TaskExecutor taskExecutor() {\n+        return new SimpleAsyncTaskExecutor();\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {\n+        return super.integrationContextManagerBean(processEngine);\n+    }\n+\n+    @Bean\n+    @ConditionalOnMissingBean\n+    @Override\n+    public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {\n+        return super.integrationContextServiceBean(processEngine);\n     }\n-    return mybatisMappers;\n-  }\n-\n-  @Bean\n-  public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) {\n-    return super.springProcessEngineBean(configuration);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public RuntimeService runtimeServiceBean(ProcessEngine processEngine) {\n-    return super.runtimeServiceBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public RepositoryService repositoryServiceBean(ProcessEngine processEngine) {\n-    return super.repositoryServiceBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public TaskService taskServiceBean(ProcessEngine processEngine) {\n-    return super.taskServiceBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public HistoryService historyServiceBean(ProcessEngine processEngine) {\n-    return super.historyServiceBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {\n-    return super.managementServiceBeanBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  public TaskExecutor taskExecutor() {\n-    return new SimpleAsyncTaskExecutor();\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public IntegrationContextManager integrationContextManagerBean(ProcessEngine processEngine) {\n-    return super.integrationContextManagerBean(processEngine);\n-  }\n-\n-  @Bean\n-  @ConditionalOnMissingBean\n-  @Override\n-  public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {\n-    return super.integrationContextServiceBean(processEngine);\n-  }\n }\n",
+            "diff_size": 147
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "42",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/172/AbstractProcessEngineAutoConfiguration.java\nindex 2244e15b617..9848b6074bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/172/AbstractProcessEngineAutoConfiguration.java\n@@ -15,7 +15,6 @@ package org.activiti.spring.boot;\n import java.util.HashSet;\n import java.util.List;\n import java.util.Set;\n-\n import org.activiti.engine.HistoryService;\n import org.activiti.engine.ManagementService;\n import org.activiti.engine.ProcessEngine;\n@@ -38,15 +37,17 @@ import org.springframework.core.task.TaskExecutor;\n  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.\n  *\n  */\n-public abstract class AbstractProcessEngineAutoConfiguration\n-        extends AbstractProcessEngineConfiguration {\n+\n+\n+public abstract class AbstractProcessEngineAutoConfiguration extends AbstractProcessEngineConfiguration {\n \n   @Bean\n   public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {\n-    return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());\n+    return new SpringAsyncExecutor(applicationTaskExecutor,\n+                                   springRejectedJobsHandler());\n   }\n-  \n-  @Bean \n+\n+  @Bean\n   public SpringRejectedJobsHandler springRejectedJobsHandler() {\n     return new SpringCallerRunsRejectedJobsHandler();\n   }\n@@ -58,7 +59,8 @@ public abstract class AbstractProcessEngineAutoConfiguration\n         Class customMybatisClass = Class.forName(customMybatisMapperClassName);\n         mybatisMappers.add(customMybatisClass);\n       } catch (ClassNotFoundException e) {\n-        throw new IllegalArgumentException(\"Class \" + customMybatisMapperClassName + \" has not been found.\", e);\n+        throw new IllegalArgumentException(\"Class \" + customMybatisMapperClassName + \" has not been found.\",\n+                                           e);\n       }\n     }\n     return mybatisMappers;\n@@ -123,4 +125,5 @@ public abstract class AbstractProcessEngineAutoConfiguration\n   public IntegrationContextService integrationContextServiceBean(ProcessEngine processEngine) {\n     return super.integrationContextServiceBean(processEngine);\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/172/AbstractProcessEngineAutoConfiguration.java\nindex 2244e15b617..d57eab6d711 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/172/AbstractProcessEngineAutoConfiguration.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot;\n \n import java.util.HashSet;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/172/AbstractProcessEngineAutoConfiguration.java\nindex 2244e15b617..d57eab6d711 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/172/AbstractProcessEngineAutoConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/172/AbstractProcessEngineAutoConfiguration.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.spring.boot;\n \n import java.util.HashSet;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

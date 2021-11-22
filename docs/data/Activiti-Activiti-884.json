@@ -1,0 +1,82 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "884",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.engine.impl.bpmn.behavior;\n\nimport java.util.ArrayList;\nimport java.util.Collection;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/884/AbstractBpmnActivityBehavior.java\nindex ee8d035fc39..dc779b2e969 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/884/AbstractBpmnActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/884/AbstractBpmnActivityBehavior.java\nindex ee8d035fc39..652aa2fc507 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/884/AbstractBpmnActivityBehavior.java\n@@ -34,89 +34,87 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;\n \n /**\n  * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.\n- *\n-\n  */\n public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n \n-  private static final long serialVersionUID = 1L;\n-\n-  protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;\n-\n-  /**\n-   * Subclasses that call leave() will first pass through this method, before the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the activity\n-   * has loop characteristics, and delegate to the behavior if this is the case.\n-   */\n-  public void leave(DelegateExecution execution) {\n-    FlowElement currentFlowElement = execution.getCurrentFlowElement();\n-    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);\n-    if (CollectionUtil.isNotEmpty(boundaryEvents)) {\n-      executeCompensateBoundaryEvents(boundaryEvents, execution);\n+    private static final long serialVersionUID = 1L;\n+\n+    protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;\n+\n+    /**\n+     * Subclasses that call leave() will first pass through this method, before the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the activity\n+     * has loop characteristics, and delegate to the behavior if this is the case.\n+     */\n+    public void leave(DelegateExecution execution) {\n+        FlowElement currentFlowElement = execution.getCurrentFlowElement();\n+        Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);\n+        if (CollectionUtil.isNotEmpty(boundaryEvents)) {\n+            executeCompensateBoundaryEvents(boundaryEvents, execution);\n+        }\n+        if (!hasLoopCharacteristics()) {\n+            super.leave(execution);\n+        } else if (hasMultiInstanceCharacteristics() && !execution.isEnded()) {\n+            multiInstanceActivityBehavior.leave(execution);\n+        }\n     }\n-    if (!hasLoopCharacteristics()) {\n-      super.leave(execution);\n-    } else if (hasMultiInstanceCharacteristics() && !execution.isEnded()) {\n-      multiInstanceActivityBehavior.leave(execution);\n-    }\n-  }\n-\n-  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, DelegateExecution execution) {\n \n-    // The parent execution becomes a scope, and a child execution is created for each of the boundary events\n-    for (BoundaryEvent boundaryEvent : boundaryEvents) {\n+    protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, DelegateExecution execution) {\n \n-      if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {\n-        continue;\n-      }\n+        // The parent execution becomes a scope, and a child execution is created for each of the boundary events\n+        for (BoundaryEvent boundaryEvent : boundaryEvents) {\n \n-      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {\n-        continue;\n-      }\n+            if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {\n+                continue;\n+            }\n \n-      ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager().createChildExecution((ExecutionEntity) execution);\n-      childExecutionEntity.setParentId(execution.getId());\n-      childExecutionEntity.setCurrentFlowElement(boundaryEvent);\n-      childExecutionEntity.setScope(false);\n+            if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {\n+                continue;\n+            }\n \n-      ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());\n-      boundaryEventBehavior.execute(childExecutionEntity);\n-    }\n+            ExecutionEntity childExecutionEntity = Context.getCommandContext().getExecutionEntityManager().createChildExecution((ExecutionEntity) execution);\n+            childExecutionEntity.setParentId(execution.getId());\n+            childExecutionEntity.setCurrentFlowElement(boundaryEvent);\n+            childExecutionEntity.setScope(false);\n \n-  }\n+            ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());\n+            boundaryEventBehavior.execute(childExecutionEntity);\n+        }\n \n-  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {\n-    Process process = getProcessDefinition(processDefinitionId);\n+    }\n \n-    // This could be cached or could be done at parsing time\n-    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);\n-    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);\n-    for (BoundaryEvent boundaryEvent : boundaryEvents) {\n-      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {\n-        results.add(boundaryEvent);\n-      }\n+    protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {\n+        Process process = getProcessDefinition(processDefinitionId);\n+\n+        // This could be cached or could be done at parsing time\n+        List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);\n+        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);\n+        for (BoundaryEvent boundaryEvent : boundaryEvents) {\n+            if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {\n+                results.add(boundaryEvent);\n+            }\n+        }\n+        return results;\n     }\n-    return results;\n-  }\n \n-  protected Process getProcessDefinition(String processDefinitionId) {\n-    // TODO: must be extracted / cache should be accessed in another way\n-    return ProcessDefinitionUtil.getProcess(processDefinitionId);\n-  }\n+    protected Process getProcessDefinition(String processDefinitionId) {\n+        // TODO: must be extracted / cache should be accessed in another way\n+        return ProcessDefinitionUtil.getProcess(processDefinitionId);\n+    }\n \n-  protected boolean hasLoopCharacteristics() {\n-    return hasMultiInstanceCharacteristics();\n-  }\n+    protected boolean hasLoopCharacteristics() {\n+        return hasMultiInstanceCharacteristics();\n+    }\n \n-  protected boolean hasMultiInstanceCharacteristics() {\n-    return multiInstanceActivityBehavior != null;\n-  }\n+    protected boolean hasMultiInstanceCharacteristics() {\n+        return multiInstanceActivityBehavior != null;\n+    }\n \n-  public MultiInstanceActivityBehavior getMultiInstanceActivityBehavior() {\n-    return multiInstanceActivityBehavior;\n-  }\n+    public MultiInstanceActivityBehavior getMultiInstanceActivityBehavior() {\n+        return multiInstanceActivityBehavior;\n+    }\n \n-  public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {\n-    this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;\n-  }\n+    public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {\n+        this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;\n+    }\n \n }\n",
+            "diff_size": 80
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/884/AbstractBpmnActivityBehavior.java\nindex ee8d035fc39..e67eef1b393 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/884/AbstractBpmnActivityBehavior.java\n@@ -20,7 +20,6 @@ package org.activiti.engine.impl.bpmn.behavior;\n import java.util.ArrayList;\n import java.util.Collection;\n import java.util.List;\n-\n import org.activiti.bpmn.model.BoundaryEvent;\n import org.activiti.bpmn.model.CompensateEventDefinition;\n import org.activiti.bpmn.model.FlowElement;\n@@ -37,10 +36,11 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;\n  *\n \n  */\n+\n+\n public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n \n   private static final long serialVersionUID = 1L;\n-\n   protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;\n \n   /**\n@@ -49,7 +49,8 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n    */\n   public void leave(DelegateExecution execution) {\n     FlowElement currentFlowElement = execution.getCurrentFlowElement();\n-    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);\n+    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(),\n+                                                                             currentFlowElement);\n     if (CollectionUtil.isNotEmpty(boundaryEvents)) {\n       executeCompensateBoundaryEvents(boundaryEvents, execution);\n     }\n@@ -64,11 +65,9 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n \n     // The parent execution becomes a scope, and a child execution is created for each of the boundary events\n     for (BoundaryEvent boundaryEvent : boundaryEvents) {\n-\n       if (CollectionUtil.isEmpty(boundaryEvent.getEventDefinitions())) {\n         continue;\n       }\n-\n       if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {\n         continue;\n       }\n@@ -81,7 +80,6 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n       ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());\n       boundaryEventBehavior.execute(childExecutionEntity);\n     }\n-\n   }\n \n   protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {\n@@ -119,4 +117,4 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {\n     this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;\n   }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/884/AbstractBpmnActivityBehavior.java\nindex ee8d035fc39..dc779b2e969 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/884/AbstractBpmnActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/884/AbstractBpmnActivityBehavior.java\nindex ee8d035fc39..dc779b2e969 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/884/AbstractBpmnActivityBehavior.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/884/AbstractBpmnActivityBehavior.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.bpmn.behavior;\n \n import java.util.ArrayList;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

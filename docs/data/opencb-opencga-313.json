@@ -1,0 +1,96 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "313",
+    "information": {
+        "errors": [
+            {
+                "line": "144",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 147).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    /**\n     * This method attempts to load storage configuration from OpenCGA installation folder, if not exists then loads JAR storage-configuration.yml.\n     *\n     * @throws IOException If any IO problem occurs\n     */",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/313/OpenCgaAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/313/OpenCgaAnalysis.java\nindex 09cc063050c..b23f07965a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/313/OpenCgaAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/313/OpenCgaAnalysis.java\n@@ -43,123 +43,123 @@ import java.util.Arrays;\n \n public abstract class OpenCgaAnalysis extends OskarAnalysis {\n \n-    protected CatalogManager catalogManager;\n-    protected Configuration configuration;\n-    protected StorageConfiguration storageConfiguration;\n-    protected VariantStorageManager variantStorageManager;\n-\n-    protected String opencgaHome;\n-    protected String sessionId;\n-\n-    protected Logger logger;\n-\n-    public OpenCgaAnalysis() {\n+  protected CatalogManager catalogManager;\n+  protected Configuration configuration;\n+  protected StorageConfiguration storageConfiguration;\n+  protected VariantStorageManager variantStorageManager;\n+\n+  protected String opencgaHome;\n+  protected String sessionId;\n+\n+  protected Logger logger;\n+\n+  public OpenCgaAnalysis() {\n+  }\n+\n+  public OpenCgaAnalysis(String opencgaHome, String sessionId) {\n+    this.opencgaHome = opencgaHome;\n+    this.sessionId = sessionId;\n+  }\n+\n+  public final OpenCgaAnalysis setUp(String opencgaHome, CatalogManager catalogManager, VariantStorageManager variantStorageManager,\n+                                     ObjectMap executorParams, Path outDir, String sessionId) {\n+    this.opencgaHome = opencgaHome;\n+    this.catalogManager = catalogManager;\n+    this.configuration = catalogManager.getConfiguration();\n+    this.variantStorageManager = variantStorageManager;\n+    this.storageConfiguration = variantStorageManager.getStorageConfiguration();\n+    this.sessionId = sessionId;\n+\n+    return setUp(executorParams, outDir);\n+  }\n+\n+  public final OpenCgaAnalysis setUp(String opencgaHome, ObjectMap executorParams, Path outDir, String sessionId)\n+      throws AnalysisException {\n+    this.opencgaHome = opencgaHome;\n+    this.sessionId = sessionId;\n+    this.executorParams = executorParams;\n+    this.outDir = outDir;\n+\n+    try {\n+      loadConfiguration();\n+      loadStorageConfiguration();\n+\n+      this.catalogManager = new CatalogManager(configuration);\n+      this.variantStorageManager = new VariantStorageManager(catalogManager, StorageEngineFactory.get(storageConfiguration));\n+    } catch (IOException | CatalogException e) {\n+      throw new AnalysisException(e);\n     }\n \n-    public OpenCgaAnalysis(String opencgaHome, String sessionId) {\n-        this.opencgaHome = opencgaHome;\n-        this.sessionId = sessionId;\n-    }\n-\n-    public final OpenCgaAnalysis setUp(String opencgaHome, CatalogManager catalogManager, VariantStorageManager variantStorageManager,\n-                                       ObjectMap executorParams, Path outDir, String sessionId) {\n-        this.opencgaHome = opencgaHome;\n-        this.catalogManager = catalogManager;\n-        this.configuration = catalogManager.getConfiguration();\n-        this.variantStorageManager = variantStorageManager;\n-        this.storageConfiguration = variantStorageManager.getStorageConfiguration();\n-        this.sessionId = sessionId;\n-\n-        return setUp(executorParams, outDir);\n-    }\n-\n-    public final OpenCgaAnalysis setUp(String opencgaHome, ObjectMap executorParams, Path outDir, String sessionId)\n-            throws AnalysisException {\n-        this.opencgaHome = opencgaHome;\n-        this.sessionId = sessionId;\n-        this.executorParams = executorParams;\n-        this.outDir = outDir;\n-\n-        try {\n-            loadConfiguration();\n-            loadStorageConfiguration();\n-\n-            this.catalogManager = new CatalogManager(configuration);\n-            this.variantStorageManager = new VariantStorageManager(catalogManager, StorageEngineFactory.get(storageConfiguration));\n-        } catch (IOException | CatalogException e) {\n-            throw new AnalysisException(e);\n-        }\n-\n-        return setUp(executorParams, outDir);\n-    }\n-\n-    private OpenCgaAnalysis setUp(ObjectMap executorParams, Path outDir) {\n-        logger = LoggerFactory.getLogger(this.getClass().toString());\n-\n-        availableFrameworks = new ArrayList<>();\n-        sourceTypes = new ArrayList<>();\n-        if (storageConfiguration.getDefaultStorageEngineId().equals(\"mongodb\")) {\n-            if (getAnalysisData().equals(Analysis.AnalysisData.VARIANT)) {\n-                sourceTypes.add(AnalysisExecutor.Source.MONGODB);\n-            }\n-        } else if (storageConfiguration.getDefaultStorageEngineId().equals(\"hadoop\")) {\n-            availableFrameworks.add(AnalysisExecutor.Framework.MAP_REDUCE);\n-            // TODO: Check from configuration if spark is available\n+    return setUp(executorParams, outDir);\n+  }\n+\n+  private OpenCgaAnalysis setUp(ObjectMap executorParams, Path outDir) {\n+    logger = LoggerFactory.getLogger(this.getClass().toString());\n+\n+    availableFrameworks = new ArrayList<>();\n+    sourceTypes = new ArrayList<>();\n+    if (storageConfiguration.getDefaultStorageEngineId().equals(\"mongodb\")) {\n+      if (getAnalysisData().equals(Analysis.AnalysisData.VARIANT)) {\n+        sourceTypes.add(AnalysisExecutor.Source.MONGODB);\n+      }\n+    } else if (storageConfiguration.getDefaultStorageEngineId().equals(\"hadoop\")) {\n+      availableFrameworks.add(AnalysisExecutor.Framework.MAP_REDUCE);\n+      // TODO: Check from configuration if spark is available\n //            availableFrameworks.add(AnalysisExecutor.Framework.SPARK);\n-            if (getAnalysisData().equals(Analysis.AnalysisData.VARIANT)) {\n-                sourceTypes.add(AnalysisExecutor.Source.HBASE);\n-            }\n-        }\n-\n-        availableFrameworks.add(AnalysisExecutor.Framework.ITERATOR);\n-        sourceTypes.add(AnalysisExecutor.Source.OPENCGA);\n-\n-        setUp(executorParams, outDir, sourceTypes, availableFrameworks);\n-        return this;\n-    }\n-\n-    protected final void setUpStorageEngineExecutor(String study) throws AnalysisException {\n-        executorParams.put(\"opencgaHome\", opencgaHome);\n-        executorParams.put(\"sessionId\", sessionId);\n-        try {\n-            DataStore dataStore = variantStorageManager.getDataStore(study, sessionId);\n-\n-            executorParams.put(\"storageEngineId\", dataStore.getStorageEngine());\n-            executorParams.put(\"dbName\", dataStore.getDbName());\n-        } catch (CatalogException e) {\n-            throw new AnalysisException(e);\n-        }\n+      if (getAnalysisData().equals(Analysis.AnalysisData.VARIANT)) {\n+        sourceTypes.add(AnalysisExecutor.Source.HBASE);\n+      }\n     }\n \n-    /**\n-     * This method attempts to load general configuration from OpenCGA installation folder, if not exists then loads JAR configuration.yml.\n-     *\n-     * @throws IOException If any IO problem occurs\n-     */\n-    private void loadConfiguration() throws IOException {\n-        this.configuration = ConfigurationUtils.loadConfiguration(opencgaHome);\n-    }\n+    availableFrameworks.add(AnalysisExecutor.Framework.ITERATOR);\n+    sourceTypes.add(AnalysisExecutor.Source.OPENCGA);\n \n-    /**\n-     * This method attempts to load storage configuration from OpenCGA installation folder, if not exists then loads JAR storage-configuration.yml.\n-     *\n-     * @throws IOException If any IO problem occurs\n-     */\n-    private void loadStorageConfiguration() throws IOException {\n-        this.storageConfiguration = ConfigurationUtils.loadStorageConfiguration(opencgaHome);\n-    }\n+    setUp(executorParams, outDir, sourceTypes, availableFrameworks);\n+    return this;\n+  }\n \n+  protected final void setUpStorageEngineExecutor(String study) throws AnalysisException {\n+    executorParams.put(\"opencgaHome\", opencgaHome);\n+    executorParams.put(\"sessionId\", sessionId);\n+    try {\n+      DataStore dataStore = variantStorageManager.getDataStore(study, sessionId);\n \n-    protected final Analyst getAnalyst(String token) throws AnalysisException {\n-        try {\n-            String userId = catalogManager.getUserManager().getUserId(token);\n-            QueryResult<User> userQueryResult = catalogManager.getUserManager().get(userId, new QueryOptions(QueryOptions.INCLUDE,\n-                    Arrays.asList(UserDBAdaptor.QueryParams.EMAIL.key(), UserDBAdaptor.QueryParams.ORGANIZATION.key())), token);\n-\n-            return new Analyst(userId, userQueryResult.first().getEmail(), userQueryResult.first().getOrganization());\n-        } catch (CatalogException e) {\n-            throw new AnalysisException(e.getMessage(), e);\n-        }\n+      executorParams.put(\"storageEngineId\", dataStore.getStorageEngine());\n+      executorParams.put(\"dbName\", dataStore.getDbName());\n+    } catch (CatalogException e) {\n+      throw new AnalysisException(e);\n+    }\n+  }\n+\n+  /**\n+   * This method attempts to load general configuration from OpenCGA installation folder, if not exists then loads JAR configuration.yml.\n+   *\n+   * @throws IOException If any IO problem occurs\n+   */\n+  private void loadConfiguration() throws IOException {\n+    this.configuration = ConfigurationUtils.loadConfiguration(opencgaHome);\n+  }\n+\n+  /**\n+   * This method attempts to load storage configuration from OpenCGA installation folder, if not exists then loads JAR storage-configuration.yml.\n+   *\n+   * @throws IOException If any IO problem occurs\n+   */\n+  private void loadStorageConfiguration() throws IOException {\n+    this.storageConfiguration = ConfigurationUtils.loadStorageConfiguration(opencgaHome);\n+  }\n+\n+\n+  protected final Analyst getAnalyst(String token) throws AnalysisException {\n+    try {\n+      String userId = catalogManager.getUserManager().getUserId(token);\n+      QueryResult<User> userQueryResult = catalogManager.getUserManager().get(userId, new QueryOptions(QueryOptions.INCLUDE,\n+          Arrays.asList(UserDBAdaptor.QueryParams.EMAIL.key(), UserDBAdaptor.QueryParams.ORGANIZATION.key())), token);\n+\n+      return new Analyst(userId, userQueryResult.first().getEmail(), userQueryResult.first().getOrganization());\n+    } catch (CatalogException e) {\n+      throw new AnalysisException(e.getMessage(), e);\n     }\n+  }\n \n }\n",
+            "diff_size": 174
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/313/OpenCgaAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/313/OpenCgaAnalysis.java\nindex 09cc063050c..13d9de3abbe 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/313/OpenCgaAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/313/OpenCgaAnalysis.java\n@@ -162,4 +162,4 @@ public abstract class OpenCgaAnalysis extends OskarAnalysis {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "144",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,282 @@
+{
+    "project_name": "couchbase-couchbase-jvm-core",
+    "error_id": "80",
+    "information": {
+        "errors": [
+            {
+                "line": "214",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 121).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "     * @param then the action to execute when the state is reached.\n     */\n    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n        endpoint\n                .states()\n                .filter(new Func1<LifecycleState, Boolean>() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/80/AbstractDynamicService.java\nindex 43cc95c1ed9..2d331555c7d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler/80/AbstractDynamicService.java\n@@ -211,7 +211,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * @param wanted the wanted state.\n      * @param then the action to execute when the state is reached.\n      */\n-    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n+    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1\n+        <LifecycleState> then) {\n         endpoint\n                 .states()\n                 .filter(new Func1<LifecycleState, Boolean>() {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/80/AbstractDynamicService.java\nindex 43cc95c1ed9..9c3893a08fa 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/80/AbstractDynamicService.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package com.couchbase.client.core.service;\n \n import com.couchbase.client.core.ResponseEvent;\n@@ -57,8 +58,9 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n     private final LifecycleState initialState;\n \n     protected AbstractDynamicService(final String hostname, final String bucket, final String password, final int port,\n-        final CoreEnvironment env, final int minEndpoints,\n-        final RingBuffer<ResponseEvent> responseBuffer, final EndpointFactory endpointFactory) {\n+                                     final CoreEnvironment env, final int minEndpoints,\n+                                     final RingBuffer<ResponseEvent> responseBuffer,\n+                                     final EndpointFactory endpointFactory) {\n         super(minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED);\n         this.initialState = minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED;\n         this.hostname = hostname;\n@@ -101,7 +103,7 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n                 @Override\n                 public Observable<LifecycleState> call(final Endpoint endpoint) {\n                     LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                            + \"Initializing connect on Endpoint.\");\n+                        + \"Initializing connect on Endpoint.\");\n                     return endpoint.connect();\n                 }\n             })\n@@ -142,23 +144,23 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n         }\n \n         return Observable\n-                .from(endpoints)\n-                .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n-                    @Override\n-                    public Observable<LifecycleState> call(Endpoint endpoint) {\n-                        LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                                + \"Initializing disconnect on Endpoint.\");\n-                        return endpoint.disconnect();\n-                    }\n-                })\n-                .lastOrDefault(initialState)\n-                .map(new Func1<LifecycleState, LifecycleState>() {\n-                    @Override\n-                    public LifecycleState call(final LifecycleState state) {\n-                        endpointStates.terminate();\n-                        return state();\n-                    }\n-                });\n+            .from(endpoints)\n+            .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n+                @Override\n+                public Observable<LifecycleState> call(Endpoint endpoint) {\n+                    LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n+                        + \"Initializing disconnect on Endpoint.\");\n+                    return endpoint.disconnect();\n+                }\n+            })\n+            .lastOrDefault(initialState)\n+            .map(new Func1<LifecycleState, LifecycleState>() {\n+                @Override\n+                public LifecycleState call(final LifecycleState state) {\n+                    endpointStates.terminate();\n+                    return state();\n+                }\n+            });\n     }\n \n     @Override\n@@ -179,7 +181,7 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * Simple log helper to give logs a common prefix.\n      *\n      * @param hostname the address.\n-     * @param service the service.\n+     * @param service  the service.\n      * @return a prefix string for logs.\n      */\n     protected static String logIdent(final String hostname, final Service service) {\n@@ -208,19 +210,20 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * Waits until the endpoint goes into the given state, calls the action and then unsubscribes.\n      *\n      * @param endpoint the endpoint to monitor.\n-     * @param wanted the wanted state.\n-     * @param then the action to execute when the state is reached.\n+     * @param wanted   the wanted state.\n+     * @param then     the action to execute when the state is reached.\n      */\n-    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n+    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted,\n+                                    Action1<LifecycleState> then) {\n         endpoint\n-                .states()\n-                .filter(new Func1<LifecycleState, Boolean>() {\n-                    @Override\n-                    public Boolean call(LifecycleState state) {\n-                        return state == wanted;\n-                    }\n-                })\n-                .take(1)\n-                .subscribe(then);\n+            .states()\n+            .filter(new Func1<LifecycleState, Boolean>() {\n+                @Override\n+                public Boolean call(LifecycleState state) {\n+                    return state == wanted;\n+                }\n+            })\n+            .take(1)\n+            .subscribe(then);\n     }\n }\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "102",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "145",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "146",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "209",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/80/AbstractDynamicService.java\nindex 43cc95c1ed9..473a005bd5b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/naturalize/80/AbstractDynamicService.java\n@@ -57,8 +57,7 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n     private final LifecycleState initialState;\n \n     protected AbstractDynamicService(final String hostname, final String bucket, final String password, final int port,\n-        final CoreEnvironment env, final int minEndpoints,\n-        final RingBuffer<ResponseEvent> responseBuffer, final EndpointFactory endpointFactory) {\n+        final CoreEnvironment env, final int minEndpoints, final RingBuffer<ResponseEvent> responseBuffer, final EndpointFactory endpointFactory) {\n         super(minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED);\n         this.initialState = minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED;\n         this.hostname = hostname;\n@@ -95,14 +94,12 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n             endpointStates.register(endpoint, endpoint);\n         }\n \n-        return Observable\n-            .from(endpoints)\n+        return Observable.from(endpoints)\n             .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n                 @Override\n                 public Observable<LifecycleState> call(final Endpoint endpoint) {\n-                    LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                            + \"Initializing connect on Endpoint.\");\n-                    return endpoint.connect();\n+                    LOGGER.debug(logIdent(hostname, AbstractDynamicService.this) + \"Initializing connect on Endpoint.\");\n+return endpoint.connect();\n                 }\n             })\n             .lastOrDefault(initialState)\n@@ -141,14 +138,12 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n             return Observable.just(state());\n         }\n \n-        return Observable\n-                .from(endpoints)\n+        return Observable.from(endpoints)\n                 .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n                     @Override\n                     public Observable<LifecycleState> call(Endpoint endpoint) {\n-                        LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                                + \"Initializing disconnect on Endpoint.\");\n-                        return endpoint.disconnect();\n+                        LOGGER.debug(logIdent(hostname, AbstractDynamicService.this) + \"Initializing disconnect on Endpoint.\");\n+return endpoint.disconnect();\n                     }\n                 })\n                 .lastOrDefault(initialState)\n@@ -212,8 +207,7 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * @param then the action to execute when the state is reached.\n      */\n     protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n-        endpoint\n-                .states()\n+        endpoint.states()\n                 .filter(new Func1<LifecycleState, Boolean>() {\n                     @Override\n                     public Boolean call(LifecycleState state) {\n@@ -223,4 +217,4 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n                 .take(1)\n                 .subscribe(then);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 259).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "94",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 45, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "96",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 49, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "96",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "97",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 49, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "98",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 45, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "99",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 41, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "99",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "100",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 75, expected level should be one of the following: 45, 49.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "101",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "102",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 79, expected level should be one of the following: 49, 53.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "103",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 75, expected level should be one of the following: 45, 49.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "104",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 71, expected level should be one of the following: 41, 45.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "135",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 45, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "137",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 49, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "137",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 152).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "138",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 49, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "139",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 45, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "140",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 41, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "140",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "141",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 75, expected level should be one of the following: 45, 49.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "142",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "143",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 79, expected level should be one of the following: 49, 53.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "144",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 79, expected level should be one of the following: 49, 53.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "145",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 75, expected level should be one of the following: 45, 49.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "146",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 71, expected level should be one of the following: 41, 45.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "213",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 29, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "215",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 33, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "216",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 29, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "217",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 25, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/80/AbstractDynamicService.java\nindex 43cc95c1ed9..fbff3fa00fb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/80/AbstractDynamicService.java\n@@ -28,7 +28,6 @@ import com.lmax.disruptor.RingBuffer;\n import rx.Observable;\n import rx.functions.Action1;\n import rx.functions.Func1;\n-\n import java.util.ArrayList;\n import java.util.Arrays;\n import java.util.List;\n@@ -39,12 +38,11 @@ import java.util.List;\n  * @author Michael Nitschinger\n  * @since 1.1.0\n  */\n+\n public abstract class AbstractDynamicService extends AbstractStateMachine<LifecycleState> implements Service {\n \n     private static final CouchbaseLogger LOGGER = CouchbaseLoggerFactory.getInstance(Service.class);\n-\n     private final Endpoint[] endpoints;\n-\n     private final String hostname;\n     private final String bucket;\n     private final String password;\n@@ -56,9 +54,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n     private final EndpointStateZipper endpointStates;\n     private final LifecycleState initialState;\n \n-    protected AbstractDynamicService(final String hostname, final String bucket, final String password, final int port,\n-        final CoreEnvironment env, final int minEndpoints,\n-        final RingBuffer<ResponseEvent> responseBuffer, final EndpointFactory endpointFactory) {\n+\n+    protected AbstractDynamicService(final String hostname, final String bucket, final String password, final int port, final CoreEnvironment env, final int minEndpoints, final RingBuffer<ResponseEvent> responseBuffer, final EndpointFactory endpointFactory) {\n         super(minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED);\n         this.initialState = minEndpoints == 0 ? LifecycleState.IDLE : LifecycleState.DISCONNECTED;\n         this.hostname = hostname;\n@@ -88,32 +85,26 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n             LOGGER.debug(logIdent(hostname, this) + \"Already connected or connecting, skipping connect.\");\n             return Observable.just(state());\n         }\n-\n         for (int i = 0; i < minEndpoints; i++) {\n             Endpoint endpoint = createEndpoint();\n             endpoints[i] = endpoint;\n             endpointStates.register(endpoint, endpoint);\n         }\n-\n-        return Observable\n-            .from(endpoints)\n-            .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n-                @Override\n-                public Observable<LifecycleState> call(final Endpoint endpoint) {\n-                    LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                            + \"Initializing connect on Endpoint.\");\n-                    return endpoint.connect();\n-                }\n-            })\n-            .lastOrDefault(initialState)\n-            .map(new Func1<LifecycleState, LifecycleState>() {\n-                @Override\n-                public LifecycleState call(final LifecycleState state) {\n-                    return state();\n-                }\n-            });\n+        return Observable.from(endpoints).flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n+                                             @Override\n+                                             public Observable<LifecycleState> call(final Endpoint endpoint) {\n+                                                 LOGGER.debug(logIdent(hostname, AbstractDynamicService.this) + \"Initializing connect on Endpoint.\");\n+                                                 return endpoint.connect();\n+                                             }\n+                                         }).lastOrDefault(initialState).map(new Func1<LifecycleState, LifecycleState>() {\n+                                                                           @Override\n+                                                                           public LifecycleState call(final LifecycleState state) {\n+                                                                               return state();\n+                                                                           }\n+                                                                       });\n     }\n \n+\n     @Override\n     public void send(final CouchbaseRequest request) {\n         if (request instanceof SignalFlush) {\n@@ -129,10 +120,10 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n             }\n             return;\n         }\n-\n         dispatch(request);\n     }\n \n+\n     @Override\n     public Observable<LifecycleState> disconnect() {\n         LOGGER.debug(logIdent(hostname, this) + \"Got instructed to disconnect.\");\n@@ -140,27 +131,22 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n             LOGGER.debug(logIdent(hostname, this) + \"Already disconnected or disconnecting, skipping disconnect.\");\n             return Observable.just(state());\n         }\n-\n-        return Observable\n-                .from(endpoints)\n-                .flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n-                    @Override\n-                    public Observable<LifecycleState> call(Endpoint endpoint) {\n-                        LOGGER.debug(logIdent(hostname, AbstractDynamicService.this)\n-                                + \"Initializing disconnect on Endpoint.\");\n-                        return endpoint.disconnect();\n-                    }\n-                })\n-                .lastOrDefault(initialState)\n-                .map(new Func1<LifecycleState, LifecycleState>() {\n-                    @Override\n-                    public LifecycleState call(final LifecycleState state) {\n-                        endpointStates.terminate();\n-                        return state();\n-                    }\n-                });\n+        return Observable.from(endpoints).flatMap(new Func1<Endpoint, Observable<LifecycleState>>() {\n+                                             @Override\n+                                             public Observable<LifecycleState> call(Endpoint endpoint) {\n+                                                 LOGGER.debug(logIdent(hostname, AbstractDynamicService.this) + \"Initializing disconnect on Endpoint.\");\n+                                                 return endpoint.disconnect();\n+                                             }\n+                                         }).lastOrDefault(initialState).map(new Func1<LifecycleState, LifecycleState>() {\n+                                                                           @Override\n+                                                                           public LifecycleState call(final LifecycleState state) {\n+                                                                               endpointStates.terminate();\n+                                                                               return state();\n+                                                                           }\n+                                                                       });\n     }\n \n+\n     @Override\n     public BucketServiceMapping mapping() {\n         return type().mapping();\n@@ -171,6 +157,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      *\n      * @return the endpoint to create.\n      */\n+\n+\n     protected Endpoint createEndpoint() {\n         return endpointFactory.create(hostname, bucket, password, port, env, responseBuffer);\n     }\n@@ -182,6 +170,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * @param service the service.\n      * @return a prefix string for logs.\n      */\n+\n+\n     protected static String logIdent(final String hostname, final Service service) {\n         return \"[\" + hostname + \"][\" + service.getClass().getSimpleName() + \"]: \";\n     }\n@@ -191,6 +181,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      *\n      * @return the list of endpoints.\n      */\n+\n+\n     protected List<Endpoint> endpoints() {\n         return Arrays.asList(endpoints);\n     }\n@@ -200,6 +192,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      *\n      * @return the underlying state zipper.\n      */\n+\n+\n     protected EndpointStateZipper endpointStates() {\n         return endpointStates;\n     }\n@@ -211,16 +205,15 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * @param wanted the wanted state.\n      * @param then the action to execute when the state is reached.\n      */\n-    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n-        endpoint\n-                .states()\n-                .filter(new Func1<LifecycleState, Boolean>() {\n-                    @Override\n-                    public Boolean call(LifecycleState state) {\n-                        return state == wanted;\n-                    }\n-                })\n-                .take(1)\n-                .subscribe(then);\n+\n+\n+    protected static void whenState(final Endpoint endpoint,\n+        final LifecycleState wanted, Action1<LifecycleState> then) {\n+        endpoint.states().filter(new Func1<LifecycleState, Boolean>() {\n+                             @Override\n+                             public Boolean call(LifecycleState state) {\n+                                 return state == wanted;\n+                             }\n+                         }).take(1).subscribe(then);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 69
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "214",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/80/AbstractDynamicService.java\nindex 43cc95c1ed9..2d331555c7d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/80/AbstractDynamicService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/80/AbstractDynamicService.java\n@@ -211,7 +211,8 @@ public abstract class AbstractDynamicService extends AbstractStateMachine<Lifecy\n      * @param wanted the wanted state.\n      * @param then the action to execute when the state is reached.\n      */\n-    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1<LifecycleState> then) {\n+    protected static void whenState(final Endpoint endpoint, final LifecycleState wanted, Action1\n+        <LifecycleState> then) {\n         endpoint\n                 .states()\n                 .filter(new Func1<LifecycleState, Boolean>() {\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

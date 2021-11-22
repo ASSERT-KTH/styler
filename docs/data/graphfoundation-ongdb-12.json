@@ -1,0 +1,138 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "12",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "72",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "72",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "113",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "113",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/12/AuthSubject.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/12/AuthSubject.java\nindex e68b6f968c8..9eda9c984e6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/12/AuthSubject.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/12/AuthSubject.java\n@@ -17,100 +17,102 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.internal.kernel.api.security;\n \n public interface AuthSubject\n {\n-    void logout();\n-\n-    // TODO: Refine this API into something more polished\n-    AuthenticationResult getAuthenticationResult();\n-\n-    /**\n-     * Changes the {@link AuthenticationResult} status to {@link AuthenticationResult#SUCCESS SUCCESS}\n-     * if it was {@link AuthenticationResult#PASSWORD_CHANGE_REQUIRED PASSWORD_CHANGE_REQUIRED}.\n-     * This allows users that changed their password to become authorized for continued processing.\n-     */\n-    void setPasswordChangeNoLongerRequired();\n-\n-    /**\n-     * @param username a username\n-     * @return true if the provided username is the underlying user name of this subject\n-     */\n-    boolean hasUsername( String username );\n-\n-    /**\n-     * Get the username associated with the auth subject\n-     * @return the username\n-     */\n-    String username();\n-\n-    /**\n-     * Implementation to use when authentication has not yet been performed. Allows nothing.\n-     */\n-    AuthSubject ANONYMOUS = new AuthSubject()\n+  void logout();\n+\n+  // TODO: Refine this API into something more polished\n+  AuthenticationResult getAuthenticationResult();\n+\n+  /**\n+   * Changes the {@link AuthenticationResult} status to {@link AuthenticationResult#SUCCESS SUCCESS}\n+   * if it was {@link AuthenticationResult#PASSWORD_CHANGE_REQUIRED PASSWORD_CHANGE_REQUIRED}.\n+   * This allows users that changed their password to become authorized for continued processing.\n+   */\n+  void setPasswordChangeNoLongerRequired();\n+\n+  /**\n+   * @param username a username\n+   * @return true if the provided username is the underlying user name of this subject\n+   */\n+  boolean hasUsername(String username);\n+\n+  /**\n+   * Get the username associated with the auth subject\n+   *\n+   * @return the username\n+   */\n+  String username();\n+\n+  /**\n+   * Implementation to use when authentication has not yet been performed. Allows nothing.\n+   */\n+  AuthSubject ANONYMOUS = new AuthSubject()\n+  {\n+    @Override\n+    public void logout()\n+    {\n+    }\n+\n+    @Override\n+    public AuthenticationResult getAuthenticationResult()\n+    {\n+      return AuthenticationResult.FAILURE;\n+    }\n+\n+    @Override\n+    public void setPasswordChangeNoLongerRequired()\n+    {\n+    }\n+\n+    @Override\n+    public boolean hasUsername(String username)\n+    {\n+      return false;\n+    }\n+\n+    @Override\n+    public String username()\n     {\n-        @Override\n-        public void logout()\n-        {\n-        }\n-\n-        @Override\n-        public AuthenticationResult getAuthenticationResult()\n-        {\n-            return AuthenticationResult.FAILURE;\n-        }\n-\n-        @Override\n-        public void setPasswordChangeNoLongerRequired()\n-        {\n-        }\n-\n-        @Override\n-        public boolean hasUsername( String username )\n-        {\n-            return false;\n-        }\n-\n-        @Override\n-        public String username()\n-        {\n-            return \"\"; // Should never clash with a valid username\n-        }\n-\n-    };\n-\n-    /**\n-     * Implementation to use when authentication is disabled. Allows everything.\n-     */\n-    AuthSubject AUTH_DISABLED = new AuthSubject()\n+      return \"\"; // Should never clash with a valid username\n+    }\n+\n+  };\n+\n+  /**\n+   * Implementation to use when authentication is disabled. Allows everything.\n+   */\n+  AuthSubject AUTH_DISABLED = new AuthSubject()\n+  {\n+    @Override\n+    public String username()\n+    {\n+      return \"\"; // Should never clash with a valid username\n+    }\n+\n+    @Override\n+    public void logout()\n+    {\n+    }\n+\n+    @Override\n+    public AuthenticationResult getAuthenticationResult()\n+    {\n+      return AuthenticationResult.SUCCESS;\n+    }\n+\n+    @Override\n+    public void setPasswordChangeNoLongerRequired()\n+    {\n+    }\n+\n+    @Override\n+    public boolean hasUsername(String username)\n     {\n-        @Override\n-        public String username()\n-        {\n-            return \"\"; // Should never clash with a valid username\n-        }\n-\n-        @Override\n-        public void logout()\n-        {\n-        }\n-\n-        @Override\n-        public AuthenticationResult getAuthenticationResult()\n-        {\n-            return AuthenticationResult.SUCCESS;\n-        }\n-\n-        @Override\n-        public void setPasswordChangeNoLongerRequired()\n-        {\n-        }\n-\n-        @Override\n-        public boolean hasUsername( String username )\n-        {\n-            return false;\n-        }\n-    };\n+      return false;\n+    }\n+  };\n }\n",
+            "diff_size": 117
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/12/AuthSubject.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/12/AuthSubject.java\nindex e68b6f968c8..44ae3f05a6e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/12/AuthSubject.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/12/AuthSubject.java\n@@ -77,7 +77,6 @@ public interface AuthSubject\n         {\n             return \"\"; // Should never clash with a valid username\n         }\n-\n     };\n \n     /**\n@@ -113,4 +112,4 @@ public interface AuthSubject\n             return false;\n         }\n     };\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

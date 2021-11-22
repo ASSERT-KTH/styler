@@ -1,0 +1,96 @@
+{
+    "project_name": "junkdog-artemis-odb",
+    "error_id": "42",
+    "information": {
+        "errors": [
+            {
+                "line": "60",
+                "severity": "error",
+                "message": "Line is longer than 105 characters (found 109).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n\tpublic static class TransmuterEntry {\n\t\tpublic List<Class<? extends Component>> componentTypes = new ArrayList<Class<? extends Component>>();\n\t\tprivate transient EntityTransmuter transmuter;\n\n\t\tpublic TransmuterEntry(Bag<Class<? extends Component>> types) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/intellij/42/ArchetypeMapper.java\nindex 7f604199f27..c47bc4add28 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/intellij/42/ArchetypeMapper.java\n@@ -17,74 +17,80 @@ import java.util.Map;\n  * Nothing to see here (API can change without prior notice)\n  */\n public class ArchetypeMapper {\n-\tpublic Map<Integer, TransmuterEntry> compositionIdMapper = new HashMap<Integer, TransmuterEntry>();\n-\tpublic SaveFileFormat serializationState;\n-\n-\tpublic ArchetypeMapper(World world, IntBag toSave) {\n-\t\tint[] ids = toSave.getData();\n-\t\tBag<Component> components = new Bag<Component>();\n-\t\tBag<Class<? extends Component>> types = new Bag<Class<? extends Component>>();\n-\n-\t\tfor (int i = 0, s = toSave.size(); s > i; i++) {\n-\t\t\tint compositionId = world.getEntity(ids[i]).getCompositionId();\n-\t\t\tif (!compositionIdMapper.containsKey(compositionId)) {\n-\t\t\t\tcomponents.clear();\n-\t\t\t\ttypes.clear();\n-\n-\t\t\t\tworld.getComponentManager().getComponentsFor(ids[i], components);\n-\t\t\t\tcompositionIdMapper.put(compositionId,\n-\t\t\t\t\tnew TransmuterEntry(toClasses(components, types)));\n-\t\t\t}\n-\t\t}\n-\t}\n-\n-\tpublic ArchetypeMapper() {} // for serialization\n-\n-\tprivate static Bag<Class<? extends Component>> toClasses(Bag<Component> source,\n-\t                                                         Bag<Class<? extends Component>> target) {\n-\t\tfor (int i = 0; i < source.size(); i++) {\n-\t\t\ttarget.add(source.get(i).getClass());\n-\t\t}\n-\n-\t\treturn target;\n-\t}\n-\tpublic void transmute(Entity e, int compositionId) {\n-\t\tcompositionIdMapper.get(compositionId).transmute(e);\n-\t}\n-\n-\tpublic Iterable<? extends Map.Entry<Integer, TransmuterEntry>> entrySet() {\n-\t\treturn compositionIdMapper.entrySet();\n-\t}\n-\n-\tpublic static class TransmuterEntry {\n-\t\tpublic List<Class<? extends Component>> componentTypes = new ArrayList<Class<? extends Component>>();\n-\t\tprivate transient EntityTransmuter transmuter;\n-\n-\t\tpublic TransmuterEntry(Bag<Class<? extends Component>> types) {\n-\t\t\ttry {\n-\t\t\t\tfor (Class<? extends Component> c : types) {\n-\t\t\t\t\tif (ClassReflection.getAnnotation(c, Transient.class) != null)\n-\t\t\t\t\t\tcontinue;\n-\n-\t\t\t\t\tcomponentTypes.add(c);\n-\t\t\t\t}\n-\t\t\t} catch (ReflectionException e) {\n-\t\t\t\tthrow new RuntimeException(e);\n-\t\t\t}\n-\t\t}\n-\n-\t\tpublic TransmuterEntry() {}\n-\n-\t\tpublic void transmute(Entity e) {\n-\t\t\tif (transmuter == null) {\n-\t\t\t\tEntityTransmuterFactory factory = new EntityTransmuterFactory(e.getWorld());\n-\t\t\t\tfor (int i = 0, s = componentTypes.size(); s > i; i++)\n-\t\t\t\t\tfactory.add(componentTypes.get(i));\n-\n-\t\t\t\ttransmuter = factory.build();\n-\t\t\t}\n-\n-\t\t\ttransmuter.transmute(e);\n-\t\t}\n-\t}\n+    public Map<Integer, TransmuterEntry> compositionIdMapper = new HashMap<Integer, TransmuterEntry>();\n+    public SaveFileFormat serializationState;\n+\n+    public ArchetypeMapper(World world, IntBag toSave) {\n+        int[] ids = toSave.getData();\n+        Bag<Component> components = new Bag<Component>();\n+        Bag<Class<? extends Component>> types = new Bag<Class<? extends Component>>();\n+\n+        for (int i = 0, s = toSave.size(); s > i; i++) {\n+            int compositionId = world.getEntity(ids[i]).getCompositionId();\n+            if (!compositionIdMapper.containsKey(compositionId)) {\n+                components.clear();\n+                types.clear();\n+\n+                world.getComponentManager().getComponentsFor(ids[i], components);\n+                compositionIdMapper.put(compositionId,\n+                        new TransmuterEntry(toClasses(components, types)));\n+            }\n+        }\n+    }\n+\n+    public ArchetypeMapper() {\n+    } // for serialization\n+\n+    private static Bag<Class<? extends Component>> toClasses(Bag<Component> source,\n+                                                             Bag<Class<? extends Component>> target) {\n+        for (int i = 0; i < source.size(); i++) {\n+            target.add(source.get(i).getClass());\n+        }\n+\n+        return target;\n+    }\n+\n+    public void transmute(Entity e, int compositionId) {\n+        compositionIdMapper.get(compositionId).transmute(e);\n+    }\n+\n+    public Iterable<? extends Map.Entry<Integer, TransmuterEntry>> entrySet() {\n+        return compositionIdMapper.entrySet();\n+    }\n+\n+    public static class TransmuterEntry {\n+        public List<Class<? extends Component>> componentTypes =\n+                new ArrayList<Class<? extends Component>>();\n+        private transient EntityTransmuter transmuter;\n+\n+        public TransmuterEntry(Bag<Class<? extends Component>> types) {\n+            try {\n+                for (Class<? extends Component> c : types) {\n+                    if (ClassReflection.getAnnotation(c, Transient.class) != null) {\n+                        continue;\n+                    }\n+\n+                    componentTypes.add(c);\n+                }\n+            } catch (ReflectionException e) {\n+                throw new RuntimeException(e);\n+            }\n+        }\n+\n+        public TransmuterEntry() {\n+        }\n+\n+        public void transmute(Entity e) {\n+            if (transmuter == null) {\n+                EntityTransmuterFactory factory = new EntityTransmuterFactory(e.getWorld());\n+                for (int i = 0, s = componentTypes.size(); s > i; i++) {\n+                    factory.add(componentTypes.get(i));\n+                }\n+\n+                transmuter = factory.build();\n+            }\n+\n+            transmuter.transmute(e);\n+        }\n+    }\n }\n",
+            "diff_size": 76
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "44",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/naturalize/42/ArchetypeMapper.java\nindex 7f604199f27..e84acc674f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/naturalize/42/ArchetypeMapper.java\n@@ -38,17 +38,18 @@ public class ArchetypeMapper {\n \t\t}\n \t}\n \n-\tpublic ArchetypeMapper() {} // for serialization\n+\tpublic ArchetypeMapper() {}\n+// for serialization\n \n-\tprivate static Bag<Class<? extends Component>> toClasses(Bag<Component> source,\n-\t                                                         Bag<Class<? extends Component>> target) {\n-\t\tfor (int i = 0; i < source.size(); i++) {\n+\tprivate static Bag<Class<? extends Component>> toClasses(Bag<Component> source, Bag<Class<? extends Component>> target) {\n+\tfor (int i = 0; i < source.size(); i++) {\n \t\t\ttarget.add(source.get(i).getClass());\n \t\t}\n \n \t\treturn target;\n \t}\n-\tpublic void transmute(Entity e, int compositionId) {\n+\n+public void transmute(Entity e, int compositionId) {\n \t\tcompositionIdMapper.get(compositionId).transmute(e);\n \t}\n \n@@ -87,4 +88,4 @@ public class ArchetypeMapper {\n \t\t\ttransmuter.transmute(e);\n \t\t}\n \t}\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/codebuff/42/ArchetypeMapper.java\nindex 7f604199f27..5ee50f0d73a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/42/ArchetypeMapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/codebuff/42/ArchetypeMapper.java\n@@ -6,7 +6,6 @@ import com.artemis.utils.Bag;\n import com.artemis.utils.IntBag;\n import com.artemis.utils.reflect.ClassReflection;\n import com.artemis.utils.reflect.ReflectionException;\n-\n import java.util.ArrayList;\n import java.util.HashMap;\n import java.util.List;\n@@ -16,75 +15,75 @@ import java.util.Map;\n  * This class is only public in order to keep GWT happy.\n  * Nothing to see here (API can change without prior notice)\n  */\n+\n public class ArchetypeMapper {\n-\tpublic Map<Integer, TransmuterEntry> compositionIdMapper = new HashMap<Integer, TransmuterEntry>();\n-\tpublic SaveFileFormat serializationState;\n-\n-\tpublic ArchetypeMapper(World world, IntBag toSave) {\n-\t\tint[] ids = toSave.getData();\n-\t\tBag<Component> components = new Bag<Component>();\n-\t\tBag<Class<? extends Component>> types = new Bag<Class<? extends Component>>();\n-\n-\t\tfor (int i = 0, s = toSave.size(); s > i; i++) {\n-\t\t\tint compositionId = world.getEntity(ids[i]).getCompositionId();\n-\t\t\tif (!compositionIdMapper.containsKey(compositionId)) {\n-\t\t\t\tcomponents.clear();\n-\t\t\t\ttypes.clear();\n-\n-\t\t\t\tworld.getComponentManager().getComponentsFor(ids[i], components);\n-\t\t\t\tcompositionIdMapper.put(compositionId,\n-\t\t\t\t\tnew TransmuterEntry(toClasses(components, types)));\n-\t\t\t}\n-\t\t}\n-\t}\n-\n-\tpublic ArchetypeMapper() {} // for serialization\n-\n-\tprivate static Bag<Class<? extends Component>> toClasses(Bag<Component> source,\n-\t                                                         Bag<Class<? extends Component>> target) {\n-\t\tfor (int i = 0; i < source.size(); i++) {\n-\t\t\ttarget.add(source.get(i).getClass());\n-\t\t}\n-\n-\t\treturn target;\n-\t}\n-\tpublic void transmute(Entity e, int compositionId) {\n-\t\tcompositionIdMapper.get(compositionId).transmute(e);\n-\t}\n-\n-\tpublic Iterable<? extends Map.Entry<Integer, TransmuterEntry>> entrySet() {\n-\t\treturn compositionIdMapper.entrySet();\n-\t}\n-\n-\tpublic static class TransmuterEntry {\n-\t\tpublic List<Class<? extends Component>> componentTypes = new ArrayList<Class<? extends Component>>();\n-\t\tprivate transient EntityTransmuter transmuter;\n-\n-\t\tpublic TransmuterEntry(Bag<Class<? extends Component>> types) {\n-\t\t\ttry {\n-\t\t\t\tfor (Class<? extends Component> c : types) {\n-\t\t\t\t\tif (ClassReflection.getAnnotation(c, Transient.class) != null)\n-\t\t\t\t\t\tcontinue;\n-\n-\t\t\t\t\tcomponentTypes.add(c);\n-\t\t\t\t}\n-\t\t\t} catch (ReflectionException e) {\n-\t\t\t\tthrow new RuntimeException(e);\n-\t\t\t}\n-\t\t}\n-\n-\t\tpublic TransmuterEntry() {}\n-\n-\t\tpublic void transmute(Entity e) {\n-\t\t\tif (transmuter == null) {\n-\t\t\t\tEntityTransmuterFactory factory = new EntityTransmuterFactory(e.getWorld());\n-\t\t\t\tfor (int i = 0, s = componentTypes.size(); s > i; i++)\n-\t\t\t\t\tfactory.add(componentTypes.get(i));\n-\n-\t\t\t\ttransmuter = factory.build();\n-\t\t\t}\n-\n-\t\t\ttransmuter.transmute(e);\n-\t\t}\n-\t}\n-}\n+ public Map<Integer, TransmuterEntry> compositionIdMapper = new HashMap<Integer, TransmuterEntry>();\n+ public SaveFileFormat serializationState;\n+\n+ public ArchetypeMapper(World world, IntBag toSave) {\n+  int[] ids = toSave.getData();\n+  Bag<Component> components = new Bag<Component>();\n+  Bag<Class<? extends Component>> types = new Bag<Class<? extends Component>>();\n+  for (int i = 0, s = toSave.size(); s > i; i++) {\n+   int compositionId = world.getEntity(ids[i]).getCompositionId();\n+   if (!compositionIdMapper.containsKey(compositionId)) {\n+    components.clear();\n+    types.clear();\n+    world.getComponentManager().getComponentsFor(ids[i], components);\n+    compositionIdMapper.put(compositionId, new TransmuterEntry(toClasses(components, types)));\n+   }\n+  }\n+ }\n+\n+ public ArchetypeMapper() {} // for serialization\n+\n+ private static Bag<Class<? extends Component>> toClasses(Bag<Component> source, Bag<Class<? extends Component>> target) {\n+  for (int i = 0; i < source.size(); i++) {\n+   target.add(source.get(i).getClass());\n+  }\n+\n+  return target;\n+ }\n+\n+\n+ public void transmute(Entity e, int compositionId) {\n+  compositionIdMapper.get(compositionId).transmute(e);\n+ }\n+\n+\n+ public Iterable<? extends Map.Entry<Integer, TransmuterEntry>> entrySet() {\n+  return compositionIdMapper.entrySet();\n+ }\n+\n+\n+ public static class TransmuterEntry {\n+  public List<Class<? extends Component>> componentTypes = new ArrayList<Class<? extends Component>>();\n+\n+  private transient EntityTransmuter transmuter;\n+\n+  public TransmuterEntry(Bag<Class<? extends Component>> types) {\n+   try {\n+    for (Class<? extends Component> c : types) {\n+     if (ClassReflection.getAnnotation(c, Transient.class) != null)\n+      continue;\n+     componentTypes.add(c);\n+    }\n+   } catch (ReflectionException e) {\n+    throw new RuntimeException(e);\n+   }\n+  }\n+\n+  public TransmuterEntry() {}\n+\n+  public void transmute(Entity e) {\n+   if (transmuter == null) {\n+    EntityTransmuterFactory factory = new EntityTransmuterFactory(e.getWorld());\n+    for (int i = 0, s = componentTypes.size(); s > i; i++)\n+     factory.add(componentTypes.get(i));\n+    transmuter = factory.build();\n+   }\n+\n+   transmuter.transmute(e);\n+  }\n+ }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 73
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 109).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

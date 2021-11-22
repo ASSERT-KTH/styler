@@ -1,0 +1,63 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "27",
+    "information": {
+        "errors": [
+            {
+                "line": "41",
+                "column": "9",
+                "severity": "warning",
+                "message": "'annotation array initialization' child has incorrect indentation level 8, expected level should be 4.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "@TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n@RestEndpoints({\n        @RestEndpoint(configBean = Resources.class,\n                opType = RestEndpoint.OpType.DELETE,\n                path = \"delete-jdbc-resource\",\n                description = \"delete-jdbc-resource\")",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/27/DeleteJdbcResource.java\nindex 0e446c8aac2..878b27408cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/27/DeleteJdbcResource.java\n@@ -38,7 +38,7 @@ import jakarta.inject.Inject;\n  */\n @TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n @RestEndpoints({\n-        @RestEndpoint(configBean = Resources.class,\n+    @RestEndpoint(configBean = Resources.class,\n                 opType = RestEndpoint.OpType.DELETE,\n                 path = \"delete-jdbc-resource\",\n                 description = \"delete-jdbc-resource\")\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/27/DeleteJdbcResource.java\nindex 0e446c8aac2..e43a4b9999c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/27/DeleteJdbcResource.java\n@@ -34,35 +34,36 @@ import jakarta.inject.Inject;\n \n /**\n  * Delete JDBC Resource command\n- *\n  */\n-@TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n+@TargetType(value = {CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.CLUSTER,\n+    CommandTarget.STANDALONE_INSTANCE})\n @RestEndpoints({\n-        @RestEndpoint(configBean = Resources.class,\n-                opType = RestEndpoint.OpType.DELETE,\n-                path = \"delete-jdbc-resource\",\n-                description = \"delete-jdbc-resource\")\n+    @RestEndpoint(configBean = Resources.class,\n+        opType = RestEndpoint.OpType.DELETE,\n+        path = \"delete-jdbc-resource\",\n+        description = \"delete-jdbc-resource\")\n })\n \n @ExecuteOn(RuntimeType.ALL)\n-@Service(name=\"delete-jdbc-resource\")\n+@Service(name = \"delete-jdbc-resource\")\n @PerLookup\n @I18n(\"delete.jdbc.resource\")\n public class DeleteJdbcResource implements AdminCommand {\n \n-    final private static LocalStringManagerImpl localStrings = new LocalStringManagerImpl(DeleteJdbcResource.class);\n+    final private static LocalStringManagerImpl localStrings =\n+        new LocalStringManagerImpl(DeleteJdbcResource.class);\n \n-    @Param(optional=true)\n+    @Param(optional = true)\n     private String target = SystemPropertyConstants.DAS_SERVER_NAME;\n \n-    @Param(name=\"jdbc_resource_name\", primary=true)\n+    @Param(name = \"jdbc_resource_name\", primary = true)\n     private String jndiName;\n \n     @Inject\n     private Domain domain;\n \n     @Inject\n-    private JDBCResourceManager jdbcResMgr ;\n+    private JDBCResourceManager jdbcResMgr;\n \n     /**\n      * Executes the command with the command parameters passed as Properties\n@@ -75,18 +76,20 @@ public class DeleteJdbcResource implements AdminCommand {\n         final ActionReport report = context.getActionReport();\n         try {\n             ResourceStatus rs = jdbcResMgr.delete(domain.getResources(), jndiName, target);\n-            if(rs.getMessage() != null){\n+            if (rs.getMessage() != null) {\n                 report.setMessage(rs.getMessage());\n             }\n             if (rs.getStatus() == ResourceStatus.SUCCESS) {\n                 report.setActionExitCode(ActionReport.ExitCode.SUCCESS);\n             } else {\n                 report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n-                if (rs.getException() != null)\n+                if (rs.getException() != null) {\n                     report.setFailureCause(rs.getException());\n+                }\n             }\n-        } catch(Exception e) {\n-            report.setMessage(localStrings.getLocalString(\"delete.jdbc.resource.fail\", \"{0} delete failed \", jndiName));\n+        } catch (Exception e) {\n+            report.setMessage(localStrings\n+                .getLocalString(\"delete.jdbc.resource.fail\", \"{0} delete failed \", jndiName));\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setFailureCause(e);\n         }\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/27/DeleteJdbcResource.java\nindex 0e446c8aac2..5abd5ab4079 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/27/DeleteJdbcResource.java\n@@ -38,12 +38,11 @@ import jakarta.inject.Inject;\n  */\n @TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n @RestEndpoints({\n-        @RestEndpoint(configBean = Resources.class,\n+    @RestEndpoint(configBean = Resources.class,\n                 opType = RestEndpoint.OpType.DELETE,\n                 path = \"delete-jdbc-resource\",\n                 description = \"delete-jdbc-resource\")\n-})\n-\n+    })\n @ExecuteOn(RuntimeType.ALL)\n @Service(name=\"delete-jdbc-resource\")\n @PerLookup\n@@ -91,4 +90,4 @@ public class DeleteJdbcResource implements AdminCommand {\n             report.setFailureCause(e);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/27/DeleteJdbcResource.java\nindex 0e446c8aac2..878b27408cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/27/DeleteJdbcResource.java\n@@ -38,7 +38,7 @@ import jakarta.inject.Inject;\n  */\n @TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n @RestEndpoints({\n-        @RestEndpoint(configBean = Resources.class,\n+    @RestEndpoint(configBean = Resources.class,\n                 opType = RestEndpoint.OpType.DELETE,\n                 path = \"delete-jdbc-resource\",\n                 description = \"delete-jdbc-resource\")\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/27/DeleteJdbcResource.java\nindex 0e446c8aac2..878b27408cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/27/DeleteJdbcResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/27/DeleteJdbcResource.java\n@@ -38,7 +38,7 @@ import jakarta.inject.Inject;\n  */\n @TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE })\n @RestEndpoints({\n-        @RestEndpoint(configBean = Resources.class,\n+    @RestEndpoint(configBean = Resources.class,\n                 opType = RestEndpoint.OpType.DELETE,\n                 path = \"delete-jdbc-resource\",\n                 description = \"delete-jdbc-resource\")\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff"
+    ]
+}

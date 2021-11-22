@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3312",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "63",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "93",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "77",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3312/MetaDataRecordFormat.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3312/MetaDataRecordFormat.java\nindex 92c13e66ff9..7c29015bad2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3312/MetaDataRecordFormat.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3312/MetaDataRecordFormat.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.store.format.standard;\n \n import java.io.IOException;\n@@ -30,45 +31,45 @@ import org.neo4j.kernel.impl.store.record.RecordLoad;\n \n public class MetaDataRecordFormat extends BaseOneByteHeaderRecordFormat<MetaDataRecord>\n {\n-    public static final int RECORD_SIZE = 9;\n-    public static final long FIELD_NOT_PRESENT = -1;\n-    private static final int ID_BITS = 32;\n+  public static final int RECORD_SIZE = 9;\n+  public static final long FIELD_NOT_PRESENT = -1;\n+  private static final int ID_BITS = 32;\n \n-    public MetaDataRecordFormat()\n-    {\n-        super( fixedRecordSize( RECORD_SIZE ), 0, IN_USE_BIT, ID_BITS );\n-    }\n+  public MetaDataRecordFormat()\n+  {\n+    super(fixedRecordSize(RECORD_SIZE), 0, IN_USE_BIT, ID_BITS);\n+  }\n \n-    @Override\n-    public MetaDataRecord newRecord()\n-    {\n-        return new MetaDataRecord();\n-    }\n+  @Override\n+  public MetaDataRecord newRecord()\n+  {\n+    return new MetaDataRecord();\n+  }\n \n-    @Override\n-    public void read( MetaDataRecord record, PageCursor cursor, RecordLoad mode, int recordSize )\n+  @Override\n+  public void read(MetaDataRecord record, PageCursor cursor, RecordLoad mode, int recordSize)\n+  {\n+    int id = record.getIntId();\n+    Position[] values = Position.values();\n+    if (id >= values.length)\n     {\n-        int id = record.getIntId();\n-        Position[] values = Position.values();\n-        if ( id >= values.length )\n-        {\n-            record.initialize( false, FIELD_NOT_PRESENT );\n-            return;\n-        }\n-\n-        Position position = values[id];\n-        int offset = position.id() * recordSize;\n-        cursor.setOffset( offset );\n-        boolean inUse = cursor.getByte() == Record.IN_USE.byteValue();\n-        long value = inUse ? cursor.getLong() : FIELD_NOT_PRESENT;\n-        record.initialize( inUse, value );\n+      record.initialize(false, FIELD_NOT_PRESENT);\n+      return;\n     }\n \n-    @Override\n-    public void write( MetaDataRecord record, PageCursor cursor, int recordSize )\n-    {\n-        assert record.inUse();\n-        cursor.putByte( Record.IN_USE.byteValue() );\n-        cursor.putLong( record.getValue() );\n-    }\n+    Position position = values[id];\n+    int offset = position.id() * recordSize;\n+    cursor.setOffset(offset);\n+    boolean inUse = cursor.getByte() == Record.IN_USE.byteValue();\n+    long value = inUse ? cursor.getLong() : FIELD_NOT_PRESENT;\n+    record.initialize(inUse, value);\n+  }\n+\n+  @Override\n+  public void write(MetaDataRecord record, PageCursor cursor, int recordSize)\n+  {\n+    assert record.inUse();\n+    cursor.putByte(Record.IN_USE.byteValue());\n+    cursor.putLong(record.getValue());\n+  }\n }\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3312/MetaDataRecordFormat.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3312/MetaDataRecordFormat.java\nindex 92c13e66ff9..bce1413e156 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3312/MetaDataRecordFormat.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3312/MetaDataRecordFormat.java\n@@ -31,7 +31,8 @@ import org.neo4j.kernel.impl.store.record.RecordLoad;\n public class MetaDataRecordFormat extends BaseOneByteHeaderRecordFormat<MetaDataRecord>\n {\n     public static final int RECORD_SIZE = 9;\n-    public static final long FIELD_NOT_PRESENT = -1;\n+\n+public static final long FIELD_NOT_PRESENT = -1;\n     private static final int ID_BITS = 32;\n \n     public MetaDataRecordFormat()\n@@ -71,4 +72,4 @@ public class MetaDataRecordFormat extends BaseOneByteHeaderRecordFormat<MetaData\n         cursor.putByte( Record.IN_USE.byteValue() );\n         cursor.putLong( record.getValue() );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

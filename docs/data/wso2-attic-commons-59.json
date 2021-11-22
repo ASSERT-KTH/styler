@@ -1,0 +1,69 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "59",
+    "information": {
+        "errors": [
+            {
+                "line": "88",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 127).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                    + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n            response.setHeader(\"Connection\", \"Refused\");\n            response.sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n            System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n            System.out.println(\"Upgrade refused\");\n            ",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/59/ServerTest.java\nindex 50fd638e106..10a097099cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/59/ServerTest.java\n@@ -85,7 +85,8 @@ public class ServerTest extends HttpServlet {\n             response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n                     + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n             response.setHeader(\"Connection\", \"Refused\");\n-            response.sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n+            response.sendError(400\n+            , \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n             System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n             System.out.println(\"Upgrade refused\");\n             \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/59/ServerTest.java\nindex 50fd638e106..981c197f0df 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/59/ServerTest.java\n@@ -37,6 +37,7 @@\n  * only if the new code is made subject to such option by the copyright\n  * holder.\n  */\n+\n package org.glassfish.servlet.http_upgrade_war;\n \n import java.io.IOException;\n@@ -51,74 +52,74 @@ import javax.servlet.http.HttpServletResponse;\n  * HTTP Upgrade Request\n  *\n  * @author Daniel\n- *\n  */\n @WebServlet(name = \"ServerTest\", urlPatterns = {\"/ServerTest\"})\n public class ServerTest extends HttpServlet {\n \n-    /**\n-     * Processes requests for both HTTP\n-     * <code>GET</code> and\n-     * <code>POST</code> methods.\n-     *\n-     * @param request servlet request\n-     * @param response servlet response\n-     * @throws ServletException if a servlet-specific error occurs\n-     * @throws IOException if an I/O error occurs\n-     */\n-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)\n-            throws ServletException, IOException {\n-        // Checking request header\n-        if (\"Dummy Protocol\".equals(request.getHeader(\"Upgrade\"))) {\n-            System.out.println(\"Accept to upgrade\");\n-            response.setStatus(101);\n-            response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n-                    + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n-            response.setHeader(\"Upgrade\", \"Dummy Protocol\");\n-            response.setHeader(\"Connection\", \"Upgrade\");\n-            response.flushBuffer();\n+  /**\n+   * Processes requests for both HTTP\n+   * <code>GET</code> and\n+   * <code>POST</code> methods.\n+   *\n+   * @param request  servlet request\n+   * @param response servlet response\n+   * @throws ServletException if a servlet-specific error occurs\n+   * @throws IOException      if an I/O error occurs\n+   */\n+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)\n+    throws ServletException, IOException {\n+    // Checking request header\n+    if (\"Dummy Protocol\".equals(request.getHeader(\"Upgrade\"))) {\n+      System.out.println(\"Accept to upgrade\");\n+      response.setStatus(101);\n+      response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n+        + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n+      response.setHeader(\"Upgrade\", \"Dummy Protocol\");\n+      response.setHeader(\"Connection\", \"Upgrade\");\n+      response.flushBuffer();\n \n-            // Call the upgrade API, and invoke the upgrade handler\n-            ProtocolUpgradeHandler handler = request.upgrade(ProtocolUpgradeHandler.class);\n-        } else {\n-            response.setStatus(400);\n-            response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n-                    + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n-            response.setHeader(\"Connection\", \"Refused\");\n-            response.sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n-            System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n-            System.out.println(\"Upgrade refused\");\n-            \n-        }\n-    }\n+      // Call the upgrade API, and invoke the upgrade handler\n+      ProtocolUpgradeHandler handler = request.upgrade(ProtocolUpgradeHandler.class);\n+    } else {\n+      response.setStatus(400);\n+      response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n+        + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n+      response.setHeader(\"Connection\", \"Refused\");\n+      response\n+        .sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n+      System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n+      System.out.println(\"Upgrade refused\");\n \n-    /**\n-     * Handles the HTTP\n-     * <code>GET</code> method.\n-     *\n-     * @param request servlet request\n-     * @param response servlet response\n-     * @throws ServletException if a servlet-specific error occurs\n-     * @throws IOException if an I/O error occurs\n-     */\n-    @Override\n-    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n-            throws ServletException, IOException {\n-        processRequest(request, response);\n     }\n+  }\n \n-    /**\n-     * Handles the HTTP\n-     * <code>POST</code> method.\n-     *\n-     * @param request servlet request\n-     * @param response servlet response\n-     * @throws ServletException if a servlet-specific error occurs\n-     * @throws IOException if an I/O error occurs\n-     */\n-    @Override\n-    protected void doPost(HttpServletRequest request, HttpServletResponse response)\n-            throws ServletException, IOException {\n-        processRequest(request, response);\n-    }\n+  /**\n+   * Handles the HTTP\n+   * <code>GET</code> method.\n+   *\n+   * @param request  servlet request\n+   * @param response servlet response\n+   * @throws ServletException if a servlet-specific error occurs\n+   * @throws IOException      if an I/O error occurs\n+   */\n+  @Override\n+  protected void doGet(HttpServletRequest request, HttpServletResponse response)\n+    throws ServletException, IOException {\n+    processRequest(request, response);\n+  }\n+\n+  /**\n+   * Handles the HTTP\n+   * <code>POST</code> method.\n+   *\n+   * @param request  servlet request\n+   * @param response servlet response\n+   * @throws ServletException if a servlet-specific error occurs\n+   * @throws IOException      if an I/O error occurs\n+   */\n+  @Override\n+  protected void doPost(HttpServletRequest request, HttpServletResponse response)\n+    throws ServletException, IOException {\n+    processRequest(request, response);\n+  }\n }\n",
+            "diff_size": 79
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "88",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/59/ServerTest.java\nindex 50fd638e106..684e74eeabb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/59/ServerTest.java\n@@ -121,4 +121,4 @@ public class ServerTest extends HttpServlet {\n             throws ServletException, IOException {\n         processRequest(request, response);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/59/ServerTest.java\nindex 50fd638e106..10a097099cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/59/ServerTest.java\n@@ -85,7 +85,8 @@ public class ServerTest extends HttpServlet {\n             response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n                     + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n             response.setHeader(\"Connection\", \"Refused\");\n-            response.sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n+            response.sendError(400\n+            , \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n             System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n             System.out.println(\"Upgrade refused\");\n             \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/59/ServerTest.java\nindex 50fd638e106..0420157db59 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/59/ServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/59/ServerTest.java\n@@ -85,7 +85,8 @@ public class ServerTest extends HttpServlet {\n             response.setHeader(\"X-Powered-By\", \"Servlet/3.1 \"\n                     + \"(GlassFish Server Open Source Edition 4.0 Java/Oracle Corporation/1.7)\");\n             response.setHeader(\"Connection\", \"Refused\");\n-            response.sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n+            response.\n+    sendError(400, \"The Upgrade request sent by the client was incorrect or can not be accept by the server\");\n             System.out.println(\"Upgrade field is: \" + request.getHeader(\"Upgrade\"));\n             System.out.println(\"Upgrade refused\");\n             \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

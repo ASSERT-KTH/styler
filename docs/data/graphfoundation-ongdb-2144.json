@@ -1,0 +1,110 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2144",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2144/StatementLocks.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2144/StatementLocks.java\nindex 077d7ae119f..cd214f856ac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2144/StatementLocks.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2144/StatementLocks.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.locking;\n \n import java.util.stream.Stream;\n@@ -29,56 +30,57 @@ import org.neo4j.kernel.impl.api.KernelStatement;\n  */\n public interface StatementLocks extends AutoCloseable\n {\n-    /**\n-     * Get {@link Locks.Client} responsible for pessimistic locks. Such locks will be grabbed right away.\n-     *\n-     * @return the locks client to serve pessimistic locks.\n-     */\n-    Locks.Client pessimistic();\n+  /**\n+   * Get {@link Locks.Client} responsible for pessimistic locks. Such locks will be grabbed right away.\n+   *\n+   * @return the locks client to serve pessimistic locks.\n+   */\n+  Locks.Client pessimistic();\n \n-    /**\n-     * Get {@link Locks.Client} responsible for optimistic locks. Such locks could potentially be grabbed later at\n-     * commit time.\n-     *\n-     * @return the locks client to serve optimistic locks.\n-     */\n-    Locks.Client optimistic();\n+  /**\n+   * Get {@link Locks.Client} responsible for optimistic locks. Such locks could potentially be grabbed later at\n+   * commit time.\n+   *\n+   * @return the locks client to serve optimistic locks.\n+   */\n+  Locks.Client optimistic();\n \n-    /**\n-     * Prepare the underlying {@link Locks.Client client}(s) for commit. This will grab all locks that have\n-     * previously been taken {@link #optimistic() optimistically}, and tell the underlying lock client to enter the\n-     * <em>prepare</em> state.\n-     * @param lockTracer lock tracer\n-     */\n-    void prepareForCommit( LockTracer lockTracer );\n+  /**\n+   * Prepare the underlying {@link Locks.Client client}(s) for commit. This will grab all locks that have\n+   * previously been taken {@link #optimistic() optimistically}, and tell the underlying lock client to enter the\n+   * <em>prepare</em> state.\n+   *\n+   * @param lockTracer lock tracer\n+   */\n+  void prepareForCommit(LockTracer lockTracer);\n \n-    /**\n-     * Stop the underlying {@link Locks.Client client}(s).\n-     */\n-    void stop();\n+  /**\n+   * Stop the underlying {@link Locks.Client client}(s).\n+   */\n+  void stop();\n \n-    /**\n-     * Close the underlying {@link Locks.Client client}(s).\n-     */\n-    @Override\n-    void close();\n+  /**\n+   * Close the underlying {@link Locks.Client client}(s).\n+   */\n+  @Override\n+  void close();\n \n-    /**\n-     * List the locks held by this transaction.\n-     *\n-     * This method is invoked by concurrent threads in order to inspect the lock state in this transaction.\n-     *\n-     * @return the locks held by this transaction.\n-     */\n-    Stream<? extends ActiveLock> activeLocks();\n+  /**\n+   * List the locks held by this transaction.\n+   * <p>\n+   * This method is invoked by concurrent threads in order to inspect the lock state in this transaction.\n+   *\n+   * @return the locks held by this transaction.\n+   */\n+  Stream<? extends ActiveLock> activeLocks();\n \n-    /**\n-     * Get the current number of active locks.\n-     *\n-     * Note that the value returned by this method might differ from the number of locks returned by\n-     * {@link #activeLocks()}, since they would introspect the lock state at different points in time.\n-     *\n-     * @return the number of active locks in this transaction.\n-     */\n-    long activeLockCount();\n+  /**\n+   * Get the current number of active locks.\n+   * <p>\n+   * Note that the value returned by this method might differ from the number of locks returned by\n+   * {@link #activeLocks()}, since they would introspect the lock state at different points in time.\n+   *\n+   * @return the number of active locks in this transaction.\n+   */\n+  long activeLockCount();\n }\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2144/StatementLocks.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2144/StatementLocks.java\nindex 077d7ae119f..7a1694982be 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2144/StatementLocks.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2144/StatementLocks.java\n@@ -81,4 +81,4 @@ public interface StatementLocks extends AutoCloseable\n      * @return the number of active locks in this transaction.\n      */\n     long activeLockCount();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

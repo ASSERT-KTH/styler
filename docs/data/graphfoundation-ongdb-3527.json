@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3527",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "96",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "96",
+                    "column": "84",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "62",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "157",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "158",
+                    "column": "62",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "168",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "168",
+                    "column": "78",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3527/TransactionIdStore.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3527/TransactionIdStore.java\nindex d9ce04737ba..055ecfbd1dc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3527/TransactionIdStore.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3527/TransactionIdStore.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.transaction.log;\n \n import java.util.concurrent.TimeoutException;\n@@ -45,135 +46,138 @@ import static org.neo4j.kernel.impl.transaction.log.entry.LogHeader.LOG_HEADER_S\n  */\n public interface TransactionIdStore\n {\n-    /**\n-     * Tx id counting starting from this value (this value means no transaction ever committed).\n-     *\n-     * Note that a read only transaction will get txId = 0, see {@link org.neo4j.internal.kernel.api.Transaction}.\n-     */\n-    long BASE_TX_ID = 1;\n-    long BASE_TX_CHECKSUM = 0;\n-\n-    /**\n-     * Timestamp value used initially for an empty database.\n-     */\n-    long BASE_TX_COMMIT_TIMESTAMP = 0;\n-\n-    /**\n-     * CONSTANT FOR UNKNOWN TX CHECKSUM\n-     */\n-    long UNKNOWN_TX_CHECKSUM = 1;\n-\n-    /**\n-     * Timestamp value used when record in the metadata store is not present and there are no transactions in logs.\n-     */\n-    long UNKNOWN_TX_COMMIT_TIMESTAMP = 1;\n-\n-    long BASE_TX_LOG_VERSION = 0;\n-    long BASE_TX_LOG_BYTE_OFFSET = LOG_HEADER_SIZE;\n-\n-    /**\n-     * @return the next transaction id for a committing transaction. The transaction id is incremented\n-     * with each call. Ids returned from this method will not be visible from {@link #getLastCommittedTransactionId()}\n-     * until handed to {@link #transactionCommitted(long, long, long)}.\n-     */\n-    long nextCommittingTransactionId();\n-\n-    /**\n-     * @return the transaction id of last committing transaction.\n-     */\n-    long committingTransactionId();\n-\n-    /**\n-     * Signals that a transaction with the given transaction id has been committed (i.e. appended to a log).\n-     * Calls to this method may come in out-of-transaction-id order. The highest transaction id\n-     * seen given to this method will be visible in {@link #getLastCommittedTransactionId()}.\n-     * @param transactionId the applied transaction id.\n-     * @param checksum checksum of the transaction.\n-     * @param commitTimestamp the timestamp of the transaction commit.\n-     */\n-    void transactionCommitted( long transactionId, long checksum, long commitTimestamp );\n-\n-    /**\n-     * @return highest seen {@link #transactionCommitted(long, long, long) committed transaction id}.\n-     */\n-    long getLastCommittedTransactionId();\n-\n-    /**\n-     * Returns transaction information about the highest committed transaction, i.e.\n-     * transaction id as well as checksum.\n-     *\n-     * @return {@link TransactionId} describing the last (i.e. highest) committed transaction.\n-     */\n-    TransactionId getLastCommittedTransaction();\n-\n-    /**\n-     * Returns transaction information about transaction where the last upgrade was performed, i.e.\n-     * transaction id as well as checksum.\n-     *\n-     * @return {@link TransactionId} describing the most recent upgrade transaction.\n-     */\n-    TransactionId getUpgradeTransaction();\n-\n-    /**\n-     * @return highest seen gap-free {@link #transactionClosed(long, long, long) closed transaction id}.\n-     */\n-    long getLastClosedTransactionId();\n-\n-    /**\n-     * Awaits gap-free {@link #transactionClosed(long, long, long) closed transaction id}.\n-     *\n-     * @param txId the awaited transaction id.\n-     * @param timeoutMillis the time to wait for it.\n-     * @throws InterruptedException interrupted.\n-     * @throws TimeoutException timed out.\n-     */\n-    void awaitClosedTransactionId( long txId, long timeoutMillis ) throws InterruptedException, TimeoutException;\n-\n-    /**\n-     * Returns transaction information about the last committed transaction, i.e.\n-     * transaction id as well as the log position following the commit entry in the transaction log.\n-     *\n-     * @return transaction information about the last closed (highest gap-free) transaction.\n-     * <pre>\n-     * [0]: transaction id\n-     * [1]: log version\n-     * [2]: byte offset into that log version\n-     * </pre>\n-     */\n-    long[] getLastClosedTransaction();\n-\n-    /**\n-     * Used by recovery, where last committed/closed transaction ids are set.\n-     * Perhaps this shouldn't be exposed like this?\n-     *  @param transactionId transaction id that will be the last closed/committed id.\n-     * @param checksum checksum of the transaction.\n-     * @param commitTimestamp the timestamp of the transaction commit.\n-     * @param byteOffset offset in the log file where the committed entry has been written.\n-     * @param logVersion version of log the committed entry has been written into.\n-     */\n-    void setLastCommittedAndClosedTransactionId( long transactionId, long checksum, long commitTimestamp, long byteOffset,\n-            long logVersion );\n-\n-    /**\n-     * Signals that a transaction with the given transaction id has been fully applied. Calls to this method\n-     * may come in out-of-transaction-id order.\n-     * @param transactionId the applied transaction id.\n-     * @param logVersion version of log the committed entry has been written into.\n-     * @param byteOffset offset in the log file where start writing the next log entry.\n-     */\n-    void transactionClosed( long transactionId, long logVersion, long byteOffset );\n-\n-    /**\n-     * Should be called in a place where no more committed transaction ids are returned, so that\n-     * applied transactions can catch up.\n-     *\n-     * @return {@code true} if the latest applied transaction (without any lower transaction id gaps)\n-     * is the same as the highest returned {@code committed transaction id}.\n-     */\n-    boolean closedTransactionIdIsOnParWithOpenedTransactionId();\n-\n-    /**\n-     * Forces the transaction id counters to persistent storage.\n-     */\n-    void flush();\n+  /**\n+   * Tx id counting starting from this value (this value means no transaction ever committed).\n+   * <p>\n+   * Note that a read only transaction will get txId = 0, see {@link org.neo4j.internal.kernel.api.Transaction}.\n+   */\n+  long BASE_TX_ID = 1;\n+  long BASE_TX_CHECKSUM = 0;\n+\n+  /**\n+   * Timestamp value used initially for an empty database.\n+   */\n+  long BASE_TX_COMMIT_TIMESTAMP = 0;\n+\n+  /**\n+   * CONSTANT FOR UNKNOWN TX CHECKSUM\n+   */\n+  long UNKNOWN_TX_CHECKSUM = 1;\n+\n+  /**\n+   * Timestamp value used when record in the metadata store is not present and there are no transactions in logs.\n+   */\n+  long UNKNOWN_TX_COMMIT_TIMESTAMP = 1;\n+\n+  long BASE_TX_LOG_VERSION = 0;\n+  long BASE_TX_LOG_BYTE_OFFSET = LOG_HEADER_SIZE;\n+\n+  /**\n+   * @return the next transaction id for a committing transaction. The transaction id is incremented\n+   * with each call. Ids returned from this method will not be visible from {@link #getLastCommittedTransactionId()}\n+   * until handed to {@link #transactionCommitted(long, long, long)}.\n+   */\n+  long nextCommittingTransactionId();\n+\n+  /**\n+   * @return the transaction id of last committing transaction.\n+   */\n+  long committingTransactionId();\n+\n+  /**\n+   * Signals that a transaction with the given transaction id has been committed (i.e. appended to a log).\n+   * Calls to this method may come in out-of-transaction-id order. The highest transaction id\n+   * seen given to this method will be visible in {@link #getLastCommittedTransactionId()}.\n+   *\n+   * @param transactionId   the applied transaction id.\n+   * @param checksum        checksum of the transaction.\n+   * @param commitTimestamp the timestamp of the transaction commit.\n+   */\n+  void transactionCommitted(long transactionId, long checksum, long commitTimestamp);\n+\n+  /**\n+   * @return highest seen {@link #transactionCommitted(long, long, long) committed transaction id}.\n+   */\n+  long getLastCommittedTransactionId();\n+\n+  /**\n+   * Returns transaction information about the highest committed transaction, i.e.\n+   * transaction id as well as checksum.\n+   *\n+   * @return {@link TransactionId} describing the last (i.e. highest) committed transaction.\n+   */\n+  TransactionId getLastCommittedTransaction();\n+\n+  /**\n+   * Returns transaction information about transaction where the last upgrade was performed, i.e.\n+   * transaction id as well as checksum.\n+   *\n+   * @return {@link TransactionId} describing the most recent upgrade transaction.\n+   */\n+  TransactionId getUpgradeTransaction();\n+\n+  /**\n+   * @return highest seen gap-free {@link #transactionClosed(long, long, long) closed transaction id}.\n+   */\n+  long getLastClosedTransactionId();\n+\n+  /**\n+   * Awaits gap-free {@link #transactionClosed(long, long, long) closed transaction id}.\n+   *\n+   * @param txId          the awaited transaction id.\n+   * @param timeoutMillis the time to wait for it.\n+   * @throws InterruptedException interrupted.\n+   * @throws TimeoutException     timed out.\n+   */\n+  void awaitClosedTransactionId(long txId, long timeoutMillis) throws InterruptedException, TimeoutException;\n+\n+  /**\n+   * Returns transaction information about the last committed transaction, i.e.\n+   * transaction id as well as the log position following the commit entry in the transaction log.\n+   *\n+   * @return transaction information about the last closed (highest gap-free) transaction.\n+   * <pre>\n+   * [0]: transaction id\n+   * [1]: log version\n+   * [2]: byte offset into that log version\n+   * </pre>\n+   */\n+  long[] getLastClosedTransaction();\n+\n+  /**\n+   * Used by recovery, where last committed/closed transaction ids are set.\n+   * Perhaps this shouldn't be exposed like this?\n+   *\n+   * @param transactionId   transaction id that will be the last closed/committed id.\n+   * @param checksum        checksum of the transaction.\n+   * @param commitTimestamp the timestamp of the transaction commit.\n+   * @param byteOffset      offset in the log file where the committed entry has been written.\n+   * @param logVersion      version of log the committed entry has been written into.\n+   */\n+  void setLastCommittedAndClosedTransactionId(long transactionId, long checksum, long commitTimestamp, long byteOffset,\n+                                              long logVersion);\n+\n+  /**\n+   * Signals that a transaction with the given transaction id has been fully applied. Calls to this method\n+   * may come in out-of-transaction-id order.\n+   *\n+   * @param transactionId the applied transaction id.\n+   * @param logVersion    version of log the committed entry has been written into.\n+   * @param byteOffset    offset in the log file where start writing the next log entry.\n+   */\n+  void transactionClosed(long transactionId, long logVersion, long byteOffset);\n+\n+  /**\n+   * Should be called in a place where no more committed transaction ids are returned, so that\n+   * applied transactions can catch up.\n+   *\n+   * @return {@code true} if the latest applied transaction (without any lower transaction id gaps)\n+   * is the same as the highest returned {@code committed transaction id}.\n+   */\n+  boolean closedTransactionIdIsOnParWithOpenedTransactionId();\n+\n+  /**\n+   * Forces the transaction id counters to persistent storage.\n+   */\n+  void flush();\n }\n",
+            "diff_size": 135
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3527/TransactionIdStore.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3527/TransactionIdStore.java\nindex d9ce04737ba..d0828fdc080 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3527/TransactionIdStore.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3527/TransactionIdStore.java\n@@ -154,7 +154,7 @@ public interface TransactionIdStore\n     void setLastCommittedAndClosedTransactionId( long transactionId, long checksum, long commitTimestamp, long byteOffset,\n             long logVersion );\n \n-    /**\n+/**\n      * Signals that a transaction with the given transaction id has been fully applied. Calls to this method\n      * may come in out-of-transaction-id order.\n      * @param transactionId the applied transaction id.\n@@ -176,4 +176,4 @@ public interface TransactionIdStore\n      * Forces the transaction id counters to persistent storage.\n      */\n     void flush();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

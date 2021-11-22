@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1111",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "64",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "101",
+                    "column": "56",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "73",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1111/CharReadable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1111/CharReadable.java\nindex be3834ece32..5f40ee09d1b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1111/CharReadable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1111/CharReadable.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.csv.reader;\n \n import java.io.Closeable;\n@@ -28,95 +29,96 @@ import java.nio.CharBuffer;\n  * A {@link Readable}, but focused on {@code char[]}, via a {@link SectionedCharBuffer} with one of the main reasons\n  * that {@link Reader#read(CharBuffer)} creates a new {@code char[]} as big as the data it's about to read\n  * every call. However {@link Reader#read(char[], int, int)} doesn't, and so leaves no garbage.\n- *\n+ * <p>\n  * The fact that this is a separate interface means that {@link Readable} instances need to be wrapped,\n  * but that's fine since the buffer size should be reasonably big such that {@link #read(SectionedCharBuffer, int)}\n  * isn't called too often. Therefore the wrapping overhead should not be noticeable at all.\n- *\n+ * <p>\n  * Also took the opportunity to let {@link CharReadable} extends {@link Closeable}, something that\n  * {@link Readable} doesn't.\n  */\n public interface CharReadable extends Closeable, SourceTraceability\n {\n-    /**\n-     * Reads characters into the {@link SectionedCharBuffer buffer}.\n-     * This method will block until data is available, an I/O error occurs, or the end of the stream is reached.\n-     * The caller is responsible for passing in {@code from} which index existing characters should be saved,\n-     * using {@link SectionedCharBuffer#compact(SectionedCharBuffer, int) compaction}, before reading into the\n-     * front section of the buffer, using {@link SectionedCharBuffer#readFrom(Reader)}.\n-     * The returned {@link SectionedCharBuffer} can be the same as got passed in, or another buffer if f.ex.\n-     * double-buffering is used. If this reader reached eof, i.e. equal state to that of {@link Reader#read(char[])}\n-     * returning {@code -1} then {@link SectionedCharBuffer#hasAvailable()} for the returned instances will\n-     * return {@code false}.\n-     *\n-     * @param buffer {@link SectionedCharBuffer} to read new data into.\n-     * @param from index into the buffer array where characters to save (compact) starts (inclusive).\n-     * @return a {@link SectionedCharBuffer} containing new data.\n-     * @throws IOException if an I/O error occurs.\n-     */\n-    SectionedCharBuffer read( SectionedCharBuffer buffer, int from ) throws IOException;\n+  /**\n+   * Reads characters into the {@link SectionedCharBuffer buffer}.\n+   * This method will block until data is available, an I/O error occurs, or the end of the stream is reached.\n+   * The caller is responsible for passing in {@code from} which index existing characters should be saved,\n+   * using {@link SectionedCharBuffer#compact(SectionedCharBuffer, int) compaction}, before reading into the\n+   * front section of the buffer, using {@link SectionedCharBuffer#readFrom(Reader)}.\n+   * The returned {@link SectionedCharBuffer} can be the same as got passed in, or another buffer if f.ex.\n+   * double-buffering is used. If this reader reached eof, i.e. equal state to that of {@link Reader#read(char[])}\n+   * returning {@code -1} then {@link SectionedCharBuffer#hasAvailable()} for the returned instances will\n+   * return {@code false}.\n+   *\n+   * @param buffer {@link SectionedCharBuffer} to read new data into.\n+   * @param from   index into the buffer array where characters to save (compact) starts (inclusive).\n+   * @return a {@link SectionedCharBuffer} containing new data.\n+   * @throws IOException if an I/O error occurs.\n+   */\n+  SectionedCharBuffer read(SectionedCharBuffer buffer, int from) throws IOException;\n \n-    /**\n-     * Reads characters into the given array starting at {@code offset}, reading {@code length} number of characters.\n-     *\n-     * Similar to {@link Reader#read(char[], int, int)}\n-     * @param into char[] to read the data into.\n-     * @param offset offset to start reading into the char[].\n-     * @param length number of bytes to read maxuimum.\n-     * @return number of bytes read, or 0 if there were no bytes read and end of readable is reached.\n-     * @throws IOException on read error.\n-     */\n-    int read( char[] into, int offset, int length ) throws IOException;\n+  /**\n+   * Reads characters into the given array starting at {@code offset}, reading {@code length} number of characters.\n+   * <p>\n+   * Similar to {@link Reader#read(char[], int, int)}\n+   *\n+   * @param into   char[] to read the data into.\n+   * @param offset offset to start reading into the char[].\n+   * @param length number of bytes to read maxuimum.\n+   * @return number of bytes read, or 0 if there were no bytes read and end of readable is reached.\n+   * @throws IOException on read error.\n+   */\n+  int read(char[] into, int offset, int length) throws IOException;\n \n-    /**\n-     * @return length of this source, in bytes.\n-     */\n-    long length();\n+  /**\n+   * @return length of this source, in bytes.\n+   */\n+  long length();\n \n-    abstract class Adapter extends SourceTraceability.Adapter implements CharReadable\n-    {\n-        @Override\n-        public void close() throws IOException\n-        {   // Nothing to close\n-        }\n+  abstract class Adapter extends SourceTraceability.Adapter implements CharReadable\n+  {\n+    @Override\n+    public void close() throws IOException\n+    {   // Nothing to close\n     }\n+  }\n \n-    CharReadable EMPTY = new CharReadable()\n+  CharReadable EMPTY = new CharReadable()\n+  {\n+    @Override\n+    public long position()\n     {\n-        @Override\n-        public long position()\n-        {\n-            return 0;\n-        }\n+      return 0;\n+    }\n \n-        @Override\n-        public String sourceDescription()\n-        {\n-            return \"EMPTY\";\n-        }\n+    @Override\n+    public String sourceDescription()\n+    {\n+      return \"EMPTY\";\n+    }\n \n-        @Override\n-        public int read( char[] into, int offset, int length )\n-        {\n-            return -1;\n-        }\n+    @Override\n+    public int read(char[] into, int offset, int length)\n+    {\n+      return -1;\n+    }\n \n-        @Override\n-        public SectionedCharBuffer read( SectionedCharBuffer buffer, int from )\n-        {\n-            buffer.compact( buffer, from );\n-            return buffer;\n-        }\n+    @Override\n+    public SectionedCharBuffer read(SectionedCharBuffer buffer, int from)\n+    {\n+      buffer.compact(buffer, from);\n+      return buffer;\n+    }\n \n-        @Override\n-        public long length()\n-        {\n-            return 0;\n-        }\n+    @Override\n+    public long length()\n+    {\n+      return 0;\n+    }\n \n-        @Override\n-        public void close()\n-        {\n-        }\n-    };\n+    @Override\n+    public void close()\n+    {\n+    }\n+  };\n }\n",
+            "diff_size": 78
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1111/CharReadable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1111/CharReadable.java\nindex be3834ece32..d603a41526e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1111/CharReadable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1111/CharReadable.java\n@@ -77,7 +77,8 @@ public interface CharReadable extends Closeable, SourceTraceability\n     {\n         @Override\n         public void close() throws IOException\n-        {   // Nothing to close\n+        {\n+    // Nothing to close\n         }\n     }\n \n@@ -119,4 +120,4 @@ public interface CharReadable extends Closeable, SourceTraceability\n         {\n         }\n     };\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

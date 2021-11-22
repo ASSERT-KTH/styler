@@ -1,0 +1,78 @@
+{
+    "project_name": "findbugsproject-findbugs",
+    "error_id": "109",
+    "information": {
+        "errors": [
+            {
+                "line": "24",
+                "column": "12",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n\n    private\tBlueJ bluej;\n    private static JRadioButton[] radioList = new JRadioButton[3];\n\n\t//Description of each radioButton.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "27",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/109/FindBugsPreferences.java\nindex 2123d6a91d5..5dd6f2ff588 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/109/FindBugsPreferences.java\n@@ -21,7 +21,7 @@ import bluej.extensions.PreferenceGenerator;\n @SuppressWarnings(\"serial\")\n public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n \n-    private\tBlueJ bluej;\n+    private BlueJ bluej;\n     private static JRadioButton[] radioList = new JRadioButton[3];\n \n \t//Description of each radioButton.\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/109/FindBugsPreferences.java\nindex 2123d6a91d5..91afaa1e063 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/109/FindBugsPreferences.java\n@@ -15,52 +15,53 @@ import bluej.extensions.PreferenceGenerator;\n  * compiling all uncompiled classes when FindBugs is run, not compiling the classes,\n  * or popping up a dialog box each time there are uncompiled classes when FindBugs\n  * is called.\n- * @author Kristin Stephens\n  *\n+ * @author Kristin Stephens\n  */\n @SuppressWarnings(\"serial\")\n public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n \n-    private\tBlueJ bluej;\n+    private BlueJ bluej;\n     private static JRadioButton[] radioList = new JRadioButton[3];\n \n-\t//Description of each radioButton.\n+    //Description of each radioButton.\n     private static String[] radioDescription = {\"Compile all classes not already compiled.\",\n-            \"Do not compile classes not already compiled.\",\n-            \"Show dialog box.\"};\n-\t\n+        \"Do not compile classes not already compiled.\",\n+        \"Show dialog box.\"};\n+\n     //Warning if this is changed must check and/or change loadValues()\n     //and RunFindbugs method compileSucceeded()\n     static String[] radioCommand = {\"Compile\", \"DoNotCompile\", \"DialogBox\"};\n-\t\n+\n     static final String PROFILE_LABEL = \"FindBugsPreference\";\n     private ButtonGroup compileGroup;\n \n-\t/**\n+    /**\n      * Creates the preference panel and loads the value.\n+     *\n      * @param bluej Instance of BlueJ\n      */\n-\tpublic FindBugsPreferences(BlueJ bluej){\n+    public FindBugsPreferences(BlueJ bluej) {\n         this.bluej = bluej;\n         compileGroup = new ButtonGroup();\n \n-\t\tsetLayout(new BoxLayout(this, BoxLayout.Y_AXIS));\n+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));\n \n         add(new JLabel(\"When FindBugs runs:\"));\n \n-\t\tfor(int i = 0; i < radioList.length; i++){\n+        for (int i = 0; i < radioList.length; i++) {\n             radioList[i] = new JRadioButton(radioDescription[i]);\n             radioList[i].setActionCommand(radioCommand[i]);\n             compileGroup.add(radioList[i]);\n-\t\t\tadd(radioList[i]);\n+            add(radioList[i]);\n         }\n \n         loadValues();\n-\t}\n+    }\n \n     /**\n      * @see bluej.extensions.PreferenceGenerator\n-\t */\n+     */\n     public JPanel getPanel() {\n         return this;\n     }\n@@ -68,22 +69,24 @@ public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n     /**\n      * @see bluej.extensions.PreferenceGenerator\n      */\n-\tpublic void loadValues() {\n-        String strButton = bluej.getExtensionPropertyString(PROFILE_LABEL,\"\");\n-\n-        if(strButton.equals(\"\"))\n-\t\t\tradioList[2].setSelected(true);\n-        else\n-            for(int i = 0; i < radioCommand.length; i++){\n-                if(strButton.equalsIgnoreCase(radioCommand[i]))\n-\t\t\t\t\tradioList[i].setSelected(true);\n+    public void loadValues() {\n+        String strButton = bluej.getExtensionPropertyString(PROFILE_LABEL, \"\");\n+\n+        if (strButton.equals(\"\")) {\n+            radioList[2].setSelected(true);\n+        } else {\n+            for (int i = 0; i < radioCommand.length; i++) {\n+                if (strButton.equalsIgnoreCase(radioCommand[i])) {\n+                    radioList[i].setSelected(true);\n+                }\n             }\n+        }\n     }\n \n     /**\n      * @see bluej.extensions.PreferenceGenerator\n      */\n-\tpublic void saveValues() {\n+    public void saveValues() {\n         bluej.setExtensionPropertyString(PROFILE_LABEL, compileGroup.getSelection().getActionCommand());\n     }\n \n",
+            "diff_size": 28
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/109/FindBugsPreferences.java\nindex 2123d6a91d5..bad0035199f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/109/FindBugsPreferences.java\n@@ -5,7 +5,6 @@ import javax.swing.ButtonGroup;\n import javax.swing.JLabel;\n import javax.swing.JPanel;\n import javax.swing.JRadioButton;\n-\n import bluej.extensions.BlueJ;\n import bluej.extensions.PreferenceGenerator;\n \n@@ -18,49 +17,51 @@ import bluej.extensions.PreferenceGenerator;\n  * @author Kristin Stephens\n  *\n  */\n+\n @SuppressWarnings(\"serial\")\n public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n+    private BlueJ bluej;\n \n-    private\tBlueJ bluej;\n     private static JRadioButton[] radioList = new JRadioButton[3];\n \n-\t//Description of each radioButton.\n-    private static String[] radioDescription = {\"Compile all classes not already compiled.\",\n-            \"Do not compile classes not already compiled.\",\n-            \"Show dialog box.\"};\n-\t\n+    //Description of each radioButton.\n+\n+    private static String[] radioDescription = { \"Compile all classes not already compiled.\", \"Do not compile classes not already compiled.\", \"Show dialog box.\" };\n+    \n     //Warning if this is changed must check and/or change loadValues()\n     //and RunFindbugs method compileSucceeded()\n-    static String[] radioCommand = {\"Compile\", \"DoNotCompile\", \"DialogBox\"};\n-\t\n+\n+    static String[] radioCommand = { \"Compile\", \"DoNotCompile\", \"DialogBox\" };\n+\n     static final String PROFILE_LABEL = \"FindBugsPreference\";\n+\n     private ButtonGroup compileGroup;\n \n-\t/**\n+    /**\n      * Creates the preference panel and loads the value.\n      * @param bluej Instance of BlueJ\n      */\n-\tpublic FindBugsPreferences(BlueJ bluej){\n-        this.bluej = bluej;\n-        compileGroup = new ButtonGroup();\n \n-\t\tsetLayout(new BoxLayout(this, BoxLayout.Y_AXIS));\n \n+    public FindBugsPreferences(BlueJ bluej) {\n+        this.bluej = bluej;\n+        compileGroup = new ButtonGroup();\n+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));\n         add(new JLabel(\"When FindBugs runs:\"));\n-\n-\t\tfor(int i = 0; i < radioList.length; i++){\n+        for (int i = 0; i < radioList.length; i++) {\n             radioList[i] = new JRadioButton(radioDescription[i]);\n             radioList[i].setActionCommand(radioCommand[i]);\n             compileGroup.add(radioList[i]);\n-\t\t\tadd(radioList[i]);\n+            add(radioList[i]);\n         }\n-\n         loadValues();\n-\t}\n+    }\n \n     /**\n      * @see bluej.extensions.PreferenceGenerator\n-\t */\n+     */\n+\n+\n     public JPanel getPanel() {\n         return this;\n     }\n@@ -68,23 +69,23 @@ public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n     /**\n      * @see bluej.extensions.PreferenceGenerator\n      */\n-\tpublic void loadValues() {\n-        String strButton = bluej.getExtensionPropertyString(PROFILE_LABEL,\"\");\n \n-        if(strButton.equals(\"\"))\n-\t\t\tradioList[2].setSelected(true);\n+    public void loadValues() {\n+        String strButton = bluej.getExtensionPropertyString(PROFILE_LABEL, \"\");\n+        if (strButton.equals(\"\"))\n+            radioList[2].setSelected(true);\n         else\n-            for(int i = 0; i < radioCommand.length; i++){\n-                if(strButton.equalsIgnoreCase(radioCommand[i]))\n-\t\t\t\t\tradioList[i].setSelected(true);\n+            for (int i = 0; i < radioCommand.length; i++) {\n+                if (strButton.equalsIgnoreCase(radioCommand[i]))\n+                    radioList[i].setSelected(true);\n             }\n     }\n \n     /**\n      * @see bluej.extensions.PreferenceGenerator\n      */\n-\tpublic void saveValues() {\n+\n+    public void saveValues() {\n         bluej.setExtensionPropertyString(PROFILE_LABEL, compileGroup.getSelection().getActionCommand());\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/109/FindBugsPreferences.java\nindex 2123d6a91d5..5dd6f2ff588 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/109/FindBugsPreferences.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/109/FindBugsPreferences.java\n@@ -21,7 +21,7 @@ import bluej.extensions.PreferenceGenerator;\n @SuppressWarnings(\"serial\")\n public class FindBugsPreferences extends JPanel implements PreferenceGenerator {\n \n-    private\tBlueJ bluej;\n+    private BlueJ bluej;\n     private static JRadioButton[] radioList = new JRadioButton[3];\n \n \t//Description of each radioButton.\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

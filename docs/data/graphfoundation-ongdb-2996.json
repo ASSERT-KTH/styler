@@ -1,0 +1,124 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2996",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "43",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "121",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "121",
+                    "column": "55",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2996/KernelTransactionHandle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2996/KernelTransactionHandle.java\nindex 0d00f843078..77932bfa180 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2996/KernelTransactionHandle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2996/KernelTransactionHandle.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.api;\n \n import java.util.Map;\n@@ -34,117 +35,122 @@ import org.neo4j.kernel.impl.locking.ActiveLock;\n  */\n public interface KernelTransactionHandle\n {\n-    /**\n-     * The id of the last transaction that was committed to the store when the underlying transaction started.\n-     *\n-     * @return the committed transaction id.\n-     */\n-    long lastTransactionIdWhenStarted();\n-\n-    /**\n-     * The timestamp of the last transaction that was committed to the store when the underlying transaction started.\n-     *\n-     * @return the timestamp value obtained with {@link System#currentTimeMillis()}.\n-     */\n-    long lastTransactionTimestampWhenStarted();\n-\n-    /**\n-     * The start time of the underlying transaction. I.e. basically {@link System#currentTimeMillis()} when user\n-     * called {@link org.neo4j.internal.kernel.api.Session#beginTransaction(KernelTransaction.Type)}.\n-     *\n-     * @return the transaction start time.\n-     */\n-    long startTime();\n-\n-    /**\n-     * The start time of the underlying transaction. I.e. basically {@link System#nanoTime()} ()} when user\n-     * called {@link org.neo4j.internal.kernel.api.Session#beginTransaction(KernelTransaction.Type)}.\n-     *\n-     * This can be used to measure elapsed time in a safe way that is not affected by system time changes.\n-     *\n-     * @return nanoTime at the start of the transaction.\n-     */\n-    long startTimeNanos();\n-\n-    /**\n-     * Underlying transaction specific timeout. In case if timeout is 0 - transaction does not have a timeout.\n-     * @return transaction timeout in milliseconds, <b>0 in case if transaction does not have a timeout<b/>\n-     */\n-    long timeoutMillis();\n-\n-    /**\n-     * Check if the underlying transaction is open.\n-     *\n-     * @return {@code true} if the underlying transaction ({@link KernelTransaction#close()} was not called),\n-     * {@code false} otherwise.\n-     */\n-    boolean isOpen();\n-\n-    /**\n-     * Mark the underlying transaction for termination.\n-     *\n-     * @param reason the reason for termination.\n-     * @return {@code true} if the underlying transaction was marked for termination, {@code false} otherwise\n-     * (when this handle represents an old transaction that has been closed).\n-     */\n-    boolean markForTermination( Status reason );\n-\n-    /**\n-     * Security context of underlying transaction that transaction has when handle was created.\n-     *\n-     * @return underlying transaction security context\n-     */\n-    AuthSubject subject();\n-\n-    /**\n-     * Metadata of underlying transaction that transaction has when handle was created.\n-     * @return underlying transaction metadata\n-     */\n-    Map<String, Object> getMetaData();\n-\n-    /**\n-     * Transaction termination reason that transaction had when handle was created.\n-     *\n-     * @return transaction termination reason.\n-     */\n-    Optional<Status> terminationReason();\n-\n-    /**\n-     * Check if this handle points to the same underlying transaction as the given one.\n-     *\n-     * @param tx the expected transaction.\n-     * @return {@code true} if this handle represents {@code tx}, {@code false} otherwise.\n-     */\n-    boolean isUnderlyingTransaction( KernelTransaction tx );\n-\n-    /**\n-     * User transaction id of underlying transaction. User transaction id is a not negative long number.\n-     * Should be unique across transactions.\n-     * @return user transaction id\n-     */\n-    long getUserTransactionId();\n-\n-    /**\n-     * User transaction name of the underlying transaction.\n-     * User transaction name consists of the name prefix and user transaction id.\n-     * Should be unique across transactions.\n-     * @return user transaction name\n-     */\n-    String getUserTransactionName();\n-\n-    /**\n-     * @return a list of all queries currently executing that use the underlying transaction\n-     */\n-    Stream<ExecutingQuery> executingQueries();\n-\n-    /**\n-     * @return the lock requests granted for this transaction.\n-     */\n-    Stream<? extends ActiveLock> activeLocks();\n-\n-    /**\n-     * Provide underlying transaction execution statistics. For example: elapsed time, allocated bytes etc\n-     * @return transaction statistics projection\n-     */\n-    TransactionExecutionStatistic transactionStatistic();\n+  /**\n+   * The id of the last transaction that was committed to the store when the underlying transaction started.\n+   *\n+   * @return the committed transaction id.\n+   */\n+  long lastTransactionIdWhenStarted();\n+\n+  /**\n+   * The timestamp of the last transaction that was committed to the store when the underlying transaction started.\n+   *\n+   * @return the timestamp value obtained with {@link System#currentTimeMillis()}.\n+   */\n+  long lastTransactionTimestampWhenStarted();\n+\n+  /**\n+   * The start time of the underlying transaction. I.e. basically {@link System#currentTimeMillis()} when user\n+   * called {@link org.neo4j.internal.kernel.api.Session#beginTransaction(KernelTransaction.Type)}.\n+   *\n+   * @return the transaction start time.\n+   */\n+  long startTime();\n+\n+  /**\n+   * The start time of the underlying transaction. I.e. basically {@link System#nanoTime()} ()} when user\n+   * called {@link org.neo4j.internal.kernel.api.Session#beginTransaction(KernelTransaction.Type)}.\n+   * <p>\n+   * This can be used to measure elapsed time in a safe way that is not affected by system time changes.\n+   *\n+   * @return nanoTime at the start of the transaction.\n+   */\n+  long startTimeNanos();\n+\n+  /**\n+   * Underlying transaction specific timeout. In case if timeout is 0 - transaction does not have a timeout.\n+   *\n+   * @return transaction timeout in milliseconds, <b>0 in case if transaction does not have a timeout<b/>\n+   */\n+  long timeoutMillis();\n+\n+  /**\n+   * Check if the underlying transaction is open.\n+   *\n+   * @return {@code true} if the underlying transaction ({@link KernelTransaction#close()} was not called),\n+   * {@code false} otherwise.\n+   */\n+  boolean isOpen();\n+\n+  /**\n+   * Mark the underlying transaction for termination.\n+   *\n+   * @param reason the reason for termination.\n+   * @return {@code true} if the underlying transaction was marked for termination, {@code false} otherwise\n+   * (when this handle represents an old transaction that has been closed).\n+   */\n+  boolean markForTermination(Status reason);\n+\n+  /**\n+   * Security context of underlying transaction that transaction has when handle was created.\n+   *\n+   * @return underlying transaction security context\n+   */\n+  AuthSubject subject();\n+\n+  /**\n+   * Metadata of underlying transaction that transaction has when handle was created.\n+   *\n+   * @return underlying transaction metadata\n+   */\n+  Map<String, Object> getMetaData();\n+\n+  /**\n+   * Transaction termination reason that transaction had when handle was created.\n+   *\n+   * @return transaction termination reason.\n+   */\n+  Optional<Status> terminationReason();\n+\n+  /**\n+   * Check if this handle points to the same underlying transaction as the given one.\n+   *\n+   * @param tx the expected transaction.\n+   * @return {@code true} if this handle represents {@code tx}, {@code false} otherwise.\n+   */\n+  boolean isUnderlyingTransaction(KernelTransaction tx);\n+\n+  /**\n+   * User transaction id of underlying transaction. User transaction id is a not negative long number.\n+   * Should be unique across transactions.\n+   *\n+   * @return user transaction id\n+   */\n+  long getUserTransactionId();\n+\n+  /**\n+   * User transaction name of the underlying transaction.\n+   * User transaction name consists of the name prefix and user transaction id.\n+   * Should be unique across transactions.\n+   *\n+   * @return user transaction name\n+   */\n+  String getUserTransactionName();\n+\n+  /**\n+   * @return a list of all queries currently executing that use the underlying transaction\n+   */\n+  Stream<ExecutingQuery> executingQueries();\n+\n+  /**\n+   * @return the lock requests granted for this transaction.\n+   */\n+  Stream<? extends ActiveLock> activeLocks();\n+\n+  /**\n+   * Provide underlying transaction execution statistics. For example: elapsed time, allocated bytes etc\n+   *\n+   * @return transaction statistics projection\n+   */\n+  TransactionExecutionStatistic transactionStatistic();\n }\n",
+            "diff_size": 119
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2996/KernelTransactionHandle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2996/KernelTransactionHandle.java\nindex 0d00f843078..3dd0d916c0d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2996/KernelTransactionHandle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2996/KernelTransactionHandle.java\n@@ -100,7 +100,7 @@ public interface KernelTransactionHandle\n      * Metadata of underlying transaction that transaction has when handle was created.\n      * @return underlying transaction metadata\n      */\n-    Map<String, Object> getMetaData();\n+    Map<String,Object> getMetaData();\n \n     /**\n      * Transaction termination reason that transaction had when handle was created.\n@@ -147,4 +147,4 @@ public interface KernelTransactionHandle\n      * @return transaction statistics projection\n      */\n     TransactionExecutionStatistic transactionStatistic();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

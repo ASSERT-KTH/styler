@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2264",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "54",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "98",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "82",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "82",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "95",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "95",
+                    "column": "67",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2264/IdMapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2264/IdMapper.java\nindex 3c3df8e8613..d723deda6be 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2264/IdMapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2264/IdMapper.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.unsafe.impl.batchimport.cache.idmapping;\n \n import java.util.function.LongFunction;\n@@ -33,64 +34,65 @@ import org.neo4j.unsafe.impl.batchimport.input.InputEntityVisitor;\n  */\n public interface IdMapper extends MemoryStatsVisitor.Visitable, AutoCloseable\n {\n-    long ID_NOT_FOUND = -1;\n+  long ID_NOT_FOUND = -1;\n \n-    /**\n-     * Maps an {@code inputId} to an actual node id.\n-     * @param inputId an id of an unknown type, coming from input.\n-     * @param actualId the actual node id that the inputId will represent.\n-     * @param group {@link Group} this input id will be added to. Used for handling input ids collisions\n-     * where multiple equal input ids might be added, as long as all input ids within a single group is unique.\n-     * Group ids are also passed into {@link #get(Object, Group)}.\n-     * It is required that all input ids belonging to a specific group are put in sequence before putting any\n-     * input ids for another group.\n-     */\n-    void put( Object inputId, long actualId, Group group );\n+  /**\n+   * Maps an {@code inputId} to an actual node id.\n+   *\n+   * @param inputId  an id of an unknown type, coming from input.\n+   * @param actualId the actual node id that the inputId will represent.\n+   * @param group    {@link Group} this input id will be added to. Used for handling input ids collisions\n+   *                 where multiple equal input ids might be added, as long as all input ids within a single group is unique.\n+   *                 Group ids are also passed into {@link #get(Object, Group)}.\n+   *                 It is required that all input ids belonging to a specific group are put in sequence before putting any\n+   *                 input ids for another group.\n+   */\n+  void put(Object inputId, long actualId, Group group);\n \n-    /**\n-     * @return whether or not a call to {@link #prepare(LongFunction, Collector, ProgressListener)} needs to commence after all calls to\n-     * {@link #put(Object, long, Group)} and before any call to {@link #get(Object, Group)}. I.e. whether or not all ids\n-     * needs to be put before making any call to {@link #get(Object, Group)}.\n-     */\n-    boolean needsPreparation();\n+  /**\n+   * @return whether or not a call to {@link #prepare(LongFunction, Collector, ProgressListener)} needs to commence after all calls to\n+   * {@link #put(Object, long, Group)} and before any call to {@link #get(Object, Group)}. I.e. whether or not all ids\n+   * needs to be put before making any call to {@link #get(Object, Group)}.\n+   */\n+  boolean needsPreparation();\n \n-    /**\n-     * After all mappings have been {@link #put(Object, long, Group)} call this method to prepare for\n-     * {@link #get(Object, Group)}.\n-     *\n-     * @param inputIdLookup can return input id of supplied node id. Used in the event of difficult collisions\n-     * so that more information have to be read from the input data again, data that normally isn't necessary\n-     * and hence discarded.\n-     * @param collector {@link Collector} for bad entries, such as duplicate node ids.\n-     * @param progress reports preparation progress.\n-     */\n-    void prepare( LongFunction<Object> inputIdLookup, Collector collector, ProgressListener progress );\n+  /**\n+   * After all mappings have been {@link #put(Object, long, Group)} call this method to prepare for\n+   * {@link #get(Object, Group)}.\n+   *\n+   * @param inputIdLookup can return input id of supplied node id. Used in the event of difficult collisions\n+   *                      so that more information have to be read from the input data again, data that normally isn't necessary\n+   *                      and hence discarded.\n+   * @param collector     {@link Collector} for bad entries, such as duplicate node ids.\n+   * @param progress      reports preparation progress.\n+   */\n+  void prepare(LongFunction<Object> inputIdLookup, Collector collector, ProgressListener progress);\n \n-    /**\n-     * Returns an actual node id representing {@code inputId}.\n-     * For this call to work {@link #prepare(LongFunction, Collector, ProgressListener)} must have\n-     * been called after all calls to {@link #put(Object, long, Group)} have been made,\n-     * iff {@link #needsPreparation()} returns {@code true}. Otherwise ids can be retrieved right after\n-     * {@link #put(Object, long, Group) being put}\n-     *\n-     * @param inputId the input id to get the actual node id for.\n-     * @param group {@link Group} the given {@code inputId} must exist in, i.e. have been put with.\n-     * @return the actual node id previously specified by {@link #put(Object, long, Group)}, or {@code -1} if not found.\n-     */\n-    long get( Object inputId, Group group );\n+  /**\n+   * Returns an actual node id representing {@code inputId}.\n+   * For this call to work {@link #prepare(LongFunction, Collector, ProgressListener)} must have\n+   * been called after all calls to {@link #put(Object, long, Group)} have been made,\n+   * iff {@link #needsPreparation()} returns {@code true}. Otherwise ids can be retrieved right after\n+   * {@link #put(Object, long, Group) being put}\n+   *\n+   * @param inputId the input id to get the actual node id for.\n+   * @param group   {@link Group} the given {@code inputId} must exist in, i.e. have been put with.\n+   * @return the actual node id previously specified by {@link #put(Object, long, Group)}, or {@code -1} if not found.\n+   */\n+  long get(Object inputId, Group group);\n \n-    /**\n-     * Releases all resources used by this {@link IdMapper}.\n-     */\n-    void close();\n+  /**\n+   * Releases all resources used by this {@link IdMapper}.\n+   */\n+  void close();\n \n-    /**\n-     * Returns instance capable of returning memory usage estimation of given {@code numberOfNodes}.\n-     *\n-     * @param numberOfNodes number of nodes to calculate memory for.\n-     * @return instance capable of calculating memory usage for the given number of nodes.\n-     */\n-    MemoryStatsVisitor.Visitable memoryEstimation( long numberOfNodes );\n+  /**\n+   * Returns instance capable of returning memory usage estimation of given {@code numberOfNodes}.\n+   *\n+   * @param numberOfNodes number of nodes to calculate memory for.\n+   * @return instance capable of calculating memory usage for the given number of nodes.\n+   */\n+  MemoryStatsVisitor.Visitable memoryEstimation(long numberOfNodes);\n \n-    PrimitiveLongIterator leftOverDuplicateNodesIds();\n+  PrimitiveLongIterator leftOverDuplicateNodesIds();\n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2264/IdMapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2264/IdMapper.java\nindex 3c3df8e8613..af9a21839d7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2264/IdMapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2264/IdMapper.java\n@@ -91,6 +91,5 @@ public interface IdMapper extends MemoryStatsVisitor.Visitable, AutoCloseable\n      * @return instance capable of calculating memory usage for the given number of nodes.\n      */\n     MemoryStatsVisitor.Visitable memoryEstimation( long numberOfNodes );\n-\n-    PrimitiveLongIterator leftOverDuplicateNodesIds();\n-}\n+PrimitiveLongIterator leftOverDuplicateNodesIds();\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,157 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "68",
+    "information": {
+        "errors": [
+            {
+                "line": "64",
+                "column": "9",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "        extends BytecodeExpression {\n        private final Variable variable;\n        private final BytecodeExpression value;\n\n        SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n            super(type(void.class));",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/68/Variable.java\nindex fb46c2ee59e..5b8d8f0e104 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/68/Variable.java\n@@ -61,6 +61,7 @@ public class Variable\n     private static final class SetVariableBytecodeExpression\n         extends BytecodeExpression {\n         private final Variable variable;\n+\n         private final BytecodeExpression value;\n \n         SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/68/Variable.java\nindex fb46c2ee59e..928e2201ffa 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/68/Variable.java\n@@ -11,6 +11,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package com.facebook.presto.bytecode;\n \n import com.facebook.presto.bytecode.expression.BytecodeExpression;\n@@ -24,66 +25,67 @@ import static java.util.Objects.requireNonNull;\n \n public class Variable\n     extends BytecodeExpression {\n-    private final String name;\n+  private final String name;\n \n-    public Variable(String name, ParameterizedType type) {\n-        super(type);\n-        this.name = requireNonNull(name, \"name is null\");\n-    }\n+  public Variable(String name, ParameterizedType type) {\n+    super(type);\n+    this.name = requireNonNull(name, \"name is null\");\n+  }\n \n-    public String getName() {\n-        return name;\n-    }\n+  public String getName() {\n+    return name;\n+  }\n \n-    public BytecodeExpression set(BytecodeExpression value) {\n-        return new SetVariableBytecodeExpression(this, value);\n-    }\n+  public BytecodeExpression set(BytecodeExpression value) {\n+    return new SetVariableBytecodeExpression(this, value);\n+  }\n \n-    public BytecodeExpression increment() {\n-        return new SetVariableBytecodeExpression(this, add(this, constantInt(1)));\n-    }\n+  public BytecodeExpression increment() {\n+    return new SetVariableBytecodeExpression(this, add(this, constantInt(1)));\n+  }\n \n-    @Override\n-    public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n-        return VariableInstruction.loadVariable(this);\n+  @Override\n+  public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+    return VariableInstruction.loadVariable(this);\n+  }\n+\n+  @Override\n+  protected String formatOneLine() {\n+    return name;\n+  }\n+\n+  @Override\n+  public List<BytecodeNode> getChildNodes() {\n+    return List.of();\n+  }\n+\n+  private static final class SetVariableBytecodeExpression\n+      extends BytecodeExpression {\n+    private final Variable variable;\n+\n+    private final BytecodeExpression value;\n+\n+    SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n+      super(type(void.class));\n+      this.variable = requireNonNull(variable, \"variable is null\");\n+      this.value = requireNonNull(value, \"value is null\");\n     }\n \n     @Override\n-    protected String formatOneLine() {\n-        return name;\n+    public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+      return new BytecodeBlock()\n+          .append(value)\n+          .putVariable(variable);\n     }\n \n     @Override\n     public List<BytecodeNode> getChildNodes() {\n-        return List.of();\n+      return List.of(value);\n     }\n \n-    private static final class SetVariableBytecodeExpression\n-        extends BytecodeExpression {\n-        private final Variable variable;\n-        private final BytecodeExpression value;\n-\n-        SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n-            super(type(void.class));\n-            this.variable = requireNonNull(variable, \"variable is null\");\n-            this.value = requireNonNull(value, \"value is null\");\n-        }\n-\n-        @Override\n-        public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n-            return new BytecodeBlock()\n-                .append(value)\n-                .putVariable(variable);\n-        }\n-\n-        @Override\n-        public List<BytecodeNode> getChildNodes() {\n-            return List.of(value);\n-        }\n-\n-        @Override\n-        protected String formatOneLine() {\n-            return variable.getName() + \" = \" + value;\n-        }\n+    @Override\n+    protected String formatOneLine() {\n+      return variable.getName() + \" = \" + value;\n     }\n+  }\n }\n",
+            "diff_size": 73
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "64",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/68/Variable.java\nindex fb46c2ee59e..80bdfb06578 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/68/Variable.java\n@@ -86,4 +86,4 @@ public class Variable\n             return variable.getName() + \" = \" + value;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "82",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/68/Variable.java\nindex fb46c2ee59e..de43babbecf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/68/Variable.java\n@@ -22,15 +22,19 @@ import static com.facebook.presto.bytecode.expression.BytecodeExpressions.add;\n import static com.facebook.presto.bytecode.expression.BytecodeExpressions.constantInt;\n import static java.util.Objects.requireNonNull;\n \n-public class Variable\n-    extends BytecodeExpression {\n+\n+public class Variable extends BytecodeExpression {\n+\n     private final String name;\n \n+\n     public Variable(String name, ParameterizedType type) {\n         super(type);\n+\n         this.name = requireNonNull(name, \"name is null\");\n     }\n \n+\n     public String getName() {\n         return name;\n     }\n@@ -43,47 +47,51 @@ public class Variable\n         return new SetVariableBytecodeExpression(this, add(this, constantInt(1)));\n     }\n \n-    @Override\n-    public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+\n+    @Override public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n         return VariableInstruction.loadVariable(this);\n     }\n \n-    @Override\n-    protected String formatOneLine() {\n+\n+    @Override protected String formatOneLine() {\n         return name;\n     }\n \n-    @Override\n-    public List<BytecodeNode> getChildNodes() {\n+\n+    @Override public List<BytecodeNode> getChildNodes() {\n         return List.of();\n     }\n \n-    private static final class SetVariableBytecodeExpression\n-        extends BytecodeExpression {\n+\n+    private static final class SetVariableBytecodeExpression extends BytecodeExpression {\n+\n         private final Variable variable;\n+\n+\n         private final BytecodeExpression value;\n \n+\n         SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n             super(type(void.class));\n+\n             this.variable = requireNonNull(variable, \"variable is null\");\n             this.value = requireNonNull(value, \"value is null\");\n         }\n \n-        @Override\n-        public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n-            return new BytecodeBlock()\n-                .append(value)\n-                .putVariable(variable);\n+\n+        @Override public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+            return new BytecodeBlock().append(value)\n+                                      .putVariable(variable);\n         }\n \n-        @Override\n-        public List<BytecodeNode> getChildNodes() {\n+\n+        @Override public List<BytecodeNode> getChildNodes() {\n             return List.of(value);\n         }\n \n-        @Override\n-        protected String formatOneLine() {\n+\n+        @Override protected String formatOneLine() {\n             return variable.getName() + \" = \" + value;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/68/Variable.java\nindex fb46c2ee59e..5b8d8f0e104 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/68/Variable.java\n@@ -61,6 +61,7 @@ public class Variable\n     private static final class SetVariableBytecodeExpression\n         extends BytecodeExpression {\n         private final Variable variable;\n+\n         private final BytecodeExpression value;\n \n         SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/68/Variable.java\nindex fb46c2ee59e..5b8d8f0e104 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/68/Variable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/68/Variable.java\n@@ -61,6 +61,7 @@ public class Variable\n     private static final class SetVariableBytecodeExpression\n         extends BytecodeExpression {\n         private final Variable variable;\n+\n         private final BytecodeExpression value;\n \n         SetVariableBytecodeExpression(Variable variable, BytecodeExpression value) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

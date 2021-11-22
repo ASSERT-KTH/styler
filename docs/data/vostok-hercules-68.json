@@ -1,0 +1,91 @@
+{
+    "project_name": "vostok-hercules",
+    "error_id": "68",
+    "information": {
+        "errors": [
+            {
+                "line": "19",
+                "severity": "warning",
+                "message": "Line is longer than 160 characters (found 166).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    private final StreamRepository streamRepository;\n\n    protected StreamTaskExecutor(StreamTaskRepository streamTaskRepository, long pollingTimeoutMillis, KafkaManager kafkaManager, StreamRepository streamRepository) {\n        super(streamTaskRepository, pollingTimeoutMillis);\n        this.kafkaManager = kafkaManager;\n        this.streamRepository = streamRepository;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/intellij/68/StreamTaskExecutor.java\nindex 11688b7a02d..d329d84681c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/intellij/68/StreamTaskExecutor.java\n@@ -11,53 +11,54 @@ import ru.kontur.vostok.hercules.meta.task.stream.StreamTaskRepository;\n  * @author Gregory Koshelev\n  */\n public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamTaskExecutor.class);\n+  private static final Logger LOGGER = LoggerFactory.getLogger(StreamTaskExecutor.class);\n \n-    private final KafkaManager kafkaManager;\n-    private final StreamRepository streamRepository;\n+  private final KafkaManager kafkaManager;\n+  private final StreamRepository streamRepository;\n \n-    protected StreamTaskExecutor(StreamTaskRepository streamTaskRepository, long pollingTimeoutMillis, KafkaManager kafkaManager, StreamRepository streamRepository) {\n-        super(streamTaskRepository, pollingTimeoutMillis);\n-        this.kafkaManager = kafkaManager;\n-        this.streamRepository = streamRepository;\n-    }\n+  protected StreamTaskExecutor(StreamTaskRepository streamTaskRepository, long pollingTimeoutMillis, KafkaManager kafkaManager,\n+                               StreamRepository streamRepository) {\n+    super(streamTaskRepository, pollingTimeoutMillis);\n+    this.kafkaManager = kafkaManager;\n+    this.streamRepository = streamRepository;\n+  }\n \n-    @Override\n-    protected boolean execute(StreamTask task) {\n-        switch (task.getType()) {\n-            case CREATE:\n-                kafkaManager.createTopic(task.getStream().getName(), task.getStream().getPartitions(), task.getStream().getTtl());//TODO: process creation error\n-                LOGGER.info(\"Created topic '{}'\", task.getStream().getName());\n-                try {\n-                    streamRepository.create(task.getStream());\n-                } catch (Exception e) {\n-                    LOGGER.error(\"Stream creation failed with exception\", e);\n-                    return false;\n-                }\n-                return true;\n-            case DELETE:\n-                try {\n-                    streamRepository.delete(task.getStream().getName());\n-                } catch (Exception e) {\n-                    LOGGER.error(\"Stream deletion failed with exception\", e);\n-                    return false;\n-                }\n-                kafkaManager.deleteTopic(task.getStream().getName());//TODO: process deletion error\n-                LOGGER.info(\"Deleted topic '{}'\", task.getStream().getName());\n-                return true;\n-            case INCREASE_PARTITIONS:\n-                kafkaManager.increasePartitions(task.getStream().getName(), task.getStream().getPartitions());//TODO: process error\n-                LOGGER.info(\"Increase partitions for topic '{}\", task.getStream().getName());\n-                try {\n-                    streamRepository.update(task.getStream());\n-                } catch (Exception e) {\n-                    LOGGER.error(\"Stream update failed with exception\", e);\n-                    return false;\n-                }\n-                return true;\n-            default:\n-                LOGGER.error(\"Unknown task type {}\", task.getType());\n-                return false;\n-        }\n+  @Override\n+  protected boolean execute(StreamTask task) {\n+    switch (task.getType()) {\n+    case CREATE:\n+      kafkaManager.createTopic(task.getStream().getName(), task.getStream().getPartitions(), task.getStream().getTtl());//TODO: process creation error\n+      LOGGER.info(\"Created topic '{}'\", task.getStream().getName());\n+      try {\n+        streamRepository.create(task.getStream());\n+      } catch (Exception e) {\n+        LOGGER.error(\"Stream creation failed with exception\", e);\n+        return false;\n+      }\n+      return true;\n+    case DELETE:\n+      try {\n+        streamRepository.delete(task.getStream().getName());\n+      } catch (Exception e) {\n+        LOGGER.error(\"Stream deletion failed with exception\", e);\n+        return false;\n+      }\n+      kafkaManager.deleteTopic(task.getStream().getName());//TODO: process deletion error\n+      LOGGER.info(\"Deleted topic '{}'\", task.getStream().getName());\n+      return true;\n+    case INCREASE_PARTITIONS:\n+      kafkaManager.increasePartitions(task.getStream().getName(), task.getStream().getPartitions());//TODO: process error\n+      LOGGER.info(\"Increase partitions for topic '{}\", task.getStream().getName());\n+      try {\n+        streamRepository.update(task.getStream());\n+      } catch (Exception e) {\n+        LOGGER.error(\"Stream update failed with exception\", e);\n+        return false;\n+      }\n+      return true;\n+    default:\n+      LOGGER.error(\"Unknown task type {}\", task.getType());\n+      return false;\n     }\n+  }\n }\n",
+            "diff_size": 47
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/naturalize/68/StreamTaskExecutor.java\nindex 11688b7a02d..a0dd39f7c52 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/naturalize/68/StreamTaskExecutor.java\n@@ -60,4 +60,4 @@ public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n                 return false;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/codebuff/68/StreamTaskExecutor.java\nindex 11688b7a02d..8e0229cb623 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/codebuff/68/StreamTaskExecutor.java\n@@ -10,13 +10,19 @@ import ru.kontur.vostok.hercules.meta.task.stream.StreamTaskRepository;\n /**\n  * @author Gregory Koshelev\n  */\n+\n+\n public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamTaskExecutor.class);\n \n+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamTaskExecutor.class);\n     private final KafkaManager kafkaManager;\n     private final StreamRepository streamRepository;\n \n-    protected StreamTaskExecutor(StreamTaskRepository streamTaskRepository, long pollingTimeoutMillis, KafkaManager kafkaManager, StreamRepository streamRepository) {\n+    protected StreamTaskExecutor(\n+        StreamTaskRepository streamTaskRepository,\n+        long pollingTimeoutMillis,\n+        KafkaManager kafkaManager, StreamRepository streamRepository\n+    ) {\n         super(streamTaskRepository, pollingTimeoutMillis);\n         this.kafkaManager = kafkaManager;\n         this.streamRepository = streamRepository;\n@@ -26,8 +32,17 @@ public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n     protected boolean execute(StreamTask task) {\n         switch (task.getType()) {\n             case CREATE:\n-                kafkaManager.createTopic(task.getStream().getName(), task.getStream().getPartitions(), task.getStream().getTtl());//TODO: process creation error\n-                LOGGER.info(\"Created topic '{}'\", task.getStream().getName());\n+                kafkaManager.createTopic(\n+                    task.getStream()\n+                    .getName(),\n+                    task.getStream()\n+                    .getPartitions(),\n+                    task.getStream()\n+                    .getTtl()\n+                );//TODO: process creation error\n+                LOGGER.info(\"Created topic '{}'\", task.getStream()\n+                .getName());\n+\n                 try {\n                     streamRepository.create(task.getStream());\n                 } catch (Exception e) {\n@@ -37,17 +52,25 @@ public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n                 return true;\n             case DELETE:\n                 try {\n-                    streamRepository.delete(task.getStream().getName());\n+                    streamRepository.delete(task.getStream()\n+                    .getName());\n                 } catch (Exception e) {\n                     LOGGER.error(\"Stream deletion failed with exception\", e);\n                     return false;\n                 }\n-                kafkaManager.deleteTopic(task.getStream().getName());//TODO: process deletion error\n-                LOGGER.info(\"Deleted topic '{}'\", task.getStream().getName());\n+\n+                kafkaManager.deleteTopic(task.getStream()\n+                .getName());//TODO: process deletion error\n+                LOGGER.info(\"Deleted topic '{}'\", task.getStream()\n+                .getName());\n                 return true;\n             case INCREASE_PARTITIONS:\n-                kafkaManager.increasePartitions(task.getStream().getName(), task.getStream().getPartitions());//TODO: process error\n-                LOGGER.info(\"Increase partitions for topic '{}\", task.getStream().getName());\n+                kafkaManager.increasePartitions(task.getStream()\n+                .getName(), task.getStream()\n+                .getPartitions());//TODO: process error\n+                LOGGER.info(\"Increase partitions for topic '{}\", task.getStream()\n+                .getName());\n+\n                 try {\n                     streamRepository.update(task.getStream());\n                 } catch (Exception e) {\n@@ -60,4 +83,4 @@ public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n                 return false;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "19",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler_three_grams/68/StreamTaskExecutor.java\nindex 11688b7a02d..36be085d367 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/errored/1/68/StreamTaskExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vostok-hercules/styler_three_grams/68/StreamTaskExecutor.java\n@@ -15,7 +15,6 @@ public class StreamTaskExecutor extends TaskExecutor<StreamTask> {\n \n     private final KafkaManager kafkaManager;\n     private final StreamRepository streamRepository;\n-\n     protected StreamTaskExecutor(StreamTaskRepository streamTaskRepository, long pollingTimeoutMillis, KafkaManager kafkaManager, StreamRepository streamRepository) {\n         super(streamTaskRepository, pollingTimeoutMillis);\n         this.kafkaManager = kafkaManager;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

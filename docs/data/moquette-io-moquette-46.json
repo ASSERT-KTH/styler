@@ -1,0 +1,114 @@
+{
+    "project_name": "moquette-io-moquette",
+    "error_id": "46",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "warning",
+                "message": "missing copyright header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "package io.moquette.broker;\n\nimport io.moquette.spi.ClientSession;\nimport io.moquette.spi.impl.subscriptions.Topic;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "warning",
+                    "message": "missing copyright header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "warning",
+                    "message": "missing copyright header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/46/Authorizator.java\nindex 621edfdc917..0bcc480e3a7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/46/Authorizator.java\n@@ -17,64 +17,58 @@ import static io.netty.handler.codec.mqtt.MqttQoS.FAILURE;\n \n final class Authorizator {\n \n-    private static final Logger LOG = LoggerFactory.getLogger(Authorizator.class);\n+  private static final Logger LOG = LoggerFactory.getLogger(Authorizator.class);\n \n-    private final IAuthorizatorPolicy policy;\n+  private final IAuthorizatorPolicy policy;\n \n-    Authorizator(IAuthorizatorPolicy policy) {\n-        this.policy = policy;\n-    }\n+  Authorizator(IAuthorizatorPolicy policy) {\n+    this.policy = policy;\n+  }\n \n-    /**\n-     * @param clientID\n-     *            the clientID\n-     * @param username\n-     *            the username\n-     * @param msg\n-     *            the subscribe message to verify\n-     * @return the list of verified topics for the given subscribe message.\n-     */\n-    List<MqttTopicSubscription> verifyTopicsReadAccess(String clientID, String username, MqttSubscribeMessage msg) {\n-        List<MqttTopicSubscription> ackTopics = new ArrayList<>();\n+  /**\n+   * @param clientID the clientID\n+   * @param username the username\n+   * @param msg      the subscribe message to verify\n+   * @return the list of verified topics for the given subscribe message.\n+   */\n+  List<MqttTopicSubscription> verifyTopicsReadAccess(String clientID, String username, MqttSubscribeMessage msg) {\n+    List<MqttTopicSubscription> ackTopics = new ArrayList<>();\n \n-        final int messageId = messageId(msg);\n-        for (MqttTopicSubscription req : msg.payload().topicSubscriptions()) {\n-            Topic topic = new Topic(req.topicName());\n-            if (!policy.canRead(topic, username, clientID)) {\n-                // send SUBACK with 0x80, the user hasn't credentials to read the topic\n-                LOG.warn(\"Client does not have read permissions on the topic CId={}, username: {}, messageId: {}, \" +\n-                         \"topic: {}\", clientID, username, messageId, topic);\n-                ackTopics.add(new MqttTopicSubscription(topic.toString(), FAILURE));\n-            } else {\n-                MqttQoS qos;\n-                if (topic.isValid()) {\n-                    LOG.debug(\"Client will be subscribed to the topic CId={}, username: {}, messageId: {}, topic: {}\",\n-                              clientID, username, messageId, topic);\n-                    qos = req.qualityOfService();\n-                } else {\n-                    LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\", clientID,\n-                             username, messageId, topic);\n-                    qos = FAILURE;\n-                }\n-                ackTopics.add(new MqttTopicSubscription(topic.toString(), qos));\n-            }\n+    final int messageId = messageId(msg);\n+    for (MqttTopicSubscription req : msg.payload().topicSubscriptions()) {\n+      Topic topic = new Topic(req.topicName());\n+      if (!policy.canRead(topic, username, clientID)) {\n+        // send SUBACK with 0x80, the user hasn't credentials to read the topic\n+        LOG.warn(\"Client does not have read permissions on the topic CId={}, username: {}, messageId: {}, \" +\n+            \"topic: {}\", clientID, username, messageId, topic);\n+        ackTopics.add(new MqttTopicSubscription(topic.toString(), FAILURE));\n+      } else {\n+        MqttQoS qos;\n+        if (topic.isValid()) {\n+          LOG.debug(\"Client will be subscribed to the topic CId={}, username: {}, messageId: {}, topic: {}\",\n+              clientID, username, messageId, topic);\n+          qos = req.qualityOfService();\n+        } else {\n+          LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\", clientID,\n+              username, messageId, topic);\n+          qos = FAILURE;\n         }\n-        return ackTopics;\n+        ackTopics.add(new MqttTopicSubscription(topic.toString(), qos));\n+      }\n     }\n+    return ackTopics;\n+  }\n \n-    /**\n-     * Ask the authorization policy if the topic can be used in a publish.\n-     *\n-     * @param topic\n-     *            the topic to write to.\n-     * @param user\n-     *            the user\n-     * @param client\n-     *            the client\n-     * @return true if the user from client can publish data on topic.\n-     */\n-    boolean canWrite(Topic topic, String user, String client) {\n-        return policy.canWrite(topic, user, client);\n-    }\n+  /**\n+   * Ask the authorization policy if the topic can be used in a publish.\n+   *\n+   * @param topic  the topic to write to.\n+   * @param user   the user\n+   * @param client the client\n+   * @return true if the user from client can publish data on topic.\n+   */\n+  boolean canWrite(Topic topic, String user, String client) {\n+    return policy.canWrite(topic, user, client);\n+  }\n \n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "warning",
+                    "message": "missing copyright header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "51",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 157).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "54",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 143).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/46/Authorizator.java\nindex 621edfdc917..9acd9fb2482 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/46/Authorizator.java\n@@ -48,13 +48,11 @@ final class Authorizator {\n             } else {\n                 MqttQoS qos;\n                 if (topic.isValid()) {\n-                    LOG.debug(\"Client will be subscribed to the topic CId={}, username: {}, messageId: {}, topic: {}\",\n-                              clientID, username, messageId, topic);\n-                    qos = req.qualityOfService();\n+                    LOG.debug(\"Client will be subscribed to the topic CId={}, username: {}, messageId: {}, topic: {}\", clientID, username, messageId, topic);\n+qos = req.qualityOfService();\n                 } else {\n-                    LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\", clientID,\n-                             username, messageId, topic);\n-                    qos = FAILURE;\n+                    LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\", clientID, username, messageId, topic);\n+qos = FAILURE;\n                 }\n                 ackTopics.add(new MqttTopicSubscription(topic.toString(), qos));\n             }\n@@ -77,4 +75,4 @@ final class Authorizator {\n         return policy.canWrite(topic, user, client);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "warning",
+                    "message": "missing copyright header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "43",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/46/Authorizator.java\nindex 621edfdc917..ab2fa0f32bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/46/Authorizator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/46/Authorizator.java\n@@ -8,7 +8,6 @@ import io.netty.handler.codec.mqtt.MqttSubscribeMessage;\n import io.netty.handler.codec.mqtt.MqttTopicSubscription;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import java.util.ArrayList;\n import java.util.List;\n \n@@ -18,7 +17,6 @@ import static io.netty.handler.codec.mqtt.MqttQoS.FAILURE;\n final class Authorizator {\n \n     private static final Logger LOG = LoggerFactory.getLogger(Authorizator.class);\n-\n     private final IAuthorizatorPolicy policy;\n \n     Authorizator(IAuthorizatorPolicy policy) {\n@@ -34,26 +32,35 @@ final class Authorizator {\n      *            the subscribe message to verify\n      * @return the list of verified topics for the given subscribe message.\n      */\n+\n     List<MqttTopicSubscription> verifyTopicsReadAccess(String clientID, String username, MqttSubscribeMessage msg) {\n         List<MqttTopicSubscription> ackTopics = new ArrayList<>();\n-\n         final int messageId = messageId(msg);\n         for (MqttTopicSubscription req : msg.payload().topicSubscriptions()) {\n             Topic topic = new Topic(req.topicName());\n             if (!policy.canRead(topic, username, clientID)) {\n                 // send SUBACK with 0x80, the user hasn't credentials to read the topic\n-                LOG.warn(\"Client does not have read permissions on the topic CId={}, username: {}, messageId: {}, \" +\n-                         \"topic: {}\", clientID, username, messageId, topic);\n+                LOG.warn(\"Client does not have read permissions on the topic CId={}, username: {}, messageId: {}, \" + \"topic: {}\",\n+                    clientID,\n+                    username,\n+                    messageId,\n+                    topic);\n                 ackTopics.add(new MqttTopicSubscription(topic.toString(), FAILURE));\n             } else {\n                 MqttQoS qos;\n                 if (topic.isValid()) {\n                     LOG.debug(\"Client will be subscribed to the topic CId={}, username: {}, messageId: {}, topic: {}\",\n-                              clientID, username, messageId, topic);\n+                        clientID,\n+                        username,\n+                        messageId,\n+                        topic);\n                     qos = req.qualityOfService();\n                 } else {\n-                    LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\", clientID,\n-                             username, messageId, topic);\n+                    LOG.warn(\"Topic filter is not valid CId={}, username: {}, messageId: {}, topic: {}\",\n+                        clientID,\n+                        username,\n+                        messageId,\n+                        topic);\n                     qos = FAILURE;\n                 }\n                 ackTopics.add(new MqttTopicSubscription(topic.toString(), qos));\n@@ -73,8 +80,8 @@ final class Authorizator {\n      *            the client\n      * @return true if the user from client can publish data on topic.\n      */\n+\n     boolean canWrite(Topic topic, String user, String client) {\n         return policy.canWrite(topic, user, client);\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 21
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "warning",
+                    "message": "missing copyright header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

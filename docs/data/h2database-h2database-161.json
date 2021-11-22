@@ -1,0 +1,87 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "161",
+    "information": {
+        "errors": [
+            {
+                "line": "66",
+                "column": "69",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "                            }\n                        }\n                        left = newList.size() == 1 ? newList.get(0) //\n                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n                        break;\n                    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/161/NullPredicate.java\nindex 228c2c29d6c..7224810a92e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/161/NullPredicate.java\n@@ -63,8 +63,9 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+                        left = newList.size() == 1 ? newList.get(0)\n+                            //\n+                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n                 }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "70",
+                    "column": "69",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/161/NullPredicate.java\nindex 228c2c29d6c..66a373286a8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/161/NullPredicate.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.expression.condition;\n \n import java.util.ArrayList;\n@@ -32,7 +33,8 @@ public class NullPredicate extends SimplePredicate {\n \n     @Override\n     public StringBuilder getSQL(StringBuilder builder, int sqlFlags) {\n-        return left.getSQL(builder.append('('), sqlFlags).append(not ? \" IS NOT NULL)\" : \" IS NULL)\");\n+        return left.getSQL(builder.append('('), sqlFlags)\n+                .append(not ? \" IS NOT NULL)\" : \" IS NULL)\");\n     }\n \n     @Override\n@@ -48,12 +50,14 @@ public class NullPredicate extends SimplePredicate {\n         if (left instanceof ExpressionList) {\n             ExpressionList list = (ExpressionList) left;\n             if (list.getType().getValueType() == Value.ROW) {\n-                for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n+                for (int i = 0, count = list.getSubexpressionCount(); i < count;\n+                     i++) {\n                     if (list.getSubexpression(i).isNullConstant()) {\n                         if (not) {\n                             return ValueExpression.FALSE;\n                         }\n-                        ArrayList<Expression> newList = new ArrayList<>(count - 1);\n+                        ArrayList<Expression> newList =\n+                                new ArrayList<>(count - 1);\n                         for (int j = 0; j < i; j++) {\n                             newList.add(list.getSubexpression(j));\n                         }\n@@ -64,7 +68,8 @@ public class NullPredicate extends SimplePredicate {\n                             }\n                         }\n                         left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+                                : new ExpressionList(\n+                                newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n                 }\n@@ -94,9 +99,9 @@ public class NullPredicate extends SimplePredicate {\n             return o.getNotIfPossible(session);\n         }\n         switch (left.getType().getValueType()) {\n-        case Value.UNKNOWN:\n-        case Value.ROW:\n-            return null;\n+            case Value.UNKNOWN:\n+            case Value.ROW:\n+                return null;\n         }\n         return new NullPredicate(left, !not);\n     }\n@@ -111,7 +116,8 @@ public class NullPredicate extends SimplePredicate {\n         } else if (left instanceof ExpressionList) {\n             ExpressionList list = (ExpressionList) left;\n             if (list.getType().getValueType() == Value.ROW) {\n-                for (int i = 0, count = list.getSubexpressionCount(); i < count; i++) {\n+                for (int i = 0, count = list.getSubexpressionCount(); i < count;\n+                     i++) {\n                     Expression e = list.getSubexpression(i);\n                     if (e instanceof ExpressionColumn) {\n                         createNullIndexCondition(filter, (ExpressionColumn) e);\n@@ -121,13 +127,16 @@ public class NullPredicate extends SimplePredicate {\n         }\n     }\n \n-    private static void createNullIndexCondition(TableFilter filter, ExpressionColumn c) {\n+    private static void createNullIndexCondition(TableFilter filter,\n+                                                 ExpressionColumn c) {\n         /*\n          * Columns with row value data type aren't valid, but perform such check\n          * to be sure.\n          */\n-        if (filter == c.getTableFilter() && c.getType().getValueType() != Value.ROW) {\n-            filter.addIndexCondition(IndexCondition.get(Comparison.EQUAL_NULL_SAFE, c, ValueExpression.NULL));\n+        if (filter == c.getTableFilter() &&\n+                c.getType().getValueType() != Value.ROW) {\n+            filter.addIndexCondition(IndexCondition\n+                    .get(Comparison.EQUAL_NULL_SAFE, c, ValueExpression.NULL));\n         }\n     }\n \n",
+            "diff_size": 20
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "66",
+                    "column": "69",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/161/NullPredicate.java\nindex 228c2c29d6c..f71fd3f6a8d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/161/NullPredicate.java\n@@ -131,4 +131,4 @@ public class NullPredicate extends SimplePredicate {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "66",
+                    "column": "68",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/161/NullPredicate.java\nindex 228c2c29d6c..e14d83bab25 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/161/NullPredicate.java\n@@ -63,7 +63,7 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n+                        left = newList.size() == 1 ? newList.get(0)//\n                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/161/NullPredicate.java\nindex 228c2c29d6c..7224810a92e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/161/NullPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/161/NullPredicate.java\n@@ -63,8 +63,9 @@ public class NullPredicate extends SimplePredicate {\n                                 newList.add(e);\n                             }\n                         }\n-                        left = newList.size() == 1 ? newList.get(0) //\n-                                : new ExpressionList(newList.toArray(new Expression[0]), false);\n+                        left = newList.size() == 1 ? newList.get(0)\n+                            //\n+                                 : new ExpressionList(newList.toArray(new Expression[0]), false);\n                         break;\n                     }\n                 }\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

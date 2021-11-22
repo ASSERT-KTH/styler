@@ -1,0 +1,142 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "83",
+    "information": {
+        "errors": [
+            {
+                "line": "63",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 146).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        Runnable task = () -> {\n            try {\n                List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n                if (!items.isEmpty()) {\n                    String tableName = getTpsTableName(db);\n                    LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "64",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'=' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "46",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/83/DatabaseResultsReporter.java\nindex 1f51f3aa9e8..b3f9df3fff2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/83/DatabaseResultsReporter.java\n@@ -60,8 +60,11 @@ public class DatabaseResultsReporter implements ResultsReporter {\n \n         Runnable task = () -> {\n             try {\n-                List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n-                if (!items.isEmpty()) {\n+                List<Item>\n+                items=container .getTpsInfos ().stream(\n+                ).map(\n+                info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n+                 if (!items.isEmpty()) {\n                     String tableName = getTpsTableName(db);\n                     LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);\n                     db.addItems(tableName, items, false);\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/83/DatabaseResultsReporter.java\nindex 1f51f3aa9e8..2d4bf8e636f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/83/DatabaseResultsReporter.java\n@@ -1,6 +1,7 @@\n /**\n  * Copyright 2011 Intuit Inc. All Rights Reserved\n  */\n+\n package com.intuit.tank.reporting.db;\n \n import java.util.ArrayList;\n@@ -31,116 +32,116 @@ import com.intuit.tank.vm.settings.TankConfig;\n \n /**\n  * DatabaseResultsReporter\n- * \n+ *\n  * @author dangleton\n- * \n  */\n public class DatabaseResultsReporter implements ResultsReporter {\n \n-    private static final Logger LOG = LogManager.getLogger(DatabaseResultsReporter.class);\n-\n-    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(10, 50, 60, TimeUnit.SECONDS,\n-            new ArrayBlockingQueue<Runnable>(50), Executors.defaultThreadFactory(),\n-            new ThreadPoolExecutor.DiscardOldestPolicy());\n-\n-    private String tpsTableName;\n-    private String timingTableName;\n-    private IDatabase db;\n-\n-    public DatabaseResultsReporter() {\n-        db = DataBaseFactory.getDatabase();\n-    }\n-\n-    /**\n-     * @inheritDoc\n-     */\n-    @Override\n-    public void sendTpsResults(final String jobId, final String instanceId, final TPSInfoContainer container,\n-            boolean async) {\n-\n-        Runnable task = () -> {\n-            try {\n-                List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n-                if (!items.isEmpty()) {\n-                    String tableName = getTpsTableName(db);\n-                    LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);\n-                    db.addItems(tableName, items, false);\n-                }\n-            } catch (Exception t) {\n-                LOG.error(\"Error adding results: \" + t.getMessage(), t);\n-                throw new RuntimeException(t);\n-            }\n-        };\n-        if (async) {\n-            EXECUTOR.execute(task);\n-        } else {\n-            task.run();\n+  private static final Logger LOG = LogManager.getLogger(DatabaseResultsReporter.class);\n+\n+  private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(10, 50, 60, TimeUnit.SECONDS,\n+    new ArrayBlockingQueue<Runnable>(50), Executors.defaultThreadFactory(),\n+    new ThreadPoolExecutor.DiscardOldestPolicy());\n+\n+  private String tpsTableName;\n+  private String timingTableName;\n+  private IDatabase db;\n+\n+  public DatabaseResultsReporter() {\n+    db = DataBaseFactory.getDatabase();\n+  }\n+\n+  /**\n+   * @inheritDoc\n+   */\n+  @Override\n+  public void sendTpsResults(final String jobId, final String instanceId, final TPSInfoContainer container,\n+                             boolean async) {\n+\n+    Runnable task = () -> {\n+      try {\n+        List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info))\n+          .collect(Collectors.toList());\n+        if (!items.isEmpty()) {\n+          String tableName = getTpsTableName(db);\n+          LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);\n+          db.addItems(tableName, items, false);\n         }\n-\n+      } catch (Exception t) {\n+        LOG.error(\"Error adding results: \" + t.getMessage(), t);\n+        throw new RuntimeException(t);\n+      }\n+    };\n+    if (async) {\n+      EXECUTOR.execute(task);\n+    } else {\n+      task.run();\n     }\n \n-    /**\n-     * @inheritDoc\n-     */\n-    @Override\n-    public void sendTimingResults(String jobId, String instanceId, List<TankResult> results, boolean async) {\n-        String tableName = getTimingTableName(db, jobId);\n-        if (results.size() != 0 && tableName != null) {\n-            final List<TankResult> l = new ArrayList<TankResult>();\n-            synchronized (results) {\n-                l.addAll(results);\n-                results.clear();\n-            }\n-            DataBaseFactory.getDatabase().addTimingResults(tableName, l, async);\n-        }\n-\n+  }\n+\n+  /**\n+   * @inheritDoc\n+   */\n+  @Override\n+  public void sendTimingResults(String jobId, String instanceId, List<TankResult> results, boolean async) {\n+    String tableName = getTimingTableName(db, jobId);\n+    if (results.size() != 0 && tableName != null) {\n+      final List<TankResult> l = new ArrayList<TankResult>();\n+      synchronized (results) {\n+        l.addAll(results);\n+        results.clear();\n+      }\n+      DataBaseFactory.getDatabase().addTimingResults(tableName, l, async);\n     }\n \n-    private Item createItem(String jobId, String instanceId, TPSInfo info) {\n-        Item item = new Item();\n-        List<Attribute> attributes = new ArrayList<Attribute>();\n-        String ts = ReportUtil.getTimestamp(info.getTimestamp());\n-        addAttribute(attributes, DatabaseKeys.TIMESTAMP_KEY.getShortKey(), ts);\n-        addAttribute(attributes, DatabaseKeys.JOB_ID_KEY.getShortKey(), jobId);\n-        addAttribute(attributes, DatabaseKeys.INSTANCE_ID_KEY.getShortKey(), instanceId);\n-        addAttribute(attributes, DatabaseKeys.LOGGING_KEY_KEY.getShortKey(), info.getKey());\n-        addAttribute(attributes, DatabaseKeys.PERIOD_KEY.getShortKey(), Integer.toString(info.getPeriodInSeconds()));\n-        addAttribute(attributes, DatabaseKeys.TRANSACTIONS_KEY.getShortKey(), Integer.toString(info.getTransactions()));\n-        item.setAttributes(attributes);\n-        String name = instanceId\n-                + \"_\" + jobId\n-                + \"_\" + info.getKey()\n-                + \"_\" + ts;\n-        item.setName(name);\n-        return item;\n+  }\n+\n+  private Item createItem(String jobId, String instanceId, TPSInfo info) {\n+    Item item = new Item();\n+    List<Attribute> attributes = new ArrayList<Attribute>();\n+    String ts = ReportUtil.getTimestamp(info.getTimestamp());\n+    addAttribute(attributes, DatabaseKeys.TIMESTAMP_KEY.getShortKey(), ts);\n+    addAttribute(attributes, DatabaseKeys.JOB_ID_KEY.getShortKey(), jobId);\n+    addAttribute(attributes, DatabaseKeys.INSTANCE_ID_KEY.getShortKey(), instanceId);\n+    addAttribute(attributes, DatabaseKeys.LOGGING_KEY_KEY.getShortKey(), info.getKey());\n+    addAttribute(attributes, DatabaseKeys.PERIOD_KEY.getShortKey(), Integer.toString(info.getPeriodInSeconds()));\n+    addAttribute(attributes, DatabaseKeys.TRANSACTIONS_KEY.getShortKey(), Integer.toString(info.getTransactions()));\n+    item.setAttributes(attributes);\n+    String name = instanceId\n+      + \"_\" + jobId\n+      + \"_\" + info.getKey()\n+      + \"_\" + ts;\n+    item.setName(name);\n+    return item;\n+  }\n+\n+  public static void addAttribute(List<Attribute> attributes, String key, String value) {\n+    if (value == null) {\n+      value = \"\";\n     }\n-\n-    public static void addAttribute(List<Attribute> attributes, String key, String value) {\n-        if (value == null) {\n-            value = \"\";\n-        }\n-        attributes.add(new Attribute(key, value));\n-    }\n-\n-    @Override\n-    public void config(HierarchicalConfiguration config) {\n-        // nothing to configure\n+    attributes.add(new Attribute(key, value));\n+  }\n+\n+  @Override\n+  public void config(HierarchicalConfiguration config) {\n+    // nothing to configure\n+  }\n+\n+  private String getTimingTableName(IDatabase db, String jobId) {\n+    if (StringUtils.isBlank(timingTableName)) {\n+      timingTableName = db.getDatabaseName(TankDatabaseType.timing, jobId);\n+      db.createTable(timingTableName);\n     }\n+    return timingTableName;\n+  }\n \n-    private String getTimingTableName(IDatabase db, String jobId) {\n-        if (StringUtils.isBlank(timingTableName)) {\n-            timingTableName = db.getDatabaseName(TankDatabaseType.timing, jobId);\n-            db.createTable(timingTableName);\n-        }\n-        return timingTableName;\n-    }\n-\n-    private String getTpsTableName(IDatabase db) {\n-        if (StringUtils.isBlank(tpsTableName)) {\n-            tpsTableName = new TankConfig().getInstanceName() + \"_tps\";\n-            db.createTable(tpsTableName);\n-        }\n-        return tpsTableName;\n+  private String getTpsTableName(IDatabase db) {\n+    if (StringUtils.isBlank(tpsTableName)) {\n+      tpsTableName = new TankConfig().getInstanceName() + \"_tps\";\n+      db.createTable(tpsTableName);\n     }\n+    return tpsTableName;\n+  }\n \n }\n",
+            "diff_size": 119
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "63",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/83/DatabaseResultsReporter.java\nindex 1f51f3aa9e8..93bb95998f0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/83/DatabaseResultsReporter.java\n@@ -143,4 +143,4 @@ public class DatabaseResultsReporter implements ResultsReporter {\n         return tpsTableName;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "63",
+                    "column": "90",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "90",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "98",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "98",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/83/DatabaseResultsReporter.java\nindex 1f51f3aa9e8..063ef03914b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/83/DatabaseResultsReporter.java\n@@ -60,8 +60,9 @@ public class DatabaseResultsReporter implements ResultsReporter {\n \n         Runnable task = () -> {\n             try {\n-                List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n-                if (!items.isEmpty()) {\n+                List<Item> items = container.getTpsInfos().stream().map(info->createItem ( jobId ,instanceId,\n+                info)).collect(Collectors.toList());\n+                 if (!items.isEmpty()) {\n                     String tableName = getTpsTableName(db);\n                     LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);\n                     db.addItems(tableName, items, false);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "64",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'=' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "46",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/83/DatabaseResultsReporter.java\nindex 1f51f3aa9e8..b3f9df3fff2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/83/DatabaseResultsReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/83/DatabaseResultsReporter.java\n@@ -60,8 +60,11 @@ public class DatabaseResultsReporter implements ResultsReporter {\n \n         Runnable task = () -> {\n             try {\n-                List<Item> items = container.getTpsInfos().stream().map(info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n-                if (!items.isEmpty()) {\n+                List<Item>\n+                items=container .getTpsInfos ().stream(\n+                ).map(\n+                info -> createItem(jobId, instanceId, info)).collect(Collectors.toList());\n+                 if (!items.isEmpty()) {\n                     String tableName = getTpsTableName(db);\n                     LOG.info(\"Sending \" + items.size() + \" to TPS Table \" + tableName);\n                     db.addItems(tableName, items, false);\n",
+            "diff_size": 5
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

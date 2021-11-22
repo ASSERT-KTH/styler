@@ -1,0 +1,140 @@
+{
+    "project_name": "DaGeRe-peass",
+    "error_id": "107",
+    "information": {
+        "errors": [
+            {
+                "line": "41",
+                "severity": "error",
+                "message": "Line is longer than 200 characters (found 220).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      VersionComparator.setVersions(commits);\n      \n      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n      final File[] outFiles = reader.readDependencies();\n\n      LOG.debug(\"Files: {}\", outFiles);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 260).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/107/DependencyReadingParallelStarter.java\nindex 821999956cf..a77b133e46d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler/107/DependencyReadingParallelStarter.java\n@@ -36,9 +36,7 @@ public class DependencyReadingParallelStarter implements Callable<Void> {\n    @Override\n    public Void call() throws Exception {\n       final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n-      VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n+      VersionComparator.setVersions(commits); final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n       final File[] outFiles = reader.readDependencies();\n \n       LOG.debug(\"Files: {}\", outFiles);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/107/DependencyReadingParallelStarter.java\nindex 821999956cf..ee68b632d91 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/intellij/107/DependencyReadingParallelStarter.java\n@@ -19,33 +19,34 @@ import picocli.CommandLine.Mixin;\n @Command(description = \"Reads the dependencies using parallel threads\", name = \"readDependenciesParallel\")\n public class DependencyReadingParallelStarter implements Callable<Void> {\n \n-   private static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n-   \n-   @Mixin\n-   private DependencyReaderConfig config;\n-\n-   public static void main(final String[] args) {\n-      try {\n-         final CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n-         commandLine.execute(args);\n-      } catch (final Throwable t) {\n-         t.printStackTrace();\n-      }\n-   }  \n-   \n-   @Override\n-   public Void call() throws Exception {\n-      final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n-      VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n-      final File[] outFiles = reader.readDependencies();\n-\n-      LOG.debug(\"Files: {}\", outFiles);\n-\n-      final File out = new File(config.getResultBaseFolder(), \"deps_\" + config.getProjectFolder().getName() + \".json\");\n-      final Dependencies all = Merger.mergeVersions(out, outFiles);\n-      return null;\n-   }\n+  private static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n+\n+  @Mixin\n+  private DependencyReaderConfig config;\n+\n+  public static void main(final String[] args) {\n+    try {\n+      final CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n+      commandLine.execute(args);\n+    } catch (final Throwable t) {\n+      t.printStackTrace();\n+    }\n+  }\n+\n+  @Override\n+  public Void call() throws Exception {\n+    final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n+    VersionComparator.setVersions(commits);\n+\n+    final DependencyParallelReader reader =\n+        new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n+    final File[] outFiles = reader.readDependencies();\n+\n+    LOG.debug(\"Files: {}\", outFiles);\n+\n+    final File out = new File(config.getResultBaseFolder(), \"deps_\" + config.getProjectFolder().getName() + \".json\");\n+    final Dependencies all = Merger.mergeVersions(out, outFiles);\n+    return null;\n+  }\n \n }\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 214).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/naturalize/107/DependencyReadingParallelStarter.java\nindex 821999956cf..9fb9d3074ce 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/naturalize/107/DependencyReadingParallelStarter.java\n@@ -19,33 +19,31 @@ import picocli.CommandLine.Mixin;\n @Command(description = \"Reads the dependencies using parallel threads\", name = \"readDependenciesParallel\")\n public class DependencyReadingParallelStarter implements Callable<Void> {\n \n-   private static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n-   \n-   @Mixin\n-   private DependencyReaderConfig config;\n+\tprivate static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n+\n+@Mixin\n+private DependencyReaderConfig config;\n \n    public static void main(final String[] args) {\n-      try {\n-         final CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n+\ttry {\n+\tfinal CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n          commandLine.execute(args);\n-      } catch (final Throwable t) {\n-         t.printStackTrace();\n-      }\n-   }  \n-   \n-   @Override\n-   public Void call() throws Exception {\n-      final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n+\t} catch (final Throwable t) {\n+\tt.printStackTrace();\n+\t}\n+\t}\n+\n+@Override\n+public Void call() throws Exception {\n+\tfinal List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n       VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n-      final File[] outFiles = reader.readDependencies();\n+final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n+final File[] outFiles = reader.readDependencies();\n \n       LOG.debug(\"Files: {}\", outFiles);\n \n       final File out = new File(config.getResultBaseFolder(), \"deps_\" + config.getProjectFolder().getName() + \".json\");\n       final Dependencies all = Merger.mergeVersions(out, outFiles);\n       return null;\n-   }\n-\n-}\n+\t}\n+\t}\n\\ No newline at end of file\n",
+            "diff_size": 20
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 216).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/107/DependencyReadingParallelStarter.java\nindex 821999956cf..7c07fc5ec66 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/codebuff/107/DependencyReadingParallelStarter.java\n@@ -3,10 +3,8 @@ package de.peass;\n import java.io.File;\n import java.util.List;\n import java.util.concurrent.Callable;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import de.peass.dependency.parallel.Merger;\n import de.peass.dependency.persistence.Dependencies;\n import de.peass.dependency.reader.DependencyParallelReader;\n@@ -16,36 +14,33 @@ import picocli.CommandLine;\n import picocli.CommandLine.Command;\n import picocli.CommandLine.Mixin;\n \n-@Command(description = \"Reads the dependencies using parallel threads\", name = \"readDependenciesParallel\")\n-public class DependencyReadingParallelStarter implements Callable<Void> {\n-\n-   private static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n-   \n-   @Mixin\n-   private DependencyReaderConfig config;\n-\n-   public static void main(final String[] args) {\n-      try {\n-         final CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n-         commandLine.execute(args);\n-      } catch (final Throwable t) {\n-         t.printStackTrace();\n-      }\n-   }  \n-   \n-   @Override\n-   public Void call() throws Exception {\n-      final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n-      VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n-      final File[] outFiles = reader.readDependencies();\n-\n-      LOG.debug(\"Files: {}\", outFiles);\n-\n-      final File out = new File(config.getResultBaseFolder(), \"deps_\" + config.getProjectFolder().getName() + \".json\");\n-      final Dependencies all = Merger.mergeVersions(out, outFiles);\n-      return null;\n-   }\n-\n-}\n+\n+@Command(description = \"Reads the dependencies using parallel threads\", name = \"readDependenciesParallel\") public class DependencyReadingParallelStarter implements Callable<Void> {\n+ private static final Logger LOG = LogManager.getLogger(DependencyReadingParallelStarter.class);\n+\n+ @Mixin private DependencyReaderConfig config;\n+\n+ public static void main(final String[] args) {\n+  try {\n+   final CommandLine commandLine = new CommandLine(new DependencyReadingParallelStarter());\n+   commandLine.execute(args);\n+  } catch (final Throwable t) {\n+   t.printStackTrace();\n+  }\n+ }\n+\n+ @Override\n+ public Void call() throws Exception {\n+  final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n+  VersionComparator.setVersions(commits);\n+\n+  final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n+  final File[] outFiles = reader.readDependencies();\n+  LOG.debug(\"Files: {}\", outFiles);\n+\n+  final File out = new File(config.getResultBaseFolder(), \"deps_\" + config.getProjectFolder().getName() + \".json\");\n+  final Dependencies all = Merger.mergeVersions(out, outFiles);\n+  return null;\n+ }\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 35
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 310).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "143",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "172",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "208",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "216",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "236",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "257",
+                    "severity": "error",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/107/DependencyReadingParallelStarter.java\nindex 821999956cf..face0525bb6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_random/107/DependencyReadingParallelStarter.java\n@@ -37,9 +37,8 @@ public class DependencyReadingParallelStarter implements Callable<Void> {\n    public Void call() throws Exception {\n       final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n       VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n-      final File[] outFiles = reader.readDependencies();\n+\n+\t\t\t\t\t\tfinal DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(),config.getResultBaseFolder(),config.getProjectFolder().getName(),commits,config.getThreads(),config.getTimeout());finalFileFile[] outFiles = reader.readDependencies();\n \n       LOG.debug(\"Files: {}\", outFiles);\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 200 characters (found 260).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/107/DependencyReadingParallelStarter.java\nindex 821999956cf..a77b133e46d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/errored/1/107/DependencyReadingParallelStarter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/DaGeRe-peass/styler_three_grams/107/DependencyReadingParallelStarter.java\n@@ -36,9 +36,7 @@ public class DependencyReadingParallelStarter implements Callable<Void> {\n    @Override\n    public Void call() throws Exception {\n       final List<GitCommit> commits = DependencyReadingStarter.getGitCommits(config.getStartversion(), config.getEndversion(), config.getProjectFolder());\n-      VersionComparator.setVersions(commits);\n-      \n-      final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n+      VersionComparator.setVersions(commits); final DependencyParallelReader reader = new DependencyParallelReader(config.getProjectFolder(), config.getResultBaseFolder(), config.getProjectFolder().getName(), commits, config.getThreads(), config.getTimeout());\n       final File[] outFiles = reader.readDependencies();\n \n       LOG.debug(\"Files: {}\", outFiles);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -12,7 +12,8 @@ import pandas as pd
 from collections import Counter
 import csv
 
-BATCH_SIZE = 500
+MIN_BATCH_SIZE = 50
+three_grams_dataset_path = os.path.join(os.path.dirname(__file__), 'three_grams.csv')
 
 def word_counter_to_csv(counter):
     # field names
@@ -23,13 +24,10 @@ def word_counter_to_csv(counter):
         [*three_gram, c]
         for three_gram, c in counter.items()
     ]
-    filename = "three_grams.csv"
 
-    with open(filename, 'w') as csvfile:
+    with open(three_grams_dataset_path, 'w') as csvfile:
         csvwriter = csv.writer(csvfile)
-
         csvwriter.writerow(fields)
-
         csvwriter.writerows(rows)
 
 
@@ -45,19 +43,19 @@ def tokenize_and_count(file_path):
     counter = Counter(three_grams)
     return counter
 
-
-df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'three_grams.csv'))
-count_df = df.loc[:,['token_1', 'token_2', 'count']].groupby(['token_1', 'token_2']).agg(['count', 'sum'])
-count = count_df['count']['count']
-good_for_insertion = list(count[count>=2].index)
-good_for_insertion_index = []
-for index, (token_1, token_2) in df.loc[:,['token_1', 'token_2']].iterrows():
-    if (token_1, token_2) in good_for_insertion:
-        good_for_insertion_index.append(index)
-good_for_insertion_df = df.iloc[good_for_insertion_index ,:]
-good_for_insertion_set = set(
-    good_for_insertion
-)
+if os.path.exists(three_grams_dataset_path):
+    df = pd.read_csv(three_grams_dataset_path)
+    count_df = df.loc[:,['token_1', 'token_2', 'count']].groupby(['token_1', 'token_2']).agg(['count', 'sum'])
+    count = count_df['count']['count']
+    good_for_insertion = list(count[count>=2].index)
+    good_for_insertion_index = []
+    for index, (token_1, token_2) in df.loc[:,['token_1', 'token_2']].iterrows():
+        if (token_1, token_2) in good_for_insertion:
+            good_for_insertion_index.append(index)
+    good_for_insertion_df = df.iloc[good_for_insertion_index ,:]
+    good_for_insertion_set = set(
+        good_for_insertion
+    )
 
 
 def is_good_for_insertion(token_a, token_b):
@@ -312,22 +310,27 @@ def modify_source(source, protocol='random'):
 
 
 class Batch:
-    def __init__(self, files_dir, checkstyle_dir, checkstyle_jar, batch_id=None, protocol='random'):
+    def __init__(self, batch_size, files_dir, checkstyle_dir, checkstyle_jar, batch_id=None, protocol='random'):
+        self.batch_size = max(batch_size, MIN_BATCH_SIZE)
         self.checkstyle_dir = checkstyle_dir
         self.checkstyle_jar = checkstyle_jar
         if batch_id == None:
             self.batch_id = uuid.uuid4().hex
         else:
             self.batch_id = batch_id
-        self.batch_files = [random.choice(files_dir) for _ in range(BATCH_SIZE)]
+        self.batch_files = [random.choice(files_dir) for _ in range(self.batch_size)]
         self.project_name = checkstyle_dir.split('/')[-3]
         self.batch_dir = f'{get_tmp_batches_dir(self.project_name)}/{self.batch_id}'
         self.protocol = protocol
     
-    def gen(self):
+    def gen(self, max_time):
         create_dir(self.batch_dir)
         self.batch_injections = {}
-        for index, file_dir in tqdm(enumerate(self.batch_files), total=BATCH_SIZE):
+        for index, file_dir in tqdm(enumerate(self.batch_files), total=self.batch_size):
+            if datetime.now() >= max_time:
+                logger.debug('Time out.')
+                break
+            
             file_name = file_dir.split('/')[-1]
             original_source = open_file(file_dir)
             try:
@@ -351,6 +354,7 @@ class Batch:
             except Exception as err:
                 logger.debug(err)
                 continue
+
         self.checkstyle_result, _ = checkstyle.check(
             self.checkstyle_dir,
             self.batch_dir,
@@ -361,6 +365,8 @@ class Batch:
         if self.checkstyle_result is not None:
             for file_dir, res in self.checkstyle_result.items():
                 index = int(file_dir.split('/')[-2])
+                if index not in self.batch_injections:
+                    continue
                 self.batch_injections[index]['errors'] = res['errors']
                 save_json(self.batch_injections[index]['dir'], 'errors.json', res['errors'])
 
@@ -384,16 +390,21 @@ def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_erro
 
     with tqdm(total=number_of_errors) as pbar:
         while len(valid_errors) < number_of_errors:
-            batch = Batch(files_dir, checkstyle_dir, checkstyle_jar, protocol=protocol)
+            if datetime.now() >= max_time:
+                number_of_errors = len(valid_errors)
+                break
+            
+            remaining_to_be_generated = number_of_errors - len(valid_errors)
+            batch = Batch(remaining_to_be_generated, files_dir, checkstyle_dir, checkstyle_jar, protocol=protocol)
             batches.append(batch)
             try:
-                batch_res = batch.gen()
+                batch_res = batch.gen(max_time)
             except KeyboardInterrupt:
                 raise KeyboardInterrupt
             except UnicodeDecodeError:
                 continue
             except: # UnicodeEncodeError
-                logger.exception("Something went whrong")
+                logger.exception("Something went wrong.")
                 continue
             if batch_res is None:
                 continue
@@ -404,10 +415,6 @@ def gen_errors(files_dir, checkstyle_dir, checkstyle_jar, target, number_of_erro
             ]
             valid_errors += batch_valid_errors
             pbar.update(len(batch_valid_errors))
-
-            if datetime.now() >= max_time:
-                number_of_errors = len(valid_errors)
-                break
 
     selected_errors = random.sample(valid_errors, number_of_errors)
     for error_id, error_metadata in enumerate(selected_errors):
@@ -483,10 +490,9 @@ if __name__ == '__main__':
         for corpus in tqdm(corpora, total=len(dataset_list)):
             for folder in os.walk(corpus):
                 files = folder[2]
-                for f in tqdm(files):
+                for f in files:
                     file_path = os.path.join(folder[0], f)
                     if file_path.endswith('.java'):
-                        logger.debug(f'file_path: {file_path}')
                         c += tokenize_and_count(file_path)
         word_counter_to_csv(c)
     elif sys.argv[1] == 'gen':

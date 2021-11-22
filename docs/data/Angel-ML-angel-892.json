@@ -1,0 +1,104 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "892",
+    "information": {
+        "errors": [
+            {
+                "line": "11",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 104).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "  * https://opensource.org/licenses/BSD-3-Clause\n  *\n  * Unless required by applicable law or agreed to in writing, software distributed under the License is\n  * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n  * either express or implied. See the License for the specific language governing permissions and\n  * limitations under the License.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/892/MatrixClockVector.java\nindex 7d2702daf66..56ebf45699d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/892/MatrixClockVector.java\n@@ -1,18 +1,18 @@\n /*\n  * Tencent is pleased to support the open source community by making Angel available.\n-  *\n-  * Copyright (C) 2017 THL A29 Limited, a Tencent company. All rights reserved.\n-  *\n-  * Licensed under the BSD 3-Clause License (the \"License\"); you may not use this file except in\n-  * compliance with the License. You may obtain a copy of the License at\n-  *\n-  * https://opensource.org/licenses/BSD-3-Clause\n-  *\n-  * Unless required by applicable law or agreed to in writing, software distributed under the License is\n-  * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n-  * either express or implied. See the License for the specific language governing permissions and\n-  * limitations under the License.\n-  */\n+ *\n+ * Copyright (C) 2017 THL A29 Limited, a Tencent company. All rights reserved.\n+ *\n+ * Licensed under the BSD 3-Clause License (the \"License\"); you may not use this file except in\n+ * compliance with the License. You may obtain a copy of the License at\n+ *\n+ * https://opensource.org/licenses/BSD-3-Clause\n+ *\n+ * Unless required by applicable law or agreed to in writing, software distributed under the License is\n+ * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n+ * either express or implied. See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n \n package com.tencent.angel.ps.impl;\n \n@@ -39,7 +39,8 @@ public class MatrixClockVector {\n \n   /**\n    * Create a MatrixClockVector\n-   * @param taskNum total task number\n+   *\n+   * @param taskNum    total task number\n    * @param matrixMeta matrix meta\n    */\n   public MatrixClockVector(int taskNum, MatrixMeta matrixMeta) {\n@@ -50,20 +51,22 @@ public class MatrixClockVector {\n \n   /**\n    * Init partitions clock vector for matrix\n+   *\n    * @param matrixMeta matrix meta\n    */\n   private void initPartClockVectors(MatrixMeta matrixMeta) {\n     Map<Integer, PartitionMeta> partIdToMetaMap = matrixMeta.getPartitionMetas();\n-    for(Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n+    for (Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n       partIdToClockVecMap.put(entry.getKey(), new PartClockVector(taskNum));\n     }\n   }\n \n   /**\n    * Update task clock for a partition\n+   *\n    * @param partId partition id\n    * @param taskId task id\n-   * @param clock clock value\n+   * @param clock  clock value\n    */\n   public void updateClock(int partId, int taskId, int clock) {\n     partIdToClockVecMap.get(partId).updateClock(taskId, clock);\n@@ -71,6 +74,7 @@ public class MatrixClockVector {\n \n   /**\n    * Get partition clock value\n+   *\n    * @param partId partition id\n    * @return partition clock value\n    */\n@@ -80,6 +84,7 @@ public class MatrixClockVector {\n \n   /**\n    * Get partition clock vector\n+   *\n    * @param partId partition id\n    * @return clock vector\n    */\n@@ -89,12 +94,13 @@ public class MatrixClockVector {\n \n   /**\n    * Get the minimal clock value for all partitions\n+   *\n    * @return the minimal clock value for all partitions\n    */\n   public int getMinClock() {\n     int minClock = Integer.MAX_VALUE;\n-    for(PartClockVector partClockVector : partIdToClockVecMap.values()) {\n-      if(partClockVector.getMinClock() < minClock) {\n+    for (PartClockVector partClockVector : partIdToClockVecMap.values()) {\n+      if (partClockVector.getMinClock() < minClock) {\n         minClock = partClockVector.getMinClock();\n       }\n     }\n@@ -103,11 +109,12 @@ public class MatrixClockVector {\n \n   /**\n    * Get partition id to partition clock map\n+   *\n    * @return partition id to partition clock map\n    */\n   public Int2IntOpenHashMap getPartClocks() {\n     Int2IntOpenHashMap partClocks = new Int2IntOpenHashMap(partIdToClockVecMap.size());\n-    for(Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n+    for (Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n       partClocks.put(entry.getKey().intValue(), entry.getValue().getMinClock());\n     }\n     return partClocks;\n@@ -115,18 +122,20 @@ public class MatrixClockVector {\n \n   /**\n    * Update task clock for all partitions\n+   *\n    * @param taskId task id\n-   * @param clock clock value\n+   * @param clock  clock value\n    */\n   public void updateClock(int taskId, int clock) {\n-    for(int partId : partIdToClockVecMap.keySet()) {\n+    for (int partId : partIdToClockVecMap.keySet()) {\n       updateClock(partId, taskId, clock);\n     }\n   }\n \n   /**\n    * Set partition clock vector\n-   * @param partId partition id\n+   *\n+   * @param partId   partition id\n    * @param clockVec clock vector\n    */\n   public void setClockVec(int partId, Int2IntOpenHashMap clockVec) {\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/892/MatrixClockVector.java\nindex 7d2702daf66..f5fc1007739 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/892/MatrixClockVector.java\n@@ -54,7 +54,7 @@ public class MatrixClockVector {\n    */\n   private void initPartClockVectors(MatrixMeta matrixMeta) {\n     Map<Integer, PartitionMeta> partIdToMetaMap = matrixMeta.getPartitionMetas();\n-    for(Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n+    for (Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n       partIdToClockVecMap.put(entry.getKey(), new PartClockVector(taskNum));\n     }\n   }\n@@ -93,7 +93,7 @@ public class MatrixClockVector {\n    */\n   public int getMinClock() {\n     int minClock = Integer.MAX_VALUE;\n-    for(PartClockVector partClockVector : partIdToClockVecMap.values()) {\n+    for (PartClockVector partClockVector : partIdToClockVecMap.values()) {\n       if(partClockVector.getMinClock() < minClock) {\n         minClock = partClockVector.getMinClock();\n       }\n@@ -107,7 +107,7 @@ public class MatrixClockVector {\n    */\n   public Int2IntOpenHashMap getPartClocks() {\n     Int2IntOpenHashMap partClocks = new Int2IntOpenHashMap(partIdToClockVecMap.size());\n-    for(Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n+    for (Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n       partClocks.put(entry.getKey().intValue(), entry.getValue().getMinClock());\n     }\n     return partClocks;\n@@ -119,7 +119,7 @@ public class MatrixClockVector {\n    * @param clock clock value\n    */\n   public void updateClock(int taskId, int clock) {\n-    for(int partId : partIdToClockVecMap.keySet()) {\n+    for (int partId : partIdToClockVecMap.keySet()) {\n       updateClock(partId, taskId, clock);\n     }\n   }\n@@ -132,4 +132,4 @@ public class MatrixClockVector {\n   public void setClockVec(int partId, Int2IntOpenHashMap clockVec) {\n     partIdToClockVecMap.get(partId).setClockVec(clockVec);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/892/MatrixClockVector.java\nindex 7d2702daf66..478df0f5e74 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/892/MatrixClockVector.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/892/MatrixClockVector.java\n@@ -19,17 +19,18 @@ package com.tencent.angel.ps.impl;\n import com.tencent.angel.ml.matrix.MatrixMeta;\n import com.tencent.angel.ml.matrix.PartitionMeta;\n import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;\n-\n import java.util.Map;\n import java.util.concurrent.ConcurrentHashMap;\n \n /**\n  * Matrix clock vector\n  */\n+\n public class MatrixClockVector {\n   /**\n    * Partition id to partition clock vector map\n    */\n+\n   private final ConcurrentHashMap<Integer, PartClockVector> partIdToClockVecMap;\n \n   /**\n@@ -42,6 +43,7 @@ public class MatrixClockVector {\n    * @param taskNum total task number\n    * @param matrixMeta matrix meta\n    */\n+\n   public MatrixClockVector(int taskNum, MatrixMeta matrixMeta) {\n     this.taskNum = taskNum;\n     this.partIdToClockVecMap = new ConcurrentHashMap<>(matrixMeta.getPartitionMetas().size());\n@@ -52,9 +54,10 @@ public class MatrixClockVector {\n    * Init partitions clock vector for matrix\n    * @param matrixMeta matrix meta\n    */\n+\n   private void initPartClockVectors(MatrixMeta matrixMeta) {\n     Map<Integer, PartitionMeta> partIdToMetaMap = matrixMeta.getPartitionMetas();\n-    for(Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n+    for (Map.Entry<Integer, PartitionMeta> entry : partIdToMetaMap.entrySet()) {\n       partIdToClockVecMap.put(entry.getKey(), new PartClockVector(taskNum));\n     }\n   }\n@@ -65,6 +68,7 @@ public class MatrixClockVector {\n    * @param taskId task id\n    * @param clock clock value\n    */\n+\n   public void updateClock(int partId, int taskId, int clock) {\n     partIdToClockVecMap.get(partId).updateClock(taskId, clock);\n   }\n@@ -74,6 +78,7 @@ public class MatrixClockVector {\n    * @param partId partition id\n    * @return partition clock value\n    */\n+\n   public int getPartClock(int partId) {\n     return partIdToClockVecMap.get(partId).getMinClock();\n   }\n@@ -83,6 +88,7 @@ public class MatrixClockVector {\n    * @param partId partition id\n    * @return clock vector\n    */\n+\n   public Int2IntOpenHashMap getClockVec(int partId) {\n     return partIdToClockVecMap.get(partId).getClockVec();\n   }\n@@ -91,10 +97,11 @@ public class MatrixClockVector {\n    * Get the minimal clock value for all partitions\n    * @return the minimal clock value for all partitions\n    */\n+\n   public int getMinClock() {\n     int minClock = Integer.MAX_VALUE;\n-    for(PartClockVector partClockVector : partIdToClockVecMap.values()) {\n-      if(partClockVector.getMinClock() < minClock) {\n+    for (PartClockVector partClockVector : partIdToClockVecMap.values()) {\n+      if (partClockVector.getMinClock() < minClock) {\n         minClock = partClockVector.getMinClock();\n       }\n     }\n@@ -105,9 +112,10 @@ public class MatrixClockVector {\n    * Get partition id to partition clock map\n    * @return partition id to partition clock map\n    */\n+\n   public Int2IntOpenHashMap getPartClocks() {\n     Int2IntOpenHashMap partClocks = new Int2IntOpenHashMap(partIdToClockVecMap.size());\n-    for(Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n+    for (Map.Entry<Integer, PartClockVector> entry : partIdToClockVecMap.entrySet()) {\n       partClocks.put(entry.getKey().intValue(), entry.getValue().getMinClock());\n     }\n     return partClocks;\n@@ -118,8 +126,9 @@ public class MatrixClockVector {\n    * @param taskId task id\n    * @param clock clock value\n    */\n+\n   public void updateClock(int taskId, int clock) {\n-    for(int partId : partIdToClockVecMap.keySet()) {\n+    for (int partId : partIdToClockVecMap.keySet()) {\n       updateClock(partId, taskId, clock);\n     }\n   }\n@@ -129,7 +138,9 @@ public class MatrixClockVector {\n    * @param partId partition id\n    * @param clockVec clock vector\n    */\n+\n   public void setClockVec(int partId, Int2IntOpenHashMap clockVec) {\n     partIdToClockVecMap.get(partId).setClockVec(clockVec);\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,96 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "33",
+    "information": {
+        "errors": [
+            {
+                "line": "15",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "\nimport datawave.util.time.DateHelper;\nimport org.apache.accumulo.core.Constants;\nimport org.apache.accumulo.core.client.AccumuloException;\nimport org.apache.accumulo.core.client.AccumuloSecurityException;\nimport org.apache.accumulo.core.client.ClientConfiguration;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "15",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "15",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/33/FileByteSummaryLoader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/33/FileByteSummaryLoader.java\nindex 82fff80f87b..9f83f0c30bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/33/FileByteSummaryLoader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/33/FileByteSummaryLoader.java\n@@ -32,106 +32,112 @@ import org.apache.hadoop.util.ToolRunner;\n import org.apache.log4j.Logger;\n \n /**\n- * \n+ *\n  */\n public class FileByteSummaryLoader extends Configured implements Tool {\n-    private static final Logger log = Logger.getLogger(FileByteSummaryLoader.class);\n-    private static String defaultVisibility = \"PUBLIC\";\n-    \n-    private static class FileByteMetricsMapper extends Mapper<Key,Value,Key,Value> {\n-        Text holder = new Text();\n-        \n-        /*\n-         * TODO: Determine whether this entire file should be removed or refactored, as it is currently not in use and its applicability toward general ingest\n-         * usage patterns is somewhat questionable\n-         */\n-        \n-        private Pattern radixRegex = Pattern.compile(\"TODO: <PATTERN-PLACEHOLDER>\");\n-        \n-        @Override\n-        protected void map(Key key, Value value, Context context) throws IOException, InterruptedException {\n-            key.getRow(holder);\n-            String name = holder.toString().substring(12);\n-            long loadTime = key.getTimestamp();\n-            String outRow = DateHelper.format(new Date(loadTime));\n-            Matcher m = radixRegex.matcher(name);\n-            key.getColumnQualifier(holder);\n-            if (m.matches()) {\n-                context.write(makeKey(outRow, \"GROOMER_RLABEL_FILES\", m.group(1), defaultVisibility), makeValue(\"1\"));\n-                context.write(makeKey(outRow, \"GROOMER_RLABEL_BYTES\", m.group(1), defaultVisibility), makeValue(holder.toString()));\n-            }\n-        }\n-        \n-        private Key makeKey(String row, String cf, String cq, String cv) {\n-            return new Key(row, cf, cq, cv);\n-        }\n-        \n-        private Value makeValue(String value) {\n-            return new Value(value.getBytes());\n-        }\n-    }\n-    \n+  private static final Logger log = Logger.getLogger(FileByteSummaryLoader.class);\n+  private static String defaultVisibility = \"PUBLIC\";\n+\n+  private static class FileByteMetricsMapper extends Mapper<Key, Value, Key, Value> {\n+    Text holder = new Text();\n+\n+    /*\n+     * TODO: Determine whether this entire file should be removed or refactored, as it is currently not in use and its applicability toward general ingest\n+     * usage patterns is somewhat questionable\n+     */\n+\n+    private Pattern radixRegex = Pattern.compile(\"TODO: <PATTERN-PLACEHOLDER>\");\n+\n     @Override\n-    public int run(String[] args) throws Exception {\n-        Configuration conf = JobSetupUtil.configure(args, getConf(), log);\n-        \n-        JobSetupUtil.printConfig(getConf(), log);\n-        \n-        Job job = new Job(conf);\n-        Configuration jconf = job.getConfiguration();\n-        job.setJarByClass(this.getClass());\n-        job.setJobName(\"FileByteMetricsSummaries\");\n-        \n-        try {\n-            Connections.initTables(conf);\n-        } catch (AccumuloException | AccumuloSecurityException e) {\n-            throw new IOException(e);\n-        }\n-        \n-        String inputTable = jconf.get(MetricsConfig.RAW_FILE_INDEX_TABLE, MetricsConfig.DEFAULT_RAW_FILE_INDEX_TABLE);\n-        String outputTable = jconf.get(MetricsConfig.METRICS_SUMMARY_TABLE, MetricsConfig.DEFAULT_METRICS_SUMMARY_TABLE);\n-        String userName = jconf.get(MetricsConfig.USER);\n-        String password = jconf.get(MetricsConfig.PASS);\n-        String instance = jconf.get(MetricsConfig.INSTANCE);\n-        String zookeepers = jconf.get(MetricsConfig.ZOOKEEPERS, \"localhost\");\n-        Range dayRange = JobSetupUtil.computeTimeRange(jconf, log);\n-        long delta = Long.parseLong(dayRange.getEndKey().getRow().toString()) - Long.parseLong(dayRange.getStartKey().getRow().toString());\n-        int numDays = (int) Math.max(1, delta / TimeUnit.DAYS.toMillis(1));\n-        \n-        defaultVisibility = jconf.get(MetricsConfig.DEFAULT_VISIBILITY, defaultVisibility);\n-        \n-        dayRange = JobSetupUtil.formatReverseSlashedTimeRange(dayRange, log);// convert millisecond epoc timestamp to /YYYY/MM/DD\n-        \n-        job.setMapperClass(FileByteMetricsMapper.class);\n-        job.setMapOutputKeyClass(Key.class);\n-        job.setMapOutputValueClass(Value.class);\n-        job.setInputFormatClass(AccumuloInputFormat.class);\n-        AccumuloInputFormat.setConnectorInfo(job, userName, new PasswordToken(password));\n-        AccumuloInputFormat.setInputTableName(job, inputTable);\n-        AccumuloInputFormat.setScanAuthorizations(job, Authorizations.EMPTY);\n-        AccumuloInputFormat.setZooKeeperInstance(job, ClientConfiguration.loadDefault().withInstance(instance.trim()).withZkHosts(zookeepers.trim()));\n-        AccumuloInputFormat.setRanges(job, Collections.singletonList(dayRange));\n-        // Ensure all data for a day goes to the same reducer so that we aggregate it correctly before sending to Accumulo\n-        RowPartitioner.configureJob(job);\n-        \n-        // Configure the reducer and output format to write out our metrics\n-        MetricsDailySummaryReducer.configureJob(job, numDays, jconf.get(MetricsConfig.INSTANCE), jconf.get(MetricsConfig.ZOOKEEPERS), userName, password,\n-                        outputTable);\n-        \n-        job.submit();\n-        JobSetupUtil.changeJobPriority(job, log);\n-        \n-        job.waitForCompletion(true);\n-        \n-        return 0;\n+    protected void map(Key key, Value value, Context context) throws IOException, InterruptedException {\n+      key.getRow(holder);\n+      String name = holder.toString().substring(12);\n+      long loadTime = key.getTimestamp();\n+      String outRow = DateHelper.format(new Date(loadTime));\n+      Matcher m = radixRegex.matcher(name);\n+      key.getColumnQualifier(holder);\n+      if (m.matches()) {\n+        context.write(makeKey(outRow, \"GROOMER_RLABEL_FILES\", m.group(1), defaultVisibility), makeValue(\"1\"));\n+        context.write(makeKey(outRow, \"GROOMER_RLABEL_BYTES\", m.group(1), defaultVisibility),\n+            makeValue(holder.toString()));\n+      }\n+    }\n+\n+    private Key makeKey(String row, String cf, String cq, String cv) {\n+      return new Key(row, cf, cq, cv);\n+    }\n+\n+    private Value makeValue(String value) {\n+      return new Value(value.getBytes());\n+    }\n+  }\n+\n+  @Override\n+  public int run(String[] args) throws Exception {\n+    Configuration conf = JobSetupUtil.configure(args, getConf(), log);\n+\n+    JobSetupUtil.printConfig(getConf(), log);\n+\n+    Job job = new Job(conf);\n+    Configuration jconf = job.getConfiguration();\n+    job.setJarByClass(this.getClass());\n+    job.setJobName(\"FileByteMetricsSummaries\");\n+\n+    try {\n+      Connections.initTables(conf);\n+    } catch (AccumuloException | AccumuloSecurityException e) {\n+      throw new IOException(e);\n     }\n-    \n-    public static void main(String[] args) {\n-        try {\n-            ToolRunner.run(new FileByteSummaryLoader(), args);\n-        } catch (Exception e) {\n-            e.printStackTrace(); // Called from main()\n-        }\n+\n+    String inputTable = jconf.get(MetricsConfig.RAW_FILE_INDEX_TABLE, MetricsConfig.DEFAULT_RAW_FILE_INDEX_TABLE);\n+    String outputTable = jconf.get(MetricsConfig.METRICS_SUMMARY_TABLE, MetricsConfig.DEFAULT_METRICS_SUMMARY_TABLE);\n+    String userName = jconf.get(MetricsConfig.USER);\n+    String password = jconf.get(MetricsConfig.PASS);\n+    String instance = jconf.get(MetricsConfig.INSTANCE);\n+    String zookeepers = jconf.get(MetricsConfig.ZOOKEEPERS, \"localhost\");\n+    Range dayRange = JobSetupUtil.computeTimeRange(jconf, log);\n+    long delta = Long.parseLong(dayRange.getEndKey().getRow().toString()) -\n+        Long.parseLong(dayRange.getStartKey().getRow().toString());\n+    int numDays = (int) Math.max(1, delta / TimeUnit.DAYS.toMillis(1));\n+\n+    defaultVisibility = jconf.get(MetricsConfig.DEFAULT_VISIBILITY, defaultVisibility);\n+\n+    dayRange =\n+        JobSetupUtil.formatReverseSlashedTimeRange(dayRange, log);// convert millisecond epoc timestamp to /YYYY/MM/DD\n+\n+    job.setMapperClass(FileByteMetricsMapper.class);\n+    job.setMapOutputKeyClass(Key.class);\n+    job.setMapOutputValueClass(Value.class);\n+    job.setInputFormatClass(AccumuloInputFormat.class);\n+    AccumuloInputFormat.setConnectorInfo(job, userName, new PasswordToken(password));\n+    AccumuloInputFormat.setInputTableName(job, inputTable);\n+    AccumuloInputFormat.setScanAuthorizations(job, Authorizations.EMPTY);\n+    AccumuloInputFormat.setZooKeeperInstance(job,\n+        ClientConfiguration.loadDefault().withInstance(instance.trim()).withZkHosts(zookeepers.trim()));\n+    AccumuloInputFormat.setRanges(job, Collections.singletonList(dayRange));\n+    // Ensure all data for a day goes to the same reducer so that we aggregate it correctly before sending to Accumulo\n+    RowPartitioner.configureJob(job);\n+\n+    // Configure the reducer and output format to write out our metrics\n+    MetricsDailySummaryReducer\n+        .configureJob(job, numDays, jconf.get(MetricsConfig.INSTANCE), jconf.get(MetricsConfig.ZOOKEEPERS), userName,\n+            password,\n+            outputTable);\n+\n+    job.submit();\n+    JobSetupUtil.changeJobPriority(job, log);\n+\n+    job.waitForCompletion(true);\n+\n+    return 0;\n+  }\n+\n+  public static void main(String[] args) {\n+    try {\n+      ToolRunner.run(new FileByteSummaryLoader(), args);\n+    } catch (Exception e) {\n+      e.printStackTrace(); // Called from main()\n     }\n-    \n+  }\n+\n }\n",
+            "diff_size": 140
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/33/FileByteSummaryLoader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/33/FileByteSummaryLoader.java\nindex 82fff80f87b..f17496d4ff2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/33/FileByteSummaryLoader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/33/FileByteSummaryLoader.java\n@@ -6,11 +6,9 @@ import java.util.Date;\n import java.util.concurrent.TimeUnit;\n import java.util.regex.Matcher;\n import java.util.regex.Pattern;\n-\n import datawave.metrics.config.MetricsConfig;\n import datawave.metrics.mapreduce.util.JobSetupUtil;\n import datawave.metrics.util.Connections;\n-\n import datawave.util.time.DateHelper;\n import org.apache.accumulo.core.Constants;\n import org.apache.accumulo.core.client.AccumuloException;\n@@ -34,10 +32,11 @@ import org.apache.log4j.Logger;\n /**\n  * \n  */\n+\n+\n public class FileByteSummaryLoader extends Configured implements Tool {\n     private static final Logger log = Logger.getLogger(FileByteSummaryLoader.class);\n     private static String defaultVisibility = \"PUBLIC\";\n-    \n     private static class FileByteMetricsMapper extends Mapper<Key,Value,Key,Value> {\n         Text holder = new Text();\n         \n@@ -45,12 +44,12 @@ public class FileByteSummaryLoader extends Configured implements Tool {\n          * TODO: Determine whether this entire file should be removed or refactored, as it is currently not in use and its applicability toward general ingest\n          * usage patterns is somewhat questionable\n          */\n-        \n         private Pattern radixRegex = Pattern.compile(\"TODO: <PATTERN-PLACEHOLDER>\");\n-        \n+\n         @Override\n         protected void map(Key key, Value value, Context context) throws IOException, InterruptedException {\n             key.getRow(holder);\n+\n             String name = holder.toString().substring(12);\n             long loadTime = key.getTimestamp();\n             String outRow = DateHelper.format(new Date(loadTime));\n@@ -61,33 +60,31 @@ public class FileByteSummaryLoader extends Configured implements Tool {\n                 context.write(makeKey(outRow, \"GROOMER_RLABEL_BYTES\", m.group(1), defaultVisibility), makeValue(holder.toString()));\n             }\n         }\n-        \n+\n         private Key makeKey(String row, String cf, String cq, String cv) {\n             return new Key(row, cf, cq, cv);\n         }\n-        \n+\n         private Value makeValue(String value) {\n             return new Value(value.getBytes());\n         }\n     }\n-    \n+\n     @Override\n     public int run(String[] args) throws Exception {\n         Configuration conf = JobSetupUtil.configure(args, getConf(), log);\n-        \n         JobSetupUtil.printConfig(getConf(), log);\n-        \n+\n         Job job = new Job(conf);\n         Configuration jconf = job.getConfiguration();\n         job.setJarByClass(this.getClass());\n         job.setJobName(\"FileByteMetricsSummaries\");\n-        \n         try {\n             Connections.initTables(conf);\n         } catch (AccumuloException | AccumuloSecurityException e) {\n             throw new IOException(e);\n         }\n-        \n+\n         String inputTable = jconf.get(MetricsConfig.RAW_FILE_INDEX_TABLE, MetricsConfig.DEFAULT_RAW_FILE_INDEX_TABLE);\n         String outputTable = jconf.get(MetricsConfig.METRICS_SUMMARY_TABLE, MetricsConfig.DEFAULT_METRICS_SUMMARY_TABLE);\n         String userName = jconf.get(MetricsConfig.USER);\n@@ -97,11 +94,8 @@ public class FileByteSummaryLoader extends Configured implements Tool {\n         Range dayRange = JobSetupUtil.computeTimeRange(jconf, log);\n         long delta = Long.parseLong(dayRange.getEndKey().getRow().toString()) - Long.parseLong(dayRange.getStartKey().getRow().toString());\n         int numDays = (int) Math.max(1, delta / TimeUnit.DAYS.toMillis(1));\n-        \n         defaultVisibility = jconf.get(MetricsConfig.DEFAULT_VISIBILITY, defaultVisibility);\n-        \n         dayRange = JobSetupUtil.formatReverseSlashedTimeRange(dayRange, log);// convert millisecond epoc timestamp to /YYYY/MM/DD\n-        \n         job.setMapperClass(FileByteMetricsMapper.class);\n         job.setMapOutputKeyClass(Key.class);\n         job.setMapOutputValueClass(Value.class);\n@@ -115,17 +109,13 @@ public class FileByteSummaryLoader extends Configured implements Tool {\n         RowPartitioner.configureJob(job);\n         \n         // Configure the reducer and output format to write out our metrics\n-        MetricsDailySummaryReducer.configureJob(job, numDays, jconf.get(MetricsConfig.INSTANCE), jconf.get(MetricsConfig.ZOOKEEPERS), userName, password,\n-                        outputTable);\n-        \n+        MetricsDailySummaryReducer.configureJob(job, numDays, jconf.get(MetricsConfig.INSTANCE), jconf.get(MetricsConfig.ZOOKEEPERS), userName, password, outputTable);\n         job.submit();\n         JobSetupUtil.changeJobPriority(job, log);\n-        \n         job.waitForCompletion(true);\n-        \n         return 0;\n     }\n-    \n+\n     public static void main(String[] args) {\n         try {\n             ToolRunner.run(new FileByteSummaryLoader(), args);\n@@ -133,5 +123,4 @@ public class FileByteSummaryLoader extends Configured implements Tool {\n             e.printStackTrace(); // Called from main()\n         }\n     }\n-    \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "15",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "15",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

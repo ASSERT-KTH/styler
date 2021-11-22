@@ -1,0 +1,133 @@
+{
+    "project_name": "openmessaging-openmessaging-java",
+    "error_id": "7",
+    "information": {
+        "errors": [
+            {
+                "line": "58",
+                "severity": "error",
+                "message": "Prohibit invoking System.out.println in source code !",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "        }, OMS.newKeyValue());\n\n        System.out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n\n        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n            @Override",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler/7/TransactionProducerApp.java\nindex b1bf5f51dc9..98042ac9bac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler/7/TransactionProducerApp.java\n@@ -53,9 +53,8 @@ public class TransactionProducerApp {\n                 //The server may lookup the transaction status forwardly associated the specified message\n                 context.commit();\n             }\n-        }, OMS.newKeyValue());\n-\n-        System.out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n+        }, OMS.newKeyValue());System\n+        .out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n \n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n             @Override\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/intellij/7/TransactionProducerApp.java\nindex b1bf5f51dc9..c1d5a17def7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/intellij/7/TransactionProducerApp.java\n@@ -41,7 +41,7 @@ public class TransactionProducerApp {\n         SendResult sendResult = producer.send(message, new LocalTransactionBranchExecutor() {\n             @Override\n             public void doLocalTransactionBranch(final Message message,\n-                final DoLocalTransactionBranchContext context) {\n+                                                 final DoLocalTransactionBranchContext context) {\n                 //Do some local transaction\n                 //Then commit this transaction and the message will be delivered.\n                 context.commit();\n@@ -49,7 +49,7 @@ public class TransactionProducerApp {\n \n             @Override\n             public void checkLocalTransactionBranch(final Message message,\n-                final CheckLocalTransactionBranchContext context) {\n+                                                    final CheckLocalTransactionBranchContext context) {\n                 //The server may lookup the transaction status forwardly associated the specified message\n                 context.commit();\n             }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "35",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "54",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/naturalize/7/TransactionProducerApp.java\nindex b1bf5f51dc9..6dc1f26534c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/naturalize/7/TransactionProducerApp.java\n@@ -27,17 +27,13 @@ import java.nio.charset.Charset;\n \n public class TransactionProducerApp {\n     public static void main(String[] args) {\n-        final MessagingAccessPoint messagingAccessPoint =\n-            OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east:default_space\");\n+        final MessagingAccessPoint messagingAccessPoint = OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east:default_space\");\n \n         final Producer producer = messagingAccessPoint.createProducer();\n         messagingAccessPoint.startup();\n         producer.startup();\n-\n-        Message message = producer.createBytesMessage(\n-            \"HELLO_QUEUE\", \"HELLO_BODY\".getBytes(Charset.forName(\"UTF-8\")));\n-\n-        //Sends a transaction message to the specified destination synchronously.\n+Message message = producer.createBytesMessage(\"HELLO_QUEUE\", \"HELLO_BODY\".getBytes(Charset.forName(\"UTF-8\")));\n+    //Sends a transaction message to the specified destination synchronously.\n         SendResult sendResult = producer.send(message, new LocalTransactionBranchExecutor() {\n             @Override\n             public void doLocalTransactionBranch(final Message message,\n@@ -65,4 +61,4 @@ public class TransactionProducerApp {\n             }\n         }));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "38",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'method def modifier' has incorrect indentation level 23, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 27, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'method def rcurly' has incorrect indentation level 23, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'method def modifier' has incorrect indentation level 23, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 27, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'method def rcurly' has incorrect indentation level 23, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/codebuff/7/TransactionProducerApp.java\nindex b1bf5f51dc9..19cd2dd696e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/codebuff/7/TransactionProducerApp.java\n@@ -27,36 +27,28 @@ import java.nio.charset.Charset;\n \n public class TransactionProducerApp {\n     public static void main(String[] args) {\n-        final MessagingAccessPoint messagingAccessPoint =\n-            OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east:default_space\");\n-\n+        final MessagingAccessPoint messagingAccessPoint = OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east:default_space\");\n         final Producer producer = messagingAccessPoint.createProducer();\n         messagingAccessPoint.startup();\n         producer.startup();\n-\n-        Message message = producer.createBytesMessage(\n-            \"HELLO_QUEUE\", \"HELLO_BODY\".getBytes(Charset.forName(\"UTF-8\")));\n+        Message message = producer.createBytesMessage(\"HELLO_QUEUE\", \"HELLO_BODY\".getBytes(Charset.forName(\"UTF-8\")));\n \n         //Sends a transaction message to the specified destination synchronously.\n         SendResult sendResult = producer.send(message, new LocalTransactionBranchExecutor() {\n-            @Override\n-            public void doLocalTransactionBranch(final Message message,\n-                final DoLocalTransactionBranchContext context) {\n+                       @Override\n+                       public void doLocalTransactionBranch(final Message message, final DoLocalTransactionBranchContext context) {\n                 //Do some local transaction\n                 //Then commit this transaction and the message will be delivered.\n-                context.commit();\n-            }\n+                           context.commit();\n+                       }\n \n-            @Override\n-            public void checkLocalTransactionBranch(final Message message,\n-                final CheckLocalTransactionBranchContext context) {\n+                       @Override\n+                       public void checkLocalTransactionBranch(final Message message, final CheckLocalTransactionBranchContext context) {\n                 //The server may lookup the transaction status forwardly associated the specified message\n-                context.commit();\n-            }\n+                           context.commit();\n+                       }\n         }, OMS.newKeyValue());\n-\n         System.out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n-\n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n             @Override\n             public void run() {\n@@ -65,4 +57,4 @@ public class TransactionProducerApp {\n             }\n         }));\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_random/7/TransactionProducerApp.java\nindex b1bf5f51dc9..98042ac9bac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_random/7/TransactionProducerApp.java\n@@ -53,9 +53,8 @@ public class TransactionProducerApp {\n                 //The server may lookup the transaction status forwardly associated the specified message\n                 context.commit();\n             }\n-        }, OMS.newKeyValue());\n-\n-        System.out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n+        }, OMS.newKeyValue());System\n+        .out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n \n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n             @Override\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_three_grams/7/TransactionProducerApp.java\nindex b1bf5f51dc9..98042ac9bac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/7/TransactionProducerApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_three_grams/7/TransactionProducerApp.java\n@@ -53,9 +53,8 @@ public class TransactionProducerApp {\n                 //The server may lookup the transaction status forwardly associated the specified message\n                 context.commit();\n             }\n-        }, OMS.newKeyValue());\n-\n-        System.out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n+        }, OMS.newKeyValue());System\n+        .out.println(\"Send transaction message OK, message id is: \" + sendResult.messageId());\n \n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n             @Override\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

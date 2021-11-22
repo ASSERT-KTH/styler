@@ -1,0 +1,87 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "57",
+    "information": {
+        "errors": [
+            {
+                "line": "71",
+                "column": "9",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "            logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n        } catch (IOException ioEx) {\n        \tIOUtils.closeQuietly(storedOriginalChannel);\n        \t// The original file not saved, or could not be opened.\n            logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n            return null;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "72",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/57/StoredOriginalFile.java\nindex 587cf847faf..a6240069fb0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/57/StoredOriginalFile.java\n@@ -68,7 +68,7 @@ public class StoredOriginalFile {\n             inputStreamIO = new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n             logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n         } catch (IOException ioEx) {\n-        \tIOUtils.closeQuietly(storedOriginalChannel);\n+        IOUtils.closeQuietly(storedOriginalChannel);\n         \t// The original file not saved, or could not be opened.\n             logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n             return null;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/57/StoredOriginalFile.java\nindex 587cf847faf..746e5b8eabb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/57/StoredOriginalFile.java\n@@ -17,6 +17,7 @@\n    Developed at the Institute for Quantitative Social Science, Harvard University.\n    Version 3.0.\n */\n+\n package edu.harvard.iq.dataverse.dataaccess;\n \n import java.io.IOException;\n@@ -28,68 +29,69 @@ import java.nio.channels.ReadableByteChannel;\n import java.util.logging.Logger;\n \n import org.apache.tika.io.IOUtils;\n+\n /**\n- *\n  * @author Leonid Andreev\n  */\n public class StoredOriginalFile {\n-    private static Logger logger = Logger.getLogger(StoredOriginalFile.class.getPackage().getName());\n-    \n-    public StoredOriginalFile () {\n-        \n-    }\n-    \n-    public static final String SAVED_ORIGINAL_FILENAME_EXTENSION = \"orig\";\n-    \n-    public static StorageIO<DataFile> retreive(StorageIO<DataFile> storageIO) {\n-        String originalMimeType;\n+  private static Logger logger = Logger.getLogger(StoredOriginalFile.class.getPackage().getName());\n \n-        DataFile dataFile = storageIO.getDataFile();\n+  public StoredOriginalFile() {\n \n-        if (dataFile == null) {\n-            return null;\n-        }\n+  }\n \n-        if (dataFile.getDataTable() != null) {\n-            originalMimeType = dataFile.getDataTable().getOriginalFileFormat();\n-        } else {\n-            return null;\n-        }\n+  public static final String SAVED_ORIGINAL_FILENAME_EXTENSION = \"orig\";\n \n-        long storedOriginalSize; \n-        InputStreamIO inputStreamIO;\n-        Channel storedOriginalChannel = null;\n-        try {\n-            storageIO.open();\n-            storedOriginalChannel = storageIO.openAuxChannel(SAVED_ORIGINAL_FILENAME_EXTENSION);\n-            storedOriginalSize = dataFile.getDataTable().getOriginalFileSize() != null ? \n-                    dataFile.getDataTable().getOriginalFileSize() : \n-                    storageIO.getAuxObjectSize(SAVED_ORIGINAL_FILENAME_EXTENSION);\n-            inputStreamIO = new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n-            logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n-        } catch (IOException ioEx) {\n-        \tIOUtils.closeQuietly(storedOriginalChannel);\n-        \t// The original file not saved, or could not be opened.\n-            logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n-            return null;\n-        }\n+  public static StorageIO<DataFile> retreive(StorageIO<DataFile> storageIO) {\n+    String originalMimeType;\n \n-        if (originalMimeType != null && !originalMimeType.isEmpty()) {\n-            if (originalMimeType.matches(\"application/x-dvn-.*-zip\")) {\n-                inputStreamIO.setMimeType(\"application/zip\");\n-            } else {\n-                inputStreamIO.setMimeType(originalMimeType);\n-            }\n-        } else {\n-            inputStreamIO.setMimeType(\"application/x-unknown\");\n-        }\n+    DataFile dataFile = storageIO.getDataFile();\n \n-        inputStreamIO.setFileName(dataFile.getOriginalFileName());\n+    if (dataFile == null) {\n+      return null;\n+    }\n+\n+    if (dataFile.getDataTable() != null) {\n+      originalMimeType = dataFile.getDataTable().getOriginalFileFormat();\n+    } else {\n+      return null;\n+    }\n \n-        return inputStreamIO;\n+    long storedOriginalSize;\n+    InputStreamIO inputStreamIO;\n+    Channel storedOriginalChannel = null;\n+    try {\n+      storageIO.open();\n+      storedOriginalChannel = storageIO.openAuxChannel(SAVED_ORIGINAL_FILENAME_EXTENSION);\n+      storedOriginalSize = dataFile.getDataTable().getOriginalFileSize() != null ?\n+        dataFile.getDataTable().getOriginalFileSize() :\n+        storageIO.getAuxObjectSize(SAVED_ORIGINAL_FILENAME_EXTENSION);\n+      inputStreamIO =\n+        new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n+      logger.fine(\"Opened stored original file as Aux \" + SAVED_ORIGINAL_FILENAME_EXTENSION);\n+    } catch (IOException ioEx) {\n+      IOUtils.closeQuietly(storedOriginalChannel);\n+      // The original file not saved, or could not be opened.\n+      logger.fine(\"Failed to open stored original file as Aux \" + SAVED_ORIGINAL_FILENAME_EXTENSION + \"!\");\n+      return null;\n+    }\n \n+    if (originalMimeType != null && !originalMimeType.isEmpty()) {\n+      if (originalMimeType.matches(\"application/x-dvn-.*-zip\")) {\n+        inputStreamIO.setMimeType(\"application/zip\");\n+      } else {\n+        inputStreamIO.setMimeType(originalMimeType);\n+      }\n+    } else {\n+      inputStreamIO.setMimeType(\"application/x-unknown\");\n     }\n \n+    inputStreamIO.setFileName(dataFile.getOriginalFileName());\n+\n+    return inputStreamIO;\n+\n+  }\n+\n     /* \n             DataFile.getOriginalFileName() method replaces this code\n     private static String generateOriginalExtension(String fileType) {\n",
+            "diff_size": 89
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/57/StoredOriginalFile.java\nindex 587cf847faf..ee744b49ab5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/57/StoredOriginalFile.java\n@@ -20,32 +20,29 @@\n package edu.harvard.iq.dataverse.dataaccess;\n \n import java.io.IOException;\n-\n import edu.harvard.iq.dataverse.DataFile;\n import java.nio.channels.Channel;\n import java.nio.channels.Channels;\n import java.nio.channels.ReadableByteChannel;\n import java.util.logging.Logger;\n-\n import org.apache.tika.io.IOUtils;\n /**\n  *\n  * @author Leonid Andreev\n  */\n+\n+\n public class StoredOriginalFile {\n+\n     private static Logger logger = Logger.getLogger(StoredOriginalFile.class.getPackage().getName());\n-    \n-    public StoredOriginalFile () {\n-        \n-    }\n-    \n+\n+    public StoredOriginalFile() {}\n+\n     public static final String SAVED_ORIGINAL_FILENAME_EXTENSION = \"orig\";\n-    \n+\n     public static StorageIO<DataFile> retreive(StorageIO<DataFile> storageIO) {\n         String originalMimeType;\n-\n         DataFile dataFile = storageIO.getDataFile();\n-\n         if (dataFile == null) {\n             return null;\n         }\n@@ -55,22 +52,19 @@ public class StoredOriginalFile {\n         } else {\n             return null;\n         }\n-\n-        long storedOriginalSize; \n+        long storedOriginalSize;\n         InputStreamIO inputStreamIO;\n         Channel storedOriginalChannel = null;\n         try {\n             storageIO.open();\n             storedOriginalChannel = storageIO.openAuxChannel(SAVED_ORIGINAL_FILENAME_EXTENSION);\n-            storedOriginalSize = dataFile.getDataTable().getOriginalFileSize() != null ? \n-                    dataFile.getDataTable().getOriginalFileSize() : \n-                    storageIO.getAuxObjectSize(SAVED_ORIGINAL_FILENAME_EXTENSION);\n+            storedOriginalSize = dataFile.getDataTable().getOriginalFileSize() != null ? dataFile.getDataTable().getOriginalFileSize() : storageIO.getAuxObjectSize(SAVED_ORIGINAL_FILENAME_EXTENSION);\n             inputStreamIO = new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n-            logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n+            logger.fine(\"Opened stored original file as Aux \" + SAVED_ORIGINAL_FILENAME_EXTENSION);\n         } catch (IOException ioEx) {\n-        \tIOUtils.closeQuietly(storedOriginalChannel);\n-        \t// The original file not saved, or could not be opened.\n-            logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n+            IOUtils.closeQuietly(storedOriginalChannel);\n+            // The original file not saved, or could not be opened.\n+            logger.fine(\"Failed to open stored original file as Aux \" + SAVED_ORIGINAL_FILENAME_EXTENSION + \"!\");\n             return null;\n         }\n \n@@ -83,11 +77,8 @@ public class StoredOriginalFile {\n         } else {\n             inputStreamIO.setMimeType(\"application/x-unknown\");\n         }\n-\n         inputStreamIO.setFileName(dataFile.getOriginalFileName());\n-\n         return inputStreamIO;\n-\n     }\n \n     /* \n@@ -116,4 +107,5 @@ public class StoredOriginalFile {\n         logger.severe(fileType + \" does not have an associated file extension\");\n         return \"\";\n     } */\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 27
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "72",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/57/StoredOriginalFile.java\nindex 587cf847faf..a6240069fb0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/57/StoredOriginalFile.java\n@@ -68,7 +68,7 @@ public class StoredOriginalFile {\n             inputStreamIO = new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n             logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n         } catch (IOException ioEx) {\n-        \tIOUtils.closeQuietly(storedOriginalChannel);\n+        IOUtils.closeQuietly(storedOriginalChannel);\n         \t// The original file not saved, or could not be opened.\n             logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n             return null;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "72",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/57/StoredOriginalFile.java\nindex 587cf847faf..269988eaa76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/57/StoredOriginalFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/57/StoredOriginalFile.java\n@@ -68,7 +68,7 @@ public class StoredOriginalFile {\n             inputStreamIO = new InputStreamIO(Channels.newInputStream((ReadableByteChannel) storedOriginalChannel), storedOriginalSize);\n             logger.fine(\"Opened stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION);\n         } catch (IOException ioEx) {\n-        \tIOUtils.closeQuietly(storedOriginalChannel);\n+            IOUtils.closeQuietly(storedOriginalChannel);\n         \t// The original file not saved, or could not be opened.\n             logger.fine(\"Failed to open stored original file as Aux \"+SAVED_ORIGINAL_FILENAME_EXTENSION+\"!\");\n             return null;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

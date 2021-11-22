@@ -1,0 +1,151 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1392",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "105",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "89",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1392/ConnectRandomlyToServerGroupImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1392/ConnectRandomlyToServerGroupImpl.java\nindex b417082e63d..bde240bd42c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1392/ConnectRandomlyToServerGroupImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1392/ConnectRandomlyToServerGroupImpl.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.upstream.strategies;\n \n import java.util.List;\n@@ -32,38 +33,37 @@ import org.neo4j.causalclustering.identity.MemberId;\n \n public class ConnectRandomlyToServerGroupImpl\n {\n-    private final List<String> groups;\n-    private final TopologyService topologyService;\n-    private final MemberId myself;\n-    private final Random random = new Random();\n-\n-    ConnectRandomlyToServerGroupImpl( List<String> groups, TopologyService topologyService, MemberId myself )\n-    {\n-        this.groups = groups;\n-        this.topologyService = topologyService;\n-        this.myself = myself;\n-    }\n+  private final List<String> groups;\n+  private final TopologyService topologyService;\n+  private final MemberId myself;\n+  private final Random random = new Random();\n \n-    public Optional<MemberId> upstreamDatabase()\n-    {\n-        Map<MemberId,ReadReplicaInfo> replicas = topologyService.localReadReplicas().members();\n+  ConnectRandomlyToServerGroupImpl(List<String> groups, TopologyService topologyService, MemberId myself)\n+  {\n+    this.groups = groups;\n+    this.topologyService = topologyService;\n+    this.myself = myself;\n+  }\n \n-        List<MemberId> choices =\n-                groups.stream().flatMap( group -> replicas.entrySet().stream().filter( isMyGroupAndNotMe( group ) ) ).map( Map.Entry::getKey ).collect(\n-                        Collectors.toList() );\n+  public Optional<MemberId> upstreamDatabase()\n+  {\n+    Map<MemberId, ReadReplicaInfo> replicas = topologyService.localReadReplicas().members();\n \n-        if ( choices.isEmpty() )\n-        {\n-            return Optional.empty();\n-        }\n-        else\n-        {\n-            return Optional.of( choices.get( random.nextInt( choices.size() ) ) );\n-        }\n-    }\n+    List<MemberId> choices =\n+        groups.stream().flatMap(group -> replicas.entrySet().stream().filter(isMyGroupAndNotMe(group))).map(Map.Entry::getKey).collect(\n+            Collectors.toList());\n \n-    private Predicate<Map.Entry<MemberId,ReadReplicaInfo>> isMyGroupAndNotMe( String group )\n+    if (choices.isEmpty())\n     {\n-        return entry -> entry.getValue().groups().contains( group ) && !entry.getKey().equals( myself );\n+      return Optional.empty();\n+    } else\n+    {\n+      return Optional.of(choices.get(random.nextInt(choices.size())));\n     }\n+  }\n+\n+  private Predicate<Map.Entry<MemberId, ReadReplicaInfo>> isMyGroupAndNotMe(String group)\n+  {\n+    return entry -> entry.getValue().groups().contains(group) && !entry.getKey().equals(myself);\n+  }\n }\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 191).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1392/ConnectRandomlyToServerGroupImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1392/ConnectRandomlyToServerGroupImpl.java\nindex b417082e63d..84ba268e5fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1392/ConnectRandomlyToServerGroupImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1392/ConnectRandomlyToServerGroupImpl.java\n@@ -48,11 +48,8 @@ public class ConnectRandomlyToServerGroupImpl\n     {\n         Map<MemberId,ReadReplicaInfo> replicas = topologyService.localReadReplicas().members();\n \n-        List<MemberId> choices =\n-                groups.stream().flatMap( group -> replicas.entrySet().stream().filter( isMyGroupAndNotMe( group ) ) ).map( Map.Entry::getKey ).collect(\n-                        Collectors.toList() );\n-\n-        if ( choices.isEmpty() )\n+        List<MemberId> choices = groups.stream().flatMap( group -> replicas.entrySet().stream().filter( isMyGroupAndNotMe( group ) ) ).map( Map.Entry::getKey ).collect( Collectors.toList() );\n+if ( choices.isEmpty() )\n         {\n             return Optional.empty();\n         }\n@@ -66,4 +63,4 @@ public class ConnectRandomlyToServerGroupImpl\n     {\n         return entry -> entry.getValue().groups().contains( group ) && !entry.getKey().equals( myself );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

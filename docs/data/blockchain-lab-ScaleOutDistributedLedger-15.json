@@ -1,0 +1,86 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "15",
+    "information": {
+        "errors": [
+            {
+                "line": "43",
+                "column": "13",
+                "severity": "warning",
+                "message": "'if' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\t\t\tNode node = entry.getKey();\n\t\t\tList<Block> blockList = entry.getValue();\n\t\t\tif(!blockList.isEmpty()) {\n\t\t\t\t// Convert Block to BlockMessage\n\t\t\t\tList<BlockMessage> blockMessageList = new ArrayList<>();\n\t\t\t\t// Don't use \"previousBlock\" pointer in the first block",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "43",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/15/ProofMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/15/ProofMessage.java\nindex b34528107ff..6d6c1e55742 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/15/ProofMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/15/ProofMessage.java\n@@ -19,47 +19,48 @@ import java.util.logging.Level;\n  * Proof message for netty.\n  */\n public class ProofMessage extends Message {\n-\t\n-\t@Getter\n-\tprivate final TransactionMessage transactionMessage;\n \n-\t/**\n-\t * Same map as in the original proof.\n-\t * Map: node id, list of blocks\n-\t */\n-\t@Getter\n-\tprivate final Map<Integer, List<BlockMessage>> chainUpdates;\n-\t\n-\t/**\n-\t * Constructor.\n-\t * @param proof - original proof \n-\t */\n-\tpublic ProofMessage(Proof proof) {\n-\t\tthis.transactionMessage = new TransactionMessage(proof.getTransaction());\n-\t\tthis.chainUpdates = new HashMap<>();\n-\t\tfor (Map.Entry<Node, List<Block>> entry : proof.getChainUpdates().entrySet()) {\n-\t\t\tNode node = entry.getKey();\n-\t\t\tList<Block> blockList = entry.getValue();\n-\t\t\tif(!blockList.isEmpty()) {\n-\t\t\t\t// Convert Block to BlockMessage\n-\t\t\t\tList<BlockMessage> blockMessageList = new ArrayList<>();\n-\t\t\t\t// Don't use \"previousBlock\" pointer in the first block\n-\t\t\t\tblockMessageList.add(new BlockMessage(blockList.get(0), true));\n-\t\t\t\tfor (int i = 1; i < blockList.size(); i++) {\n-\t\t\t\t\tBlock block = blockList.get(i);\n-\t\t\t\t\tblockMessageList.add(new BlockMessage(block));\n-\t\t\t\t}\n-\t\t\t\tthis.chainUpdates.put(node.getId(), blockMessageList);\n-\t\t\t}\n-\t\t}\n-\t}\n+    @Getter\n+    private final TransactionMessage transactionMessage;\n \n-\t@Override\n-\tpublic void handle(LocalStore localStore) {\n-\t\ttry {\n-\t\t\tCommunicationHelper.receiveTransaction(new Proof(this, localStore), localStore);\n-\t\t} catch (IOException e) {\n-\t\t\tLog.log(Level.SEVERE, \"Exception while handling proof message\", e);\n-\t\t}\n-\t}\n+    /**\n+     * Same map as in the original proof.\n+     * Map: node id, list of blocks\n+     */\n+    @Getter\n+    private final Map<Integer, List<BlockMessage>> chainUpdates;\n+\n+    /**\n+     * Constructor.\n+     *\n+     * @param proof - original proof\n+     */\n+    public ProofMessage(Proof proof) {\n+        this.transactionMessage = new TransactionMessage(proof.getTransaction());\n+        this.chainUpdates = new HashMap<>();\n+        for (Map.Entry<Node, List<Block>> entry : proof.getChainUpdates().entrySet()) {\n+            Node node = entry.getKey();\n+            List<Block> blockList = entry.getValue();\n+            if (!blockList.isEmpty()) {\n+                // Convert Block to BlockMessage\n+                List<BlockMessage> blockMessageList = new ArrayList<>();\n+                // Don't use \"previousBlock\" pointer in the first block\n+                blockMessageList.add(new BlockMessage(blockList.get(0), true));\n+                for (int i = 1; i < blockList.size(); i++) {\n+                    Block block = blockList.get(i);\n+                    blockMessageList.add(new BlockMessage(block));\n+                }\n+                this.chainUpdates.put(node.getId(), blockMessageList);\n+            }\n+        }\n+    }\n+\n+    @Override\n+    public void handle(LocalStore localStore) {\n+        try {\n+            CommunicationHelper.receiveTransaction(new Proof(this, localStore), localStore);\n+        } catch (IOException e) {\n+            Log.log(Level.SEVERE, \"Exception while handling proof message\", e);\n+        }\n+    }\n }\n",
+            "diff_size": 73
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "43",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/15/ProofMessage.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/15/ProofMessage.java\nindex b34528107ff..dcf351c8d5c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/15/ProofMessage.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/15/ProofMessage.java\n@@ -40,7 +40,7 @@ public class ProofMessage extends Message {\n \t\tfor (Map.Entry<Node, List<Block>> entry : proof.getChainUpdates().entrySet()) {\n \t\t\tNode node = entry.getKey();\n \t\t\tList<Block> blockList = entry.getValue();\n-\t\t\tif(!blockList.isEmpty()) {\n+\t\t\tif(!blockList .isEmpty()) {\n \t\t\t\t// Convert Block to BlockMessage\n \t\t\t\tList<BlockMessage> blockMessageList = new ArrayList<>();\n \t\t\t\t// Don't use \"previousBlock\" pointer in the first block\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "43",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

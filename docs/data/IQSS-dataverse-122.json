@@ -1,0 +1,87 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "122",
+    "information": {
+        "errors": [
+            {
+                "line": "31",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "@Path(\"roles\")\npublic class Roles extends AbstractApiBean {\n\t\n\t@GET\n\t@Path(\"{id}\")\n\tpublic Response viewRole( @PathParam(\"id\") String id) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "31",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/122/Roles.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/122/Roles.java\nindex 72add184a24..a88edef5930 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/122/Roles.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/122/Roles.java\n@@ -23,43 +23,45 @@ import javax.ws.rs.core.Response;\n \n /**\n  * Util API for managing roles. Might not make it to the production version.\n+ *\n  * @author michael\n  */\n @Stateless\n @Path(\"roles\")\n public class Roles extends AbstractApiBean {\n-\t\n-\t@GET\n-\t@Path(\"{id}\")\n-\tpublic Response viewRole( @PathParam(\"id\") String id) {\n-        return response( ()-> {\n-            final User user = findUserOrDie(); \n-            final DataverseRole role = findRoleOrDie(id);\n-            return ( permissionSvc.userOn(user, role.getOwner()).has(Permission.ManageDataversePermissions) ) \n-                    ? ok( json(role) ) : permissionError(\"Permission required to view roles.\");\n-        });\n-\t}\n-\t\n-    @DELETE\n-    @Path(\"{id}\")\n-    public Response deleteRole(@PathParam(\"id\") String id) {\n-        return response(req -> {\n-            DataverseRole role = findRoleOrDie(id);\n-            List<String> args = Arrays.asList(role.getName());\n-            if (role.getOwner() == null) {\n-                throw new WrappedResponse(forbidden(BundleUtil.getStringFromBundle(\"find.dataverse.role.error.role.builtin.not.allowed\", args)));\n-            }\n-            execCommand(new DeleteRoleCommand(req, role));\n-            return ok(\"role \" + role.getName() + \" deleted.\");\n-        });\n-    }\n-\t\n-\t@POST\n-\tpublic Response createNewRole( RoleDTO roleDto,\n-                                   @QueryParam(\"dvo\") String dvoIdtf ) {\n-        return response( req -> ok(json(execCommand(\n-                                  new CreateRoleCommand(roleDto.asRole(),\n-                                                        req,findDataverseOrDie(dvoIdtf))))));\n-\t}\n-    \n+\n+  @GET\n+  @Path(\"{id}\")\n+  public Response viewRole(@PathParam(\"id\") String id) {\n+    return response(() -> {\n+      final User user = findUserOrDie();\n+      final DataverseRole role = findRoleOrDie(id);\n+      return (permissionSvc.userOn(user, role.getOwner()).has(Permission.ManageDataversePermissions))\n+        ? ok(json(role)) : permissionError(\"Permission required to view roles.\");\n+    });\n+  }\n+\n+  @DELETE\n+  @Path(\"{id}\")\n+  public Response deleteRole(@PathParam(\"id\") String id) {\n+    return response(req -> {\n+      DataverseRole role = findRoleOrDie(id);\n+      List<String> args = Arrays.asList(role.getName());\n+      if (role.getOwner() == null) {\n+        throw new WrappedResponse(\n+          forbidden(BundleUtil.getStringFromBundle(\"find.dataverse.role.error.role.builtin.not.allowed\", args)));\n+      }\n+      execCommand(new DeleteRoleCommand(req, role));\n+      return ok(\"role \" + role.getName() + \" deleted.\");\n+    });\n+  }\n+\n+  @POST\n+  public Response createNewRole(RoleDTO roleDto,\n+                                @QueryParam(\"dvo\") String dvoIdtf) {\n+    return response(req -> ok(json(execCommand(\n+      new CreateRoleCommand(roleDto.asRole(),\n+        req, findDataverseOrDie(dvoIdtf))))));\n+  }\n+\n }\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/122/Roles.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/122/Roles.java\nindex 72add184a24..607a68385f7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/122/Roles.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/122/Roles.java\n@@ -10,7 +10,9 @@ import javax.ws.rs.GET;\n import javax.ws.rs.POST;\n import javax.ws.rs.Path;\n import javax.ws.rs.PathParam;\n+\n import static edu.harvard.iq.dataverse.util.json.JsonPrinter.*;\n+\n import edu.harvard.iq.dataverse.engine.command.impl.CreateRoleCommand;\n import edu.harvard.iq.dataverse.engine.command.impl.DeleteRoleCommand;\n import edu.harvard.iq.dataverse.util.BundleUtil;\n@@ -25,21 +27,22 @@ import javax.ws.rs.core.Response;\n  * Util API for managing roles. Might not make it to the production version.\n  * @author michael\n  */\n+\n+\n @Stateless\n @Path(\"roles\")\n public class Roles extends AbstractApiBean {\n-\t\n-\t@GET\n-\t@Path(\"{id}\")\n-\tpublic Response viewRole( @PathParam(\"id\") String id) {\n-        return response( ()-> {\n-            final User user = findUserOrDie(); \n+\n+    @GET\n+    @Path(\"{id}\")\n+    public Response viewRole(@PathParam(\"id\") String id) {\n+        return response(() -> {\n+            final User user = findUserOrDie();\n             final DataverseRole role = findRoleOrDie(id);\n-            return ( permissionSvc.userOn(user, role.getOwner()).has(Permission.ManageDataversePermissions) ) \n-                    ? ok( json(role) ) : permissionError(\"Permission required to view roles.\");\n+            return (permissionSvc.userOn(user, role.getOwner()).has(Permission.ManageDataversePermissions)) ? ok(json(role)) : permissionError(\"Permission required to view roles.\");\n         });\n-\t}\n-\t\n+    }\n+\n     @DELETE\n     @Path(\"{id}\")\n     public Response deleteRole(@PathParam(\"id\") String id) {\n@@ -53,13 +56,10 @@ public class Roles extends AbstractApiBean {\n             return ok(\"role \" + role.getName() + \" deleted.\");\n         });\n     }\n-\t\n-\t@POST\n-\tpublic Response createNewRole( RoleDTO roleDto,\n-                                   @QueryParam(\"dvo\") String dvoIdtf ) {\n-        return response( req -> ok(json(execCommand(\n-                                  new CreateRoleCommand(roleDto.asRole(),\n-                                                        req,findDataverseOrDie(dvoIdtf))))));\n-\t}\n-    \n-}\n+\n+    @POST\n+    public Response createNewRole(RoleDTO roleDto, @QueryParam(\"dvo\") String dvoIdtf) {\n+        return response(req -> ok(json(execCommand(new CreateRoleCommand(roleDto.asRole(), req, findDataverseOrDie(dvoIdtf))))));\n+    }\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 24
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "31",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "31",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

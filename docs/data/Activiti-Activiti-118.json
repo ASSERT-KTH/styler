@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "118",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.bpmn.helper;\n\nimport java.util.List;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/118/MessageThrowingEventListener.java\nindex 4beb93b47e7..cac78b17dbf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/118/MessageThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/118/MessageThrowingEventListener.java\nindex 4beb93b47e7..84514b100e8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/118/MessageThrowingEventListener.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n@@ -25,39 +26,36 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit\n /**\n  * An {@link ActivitiEventListener} that throws a message event when an event is dispatched to it. Sends the message to the execution the event was fired from. If the execution is not subscribed to a\n  * message, the process-instance is checked.\n- * \n-\n- * \n  */\n public class MessageThrowingEventListener extends BaseDelegateEventListener {\n \n-  protected String messageName;\n-  protected Class<?> entityClass;\n+    protected String messageName;\n+    protected Class<?> entityClass;\n+\n+    @Override\n+    public void onEvent(ActivitiEvent event) {\n+        if (isValidEvent(event)) {\n \n-  @Override\n-  public void onEvent(ActivitiEvent event) {\n-    if (isValidEvent(event)) {\n+            if (event.getProcessInstanceId() == null) {\n+                throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance\");\n+            }\n \n-      if (event.getProcessInstanceId() == null) {\n-        throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance\");\n-      }\n+            EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();\n+            List<MessageEventSubscriptionEntity> subscriptionEntities = eventSubscriptionEntityManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(\n+                    event.getProcessInstanceId(), messageName);\n \n-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();\n-      List<MessageEventSubscriptionEntity> subscriptionEntities = eventSubscriptionEntityManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(\n-          event.getProcessInstanceId(), messageName);\n-      \n-      for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {\n-        eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);\n-      }\n+            for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {\n+                eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);\n+            }\n+        }\n     }\n-  }\n \n-  public void setMessageName(String messageName) {\n-    this.messageName = messageName;\n-  }\n+    public void setMessageName(String messageName) {\n+        this.messageName = messageName;\n+    }\n \n-  @Override\n-  public boolean isFailOnException() {\n-    return true;\n-  }\n+    @Override\n+    public boolean isFailOnException() {\n+        return true;\n+    }\n }\n",
+            "diff_size": 33
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/118/MessageThrowingEventListener.java\nindex 4beb93b47e7..877909b130a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/118/MessageThrowingEventListener.java\n@@ -13,7 +13,6 @@\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n-\n import org.activiti.engine.ActivitiIllegalArgumentException;\n import org.activiti.engine.delegate.event.ActivitiEvent;\n import org.activiti.engine.delegate.event.ActivitiEventListener;\n@@ -29,6 +28,8 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit\n \n  * \n  */\n+\n+\n public class MessageThrowingEventListener extends BaseDelegateEventListener {\n \n   protected String messageName;\n@@ -37,17 +38,14 @@ public class MessageThrowingEventListener extends BaseDelegateEventListener {\n   @Override\n   public void onEvent(ActivitiEvent event) {\n     if (isValidEvent(event)) {\n-\n       if (event.getProcessInstanceId() == null) {\n         throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance\");\n       }\n \n       EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();\n-      List<MessageEventSubscriptionEntity> subscriptionEntities = eventSubscriptionEntityManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(\n-          event.getProcessInstanceId(), messageName);\n-      \n+      List<MessageEventSubscriptionEntity> subscriptionEntities = eventSubscriptionEntityManager.findMessageEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), messageName);\n       for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {\n-        eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);\n+          eventSubscriptionEntityManager.eventReceived(messageEventSubscriptionEntity, null, false);\n       }\n     }\n   }\n@@ -60,4 +58,4 @@ public class MessageThrowingEventListener extends BaseDelegateEventListener {\n   public boolean isFailOnException() {\n     return true;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/118/MessageThrowingEventListener.java\nindex 4beb93b47e7..cac78b17dbf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/118/MessageThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/118/MessageThrowingEventListener.java\nindex 4beb93b47e7..cac78b17dbf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/118/MessageThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/118/MessageThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,130 @@
+{
+    "project_name": "neo4j-neo4j",
+    "error_id": "2959",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "117",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "81",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/2959/DetachedCheckpointLogEntryWriter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/2959/DetachedCheckpointLogEntryWriter.java\nindex 44301e00251..05c5c7dd8ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/2959/DetachedCheckpointLogEntryWriter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/2959/DetachedCheckpointLogEntryWriter.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.transaction.log;\n \n import java.io.IOException;\n@@ -37,34 +38,34 @@ public class DetachedCheckpointLogEntryWriter\n     static final int RECORD_LENGTH_BYTES = 192;\n     protected final WritableChecksumChannel channel;\n \n-    public DetachedCheckpointLogEntryWriter( WritableChecksumChannel channel )\n+    public DetachedCheckpointLogEntryWriter(WritableChecksumChannel channel)\n     {\n         this.channel = channel;\n     }\n \n-    public void writeCheckPointEntry( LogPosition logPosition, Instant checkpointTime, StoreId storeId, String reason ) throws IOException\n+    public void writeCheckPointEntry(LogPosition logPosition, Instant checkpointTime, StoreId storeId, String reason) throws IOException\n     {\n         channel.beginChecksum();\n-        writeLogEntryHeader( DETACHED_CHECK_POINT, channel );\n+        writeLogEntryHeader(DETACHED_CHECK_POINT, channel);\n         byte[] reasonBytes = reason.getBytes();\n-        short length = safeCastIntToShort( min( reasonBytes.length, MAX_DESCRIPTION_LENGTH ) );\n+        short length = safeCastIntToShort(min(reasonBytes.length, MAX_DESCRIPTION_LENGTH));\n         byte[] descriptionBytes = new byte[MAX_DESCRIPTION_LENGTH];\n-        System.arraycopy( reasonBytes, 0, descriptionBytes, 0, length );\n-        channel.putLong( logPosition.getLogVersion() )\n-               .putLong( logPosition.getByteOffset() )\n-               .putLong( checkpointTime.toEpochMilli() )\n-               .putLong( storeId.getCreationTime() )\n-               .putLong( storeId.getRandomId() )\n-               .putLong( storeId.getStoreVersion() )\n-               .putLong( storeId.getUpgradeTime() )\n-               .putLong( storeId.getUpgradeTxId() )\n-               .putShort( length )\n-               .put( descriptionBytes, descriptionBytes.length );\n+        System.arraycopy(reasonBytes, 0, descriptionBytes, 0, length);\n+        channel.putLong(logPosition.getLogVersion())\n+          .putLong(logPosition.getByteOffset())\n+          .putLong(checkpointTime.toEpochMilli())\n+          .putLong(storeId.getCreationTime())\n+          .putLong(storeId.getRandomId())\n+          .putLong(storeId.getStoreVersion())\n+          .putLong(storeId.getUpgradeTime())\n+          .putLong(storeId.getUpgradeTxId())\n+          .putShort(length)\n+          .put(descriptionBytes, descriptionBytes.length);\n         channel.putChecksum();\n     }\n \n-    protected static void writeLogEntryHeader( byte type, WritableChannel channel ) throws IOException\n+    protected static void writeLogEntryHeader(byte type, WritableChannel channel) throws IOException\n     {\n-        channel.put( LATEST.versionByte() ).put( type );\n+        channel.put(LATEST.versionByte()).put(type);\n     }\n }\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,108 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "11",
+    "information": {
+        "errors": [
+            {
+                "line": "36",
+                "column": "5",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n    private final SnapshotThrottle snapshotThrottle;\n    private LocalSnapshotMetaTable metaTable;\n\n    public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n        super(path);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/11/SnapshotFileReader.java\nindex 17f81100d2d..f5d00f1e2c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/11/SnapshotFileReader.java\n@@ -33,6 +33,7 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n public class SnapshotFileReader extends LocalDirReader {\n \n     private final SnapshotThrottle snapshotThrottle;\n+\n     private LocalSnapshotMetaTable metaTable;\n \n     public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/11/SnapshotFileReader.java\nindex 17f81100d2d..4e6c2733d9e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/11/SnapshotFileReader.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.ignite.raft.jraft.storage.snapshot.local;\n \n import java.io.File;\n@@ -32,56 +33,57 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n  */\n public class SnapshotFileReader extends LocalDirReader {\n \n-    private final SnapshotThrottle snapshotThrottle;\n-    private LocalSnapshotMetaTable metaTable;\n+  private final SnapshotThrottle snapshotThrottle;\n \n-    public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n-        super(path);\n-        this.snapshotThrottle = snapshotThrottle;\n-    }\n+  private LocalSnapshotMetaTable metaTable;\n \n-    public LocalSnapshotMetaTable getMetaTable() {\n-        return this.metaTable;\n-    }\n+  public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n+    super(path);\n+    this.snapshotThrottle = snapshotThrottle;\n+  }\n \n-    public void setMetaTable(LocalSnapshotMetaTable metaTable) {\n-        this.metaTable = metaTable;\n-    }\n+  public LocalSnapshotMetaTable getMetaTable() {\n+    return this.metaTable;\n+  }\n \n-    public boolean open() {\n-        final File file = new File(getPath());\n-        return file.exists();\n-    }\n+  public void setMetaTable(LocalSnapshotMetaTable metaTable) {\n+    this.metaTable = metaTable;\n+  }\n \n-    @Override\n-    public int readFile(final ByteBufferCollector metaBufferCollector, final String fileName, final long offset,\n-        final long maxCount) throws IOException, RetryAgainException {\n-        // read the whole meta file.\n-        if (fileName.equals(Snapshot.JRAFT_SNAPSHOT_META_FILE)) {\n-            final ByteBuffer metaBuf = this.metaTable.saveToByteBufferAsRemote();\n-            // because bufRef will flip the buffer before using, so we must set the meta buffer position to it's limit.\n-            metaBuf.position(metaBuf.limit());\n-            metaBufferCollector.setBuffer(metaBuf);\n-            return EOF;\n-        }\n-        final LocalFileMeta fileMeta = this.metaTable.getFileMeta(fileName);\n-        if (fileMeta == null) {\n-            throw new FileNotFoundException(\"LocalFileMeta not found for \" + fileName);\n-        }\n+  public boolean open() {\n+    final File file = new File(getPath());\n+    return file.exists();\n+  }\n \n-        // go through throttle\n-        long newMaxCount = maxCount;\n-        if (this.snapshotThrottle != null) {\n-            newMaxCount = this.snapshotThrottle.throttledByThroughput(maxCount);\n-            if (newMaxCount < maxCount) {\n-                // if it's not allowed to read partly or it's allowed but\n-                // throughput is throttled to 0, try again.\n-                if (newMaxCount == 0) {\n-                    throw new RetryAgainException(\"readFile throttled by throughput\");\n-                }\n-            }\n-        }\n+  @Override\n+  public int readFile(final ByteBufferCollector metaBufferCollector, final String fileName, final long offset,\n+                      final long maxCount) throws IOException, RetryAgainException {\n+    // read the whole meta file.\n+    if (fileName.equals(Snapshot.JRAFT_SNAPSHOT_META_FILE)) {\n+      final ByteBuffer metaBuf = this.metaTable.saveToByteBufferAsRemote();\n+      // because bufRef will flip the buffer before using, so we must set the meta buffer position to it's limit.\n+      metaBuf.position(metaBuf.limit());\n+      metaBufferCollector.setBuffer(metaBuf);\n+      return EOF;\n+    }\n+    final LocalFileMeta fileMeta = this.metaTable.getFileMeta(fileName);\n+    if (fileMeta == null) {\n+      throw new FileNotFoundException(\"LocalFileMeta not found for \" + fileName);\n+    }\n \n-        return readFileWithMeta(metaBufferCollector, fileName, fileMeta, offset, newMaxCount);\n+    // go through throttle\n+    long newMaxCount = maxCount;\n+    if (this.snapshotThrottle != null) {\n+      newMaxCount = this.snapshotThrottle.throttledByThroughput(maxCount);\n+      if (newMaxCount < maxCount) {\n+        // if it's not allowed to read partly or it's allowed but\n+        // throughput is throttled to 0, try again.\n+        if (newMaxCount == 0) {\n+          throw new RetryAgainException(\"readFile throttled by throughput\");\n+        }\n+      }\n     }\n+\n+    return readFileWithMeta(metaBufferCollector, fileName, fileMeta, offset, newMaxCount);\n+  }\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "35",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/11/SnapshotFileReader.java\nindex 17f81100d2d..f958b6e31ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/11/SnapshotFileReader.java\n@@ -31,8 +31,7 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n  * Snapshot file reader\n  */\n public class SnapshotFileReader extends LocalDirReader {\n-\n-    private final SnapshotThrottle snapshotThrottle;\n+private final SnapshotThrottle snapshotThrottle;\n     private LocalSnapshotMetaTable metaTable;\n \n     public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n@@ -64,7 +63,8 @@ public class SnapshotFileReader extends LocalDirReader {\n             metaBufferCollector.setBuffer(metaBuf);\n             return EOF;\n         }\n-        final LocalFileMeta fileMeta = this.metaTable.getFileMeta(fileName);\n+\n+final LocalFileMeta fileMeta = this.metaTable.getFileMeta(fileName);\n         if (fileMeta == null) {\n             throw new FileNotFoundException(\"LocalFileMeta not found for \" + fileName);\n         }\n@@ -84,4 +84,4 @@ public class SnapshotFileReader extends LocalDirReader {\n \n         return readFileWithMeta(metaBufferCollector, fileName, fileMeta, offset, newMaxCount);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "35",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/11/SnapshotFileReader.java\nindex 17f81100d2d..0213edc2fa8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/11/SnapshotFileReader.java\n@@ -30,16 +30,23 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n /**\n  * Snapshot file reader\n  */\n+\n+\n public class SnapshotFileReader extends LocalDirReader {\n \n     private final SnapshotThrottle snapshotThrottle;\n+\n+\n     private LocalSnapshotMetaTable metaTable;\n \n+\n     public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n         super(path);\n+\n         this.snapshotThrottle = snapshotThrottle;\n     }\n \n+\n     public LocalSnapshotMetaTable getMetaTable() {\n         return this.metaTable;\n     }\n@@ -50,29 +57,41 @@ public class SnapshotFileReader extends LocalDirReader {\n \n     public boolean open() {\n         final File file = new File(getPath());\n+\n         return file.exists();\n     }\n \n-    @Override\n-    public int readFile(final ByteBufferCollector metaBufferCollector, final String fileName, final long offset,\n-        final long maxCount) throws IOException, RetryAgainException {\n+\n+    @Override public int readFile(\n+        final ByteBufferCollector metaBufferCollector,\n+        final String fileName,\n+        final long offset, final long maxCount\n+    ) throws IOException, RetryAgainException {\n         // read the whole meta file.\n         if (fileName.equals(Snapshot.JRAFT_SNAPSHOT_META_FILE)) {\n             final ByteBuffer metaBuf = this.metaTable.saveToByteBufferAsRemote();\n             // because bufRef will flip the buffer before using, so we must set the meta buffer position to it's limit.\n+\n             metaBuf.position(metaBuf.limit());\n+\n             metaBufferCollector.setBuffer(metaBuf);\n+\n             return EOF;\n         }\n+\n         final LocalFileMeta fileMeta = this.metaTable.getFileMeta(fileName);\n+\n         if (fileMeta == null) {\n             throw new FileNotFoundException(\"LocalFileMeta not found for \" + fileName);\n         }\n \n         // go through throttle\n+\n         long newMaxCount = maxCount;\n+\n         if (this.snapshotThrottle != null) {\n             newMaxCount = this.snapshotThrottle.throttledByThroughput(maxCount);\n+\n             if (newMaxCount < maxCount) {\n                 // if it's not allowed to read partly or it's allowed but\n                 // throughput is throttled to 0, try again.\n@@ -84,4 +103,4 @@ public class SnapshotFileReader extends LocalDirReader {\n \n         return readFileWithMeta(metaBufferCollector, fileName, fileMeta, offset, newMaxCount);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/11/SnapshotFileReader.java\nindex 17f81100d2d..f5d00f1e2c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/11/SnapshotFileReader.java\n@@ -33,6 +33,7 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n public class SnapshotFileReader extends LocalDirReader {\n \n     private final SnapshotThrottle snapshotThrottle;\n+\n     private LocalSnapshotMetaTable metaTable;\n \n     public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/11/SnapshotFileReader.java\nindex 17f81100d2d..f5d00f1e2c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/11/SnapshotFileReader.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/11/SnapshotFileReader.java\n@@ -33,6 +33,7 @@ import org.apache.ignite.raft.jraft.util.ByteBufferCollector;\n public class SnapshotFileReader extends LocalDirReader {\n \n     private final SnapshotThrottle snapshotThrottle;\n+\n     private LocalSnapshotMetaTable metaTable;\n \n     public SnapshotFileReader(String path, SnapshotThrottle snapshotThrottle) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

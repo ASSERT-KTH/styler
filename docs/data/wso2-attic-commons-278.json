@@ -1,0 +1,90 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "278",
+    "information": {
+        "errors": [
+            {
+                "line": "68",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 122).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    /** Global extension bundle registry **/\n    final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n    \n    /** Mapping from external variable engine identifier to the engine implementation. */\n    final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/278/Contexts.java\nindex 4e48cb1099b..07b3925ff65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/278/Contexts.java\n@@ -66,7 +66,7 @@ class Contexts {\n \n     /** Global extension bundle registry **/\n     final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n-    \n+\n     /** Mapping from external variable engine identifier to the engine implementation. */\n     final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/278/Contexts.java\nindex 4e48cb1099b..a3f6858940c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/278/Contexts.java\n@@ -49,107 +49,117 @@ import org.apache.ode.bpel.extension.ExtensionBundleRuntime;\n  * Aggregation of all the contexts provided to the BPEL engine by the integration layer.\n  */\n class Contexts {\n-    private static final Log __log = LogFactory.getLog(Contexts.class);\n-    \n-    TransactionManager txManager;\n-    MessageExchangeContext mexContext;\n-    Scheduler scheduler;\n-    EndpointReferenceContext eprContext;\n-    BindingContext bindingContext;\n-    BpelDAOConnectionFactory dao;\n-\n-    /** Global Message-Exchange interceptors. Must be copy-on-write!!! */\n-    final List<MessageExchangeInterceptor> globalIntereceptors = new CopyOnWriteArrayList<MessageExchangeInterceptor>();\n-\n-    /** Global event listeners. Must be copy-on-write!!! */\n-    final List<BpelEventListener> eventListeners = new CopyOnWriteArrayList<BpelEventListener>();\n-\n-    /** Global extension bundle registry **/\n-    final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n-    \n-    /** Mapping from external variable engine identifier to the engine implementation. */\n-    final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();\n-\n-    public boolean isTransacted() {\n-        try {\n-            return txManager.getStatus() == Status.STATUS_ACTIVE;\n-        } catch (SystemException e) {\n-            throw new BpelEngineException(e);\n-        }\n+  private static final Log __log = LogFactory.getLog(Contexts.class);\n+\n+  TransactionManager txManager;\n+  MessageExchangeContext mexContext;\n+  Scheduler scheduler;\n+  EndpointReferenceContext eprContext;\n+  BindingContext bindingContext;\n+  BpelDAOConnectionFactory dao;\n+\n+  /**\n+   * Global Message-Exchange interceptors. Must be copy-on-write!!!\n+   */\n+  final List<MessageExchangeInterceptor> globalIntereceptors = new CopyOnWriteArrayList<MessageExchangeInterceptor>();\n+\n+  /**\n+   * Global event listeners. Must be copy-on-write!!!\n+   */\n+  final List<BpelEventListener> eventListeners = new CopyOnWriteArrayList<BpelEventListener>();\n+\n+  /**\n+   * Global extension bundle registry\n+   **/\n+  final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n+\n+  /**\n+   * Mapping from external variable engine identifier to the engine implementation.\n+   */\n+  final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();\n+\n+  public boolean isTransacted() {\n+    try {\n+      return txManager.getStatus() == Status.STATUS_ACTIVE;\n+    } catch (SystemException e) {\n+      throw new BpelEngineException(e);\n     }\n+  }\n \n-    public void execTransaction(final Runnable transaction) {\n-        try {\n-            execTransaction(new Callable<Void>() {\n-\n-                public Void call() throws Exception {\n-                    transaction.run();\n-                    return null;\n-                }\n+  public void execTransaction(final Runnable transaction) {\n+    try {\n+      execTransaction(new Callable<Void>() {\n \n-            });\n-        } catch (Exception e) {\n-            throw new BpelEngineException(e);\n+        public Void call() throws Exception {\n+          transaction.run();\n+          return null;\n         }\n \n+      });\n+    } catch (Exception e) {\n+      throw new BpelEngineException(e);\n     }\n \n-    public <T> T execTransaction(Callable<T> transaction) throws Exception{\n+  }\n+\n+  public <T> T execTransaction(Callable<T> transaction) throws Exception {\n+    try {\n+      txManager.begin();\n+    } catch (Exception ex) {\n+      String errmsg = \"Internal Error, could not begin transaction.\";\n+      throw new BpelEngineException(errmsg, ex);\n+    }\n+    boolean success = false;\n+    try {\n+      T retval = transaction.call();\n+      success = (txManager.getStatus() != Status.STATUS_MARKED_ROLLBACK);\n+      return retval;\n+    } catch (Exception ex) {\n+      throw ex;\n+    } finally {\n+      if (success) {\n         try {\n-            txManager.begin();\n+          txManager.commit();\n         } catch (Exception ex) {\n-            String errmsg = \"Internal Error, could not begin transaction.\";\n-            throw new BpelEngineException(errmsg, ex);\n+          __log.error(\"Commit failed.\", ex);\n+          throw new BpelEngineException(\"Commit failed.\", ex);\n         }\n-        boolean success = false;\n+      } else {\n         try {\n-            T retval = transaction.call();\n-            success = (txManager.getStatus() != Status.STATUS_MARKED_ROLLBACK);\n-            return retval;\n+          txManager.rollback();\n         } catch (Exception ex) {\n-            throw ex;\n-        } finally {\n-            if (success)\n-                try {\n-                    txManager.commit();\n-                } catch (Exception ex) {\n-                    __log.error(\"Commit failed.\", ex);                    \n-                    throw new BpelEngineException(\"Commit failed.\", ex);\n-                }\n-            else\n-                try {\n-                    txManager.rollback();\n-                } catch (Exception ex) {\n-                    __log.error(\"Transaction rollback failed.\", ex);\n-                }\n+          __log.error(\"Transaction rollback failed.\", ex);\n         }\n+      }\n     }\n-    \n-    public void setRollbackOnly() {\n-        try {\n-            txManager.setRollbackOnly();\n-        } catch (SystemException se) {\n-            __log.error(\"Transaction set rollback only failed.\", se);\n-        }\n+  }\n+\n+  public void setRollbackOnly() {\n+    try {\n+      txManager.setRollbackOnly();\n+    } catch (SystemException se) {\n+      __log.error(\"Transaction set rollback only failed.\", se);\n     }\n+  }\n \n-    public void registerCommitSynchronizer(final Runnable runnable) {\n-        try {\n-            txManager.getTransaction().registerSynchronization(new Synchronization() {\n+  public void registerCommitSynchronizer(final Runnable runnable) {\n+    try {\n+      txManager.getTransaction().registerSynchronization(new Synchronization() {\n \n-                public void afterCompletion(int status) {\n-                    if (status == Status.STATUS_COMMITTED)\n-                        runnable.run();\n-                }\n+        public void afterCompletion(int status) {\n+          if (status == Status.STATUS_COMMITTED) {\n+            runnable.run();\n+          }\n+        }\n \n-                public void beforeCompletion() {\n+        public void beforeCompletion() {\n \n-                }\n-                \n-            });\n-        } catch (Exception ex) {\n-            throw new BpelEngineException(\"Error registering synchronizer.\" ,ex);\n         }\n+\n+      });\n+    } catch (Exception ex) {\n+      throw new BpelEngineException(\"Error registering synchronizer.\", ex);\n     }\n+  }\n \n }\n",
+            "diff_size": 117
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/278/Contexts.java\nindex 4e48cb1099b..ae1b1b960f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/278/Contexts.java\n@@ -113,10 +113,9 @@ class Contexts {\n                 try {\n                     txManager.commit();\n                 } catch (Exception ex) {\n-                    __log.error(\"Commit failed.\", ex);                    \n-                    throw new BpelEngineException(\"Commit failed.\", ex);\n-                }\n-            else\n+                    __log.error(\"Commit failed.\", ex);\n+throw new BpelEngineException(\"Commit failed.\", ex);\n+        } else\n                 try {\n                     txManager.rollback();\n                 } catch (Exception ex) {\n@@ -145,11 +144,10 @@ class Contexts {\n                 public void beforeCompletion() {\n \n                 }\n-                \n-            });\n+    });\n         } catch (Exception ex) {\n             throw new BpelEngineException(\"Error registering synchronizer.\" ,ex);\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/278/Contexts.java\nindex 4e48cb1099b..07b3925ff65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/278/Contexts.java\n@@ -66,7 +66,7 @@ class Contexts {\n \n     /** Global extension bundle registry **/\n     final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n-    \n+\n     /** Mapping from external variable engine identifier to the engine implementation. */\n     final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/278/Contexts.java\nindex 4e48cb1099b..07b3925ff65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/278/Contexts.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/278/Contexts.java\n@@ -66,7 +66,7 @@ class Contexts {\n \n     /** Global extension bundle registry **/\n     final Map<String, ExtensionBundleRuntime> extensionRegistry = new ConcurrentHashMap<String, ExtensionBundleRuntime>();\n-    \n+\n     /** Mapping from external variable engine identifier to the engine implementation. */\n     final HashMap<QName, ExternalVariableModule> externalVariableEngines = new HashMap<QName, ExternalVariableModule>();\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

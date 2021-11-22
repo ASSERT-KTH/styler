@@ -1,0 +1,82 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "350",
+    "information": {
+        "errors": [
+            {
+                "line": "64",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 122).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    catch (Throwable t)\n    {\n      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n    }\n\treturn validator;\n  }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/350/ClassloaderWSDL11ValidatorDelegate.java\nindex 96b7f6849dd..8c434008dcd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/350/ClassloaderWSDL11ValidatorDelegate.java\n@@ -61,8 +61,9 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n     }\n     catch (Throwable t)\n     {\n-      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n-    }\n-\treturn validator;\n+      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \"\n+      + validatorClassname, ILogger.SEV_ERROR, t);\n+     }\n+\t\t\treturn validator;\n   }\n }\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/350/ClassloaderWSDL11ValidatorDelegate.java\nindex 96b7f6849dd..7eb0d9f0fa6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/350/ClassloaderWSDL11ValidatorDelegate.java\n@@ -4,7 +4,7 @@\n  * are made available under the terms of the Eclipse Public License v1.0\n  * which accompanies this distribution, and is available at\n  * http://www.eclipse.org/legal/epl-v10.html\n- * \n+ *\n  * Contributors:\n  *     IBM Corporation - initial API and implementation\n  *******************************************************************************/\n@@ -14,55 +14,48 @@ package org.eclipse.wst.wsdl.validation.internal.wsdl11;\n import org.eclipse.wst.wsdl.validation.internal.logging.ILogger;\n import org.eclipse.wst.wsdl.validation.internal.logging.LoggerFactory;\n \n-public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n-{\n+public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate {\n   private String validatorClassname = null;\n   private ClassLoader classLoader = null;\n \n   /**\n    * Create a delegate for a validator by its class name.\n-   * \n+   *\n    * @param validatorClassname The name of the validator class.\n    */\n-  public ClassloaderWSDL11ValidatorDelegate(String validatorClassname)\n-  {\n-\tthis.validatorClassname = validatorClassname;\n+  public ClassloaderWSDL11ValidatorDelegate(String validatorClassname) {\n+    this.validatorClassname = validatorClassname;\n   }\n \n   /**\n-   * Create a delegate for a validator by its class name and \n+   * Create a delegate for a validator by its class name and\n    * a class loader to load the validator.\n-   * \n+   *\n    * @param validatorClassname The name of the validator class.\n-   * @param classLoader The class loader to use to load the validator.\n+   * @param classLoader        The class loader to use to load the validator.\n    */\n-  public ClassloaderWSDL11ValidatorDelegate(String validatorClassname, ClassLoader classLoader)\n-  {\n+  public ClassloaderWSDL11ValidatorDelegate(String validatorClassname, ClassLoader classLoader) {\n     this(validatorClassname);\n     this.classLoader = classLoader;\n   }\n-  \n+\n   /* (non-Javadoc)\n    * @see org.eclipse.wst.wsdl.validation.internal.wsdl11.WSDL11ValidatorDelegate#loadValidator()\n    */\n-  protected IWSDL11Validator loadValidator()\n-  {\n-\tIWSDL11Validator validator = null;\n-\tif(classLoader == null)\n-\t{\n-\t  classLoader = getClass().getClassLoader();\n-\t}\n-\ttry\n-\t{\n+  protected IWSDL11Validator loadValidator() {\n+    IWSDL11Validator validator = null;\n+    if (classLoader == null) {\n+      classLoader = getClass().getClassLoader();\n+    }\n+    try {\n       Class validatorClass =\n-      classLoader != null ? classLoader.loadClass(validatorClassname) : Class.forName(validatorClassname);\n+        classLoader != null ? classLoader.loadClass(validatorClassname) : Class.forName(validatorClassname);\n \n-      validator = (IWSDL11Validator)validatorClass.newInstance();\n-    }\n-    catch (Throwable t)\n-    {\n-      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n+      validator = (IWSDL11Validator) validatorClass.newInstance();\n+    } catch (Throwable t) {\n+      LoggerFactory.getInstance().getLogger()\n+        .log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n     }\n-\treturn validator;\n+    return validator;\n   }\n }\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "57",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/350/ClassloaderWSDL11ValidatorDelegate.java\nindex 96b7f6849dd..11e6d20b8ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/350/ClassloaderWSDL11ValidatorDelegate.java\n@@ -27,7 +27,7 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n   public ClassloaderWSDL11ValidatorDelegate(String validatorClassname)\n   {\n \tthis.validatorClassname = validatorClassname;\n-  }\n+    }\n \n   /**\n    * Create a delegate for a validator by its class name and \n@@ -54,8 +54,7 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n \t}\n \ttry\n \t{\n-      Class validatorClass =\n-      classLoader != null ? classLoader.loadClass(validatorClassname) : Class.forName(validatorClassname);\n+  Class validatorClass = classLoader != null ? classLoader.loadClass(validatorClassname) : Class.forName(validatorClassname);\n \n       validator = (IWSDL11Validator)validatorClass.newInstance();\n     }\n@@ -63,6 +62,6 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n     {\n       LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n     }\n-\treturn validator;\n+return validator;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "64",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/350/ClassloaderWSDL11ValidatorDelegate.java\nindex 96b7f6849dd..0b3499719e2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/350/ClassloaderWSDL11ValidatorDelegate.java\n@@ -63,6 +63,6 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n     {\n       LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n     }\n-\treturn validator;\n+  return validator;\n   }\n }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/350/ClassloaderWSDL11ValidatorDelegate.java\nindex 96b7f6849dd..8c434008dcd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/350/ClassloaderWSDL11ValidatorDelegate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/350/ClassloaderWSDL11ValidatorDelegate.java\n@@ -61,8 +61,9 @@ public class ClassloaderWSDL11ValidatorDelegate extends WSDL11ValidatorDelegate\n     }\n     catch (Throwable t)\n     {\n-      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \" + validatorClassname, ILogger.SEV_ERROR, t);\n-    }\n-\treturn validator;\n+      LoggerFactory.getInstance().getLogger().log(\"Unable to load validator \"\n+      + validatorClassname, ILogger.SEV_ERROR, t);\n+     }\n+\t\t\treturn validator;\n   }\n }\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

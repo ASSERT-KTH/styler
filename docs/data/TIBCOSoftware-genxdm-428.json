@@ -1,0 +1,96 @@
+{
+    "project_name": "TIBCOSoftware-genxdm",
+    "error_id": "428",
+    "information": {
+        "errors": [
+            {
+                "line": "44",
+                "column": "1",
+                "severity": "warning",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "{\n\n\t/**\n\t * @return a version of this which, when evaluated, returns a Node iterator in document order\n\t */\n\t@Override",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "45",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler/428/ReverseAxisExpr.java\nindex 039a5b73418..9fe135c9fd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler/428/ReverseAxisExpr.java\n@@ -41,10 +41,10 @@ abstract class ReverseAxisExpr\n     extends AxisExpr\r\n {\r\n \r\n-\t/**\r\n+/**\r\n \t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n \t */\r\n-\t@Override\r\n+ @Override\r\n \tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n \t{\r\n \t\treturn new ConvertibleNodeSetExprImpl()\r\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/intellij/428/ReverseAxisExpr.java\nindex 039a5b73418..765d300a971 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/intellij/428/ReverseAxisExpr.java\n@@ -3,7 +3,7 @@\n  * license details\r\n  * Portions copyright (c) 2002, Bill Lindsey : see copying.txt for license\r\n  * details\r\n- * \r\n+ *\r\n  * Portions copyright (c) 2009-2011 TIBCO Software Inc.\r\n  *\r\n  * Licensed under the Apache License, Version 2.0 (the \"License\");\r\n@@ -18,6 +18,7 @@\n  * See the License for the specific language governing permissions and\r\n  * limitations under the License.\r\n  */\r\n+\r\n package org.genxdm.processor.xpath.v10.expressions;\r\n \r\n import java.util.ArrayList;\r\n@@ -37,48 +38,45 @@ import org.genxdm.xpath.v10.NodeIterator;\n /**\r\n  * A reverse axis (XPath) expression represents a Node set which may need to be seen in document order (thus reversed)\r\n  */\r\n-abstract class ReverseAxisExpr \r\n-    extends AxisExpr\r\n-{\r\n+abstract class ReverseAxisExpr\r\n+    extends AxisExpr {\r\n \r\n-\t/**\r\n-\t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n-\t */\r\n-\t@Override\r\n-\tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n-\t{\r\n-\t\treturn new ConvertibleNodeSetExprImpl()\r\n-\t\t{\r\n+    /**\r\n+     * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n+     */\r\n+    @Override\r\n+    ConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr) {\r\n+        return new ConvertibleNodeSetExprImpl() {\r\n             @Override\r\n-\t\t\tpublic <N> NodeIterator<N> nodeIterator(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv) {\r\n-\t\t\t\treturn reverse(expr.nodeIterator(model, node, dynEnv), model);\r\n-\t\t\t}\r\n+            public <N> NodeIterator<N> nodeIterator(Model<N> model, final N node,\r\n+                                                    final NodeDynamicContext<N> dynEnv) {\r\n+                return reverse(expr.nodeIterator(model, node, dynEnv), model);\r\n+            }\r\n \r\n             @Override\r\n-            public Traverser traverseNodes(TraversingInformer contextNode, TraverserDynamicContext dynEnv) {\r\n+            public Traverser traverseNodes(TraversingInformer contextNode,\r\n+                                           TraverserDynamicContext dynEnv) {\r\n                 return reverse(expr.traverseNodes(contextNode, dynEnv));\r\n             }\r\n-\t\t};\r\n-\t}\r\n+        };\r\n+    }\r\n \r\n-\tprivate static <N> NodeIterator<N> reverse(final NodeIterator<N> iter, final Model<N> model)\r\n-\t{\r\n-\t    List<N> list = new ArrayList<N>(10);\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN node = iter.next();\r\n-\t\t\tif (node == null)\r\n-\t\t\t\tbreak;\r\n-\t\t\tlist.add(node);\r\n-\t\t}\r\n-\t\tCollections.reverse(list);\r\n-\t\treturn new ListNodeIterator<N>(list);\r\n-\t}\r\n+    private static <N> NodeIterator<N> reverse(final NodeIterator<N> iter, final Model<N> model) {\r\n+        List<N> list = new ArrayList<N>(10);\r\n+        for (; ; ) {\r\n+            N node = iter.next();\r\n+            if (node == null) {\r\n+                break;\r\n+            }\r\n+            list.add(node);\r\n+        }\r\n+        Collections.reverse(list);\r\n+        return new ListNodeIterator<N>(list);\r\n+    }\r\n \r\n-    private static Traverser reverse(final Traverser iter)\r\n-    {\r\n+    private static Traverser reverse(final Traverser iter) {\r\n         List<Cursor> list = new ArrayList<Cursor>();\r\n-        for (;iter.moveToNext();) {\r\n+        for (; iter.moveToNext(); ) {\r\n             Cursor cursor = iter.newCursor();\r\n             list.add(cursor);\r\n         }\r\n",
+            "diff_size": 37
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "44",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/naturalize/428/ReverseAxisExpr.java\nindex 039a5b73418..bbbeff4539b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/naturalize/428/ReverseAxisExpr.java\n@@ -38,51 +38,50 @@ import org.genxdm.xpath.v10.NodeIterator;\n  * A reverse axis (XPath) expression represents a Node set which may need to be seen in document order (thus reversed)\r\n  */\r\n abstract class ReverseAxisExpr \r\n-    extends AxisExpr\r\n-{\r\n-\r\n-\t/**\r\n+    extends AxisExpr\n+{\n+    /**\r\n \t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n \t */\r\n \t@Override\r\n \tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n-\t{\r\n-\t\treturn new ConvertibleNodeSetExprImpl()\r\n-\t\t{\r\n-            @Override\r\n-\t\t\tpublic <N> NodeIterator<N> nodeIterator(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv) {\r\n-\t\t\t\treturn reverse(expr.nodeIterator(model, node, dynEnv), model);\r\n-\t\t\t}\r\n-\r\n-            @Override\r\n+\t{\n+    return new ConvertibleNodeSetExprImpl()\r\n+\t\t{\n+    @Override\n+public <N> NodeIterator<N> nodeIterator(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv) {\n+    return reverse(expr.nodeIterator(model, node, dynEnv), model);\n+    }\n+\n+@Override\r\n             public Traverser traverseNodes(TraversingInformer contextNode, TraverserDynamicContext dynEnv) {\r\n                 return reverse(expr.traverseNodes(contextNode, dynEnv));\r\n-            }\r\n-\t\t};\r\n-\t}\r\n+            }\n+    };\n+    }\r\n \r\n \tprivate static <N> NodeIterator<N> reverse(final NodeIterator<N> iter, final Model<N> model)\r\n \t{\r\n-\t    List<N> list = new ArrayList<N>(10);\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN node = iter.next();\r\n-\t\t\tif (node == null)\r\n-\t\t\t\tbreak;\r\n-\t\t\tlist.add(node);\r\n-\t\t}\r\n+\t    List<N> list = new ArrayList<N>(10);\n+for (;;)\r\n+\t\t{\n+    N node = iter.next();\r\n+\t\t\tif (node == null)\n+    break;\n+list.add(node);\n+    }\r\n \t\tCollections.reverse(list);\r\n-\t\treturn new ListNodeIterator<N>(list);\r\n-\t}\r\n-\r\n-    private static Traverser reverse(final Traverser iter)\r\n+\t\treturn new ListNodeIterator<N>(list);\n+    }\n+\n+private static Traverser reverse(final Traverser iter)\r\n     {\r\n         List<Cursor> list = new ArrayList<Cursor>();\r\n-        for (;iter.moveToNext();) {\r\n+        for (; iter.moveToNext();) {\r\n             Cursor cursor = iter.newCursor();\r\n             list.add(cursor);\r\n         }\r\n         Collections.reverse(list);\r\n         return new ListTraverser(list);\r\n     }\r\n-}\r\n+}\n\\ No newline at end of file\n",
+            "diff_size": 30
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/codebuff/428/ReverseAxisExpr.java\nindex 039a5b73418..755fef9acc0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/codebuff/428/ReverseAxisExpr.java\n@@ -18,71 +18,75 @@\n  * See the License for the specific language governing permissions and\r\n  * limitations under the License.\r\n  */\r\n-package org.genxdm.processor.xpath.v10.expressions;\r\n-\r\n-import java.util.ArrayList;\r\n-import java.util.Collections;\r\n-import java.util.List;\r\n-\r\n-import org.genxdm.Model;\r\n-import org.genxdm.Cursor;\r\n-import org.genxdm.nodes.Traverser;\r\n-import org.genxdm.nodes.TraversingInformer;\r\n-import org.genxdm.processor.xpath.v10.iterators.ListNodeIterator;\r\n-import org.genxdm.processor.xpath.v10.iterators.ListTraverser;\r\n-import org.genxdm.xpath.v10.TraverserDynamicContext;\r\n-import org.genxdm.xpath.v10.NodeDynamicContext;\r\n+package org.genxdm.processor.xpath.v10.expressions;\n+\n+import java.util.ArrayList;\n+import java.util.Collections;\n+import java.util.List;\n+import org.genxdm.Model;\n+import org.genxdm.Cursor;\n+import org.genxdm.nodes.Traverser;\n+import org.genxdm.nodes.TraversingInformer;\n+import org.genxdm.processor.xpath.v10.iterators.ListNodeIterator;\n+import org.genxdm.processor.xpath.v10.iterators.ListTraverser;\n+import org.genxdm.xpath.v10.TraverserDynamicContext;\n+import org.genxdm.xpath.v10.NodeDynamicContext;\n import org.genxdm.xpath.v10.NodeIterator;\r\n \r\n /**\r\n  * A reverse axis (XPath) expression represents a Node set which may need to be seen in document order (thus reversed)\r\n- */\r\n-abstract class ReverseAxisExpr \r\n-    extends AxisExpr\r\n+ */\n+\n+abstract class ReverseAxisExpr extends AxisExpr\n {\r\n \r\n-\t/**\r\n-\t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n-\t */\r\n-\t@Override\r\n-\tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n-\t{\r\n-\t\treturn new ConvertibleNodeSetExprImpl()\r\n-\t\t{\r\n-            @Override\r\n-\t\t\tpublic <N> NodeIterator<N> nodeIterator(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv) {\r\n-\t\t\t\treturn reverse(expr.nodeIterator(model, node, dynEnv), model);\r\n-\t\t\t}\r\n-\r\n-            @Override\r\n-            public Traverser traverseNodes(TraversingInformer contextNode, TraverserDynamicContext dynEnv) {\r\n-                return reverse(expr.traverseNodes(contextNode, dynEnv));\r\n-            }\r\n-\t\t};\r\n-\t}\r\n-\r\n-\tprivate static <N> NodeIterator<N> reverse(final NodeIterator<N> iter, final Model<N> model)\r\n-\t{\r\n-\t    List<N> list = new ArrayList<N>(10);\r\n-\t\tfor (;;)\r\n-\t\t{\r\n-\t\t\tN node = iter.next();\r\n-\t\t\tif (node == null)\r\n-\t\t\t\tbreak;\r\n-\t\t\tlist.add(node);\r\n-\t\t}\r\n-\t\tCollections.reverse(list);\r\n-\t\treturn new ListNodeIterator<N>(list);\r\n-\t}\r\n-\r\n-    private static Traverser reverse(final Traverser iter)\r\n-    {\r\n-        List<Cursor> list = new ArrayList<Cursor>();\r\n-        for (;iter.moveToNext();) {\r\n-            Cursor cursor = iter.newCursor();\r\n-            list.add(cursor);\r\n-        }\r\n-        Collections.reverse(list);\r\n-        return new ListTraverser(list);\r\n-    }\r\n-}\r\n+    /**\r\n+     * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n+     */\n+\n+    @Override\n+    ConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\n+    {\n+        return new ConvertibleNodeSetExprImpl()\n+        {\n+\n+            @Override\n+            public <N> NodeIterator<N> nodeIterator(Model<N> model, final N node, final NodeDynamicContext<N> dynEnv)\n+            {\n+                return reverse(expr.nodeIterator(model, node, dynEnv), model);\n+            }\n+\n+            @Override\n+            public Traverser traverseNodes(TraversingInformer contextNode, TraverserDynamicContext dynEnv)\n+            {\n+                return reverse(expr.traverseNodes(contextNode, dynEnv));\n+            }\n+        };\n+    }\n+\n+    private static <N> NodeIterator<N> reverse(final NodeIterator<N> iter, final Model<N> model)\n+    {\n+        List<N> list = new ArrayList<N>(10);\n+        for (;;)\n+        {\n+            N node = iter.next();\n+            if (node == null)\n+            break;\n+            list.add(node);\n+        }\n+        Collections.reverse(list);\n+        return new ListNodeIterator<N>(list);\n+    }\n+\n+    private static Traverser reverse(final Traverser iter)\n+    {\n+        List<Cursor> list = new ArrayList<Cursor>();\n+        for (; iter.moveToNext() ;)\n+        {\n+            Cursor cursor = iter.newCursor();\n+            list.add(cursor);\n+        }\n+        Collections.reverse(list);\n+        return new ListTraverser(list);\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 67
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "45",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_random/428/ReverseAxisExpr.java\nindex 039a5b73418..9fe135c9fd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_random/428/ReverseAxisExpr.java\n@@ -41,10 +41,10 @@ abstract class ReverseAxisExpr\n     extends AxisExpr\r\n {\r\n \r\n-\t/**\r\n+/**\r\n \t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n \t */\r\n-\t@Override\r\n+ @Override\r\n \tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n \t{\r\n \t\treturn new ConvertibleNodeSetExprImpl()\r\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "45",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_three_grams/428/ReverseAxisExpr.java\nindex 039a5b73418..a03f3b28057 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/errored/1/428/ReverseAxisExpr.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/TIBCOSoftware-genxdm/styler_three_grams/428/ReverseAxisExpr.java\n@@ -41,10 +41,10 @@ abstract class ReverseAxisExpr\n     extends AxisExpr\r\n {\r\n \r\n-\t/**\r\n+    /**\r\n \t * @return a version of this which, when evaluated, returns a Node iterator in document order\r\n \t */\r\n-\t@Override\r\n+ @Override\r\n \tConvertibleNodeSetExprImpl makeDocumentOrderExpr(final ConvertibleNodeSetExprImpl expr)\r\n \t{\r\n \t\treturn new ConvertibleNodeSetExprImpl()\r\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

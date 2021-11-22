@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "399",
+    "information": {
+        "errors": [
+            {
+                "line": "115",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 134).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                Throwable throwable = new Exception();\n                String stackTraceString = getStackTrace(throwable);\n                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state + \"\\n\" + stackTraceString);\n            }\n            if (_depth <= 0)\n                throw new IllegalStateException(\"Too many release() calls.\");",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/399/NStateLatch.java\nindex 036894902d1..7057ef61190 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/399/NStateLatch.java\n@@ -112,9 +112,10 @@ public class NStateLatch {\n             if (_state != state) {\n                 Throwable throwable = new Exception();\n                 String stackTraceString = getStackTrace(throwable);\n-                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state + \"\\n\" + stackTraceString);\n-            }\n-            if (_depth <= 0)\n+                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state\n+                          + \"\\n\" + stackTraceString);\n+             }\n+             if (_depth <= 0)\n                 throw new IllegalStateException(\"Too many release() calls.\");\n \n             _depth --;\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/399/NStateLatch.java\nindex 036894902d1..5340bc3f14c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/399/NStateLatch.java\n@@ -41,99 +41,118 @@ import java.util.concurrent.locks.ReentrantLock;\n  * @author Maciej Szefler ( m s z e f l e r @ g m a i l . c o m )\n  */\n public class NStateLatch {\n-    static final Log __log = LogFactory.getLog(NStateLatch.class);\n-\n-    /** Current state. */\n-    private int _state = -1;\n-\n-    /** Current depth (i.e. number of enter() calls) */\n-    private int _depth = 0;\n-\n-    /** Action for state transition ?-->i */\n-    protected Runnable _transitions[];\n-\n-    /** Synchronization lock .*/\n-    private Lock _lock;\n-\n-    /** _depth == 0 condition. */\n-    private Condition _depth0;\n-\n-    private boolean _transitioning = false;\n-\n-    /**\n-     * Constructor, the array of {@link Runnable}s defines the number of states and the transition\n-     * actions.\n-     * @param transitions action to perform when entering state x.\n-     */\n-    public NStateLatch(Runnable [] transitions) {\n-        _transitions = transitions;\n-        _lock = new ReentrantLock();\n-        _depth0 = _lock.newCondition();\n+  static final Log __log = LogFactory.getLog(NStateLatch.class);\n+\n+  /**\n+   * Current state.\n+   */\n+  private int _state = -1;\n+\n+  /**\n+   * Current depth (i.e. number of enter() calls)\n+   */\n+  private int _depth = 0;\n+\n+  /**\n+   * Action for state transition ?-->i\n+   */\n+  protected Runnable _transitions[];\n+\n+  /**\n+   * Synchronization lock .\n+   */\n+  private Lock _lock;\n+\n+  /**\n+   * _depth == 0 condition.\n+   */\n+  private Condition _depth0;\n+\n+  private boolean _transitioning = false;\n+\n+  /**\n+   * Constructor, the array of {@link Runnable}s defines the number of states and the transition\n+   * actions.\n+   *\n+   * @param transitions action to perform when entering state x.\n+   */\n+  public NStateLatch(Runnable[] transitions) {\n+    _transitions = transitions;\n+    _lock = new ReentrantLock();\n+    _depth0 = _lock.newCondition();\n+  }\n+\n+  public void latch(int state) {\n+    if (state >= _transitions.length || state < 0) {\n+      throw new IllegalArgumentException(\"Invalid state.\");\n     }\n \n-    public void latch(int state) {\n-        if (state >= _transitions.length || state < 0)\n-            throw new IllegalArgumentException(\"Invalid state.\");\n-\n-        _lock.lock();\n-        try {\n-            if (_transitioning )\n-                throw new IllegalStateException(\"Manipulating latch from transition. \");\n-\n-            if (_state != state) {\n-                // wait for the depth to become 0\n-                while (_depth != 0)\n-                    _depth0.awaitUninterruptibly();\n-\n-                if (_state != state) {\n-                    if (_transitions[state] != null)\n-                        try {\n-                            _transitioning = true;\n-                            _transitions[state].run();\n-                        } finally {\n-                            _transitioning = false;\n-                        }\n-                    _state = state;\n-                }\n-            }\n-        } finally {\n-            _depth ++;\n-            _lock.unlock();\n-        }\n-    }\n-\n-    public void release(int state) {\n-        _lock.lock();\n-        try {\n+    _lock.lock();\n+    try {\n+      if (_transitioning) {\n+        throw new IllegalStateException(\"Manipulating latch from transition. \");\n+      }\n \n-            if (_transitioning )\n-                throw new IllegalStateException(\"Manipulating latch from transition. \");\n+      if (_state != state) {\n+        // wait for the depth to become 0\n+        while (_depth != 0) {\n+          _depth0.awaitUninterruptibly();\n+        }\n \n-            if (_state != state) {\n-                Throwable throwable = new Exception();\n-                String stackTraceString = getStackTrace(throwable);\n-                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state + \"\\n\" + stackTraceString);\n+        if (_state != state) {\n+          if (_transitions[state] != null) {\n+            try {\n+              _transitioning = true;\n+              _transitions[state].run();\n+            } finally {\n+              _transitioning = false;\n             }\n-            if (_depth <= 0)\n-                throw new IllegalStateException(\"Too many release() calls.\");\n-\n-            _depth --;\n-\n-            if (_depth == 0)\n-                _depth0.signal();\n-        } finally {\n-            _lock.unlock();\n+          }\n+          _state = state;\n         }\n+      }\n+    } finally {\n+      _depth++;\n+      _lock.unlock();\n     }\n-\n-    public int getDepth(int state) {\n-        return (_state == state ? _depth : 0);\n-    }\n-\n-    public static String getStackTrace(Throwable aThrowable) {\n-        final Writer result = new StringWriter();\n-        final PrintWriter printWriter = new PrintWriter(result);\n-        aThrowable.printStackTrace(printWriter);\n-        return result.toString();\n+  }\n+\n+  public void release(int state) {\n+    _lock.lock();\n+    try {\n+\n+      if (_transitioning) {\n+        throw new IllegalStateException(\"Manipulating latch from transition. \");\n+      }\n+\n+      if (_state != state) {\n+        Throwable throwable = new Exception();\n+        String stackTraceString = getStackTrace(throwable);\n+        __log.error(\n+          \"Latch error, was releasing for state \" + state + \" but actually in \" + _state + \"\\n\" + stackTraceString);\n+      }\n+      if (_depth <= 0) {\n+        throw new IllegalStateException(\"Too many release() calls.\");\n+      }\n+\n+      _depth--;\n+\n+      if (_depth == 0) {\n+        _depth0.signal();\n+      }\n+    } finally {\n+      _lock.unlock();\n     }\n+  }\n+\n+  public int getDepth(int state) {\n+    return (_state == state ? _depth : 0);\n+  }\n+\n+  public static String getStackTrace(Throwable aThrowable) {\n+    final Writer result = new StringWriter();\n+    final PrintWriter printWriter = new PrintWriter(result);\n+    aThrowable.printStackTrace(printWriter);\n+    return result.toString();\n+  }\n }\n",
+            "diff_size": 142
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "115",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/399/NStateLatch.java\nindex 036894902d1..e536cf88322 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/399/NStateLatch.java\n@@ -65,7 +65,7 @@ public class NStateLatch {\n      * actions.\n      * @param transitions action to perform when entering state x.\n      */\n-    public NStateLatch(Runnable [] transitions) {\n+    public NStateLatch(Runnable[] transitions) {\n         _transitions = transitions;\n         _lock = new ReentrantLock();\n         _depth0 = _lock.newCondition();\n@@ -77,7 +77,7 @@ public class NStateLatch {\n \n         _lock.lock();\n         try {\n-            if (_transitioning )\n+            if (_transitioning)\n                 throw new IllegalStateException(\"Manipulating latch from transition. \");\n \n             if (_state != state) {\n@@ -106,7 +106,7 @@ public class NStateLatch {\n         _lock.lock();\n         try {\n \n-            if (_transitioning )\n+            if (_transitioning)\n                 throw new IllegalStateException(\"Manipulating latch from transition. \");\n \n             if (_state != state) {\n@@ -116,8 +116,7 @@ public class NStateLatch {\n             }\n             if (_depth <= 0)\n                 throw new IllegalStateException(\"Too many release() calls.\");\n-\n-            _depth --;\n+_depth --;\n \n             if (_depth == 0)\n                 _depth0.signal();\n@@ -136,4 +135,4 @@ public class NStateLatch {\n         aThrowable.printStackTrace(printWriter);\n         return result.toString();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "115",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/399/NStateLatch.java\nindex 036894902d1..7057ef61190 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/399/NStateLatch.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/399/NStateLatch.java\n@@ -112,9 +112,10 @@ public class NStateLatch {\n             if (_state != state) {\n                 Throwable throwable = new Exception();\n                 String stackTraceString = getStackTrace(throwable);\n-                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state + \"\\n\" + stackTraceString);\n-            }\n-            if (_depth <= 0)\n+                __log.error(\"Latch error, was releasing for state \" + state + \" but actually in \" + _state\n+                          + \"\\n\" + stackTraceString);\n+             }\n+             if (_depth <= 0)\n                 throw new IllegalStateException(\"Too many release() calls.\");\n \n             _depth --;\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

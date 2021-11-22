@@ -1,0 +1,104 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "229",
+    "information": {
+        "errors": [
+            {
+                "line": "6",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 102).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in\n * compliance with the License. You may obtain a copy of the License at\n *\n * https://opensource.org/licenses/Apache-2.0",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/229/PartGetNeighborAliasTableResult.java\nindex 583f83455a9..e87a8767ce9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/229/PartGetNeighborAliasTableResult.java\n@@ -21,74 +21,74 @@ import com.tencent.angel.ml.matrix.psf.get.base.PartitionGetResult;\n import io.netty.buffer.ByteBuf;\n \n public class PartGetNeighborAliasTableResult extends PartitionGetResult {\n-    private int partId;\n-    private long[][] nodeIdToNeighbors;\n+  private int partId;\n+  private long[][] nodeIdToNeighbors;\n \n-    public PartGetNeighborAliasTableResult(int partitionId, long[][] nodeIdToNeighbors) {\n-        this.partId = partitionId;\n-        this.nodeIdToNeighbors = nodeIdToNeighbors;\n-        assert (nodeIdToNeighbors != null);\n-    }\n+  public PartGetNeighborAliasTableResult(int partitionId, long[][] nodeIdToNeighbors) {\n+    this.partId = partitionId;\n+    this.nodeIdToNeighbors = nodeIdToNeighbors;\n+    assert (nodeIdToNeighbors != null);\n+  }\n \n-    public PartGetNeighborAliasTableResult() {\n-        this(-1, null);\n-    }\n+  public PartGetNeighborAliasTableResult() {\n+    this(-1, null);\n+  }\n \n-    public long[][] getNodeIdToNeighbors() {\n-        return nodeIdToNeighbors;\n-    }\n+  public long[][] getNodeIdToNeighbors() {\n+    return nodeIdToNeighbors;\n+  }\n \n-    public void setNodeIdToNeighbors(\n-            long[][] nodeIdToNeighbors) {\n-        this.nodeIdToNeighbors = nodeIdToNeighbors;\n-    }\n+  public void setNodeIdToNeighbors(\n+      long[][] nodeIdToNeighbors) {\n+    this.nodeIdToNeighbors = nodeIdToNeighbors;\n+  }\n \n-    public int getPartId() {\n-        return partId;\n-    }\n+  public int getPartId() {\n+    return partId;\n+  }\n \n-    @Override\n-    public void serialize(ByteBuf output) {\n-        output.writeInt(partId);\n-        output.writeInt(nodeIdToNeighbors.length);\n-        for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                output.writeInt(0);\n-            } else {\n-                output.writeInt(nodeIdToNeighbors[i].length);\n-                for (long value : nodeIdToNeighbors[i]) {\n-                    output.writeLong(value);\n-                }\n-            }\n+  @Override\n+  public void serialize(ByteBuf output) {\n+    output.writeInt(partId);\n+    output.writeInt(nodeIdToNeighbors.length);\n+    for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n+      if (nodeIdToNeighbors[i] == null) {\n+        output.writeInt(0);\n+      } else {\n+        output.writeInt(nodeIdToNeighbors[i].length);\n+        for (long value : nodeIdToNeighbors[i]) {\n+          output.writeLong(value);\n         }\n+      }\n     }\n+  }\n \n-    @Override\n-    public void deserialize(ByteBuf input) {\n-        partId = input.readInt();\n-        int size = input.readInt();\n-        nodeIdToNeighbors = new long[size][];\n+  @Override\n+  public void deserialize(ByteBuf input) {\n+    partId = input.readInt();\n+    int size = input.readInt();\n+    nodeIdToNeighbors = new long[size][];\n \n-        for (int i = 0; i < size; i++) {\n-            long[] neighbors = new long[input.readInt()];\n-            for (int j = 0; j < neighbors.length; j++) {\n-                neighbors[j] = input.readLong();\n-            }\n-            nodeIdToNeighbors[i] = neighbors;\n-        }\n+    for (int i = 0; i < size; i++) {\n+      long[] neighbors = new long[input.readInt()];\n+      for (int j = 0; j < neighbors.length; j++) {\n+        neighbors[j] = input.readLong();\n+      }\n+      nodeIdToNeighbors[i] = neighbors;\n     }\n+  }\n \n-    @Override\n-    public int bufferLen() {\n-        int len = 8;\n-        for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                len += 4 ;\n-            } else {\n-                len += 4 ;\n-                len += 8 * nodeIdToNeighbors[i].length;\n-            }\n-        }\n-        return len;\n+  @Override\n+  public int bufferLen() {\n+    int len = 8;\n+    for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n+      if (nodeIdToNeighbors[i] == null) {\n+        len += 4;\n+      } else {\n+        len += 4;\n+        len += 8 * nodeIdToNeighbors[i].length;\n+      }\n     }\n+    return len;\n+  }\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/229/PartGetNeighborAliasTableResult.java\nindex 583f83455a9..5269ae22382 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/229/PartGetNeighborAliasTableResult.java\n@@ -21,74 +21,73 @@ import com.tencent.angel.ml.matrix.psf.get.base.PartitionGetResult;\n import io.netty.buffer.ByteBuf;\n \n public class PartGetNeighborAliasTableResult extends PartitionGetResult {\n-    private int partId;\n+  private int partId;\n     private long[][] nodeIdToNeighbors;\n \n     public PartGetNeighborAliasTableResult(int partitionId, long[][] nodeIdToNeighbors) {\n-        this.partId = partitionId;\n+  this.partId = partitionId;\n         this.nodeIdToNeighbors = nodeIdToNeighbors;\n         assert (nodeIdToNeighbors != null);\n     }\n \n     public PartGetNeighborAliasTableResult() {\n-        this(-1, null);\n+  this(-1, null);\n     }\n \n     public long[][] getNodeIdToNeighbors() {\n-        return nodeIdToNeighbors;\n-    }\n+  return nodeIdToNeighbors;\n+  }\n \n-    public void setNodeIdToNeighbors(\n-            long[][] nodeIdToNeighbors) {\n-        this.nodeIdToNeighbors = nodeIdToNeighbors;\n-    }\n+    public void setNodeIdToNeighbors(long[][] nodeIdToNeighbors) {\n+  this.nodeIdToNeighbors = nodeIdToNeighbors;\n+  }\n \n     public int getPartId() {\n-        return partId;\n+  return partId;\n     }\n \n     @Override\n     public void serialize(ByteBuf output) {\n-        output.writeInt(partId);\n+  output.writeInt(partId);\n         output.writeInt(nodeIdToNeighbors.length);\n         for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                output.writeInt(0);\n+  if (nodeIdToNeighbors[i] == null) {\n+  output.writeInt(0);\n             } else {\n-                output.writeInt(nodeIdToNeighbors[i].length);\n+  output.writeInt(nodeIdToNeighbors[i].length);\n                 for (long value : nodeIdToNeighbors[i]) {\n-                    output.writeLong(value);\n+  output.writeLong(value);\n                 }\n-            }\n-        }\n-    }\n+  }\n+  }\n+  }\n \n     @Override\n     public void deserialize(ByteBuf input) {\n-        partId = input.readInt();\n+  partId = input.readInt();\n         int size = input.readInt();\n         nodeIdToNeighbors = new long[size][];\n \n         for (int i = 0; i < size; i++) {\n-            long[] neighbors = new long[input.readInt()];\n+  long[] neighbors = new long[input.readInt()];\n             for (int j = 0; j < neighbors.length; j++) {\n-                neighbors[j] = input.readLong();\n-            }\n+  neighbors[j] = input.readLong();\n+  }\n             nodeIdToNeighbors[i] = neighbors;\n         }\n-    }\n+  }\n \n     @Override\n     public int bufferLen() {\n-        int len = 8;\n+  int len = 8;\n         for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                len += 4 ;\n+  if (nodeIdToNeighbors[i] == null) {\n+  len += 4;\n             } else {\n-                len += 4 ;\n+  len += 4;\n                 len += 8 * nodeIdToNeighbors[i].length;\n             }\n-        }\n+  }\n         return len;\n     }\n-}\n+  }\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/229/PartGetNeighborAliasTableResult.java\nindex 583f83455a9..df194c98808 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/229/PartGetNeighborAliasTableResult.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/229/PartGetNeighborAliasTableResult.java\n@@ -21,74 +21,74 @@ import com.tencent.angel.ml.matrix.psf.get.base.PartitionGetResult;\n import io.netty.buffer.ByteBuf;\n \n public class PartGetNeighborAliasTableResult extends PartitionGetResult {\n-    private int partId;\n-    private long[][] nodeIdToNeighbors;\n \n-    public PartGetNeighborAliasTableResult(int partitionId, long[][] nodeIdToNeighbors) {\n-        this.partId = partitionId;\n-        this.nodeIdToNeighbors = nodeIdToNeighbors;\n-        assert (nodeIdToNeighbors != null);\n-    }\n+  private int partId;\n+  private long[][] nodeIdToNeighbors;\n \n-    public PartGetNeighborAliasTableResult() {\n-        this(-1, null);\n-    }\n+  public PartGetNeighborAliasTableResult(int partitionId, long[][] nodeIdToNeighbors) {\n+    this.partId = partitionId;\n+    this.nodeIdToNeighbors = nodeIdToNeighbors;\n+    assert (nodeIdToNeighbors != null);\n+  }\n \n-    public long[][] getNodeIdToNeighbors() {\n-        return nodeIdToNeighbors;\n-    }\n+  public PartGetNeighborAliasTableResult() {\n+    this(-1, null);\n+  }\n \n-    public void setNodeIdToNeighbors(\n-            long[][] nodeIdToNeighbors) {\n-        this.nodeIdToNeighbors = nodeIdToNeighbors;\n-    }\n+  public long[][] getNodeIdToNeighbors() {\n+    return nodeIdToNeighbors;\n+  }\n \n-    public int getPartId() {\n-        return partId;\n-    }\n+  public void setNodeIdToNeighbors(long[][] nodeIdToNeighbors) {\n+    this.nodeIdToNeighbors = nodeIdToNeighbors;\n+  }\n+\n+  public int getPartId() {\n+    return partId;\n+  }\n \n-    @Override\n-    public void serialize(ByteBuf output) {\n-        output.writeInt(partId);\n-        output.writeInt(nodeIdToNeighbors.length);\n-        for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                output.writeInt(0);\n-            } else {\n-                output.writeInt(nodeIdToNeighbors[i].length);\n-                for (long value : nodeIdToNeighbors[i]) {\n-                    output.writeLong(value);\n-                }\n-            }\n+  @Override\n+  public void serialize(ByteBuf output) {\n+    output.writeInt(partId);\n+    output.writeInt(nodeIdToNeighbors.length);\n+    for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n+      if (nodeIdToNeighbors[i] == null) {\n+        output.writeInt(0);\n+      } else {\n+        output.writeInt(nodeIdToNeighbors[i].length);\n+        for (long value : nodeIdToNeighbors[i]) {\n+          output.writeLong(value);\n         }\n+      }\n     }\n+  }\n \n-    @Override\n-    public void deserialize(ByteBuf input) {\n-        partId = input.readInt();\n-        int size = input.readInt();\n-        nodeIdToNeighbors = new long[size][];\n+  @Override\n+  public void deserialize(ByteBuf input) {\n+    partId = input.readInt();\n \n-        for (int i = 0; i < size; i++) {\n-            long[] neighbors = new long[input.readInt()];\n-            for (int j = 0; j < neighbors.length; j++) {\n-                neighbors[j] = input.readLong();\n-            }\n-            nodeIdToNeighbors[i] = neighbors;\n-        }\n+    int size = input.readInt();\n+    nodeIdToNeighbors = new long[size][];\n+    for (int i = 0; i < size; i++) {\n+      long[] neighbors = new long[input.readInt()];\n+      for (int j = 0; j < neighbors.length; j++) {\n+        neighbors[j] = input.readLong();\n+      }\n+      nodeIdToNeighbors[i] = neighbors;\n     }\n+  }\n \n-    @Override\n-    public int bufferLen() {\n-        int len = 8;\n-        for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n-            if (nodeIdToNeighbors[i] == null) {\n-                len += 4 ;\n-            } else {\n-                len += 4 ;\n-                len += 8 * nodeIdToNeighbors[i].length;\n-            }\n-        }\n-        return len;\n+  @Override\n+  public int bufferLen() {\n+    int len = 8;\n+    for (int i = 0; i < nodeIdToNeighbors.length; i++) {\n+      if (nodeIdToNeighbors[i] == null) {\n+        len += 4;\n+      } else {\n+        len += 4;\n+        len += 8 * nodeIdToNeighbors[i].length;\n+      }\n     }\n-}\n+    return len;\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 70
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

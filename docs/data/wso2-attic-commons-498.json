@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "498",
+    "information": {
+        "errors": [
+            {
+                "line": "115",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 191).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Override\n    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor, AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n        lengthToKeep = ((IntConstant) parameters[0]).getValue();\n\n        if (this.siddhiContext.isDistributedProcessingEnabled()) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/498/LengthBatchWindowProcessor.java\nindex 99a04afae9b..a93cf251dd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/498/LengthBatchWindowProcessor.java\n@@ -112,8 +112,9 @@ public class LengthBatchWindowProcessor extends WindowProcessor {\n     }\n \n     @Override\n-    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor, AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n-        lengthToKeep = ((IntConstant) parameters[0]).getValue();\n+    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor,\n+            AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n+         lengthToKeep = ((IntConstant) parameters[0]).getValue();\n \n         if (this.siddhiContext.isDistributedProcessingEnabled()) {\n             window = new SiddhiQueueGrid<StreamEvent>(elementId, this.siddhiContext, this.async);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/498/LengthBatchWindowProcessor.java\nindex 99a04afae9b..764f6a07159 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/498/LengthBatchWindowProcessor.java\n@@ -22,116 +22,118 @@ import java.util.List;\n \n public class LengthBatchWindowProcessor extends WindowProcessor {\n \n-    private int lengthToKeep;\n-    private List<InEvent> newEventList;\n-    private List<RemoveEvent> oldEventList;\n-\n-    private ISiddhiQueue<StreamEvent> window;\n-\n-    @Override\n-    protected void processEvent(InEvent event) {\n-        acquireLock();\n-        try {\n-            processLengthBatchWindow(event);\n-        } finally {\n-            releaseLock();\n-        }\n+  private int lengthToKeep;\n+  private List<InEvent> newEventList;\n+  private List<RemoveEvent> oldEventList;\n+\n+  private ISiddhiQueue<StreamEvent> window;\n+\n+  @Override\n+  protected void processEvent(InEvent event) {\n+    acquireLock();\n+    try {\n+      processLengthBatchWindow(event);\n+    } finally {\n+      releaseLock();\n     }\n-\n-    @Override\n-    protected void processEvent(InListEvent listEvent) {\n-        acquireLock();\n-        try {\n-            Event[] events = listEvent.getEvents();\n-            for (int i = 0, events1Length = listEvent.getActiveEvents(); i < events1Length; i++) {\n-                processLengthBatchWindow((InEvent) events[i]);\n-            }\n-        } finally {\n-            releaseLock();\n-        }\n+  }\n+\n+  @Override\n+  protected void processEvent(InListEvent listEvent) {\n+    acquireLock();\n+    try {\n+      Event[] events = listEvent.getEvents();\n+      for (int i = 0, events1Length = listEvent.getActiveEvents(); i < events1Length; i++) {\n+        processLengthBatchWindow((InEvent) events[i]);\n+      }\n+    } finally {\n+      releaseLock();\n     }\n-\n-    @Override\n-    public Iterator<StreamEvent> iterator() {\n-        return window.iterator();\n+  }\n+\n+  @Override\n+  public Iterator<StreamEvent> iterator() {\n+    return window.iterator();\n+  }\n+\n+  @Override\n+  public Iterator<StreamEvent> iterator(String predicate) {\n+    if (siddhiContext.isDistributedProcessingEnabled()) {\n+      return ((SiddhiQueueGrid<StreamEvent>) window).iterator(predicate);\n+    } else {\n+      return window.iterator();\n     }\n+  }\n \n-    @Override\n-    public Iterator<StreamEvent> iterator(String predicate) {\n-        if (siddhiContext.isDistributedProcessingEnabled()) {\n-            return ((SiddhiQueueGrid<StreamEvent>) window).iterator(predicate);\n-        } else {\n-            return window.iterator();\n-        }\n+  private void processLengthBatchWindow(InEvent event) {\n+    newEventList.add(event);\n+    if (log.isDebugEnabled()) {\n+      log.debug(\"newEventList size \" + newEventList.size() + \" with event \" + event);\n     }\n-\n-    private void processLengthBatchWindow(InEvent event) {\n-        newEventList.add(event);\n-        if (log.isDebugEnabled()) {\n-            log.debug(\"newEventList size \" + newEventList.size() + \" with event \" + event);\n-        }\n-        if (newEventList.size() == lengthToKeep) {\n-\n-            //sending old events\n-            oldEventList.clear();\n-            while (true) {\n-                RemoveEvent oldEvent = (RemoveEvent) window.poll();\n-                if (oldEvent == null) {\n-                    break;\n-                } else {\n-                    oldEvent.setExpiryTime(System.currentTimeMillis());\n-                    oldEventList.add(oldEvent);\n-                }\n-            }\n-            if (oldEventList.size() > 0) {\n-                nextProcessor.process(new RemoveListEvent(oldEventList.toArray(new RemoveEvent[oldEventList.size()])));\n-                oldEventList.clear();\n-            }\n-\n-            InEvent[] inEvents = newEventList.toArray(new InEvent[newEventList.size()]);\n-            for (InEvent inEvent : inEvents) {\n-                window.put(new RemoveEvent(inEvent, -1));\n-            }\n-            nextProcessor.process(new InListEvent(inEvents));\n-\n-            newEventList.clear();\n+    if (newEventList.size() == lengthToKeep) {\n+\n+      //sending old events\n+      oldEventList.clear();\n+      while (true) {\n+        RemoveEvent oldEvent = (RemoveEvent) window.poll();\n+        if (oldEvent == null) {\n+          break;\n+        } else {\n+          oldEvent.setExpiryTime(System.currentTimeMillis());\n+          oldEventList.add(oldEvent);\n         }\n+      }\n+      if (oldEventList.size() > 0) {\n+        nextProcessor.process(new RemoveListEvent(oldEventList.toArray(new RemoveEvent[oldEventList.size()])));\n+        oldEventList.clear();\n+      }\n+\n+      InEvent[] inEvents = newEventList.toArray(new InEvent[newEventList.size()]);\n+      for (InEvent inEvent : inEvents) {\n+        window.put(new RemoveEvent(inEvent, -1));\n+      }\n+      nextProcessor.process(new InListEvent(inEvents));\n+\n+      newEventList.clear();\n     }\n-\n-\n-    @Override\n-    protected Object[] currentState() {\n-        return new Object[]{window.currentState(), oldEventList, newEventList};\n+  }\n+\n+\n+  @Override\n+  protected Object[] currentState() {\n+    return new Object[] {window.currentState(), oldEventList, newEventList};\n+  }\n+\n+  @Override\n+  protected void restoreState(Object[] data) {\n+    window.restoreState((Object[]) data[0]);\n+    oldEventList = ((ArrayList<RemoveEvent>) data[1]);\n+    newEventList = ((ArrayList<InEvent>) data[2]);\n+  }\n+\n+  @Override\n+  protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor,\n+                      AbstractDefinition streamDefinition, String elementId, boolean async,\n+                      SiddhiContext siddhiContext) {\n+    lengthToKeep = ((IntConstant) parameters[0]).getValue();\n+\n+    if (this.siddhiContext.isDistributedProcessingEnabled()) {\n+      window = new SiddhiQueueGrid<StreamEvent>(elementId, this.siddhiContext, this.async);\n+    } else {\n+      window = new SiddhiQueue<StreamEvent>();\n     }\n-\n-    @Override\n-    protected void restoreState(Object[] data) {\n-        window.restoreState((Object[]) data[0]);\n-        oldEventList = ((ArrayList<RemoveEvent>) data[1]);\n-        newEventList = ((ArrayList<InEvent>) data[2]);\n+    oldEventList = new ArrayList<RemoveEvent>();\n+    if (this.siddhiContext.isDistributedProcessingEnabled()) {\n+      newEventList = this.siddhiContext.getHazelcastInstance().getList(elementId + \"-newEventList\");\n+    } else {\n+      newEventList = new ArrayList<InEvent>();\n     }\n \n-    @Override\n-    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor, AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n-        lengthToKeep = ((IntConstant) parameters[0]).getValue();\n-\n-        if (this.siddhiContext.isDistributedProcessingEnabled()) {\n-            window = new SiddhiQueueGrid<StreamEvent>(elementId, this.siddhiContext, this.async);\n-        } else {\n-            window = new SiddhiQueue<StreamEvent>();\n-        }\n-        oldEventList = new ArrayList<RemoveEvent>();\n-        if (this.siddhiContext.isDistributedProcessingEnabled()) {\n-            newEventList = this.siddhiContext.getHazelcastInstance().getList(elementId + \"-newEventList\");\n-        } else {\n-            newEventList = new ArrayList<InEvent>();\n-        }\n-\n-    }\n+  }\n \n-    @Override\n-    public void destroy(){\n+  @Override\n+  public void destroy() {\n \n-    }\n+  }\n \n }\n",
+            "diff_size": 142
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "115",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 191).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/498/LengthBatchWindowProcessor.java\nindex 99a04afae9b..0b4819350f0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/498/LengthBatchWindowProcessor.java\n@@ -130,8 +130,8 @@ public class LengthBatchWindowProcessor extends WindowProcessor {\n     }\n \n     @Override\n-    public void destroy(){\n+    public void destroy() {\n \n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "115",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 191).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/498/LengthBatchWindowProcessor.java\nindex 99a04afae9b..a93cf251dd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/498/LengthBatchWindowProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/498/LengthBatchWindowProcessor.java\n@@ -112,8 +112,9 @@ public class LengthBatchWindowProcessor extends WindowProcessor {\n     }\n \n     @Override\n-    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor, AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n-        lengthToKeep = ((IntConstant) parameters[0]).getValue();\n+    protected void init(Expression[] parameters, QueryPostProcessingElement nextProcessor,\n+            AbstractDefinition streamDefinition, String elementId, boolean async, SiddhiContext siddhiContext) {\n+         lengthToKeep = ((IntConstant) parameters[0]).getValue();\n \n         if (this.siddhiContext.isDistributedProcessingEnabled()) {\n             window = new SiddhiQueueGrid<StreamEvent>(elementId, this.siddhiContext, this.async);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

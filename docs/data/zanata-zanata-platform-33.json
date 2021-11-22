@@ -1,0 +1,87 @@
+{
+    "project_name": "zanata-zanata-platform",
+    "error_id": "33",
+    "information": {
+        "errors": [
+            {
+                "line": "92",
+                "column": "41",
+                "severity": "error",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "    public static void writeFileToOutputStream(File file, OutputStream output)\n            throws IOException {\n        byte[] buffer = new byte[4096]; // To hold file contents\n        int bytesRead;\n        try (FileInputStream input = new FileInputStream(file)) {\n            while ((bytesRead = input.read(buffer)) != -1) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/styler/33/FileUtil.java\nindex d9bf4785a45..318eeff250e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/styler/33/FileUtil.java\n@@ -89,8 +89,9 @@ public class FileUtil {\n      */\n     public static void writeFileToOutputStream(File file, OutputStream output)\n             throws IOException {\n-        byte[] buffer = new byte[4096]; // To hold file contents\n-        int bytesRead;\n+        byte[] buffer = new byte[4096];\n+        // To hold file contents\n+         int bytesRead;\n         try (FileInputStream input = new FileInputStream(file)) {\n             while ((bytesRead = input.read(buffer)) != -1) {\n                 output.write(buffer, 0, bytesRead);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "93",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/intellij/33/FileUtil.java\nindex d9bf4785a45..5ffde5bf7af 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/intellij/33/FileUtil.java\n@@ -18,6 +18,7 @@\n  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF\n  * site: http://www.fsf.org.\n  */\n+\n package org.zanata.util;\n \n import javax.annotation.Nullable;\n@@ -32,69 +33,69 @@ import java.io.OutputStream;\n  * @author Alex Eng <a href=\"mailto:aeng@redhat.com\">aeng@redhat.com</a>\n  */\n public class FileUtil {\n-    private static final org.slf4j.Logger log =\n-            org.slf4j.LoggerFactory.getLogger(FileUtil.class);\n+  private static final org.slf4j.Logger log =\n+    org.slf4j.LoggerFactory.getLogger(FileUtil.class);\n \n-    /**\n-     * Generate documentId by concatenating path with fileName\n-     *\n-     * e.g \"foo\", \"bar.txt\" = \"foo/bar.txt\"\n-     *\n-     * @param path\n-     * @param fileName\n-     */\n-    public static String generateDocId(String path, String fileName) {\n-        return convertToValidPath(path) + fileName;\n-    }\n+  /**\n+   * Generate documentId by concatenating path with fileName\n+   * <p>\n+   * e.g \"foo\", \"bar.txt\" = \"foo/bar.txt\"\n+   *\n+   * @param path\n+   * @param fileName\n+   */\n+  public static String generateDocId(String path, String fileName) {\n+    return convertToValidPath(path) + fileName;\n+  }\n \n-    /**\n-     * A valid path is either empty, or has a trailing slash and no leading\n-     * slash.\n-     *\n-     * @param path\n-     * @return valid path\n-     */\n-    public static String convertToValidPath(String path) {\n-        path = path.trim();\n-        while (path.startsWith(\"/\")) {\n-            path = path.substring(1);\n-        }\n-        if (path.length() > 0 && !path.endsWith(\"/\")) {\n-            path = path.concat(\"/\");\n-        }\n-        return path;\n+  /**\n+   * A valid path is either empty, or has a trailing slash and no leading\n+   * slash.\n+   *\n+   * @param path\n+   * @return valid path\n+   */\n+  public static String convertToValidPath(String path) {\n+    path = path.trim();\n+    while (path.startsWith(\"/\")) {\n+      path = path.substring(1);\n+    }\n+    if (path.length() > 0 && !path.endsWith(\"/\")) {\n+      path = path.concat(\"/\");\n     }\n+    return path;\n+  }\n \n-    /**\n-     * Try delete given file or use File#deleteOnExit\n-     *\n-     * @param file\n-     */\n-    public static void tryDeleteFile(@Nullable File file) {\n-        if (file != null) {\n-            if (!file.delete()) {\n-                log.warn(\"unable to remove file {}, marked for delete on exit\",\n-                        file.getAbsolutePath());\n-                file.deleteOnExit();\n-            }\n-        }\n+  /**\n+   * Try delete given file or use File#deleteOnExit\n+   *\n+   * @param file\n+   */\n+  public static void tryDeleteFile(@Nullable File file) {\n+    if (file != null) {\n+      if (!file.delete()) {\n+        log.warn(\"unable to remove file {}, marked for delete on exit\",\n+          file.getAbsolutePath());\n+        file.deleteOnExit();\n+      }\n     }\n+  }\n \n-    /**\n-     * Write given file to outputstream.\n-     *\n-     * @param file\n-     * @param output\n-     * @throws IOException\n-     */\n-    public static void writeFileToOutputStream(File file, OutputStream output)\n-            throws IOException {\n-        byte[] buffer = new byte[4096]; // To hold file contents\n-        int bytesRead;\n-        try (FileInputStream input = new FileInputStream(file)) {\n-            while ((bytesRead = input.read(buffer)) != -1) {\n-                output.write(buffer, 0, bytesRead);\n-            }\n-        }\n+  /**\n+   * Write given file to outputstream.\n+   *\n+   * @param file\n+   * @param output\n+   * @throws IOException\n+   */\n+  public static void writeFileToOutputStream(File file, OutputStream output)\n+    throws IOException {\n+    byte[] buffer = new byte[4096]; // To hold file contents\n+    int bytesRead;\n+    try (FileInputStream input = new FileInputStream(file)) {\n+      while ((bytesRead = input.read(buffer)) != -1) {\n+        output.write(buffer, 0, bytesRead);\n+      }\n     }\n+  }\n }\n",
+            "diff_size": 63
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "95",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/codebuff/33/FileUtil.java\nindex d9bf4785a45..3371aa9454a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/codebuff/33/FileUtil.java\n@@ -31,9 +31,10 @@ import java.io.OutputStream;\n  *\n  * @author Alex Eng <a href=\"mailto:aeng@redhat.com\">aeng@redhat.com</a>\n  */\n+\n+\n public class FileUtil {\n-    private static final org.slf4j.Logger log =\n-            org.slf4j.LoggerFactory.getLogger(FileUtil.class);\n+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FileUtil.class);\n \n     /**\n      * Generate documentId by concatenating path with fileName\n@@ -54,8 +55,10 @@ public class FileUtil {\n      * @param path\n      * @return valid path\n      */\n+\n     public static String convertToValidPath(String path) {\n         path = path.trim();\n+\n         while (path.startsWith(\"/\")) {\n             path = path.substring(1);\n         }\n@@ -70,11 +73,11 @@ public class FileUtil {\n      *\n      * @param file\n      */\n+\n     public static void tryDeleteFile(@Nullable File file) {\n         if (file != null) {\n             if (!file.delete()) {\n-                log.warn(\"unable to remove file {}, marked for delete on exit\",\n-                        file.getAbsolutePath());\n+                log.warn(\"unable to remove file {}, marked for delete on exit\", file.getAbsolutePath());\n                 file.deleteOnExit();\n             }\n         }\n@@ -87,8 +90,8 @@ public class FileUtil {\n      * @param output\n      * @throws IOException\n      */\n-    public static void writeFileToOutputStream(File file, OutputStream output)\n-            throws IOException {\n+\n+    public static void writeFileToOutputStream(File file, OutputStream output) throws IOException {\n         byte[] buffer = new byte[4096]; // To hold file contents\n         int bytesRead;\n         try (FileInputStream input = new FileInputStream(file)) {\n@@ -97,4 +100,4 @@ public class FileUtil {\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "92",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/styler_three_grams/33/FileUtil.java\nindex d9bf4785a45..318eeff250e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/errored/1/33/FileUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/zanata-zanata-platform/styler_three_grams/33/FileUtil.java\n@@ -89,8 +89,9 @@ public class FileUtil {\n      */\n     public static void writeFileToOutputStream(File file, OutputStream output)\n             throws IOException {\n-        byte[] buffer = new byte[4096]; // To hold file contents\n-        int bytesRead;\n+        byte[] buffer = new byte[4096];\n+        // To hold file contents\n+         int bytesRead;\n         try (FileInputStream input = new FileInputStream(file)) {\n             while ((bytesRead = input.read(buffer)) != -1) {\n                 output.write(buffer, 0, bytesRead);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

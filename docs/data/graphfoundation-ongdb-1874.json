@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1874",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "108",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "43",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "75",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "54",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "71",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "121",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "121",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1874/TxAbstractRelationshipCursor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1874/TxAbstractRelationshipCursor.java\nindex 7c51be1ac8d..59d20d565e2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1874/TxAbstractRelationshipCursor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1874/TxAbstractRelationshipCursor.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.api.cursor;\n \n import java.util.function.Consumer;\n@@ -36,101 +37,101 @@ import static org.neo4j.kernel.impl.store.record.Record.NO_NEXT_PROPERTY;\n  * Overlays transaction state on a {@link RelationshipItem} cursor.\n  */\n public abstract class TxAbstractRelationshipCursor\n-        implements Cursor<RelationshipItem>, RelationshipVisitor<RuntimeException>, RelationshipItem\n+    implements Cursor<RelationshipItem>, RelationshipVisitor<RuntimeException>, RelationshipItem\n {\n-    protected final TransactionState state;\n-    private final Consumer<TxAbstractRelationshipCursor> instanceCache;\n-\n-    protected Cursor<RelationshipItem> cursor;\n-\n-    private long id = StatementConstants.NO_SUCH_RELATIONSHIP;\n-    private int type;\n-    private long startNodeId;\n-    private long endNodeId;\n-\n-    RelationshipState relationshipState;\n-    protected boolean relationshipIsAddedInThisTx;\n-\n-    TxAbstractRelationshipCursor( TransactionState state, Consumer<TxAbstractRelationshipCursor> instanceCache )\n-    {\n-        this.state = state;\n-        this.instanceCache = instanceCache;\n-    }\n-\n-    public TxAbstractRelationshipCursor init( Cursor<RelationshipItem> cursor )\n-    {\n-        this.cursor = cursor;\n-        return this;\n-    }\n-\n-    @Override\n-    public RelationshipItem get()\n-    {\n-        if ( id == StatementConstants.NO_SUCH_RELATIONSHIP )\n-        {\n-            throw new IllegalStateException();\n-        }\n-\n-        return this;\n-    }\n-\n-    @Override\n-    public void visit( long relId, int type, long startNode, long endNode ) throws RuntimeException\n-    {\n-        this.id = relId;\n-        this.type = type;\n-        this.startNodeId = startNode;\n-        this.endNodeId = endNode;\n-    }\n-\n-    @Override\n-    public void close()\n-    {\n-        cursor.close();\n-        cursor = null;\n-        relationshipState = null;\n-        instanceCache.accept( this );\n-    }\n-\n-    @Override\n-    public long id()\n-    {\n-        return id;\n-    }\n-\n-    @Override\n-    public int type()\n+  protected final TransactionState state;\n+  private final Consumer<TxAbstractRelationshipCursor> instanceCache;\n+\n+  protected Cursor<RelationshipItem> cursor;\n+\n+  private long id = StatementConstants.NO_SUCH_RELATIONSHIP;\n+  private int type;\n+  private long startNodeId;\n+  private long endNodeId;\n+\n+  RelationshipState relationshipState;\n+  protected boolean relationshipIsAddedInThisTx;\n+\n+  TxAbstractRelationshipCursor(TransactionState state, Consumer<TxAbstractRelationshipCursor> instanceCache)\n+  {\n+    this.state = state;\n+    this.instanceCache = instanceCache;\n+  }\n+\n+  public TxAbstractRelationshipCursor init(Cursor<RelationshipItem> cursor)\n+  {\n+    this.cursor = cursor;\n+    return this;\n+  }\n+\n+  @Override\n+  public RelationshipItem get()\n+  {\n+    if (id == StatementConstants.NO_SUCH_RELATIONSHIP)\n     {\n-        return type;\n+      throw new IllegalStateException();\n     }\n \n-    @Override\n-    public long startNode()\n-    {\n-        return startNodeId;\n-    }\n-\n-    @Override\n-    public long endNode()\n-    {\n-        return endNodeId;\n-    }\n-\n-    @Override\n-    public long otherNode( long nodeId )\n-    {\n-        return startNodeId == nodeId ? endNodeId : startNodeId;\n-    }\n-\n-    @Override\n-    public long nextPropertyId()\n-    {\n-        return relationshipIsAddedInThisTx ? NO_NEXT_PROPERTY.longValue() : cursor.get().nextPropertyId();\n-    }\n-\n-    @Override\n-    public Lock lock()\n-    {\n-        return relationshipIsAddedInThisTx ? NO_LOCK : cursor.get().lock();\n-    }\n+    return this;\n+  }\n+\n+  @Override\n+  public void visit(long relId, int type, long startNode, long endNode) throws RuntimeException\n+  {\n+    this.id = relId;\n+    this.type = type;\n+    this.startNodeId = startNode;\n+    this.endNodeId = endNode;\n+  }\n+\n+  @Override\n+  public void close()\n+  {\n+    cursor.close();\n+    cursor = null;\n+    relationshipState = null;\n+    instanceCache.accept(this);\n+  }\n+\n+  @Override\n+  public long id()\n+  {\n+    return id;\n+  }\n+\n+  @Override\n+  public int type()\n+  {\n+    return type;\n+  }\n+\n+  @Override\n+  public long startNode()\n+  {\n+    return startNodeId;\n+  }\n+\n+  @Override\n+  public long endNode()\n+  {\n+    return endNodeId;\n+  }\n+\n+  @Override\n+  public long otherNode(long nodeId)\n+  {\n+    return startNodeId == nodeId ? endNodeId : startNodeId;\n+  }\n+\n+  @Override\n+  public long nextPropertyId()\n+  {\n+    return relationshipIsAddedInThisTx ? NO_NEXT_PROPERTY.longValue() : cursor.get().nextPropertyId();\n+  }\n+\n+  @Override\n+  public Lock lock()\n+  {\n+    return relationshipIsAddedInThisTx ? NO_LOCK : cursor.get().lock();\n+  }\n }\n",
+            "diff_size": 127
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1874/TxAbstractRelationshipCursor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1874/TxAbstractRelationshipCursor.java\nindex 7c51be1ac8d..80714485f87 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1874/TxAbstractRelationshipCursor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1874/TxAbstractRelationshipCursor.java\n@@ -35,8 +35,7 @@ import static org.neo4j.kernel.impl.store.record.Record.NO_NEXT_PROPERTY;\n /**\n  * Overlays transaction state on a {@link RelationshipItem} cursor.\n  */\n-public abstract class TxAbstractRelationshipCursor\n-        implements Cursor<RelationshipItem>, RelationshipVisitor<RuntimeException>, RelationshipItem\n+public abstract class TxAbstractRelationshipCursor implements Cursor<RelationshipItem>, RelationshipVisitor<RuntimeException>, RelationshipItem\n {\n     protected final TransactionState state;\n     private final Consumer<TxAbstractRelationshipCursor> instanceCache;\n@@ -133,4 +132,4 @@ public abstract class TxAbstractRelationshipCursor\n     {\n         return relationshipIsAddedInThisTx ? NO_LOCK : cursor.get().lock();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

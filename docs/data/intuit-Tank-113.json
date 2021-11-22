@@ -1,0 +1,240 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "113",
+    "information": {
+        "errors": [
+            {
+                "line": "92",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 156).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n        try {\n            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n        } catch (Exception ex) {\n            LOG.error(ex.getMessage());\n            throw new RuntimeException(ex);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "93",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'(' should be on the previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "16",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/113/AmazonDataConverter.java\nindex 0322e448999..4f8f3993bad 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler/113/AmazonDataConverter.java\n@@ -89,7 +89,9 @@ public class AmazonDataConverter {\n      */\n     public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n         try {\n-            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n+            return reservation.getInstances().stream().map(instance->instanceToVmInformation\n+            ( reservation ,instance,region)).collect(Collectors.\n+        toList ());\n         } catch (Exception ex) {\n             LOG.error(ex.getMessage());\n             throw new RuntimeException(ex);\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/113/AmazonDataConverter.java\nindex 0322e448999..c6d5841af67 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/113/AmazonDataConverter.java\n@@ -1,6 +1,7 @@\n /**\n  * Copyright 2011 Intuit Inc. All Rights Reserved\n  */\n+\n package com.intuit.tank.vmManager.environment.amazon;\n \n /*\n@@ -32,68 +33,68 @@ import com.intuit.tank.vm.vmManager.VMInformation;\n \n /**\n  * AmazonDataConverter\n- * \n+ *\n  * @author dangleton\n- * \n  */\n public class AmazonDataConverter {\n-    private static final Logger LOG = LogManager.getLogger(AmazonDataConverter.class);\n-\n-    public List<VMInformation> processStateChange(List<InstanceStateChange> changes) {\n-        List<VMInformation> output = new ArrayList<VMInformation>();\n-        try {\n-            for (InstanceStateChange instance : changes) {\n-                VMInformation info = new VMInformation();\n-                info.setInstanceId(instance.getInstanceId());\n-                info.setState(instance.getCurrentState().getName());\n-                output.add(info);\n-            }\n-\n-            return output;\n-        } catch (Exception ex) {\n-            LOG.error(ex.getMessage(), ex);\n-            if (ex instanceof RuntimeException) {\n-                throw (RuntimeException) ex;\n-            }\n-            throw new RuntimeException(ex);\n-        }\n-    }\n+  private static final Logger LOG = LogManager.getLogger(AmazonDataConverter.class);\n \n-    /**\n-     * @param data\n-     * @param instance\n-     * @param region\n-     * @return\n-     */\n-    public VMInformation instanceToVmInformation(Reservation data, Instance instance, VMRegion region) {\n+  public List<VMInformation> processStateChange(List<InstanceStateChange> changes) {\n+    List<VMInformation> output = new ArrayList<VMInformation>();\n+    try {\n+      for (InstanceStateChange instance : changes) {\n         VMInformation info = new VMInformation();\n-        info.setProvider(VMProvider.Amazon);\n-        info.setRequestId(data.getRequesterId());\n-        info.setImageId(instance.getImageId());\n         info.setInstanceId(instance.getInstanceId());\n-        info.setKeyName(instance.getKeyName());\n-        // info.setLaunchTime();\n-        info.setRegion(region);\n-        info.setPlatform(instance.getPlatform());\n-        info.setPrivateDNS(instance.getPrivateDnsName());\n-        info.setPublicDNS(instance.getPublicDnsName());\n-        info.setState(instance.getState().getName());\n-        info.setSize(instance.getInstanceType());\n-        return info;\n+        info.setState(instance.getCurrentState().getName());\n+        output.add(info);\n+      }\n+\n+      return output;\n+    } catch (Exception ex) {\n+      LOG.error(ex.getMessage(), ex);\n+      if (ex instanceof RuntimeException) {\n+        throw (RuntimeException) ex;\n+      }\n+      throw new RuntimeException(ex);\n     }\n+  }\n+\n+  /**\n+   * @param data\n+   * @param instance\n+   * @param region\n+   * @return\n+   */\n+  public VMInformation instanceToVmInformation(Reservation data, Instance instance, VMRegion region) {\n+    VMInformation info = new VMInformation();\n+    info.setProvider(VMProvider.Amazon);\n+    info.setRequestId(data.getRequesterId());\n+    info.setImageId(instance.getImageId());\n+    info.setInstanceId(instance.getInstanceId());\n+    info.setKeyName(instance.getKeyName());\n+    // info.setLaunchTime();\n+    info.setRegion(region);\n+    info.setPlatform(instance.getPlatform());\n+    info.setPrivateDNS(instance.getPrivateDnsName());\n+    info.setPublicDNS(instance.getPublicDnsName());\n+    info.setState(instance.getState().getName());\n+    info.setSize(instance.getInstanceType());\n+    return info;\n+  }\n \n-    /**\n-     * @param reservation\n-     * @param region\n-     * @return\n-     */\n-    public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n-        try {\n-            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n-        } catch (Exception ex) {\n-            LOG.error(ex.getMessage());\n-            throw new RuntimeException(ex);\n-        }\n+  /**\n+   * @param reservation\n+   * @param region\n+   * @return\n+   */\n+  public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n+    try {\n+      return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region))\n+        .collect(Collectors.toList());\n+    } catch (Exception ex) {\n+      LOG.error(ex.getMessage());\n+      throw new RuntimeException(ex);\n     }\n+  }\n \n }\n",
+            "diff_size": 82
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/113/AmazonDataConverter.java\nindex 0322e448999..dd1646d1aa8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/113/AmazonDataConverter.java\n@@ -96,4 +96,4 @@ public class AmazonDataConverter {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 155).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/113/AmazonDataConverter.java\nindex 0322e448999..d4bc4578ad7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/113/AmazonDataConverter.java\n@@ -16,13 +16,13 @@ package com.intuit.tank.vmManager.environment.amazon;\n  * #L%\n  */\n \n+\n+\n import java.util.ArrayList;\n import java.util.List;\n import java.util.stream.Collectors;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import com.amazonaws.services.ec2.model.Instance;\n import com.amazonaws.services.ec2.model.InstanceStateChange;\n import com.amazonaws.services.ec2.model.Reservation;\n@@ -36,9 +36,13 @@ import com.intuit.tank.vm.vmManager.VMInformation;\n  * @author dangleton\n  * \n  */\n+\n+\n public class AmazonDataConverter {\n+\n     private static final Logger LOG = LogManager.getLogger(AmazonDataConverter.class);\n \n+\n     public List<VMInformation> processStateChange(List<InstanceStateChange> changes) {\n         List<VMInformation> output = new ArrayList<VMInformation>();\n         try {\n@@ -48,7 +52,6 @@ public class AmazonDataConverter {\n                 info.setState(instance.getCurrentState().getName());\n                 output.add(info);\n             }\n-\n             return output;\n         } catch (Exception ex) {\n             LOG.error(ex.getMessage(), ex);\n@@ -65,6 +68,8 @@ public class AmazonDataConverter {\n      * @param region\n      * @return\n      */\n+\n+\n     public VMInformation instanceToVmInformation(Reservation data, Instance instance, VMRegion region) {\n         VMInformation info = new VMInformation();\n         info.setProvider(VMProvider.Amazon);\n@@ -87,13 +92,14 @@ public class AmazonDataConverter {\n      * @param region\n      * @return\n      */\n+\n+\n     public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n         try {\n-            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n+            return reservation.getInstances().stream().map(instance-> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n         } catch (Exception ex) {\n             LOG.error(ex.getMessage());\n             throw new RuntimeException(ex);\n         }\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 16
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 182).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "95",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "107",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "117",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "117",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "125",
+                    "severity": "warning",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "136",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "155",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "158",
+                    "severity": "warning",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "160",
+                    "severity": "warning",
+                    "message": "'}' at column 160 should have line break before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "161",
+                    "severity": "warning",
+                    "message": "'catch' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/113/AmazonDataConverter.java\nindex 0322e448999..ed169a7a2a9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_random/113/AmazonDataConverter.java\n@@ -89,8 +89,7 @@ public class AmazonDataConverter {\n      */\n     public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n         try {\n-            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n-        } catch (Exception ex) {\n+            return reservation.getInstances().stream().map(instance ->instanceToVmInformation (reservation,instance ,region )).collect (Collectors.toList () );}catch (Exception ex) {\n             LOG.error(ex.getMessage());\n             throw new RuntimeException(ex);\n         }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "93",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "'(' should be on the previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "16",
+                    "severity": "warning",
+                    "message": "'(' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/113/AmazonDataConverter.java\nindex 0322e448999..4f8f3993bad 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/113/AmazonDataConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/113/AmazonDataConverter.java\n@@ -89,7 +89,9 @@ public class AmazonDataConverter {\n      */\n     public List<VMInformation> processReservation(Reservation reservation, VMRegion region) {\n         try {\n-            return reservation.getInstances().stream().map(instance -> instanceToVmInformation(reservation, instance, region)).collect(Collectors.toList());\n+            return reservation.getInstances().stream().map(instance->instanceToVmInformation\n+            ( reservation ,instance,region)).collect(Collectors.\n+        toList ());\n         } catch (Exception ex) {\n             LOG.error(ex.getMessage());\n             throw new RuntimeException(ex);\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

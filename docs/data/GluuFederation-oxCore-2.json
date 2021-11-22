@@ -1,0 +1,119 @@
+{
+    "project_name": "GluuFederation-oxCore",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "38",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n\n\tvoid persist(Object entry);\n\n\t<T> T merge(T entry);\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "40",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler/2/PersistenceEntryManager.java\nindex 0e17be5ca6f..fbbbf41eab3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler/2/PersistenceEntryManager.java\n@@ -35,7 +35,7 @@ public interface PersistenceEntryManager extends EntityManager {\n     boolean authenticate(String primaryKey, String password);\n     <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n \n-\tvoid persist(Object entry);\n+    void persist(Object entry);\n \n \t<T> T merge(T entry);\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/intellij/2/PersistenceEntryManager.java\nindex 0e17be5ca6f..c22ab47dd7a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/intellij/2/PersistenceEntryManager.java\n@@ -33,21 +33,24 @@ import org.gluu.search.filter.Filter;\n public interface PersistenceEntryManager extends EntityManager {\n \n     boolean authenticate(String primaryKey, String password);\n+\n     <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n \n-\tvoid persist(Object entry);\n+    void persist(Object entry);\n \n-\t<T> T merge(T entry);\n+    <T> T merge(T entry);\n \n-\t@Deprecated\n-\tboolean contains(Object entity);\n+    @Deprecated\n+    boolean contains(Object entity);\n \n     <T> boolean contains(String primaryKey, Class<T> entryClass);\n+\n     <T> boolean contains(String primaryKey, Class<T> entryClass, Filter filter);\n \n     <T> int countEntries(Object entry);\n \n     <T> int countEntries(String primaryKey, Class<T> entryClass, Filter filter);\n+\n     <T> int countEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope);\n \n     <T> List<T> createEntities(Class<T> entryClass, Map<String, List<AttributeData>> entriesAttributes);\n@@ -61,14 +64,20 @@ public interface PersistenceEntryManager extends EntityManager {\n      * @return Result entries\n      */\n     <T> List<T> findEntries(Object entry);\n+\n     <T> List<T> findEntries(Object entry, int count);\n \n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter);\n+\n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, int count);\n+\n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes);\n+\n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, int count);\n+\n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes,\n                             int start, int count, int chunkSize);\n+\n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes,\n                             BatchOperation<T> batchOperation, int start, int count, int chunkSize);\n \n@@ -76,17 +85,24 @@ public interface PersistenceEntryManager extends EntityManager {\n     <T> PagedResult<T> findPagedEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, String sortBy,\n                                         SortOrder sortOrder, int start, int count, int chunkSize);\n \n-\tvoid remove(Object entry);\n+    void remove(Object entry);\n+\n     void remove(String dn);\n-\t<T> int remove(String dn, Class<T> entryClass, Filter filter, int count);\n+\n+    <T> int remove(String dn, Class<T> entryClass, Filter filter, int count);\n+\n     void removeRecursively(String primaryKey);\n \n     boolean hasBranchesSupport(String primaryKey);\n+\n     boolean hasExpirationSupport(String primaryKey);\n-\tString getPersistenceType();\n+\n+    String getPersistenceType();\n+\n     String getPersistenceType(String primaryKey);\n \n     Date decodeTime(String primaryKey, String date);\n+\n     String encodeTime(String primaryKey, Date date);\n \n     int getHashCode(Object entry);\n@@ -97,6 +113,7 @@ public interface PersistenceEntryManager extends EntityManager {\n                                               String sumByProperties);\n \n     void addDeleteSubscriber(DeleteNotifier subscriber);\n+\n     void removeDeleteSubscriber(DeleteNotifier subscriber);\n \n     <T> void sortListByProperties(Class<T> entryClass, List<T> entries, boolean caseSensetive, String... sortByProperties);\n@@ -106,6 +123,7 @@ public interface PersistenceEntryManager extends EntityManager {\n     void importEntry(String dn, List<AttributeData> data);\n \n     PersistenceOperationService getOperationService();\n+\n     PersistenceEntryManager getPersistenceEntryManager(String persistenceType);\n \n     boolean destroy();\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "41",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "error",
+                    "message": "Line is longer than 150 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "error",
+                    "message": "Line is longer than 150 characters (found 200).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 150 characters (found 199).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "105",
+                    "severity": "error",
+                    "message": "Line is longer than 150 characters (found 157).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/naturalize/2/PersistenceEntryManager.java\nindex 0e17be5ca6f..97da825d360 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/naturalize/2/PersistenceEntryManager.java\n@@ -33,22 +33,25 @@ import org.gluu.search.filter.Filter;\n public interface PersistenceEntryManager extends EntityManager {\n \n     boolean authenticate(String primaryKey, String password);\n-    <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n \n-\tvoid persist(Object entry);\n+<T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n+\n+void persist(Object entry);\n \n \t<T> T merge(T entry);\n \n \t@Deprecated\n \tboolean contains(Object entity);\n \n-    <T> boolean contains(String primaryKey, Class<T> entryClass);\n-    <T> boolean contains(String primaryKey, Class<T> entryClass, Filter filter);\n+<T> boolean contains(String primaryKey, Class<T> entryClass);\n+\n+<T> boolean contains(String primaryKey, Class<T> entryClass, Filter filter);\n \n     <T> int countEntries(Object entry);\n \n     <T> int countEntries(String primaryKey, Class<T> entryClass, Filter filter);\n-    <T> int countEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope);\n+\n+<T> int countEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope);\n \n     <T> List<T> createEntities(Class<T> entryClass, Map<String, List<AttributeData>> entriesAttributes);\n \n@@ -61,30 +64,36 @@ public interface PersistenceEntryManager extends EntityManager {\n      * @return Result entries\n      */\n     <T> List<T> findEntries(Object entry);\n-    <T> List<T> findEntries(Object entry, int count);\n+\n+<T> List<T> findEntries(Object entry, int count);\n \n     <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter);\n-    <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, int count);\n-    <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes);\n-    <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, int count);\n-    <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes,\n-                            int start, int count, int chunkSize);\n-    <T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes,\n-                            BatchOperation<T> batchOperation, int start, int count, int chunkSize);\n-\n-    // TODO: Combine sortBy and SortOrder into Sort\n-    <T> PagedResult<T> findPagedEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, String sortBy,\n-                                        SortOrder sortOrder, int start, int count, int chunkSize);\n-\n-\tvoid remove(Object entry);\n-    void remove(String dn);\n-\t<T> int remove(String dn, Class<T> entryClass, Filter filter, int count);\n-    void removeRecursively(String primaryKey);\n+\n+<T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, int count);\n+\n+<T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes);\n+\n+<T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, int count);\n+\n+<T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes, int start, int count, int chunkSize);\n+\n+<T> List<T> findEntries(String primaryKey, Class<T> entryClass, Filter filter, SearchScope scope, String[] ldapReturnAttributes, BatchOperation<T> batchOperation, int start, int count, int chunkSize);\n+\n+// TODO: Combine sortBy and SortOrder into Sort\n+    <T> PagedResult<T> findPagedEntries(String primaryKey, Class<T> entryClass, Filter filter, String[] ldapReturnAttributes, String sortBy, SortOrder sortOrder, int start, int count, int chunkSize);\n+\n+void remove(Object entry);\n+\n+void remove(String dn);\n+\n+<T> int remove(String dn, Class<T> entryClass, Filter filter, int count);\n+\n+void removeRecursively(String primaryKey);\n \n     boolean hasBranchesSupport(String primaryKey);\n     boolean hasExpirationSupport(String primaryKey);\n-\tString getPersistenceType();\n-    String getPersistenceType(String primaryKey);\n+String getPersistenceType();\n+String getPersistenceType(String primaryKey);\n \n     Date decodeTime(String primaryKey, String date);\n     String encodeTime(String primaryKey, Date date);\n@@ -93,11 +102,11 @@ public interface PersistenceEntryManager extends EntityManager {\n \n     String[] getObjectClasses(Object entry, Class<?> entryClass);\n \n-    <T> Map<T, List<T>> groupListByProperties(Class<T> entryClass, List<T> entries, boolean caseSensetive, String groupByProperties,\n-                                              String sumByProperties);\n+    <T> Map<T, List<T>> groupListByProperties(Class<T> entryClass, List<T> entries, boolean caseSensetive, String groupByProperties, String sumByProperties);\n \n-    void addDeleteSubscriber(DeleteNotifier subscriber);\n-    void removeDeleteSubscriber(DeleteNotifier subscriber);\n+void addDeleteSubscriber(DeleteNotifier subscriber);\n+\n+void removeDeleteSubscriber(DeleteNotifier subscriber);\n \n     <T> void sortListByProperties(Class<T> entryClass, List<T> entries, boolean caseSensetive, String... sortByProperties);\n \n@@ -109,7 +118,6 @@ public interface PersistenceEntryManager extends EntityManager {\n     PersistenceEntryManager getPersistenceEntryManager(String persistenceType);\n \n     boolean destroy();\n-\n     default void clear() {\n         throw new UnsupportedOperationException(\"Method not implemented.\");\n     }\n@@ -178,4 +186,4 @@ public interface PersistenceEntryManager extends EntityManager {\n         throw new UnsupportedOperationException(\"Method not implemented.\");\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "40",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler_random/2/PersistenceEntryManager.java\nindex 0e17be5ca6f..fbbbf41eab3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler_random/2/PersistenceEntryManager.java\n@@ -35,7 +35,7 @@ public interface PersistenceEntryManager extends EntityManager {\n     boolean authenticate(String primaryKey, String password);\n     <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n \n-\tvoid persist(Object entry);\n+    void persist(Object entry);\n \n \t<T> T merge(T entry);\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "40",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler_three_grams/2/PersistenceEntryManager.java\nindex 0e17be5ca6f..fbbbf41eab3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/errored/1/2/PersistenceEntryManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/GluuFederation-oxCore/styler_three_grams/2/PersistenceEntryManager.java\n@@ -35,7 +35,7 @@ public interface PersistenceEntryManager extends EntityManager {\n     boolean authenticate(String primaryKey, String password);\n     <T> boolean authenticate(String baseDN, Class<T> entryClass, String userName, String password);\n \n-\tvoid persist(Object entry);\n+    void persist(Object entry);\n \n \t<T> T merge(T entry);\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

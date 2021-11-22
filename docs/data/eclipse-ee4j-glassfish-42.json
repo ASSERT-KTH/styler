@@ -1,0 +1,78 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "42",
+    "information": {
+        "errors": [
+            {
+                "line": "104",
+                "column": "16",
+                "severity": "warning",
+                "message": "'for' child has incorrect indentation level 15, expected level should be 12.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "        Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n        for (TreeNode parentNode : parentNodes) {\n               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n        }\n        // reset the pattern.\n        pattern = parentNodes[0].relativeName;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/42/ListCommand.java\nindex 630ef9c55b1..322bce70515 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/42/ListCommand.java\n@@ -101,7 +101,7 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n         parentNodes = getAliasedParent(domain, pattern);\n         Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n         for (TreeNode parentNode : parentNodes) {\n-               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n+            dottedNames.putAll(getAllDottedNodes(parentNode.node));\n         }\n         // reset the pattern.\n         pattern = parentNodes[0].relativeName;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/42/ListCommand.java\nindex 630ef9c55b1..95d0bd3abce 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/42/ListCommand.java\n@@ -47,11 +47,11 @@ import org.glassfish.api.admin.AccessRequired.AccessCheck;\n  * Date: Jul 12, 2008\n  * Time: 1:27:53 AM\n  */\n-@Service(name=\"list\")\n+@Service(name = \"list\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n-        AdminCommandSecurity.Preauthorization, AdminCommandSecurity.AccessCheckProvider {\n+    AdminCommandSecurity.Preauthorization, AdminCommandSecurity.AccessCheckProvider {\n \n     @Inject\n     private MonitoringReporter mr;\n@@ -69,13 +69,14 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n     ServiceLocator habitat;\n \n     //How to define short option name?\n-    @Param(name=\"MoniTor\", optional=true, defaultValue=\"false\", shortName=\"m\", alias=\"Mon\")\n+    @Param(name = \"MoniTor\", optional = true, defaultValue = \"false\", shortName = \"m\", alias = \"Mon\")\n     Boolean monitor;\n \n     @Param(primary = true)\n-    String pattern=\"\";\n+    String pattern = \"\";\n \n-    @Inject @Optional\n+    @Inject\n+    @Optional\n     private MonitoringRuntimeDataRegistry mrdr;\n \n     private Map<Dom, String> matchingNodes;\n@@ -99,18 +100,19 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n     private boolean preAuthorizationForNonMonitoring(final AdminCommandContext context) {\n         // first let's get the parent for this pattern.\n         parentNodes = getAliasedParent(domain, pattern);\n-        Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n+        Map<Dom, String> dottedNames = new HashMap<Dom, String>();\n         for (TreeNode parentNode : parentNodes) {\n-               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n+            dottedNames.putAll(getAllDottedNodes(parentNode.node));\n         }\n         // reset the pattern.\n         pattern = parentNodes[0].relativeName;\n \n         matchingNodes = getMatchingNodes(dottedNames, pattern);\n-        if (matchingNodes.isEmpty() && pattern.lastIndexOf('.')!=-1) {\n+        if (matchingNodes.isEmpty() && pattern.lastIndexOf('.') != -1) {\n             // it's possible the user is just looking for an attribute, let's remove the\n             // last element from the pattern.\n-            matchingNodes = getMatchingNodes(dottedNames, pattern.substring(0, pattern.lastIndexOf(\".\")));\n+            matchingNodes =\n+                getMatchingNodes(dottedNames, pattern.substring(0, pattern.lastIndexOf(\".\")));\n         }\n         return true;\n     }\n@@ -130,8 +132,10 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n \n     private Collection<? extends AccessCheck> getAccessChecksForNonMonitoring() {\n         final Collection<AccessCheck> accessChecks = new ArrayList<AccessCheck>();\n-        for (Map.Entry<Dom,String> entry : matchingNodes.entrySet()) {\n-            accessChecks.add(new AccessCheck(AccessRequired.Util.resourceNameFromDom((Dom)entry.getKey()), \"read\"));\n+        for (Map.Entry<Dom, String> entry : matchingNodes.entrySet()) {\n+            accessChecks.add(\n+                new AccessCheck(AccessRequired.Util.resourceNameFromDom((Dom) entry.getKey()),\n+                    \"read\"));\n         }\n         return accessChecks;\n     }\n@@ -144,7 +148,7 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n         try {\n             PropsFileActionReporter reporter = (PropsFileActionReporter) report;\n             reporter.useMainChildrenAttribute(true);\n-        } catch(ClassCastException e) {\n+        } catch (ClassCastException e) {\n             // ignore, this is not a manifest output\n         }\n \n@@ -176,8 +180,8 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n             paramMap.set(\"DEFAULT\", pattern);\n             List<Server> targetList = targetService.getInstances(targetName);\n             ClusterOperationUtil.replicateCommand(\"list\", FailurePolicy.Error, FailurePolicy.Warn,\n-                    FailurePolicy.Ignore, targetList, context, paramMap, habitat);\n-        } catch(Exception ex) {\n+                FailurePolicy.Ignore, targetList, context, paramMap, habitat);\n+        } catch (Exception ex) {\n             report.setActionExitCode(ExitCode.FAILURE);\n             report.setMessage(\"Failure while trying get details from instance \" + targetName);\n         }\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "104",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'for' child has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "105",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/42/ListCommand.java\nindex 630ef9c55b1..34a7cf3315a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/42/ListCommand.java\n@@ -101,8 +101,8 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n         parentNodes = getAliasedParent(domain, pattern);\n         Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n         for (TreeNode parentNode : parentNodes) {\n-               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n-        }\n+    dottedNames.putAll(getAllDottedNodes(parentNode.node));\n+    }\n         // reset the pattern.\n         pattern = parentNodes[0].relativeName;\n \n@@ -182,4 +182,4 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n             report.setMessage(\"Failure while trying get details from instance \" + targetName);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/42/ListCommand.java\nindex 630ef9c55b1..322bce70515 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/42/ListCommand.java\n@@ -101,7 +101,7 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n         parentNodes = getAliasedParent(domain, pattern);\n         Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n         for (TreeNode parentNode : parentNodes) {\n-               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n+            dottedNames.putAll(getAllDottedNodes(parentNode.node));\n         }\n         // reset the pattern.\n         pattern = parentNodes[0].relativeName;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/42/ListCommand.java\nindex 630ef9c55b1..322bce70515 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/42/ListCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/42/ListCommand.java\n@@ -101,7 +101,7 @@ public class ListCommand extends V2DottedNameSupport implements AdminCommand,\n         parentNodes = getAliasedParent(domain, pattern);\n         Map<Dom, String> dottedNames =  new HashMap<Dom, String>();\n         for (TreeNode parentNode : parentNodes) {\n-               dottedNames.putAll(getAllDottedNodes(parentNode.node));\n+            dottedNames.putAll(getAllDottedNodes(parentNode.node));\n         }\n         // reset the pattern.\n         pattern = parentNodes[0].relativeName;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

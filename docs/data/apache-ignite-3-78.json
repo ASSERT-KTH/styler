@@ -1,0 +1,115 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "78",
+    "information": {
+        "errors": [
+            {
+                "line": "31",
+                "column": "5",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "public class Scope {\n    private final Map<String, Variable> variables = new TreeMap<>();\n    private final List<Variable> allVariables = new ArrayList<>();\n\n    private final Variable thisVariable;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/78/Scope.java\nindex 46c70600d53..d59387b9c93 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/78/Scope.java\n@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;\n \n public class Scope {\n     private final Map<String, Variable> variables = new TreeMap<>();\n+\n     private final List<Variable> allVariables = new ArrayList<>();\n \n     private final Variable thisVariable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/78/Scope.java\nindex 46c70600d53..8c33d40cdf5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/78/Scope.java\n@@ -11,6 +11,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package com.facebook.presto.bytecode;\n \n import com.facebook.presto.bytecode.expression.BytecodeExpression;\n@@ -27,76 +28,76 @@ import static com.facebook.presto.bytecode.ParameterizedType.type;\n import static java.util.Objects.requireNonNull;\n \n public class Scope {\n-    private final Map<String, Variable> variables = new TreeMap<>();\n-    private final List<Variable> allVariables = new ArrayList<>();\n-\n-    private final Variable thisVariable;\n-\n-    private int nextTempVariableId;\n-\n-    // This can only be constructed by a method definition\n-    Scope(Optional<ParameterizedType> thisType, Iterable<Parameter> parameters) {\n-        if (thisType.isPresent()) {\n-            thisVariable = new Variable(\"this\", thisType.get());\n-            variables.put(\"this\", thisVariable);\n-            allVariables.add(thisVariable);\n-        }\n-        else {\n-            thisVariable = null;\n-        }\n-\n-        for (Parameter parameter : parameters) {\n-            variables.put(parameter.getName(), parameter);\n-            allVariables.add(parameter);\n-        }\n-    }\n+  private final Map<String, Variable> variables = new TreeMap<>();\n \n-    public List<Variable> getVariables() {\n-        return List.copyOf(allVariables);\n-    }\n+  private final List<Variable> allVariables = new ArrayList<>();\n \n-    public Variable createTempVariable(Class<?> type) {\n-        // reserve a slot for this variable\n-        Variable variable = new Variable(\"temp_\" + nextTempVariableId, type(type));\n-        nextTempVariableId += Type.getType(type(type).getType()).getSize();\n+  private final Variable thisVariable;\n \n-        allVariables.add(variable);\n+  private int nextTempVariableId;\n \n-        return variable;\n+  // This can only be constructed by a method definition\n+  Scope(Optional<ParameterizedType> thisType, Iterable<Parameter> parameters) {\n+    if (thisType.isPresent()) {\n+      thisVariable = new Variable(\"this\", thisType.get());\n+      variables.put(\"this\", thisVariable);\n+      allVariables.add(thisVariable);\n+    } else {\n+      thisVariable = null;\n     }\n \n-    public Variable getThis() {\n-        checkState(thisVariable != null, \"Static methods do not have a 'this' variable\");\n-        return thisVariable;\n+    for (Parameter parameter : parameters) {\n+      variables.put(parameter.getName(), parameter);\n+      allVariables.add(parameter);\n     }\n+  }\n \n-    public Variable getVariable(String name) {\n-        Variable variable = variables.get(name);\n-        checkArgument(variable != null, \"Variable %s not defined\", name);\n-        return variable;\n-    }\n+  public List<Variable> getVariables() {\n+    return List.copyOf(allVariables);\n+  }\n \n-    public Variable declareVariable(Class<?> type, String variableName) {\n-        return declareVariable(type(type), variableName);\n-    }\n+  public Variable createTempVariable(Class<?> type) {\n+    // reserve a slot for this variable\n+    Variable variable = new Variable(\"temp_\" + nextTempVariableId, type(type));\n+    nextTempVariableId += Type.getType(type(type).getType()).getSize();\n \n-    public Variable declareVariable(ParameterizedType type, String variableName) {\n-        requireNonNull(type, \"type is null\");\n-        requireNonNull(variableName, \"variableName is null\");\n-        checkArgument(!variables.containsKey(variableName), \"There is already a variable named %s\", variableName);\n-        checkArgument(!\"this\".equals(variableName), \"The 'this' variable can not be declared\");\n+    allVariables.add(variable);\n \n-        Variable variable = new Variable(variableName, type);\n+    return variable;\n+  }\n \n-        variables.put(variableName, variable);\n-        allVariables.add(variable);\n+  public Variable getThis() {\n+    checkState(thisVariable != null, \"Static methods do not have a 'this' variable\");\n+    return thisVariable;\n+  }\n \n-        return variable;\n-    }\n+  public Variable getVariable(String name) {\n+    Variable variable = variables.get(name);\n+    checkArgument(variable != null, \"Variable %s not defined\", name);\n+    return variable;\n+  }\n \n-    public Variable declareVariable(String variableName, BytecodeBlock block, BytecodeExpression initialValue) {\n-        Variable variable = declareVariable(initialValue.getType(), variableName);\n-        block.append(variable.set(initialValue));\n-        return variable;\n-    }\n+  public Variable declareVariable(Class<?> type, String variableName) {\n+    return declareVariable(type(type), variableName);\n+  }\n+\n+  public Variable declareVariable(ParameterizedType type, String variableName) {\n+    requireNonNull(type, \"type is null\");\n+    requireNonNull(variableName, \"variableName is null\");\n+    checkArgument(!variables.containsKey(variableName), \"There is already a variable named %s\", variableName);\n+    checkArgument(!\"this\".equals(variableName), \"The 'this' variable can not be declared\");\n+\n+    Variable variable = new Variable(variableName, type);\n+\n+    variables.put(variableName, variable);\n+    allVariables.add(variable);\n+\n+    return variable;\n+  }\n+\n+  public Variable declareVariable(String variableName, BytecodeBlock block, BytecodeExpression initialValue) {\n+    Variable variable = declareVariable(initialValue.getType(), variableName);\n+    block.append(variable.set(initialValue));\n+    return variable;\n+  }\n }\n",
+            "diff_size": 92
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "31",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/78/Scope.java\nindex 46c70600d53..40a1ab2e923 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/78/Scope.java\n@@ -99,4 +99,4 @@ public class Scope {\n         block.append(variable.set(initialValue));\n         return variable;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "30",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "35",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/78/Scope.java\nindex 46c70600d53..5b23822030d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/78/Scope.java\n@@ -26,31 +26,42 @@ import static com.facebook.presto.bytecode.BytecodeUtils.checkState;\n import static com.facebook.presto.bytecode.ParameterizedType.type;\n import static java.util.Objects.requireNonNull;\n \n+\n public class Scope {\n+\n     private final Map<String, Variable> variables = new TreeMap<>();\n+\n+\n     private final List<Variable> allVariables = new ArrayList<>();\n \n+\n     private final Variable thisVariable;\n \n+\n     private int nextTempVariableId;\n \n     // This can only be constructed by a method definition\n+\n+\n     Scope(Optional<ParameterizedType> thisType, Iterable<Parameter> parameters) {\n         if (thisType.isPresent()) {\n             thisVariable = new Variable(\"this\", thisType.get());\n+\n             variables.put(\"this\", thisVariable);\n+\n             allVariables.add(thisVariable);\n         }\n         else {\n             thisVariable = null;\n         }\n-\n         for (Parameter parameter : parameters) {\n             variables.put(parameter.getName(), parameter);\n+\n             allVariables.add(parameter);\n         }\n     }\n \n+\n     public List<Variable> getVariables() {\n         return List.copyOf(allVariables);\n     }\n@@ -58,6 +69,7 @@ public class Scope {\n     public Variable createTempVariable(Class<?> type) {\n         // reserve a slot for this variable\n         Variable variable = new Variable(\"temp_\" + nextTempVariableId, type(type));\n+\n         nextTempVariableId += Type.getType(type(type).getType()).getSize();\n \n         allVariables.add(variable);\n@@ -67,12 +79,15 @@ public class Scope {\n \n     public Variable getThis() {\n         checkState(thisVariable != null, \"Static methods do not have a 'this' variable\");\n+\n         return thisVariable;\n     }\n \n     public Variable getVariable(String name) {\n         Variable variable = variables.get(name);\n+\n         checkArgument(variable != null, \"Variable %s not defined\", name);\n+\n         return variable;\n     }\n \n@@ -82,13 +97,17 @@ public class Scope {\n \n     public Variable declareVariable(ParameterizedType type, String variableName) {\n         requireNonNull(type, \"type is null\");\n+\n         requireNonNull(variableName, \"variableName is null\");\n+\n         checkArgument(!variables.containsKey(variableName), \"There is already a variable named %s\", variableName);\n+\n         checkArgument(!\"this\".equals(variableName), \"The 'this' variable can not be declared\");\n \n         Variable variable = new Variable(variableName, type);\n \n         variables.put(variableName, variable);\n+\n         allVariables.add(variable);\n \n         return variable;\n@@ -96,7 +115,9 @@ public class Scope {\n \n     public Variable declareVariable(String variableName, BytecodeBlock block, BytecodeExpression initialValue) {\n         Variable variable = declareVariable(initialValue.getType(), variableName);\n+\n         block.append(variable.set(initialValue));\n+\n         return variable;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 24
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/78/Scope.java\nindex 46c70600d53..d59387b9c93 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/78/Scope.java\n@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;\n \n public class Scope {\n     private final Map<String, Variable> variables = new TreeMap<>();\n+\n     private final List<Variable> allVariables = new ArrayList<>();\n \n     private final Variable thisVariable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/78/Scope.java\nindex 46c70600d53..d59387b9c93 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/78/Scope.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/78/Scope.java\n@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;\n \n public class Scope {\n     private final Map<String, Variable> variables = new TreeMap<>();\n+\n     private final List<Variable> allVariables = new ArrayList<>();\n \n     private final Variable thisVariable;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

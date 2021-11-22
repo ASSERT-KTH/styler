@@ -1,0 +1,159 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1521",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "90",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "64",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "71",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "14",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1521/ClientMessageTypeHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1521/ClientMessageTypeHandler.java\nindex 69dae72d2aa..2f9b79a70c3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1521/ClientMessageTypeHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1521/ClientMessageTypeHandler.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.catchup;\n \n import io.netty.buffer.ByteBuf;\n@@ -31,58 +32,57 @@ import static org.neo4j.causalclustering.catchup.ResponseMessageType.from;\n \n public class ClientMessageTypeHandler extends ChannelInboundHandlerAdapter\n {\n-    private final Log log;\n-    private final CatchupClientProtocol protocol;\n+  private final Log log;\n+  private final CatchupClientProtocol protocol;\n \n-    public ClientMessageTypeHandler( CatchupClientProtocol protocol, LogProvider logProvider )\n-    {\n-        this.protocol = protocol;\n-        this.log = logProvider.getLog( getClass() );\n-    }\n+  public ClientMessageTypeHandler(CatchupClientProtocol protocol, LogProvider logProvider)\n+  {\n+    this.protocol = protocol;\n+    this.log = logProvider.getLog(getClass());\n+  }\n \n-    @Override\n-    public void channelRead( ChannelHandlerContext ctx, Object msg )\n+  @Override\n+  public void channelRead(ChannelHandlerContext ctx, Object msg)\n+  {\n+    if (protocol.isExpecting(CatchupClientProtocol.State.MESSAGE_TYPE))\n     {\n-        if ( protocol.isExpecting( CatchupClientProtocol.State.MESSAGE_TYPE ) )\n-        {\n-            byte byteValue = ((ByteBuf) msg).readByte();\n-            ResponseMessageType responseMessageType = from( byteValue );\n+      byte byteValue = ((ByteBuf) msg).readByte();\n+      ResponseMessageType responseMessageType = from(byteValue);\n \n-            switch ( responseMessageType )\n-            {\n-            case STORE_ID:\n-                protocol.expect( CatchupClientProtocol.State.STORE_ID );\n-                break;\n-            case TX:\n-                protocol.expect( CatchupClientProtocol.State.TX_PULL_RESPONSE );\n-                break;\n-            case FILE:\n-                protocol.expect( CatchupClientProtocol.State.FILE_HEADER );\n-                break;\n-            case STORE_COPY_FINISHED:\n-                protocol.expect( CatchupClientProtocol.State.STORE_COPY_FINISHED );\n-                break;\n-            case CORE_SNAPSHOT:\n-                protocol.expect( CatchupClientProtocol.State.CORE_SNAPSHOT );\n-                break;\n-            case TX_STREAM_FINISHED:\n-                protocol.expect( CatchupClientProtocol.State.TX_STREAM_FINISHED );\n-                break;\n-            case PREPARE_STORE_COPY_RESPONSE:\n-                protocol.expect( CatchupClientProtocol.State.PREPARE_STORE_COPY_RESPONSE );\n-                break;\n-            case INDEX_SNAPSHOT_RESPONSE:\n-                protocol.expect( CatchupClientProtocol.State.INDEX_SNAPSHOT_RESPONSE );\n-                break;\n-            default:\n-                log.warn( \"No handler found for message type %s (%d)\", responseMessageType.name(), byteValue );\n-            }\n+      switch (responseMessageType)\n+      {\n+        case STORE_ID:\n+          protocol.expect(CatchupClientProtocol.State.STORE_ID);\n+          break;\n+        case TX:\n+          protocol.expect(CatchupClientProtocol.State.TX_PULL_RESPONSE);\n+          break;\n+        case FILE:\n+          protocol.expect(CatchupClientProtocol.State.FILE_HEADER);\n+          break;\n+        case STORE_COPY_FINISHED:\n+          protocol.expect(CatchupClientProtocol.State.STORE_COPY_FINISHED);\n+          break;\n+        case CORE_SNAPSHOT:\n+          protocol.expect(CatchupClientProtocol.State.CORE_SNAPSHOT);\n+          break;\n+        case TX_STREAM_FINISHED:\n+          protocol.expect(CatchupClientProtocol.State.TX_STREAM_FINISHED);\n+          break;\n+        case PREPARE_STORE_COPY_RESPONSE:\n+          protocol.expect(CatchupClientProtocol.State.PREPARE_STORE_COPY_RESPONSE);\n+          break;\n+        case INDEX_SNAPSHOT_RESPONSE:\n+          protocol.expect(CatchupClientProtocol.State.INDEX_SNAPSHOT_RESPONSE);\n+          break;\n+        default:\n+          log.warn(\"No handler found for message type %s (%d)\", responseMessageType.name(), byteValue);\n+      }\n \n-            ReferenceCountUtil.release( msg );\n-        }\n-        else\n-        {\n-            ctx.fireChannelRead( msg );\n-        }\n+      ReferenceCountUtil.release(msg);\n+    } else\n+    {\n+      ctx.fireChannelRead(msg);\n     }\n+  }\n }\n",
+            "diff_size": 52
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1521/ClientMessageTypeHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1521/ClientMessageTypeHandler.java\nindex 69dae72d2aa..a059e75516c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1521/ClientMessageTypeHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1521/ClientMessageTypeHandler.java\n@@ -47,8 +47,7 @@ public class ClientMessageTypeHandler extends ChannelInboundHandlerAdapter\n         {\n             byte byteValue = ((ByteBuf) msg).readByte();\n             ResponseMessageType responseMessageType = from( byteValue );\n-\n-            switch ( responseMessageType )\n+switch ( responseMessageType )\n             {\n             case STORE_ID:\n                 protocol.expect( CatchupClientProtocol.State.STORE_ID );\n@@ -85,4 +84,4 @@ public class ClientMessageTypeHandler extends ChannelInboundHandlerAdapter\n             ctx.fireChannelRead( msg );\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

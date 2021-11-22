@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "70",
+    "information": {
+        "errors": [
+            {
+                "line": "25",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "\nimport org.apache.accumulo.core.client.Scanner;\nimport org.apache.accumulo.core.client.impl.ScannerOptions;\nimport org.apache.accumulo.core.data.Key;\nimport org.apache.accumulo.core.data.Range;\nimport org.apache.accumulo.core.data.Value;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/70/InMemoryScanner.java\nindex 872f6877041..1c824df0aae 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/70/InMemoryScanner.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package datawave.accumulo.inmemory;\n \n import java.io.IOException;\n@@ -32,111 +33,115 @@ import org.apache.accumulo.core.iterators.SortedMapIterator;\n import org.apache.accumulo.core.security.Authorizations;\n \n public class InMemoryScanner extends InMemoryScannerBase implements Scanner, ScannerRebuilder, Cloneable {\n-    \n-    int batchSize = 0;\n-    Range range = new Range();\n \n-    @Override\n-    public InMemoryScanner clone() {\n-        InMemoryScanner clone = new InMemoryScanner(table, getAuthorizations());\n-        clone.batchSize = getBatchSize();\n-        clone.range = getRange();\n-        ScannerOptions.setOptions(clone, this);\n-        clone.timeOut = timeOut;\n-        return clone;\n-    }\n-    \n-    InMemoryScanner(InMemoryTable table, Authorizations auths) {\n-        super(table, auths);\n-    }\n-    \n-    @Override\n-    public void setTimeOut(int timeOut) {\n-        if (timeOut == Integer.MAX_VALUE)\n-            setTimeout(Long.MAX_VALUE, TimeUnit.MILLISECONDS);\n-        else\n-            setTimeout(timeOut, TimeUnit.SECONDS);\n-    }\n-    \n-    @Override\n-    public int getTimeOut() {\n-        long timeout = getTimeout(TimeUnit.SECONDS);\n-        if (timeout >= Integer.MAX_VALUE)\n-            return Integer.MAX_VALUE;\n-        return (int) timeout;\n-    }\n-    \n-    @Override\n-    public void setRange(Range range) {\n-        this.range = range;\n-    }\n-    \n-    @Override\n-    public Range getRange() {\n-        return this.range;\n-    }\n-    \n-    @Override\n-    public void setBatchSize(int size) {\n-        this.batchSize = size;\n-    }\n-    \n-    @Override\n-    public int getBatchSize() {\n-        return this.batchSize;\n-    }\n-    \n-    @Override\n-    public void enableIsolation() {}\n-    \n-    @Override\n-    public void disableIsolation() {}\n-    \n-    static class RangeFilter extends Filter {\n-        Range range;\n-        \n-        RangeFilter(SortedKeyValueIterator<Key,Value> i, Range range) {\n-            setSource(i);\n-            this.range = range;\n-        }\n-        \n-        @Override\n-        public boolean accept(Key k, Value v) {\n-            return range.contains(k);\n-        }\n+  int batchSize = 0;\n+  Range range = new Range();\n+\n+  @Override\n+  public InMemoryScanner clone() {\n+    InMemoryScanner clone = new InMemoryScanner(table, getAuthorizations());\n+    clone.batchSize = getBatchSize();\n+    clone.range = getRange();\n+    ScannerOptions.setOptions(clone, this);\n+    clone.timeOut = timeOut;\n+    return clone;\n+  }\n+\n+  InMemoryScanner(InMemoryTable table, Authorizations auths) {\n+    super(table, auths);\n+  }\n+\n+  @Override\n+  public void setTimeOut(int timeOut) {\n+    if (timeOut == Integer.MAX_VALUE) {\n+      setTimeout(Long.MAX_VALUE, TimeUnit.MILLISECONDS);\n+    } else {\n+      setTimeout(timeOut, TimeUnit.SECONDS);\n     }\n-    \n-    @Override\n-    public Iterator<Entry<Key,Value>> iterator() {\n-        SortedKeyValueIterator<Key,Value> i = new SortedMapIterator(table.table);\n-        try {\n-            i = new RangeFilter(createFilter(i), range);\n-            i.seek(range, createColumnBSS(fetchedColumns), !fetchedColumns.isEmpty());\n-            return new IteratorAdapter(i);\n-        } catch (IOException e) {\n-            throw new RuntimeException(e);\n-        }\n-        \n+  }\n+\n+  @Override\n+  public int getTimeOut() {\n+    long timeout = getTimeout(TimeUnit.SECONDS);\n+    if (timeout >= Integer.MAX_VALUE) {\n+      return Integer.MAX_VALUE;\n     }\n+    return (int) timeout;\n+  }\n \n-    @Override\n-    public Iterator<Entry<Key,Value>> rebuild(Key lastKey) {\n-        // simply rebuild the range starting at lastKey, non-inclusive.\n-        Range newRange = new Range(lastKey, false, range.getEndKey(), range.isEndKeyInclusive());\n-        this.range = newRange;\n+  @Override\n+  public void setRange(Range range) {\n+    this.range = range;\n+  }\n+\n+  @Override\n+  public Range getRange() {\n+    return this.range;\n+  }\n+\n+  @Override\n+  public void setBatchSize(int size) {\n+    this.batchSize = size;\n+  }\n+\n+  @Override\n+  public int getBatchSize() {\n+    return this.batchSize;\n+  }\n+\n+  @Override\n+  public void enableIsolation() {\n+  }\n+\n+  @Override\n+  public void disableIsolation() {\n+  }\n+\n+  static class RangeFilter extends Filter {\n+    Range range;\n \n-        // now rebuild the iterator stack using the new range.\n-        return iterator();\n+    RangeFilter(SortedKeyValueIterator<Key, Value> i, Range range) {\n+      setSource(i);\n+      this.range = range;\n     }\n-    \n+\n     @Override\n-    public long getReadaheadThreshold() {\n-        return 0;\n+    public boolean accept(Key k, Value v) {\n+      return range.contains(k);\n     }\n-    \n-    @Override\n-    public void setReadaheadThreshold(long batches) {\n-        \n+  }\n+\n+  @Override\n+  public Iterator<Entry<Key, Value>> iterator() {\n+    SortedKeyValueIterator<Key, Value> i = new SortedMapIterator(table.table);\n+    try {\n+      i = new RangeFilter(createFilter(i), range);\n+      i.seek(range, createColumnBSS(fetchedColumns), !fetchedColumns.isEmpty());\n+      return new IteratorAdapter(i);\n+    } catch (IOException e) {\n+      throw new RuntimeException(e);\n     }\n-    \n+\n+  }\n+\n+  @Override\n+  public Iterator<Entry<Key, Value>> rebuild(Key lastKey) {\n+    // simply rebuild the range starting at lastKey, non-inclusive.\n+    Range newRange = new Range(lastKey, false, range.getEndKey(), range.isEndKeyInclusive());\n+    this.range = newRange;\n+\n+    // now rebuild the iterator stack using the new range.\n+    return iterator();\n+  }\n+\n+  @Override\n+  public long getReadaheadThreshold() {\n+    return 0;\n+  }\n+\n+  @Override\n+  public void setReadaheadThreshold(long batches) {\n+\n+  }\n+\n }\n",
+            "diff_size": 156
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/70/InMemoryScanner.java\nindex 872f6877041..d512823d880 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/70/InMemoryScanner.java\n@@ -124,7 +124,6 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         // simply rebuild the range starting at lastKey, non-inclusive.\n         Range newRange = new Range(lastKey, false, range.getEndKey(), range.isEndKeyInclusive());\n         this.range = newRange;\n-\n         // now rebuild the iterator stack using the new range.\n         return iterator();\n     }\n@@ -139,4 +138,4 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         \n     }\n     \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/70/InMemoryScanner.java\nindex 872f6877041..c9ec1fbd12f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/70/InMemoryScanner.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/70/InMemoryScanner.java\n@@ -20,7 +20,6 @@ import java.io.IOException;\n import java.util.Iterator;\n import java.util.Map.Entry;\n import java.util.concurrent.TimeUnit;\n-\n import org.apache.accumulo.core.client.Scanner;\n import org.apache.accumulo.core.client.impl.ScannerOptions;\n import org.apache.accumulo.core.data.Key;\n@@ -31,8 +30,8 @@ import org.apache.accumulo.core.iterators.SortedKeyValueIterator;\n import org.apache.accumulo.core.iterators.SortedMapIterator;\n import org.apache.accumulo.core.security.Authorizations;\n \n+\n public class InMemoryScanner extends InMemoryScannerBase implements Scanner, ScannerRebuilder, Cloneable {\n-    \n     int batchSize = 0;\n     Range range = new Range();\n \n@@ -45,11 +44,11 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         clone.timeOut = timeOut;\n         return clone;\n     }\n-    \n+\n     InMemoryScanner(InMemoryTable table, Authorizations auths) {\n         super(table, auths);\n     }\n-    \n+\n     @Override\n     public void setTimeOut(int timeOut) {\n         if (timeOut == Integer.MAX_VALUE)\n@@ -57,7 +56,7 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         else\n             setTimeout(timeOut, TimeUnit.SECONDS);\n     }\n-    \n+\n     @Override\n     public int getTimeOut() {\n         long timeout = getTimeout(TimeUnit.SECONDS);\n@@ -65,47 +64,47 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n             return Integer.MAX_VALUE;\n         return (int) timeout;\n     }\n-    \n+\n     @Override\n     public void setRange(Range range) {\n         this.range = range;\n     }\n-    \n+\n     @Override\n     public Range getRange() {\n         return this.range;\n     }\n-    \n+\n     @Override\n     public void setBatchSize(int size) {\n         this.batchSize = size;\n     }\n-    \n+\n     @Override\n     public int getBatchSize() {\n         return this.batchSize;\n     }\n-    \n+\n     @Override\n     public void enableIsolation() {}\n-    \n+\n     @Override\n     public void disableIsolation() {}\n-    \n+\n     static class RangeFilter extends Filter {\n         Range range;\n-        \n+\n         RangeFilter(SortedKeyValueIterator<Key,Value> i, Range range) {\n             setSource(i);\n             this.range = range;\n         }\n-        \n+\n         @Override\n         public boolean accept(Key k, Value v) {\n             return range.contains(k);\n         }\n     }\n-    \n+\n     @Override\n     public Iterator<Entry<Key,Value>> iterator() {\n         SortedKeyValueIterator<Key,Value> i = new SortedMapIterator(table.table);\n@@ -116,7 +115,6 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         } catch (IOException e) {\n             throw new RuntimeException(e);\n         }\n-        \n     }\n \n     @Override\n@@ -128,15 +126,12 @@ public class InMemoryScanner extends InMemoryScannerBase implements Scanner, Sca\n         // now rebuild the iterator stack using the new range.\n         return iterator();\n     }\n-    \n+\n     @Override\n     public long getReadaheadThreshold() {\n         return 0;\n     }\n-    \n+\n     @Override\n-    public void setReadaheadThreshold(long batches) {\n-        \n-    }\n-    \n-}\n+    public void setReadaheadThreshold(long batches) {}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 24
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

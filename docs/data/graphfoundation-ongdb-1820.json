@@ -1,0 +1,170 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1820",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "107",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "113",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "88",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1820/DefaultSlaveFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1820/DefaultSlaveFactory.java\nindex ecd0af4dda6..5f74f2d1993 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1820/DefaultSlaveFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1820/DefaultSlaveFactory.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.ha.com.master;\n \n import java.util.function.Supplier;\n@@ -33,34 +34,34 @@ import org.neo4j.logging.LogProvider;\n \n public class DefaultSlaveFactory implements SlaveFactory\n {\n-    private final LogProvider logProvider;\n-    private final Monitors monitors;\n-    private final int chunkSize;\n-    private StoreId storeId;\n-    private final Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> entryReader;\n+  private final LogProvider logProvider;\n+  private final Monitors monitors;\n+  private final int chunkSize;\n+  private StoreId storeId;\n+  private final Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> entryReader;\n \n-    public DefaultSlaveFactory( LogProvider logProvider, Monitors monitors, int chunkSize,\n-            Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> logEntryReader )\n-    {\n-        this.logProvider = logProvider;\n-        this.monitors = monitors;\n-        this.chunkSize = chunkSize;\n-        this.entryReader = logEntryReader;\n-    }\n+  public DefaultSlaveFactory(LogProvider logProvider, Monitors monitors, int chunkSize,\n+                             Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> logEntryReader)\n+  {\n+    this.logProvider = logProvider;\n+    this.monitors = monitors;\n+    this.chunkSize = chunkSize;\n+    this.entryReader = logEntryReader;\n+  }\n \n-    @Override\n-    public Slave newSlave( LifeSupport life, ClusterMember clusterMember, String originHostNameOrIp, int originPort )\n-    {\n-        return life.add( new SlaveClient( clusterMember.getInstanceId(), clusterMember.getHAUri().getHost(),\n-                clusterMember.getHAUri().getPort(), originHostNameOrIp, logProvider, storeId,\n-                2, // and that's 1 too many, because we push from the master from one thread only anyway\n-                chunkSize, monitors.newMonitor( ByteCounterMonitor.class, SlaveClient.class ),\n-                monitors.newMonitor( RequestMonitor.class, SlaveClient.class ), entryReader.get() ) );\n-    }\n+  @Override\n+  public Slave newSlave(LifeSupport life, ClusterMember clusterMember, String originHostNameOrIp, int originPort)\n+  {\n+    return life.add(new SlaveClient(clusterMember.getInstanceId(), clusterMember.getHAUri().getHost(),\n+        clusterMember.getHAUri().getPort(), originHostNameOrIp, logProvider, storeId,\n+        2, // and that's 1 too many, because we push from the master from one thread only anyway\n+        chunkSize, monitors.newMonitor(ByteCounterMonitor.class, SlaveClient.class),\n+        monitors.newMonitor(RequestMonitor.class, SlaveClient.class), entryReader.get()));\n+  }\n \n-    @Override\n-    public void setStoreId( StoreId storeId )\n-    {\n-        this.storeId = storeId;\n-    }\n+  @Override\n+  public void setStoreId(StoreId storeId)\n+  {\n+    this.storeId = storeId;\n+  }\n }\n",
+            "diff_size": 28
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "42",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 170).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "53",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 275).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "54",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 181).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1820/DefaultSlaveFactory.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1820/DefaultSlaveFactory.java\nindex ecd0af4dda6..03ed30f0009 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1820/DefaultSlaveFactory.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1820/DefaultSlaveFactory.java\n@@ -39,8 +39,7 @@ public class DefaultSlaveFactory implements SlaveFactory\n     private StoreId storeId;\n     private final Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> entryReader;\n \n-    public DefaultSlaveFactory( LogProvider logProvider, Monitors monitors, int chunkSize,\n-            Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> logEntryReader )\n+    public DefaultSlaveFactory( LogProvider logProvider, Monitors monitors, int chunkSize, Supplier<LogEntryReader<ReadableClosablePositionAwareChannel>> logEntryReader )\n     {\n         this.logProvider = logProvider;\n         this.monitors = monitors;\n@@ -51,11 +50,8 @@ public class DefaultSlaveFactory implements SlaveFactory\n     @Override\n     public Slave newSlave( LifeSupport life, ClusterMember clusterMember, String originHostNameOrIp, int originPort )\n     {\n-        return life.add( new SlaveClient( clusterMember.getInstanceId(), clusterMember.getHAUri().getHost(),\n-                clusterMember.getHAUri().getPort(), originHostNameOrIp, logProvider, storeId,\n-                2, // and that's 1 too many, because we push from the master from one thread only anyway\n-                chunkSize, monitors.newMonitor( ByteCounterMonitor.class, SlaveClient.class ),\n-                monitors.newMonitor( RequestMonitor.class, SlaveClient.class ), entryReader.get() ) );\n+        return life.add( new SlaveClient( clusterMember.getInstanceId(), clusterMember.getHAUri().getHost(), clusterMember.getHAUri().getPort(), originHostNameOrIp, logProvider, storeId, 2, // and that's 1 too many, because we push from the master from one thread only anyway\n+                chunkSize, monitors.newMonitor( ByteCounterMonitor.class, SlaveClient.class ), monitors.newMonitor( RequestMonitor.class, SlaveClient.class ), entryReader.get() ) );\n     }\n \n     @Override\n@@ -63,4 +59,4 @@ public class DefaultSlaveFactory implements SlaveFactory\n     {\n         this.storeId = storeId;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

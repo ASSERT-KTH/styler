@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "285",
+    "information": {
+        "errors": [
+            {
+                "line": "116",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 144).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                        _ode._scheduler.execIsolatedTransaction(new Callable<Void>() {\n                            public Void call() throws Exception {\n                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \" + _responseTimeout + \"ms.\", null);\n                                return null;\n                            }\n                        });",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/285/OdeConsumerAsync.java\nindex 029ded735bb..6dbfa638637 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/285/OdeConsumerAsync.java\n@@ -113,8 +113,9 @@ class OdeConsumerAsync extends OdeConsumer {\n                     try {\n                         _ode._scheduler.execIsolatedTransaction(new Callable<Void>() {\n                             public Void call() throws Exception {\n-                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \" + _responseTimeout + \"ms.\", null);\n-                                return null;\n+                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \"\n+                                        + _responseTimeout + \"ms.\", null);\n+                                 return null;\n                             }\n                         });\n                     } catch (Exception ex) {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/285/OdeConsumerAsync.java\nindex 029ded735bb..96970e141c4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/285/OdeConsumerAsync.java\n@@ -40,88 +40,91 @@ import org.apache.ode.bpel.iapi.MessageExchange.FailureType;\n  * Asynchronous JBI service consumer\n  */\n class OdeConsumerAsync extends OdeConsumer {\n-    private static final Log __log = LogFactory.getLog(OdeConsumerAsync.class);\n-\n-    /**\n-     * We create an executor to handle all the asynchronous invocations/timeouts. Note, we don't need a lot of threads\n-     * here, the operations are all async, using single-thread executor avoids any possible problems in concurrent\n-     * use of delivery channel.\n-     *\n-     * WARNING:  Canceling tasks does not immediately release them, so we don't use the schedule-cancel pattern here.\n-     */\n-    private ScheduledExecutorService _executor;\n-\n-    private Map<String, Long> _mexTimeouts = new ConcurrentHashMap<String, Long>();\n-\n-    OdeConsumerAsync(OdeContext ode) {\n-        super(ode);\n-       _executor = Executors.newSingleThreadScheduledExecutor();\n-        _executor.scheduleWithFixedDelay(new MEXReaper(), _responseTimeout, _responseTimeout/10, TimeUnit.MILLISECONDS);\n-    }\n-\n-    @Override\n-    protected void doSendOneWay(final PartnerRoleMessageExchange odeMex, final InOnly inonly) {\n-        _executor.submit(new Runnable() {\n-            public void run() {\n-                try {\n-                    _outstandingExchanges.put(inonly.getExchangeId(), odeMex);\n-                    _ode.getChannel().send(inonly);\n-                } catch (MessagingException e) {\n-                    String errmsg = \"Error sending request-only message to JBI for ODE mex \" + odeMex;\n-                    __log.error(errmsg, e);\n-                }\n-            }\n-        });\n-\n-    }\n-\n-    @Override\n-    protected void doSendTwoWay(final PartnerRoleMessageExchange odeMex, final InOut inout) {\n-        _executor.submit(new Runnable() {\n-            public void run() {\n-                try {\n-                    _outstandingExchanges.put(inout.getExchangeId(), odeMex);\n-                    _mexTimeouts.put(inout.getExchangeId(), System.currentTimeMillis()+_responseTimeout);\n-                    _ode.getChannel().send(inout);\n-                } catch (MessagingException e) {\n-                    String errmsg = \"Error sending request-only message to JBI for ODE mex \" + odeMex;\n-                    __log.error(errmsg, e);\n-                }\n-            }\n-        });\n-\n-    }\n-\n-    protected void inOutDone(InOut inout) {\n-        _mexTimeouts.remove(inout.getExchangeId());\n-    }\n-\n-    private class MEXReaper implements Runnable {\n-        public void run() {\n-            long now = System.currentTimeMillis();\n-            Object[] inouts = _mexTimeouts.keySet().toArray();\n-            for (int i=0; i<inouts.length; i++) {\n-                long timeout = _mexTimeouts.get(inouts[i]);\n-                if (now >= timeout) {\n-                    _mexTimeouts.remove(inouts[i]);\n-                    final PartnerRoleMessageExchange pmex = _outstandingExchanges.remove(inouts[i]);\n-\n-                    if (pmex == null) /* no worries, got a response. */\n-                        continue;\n-\n-                    __log.warn(\"Timeout on JBI message exchange \" + inouts[i]);\n-                    try {\n-                        _ode._scheduler.execIsolatedTransaction(new Callable<Void>() {\n-                            public Void call() throws Exception {\n-                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \" + _responseTimeout + \"ms.\", null);\n-                                return null;\n-                            }\n-                        });\n-                    } catch (Exception ex) {\n-                        __log.error(\"Error executing transaction:  \", ex);\n-                    }\n-                }\n-            }\n+  private static final Log __log = LogFactory.getLog(OdeConsumerAsync.class);\n+\n+  /**\n+   * We create an executor to handle all the asynchronous invocations/timeouts. Note, we don't need a lot of threads\n+   * here, the operations are all async, using single-thread executor avoids any possible problems in concurrent\n+   * use of delivery channel.\n+   * <p>\n+   * WARNING:  Canceling tasks does not immediately release them, so we don't use the schedule-cancel pattern here.\n+   */\n+  private ScheduledExecutorService _executor;\n+\n+  private Map<String, Long> _mexTimeouts = new ConcurrentHashMap<String, Long>();\n+\n+  OdeConsumerAsync(OdeContext ode) {\n+    super(ode);\n+    _executor = Executors.newSingleThreadScheduledExecutor();\n+    _executor.scheduleWithFixedDelay(new MEXReaper(), _responseTimeout, _responseTimeout / 10, TimeUnit.MILLISECONDS);\n+  }\n+\n+  @Override\n+  protected void doSendOneWay(final PartnerRoleMessageExchange odeMex, final InOnly inonly) {\n+    _executor.submit(new Runnable() {\n+      public void run() {\n+        try {\n+          _outstandingExchanges.put(inonly.getExchangeId(), odeMex);\n+          _ode.getChannel().send(inonly);\n+        } catch (MessagingException e) {\n+          String errmsg = \"Error sending request-only message to JBI for ODE mex \" + odeMex;\n+          __log.error(errmsg, e);\n+        }\n+      }\n+    });\n+\n+  }\n+\n+  @Override\n+  protected void doSendTwoWay(final PartnerRoleMessageExchange odeMex, final InOut inout) {\n+    _executor.submit(new Runnable() {\n+      public void run() {\n+        try {\n+          _outstandingExchanges.put(inout.getExchangeId(), odeMex);\n+          _mexTimeouts.put(inout.getExchangeId(), System.currentTimeMillis() + _responseTimeout);\n+          _ode.getChannel().send(inout);\n+        } catch (MessagingException e) {\n+          String errmsg = \"Error sending request-only message to JBI for ODE mex \" + odeMex;\n+          __log.error(errmsg, e);\n+        }\n+      }\n+    });\n+\n+  }\n+\n+  protected void inOutDone(InOut inout) {\n+    _mexTimeouts.remove(inout.getExchangeId());\n+  }\n+\n+  private class MEXReaper implements Runnable {\n+    public void run() {\n+      long now = System.currentTimeMillis();\n+      Object[] inouts = _mexTimeouts.keySet().toArray();\n+      for (int i = 0; i < inouts.length; i++) {\n+        long timeout = _mexTimeouts.get(inouts[i]);\n+        if (now >= timeout) {\n+          _mexTimeouts.remove(inouts[i]);\n+          final PartnerRoleMessageExchange pmex = _outstandingExchanges.remove(inouts[i]);\n+\n+          if (pmex == null) /* no worries, got a response. */ {\n+            continue;\n+          }\n+\n+          __log.warn(\"Timeout on JBI message exchange \" + inouts[i]);\n+          try {\n+            _ode._scheduler.execIsolatedTransaction(new Callable<Void>() {\n+              public Void call() throws Exception {\n+                pmex\n+                  .replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \" + _responseTimeout + \"ms.\",\n+                    null);\n+                return null;\n+              }\n+            });\n+          } catch (Exception ex) {\n+            __log.error(\"Error executing transaction:  \", ex);\n+          }\n         }\n+      }\n     }\n+  }\n }\n",
+            "diff_size": 85
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "116",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/285/OdeConsumerAsync.java\nindex 029ded735bb..aed2df49c1b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/285/OdeConsumerAsync.java\n@@ -124,4 +124,4 @@ class OdeConsumerAsync extends OdeConsumer {\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "116",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/285/OdeConsumerAsync.java\nindex 029ded735bb..6dbfa638637 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/285/OdeConsumerAsync.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/285/OdeConsumerAsync.java\n@@ -113,8 +113,9 @@ class OdeConsumerAsync extends OdeConsumer {\n                     try {\n                         _ode._scheduler.execIsolatedTransaction(new Callable<Void>() {\n                             public Void call() throws Exception {\n-                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \" + _responseTimeout + \"ms.\", null);\n-                                return null;\n+                                pmex.replyWithFailure(FailureType.NO_RESPONSE, \"Response not received after \"\n+                                        + _responseTimeout + \"ms.\", null);\n+                                 return null;\n                             }\n                         });\n                     } catch (Exception ex) {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

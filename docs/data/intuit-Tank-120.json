@@ -1,0 +1,98 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "120",
+    "information": {
+        "errors": [
+            {
+                "line": "61",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 161).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                List<HierarchicalConfiguration> restrictionGroups = restrictionConfig.configurationsAt(\"groups/group\");\n                String key = restrictionConfig.getString(\"@operation\");\n                List<String> value = restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n                restrictionMap.put(key, value);\n            }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 161).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/120/SecurityConfig.java\nindex da255146e12..46705e3331f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/120/SecurityConfig.java\n@@ -1,6 +1,7 @@\n /**\n  * Copyright 2011 Intuit Inc. All Rights Reserved\n  */\n+\n package com.intuit.tank.vm.settings;\n \n /*\n@@ -29,80 +30,80 @@ import org.apache.commons.configuration.HierarchicalConfiguration;\n \n /**\n  * SecurityConfig <code>\n- * \n+ *\n  * @author dangleton\n- * \n  */\n public class SecurityConfig {\n \n-    private Set<String> groups = new HashSet<String>();\n-    private Set<String> defaultGroups = new HashSet<String>();\n-\n-    private Set<DefaultUser> users = new HashSet<DefaultUser>();\n-\n-    private Map<String, List<String>> restrictionMap = new HashMap<String, List<String>>();\n-\n-    @SuppressWarnings(\"unchecked\")\n-    public SecurityConfig(@Nonnull HierarchicalConfiguration config) {\n-        if (config != null) {\n-            List<HierarchicalConfiguration> sizes = config.configurationsAt(\"groups/group\");\n-            for (HierarchicalConfiguration sizeConfig : sizes) {\n-                String group = sizeConfig.getString(\"\");\n-                if (sizeConfig.getBoolean(\"@isDefault\", false)) {\n-                    defaultGroups.add(group);\n-                }\n-                groups.add(group);\n-            }\n-\n-            List<HierarchicalConfiguration> restrictionConfigs = config.configurationsAt(\"restrictions/restriction\");\n-            for (HierarchicalConfiguration restrictionConfig : restrictionConfigs) {\n-                List<HierarchicalConfiguration> restrictionGroups = restrictionConfig.configurationsAt(\"groups/group\");\n-                String key = restrictionConfig.getString(\"@operation\");\n-                List<String> value = restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n-                restrictionMap.put(key, value);\n-            }\n-\n-            List<HierarchicalConfiguration> userConfigs = config.configurationsAt(\"users/user\");\n-            for (HierarchicalConfiguration userConfig : userConfigs) {\n-                users.add(new DefaultUser(userConfig));\n-            }\n-        }\n-    }\n-\n-    /**\n-     * \n-     * @return the groups\n-     */\n-    public Set<String> getGroups() {\n-        return groups;\n-    }\n-\n-    /**\n-     * @return the defaultGroups\n-     */\n-    public Set<String> getDefaultGroups() {\n-        return defaultGroups;\n-    }\n+  private Set<String> groups = new HashSet<String>();\n+  private Set<String> defaultGroups = new HashSet<String>();\n \n-    public Map<String, List<String>> getRestrictionMap() {\n-        return restrictionMap;\n-    }\n+  private Set<DefaultUser> users = new HashSet<DefaultUser>();\n \n-    /**\n-     * return if the group is a default group (should be added to all new users.\n-     * \n-     * @param groupName\n-     * @return\n-     */\n-    public boolean isDefaultGroup(String groupName) {\n-        return defaultGroups.contains(groupName);\n-    }\n+  private Map<String, List<String>> restrictionMap = new HashMap<String, List<String>>();\n \n-    /**\n-     * @return the users\n-     */\n-    public Set<DefaultUser> getDefaultUsers() {\n-        return users;\n+  @SuppressWarnings(\"unchecked\")\n+  public SecurityConfig(@Nonnull HierarchicalConfiguration config) {\n+    if (config != null) {\n+      List<HierarchicalConfiguration> sizes = config.configurationsAt(\"groups/group\");\n+      for (HierarchicalConfiguration sizeConfig : sizes) {\n+        String group = sizeConfig.getString(\"\");\n+        if (sizeConfig.getBoolean(\"@isDefault\", false)) {\n+          defaultGroups.add(group);\n+        }\n+        groups.add(group);\n+      }\n+\n+      List<HierarchicalConfiguration> restrictionConfigs = config.configurationsAt(\"restrictions/restriction\");\n+      for (HierarchicalConfiguration restrictionConfig : restrictionConfigs) {\n+        List<HierarchicalConfiguration> restrictionGroups = restrictionConfig.configurationsAt(\"groups/group\");\n+        String key = restrictionConfig.getString(\"@operation\");\n+        List<String> value =\n+          restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\"))\n+            .collect(Collectors.toList());\n+        restrictionMap.put(key, value);\n+      }\n+\n+      List<HierarchicalConfiguration> userConfigs = config.configurationsAt(\"users/user\");\n+      for (HierarchicalConfiguration userConfig : userConfigs) {\n+        users.add(new DefaultUser(userConfig));\n+      }\n     }\n+  }\n+\n+  /**\n+   * @return the groups\n+   */\n+  public Set<String> getGroups() {\n+    return groups;\n+  }\n+\n+  /**\n+   * @return the defaultGroups\n+   */\n+  public Set<String> getDefaultGroups() {\n+    return defaultGroups;\n+  }\n+\n+  public Map<String, List<String>> getRestrictionMap() {\n+    return restrictionMap;\n+  }\n+\n+  /**\n+   * return if the group is a default group (should be added to all new users.\n+   *\n+   * @param groupName\n+   * @return\n+   */\n+  public boolean isDefaultGroup(String groupName) {\n+    return defaultGroups.contains(groupName);\n+  }\n+\n+  /**\n+   * @return the users\n+   */\n+  public Set<DefaultUser> getDefaultUsers() {\n+    return users;\n+  }\n \n }\n",
+            "diff_size": 125
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 161).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/120/SecurityConfig.java\nindex da255146e12..20d2c4a053a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/120/SecurityConfig.java\n@@ -105,4 +105,4 @@ public class SecurityConfig {\n         return users;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 160).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/120/SecurityConfig.java\nindex da255146e12..adaaa96020c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/120/SecurityConfig.java\n@@ -16,15 +16,15 @@ package com.intuit.tank.vm.settings;\n  * #L%\n  */\n \n+\n+\n import java.util.HashMap;\n import java.util.HashSet;\n import java.util.List;\n import java.util.Map;\n import java.util.Set;\n import java.util.stream.Collectors;\n-\n import javax.annotation.Nonnull;\n-\n import org.apache.commons.configuration.HierarchicalConfiguration;\n \n /**\n@@ -33,13 +33,13 @@ import org.apache.commons.configuration.HierarchicalConfiguration;\n  * @author dangleton\n  * \n  */\n+\n+\n public class SecurityConfig {\n \n     private Set<String> groups = new HashSet<String>();\n     private Set<String> defaultGroups = new HashSet<String>();\n-\n     private Set<DefaultUser> users = new HashSet<DefaultUser>();\n-\n     private Map<String, List<String>> restrictionMap = new HashMap<String, List<String>>();\n \n     @SuppressWarnings(\"unchecked\")\n@@ -53,15 +53,13 @@ public class SecurityConfig {\n                 }\n                 groups.add(group);\n             }\n-\n             List<HierarchicalConfiguration> restrictionConfigs = config.configurationsAt(\"restrictions/restriction\");\n             for (HierarchicalConfiguration restrictionConfig : restrictionConfigs) {\n                 List<HierarchicalConfiguration> restrictionGroups = restrictionConfig.configurationsAt(\"groups/group\");\n                 String key = restrictionConfig.getString(\"@operation\");\n-                List<String> value = restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n+                List<String> value = restrictionGroups.stream().map(restrictionGroupConfig-> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n                 restrictionMap.put(key, value);\n             }\n-\n             List<HierarchicalConfiguration> userConfigs = config.configurationsAt(\"users/user\");\n             for (HierarchicalConfiguration userConfig : userConfigs) {\n                 users.add(new DefaultUser(userConfig));\n@@ -73,6 +71,8 @@ public class SecurityConfig {\n      * \n      * @return the groups\n      */\n+\n+\n     public Set<String> getGroups() {\n         return groups;\n     }\n@@ -80,10 +80,13 @@ public class SecurityConfig {\n     /**\n      * @return the defaultGroups\n      */\n+\n+\n     public Set<String> getDefaultGroups() {\n         return defaultGroups;\n     }\n \n+\n     public Map<String, List<String>> getRestrictionMap() {\n         return restrictionMap;\n     }\n@@ -94,6 +97,8 @@ public class SecurityConfig {\n      * @param groupName\n      * @return\n      */\n+\n+\n     public boolean isDefaultGroup(String groupName) {\n         return defaultGroups.contains(groupName);\n     }\n@@ -101,8 +106,10 @@ public class SecurityConfig {\n     /**\n      * @return the users\n      */\n+\n+\n     public Set<DefaultUser> getDefaultUsers() {\n         return users;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 21
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 161).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 216).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/120/SecurityConfig.java\nindex da255146e12..1665a47c438 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/120/SecurityConfig.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/styler_three_grams/120/SecurityConfig.java\n@@ -57,8 +57,7 @@ public class SecurityConfig {\n             List<HierarchicalConfiguration> restrictionConfigs = config.configurationsAt(\"restrictions/restriction\");\n             for (HierarchicalConfiguration restrictionConfig : restrictionConfigs) {\n                 List<HierarchicalConfiguration> restrictionGroups = restrictionConfig.configurationsAt(\"groups/group\");\n-                String key = restrictionConfig.getString(\"@operation\");\n-                List<String> value = restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n+                String key = restrictionConfig.getString(\"@operation\");List<String> value = restrictionGroups.stream().map(restrictionGroupConfig -> restrictionGroupConfig.getString(\"\")).collect(Collectors.toList());\n                 restrictionMap.put(key, value);\n             }\n \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

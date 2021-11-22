@@ -1,0 +1,82 @@
+{
+    "project_name": "wayshall-onetwo",
+    "error_id": "30",
+    "information": {
+        "errors": [
+            {
+                "line": "58",
+                "severity": "error",
+                "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+            }
+        ]
+    },
+    "source_code": "\t\t\t}\n//\t\t\tif (entry.getKey().toString().contains(\"/productCategory/treeList*\")) {\n//\t\t\t\tSystem.out.println(\"test\");\n//\t\t\t}\n\t\t\tif (entry.getKey().matches(request)) {\n\t\t\t\tauths.addAll(entry.getValue());",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "error",
+                    "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/30/MatchAllFilterInvocationSecurityMetadataSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/intellij/30/MatchAllFilterInvocationSecurityMetadataSource.java\nindex 591c028f022..7b6469aaf71 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/30/MatchAllFilterInvocationSecurityMetadataSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/intellij/30/MatchAllFilterInvocationSecurityMetadataSource.java\n@@ -21,50 +21,51 @@ import com.google.common.collect.Sets;\n /**\n  * \u9ed8\u8ba4\u7684DefaultFilterInvocationSecurityMetadataSource\u5339\u914d\u5230\u4e86\u7acb\u523b\u8fd4\u56de\uff0c\n  * \u8fd9\u91cc\u63d0\u4f9b\u4e00\u4e2a\u5339\u914d\u6240\u6709\u5230\u5b9e\u73b0\n+ *\n  * @author weishao zeng\n  * <br/>\n  */\n public class MatchAllFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {\n-\tprotected final Logger logger = JFishLoggerFactory.getLogger(getClass());\n+  protected final Logger logger = JFishLoggerFactory.getLogger(getClass());\n \n-\tprivate final Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;\n+  private final Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;\n \n-\tpublic MatchAllFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap) {\n-\t\tthis.requestMap = requestMap;\n-\t}\n+  public MatchAllFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap) {\n+    this.requestMap = requestMap;\n+  }\n \n-\tpublic Collection<ConfigAttribute> getAllConfigAttributes() {\n-\t\tSet<ConfigAttribute> allAttributes = new HashSet<ConfigAttribute>();\n+  public Collection<ConfigAttribute> getAllConfigAttributes() {\n+    Set<ConfigAttribute> allAttributes = new HashSet<ConfigAttribute>();\n \n-\t\tfor (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap\n-\t\t\t\t.entrySet()) {\n-\t\t\tallAttributes.addAll(entry.getValue());\n-\t\t}\n+    for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap\n+      .entrySet()) {\n+      allAttributes.addAll(entry.getValue());\n+    }\n \n-\t\treturn allAttributes;\n-\t}\n+    return allAttributes;\n+  }\n \n-\tpublic Collection<ConfigAttribute> getAttributes(Object object) {\n-\t\tfinal HttpServletRequest request = ((FilterInvocation) object).getRequest();\n-\t\tCollection<ConfigAttribute> auths = Sets.newHashSet();\n-\t\tfor (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {\n-\t\t\tif (entry.getKey().equals(AnyRequestMatcher.INSTANCE)) {\n-\t\t\t\tif (logger.isDebugEnabled()) {\n-\t\t\t\t\tlogger.debug(\"ignore any matcher for: {}\", entry.getValue());\n-\t\t\t\t}\n-\t\t\t\tcontinue;\n-\t\t\t}\n+  public Collection<ConfigAttribute> getAttributes(Object object) {\n+    final HttpServletRequest request = ((FilterInvocation) object).getRequest();\n+    Collection<ConfigAttribute> auths = Sets.newHashSet();\n+    for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {\n+      if (entry.getKey().equals(AnyRequestMatcher.INSTANCE)) {\n+        if (logger.isDebugEnabled()) {\n+          logger.debug(\"ignore any matcher for: {}\", entry.getValue());\n+        }\n+        continue;\n+      }\n //\t\t\tif (entry.getKey().toString().contains(\"/productCategory/treeList*\")) {\n //\t\t\t\tSystem.out.println(\"test\");\n //\t\t\t}\n-\t\t\tif (entry.getKey().matches(request)) {\n-\t\t\t\tauths.addAll(entry.getValue());\n-\t\t\t}\n-\t\t}\n-\t\treturn auths;\n-\t}\n+      if (entry.getKey().matches(request)) {\n+        auths.addAll(entry.getValue());\n+      }\n+    }\n+    return auths;\n+  }\n \n-\tpublic boolean supports(Class<?> clazz) {\n-\t\treturn FilterInvocation.class.isAssignableFrom(clazz);\n-\t}\n+  public boolean supports(Class<?> clazz) {\n+    return FilterInvocation.class.isAssignableFrom(clazz);\n+  }\n }\n",
+            "diff_size": 33
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/30/MatchAllFilterInvocationSecurityMetadataSource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/naturalize/30/MatchAllFilterInvocationSecurityMetadataSource.java\nindex 591c028f022..d1f25e19572 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/30/MatchAllFilterInvocationSecurityMetadataSource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/naturalize/30/MatchAllFilterInvocationSecurityMetadataSource.java\n@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;\n  * <br/>\n  */\n public class MatchAllFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {\n+\n \tprotected final Logger logger = JFishLoggerFactory.getLogger(getClass());\n \n \tprivate final Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;\n@@ -36,9 +37,8 @@ public class MatchAllFilterInvocationSecurityMetadataSource implements FilterInv\n \tpublic Collection<ConfigAttribute> getAllConfigAttributes() {\n \t\tSet<ConfigAttribute> allAttributes = new HashSet<ConfigAttribute>();\n \n-\t\tfor (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap\n-\t\t\t\t.entrySet()) {\n-\t\t\tallAttributes.addAll(entry.getValue());\n+\t\tfor (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {\n+\tallAttributes.addAll(entry.getValue());\n \t\t}\n \n \t\treturn allAttributes;\n@@ -54,10 +54,9 @@ public class MatchAllFilterInvocationSecurityMetadataSource implements FilterInv\n \t\t\t\t}\n \t\t\t\tcontinue;\n \t\t\t}\n-//\t\t\tif (entry.getKey().toString().contains(\"/productCategory/treeList*\")) {\n-//\t\t\t\tSystem.out.println(\"test\");\n-//\t\t\t}\n-\t\t\tif (entry.getKey().matches(request)) {\n+\n+//\t\t\t\n+if (entry.getKey().matches(request)) {\n \t\t\t\tauths.addAll(entry.getValue());\n \t\t\t}\n \t\t}\n@@ -67,4 +66,4 @@ public class MatchAllFilterInvocationSecurityMetadataSource implements FilterInv\n \tpublic boolean supports(Class<?> clazz) {\n \t\treturn FilterInvocation.class.isAssignableFrom(clazz);\n \t}\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "58",
+                    "severity": "error",
+                    "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "naturalize"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

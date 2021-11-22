@@ -1,0 +1,78 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "104",
+    "information": {
+        "errors": [
+            {
+                "line": "350",
+                "column": "39",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "    public OutputStream newOutputStream(boolean append) throws IOException {\n        Path file = Paths.get(name);\n        OpenOption[] options = append //\n                ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n                : new OpenOption[0];\n        try {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/104/FilePathDisk.java\nindex a327aacfab5..744fbf4ff76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/104/FilePathDisk.java\n@@ -347,8 +347,9 @@ public class FilePathDisk extends FilePath {\n     @Override\n     public OutputStream newOutputStream(boolean append) throws IOException {\n         Path file = Paths.get(name);\n-        OpenOption[] options = append //\n-                ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n+        OpenOption[] options = append\n+            //\n+                 ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n                 : new OpenOption[0];\n         try {\n             Path parent = file.getParent();\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "366",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/104/FilePathDisk.java\nindex a327aacfab5..3f0a73c61a1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/104/FilePathDisk.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.store.fs.disk;\n \n import java.io.FileNotFoundException;\n@@ -118,25 +119,32 @@ public class FilePathDisk extends FilePath {\n         Path oldFile = Paths.get(name);\n         Path newFile = Paths.get(newName.name);\n         if (!Files.exists(oldFile)) {\n-            throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, name + \" (not found)\", newName.name);\n+            throw DbException\n+                    .get(ErrorCode.FILE_RENAME_FAILED_2, name + \" (not found)\",\n+                            newName.name);\n         }\n         if (atomicReplace) {\n             try {\n-                Files.move(oldFile, newFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);\n+                Files.move(oldFile, newFile,\n+                        StandardCopyOption.REPLACE_EXISTING,\n+                        StandardCopyOption.ATOMIC_MOVE);\n                 return;\n             } catch (AtomicMoveNotSupportedException ex) {\n                 // Ignore\n             } catch (IOException ex) {\n-                throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, ex, name, newName.name);\n+                throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, ex, name,\n+                        newName.name);\n             }\n         }\n-        CopyOption[] copyOptions = atomicReplace ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING }\n+        CopyOption[] copyOptions = atomicReplace ?\n+                new CopyOption[] {StandardCopyOption.REPLACE_EXISTING}\n                 : new CopyOption[0];\n         IOException cause;\n         try {\n             Files.move(oldFile, newFile, copyOptions);\n         } catch (FileAlreadyExistsException ex) {\n-            throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, name, newName + \" (exists)\");\n+            throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, name,\n+                    newName + \" (exists)\");\n         } catch (IOException ex) {\n             cause = ex;\n             for (int i = 0; i < SysProperties.MAX_FILE_RETRY; i++) {\n@@ -145,13 +153,15 @@ public class FilePathDisk extends FilePath {\n                     Files.move(oldFile, newFile, copyOptions);\n                     return;\n                 } catch (FileAlreadyExistsException ex2) {\n-                    throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, name, newName + \" (exists)\");\n+                    throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, name,\n+                            newName + \" (exists)\");\n                 } catch (IOException ex2) {\n                     cause = ex;\n                 }\n                 wait(i);\n             }\n-            throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, cause, name, newName.name);\n+            throw DbException.get(ErrorCode.FILE_RENAME_FAILED_2, cause, name,\n+                    newName.name);\n         }\n     }\n \n@@ -212,7 +222,8 @@ public class FilePathDisk extends FilePath {\n     @Override\n     public List<FilePath> newDirectoryStream() {\n         try (Stream<Path> files = Files.list(Paths.get(name).toRealPath())) {\n-            return files.collect(ArrayList::new, (t, u) -> t.add(getPath(u.toString())), ArrayList::addAll);\n+            return files.collect(ArrayList::new,\n+                    (t, u) -> t.add(getPath(u.toString())), ArrayList::addAll);\n         } catch (NoSuchFileException e) {\n             return Collections.emptyList();\n         } catch (IOException e) {\n@@ -241,20 +252,22 @@ public class FilePathDisk extends FilePath {\n              * non-Windows file systems, but it doesn't affect real access\n              * permissions.\n              */\n-            if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {\n+            if (fileStore\n+                    .supportsFileAttributeView(PosixFileAttributeView.class)) {\n                 HashSet<PosixFilePermission> permissions = new HashSet<>();\n                 for (PosixFilePermission p : Files.getPosixFilePermissions(f)) {\n                     switch (p) {\n-                    case OWNER_WRITE:\n-                    case GROUP_WRITE:\n-                    case OTHERS_WRITE:\n-                        break;\n-                    default:\n-                        permissions.add(p);\n+                        case OWNER_WRITE:\n+                        case GROUP_WRITE:\n+                        case OTHERS_WRITE:\n+                            break;\n+                        default:\n+                            permissions.add(p);\n                     }\n                 }\n                 Files.setPosixFilePermissions(f, permissions);\n-            } else if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {\n+            } else if (fileStore\n+                    .supportsFileAttributeView(DosFileAttributeView.class)) {\n                 Files.setAttribute(f, \"dos:readonly\", true);\n             } else {\n                 return false;\n@@ -275,7 +288,8 @@ public class FilePathDisk extends FilePath {\n              * File does not exist or isn't accessible, try to get the real path\n              * of parent directory.\n              */\n-            return getPath(toRealPath(path.toAbsolutePath().normalize()).toString());\n+            return getPath(\n+                    toRealPath(path.toAbsolutePath().normalize()).toString());\n         }\n     }\n \n@@ -323,7 +337,8 @@ public class FilePathDisk extends FilePath {\n         try {\n             Files.createDirectory(dir);\n         } catch (FileAlreadyExistsException e) {\n-            throw DbException.get(ErrorCode.FILE_CREATION_FAILED_1, name + \" (a file with this name already exists)\");\n+            throw DbException.get(ErrorCode.FILE_CREATION_FAILED_1,\n+                    name + \" (a file with this name already exists)\");\n         } catch (IOException e) {\n             IOException cause = e;\n             for (int i = 0; i < SysProperties.MAX_FILE_RETRY; i++) {\n@@ -340,7 +355,8 @@ public class FilePathDisk extends FilePath {\n                 }\n                 wait(i);\n             }\n-            throw DbException.get(ErrorCode.FILE_CREATION_FAILED_1, cause, name);\n+            throw DbException\n+                    .get(ErrorCode.FILE_CREATION_FAILED_1, cause, name);\n         }\n     }\n \n@@ -348,7 +364,8 @@ public class FilePathDisk extends FilePath {\n     public OutputStream newOutputStream(boolean append) throws IOException {\n         Path file = Paths.get(name);\n         OpenOption[] options = append //\n-                ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n+                ? new OpenOption[] {StandardOpenOption.CREATE,\n+                StandardOpenOption.APPEND}\n                 : new OpenOption[0];\n         try {\n             Path parent = file.getParent();\n@@ -417,7 +434,9 @@ public class FilePathDisk extends FilePath {\n \n     @Override\n     public FileChannel open(String mode) throws IOException {\n-        FileChannel f = FileChannel.open(Paths.get(name), FileUtils.modeToOptions(mode), FileUtils.NO_ATTRIBUTES);\n+        FileChannel f = FileChannel\n+                .open(Paths.get(name), FileUtils.modeToOptions(mode),\n+                        FileUtils.NO_ATTRIBUTES);\n         IOUtils.trace(\"open\", name, f);\n         return f;\n     }\n@@ -428,11 +447,13 @@ public class FilePathDisk extends FilePath {\n     }\n \n     @Override\n-    public FilePath createTempFile(String suffix, boolean inTempDir) throws IOException {\n+    public FilePath createTempFile(String suffix, boolean inTempDir)\n+            throws IOException {\n         Path file = Paths.get(name + '.').toAbsolutePath();\n         String prefix = file.getFileName().toString();\n         if (inTempDir) {\n-            Files.createDirectories(Paths.get(System.getProperty(\"java.io.tmpdir\", \".\")));\n+            Files.createDirectories(\n+                    Paths.get(System.getProperty(\"java.io.tmpdir\", \".\")));\n             file = Files.createTempFile(prefix, suffix);\n         } else {\n             Path dir = file.getParent();\n",
+            "diff_size": 44
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "350",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/104/FilePathDisk.java\nindex a327aacfab5..744fbf4ff76 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/104/FilePathDisk.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/104/FilePathDisk.java\n@@ -347,8 +347,9 @@ public class FilePathDisk extends FilePath {\n     @Override\n     public OutputStream newOutputStream(boolean append) throws IOException {\n         Path file = Paths.get(name);\n-        OpenOption[] options = append //\n-                ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n+        OpenOption[] options = append\n+            //\n+                 ? new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND }\n                 : new OpenOption[0];\n         try {\n             Path parent = file.getParent();\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

@@ -1,0 +1,79 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "72",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "column": "29",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": " * @author Bill Shannon\n */\n@Service(name=\"metadata\")   // XXX - need a better mapping\n@PerLookup\npublic class XMLContentActionReporter extends ActionReporter {\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/72/XMLContentActionReporter.java\nindex 959a20fdb19..00199740369 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/72/XMLContentActionReporter.java\n@@ -56,7 +56,11 @@ import org.glassfish.hk2.api.PerLookup;\n  * @author tjquinn\n  * @author Bill Shannon\n  */\n-@Service(name=\"metadata\")   // XXX - need a better mapping\n+@Service(name=\"metadata\")\n+\n+// XXX - need a better mapping\n+\n+\n @PerLookup\n public class XMLContentActionReporter extends ActionReporter {\n \n",
+            "diff_size": 5
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "59",
+                    "column": "31",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/72/XMLContentActionReporter.java\nindex 959a20fdb19..9513bd1f967 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/72/XMLContentActionReporter.java\n@@ -32,9 +32,9 @@ import org.glassfish.hk2.api.PerLookup;\n  * Represents the action report as XML like this:\n  * <br>\n  * <!--\n- *     Apologies for the formatting - it's necessary for the JavaDoc to be readable\n- *     If you are using NetBeans, for example, click anywhere in this comment area to see\n- *     the document example clearly in the JavaDoc preview\n+ * Apologies for the formatting - it's necessary for the JavaDoc to be readable\n+ * If you are using NetBeans, for example, click anywhere in this comment area to see\n+ * the document example clearly in the JavaDoc preview\n  * -->\n  * <code>\n  * <br>&lt;action-report description=\"xxx\" exit-code=\"xxx\" [failure-cause=\"xxx\"]>\n@@ -48,7 +48,7 @@ import org.glassfish.hk2.api.PerLookup;\n  * <br>&nbsp;&nbsp;&lt/message-part>\n  * <br>&lt;/action-report>\n  * </code>\n- *\n+ * <p>\n  * Currently this is used to return the metadata for a command, although\n  * it could be used more generally to return XML content.  In the general\n  * case the action-report and message-part elements ought to be removed.\n@@ -56,11 +56,11 @@ import org.glassfish.hk2.api.PerLookup;\n  * @author tjquinn\n  * @author Bill Shannon\n  */\n-@Service(name=\"metadata\")   // XXX - need a better mapping\n+@Service(name = \"metadata\")   // XXX - need a better mapping\n @PerLookup\n public class XMLContentActionReporter extends ActionReporter {\n \n-    public void writeReport(OutputStream os)  {\n+    public void writeReport(OutputStream os) {\n         try {\n             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n             DocumentBuilder db = dbf.newDocumentBuilder();\n@@ -80,12 +80,13 @@ public class XMLContentActionReporter extends ActionReporter {\n      * Creates a new Element representing the XML content describing an\n      * action report.  Invokes itself recursively to capture information\n      * about any subactions.\n+     *\n      * @param owningDocument Document which will own all generated XML content\n-     * @param report the ActionReporter to convert to XML content\n+     * @param report         the ActionReporter to convert to XML content\n      * @return Element for the specified ActionReporter (and any sub-reports)\n      */\n     private Element writeActionReport(Document owningDocument,\n-            ActionReporter report) {\n+                                      ActionReporter report) {\n         Element result = owningDocument.createElement(\"action-report\");\n         result.setAttribute(\"description\", report.actionDescription);\n         result.setAttribute(\"exit-code\", report.getActionExitCode().name());\n@@ -107,7 +108,7 @@ public class XMLContentActionReporter extends ActionReporter {\n     }\n \n     private void writePart(Element actionReport, MessagePart part,\n-            String childType) {\n+                           String childType) {\n         Document d = actionReport.getOwnerDocument();\n         Element messagePart = d.createElement(\"message-part\");\n         actionReport.appendChild(messagePart);\n@@ -123,8 +124,9 @@ public class XMLContentActionReporter extends ActionReporter {\n         }\n         messagePart.setAttribute(\"message\", part.getMessage());\n \n-        for (MessagePart subPart : part.getChildren())\n+        for (MessagePart subPart : part.getChildren()) {\n             writeSubPart(messagePart, subPart, subPart.getChildrenType());\n+        }\n     }\n \n     /**\n@@ -133,7 +135,7 @@ public class XMLContentActionReporter extends ActionReporter {\n      * are attributes of the element.  Recurse for any subparts.\n      */\n     private void writeSubPart(Element actionReport, MessagePart part,\n-            String childType) {\n+                              String childType) {\n         Document d = actionReport.getOwnerDocument();\n         Element messagePart = d.createElement(childType);\n         actionReport.appendChild(messagePart);\n@@ -142,19 +144,20 @@ public class XMLContentActionReporter extends ActionReporter {\n             messagePart.setAttribute(prop.getKey().toString(),\n                 prop.getValue().toString());\n         }\n-        for (MessagePart subPart : part.getChildren())\n+        for (MessagePart subPart : part.getChildren()) {\n             writeSubPart(messagePart, subPart, subPart.getChildrenType());\n+        }\n     }\n \n     /**\n      * Write the XML document to the output stream.\n      *\n-     * @param doc   the XML document\n-     * @param os    the output stream\n+     * @param doc the XML document\n+     * @param os  the output stream\n      * @throws TransformerException if anything goes wrong\n      */\n     private void writeXML(Document doc, OutputStream os)\n-            throws TransformerException {\n+        throws TransformerException {\n         Source source = new DOMSource(doc);\n \n         Result result = new StreamResult(os);\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/72/XMLContentActionReporter.java\nindex 959a20fdb19..d521484e5d1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/72/XMLContentActionReporter.java\n@@ -56,7 +56,8 @@ import org.glassfish.hk2.api.PerLookup;\n  * @author tjquinn\n  * @author Bill Shannon\n  */\n-@Service(name=\"metadata\")   // XXX - need a better mapping\n+@Service(name=\"metadata\")\n+// XXX - need a better mapping\n @PerLookup\n public class XMLContentActionReporter extends ActionReporter {\n \n@@ -162,4 +163,4 @@ public class XMLContentActionReporter extends ActionReporter {\n         Transformer xformer = TransformerFactory.newInstance().newTransformer();\n         xformer.transform(source, result);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/72/XMLContentActionReporter.java\nindex 959a20fdb19..00199740369 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/72/XMLContentActionReporter.java\n@@ -56,7 +56,11 @@ import org.glassfish.hk2.api.PerLookup;\n  * @author tjquinn\n  * @author Bill Shannon\n  */\n-@Service(name=\"metadata\")   // XXX - need a better mapping\n+@Service(name=\"metadata\")\n+\n+// XXX - need a better mapping\n+\n+\n @PerLookup\n public class XMLContentActionReporter extends ActionReporter {\n \n",
+            "diff_size": 5
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "59",
+                    "column": "26",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/72/XMLContentActionReporter.java\nindex 959a20fdb19..33c59670f5e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/72/XMLContentActionReporter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/72/XMLContentActionReporter.java\n@@ -56,7 +56,7 @@ import org.glassfish.hk2.api.PerLookup;\n  * @author tjquinn\n  * @author Bill Shannon\n  */\n-@Service(name=\"metadata\")   // XXX - need a better mapping\n+@Service(name=\"metadata\")// XXX - need a better mapping\n @PerLookup\n public class XMLContentActionReporter extends ActionReporter {\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,138 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2185",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "53",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "51",
+                    "column": "97",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "105",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "105",
+                    "column": "93",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2185/ReadOnlyAbstractDatabaseIndex.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2185/ReadOnlyAbstractDatabaseIndex.java\nindex 3dc24573344..f318a5ce038 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2185/ReadOnlyAbstractDatabaseIndex.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2185/ReadOnlyAbstractDatabaseIndex.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.api.impl.index;\n \n import java.io.File;\n@@ -29,132 +30,133 @@ import org.neo4j.kernel.api.impl.index.partition.AbstractIndexPartition;\n /**\n  * Read only lucene index representation that wraps provided index implementation and\n  * allow read only operations only on top of it.\n+ *\n  * @param <T> - particular index implementation\n  */\n public abstract class ReadOnlyAbstractDatabaseIndex<T extends AbstractLuceneIndex> implements DatabaseIndex\n {\n-    protected T luceneIndex;\n-\n-    public ReadOnlyAbstractDatabaseIndex( T luceneIndex )\n-    {\n-        this.luceneIndex = luceneIndex;\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void create()\n-    {\n-        throw new UnsupportedOperationException( \"Index creation in read only mode is not supported.\" );\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void open() throws IOException\n-    {\n-        luceneIndex.open();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public boolean isOpen()\n-    {\n-        return luceneIndex.isOpen();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public boolean isReadOnly()\n-    {\n-        return true;\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public boolean exists() throws IOException\n-    {\n-        return luceneIndex.exists();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public boolean isValid()\n-    {\n-        return luceneIndex.isValid();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void drop()\n-    {\n-        throw new UnsupportedOperationException( \"Index drop is not supported in read only mode.\" );\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void flush()\n-    {\n-        // nothing to flush in read only mode\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void close() throws IOException\n-    {\n-        luceneIndex.close();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public LuceneAllDocumentsReader allDocumentsReader()\n-    {\n-        return luceneIndex.allDocumentsReader();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public ResourceIterator<File> snapshot() throws IOException\n-    {\n-        return luceneIndex.snapshot();\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public void maybeRefreshBlocking()\n-    {\n-        //nothing to refresh in read only mode\n-    }\n-\n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public List<AbstractIndexPartition> getPartitions()\n-    {\n-        return luceneIndex.getPartitions();\n-    }\n+  protected T luceneIndex;\n+\n+  public ReadOnlyAbstractDatabaseIndex(T luceneIndex)\n+  {\n+    this.luceneIndex = luceneIndex;\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void create()\n+  {\n+    throw new UnsupportedOperationException(\"Index creation in read only mode is not supported.\");\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void open() throws IOException\n+  {\n+    luceneIndex.open();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public boolean isOpen()\n+  {\n+    return luceneIndex.isOpen();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public boolean isReadOnly()\n+  {\n+    return true;\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public boolean exists() throws IOException\n+  {\n+    return luceneIndex.exists();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public boolean isValid()\n+  {\n+    return luceneIndex.isValid();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void drop()\n+  {\n+    throw new UnsupportedOperationException(\"Index drop is not supported in read only mode.\");\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void flush()\n+  {\n+    // nothing to flush in read only mode\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void close() throws IOException\n+  {\n+    luceneIndex.close();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public LuceneAllDocumentsReader allDocumentsReader()\n+  {\n+    return luceneIndex.allDocumentsReader();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public ResourceIterator<File> snapshot() throws IOException\n+  {\n+    return luceneIndex.snapshot();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void maybeRefreshBlocking()\n+  {\n+    //nothing to refresh in read only mode\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public List<AbstractIndexPartition> getPartitions()\n+  {\n+    return luceneIndex.getPartitions();\n+  }\n \n }\n",
+            "diff_size": 125
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2185/ReadOnlyAbstractDatabaseIndex.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2185/ReadOnlyAbstractDatabaseIndex.java\nindex 3dc24573344..cb19e59d361 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2185/ReadOnlyAbstractDatabaseIndex.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2185/ReadOnlyAbstractDatabaseIndex.java\n@@ -156,5 +156,4 @@ public abstract class ReadOnlyAbstractDatabaseIndex<T extends AbstractLuceneInde\n     {\n         return luceneIndex.getPartitions();\n     }\n-\n-}\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

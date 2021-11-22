@@ -1,0 +1,71 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "41",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "column": "1",
+                "severity": "warning",
+                "message": "'annotation array initialization' child has incorrect indentation level 0, expected level should be one of the following: 4, 19, 22.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "@ExecuteOn({RuntimeType.DAS})\n@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\nCommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n@I18n(\"list.system.properties\")\n@RestEndpoints({\n    @RestEndpoint(configBean=Domain.class,",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/41/ListSystemProperties.java\nindex e8a1feb5a8f..cc230420ba1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/41/ListSystemProperties.java\n@@ -55,8 +55,7 @@ import org.glassfish.hk2.api.PerLookup;\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @ExecuteOn({RuntimeType.DAS})\n-@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\n-CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n+@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n @I18n(\"list.system.properties\")\n @RestEndpoints({\n     @RestEndpoint(configBean=Domain.class,\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/41/ListSystemProperties.java\nindex e8a1feb5a8f..32b6599cce4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/41/ListSystemProperties.java\n@@ -43,33 +43,34 @@ import org.glassfish.hk2.api.PerLookup;\n \n /**\n  * List System Properties Command\n- *\n+ * <p>\n  * Lists the system properties of the domain, configuration, cluster, or server instance\n- *\n+ * <p>\n  * Usage: lists-system-properties [--terse={true|false}][ --echo={true|false} ]\n  * [ --interactive={true|false} ] [ --host  host] [--port port] [--secure| -s ]\n  * [ --user  admin_user] [--passwordfile filename] [--help] [target_name]\n- *\n  */\n-@Service(name=\"list-system-properties\")\n+@Service(name = \"list-system-properties\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @ExecuteOn({RuntimeType.DAS})\n-@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\n-CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n+@TargetType(value = {CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\n+    CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN,\n+    CommandTarget.STANDALONE_INSTANCE})\n @I18n(\"list.system.properties\")\n @RestEndpoints({\n-    @RestEndpoint(configBean=Domain.class,\n-        opType=RestEndpoint.OpType.GET,\n-        path=\"list-system-properties\",\n-        description=\"list-system-properties\")\n+    @RestEndpoint(configBean = Domain.class,\n+        opType = RestEndpoint.OpType.GET,\n+        path = \"list-system-properties\",\n+        description = \"list-system-properties\")\n })\n public class ListSystemProperties implements AdminCommand, AdminCommandSecurity.Preauthorization,\n-        AdminCommandSecurity.AccessCheckProvider {\n+    AdminCommandSecurity.AccessCheckProvider {\n \n-    final private static LocalStringManagerImpl localStrings = new LocalStringManagerImpl(ListSystemProperties.class);\n+    final private static LocalStringManagerImpl localStrings =\n+        new LocalStringManagerImpl(ListSystemProperties.class);\n \n-    @Param(optional=true, primary=true, defaultValue=SystemPropertyConstants.DAS_SERVER_NAME)\n+    @Param(optional = true, primary = true, defaultValue = SystemPropertyConstants.DAS_SERVER_NAME)\n     String target;\n \n     @Inject\n@@ -84,7 +85,8 @@ public class ListSystemProperties implements AdminCommand, AdminCommandSecurity.\n             final ActionReport report = context.getActionReport();\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             String msg = localStrings.getLocalString(\"invalid.target.sys.props\",\n-                    \"Invalid target:{0}. Valid targets types are domain, config, cluster, default server, clustered instance, stand alone instance\", target);\n+                \"Invalid target:{0}. Valid targets types are domain, config, cluster, default server, clustered instance, stand alone instance\",\n+                target);\n             report.setMessage(msg);\n             return false;\n         }\n@@ -93,8 +95,11 @@ public class ListSystemProperties implements AdminCommand, AdminCommandSecurity.\n \n     @Override\n     public Collection<? extends AccessRequired.AccessCheck> getAccessChecks() {\n-        final Collection<AccessRequired.AccessCheck> result = new ArrayList<AccessRequired.AccessCheck>();\n-        result.add(new AccessRequired.AccessCheck(AccessRequired.Util.resourceNameFromConfigBeanProxy(spb), \"update\"));\n+        final Collection<AccessRequired.AccessCheck> result =\n+            new ArrayList<AccessRequired.AccessCheck>();\n+        result.add(\n+            new AccessRequired.AccessCheck(AccessRequired.Util.resourceNameFromConfigBeanProxy(spb),\n+                \"update\"));\n         return result;\n     }\n \n@@ -113,19 +118,20 @@ public class ListSystemProperties implements AdminCommand, AdminCommandSecurity.\n             if (sysProps.isEmpty()) {\n                 final ActionReport.MessagePart part = report.getTopMessagePart().addChild();\n                 part.setMessage(localStrings.getLocalString(\n-                        \"NothingToList\", \"Nothing to List.\"));\n+                    \"NothingToList\", \"Nothing to List.\"));\n             } else {\n                 for (SystemProperty prop : sysProps) {\n                     final ActionReport.MessagePart part = report.getTopMessagePart().addChild();\n-                    part.setMessage(prop.getName()+\"=\"+prop.getValue());\n+                    part.setMessage(prop.getName() + \"=\" + prop.getValue());\n                     length++;\n                 }\n-                report.setMessage(localStrings.getLocalString(\"list.ok\", \"The target {0} contains following {1} system properties\", target, length));\n+                report.setMessage(localStrings.getLocalString(\"list.ok\",\n+                    \"The target {0} contains following {1} system properties\", target, length));\n             }\n             report.setActionExitCode(ActionReport.ExitCode.SUCCESS);\n         } catch (Exception e) {\n             report.setMessage(localStrings.getLocalString(\"list.system.properties.failed\",\n-                    \"list-system-properties failed\"));\n+                \"list-system-properties failed\"));\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setFailureCause(e);\n         }\n",
+            "diff_size": 27
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "59",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'annotation array initialization' child has incorrect indentation level 0, expected level should be one of the following: 4, 19, 22.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/41/ListSystemProperties.java\nindex e8a1feb5a8f..9e40114b462 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/41/ListSystemProperties.java\n@@ -130,4 +130,4 @@ public class ListSystemProperties implements AdminCommand, AdminCommandSecurity.\n             report.setFailureCause(e);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/41/ListSystemProperties.java\nindex e8a1feb5a8f..cc230420ba1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/41/ListSystemProperties.java\n@@ -55,8 +55,7 @@ import org.glassfish.hk2.api.PerLookup;\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @ExecuteOn({RuntimeType.DAS})\n-@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\n-CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n+@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n @I18n(\"list.system.properties\")\n @RestEndpoints({\n     @RestEndpoint(configBean=Domain.class,\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/41/ListSystemProperties.java\nindex e8a1feb5a8f..cc230420ba1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/41/ListSystemProperties.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/41/ListSystemProperties.java\n@@ -55,8 +55,7 @@ import org.glassfish.hk2.api.PerLookup;\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @ExecuteOn({RuntimeType.DAS})\n-@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,\n-CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n+@TargetType(value={CommandTarget.CLUSTER, CommandTarget.CLUSTERED_INSTANCE,CommandTarget.CONFIG, CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.STANDALONE_INSTANCE})\n @I18n(\"list.system.properties\")\n @RestEndpoints({\n     @RestEndpoint(configBean=Domain.class,\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "66",
+    "information": {
+        "errors": [
+            {
+                "line": "6",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.data.PartialKey;\nimport org.apache.accumulo.core.data.Range;\nimport org.apache.accumulo.core.file.keyfunctor.KeyFunctor;\n\n/**\n * This is a function that will create a bloom filter key from a Key from the shard index or shard reverse index tables. The bloom filter is based on the field",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/66/ShardIndexKeyFunctor.java\nindex e1e3c7dbb13..6fa0091ec43 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/66/ShardIndexKeyFunctor.java\n@@ -8,95 +8,94 @@ import org.apache.accumulo.core.file.keyfunctor.KeyFunctor;\n /**\n  * This is a function that will create a bloom filter key from a Key from the shard index or shard reverse index tables. The bloom filter is based on the field\n  * name and field value.\n- * \n- * \n- * \n  */\n public class ShardIndexKeyFunctor implements KeyFunctor {\n-    \n-    private static final byte[] EMPTY_BYTES = new byte[0];\n-    \n+\n+  private static final byte[] EMPTY_BYTES = new byte[0];\n+\n+  /**\n+   * Transform a Accumulo key into a bloom filter key. This is expected to always return a value, however returning a zero length bloom filter key is\n+   * equivalent to ignoring the bloom filters for this key.\n+   */\n+  @Override\n+  public org.apache.hadoop.util.bloom.Key transform(org.apache.accumulo.core.data.Key cbKey) {\n+\n+    if (isKeyInBloomFilter(cbKey)) {\n+      byte keyData[];\n+\n+      // The row is the field value\n+      ByteSequence row = cbKey.getRowData();\n+\n+      // The column family is the field name\n+      ByteSequence cf = cbKey.getColumnFamilyData();\n+\n+      keyData = new byte[row.length() + cf.length()];\n+      System.arraycopy(cf.getBackingArray(), 0, keyData, 0, cf.length());\n+      System.arraycopy(row.getBackingArray(), 0, keyData, cf.length(), row.length());\n+\n+      return new org.apache.hadoop.util.bloom.Key(keyData, 1.0);\n+    }\n+\n+    return new org.apache.hadoop.util.bloom.Key(EMPTY_BYTES, 1.0);\n+  }\n+\n+  /**\n+   * Return bloom filter key for the start of the range. Returning null or an zero length key is equivalent to ignoring the bloom filters for this key.\n+   */\n+  @Override\n+  public org.apache.hadoop.util.bloom.Key transform(Range range) {\n+    if (isRangeInBloomFilter(range)) {\n+      return transform(range.getStartKey());\n+    }\n+    return null;\n+  }\n+\n+  /**\n+   * Determine whether this range should be considered by the bloom filter.\n+   *\n+   * @param range\n+   * @return true if it is to be considered, false otherwise\n+   */\n+  static boolean isRangeInBloomFilter(Range range) {\n+\n     /**\n-     * Transform a Accumulo key into a bloom filter key. This is expected to always return a value, however returning a zero length bloom filter key is\n-     * equivalent to ignoring the bloom filters for this key.\n+     * If the range has no start key or no end key, then ignore the bloom filters\n      */\n-    @Override\n-    public org.apache.hadoop.util.bloom.Key transform(org.apache.accumulo.core.data.Key cbKey) {\n-        \n-        if (isKeyInBloomFilter(cbKey)) {\n-            byte keyData[];\n-            \n-            // The row is the field value\n-            ByteSequence row = cbKey.getRowData();\n-            \n-            // The column family is the field name\n-            ByteSequence cf = cbKey.getColumnFamilyData();\n-            \n-            keyData = new byte[row.length() + cf.length()];\n-            System.arraycopy(cf.getBackingArray(), 0, keyData, 0, cf.length());\n-            System.arraycopy(row.getBackingArray(), 0, keyData, cf.length(), row.length());\n-            \n-            return new org.apache.hadoop.util.bloom.Key(keyData, 1.0);\n-        }\n-        \n-        return new org.apache.hadoop.util.bloom.Key(EMPTY_BYTES, 1.0);\n+    if (range.getStartKey() == null || range.getEndKey() == null) {\n+      return false;\n     }\n-    \n+\n     /**\n-     * Return bloom filter key for the start of the range. Returning null or an zero length key is equivalent to ignoring the bloom filters for this key.\n+     * If this key is not in the bloom filter, then ignore the bloom filters\n      */\n-    @Override\n-    public org.apache.hadoop.util.bloom.Key transform(Range range) {\n-        if (isRangeInBloomFilter(range)) {\n-            return transform(range.getStartKey());\n-        }\n-        return null;\n+    if (!isKeyInBloomFilter(range.getStartKey())) {\n+      return false;\n     }\n-    \n+\n     /**\n-     * Determine whether this range should be considered by the bloom filter.\n-     * \n-     * @param range\n-     * @return true if it is to be considered, false otherwise\n+     * If the start key and the end key are equal up to the depth being considered, then we should consider the bloom filter.\n      */\n-    static boolean isRangeInBloomFilter(Range range) {\n-        \n-        /**\n-         * If the range has no start key or no end key, then ignore the bloom filters\n-         */\n-        if (range.getStartKey() == null || range.getEndKey() == null) {\n-            return false;\n-        }\n-        \n-        /**\n-         * If this key is not in the bloom filter, then ignore the bloom filters\n-         */\n-        if (!isKeyInBloomFilter(range.getStartKey())) {\n-            return false;\n-        }\n-        \n-        /**\n-         * If the start key and the end key are equal up to the depth being considered, then we should consider the bloom filter.\n-         */\n-        if (range.getStartKey().equals(range.getEndKey(), PartialKey.ROW_COLFAM))\n-            return true;\n-        \n-        /**\n-         * If the end key is precisely the key immediately after the start key including everything up to the deleted flag, then we should consider the bloom\n-         * filter.\n-         */\n-        return range.getStartKey().followingKey(PartialKey.ROW_COLFAM).equals(range.getEndKey(), PartialKey.ROW_COLFAM_COLQUAL_COLVIS_TIME)\n-                        && !range.isEndKeyInclusive();\n+    if (range.getStartKey().equals(range.getEndKey(), PartialKey.ROW_COLFAM)) {\n+      return true;\n     }\n-    \n+\n     /**\n-     * A key is to be considered by the bloom filter if the field name and field value are supplied.\n-     * \n-     * @param cbKey\n+     * If the end key is precisely the key immediately after the start key including everything up to the deleted flag, then we should consider the bloom\n+     * filter.\n      */\n-    static boolean isKeyInBloomFilter(org.apache.accumulo.core.data.Key cbKey) {\n-        // if we have a row with the field name and a column familiy with the field value, then\n-        // we can use the bloom filter for this key\n-        return (cbKey.getRowData().length() > 0 && cbKey.getColumnFamilyData().length() > 0);\n-    }\n+    return range.getStartKey().followingKey(PartialKey.ROW_COLFAM)\n+        .equals(range.getEndKey(), PartialKey.ROW_COLFAM_COLQUAL_COLVIS_TIME)\n+        && !range.isEndKeyInclusive();\n+  }\n+\n+  /**\n+   * A key is to be considered by the bloom filter if the field name and field value are supplied.\n+   *\n+   * @param cbKey\n+   */\n+  static boolean isKeyInBloomFilter(org.apache.accumulo.core.data.Key cbKey) {\n+    // if we have a row with the field name and a column familiy with the field value, then\n+    // we can use the bloom filter for this key\n+    return (cbKey.getRowData().length() > 0 && cbKey.getColumnFamilyData().length() > 0);\n+  }\n }\n",
+            "diff_size": 133
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/66/ShardIndexKeyFunctor.java\nindex e1e3c7dbb13..1d4cefce8f5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/66/ShardIndexKeyFunctor.java\n@@ -99,4 +99,4 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n         // we can use the bloom filter for this key\n         return (cbKey.getRowData().length() > 0 && cbKey.getColumnFamilyData().length() > 0);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/66/ShardIndexKeyFunctor.java\nindex e1e3c7dbb13..d83bcd41aa8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/66/ShardIndexKeyFunctor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/66/ShardIndexKeyFunctor.java\n@@ -12,17 +12,18 @@ import org.apache.accumulo.core.file.keyfunctor.KeyFunctor;\n  * \n  * \n  */\n+\n+\n public class ShardIndexKeyFunctor implements KeyFunctor {\n-    \n     private static final byte[] EMPTY_BYTES = new byte[0];\n     \n     /**\n      * Transform a Accumulo key into a bloom filter key. This is expected to always return a value, however returning a zero length bloom filter key is\n      * equivalent to ignoring the bloom filters for this key.\n      */\n+\n     @Override\n     public org.apache.hadoop.util.bloom.Key transform(org.apache.accumulo.core.data.Key cbKey) {\n-        \n         if (isKeyInBloomFilter(cbKey)) {\n             byte keyData[];\n             \n@@ -31,20 +32,18 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n             \n             // The column family is the field name\n             ByteSequence cf = cbKey.getColumnFamilyData();\n-            \n             keyData = new byte[row.length() + cf.length()];\n             System.arraycopy(cf.getBackingArray(), 0, keyData, 0, cf.length());\n             System.arraycopy(row.getBackingArray(), 0, keyData, cf.length(), row.length());\n-            \n             return new org.apache.hadoop.util.bloom.Key(keyData, 1.0);\n         }\n-        \n         return new org.apache.hadoop.util.bloom.Key(EMPTY_BYTES, 1.0);\n     }\n     \n     /**\n      * Return bloom filter key for the start of the range. Returning null or an zero length key is equivalent to ignoring the bloom filters for this key.\n      */\n+\n     @Override\n     public org.apache.hadoop.util.bloom.Key transform(Range range) {\n         if (isRangeInBloomFilter(range)) {\n@@ -59,6 +58,7 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n      * @param range\n      * @return true if it is to be considered, false otherwise\n      */\n+\n     static boolean isRangeInBloomFilter(Range range) {\n         \n         /**\n@@ -71,6 +71,8 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n         /**\n          * If this key is not in the bloom filter, then ignore the bloom filters\n          */\n+\n+\n         if (!isKeyInBloomFilter(range.getStartKey())) {\n             return false;\n         }\n@@ -78,6 +80,8 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n         /**\n          * If the start key and the end key are equal up to the depth being considered, then we should consider the bloom filter.\n          */\n+\n+\n         if (range.getStartKey().equals(range.getEndKey(), PartialKey.ROW_COLFAM))\n             return true;\n         \n@@ -85,8 +89,7 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n          * If the end key is precisely the key immediately after the start key including everything up to the deleted flag, then we should consider the bloom\n          * filter.\n          */\n-        return range.getStartKey().followingKey(PartialKey.ROW_COLFAM).equals(range.getEndKey(), PartialKey.ROW_COLFAM_COLQUAL_COLVIS_TIME)\n-                        && !range.isEndKeyInclusive();\n+        return range.getStartKey().followingKey(PartialKey.ROW_COLFAM).equals(range.getEndKey(), PartialKey.ROW_COLFAM_COLQUAL_COLVIS_TIME) && !range.isEndKeyInclusive();\n     }\n     \n     /**\n@@ -94,9 +97,10 @@ public class ShardIndexKeyFunctor implements KeyFunctor {\n      * \n      * @param cbKey\n      */\n+\n     static boolean isKeyInBloomFilter(org.apache.accumulo.core.data.Key cbKey) {\n         // if we have a row with the field name and a column familiy with the field value, then\n         // we can use the bloom filter for this key\n         return (cbKey.getRowData().length() > 0 && cbKey.getColumnFamilyData().length() > 0);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

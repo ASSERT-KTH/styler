@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2914",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "18",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "102",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "51",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "37",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "74",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2914/PooledJobHandle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2914/PooledJobHandle.java\nindex 7bd8f890193..a57982ab9f7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2914/PooledJobHandle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2914/PooledJobHandle.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.scheduler;\n \n import java.util.List;\n@@ -29,38 +30,38 @@ import org.neo4j.scheduler.JobScheduler;\n \n final class PooledJobHandle implements JobScheduler.JobHandle\n {\n-    private final Future<?> future;\n-    private final Object registryKey;\n-    private final ConcurrentHashMap<Object,Future<?>> registry;\n-    private final List<JobScheduler.CancelListener> cancelListeners = new CopyOnWriteArrayList<>();\n+  private final Future<?> future;\n+  private final Object registryKey;\n+  private final ConcurrentHashMap<Object, Future<?>> registry;\n+  private final List<JobScheduler.CancelListener> cancelListeners = new CopyOnWriteArrayList<>();\n \n-    PooledJobHandle( Future<?> future, Object registryKey, ConcurrentHashMap<Object,Future<?>> registry )\n-    {\n-        this.future = future;\n-        this.registryKey = registryKey;\n-        this.registry = registry;\n-    }\n+  PooledJobHandle(Future<?> future, Object registryKey, ConcurrentHashMap<Object, Future<?>> registry)\n+  {\n+    this.future = future;\n+    this.registryKey = registryKey;\n+    this.registry = registry;\n+  }\n \n-    @Override\n-    public void cancel( boolean mayInterruptIfRunning )\n+  @Override\n+  public void cancel(boolean mayInterruptIfRunning)\n+  {\n+    future.cancel(mayInterruptIfRunning);\n+    for (JobScheduler.CancelListener cancelListener : cancelListeners)\n     {\n-        future.cancel( mayInterruptIfRunning );\n-        for ( JobScheduler.CancelListener cancelListener : cancelListeners )\n-        {\n-            cancelListener.cancelled( mayInterruptIfRunning );\n-        }\n-        registry.remove( registryKey );\n+      cancelListener.cancelled(mayInterruptIfRunning);\n     }\n+    registry.remove(registryKey);\n+  }\n \n-    @Override\n-    public void waitTermination() throws InterruptedException, ExecutionException\n-    {\n-        future.get();\n-    }\n+  @Override\n+  public void waitTermination() throws InterruptedException, ExecutionException\n+  {\n+    future.get();\n+  }\n \n-    @Override\n-    public void registerCancelListener( JobScheduler.CancelListener listener )\n-    {\n-        cancelListeners.add( listener );\n-    }\n+  @Override\n+  public void registerCancelListener(JobScheduler.CancelListener listener)\n+  {\n+    cancelListeners.add(listener);\n+  }\n }\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2914/PooledJobHandle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2914/PooledJobHandle.java\nindex 7bd8f890193..baa3ae81d3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2914/PooledJobHandle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2914/PooledJobHandle.java\n@@ -63,4 +63,4 @@ final class PooledJobHandle implements JobScheduler.JobHandle\n     {\n         cancelListeners.add( listener );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

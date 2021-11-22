@@ -1,0 +1,110 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "767",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "95",
+                    "column": "98",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/767/TransactionApplicationMode.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/767/TransactionApplicationMode.java\nindex b6042e6f460..45e94919acf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/767/TransactionApplicationMode.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/767/TransactionApplicationMode.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.storageengine.api;\n \n import org.neo4j.kernel.impl.transaction.command.Command.Version;\n@@ -31,112 +32,112 @@ import static org.neo4j.kernel.impl.transaction.command.Command.Version.BEFORE;\n  */\n public enum TransactionApplicationMode\n {\n-    /**\n-     * Transaction that is created in the \"normal\" way and has changed transaction state, which goes\n-     * to commit and produces commands from that. Such a transaction is able to alter cache since it has\n-     * all such high level information directly from the transaction state.\n-     */\n-    INTERNAL(\n-            false, // id tracking not needed since that is done in the transaction before commit\n-            false, // cache invalidation not needed since cache can be updated\n-            false, // no extra care in terms of idempotency needs to be taken\n-            true,  // include all stores\n-            AFTER\n-            ),\n+  /**\n+   * Transaction that is created in the \"normal\" way and has changed transaction state, which goes\n+   * to commit and produces commands from that. Such a transaction is able to alter cache since it has\n+   * all such high level information directly from the transaction state.\n+   */\n+  INTERNAL(\n+      false, // id tracking not needed since that is done in the transaction before commit\n+      false, // cache invalidation not needed since cache can be updated\n+      false, // no extra care in terms of idempotency needs to be taken\n+      true,  // include all stores\n+      AFTER\n+  ),\n \n-    /**\n-     * Transaction that comes from an external source and consists only of commands, i.e. it may not\n-     * contain enough information to f.ex. update cache, but applies to the store just like an internal\n-     * transaction does.\n-     */\n-    EXTERNAL(\n-            true,  // id tracking needed since that hasn't been done prior to receiving this external transaction\n-            true,  // cache invalidation needed since not enough information available to update cache\n-            false, // no extra care in terms of idempotency needs to be taken\n-            true,  // include all stores\n-            AFTER\n-            ),\n+  /**\n+   * Transaction that comes from an external source and consists only of commands, i.e. it may not\n+   * contain enough information to f.ex. update cache, but applies to the store just like an internal\n+   * transaction does.\n+   */\n+  EXTERNAL(\n+      true,  // id tracking needed since that hasn't been done prior to receiving this external transaction\n+      true,  // cache invalidation needed since not enough information available to update cache\n+      false, // no extra care in terms of idempotency needs to be taken\n+      true,  // include all stores\n+      AFTER\n+  ),\n \n-    /**\n-     * Transaction that is recovered, where commands are read, much like {@link #EXTERNAL}, but should\n-     * be applied differently where extra care should be taken to ensure idempotency. This is because\n-     * a recovered transaction may have already been applied previously to the store.\n-     */\n-    RECOVERY(\n-            true,  // id tracking not needed because id generators will be rebuilt after recovery anyway\n-            false, // during recovery there's not really a cache to invalidate so don't bother\n-            true,  // extra care needs to be taken to ensure idempotency since this transaction may have been applied previously\n-            true,  // include all stores\n-            AFTER\n-            ),\n+  /**\n+   * Transaction that is recovered, where commands are read, much like {@link #EXTERNAL}, but should\n+   * be applied differently where extra care should be taken to ensure idempotency. This is because\n+   * a recovered transaction may have already been applied previously to the store.\n+   */\n+  RECOVERY(\n+      true,  // id tracking not needed because id generators will be rebuilt after recovery anyway\n+      false, // during recovery there's not really a cache to invalidate so don't bother\n+      true,  // extra care needs to be taken to ensure idempotency since this transaction may have been applied previously\n+      true,  // include all stores\n+      AFTER\n+  ),\n \n-    /**\n-     * Transaction that is recovered during a phase of reverse recovery in order to rewind neo store back\n-     * to a state where forward recovery then can commence from. Rewinding the store back to the point\n-     * if the last checkpoint will allow for correct updates to indexes, because indexes reads from\n-     * a mix of log and store to produce its updates.\n-     */\n-    REVERSE_RECOVERY(\n-            false, // id tracking not needed because this is for the initial reverse recovery\n-            false, // cache invalidation not needed because this is for the initial reverse recovery\n-            true,  // extra care in terms of idempotency needs to be taken\n-            false, // only apply to neo store\n-            BEFORE\n-            );\n+  /**\n+   * Transaction that is recovered during a phase of reverse recovery in order to rewind neo store back\n+   * to a state where forward recovery then can commence from. Rewinding the store back to the point\n+   * if the last checkpoint will allow for correct updates to indexes, because indexes reads from\n+   * a mix of log and store to produce its updates.\n+   */\n+  REVERSE_RECOVERY(\n+      false, // id tracking not needed because this is for the initial reverse recovery\n+      false, // cache invalidation not needed because this is for the initial reverse recovery\n+      true,  // extra care in terms of idempotency needs to be taken\n+      false, // only apply to neo store\n+      BEFORE\n+  );\n \n-    private final boolean needsHighIdTracking;\n-    private final boolean needsCacheInvalidation;\n-    private final boolean needsIdempotencyChecks;\n-    private final boolean indexesAndCounts;\n-    private final Version version;\n+  private final boolean needsHighIdTracking;\n+  private final boolean needsCacheInvalidation;\n+  private final boolean needsIdempotencyChecks;\n+  private final boolean indexesAndCounts;\n+  private final Version version;\n \n-    TransactionApplicationMode( boolean needsHighIdTracking, boolean needsCacheInvalidation,\n-            boolean ensureIdempotency, boolean indexesAndCounts, Version version )\n-    {\n-        this.needsHighIdTracking = needsHighIdTracking;\n-        this.needsCacheInvalidation = needsCacheInvalidation;\n-        this.needsIdempotencyChecks = ensureIdempotency;\n-        this.indexesAndCounts = indexesAndCounts;\n-        this.version = version;\n-    }\n+  TransactionApplicationMode(boolean needsHighIdTracking, boolean needsCacheInvalidation,\n+                             boolean ensureIdempotency, boolean indexesAndCounts, Version version)\n+  {\n+    this.needsHighIdTracking = needsHighIdTracking;\n+    this.needsCacheInvalidation = needsCacheInvalidation;\n+    this.needsIdempotencyChecks = ensureIdempotency;\n+    this.indexesAndCounts = indexesAndCounts;\n+    this.version = version;\n+  }\n \n-    /**\n-     * @return whether or not applying a transaction need to track and update high ids of underlying stores.\n-     */\n-    public boolean needsHighIdTracking()\n-    {\n-        return needsHighIdTracking;\n-    }\n+  /**\n+   * @return whether or not applying a transaction need to track and update high ids of underlying stores.\n+   */\n+  public boolean needsHighIdTracking()\n+  {\n+    return needsHighIdTracking;\n+  }\n \n-    /**\n-     * @return whether or not applying a transaction need to do additional work of invalidating affected caches.\n-     */\n-    public boolean needsCacheInvalidationOnUpdates()\n-    {\n-        return needsCacheInvalidation;\n-    }\n+  /**\n+   * @return whether or not applying a transaction need to do additional work of invalidating affected caches.\n+   */\n+  public boolean needsCacheInvalidationOnUpdates()\n+  {\n+    return needsCacheInvalidation;\n+  }\n \n-    /**\n-     * @return whether or not applying a transaction need to be extra cautious about idempotency.\n-     */\n-    public boolean needsIdempotencyChecks()\n-    {\n-        return needsIdempotencyChecks;\n-    }\n+  /**\n+   * @return whether or not applying a transaction need to be extra cautious about idempotency.\n+   */\n+  public boolean needsIdempotencyChecks()\n+  {\n+    return needsIdempotencyChecks;\n+  }\n \n-    /**\n-     * @return whether or not to include auxiliary stores, such as indexing, counts and statistics.\n-     */\n-    public boolean needsAuxiliaryStores()\n-    {\n-        return indexesAndCounts;\n-    }\n+  /**\n+   * @return whether or not to include auxiliary stores, such as indexing, counts and statistics.\n+   */\n+  public boolean needsAuxiliaryStores()\n+  {\n+    return indexesAndCounts;\n+  }\n \n-    /**\n-     * @return which version of commands to apply, where some commands have before/after versions.\n-     */\n-    public Version version()\n-    {\n-        return version;\n-    }\n+  /**\n+   * @return which version of commands to apply, where some commands have before/after versions.\n+   */\n+  public Version version()\n+  {\n+    return version;\n+  }\n }\n",
+            "diff_size": 99
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/767/TransactionApplicationMode.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/767/TransactionApplicationMode.java\nindex b6042e6f460..9760ac656e9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/767/TransactionApplicationMode.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/767/TransactionApplicationMode.java\n@@ -36,55 +36,40 @@ public enum TransactionApplicationMode\n      * to commit and produces commands from that. Such a transaction is able to alter cache since it has\n      * all such high level information directly from the transaction state.\n      */\n-    INTERNAL(\n-            false, // id tracking not needed since that is done in the transaction before commit\n+    INTERNAL( false, // id tracking not needed since that is done in the transaction before commit\n             false, // cache invalidation not needed since cache can be updated\n             false, // no extra care in terms of idempotency needs to be taken\n-            true,  // include all stores\n-            AFTER\n-            ),\n-\n-    /**\n+            true, // include all stores\n+            AFTER ), /**\n      * Transaction that comes from an external source and consists only of commands, i.e. it may not\n      * contain enough information to f.ex. update cache, but applies to the store just like an internal\n      * transaction does.\n      */\n-    EXTERNAL(\n-            true,  // id tracking needed since that hasn't been done prior to receiving this external transaction\n-            true,  // cache invalidation needed since not enough information available to update cache\n+    EXTERNAL( true, // id tracking needed since that hasn't been done prior to receiving this external transaction\n+            true, // cache invalidation needed since not enough information available to update cache\n             false, // no extra care in terms of idempotency needs to be taken\n-            true,  // include all stores\n-            AFTER\n-            ),\n-\n-    /**\n+            true, // include all stores\n+            AFTER ), /**\n      * Transaction that is recovered, where commands are read, much like {@link #EXTERNAL}, but should\n      * be applied differently where extra care should be taken to ensure idempotency. This is because\n      * a recovered transaction may have already been applied previously to the store.\n      */\n-    RECOVERY(\n-            true,  // id tracking not needed because id generators will be rebuilt after recovery anyway\n+    RECOVERY( true, // id tracking not needed because id generators will be rebuilt after recovery anyway\n             false, // during recovery there's not really a cache to invalidate so don't bother\n-            true,  // extra care needs to be taken to ensure idempotency since this transaction may have been applied previously\n-            true,  // include all stores\n-            AFTER\n-            ),\n-\n-    /**\n+            true, // extra care needs to be taken to ensure idempotency since this transaction may have been applied previously\n+            true, // include all stores\n+            AFTER ), /**\n      * Transaction that is recovered during a phase of reverse recovery in order to rewind neo store back\n      * to a state where forward recovery then can commence from. Rewinding the store back to the point\n      * if the last checkpoint will allow for correct updates to indexes, because indexes reads from\n      * a mix of log and store to produce its updates.\n      */\n-    REVERSE_RECOVERY(\n-            false, // id tracking not needed because this is for the initial reverse recovery\n+    REVERSE_RECOVERY( false, // id tracking not needed because this is for the initial reverse recovery\n             false, // cache invalidation not needed because this is for the initial reverse recovery\n-            true,  // extra care in terms of idempotency needs to be taken\n+            true, // extra care in terms of idempotency needs to be taken\n             false, // only apply to neo store\n-            BEFORE\n-            );\n-\n-    private final boolean needsHighIdTracking;\n+            BEFORE );\n+private final boolean needsHighIdTracking;\n     private final boolean needsCacheInvalidation;\n     private final boolean needsIdempotencyChecks;\n     private final boolean indexesAndCounts;\n@@ -139,4 +124,4 @@ public enum TransactionApplicationMode\n     {\n         return version;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

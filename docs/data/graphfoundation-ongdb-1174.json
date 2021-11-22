@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1174",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "32",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "32",
+                    "column": "43",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1174/SuspendableLifeCycle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1174/SuspendableLifeCycle.java\nindex ab14d05796d..d2f8bb7685b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1174/SuspendableLifeCycle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1174/SuspendableLifeCycle.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.helper;\n \n import org.neo4j.kernel.lifecycle.Lifecycle;\n@@ -24,75 +25,73 @@ import org.neo4j.logging.Log;\n \n public abstract class SuspendableLifeCycle implements Lifecycle, Suspendable\n {\n-    private final Log debugLog;\n-    private boolean stoppedByLifeCycle = true;\n-    private boolean enabled = true;\n+  private final Log debugLog;\n+  private boolean stoppedByLifeCycle = true;\n+  private boolean enabled = true;\n \n-    public SuspendableLifeCycle( Log debugLog )\n-    {\n-        this.debugLog = debugLog;\n-    }\n+  public SuspendableLifeCycle(Log debugLog)\n+  {\n+    this.debugLog = debugLog;\n+  }\n \n-    @Override\n-    public final synchronized void enable() throws Throwable\n+  @Override\n+  public final synchronized void enable() throws Throwable\n+  {\n+    if (!stoppedByLifeCycle)\n     {\n-        if ( !stoppedByLifeCycle )\n-        {\n-            start0();\n-        }\n-        else\n-        {\n-            debugLog.info( \"%s will not start. It was enabled but is stopped by lifecycle\", this );\n-        }\n-        enabled = true;\n-    }\n-\n-    @Override\n-    public final synchronized void disable() throws Throwable\n+      start0();\n+    } else\n     {\n-        stop0();\n-        enabled = false;\n+      debugLog.info(\"%s will not start. It was enabled but is stopped by lifecycle\", this);\n     }\n+    enabled = true;\n+  }\n \n-    @Override\n-    public final synchronized void init() throws Throwable\n-    {\n-        init0();\n-    }\n+  @Override\n+  public final synchronized void disable() throws Throwable\n+  {\n+    stop0();\n+    enabled = false;\n+  }\n \n-    @Override\n-    public final synchronized void start() throws Throwable\n-    {\n-        if ( !enabled )\n-        {\n-            debugLog.info( \"Start call from lifecycle is ignored because %s is disabled.\", this );\n-        }\n-        else\n-        {\n-            start0();\n-        }\n-        stoppedByLifeCycle = false;\n-    }\n+  @Override\n+  public final synchronized void init() throws Throwable\n+  {\n+    init0();\n+  }\n \n-    @Override\n-    public final synchronized void stop() throws Throwable\n+  @Override\n+  public final synchronized void start() throws Throwable\n+  {\n+    if (!enabled)\n     {\n-        stop0();\n-        stoppedByLifeCycle = true;\n-    }\n-\n-    @Override\n-    public final synchronized void shutdown() throws Throwable\n+      debugLog.info(\"Start call from lifecycle is ignored because %s is disabled.\", this);\n+    } else\n     {\n-        shutdown0();\n-        stoppedByLifeCycle = true;\n+      start0();\n     }\n+    stoppedByLifeCycle = false;\n+  }\n+\n+  @Override\n+  public final synchronized void stop() throws Throwable\n+  {\n+    stop0();\n+    stoppedByLifeCycle = true;\n+  }\n+\n+  @Override\n+  public final synchronized void shutdown() throws Throwable\n+  {\n+    shutdown0();\n+    stoppedByLifeCycle = true;\n+  }\n \n-    protected abstract void init0() throws Throwable;\n+  protected abstract void init0() throws Throwable;\n \n-    protected abstract void start0() throws Throwable;\n+  protected abstract void start0() throws Throwable;\n \n-    protected abstract void stop0() throws Throwable;\n+  protected abstract void stop0() throws Throwable;\n \n-    protected abstract void shutdown0() throws Throwable;\n+  protected abstract void shutdown0() throws Throwable;\n }\n",
+            "diff_size": 80
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1174/SuspendableLifeCycle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1174/SuspendableLifeCycle.java\nindex ab14d05796d..ca9ee634b74 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1174/SuspendableLifeCycle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1174/SuspendableLifeCycle.java\n@@ -44,7 +44,8 @@ public abstract class SuspendableLifeCycle implements Lifecycle, Suspendable\n         {\n             debugLog.info( \"%s will not start. It was enabled but is stopped by lifecycle\", this );\n         }\n-        enabled = true;\n+\n+enabled = true;\n     }\n \n     @Override\n@@ -71,7 +72,8 @@ public abstract class SuspendableLifeCycle implements Lifecycle, Suspendable\n         {\n             start0();\n         }\n-        stoppedByLifeCycle = false;\n+\n+stoppedByLifeCycle = false;\n     }\n \n     @Override\n@@ -95,4 +97,4 @@ public abstract class SuspendableLifeCycle implements Lifecycle, Suspendable\n     protected abstract void stop0() throws Throwable;\n \n     protected abstract void shutdown0() throws Throwable;\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

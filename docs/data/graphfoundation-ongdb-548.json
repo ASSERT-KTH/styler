@@ -1,0 +1,159 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "548",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "69",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "59",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/548/IndexUpgraderWrapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/548/IndexUpgraderWrapper.java\nindex fadf615400c..0981acf1830 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/548/IndexUpgraderWrapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/548/IndexUpgraderWrapper.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.upgrade.lucene;\n \n import java.lang.invoke.MethodHandle;\n@@ -38,45 +39,44 @@ import org.neo4j.upgrade.loader.EmbeddedJarLoader;\n  */\n class IndexUpgraderWrapper implements AutoCloseable\n {\n-    private static final String LUCENE_INDEX_UPGRADER_CLASS_NAME = \"org.apache.lucene.index.IndexUpgrader\";\n+  private static final String LUCENE_INDEX_UPGRADER_CLASS_NAME = \"org.apache.lucene.index.IndexUpgrader\";\n \n-    private EmbeddedJarLoader luceneLoader;\n-    private MethodHandle mainMethod;\n-    private Supplier<EmbeddedJarLoader> jarLoaderSupplier;\n+  private EmbeddedJarLoader luceneLoader;\n+  private MethodHandle mainMethod;\n+  private Supplier<EmbeddedJarLoader> jarLoaderSupplier;\n \n-    IndexUpgraderWrapper( Supplier<EmbeddedJarLoader> jarLoaderSupplier )\n-    {\n-        this.jarLoaderSupplier = jarLoaderSupplier;\n-    }\n+  IndexUpgraderWrapper(Supplier<EmbeddedJarLoader> jarLoaderSupplier)\n+  {\n+    this.jarLoaderSupplier = jarLoaderSupplier;\n+  }\n \n-    public void upgradeIndex( Path indexPath ) throws Throwable\n+  public void upgradeIndex(Path indexPath) throws Throwable\n+  {\n+    // since lucene use ServiceLocator to load services, context class loader need to be replaced as well\n+    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();\n+    try\n+    {\n+      if (mainMethod == null)\n+      {\n+        luceneLoader = jarLoaderSupplier.get();\n+        Class upgrader = luceneLoader.loadEmbeddedClass(LUCENE_INDEX_UPGRADER_CLASS_NAME);\n+        MethodHandles.Lookup lookup = MethodHandles.lookup();\n+        mainMethod = lookup.findStatic(upgrader, \"main\", MethodType.methodType(void.class, String[].class));\n+      }\n+      Thread.currentThread().setContextClassLoader(luceneLoader.getJarsClassLoader());\n+      mainMethod.invokeExact(new String[] {indexPath.toString()});\n+    } finally\n     {\n-        // since lucene use ServiceLocator to load services, context class loader need to be replaced as well\n-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();\n-        try\n-        {\n-            if ( mainMethod == null )\n-            {\n-                luceneLoader = jarLoaderSupplier.get();\n-                Class upgrader = luceneLoader.loadEmbeddedClass( LUCENE_INDEX_UPGRADER_CLASS_NAME );\n-                MethodHandles.Lookup lookup = MethodHandles.lookup();\n-                mainMethod = lookup.findStatic( upgrader, \"main\", MethodType.methodType( void.class, String[].class ) );\n-            }\n-            Thread.currentThread().setContextClassLoader( luceneLoader.getJarsClassLoader() );\n-            mainMethod.invokeExact( new String[]{indexPath.toString()} );\n-        }\n-        finally\n-        {\n-            Thread.currentThread().setContextClassLoader( contextClassLoader );\n-        }\n+      Thread.currentThread().setContextClassLoader(contextClassLoader);\n     }\n+  }\n \n-    @Override\n-    public void close() throws Exception\n+  @Override\n+  public void close() throws Exception\n+  {\n+    if (luceneLoader != null)\n     {\n-        if ( luceneLoader != null )\n-        {\n-            luceneLoader.close();\n-        }\n+      luceneLoader.close();\n     }\n+  }\n }\n",
+            "diff_size": 53
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/548/IndexUpgraderWrapper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/548/IndexUpgraderWrapper.java\nindex fadf615400c..2123f5443b4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/548/IndexUpgraderWrapper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/548/IndexUpgraderWrapper.java\n@@ -79,4 +79,4 @@ class IndexUpgraderWrapper implements AutoCloseable\n             luceneLoader.close();\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

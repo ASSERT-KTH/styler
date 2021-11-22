@@ -1,0 +1,69 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "608",
+    "information": {
+        "errors": [
+            {
+                "line": "33",
+                "severity": "error",
+                "message": "'STATIC_INIT' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n  private static Map<String, Integer> units = new HashMap<String, Integer>();\n  static {\n    units.put(\"millis\", Calendar.MILLISECOND);\n    units.put(\"seconds\", Calendar.SECOND);\n    units.put(\"second\", Calendar.SECOND);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/608/DefaultBusinessCalendar.java\nindex d365a1f98ea..414cf3612ae 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/608/DefaultBusinessCalendar.java\n@@ -30,6 +30,7 @@ import org.activiti.engine.impl.context.Context;\n public class DefaultBusinessCalendar implements BusinessCalendar {\n \n   private static Map<String, Integer> units = new HashMap<String, Integer>();\n+\n   static {\n     units.put(\"millis\", Calendar.MILLISECOND);\n     units.put(\"seconds\", Calendar.SECOND);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/608/DefaultBusinessCalendar.java\nindex d365a1f98ea..d4beeb32dd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/608/DefaultBusinessCalendar.java\n@@ -29,68 +29,69 @@ import org.activiti.engine.impl.context.Context;\n @Internal\n public class DefaultBusinessCalendar implements BusinessCalendar {\n \n-  private static Map<String, Integer> units = new HashMap<String, Integer>();\n-  static {\n-    units.put(\"millis\", Calendar.MILLISECOND);\n-    units.put(\"seconds\", Calendar.SECOND);\n-    units.put(\"second\", Calendar.SECOND);\n-    units.put(\"minute\", Calendar.MINUTE);\n-    units.put(\"minutes\", Calendar.MINUTE);\n-    units.put(\"hour\", Calendar.HOUR);\n-    units.put(\"hours\", Calendar.HOUR);\n-    units.put(\"day\", Calendar.DAY_OF_YEAR);\n-    units.put(\"days\", Calendar.DAY_OF_YEAR);\n-    units.put(\"week\", Calendar.WEEK_OF_YEAR);\n-    units.put(\"weeks\", Calendar.WEEK_OF_YEAR);\n-    units.put(\"month\", Calendar.MONTH);\n-    units.put(\"months\", Calendar.MONTH);\n-    units.put(\"year\", Calendar.YEAR);\n-    units.put(\"years\", Calendar.YEAR);\n-  }\n-\n-  @Override\n-  public Date resolveDuedate(String duedateDescription, int maxIterations) {\n-    return resolveDuedate(duedateDescription);\n-  }\n-\n-  public Date resolveDuedate(String duedate) {\n-    Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();\n-\n-    String[] tokens = duedate.split(\" and \");\n-    for (String token : tokens) {\n-      resolvedDuedate = addSingleUnitQuantity(resolvedDuedate, token);\n+    private static Map<String, Integer> units = new HashMap<String, Integer>();\n+\n+    static {\n+        units.put(\"millis\", Calendar.MILLISECOND);\n+        units.put(\"seconds\", Calendar.SECOND);\n+        units.put(\"second\", Calendar.SECOND);\n+        units.put(\"minute\", Calendar.MINUTE);\n+        units.put(\"minutes\", Calendar.MINUTE);\n+        units.put(\"hour\", Calendar.HOUR);\n+        units.put(\"hours\", Calendar.HOUR);\n+        units.put(\"day\", Calendar.DAY_OF_YEAR);\n+        units.put(\"days\", Calendar.DAY_OF_YEAR);\n+        units.put(\"week\", Calendar.WEEK_OF_YEAR);\n+        units.put(\"weeks\", Calendar.WEEK_OF_YEAR);\n+        units.put(\"month\", Calendar.MONTH);\n+        units.put(\"months\", Calendar.MONTH);\n+        units.put(\"year\", Calendar.YEAR);\n+        units.put(\"years\", Calendar.YEAR);\n     }\n \n-    return resolvedDuedate;\n-  }\n+    @Override\n+    public Date resolveDuedate(String duedateDescription, int maxIterations) {\n+        return resolveDuedate(duedateDescription);\n+    }\n+\n+    public Date resolveDuedate(String duedate) {\n+        Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();\n \n-  @Override\n-  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {\n-    return true;\n-  }\n+        String[] tokens = duedate.split(\" and \");\n+        for (String token : tokens) {\n+            resolvedDuedate = addSingleUnitQuantity(resolvedDuedate, token);\n+        }\n \n-  @Override\n-  public Date resolveEndDate(String endDate) {\n-    return null;\n-  }\n+        return resolvedDuedate;\n+    }\n \n-  protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {\n-    int spaceIndex = singleUnitQuantity.indexOf(\" \");\n-    if (spaceIndex == -1 || singleUnitQuantity.length() < spaceIndex + 1) {\n-      throw new ActivitiIllegalArgumentException(\"invalid duedate format: \" + singleUnitQuantity);\n+    @Override\n+    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {\n+        return true;\n     }\n \n-    String quantityText = singleUnitQuantity.substring(0, spaceIndex);\n-    Integer quantity = new Integer(quantityText);\n+    @Override\n+    public Date resolveEndDate(String endDate) {\n+        return null;\n+    }\n \n-    String unitText = singleUnitQuantity.substring(spaceIndex + 1).trim().toLowerCase();\n+    protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {\n+        int spaceIndex = singleUnitQuantity.indexOf(\" \");\n+        if (spaceIndex == -1 || singleUnitQuantity.length() < spaceIndex + 1) {\n+            throw new ActivitiIllegalArgumentException(\"invalid duedate format: \" + singleUnitQuantity);\n+        }\n \n-    int unit = units.get(unitText);\n+        String quantityText = singleUnitQuantity.substring(0, spaceIndex);\n+        Integer quantity = new Integer(quantityText);\n \n-    GregorianCalendar calendar = new GregorianCalendar();\n-    calendar.setTime(startDate);\n-    calendar.add(unit, quantity);\n+        String unitText = singleUnitQuantity.substring(spaceIndex + 1).trim().toLowerCase();\n \n-    return calendar.getTime();\n-  }\n+        int unit = units.get(unitText);\n+\n+        GregorianCalendar calendar = new GregorianCalendar();\n+        calendar.setTime(startDate);\n+        calendar.add(unit, quantity);\n+\n+        return calendar.getTime();\n+    }\n }\n",
+            "diff_size": 71
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/608/DefaultBusinessCalendar.java\nindex d365a1f98ea..f23b8861c7c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/608/DefaultBusinessCalendar.java\n@@ -21,7 +21,6 @@ import java.util.Date;\n import java.util.GregorianCalendar;\n import java.util.HashMap;\n import java.util.Map;\n-\n import org.activiti.engine.ActivitiIllegalArgumentException;\n import org.activiti.engine.api.internal.Internal;\n import org.activiti.engine.impl.context.Context;\n@@ -30,6 +29,7 @@ import org.activiti.engine.impl.context.Context;\n public class DefaultBusinessCalendar implements BusinessCalendar {\n \n   private static Map<String, Integer> units = new HashMap<String, Integer>();\n+\n   static {\n     units.put(\"millis\", Calendar.MILLISECOND);\n     units.put(\"seconds\", Calendar.SECOND);\n@@ -55,12 +55,10 @@ public class DefaultBusinessCalendar implements BusinessCalendar {\n \n   public Date resolveDuedate(String duedate) {\n     Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();\n-\n     String[] tokens = duedate.split(\" and \");\n     for (String token : tokens) {\n-      resolvedDuedate = addSingleUnitQuantity(resolvedDuedate, token);\n+        resolvedDuedate = addSingleUnitQuantity(resolvedDuedate, token);\n     }\n-\n     return resolvedDuedate;\n   }\n \n@@ -82,15 +80,12 @@ public class DefaultBusinessCalendar implements BusinessCalendar {\n \n     String quantityText = singleUnitQuantity.substring(0, spaceIndex);\n     Integer quantity = new Integer(quantityText);\n-\n     String unitText = singleUnitQuantity.substring(spaceIndex + 1).trim().toLowerCase();\n-\n     int unit = units.get(unitText);\n-\n     GregorianCalendar calendar = new GregorianCalendar();\n     calendar.setTime(startDate);\n     calendar.add(unit, quantity);\n-\n     return calendar.getTime();\n   }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/608/DefaultBusinessCalendar.java\nindex d365a1f98ea..414cf3612ae 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/608/DefaultBusinessCalendar.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/608/DefaultBusinessCalendar.java\n@@ -30,6 +30,7 @@ import org.activiti.engine.impl.context.Context;\n public class DefaultBusinessCalendar implements BusinessCalendar {\n \n   private static Map<String, Integer> units = new HashMap<String, Integer>();\n+\n   static {\n     units.put(\"millis\", Calendar.MILLISECOND);\n     units.put(\"seconds\", Calendar.SECOND);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "'STATIC_INIT' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "codebuff",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "styler_three_grams"
+    ]
+}

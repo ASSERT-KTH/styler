@@ -1,0 +1,80 @@
+{
+    "project_name": "codefollower-H2-Research",
+    "error_id": "442",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "column": "24",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "    Value getValue(Database database, int dataType) {\n        if (distinct) {\n            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n        }\n        Value v = null;\n        int s = 0;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..22aa7f712db 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler/442/AggregateDataSelectivity.java\n@@ -56,8 +56,9 @@ class AggregateDataSelectivity extends AggregateData {\n     @Override\n     Value getValue(Database database, int dataType) {\n         if (distinct) {\n-            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n-        }\n+            count = 0;\n+        //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n+         }\n         Value v = null;\n         int s = 0;\n         if (count == 0) {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "60",
+                    "column": "18",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..17c57cdfa4a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/intellij/442/AggregateDataSelectivity.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.expression.aggregate;\n \n import org.h2.engine.Constants;\n@@ -16,60 +17,60 @@ import org.h2.value.ValueInt;\n  */\n class AggregateDataSelectivity extends AggregateData {\n \n-    private final boolean distinct;\n+  private final boolean distinct;\n \n-    private long count;\n-    private IntIntHashMap distinctHashes;\n-    private double m2;\n+  private long count;\n+  private IntIntHashMap distinctHashes;\n+  private double m2;\n \n-    /**\n-     * Creates new instance of data for SELECTIVITY aggregate.\n-     *\n-     * @param distinct if distinct is used\n-     */\n-    AggregateDataSelectivity(boolean distinct) {\n-        this.distinct = distinct;\n-    }\n+  /**\n+   * Creates new instance of data for SELECTIVITY aggregate.\n+   *\n+   * @param distinct if distinct is used\n+   */\n+  AggregateDataSelectivity(boolean distinct) {\n+    this.distinct = distinct;\n+  }\n \n-    @Override\n+  @Override\n //<<<<<<< HEAD:h2/src/main/org/h2/expression/AggregateDataSelectivity.java\n //    void add(Database database, int dataType, boolean distinct, Value v) {\n //        //\u662f\u57fa\u4e8e\u67d0\u4e2a\u8868\u8fbe\u5f0f(\u591a\u6570\u662f\u5355\u4e2a\u5b57\u6bb5)\u7b97\u4e0d\u91cd\u590d\u7684\u8bb0\u5f55\u6570\u6240\u5360\u603b\u8bb0\u5f55\u6570\u7684\u767e\u5206\u6bd4\n //        //org.h2.engine.Constants.SELECTIVITY_DISTINCT_COUNT\u9ed8\u8ba4\u662f1\u4e07\uff0c\u8fd9\u4e2a\u503c\u4e0d\u80fd\u6539\uff0c\n //        //\u5bf9\u7edf\u8ba1\u503c\u5f71\u54cd\u5f88\u5927\u3002\u901a\u5e38\u8fd9\u4e2a\u503c\u8d8a\u5927\uff0c\u7edf\u8ba1\u8d8a\u7cbe\u786e\uff0c\u4f46\u662f\u4f1a\u4f7f\u7528\u66f4\u591a\u5185\u5b58\u3002\n //        //SELECTIVITY\u8d8a\u5927\uff0c\u8bf4\u660e\u91cd\u590d\u7684\u8bb0\u5f55\u8d8a\u5c11\uff0c\u5728\u9009\u62e9\u7d22\u5f15\u65f6\u66f4\u6709\u5229\u3002\n-    void add(Database database, Value v) {\n-        count++;\n-        if (distinctHashes == null) {\n-            distinctHashes = new IntIntHashMap();\n-        }\n-        int size = distinctHashes.size();\n-        if (size > Constants.SELECTIVITY_DISTINCT_COUNT) {\n-            distinctHashes = new IntIntHashMap();\n-            m2 += size;\n-        }\n-        int hash = v.hashCode();\n-        // the value -1 is not supported\n-        distinctHashes.put(hash, 1);\n+  void add(Database database, Value v) {\n+    count++;\n+    if (distinctHashes == null) {\n+      distinctHashes = new IntIntHashMap();\n     }\n+    int size = distinctHashes.size();\n+    if (size > Constants.SELECTIVITY_DISTINCT_COUNT) {\n+      distinctHashes = new IntIntHashMap();\n+      m2 += size;\n+    }\n+    int hash = v.hashCode();\n+    // the value -1 is not supported\n+    distinctHashes.put(hash, 1);\n+  }\n \n-    @Override\n-    Value getValue(Database database, int dataType) {\n-        if (distinct) {\n-            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n-        }\n-        Value v = null;\n-        int s = 0;\n-        if (count == 0) {\n-            s = 0;\n-        } else {\n-            m2 += distinctHashes.size();\n-            m2 = 100 * m2 / count;\n-            s = (int) m2;\n-            s = s <= 0 ? 1 : s > 100 ? 100 : s;\n-        }\n-        v = ValueInt.get(s);\n-        return v.convertTo(dataType);\n+  @Override\n+  Value getValue(Database database, int dataType) {\n+    if (distinct) {\n+      count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n+    }\n+    Value v = null;\n+    int s = 0;\n+    if (count == 0) {\n+      s = 0;\n+    } else {\n+      m2 += distinctHashes.size();\n+      m2 = 100 * m2 / count;\n+      s = (int) m2;\n+      s = s <= 0 ? 1 : s > 100 ? 100 : s;\n     }\n+    v = ValueInt.get(s);\n+    return v.convertTo(dataType);\n+  }\n \n }\n",
+            "diff_size": 56
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..ccbb40a7a46 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/naturalize/442/AggregateDataSelectivity.java\n@@ -32,13 +32,8 @@ class AggregateDataSelectivity extends AggregateData {\n     }\n \n     @Override\n-//<<<<<<< HEAD:h2/src/main/org/h2/expression/AggregateDataSelectivity.java\n-//    void add(Database database, int dataType, boolean distinct, Value v) {\n-//        //\u662f\u57fa\u4e8e\u67d0\u4e2a\u8868\u8fbe\u5f0f(\u591a\u6570\u662f\u5355\u4e2a\u5b57\u6bb5)\u7b97\u4e0d\u91cd\u590d\u7684\u8bb0\u5f55\u6570\u6240\u5360\u603b\u8bb0\u5f55\u6570\u7684\u767e\u5206\u6bd4\n-//        //org.h2.engine.Constants.SELECTIVITY_DISTINCT_COUNT\u9ed8\u8ba4\u662f1\u4e07\uff0c\u8fd9\u4e2a\u503c\u4e0d\u80fd\u6539\uff0c\n-//        //\u5bf9\u7edf\u8ba1\u503c\u5f71\u54cd\u5f88\u5927\u3002\u901a\u5e38\u8fd9\u4e2a\u503c\u8d8a\u5927\uff0c\u7edf\u8ba1\u8d8a\u7cbe\u786e\uff0c\u4f46\u662f\u4f1a\u4f7f\u7528\u66f4\u591a\u5185\u5b58\u3002\n-//        //SELECTIVITY\u8d8a\u5927\uff0c\u8bf4\u660e\u91cd\u590d\u7684\u8bb0\u5f55\u8d8a\u5c11\uff0c\u5728\u9009\u62e9\u7d22\u5f15\u65f6\u66f4\u6709\u5229\u3002\n-    void add(Database database, Value v) {\n+//<<<<<<< H\n+void add(Database database, Value v) {\n         count++;\n         if (distinctHashes == null) {\n             distinctHashes = new IntIntHashMap();\n@@ -56,7 +51,8 @@ class AggregateDataSelectivity extends AggregateData {\n     @Override\n     Value getValue(Database database, int dataType) {\n         if (distinct) {\n-            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n+            count = 0;\n+//\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n         }\n         Value v = null;\n         int s = 0;\n@@ -72,4 +68,4 @@ class AggregateDataSelectivity extends AggregateData {\n         return v.convertTo(dataType);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "61",
+                    "column": "24",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..c1ffe919f37 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/codebuff/442/AggregateDataSelectivity.java\n@@ -14,10 +14,11 @@ import org.h2.value.ValueInt;\n /**\n  * Data stored while calculating a SELECTIVITY aggregate.\n  */\n+\n+\n class AggregateDataSelectivity extends AggregateData {\n \n     private final boolean distinct;\n-\n     private long count;\n     private IntIntHashMap distinctHashes;\n     private double m2;\n@@ -27,6 +28,7 @@ class AggregateDataSelectivity extends AggregateData {\n      *\n      * @param distinct if distinct is used\n      */\n+\n     AggregateDataSelectivity(boolean distinct) {\n         this.distinct = distinct;\n     }\n@@ -72,4 +74,4 @@ class AggregateDataSelectivity extends AggregateData {\n         return v.convertTo(dataType);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..22aa7f712db 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_random/442/AggregateDataSelectivity.java\n@@ -56,8 +56,9 @@ class AggregateDataSelectivity extends AggregateData {\n     @Override\n     Value getValue(Database database, int dataType) {\n         if (distinct) {\n-            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n-        }\n+            count = 0;\n+        //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n+         }\n         Value v = null;\n         int s = 0;\n         if (count == 0) {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/442/AggregateDataSelectivity.java\nindex 1bf777b3d1c..22aa7f712db 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/errored/1/442/AggregateDataSelectivity.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/codefollower-H2-Research/styler_three_grams/442/AggregateDataSelectivity.java\n@@ -56,8 +56,9 @@ class AggregateDataSelectivity extends AggregateData {\n     @Override\n     Value getValue(Database database, int dataType) {\n         if (distinct) {\n-            count = 0; //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n-        }\n+            count = 0;\n+        //\u52a0distinct\u65f6\uff0c\u610f\u601d\u5c31\u662f\u6ca1\u6709\u91cd\u590d\u7684\u5b57\u6bb5\u503c\u4e86\uff0c\u6240\u4ee5SELECTIVITY\u5c31\u662f0\n+         }\n         Value v = null;\n         int s = 0;\n         if (count == 0) {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff"
+    ]
+}

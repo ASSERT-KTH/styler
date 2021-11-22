@@ -1,0 +1,77 @@
+{
+    "project_name": "apache-usergrid",
+    "error_id": "210",
+    "information": {
+        "errors": [
+            {
+                "line": "144",
+                "column": "52",
+                "severity": "warning",
+                "message": "'=' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\n\n        final Observable<EntityIdScope> entityIds =allEntityIdsObservable.getEntities( applicationScopeObservable );\n        //now we have an observable of entityIds.  Walk each connection type\n\n        //get all edge types for connections",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler/210/ConnectionServiceImpl.java\nindex 82c10381326..fecb59b2e65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler/210/ConnectionServiceImpl.java\n@@ -141,7 +141,7 @@ public class ConnectionServiceImpl implements ConnectionService {\n         final Observable<ApplicationScope> applicationScopeObservable ) {\n \n \n-        final Observable<EntityIdScope> entityIds =allEntityIdsObservable.getEntities( applicationScopeObservable );\n+        final Observable<EntityIdScope> entityIds = allEntityIdsObservable.getEntities( applicationScopeObservable );\n         //now we have an observable of entityIds.  Walk each connection type\n \n         //get all edge types for connections\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "95",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "124",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/210/ConnectionServiceImpl.java\nindex 82c10381326..06c0816e18e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/intellij/210/ConnectionServiceImpl.java\n@@ -48,14 +48,16 @@ import rx.Observable;\n public class ConnectionServiceImpl implements ConnectionService {\n \n     private final PipelineBuilderFactory pipelineBuilderFactory;\n+\n     private final AllEntityIdsObservable allEntityIdsObservable;\n+\n     private final GraphManagerFactory graphManagerFactory;\n \n \n     @Inject\n-    public ConnectionServiceImpl( final PipelineBuilderFactory pipelineBuilderFactory,\n-                                  final AllEntityIdsObservable allEntityIdsObservable,\n-                                  final GraphManagerFactory graphManagerFactory ) {\n+    public ConnectionServiceImpl(final PipelineBuilderFactory pipelineBuilderFactory,\n+                                 final AllEntityIdsObservable allEntityIdsObservable,\n+                                 final GraphManagerFactory graphManagerFactory) {\n         this.pipelineBuilderFactory = pipelineBuilderFactory;\n         this.allEntityIdsObservable = allEntityIdsObservable;\n         this.graphManagerFactory = graphManagerFactory;\n@@ -63,7 +65,7 @@ public class ConnectionServiceImpl implements ConnectionService {\n \n \n     @Override\n-    public Observable<ResultsPage<Entity>> searchConnection( final ConnectionSearch search ) {\n+    public Observable<ResultsPage<Entity>> searchConnection(final ConnectionSearch search) {\n         //set startid -- graph | es query filter -- load entities filter (verifies exists) --> results page collector\n         // -> 1.0 results\n \n@@ -78,8 +80,8 @@ public class ConnectionServiceImpl implements ConnectionService {\n         final Optional<String> query = search.getQuery();\n \n         final IdBuilder pipelineBuilder =\n-            pipelineBuilderFactory.create( search.getApplicationScope() ).withCursor( search.getCursor() )\n-                                  .withLimit( search.getLimit() ).fromId( search.getSourceNodeId() );\n+            pipelineBuilderFactory.create(search.getApplicationScope()).withCursor(search.getCursor())\n+                .withLimit(search.getLimit()).fromId(search.getSourceNodeId());\n \n \n         //we want to load all entities\n@@ -87,16 +89,14 @@ public class ConnectionServiceImpl implements ConnectionService {\n         final EntityBuilder results;\n \n \n-        if ( !query.isPresent() ) {\n+        if (!query.isPresent()) {\n             results =\n-                pipelineBuilder.traverseConnection( search.getConnectionName(), search.getEntityType() ).loadEntities();\n-        }\n-\n-        else {\n+                pipelineBuilder.traverseConnection(search.getConnectionName(), search.getEntityType()).loadEntities();\n+        } else {\n \n             results =\n-                pipelineBuilder.searchConnection( search.getConnectionName(), query.get(), search.getEntityType() )\n-                               .loadEntities();\n+                pipelineBuilder.searchConnection(search.getConnectionName(), query.get(), search.getEntityType())\n+                    .loadEntities();\n         }\n \n \n@@ -105,32 +105,31 @@ public class ConnectionServiceImpl implements ConnectionService {\n \n \n     @Override\n-    public Observable<ResultsPage<ConnectionRef>> searchConnectionAsRefs( final ConnectionSearch search ) {\n+    public Observable<ResultsPage<ConnectionRef>> searchConnectionAsRefs(final ConnectionSearch search) {\n \n         final Optional<String> query = search.getQuery();\n \n         final Id sourceNodeId = search.getSourceNodeId();\n \n         final IdBuilder pipelineBuilder =\n-            pipelineBuilderFactory.create( search.getApplicationScope() ).withCursor( search.getCursor() )\n-                                  .withLimit( search.getLimit() ).fromId( sourceNodeId );\n+            pipelineBuilderFactory.create(search.getApplicationScope()).withCursor(search.getCursor())\n+                .withLimit(search.getLimit()).fromId(sourceNodeId);\n \n \n         final IdBuilder traversedIds;\n         final String connectionName = search.getConnectionName();\n \n-        if ( !query.isPresent() ) {\n-            traversedIds = pipelineBuilder.traverseConnection( connectionName, search.getEntityType() );\n-        }\n-        else {\n+        if (!query.isPresent()) {\n+            traversedIds = pipelineBuilder.traverseConnection(connectionName, search.getEntityType());\n+        } else {\n             traversedIds =\n-                pipelineBuilder.searchConnection( connectionName, query.get(), search.getEntityType() ).loadIds();\n+                pipelineBuilder.searchConnection(connectionName, query.get(), search.getEntityType()).loadIds();\n         }\n \n         //create connection refs\n \n         final Observable<ResultsPage<ConnectionRef>> results =\n-            traversedIds.loadConnectionRefs( sourceNodeId, connectionName ).build();\n+            traversedIds.loadConnectionRefs(sourceNodeId, connectionName).build();\n \n         return results;\n     }\n@@ -138,46 +137,46 @@ public class ConnectionServiceImpl implements ConnectionService {\n \n     @Override\n     public Observable<ConnectionScope> deDupeConnections(\n-        final Observable<ApplicationScope> applicationScopeObservable ) {\n+        final Observable<ApplicationScope> applicationScopeObservable) {\n \n \n-        final Observable<EntityIdScope> entityIds =allEntityIdsObservable.getEntities( applicationScopeObservable );\n+        final Observable<EntityIdScope> entityIds = allEntityIdsObservable.getEntities(applicationScopeObservable);\n         //now we have an observable of entityIds.  Walk each connection type\n \n         //get all edge types for connections\n-       return  entityIds.flatMap( entityIdScope -> {\n+        return entityIds.flatMap(entityIdScope -> {\n \n             final ApplicationScope applicationScope = entityIdScope.getApplicationScope();\n             final Id entityId = entityIdScope.getId();\n \n-            final GraphManager gm = graphManagerFactory.createEdgeManager(applicationScope );\n+            final GraphManager gm = graphManagerFactory.createEdgeManager(applicationScope);\n \n             return gm.getEdgeTypesFromSource(\n-                new SimpleSearchEdgeType( entityId, CpNamingUtils.EDGE_CONN_PREFIX, Optional.absent() ) )\n+                new SimpleSearchEdgeType(entityId, CpNamingUtils.EDGE_CONN_PREFIX, Optional.absent()))\n \n                 //now load all edges from this node of this type\n-                .flatMap( edgeType -> {\n+                .flatMap(edgeType -> {\n                     final SearchByEdgeType searchByEdge =\n-                        new SimpleSearchByEdgeType( entityId, edgeType, Long.MAX_VALUE,\n-                            SearchByEdgeType.Order.ASCENDING, Optional.absent() );\n+                        new SimpleSearchByEdgeType(entityId, edgeType, Long.MAX_VALUE,\n+                            SearchByEdgeType.Order.ASCENDING, Optional.absent());\n \n                     //load edges from the source the with type specified\n-                    return gm.loadEdgesFromSource( searchByEdge );\n-                } )\n+                    return gm.loadEdgesFromSource(searchByEdge);\n+                })\n \n                 //now that we have a stream of edges, stream all versions\n-                .flatMap( edge -> {\n+                .flatMap(edge -> {\n                     final SearchByEdge searchByEdge =\n-                        new SimpleSearchByEdge( edge.getSourceNode(), edge.getType(), edge.getTargetNode(),\n-                            Long.MAX_VALUE, SearchByEdgeType.Order.ASCENDING, Optional.absent() );\n-                    return gm.loadEdgeVersions( searchByEdge );\n-                } )\n-\n-            //skip the first version since it's the one we want to retain\n-            // validate there is only 1 version of it, delete anything > than the min\n-                .skip( 1 )\n-                .flatMap( edgeToDelete -> gm.deleteEdge( edgeToDelete ) )\n-                .map(deletedEdge ->  new ConnectionScope( applicationScope, deletedEdge ) ) ;\n+                        new SimpleSearchByEdge(edge.getSourceNode(), edge.getType(), edge.getTargetNode(),\n+                            Long.MAX_VALUE, SearchByEdgeType.Order.ASCENDING, Optional.absent());\n+                    return gm.loadEdgeVersions(searchByEdge);\n+                })\n+\n+                //skip the first version since it's the one we want to retain\n+                // validate there is only 1 version of it, delete anything > than the min\n+                .skip(1)\n+                .flatMap(edgeToDelete -> gm.deleteEdge(edgeToDelete))\n+                .map(deletedEdge -> new ConnectionScope(applicationScope, deletedEdge));\n         });\n     }\n }\n",
+            "diff_size": 45
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_random/210/ConnectionServiceImpl.java\nindex 82c10381326..fecb59b2e65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_random/210/ConnectionServiceImpl.java\n@@ -141,7 +141,7 @@ public class ConnectionServiceImpl implements ConnectionService {\n         final Observable<ApplicationScope> applicationScopeObservable ) {\n \n \n-        final Observable<EntityIdScope> entityIds =allEntityIdsObservable.getEntities( applicationScopeObservable );\n+        final Observable<EntityIdScope> entityIds = allEntityIdsObservable.getEntities( applicationScopeObservable );\n         //now we have an observable of entityIds.  Walk each connection type\n \n         //get all edge types for connections\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_three_grams/210/ConnectionServiceImpl.java\nindex 82c10381326..fecb59b2e65 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/errored/1/210/ConnectionServiceImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-usergrid/styler_three_grams/210/ConnectionServiceImpl.java\n@@ -141,7 +141,7 @@ public class ConnectionServiceImpl implements ConnectionService {\n         final Observable<ApplicationScope> applicationScopeObservable ) {\n \n \n-        final Observable<EntityIdScope> entityIds =allEntityIdsObservable.getEntities( applicationScopeObservable );\n+        final Observable<EntityIdScope> entityIds = allEntityIdsObservable.getEntities( applicationScopeObservable );\n         //now we have an observable of entityIds.  Walk each connection type\n \n         //get all edge types for connections\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

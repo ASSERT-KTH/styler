@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "388",
+    "information": {
+        "errors": [
+            {
+                "line": "80",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n  public String getUrl() {\n      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).getAttribute(\"address\");\n  }\n\n  public void setUrl(String url) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/388/WSDL20Endpoint.java\nindex b58591e8d5a..a1c5ef406bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/388/WSDL20Endpoint.java\n@@ -77,7 +77,8 @@ public class WSDL20Endpoint implements MutableEndpoint {\n   }\n \n   public String getUrl() {\n-      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).getAttribute(\"address\");\n+      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).\n+      getAttribute(\"address\");\n   }\n \n   public void setUrl(String url) {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/388/WSDL20Endpoint.java\nindex b58591e8d5a..02b3c99edeb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/388/WSDL20Endpoint.java\n@@ -40,51 +40,53 @@ public class WSDL20Endpoint implements MutableEndpoint {\n   }\n \n   public String getSessionId() {\n-      Element endpointElmt = (Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n-      NodeList idNodes = endpointElmt.getElementsByTagNameNS(Namespaces.ODE_SESSION_NS, \"session\");\n+    Element endpointElmt = (Element) _serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n+    NodeList idNodes = endpointElmt.getElementsByTagNameNS(Namespaces.ODE_SESSION_NS, \"session\");\n+    if (idNodes.getLength() > 0) {\n+      return idNodes.item(0).getTextContent();\n+    } else {\n+      // try the same with the intalio header\n+      idNodes = endpointElmt.getElementsByTagNameNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n       if (idNodes.getLength() > 0) {\n-          return idNodes.item(0).getTextContent();\n-      } else {\n-          // try the same with the intalio header\n-          idNodes = endpointElmt.getElementsByTagNameNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n-          if (idNodes.getLength() > 0) {\n-              return idNodes.item(0).getTextContent();\n-          }\n-          return null;\n+        return idNodes.item(0).getTextContent();\n       }\n+      return null;\n+    }\n   }\n \n   public void setSessionId(String sessionId) {\n-      Element endpointElmt = (Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n-      NodeList idList = endpointElmt.getElementsByTagNameNS(Namespaces.ODE_SESSION_NS, \"session\");\n-      if (idList.getLength() > 0)\n-          idList.item(0).setTextContent(sessionId);\n-      else {\n-          Element sessElmt = endpointElmt.getOwnerDocument().createElementNS(Namespaces.ODE_SESSION_NS, \"session\");\n-          sessElmt.setTextContent(sessionId);\n-          endpointElmt.appendChild(sessElmt);\n-      }\n+    Element endpointElmt = (Element) _serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n+    NodeList idList = endpointElmt.getElementsByTagNameNS(Namespaces.ODE_SESSION_NS, \"session\");\n+    if (idList.getLength() > 0) {\n+      idList.item(0).setTextContent(sessionId);\n+    } else {\n+      Element sessElmt = endpointElmt.getOwnerDocument().createElementNS(Namespaces.ODE_SESSION_NS, \"session\");\n+      sessElmt.setTextContent(sessionId);\n+      endpointElmt.appendChild(sessElmt);\n+    }\n \n-      // and the same for the intalio header\n-      idList = endpointElmt.getElementsByTagNameNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n-      if (idList.getLength() > 0)\n-          idList.item(0).setTextContent(sessionId);\n-      else {\n-          Element sessElmt = endpointElmt.getOwnerDocument().createElementNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n-          sessElmt.setTextContent(sessionId);\n-          endpointElmt.appendChild(sessElmt);\n-      }\n+    // and the same for the intalio header\n+    idList = endpointElmt.getElementsByTagNameNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n+    if (idList.getLength() > 0) {\n+      idList.item(0).setTextContent(sessionId);\n+    } else {\n+      Element sessElmt = endpointElmt.getOwnerDocument().createElementNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n+      sessElmt.setTextContent(sessionId);\n+      endpointElmt.appendChild(sessElmt);\n+    }\n   }\n \n   public String getUrl() {\n-      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).getAttribute(\"address\");\n+    return ((Element) _serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0))\n+      .getAttribute(\"address\");\n   }\n \n   public void setUrl(String url) {\n-    Element endpointElmt = (Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n+    Element endpointElmt = (Element) _serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0);\n     NodeList addrList = endpointElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"address\");\n-    if (addrList.getLength() > 0) addrList.item(0).setTextContent(url);\n-    else {\n+    if (addrList.getLength() > 0) {\n+      addrList.item(0).setTextContent(url);\n+    } else {\n       Element addrElmt = _serviceElmt.getOwnerDocument().createElementNS(Namespaces.WSDL_20, \"address\");\n       addrElmt.setTextContent(url);\n       endpointElmt.appendChild(addrElmt);\n@@ -95,20 +97,23 @@ public class WSDL20Endpoint implements MutableEndpoint {\n     if (node.getNodeType() == Node.ELEMENT_NODE) {\n       Element elmt = (Element) node;\n       if (elmt.getLocalName().equals(\"service-ref\") &&\n-              (elmt.getNamespaceURI().equals(Namespaces.WS_BPEL_20_NS) ||\n-                      elmt.getNamespaceURI().equals(Namespaces.WSBPEL2_0_FINAL_SERVREF)))\n-        elmt= DOMUtils.getFirstChildElement(elmt);\n-      if (elmt.getLocalName().equals(\"service\") && elmt.getNamespaceURI().equals(Namespaces.WSDL_20))\n+        (elmt.getNamespaceURI().equals(Namespaces.WS_BPEL_20_NS) ||\n+          elmt.getNamespaceURI().equals(Namespaces.WSBPEL2_0_FINAL_SERVREF))) {\n+        elmt = DOMUtils.getFirstChildElement(elmt);\n+      }\n+      if (elmt.getLocalName().equals(\"service\") && elmt.getNamespaceURI().equals(Namespaces.WSDL_20)) {\n         return true;\n+      }\n     }\n     return false;\n   }\n \n   public void set(Node node) {\n-    if (node.getNamespaceURI().equals(SERVICE_REF_QNAME.getNamespaceURI()))\n-      _serviceElmt = DOMUtils.getFirstChildElement((Element)node);\n-    else\n+    if (node.getNamespaceURI().equals(SERVICE_REF_QNAME.getNamespaceURI())) {\n+      _serviceElmt = DOMUtils.getFirstChildElement((Element) node);\n+    } else {\n       _serviceElmt = (Element) node;\n+    }\n   }\n \n   public Document toXML() {\n@@ -121,10 +126,12 @@ public class WSDL20Endpoint implements MutableEndpoint {\n   }\n \n   public Map toMap() {\n-    HashMap<String,String> result = new HashMap<String,String>(1);\n+    HashMap<String, String> result = new HashMap<String, String>(1);\n     result.put(ADDRESS, getUrl());\n     String sid = getSessionId();\n-    if (sid != null) result.put(SESSION, sid);\n+    if (sid != null) {\n+      result.put(SESSION, sid);\n+    }\n     return result;\n   }\n \n@@ -139,15 +146,17 @@ public class WSDL20Endpoint implements MutableEndpoint {\n     Element endpoint = doc.createElementNS(Namespaces.WSDL_20, \"endpoint\");\n     endpoint.setAttribute(\"name\", \"\");\n     endpoint.setAttribute(\"binding\", \"\");\n-    if (eprMap.get(ADDRESS) != null) endpoint.setAttribute(\"address\", (String) eprMap.get(ADDRESS));\n+    if (eprMap.get(ADDRESS) != null) {\n+      endpoint.setAttribute(\"address\", (String) eprMap.get(ADDRESS));\n+    }\n     if (eprMap.get(SESSION) != null) {\n-        Element session = doc.createElementNS(Namespaces.ODE_SESSION_NS, \"session\");\n-        session.setTextContent((String) eprMap.get(SESSION));\n-        endpoint.appendChild(session);\n-        // plus the deprecated intalio header\n-        session = doc.createElementNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n-        session.setTextContent((String) eprMap.get(SESSION));\n-        endpoint.appendChild(session);\n+      Element session = doc.createElementNS(Namespaces.ODE_SESSION_NS, \"session\");\n+      session.setTextContent((String) eprMap.get(SESSION));\n+      endpoint.appendChild(session);\n+      // plus the deprecated intalio header\n+      session = doc.createElementNS(Namespaces.INTALIO_SESSION_NS, \"session\");\n+      session.setTextContent((String) eprMap.get(SESSION));\n+      endpoint.appendChild(session);\n     }\n     _serviceElmt.appendChild(endpoint);\n     doc.appendChild(_serviceElmt);\n",
+            "diff_size": 65
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "80",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/388/WSDL20Endpoint.java\nindex b58591e8d5a..bea72a098c1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/388/WSDL20Endpoint.java\n@@ -97,7 +97,7 @@ public class WSDL20Endpoint implements MutableEndpoint {\n       if (elmt.getLocalName().equals(\"service-ref\") &&\n               (elmt.getNamespaceURI().equals(Namespaces.WS_BPEL_20_NS) ||\n                       elmt.getNamespaceURI().equals(Namespaces.WSBPEL2_0_FINAL_SERVREF)))\n-        elmt= DOMUtils.getFirstChildElement(elmt);\n+    elmt= DOMUtils.getFirstChildElement(elmt);\n       if (elmt.getLocalName().equals(\"service\") && elmt.getNamespaceURI().equals(Namespaces.WSDL_20))\n         return true;\n     }\n@@ -152,4 +152,4 @@ public class WSDL20Endpoint implements MutableEndpoint {\n     _serviceElmt.appendChild(endpoint);\n     doc.appendChild(_serviceElmt);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "80",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/388/WSDL20Endpoint.java\nindex b58591e8d5a..a1c5ef406bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/388/WSDL20Endpoint.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/388/WSDL20Endpoint.java\n@@ -77,7 +77,8 @@ public class WSDL20Endpoint implements MutableEndpoint {\n   }\n \n   public String getUrl() {\n-      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).getAttribute(\"address\");\n+      return ((Element)_serviceElmt.getElementsByTagNameNS(Namespaces.WSDL_20, \"endpoint\").item(0)).\n+      getAttribute(\"address\");\n   }\n \n   public void setUrl(String url) {\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

@@ -1,0 +1,131 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "847",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.gateway;\n\nimport gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..6e1f616da13 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler/847/AbstractJMXEnabledServlet.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.gateway;\n \n import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..c680bbfa150 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/847/AbstractJMXEnabledServlet.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.gateway;\n \n import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n@@ -52,117 +53,125 @@ import org.slf4j.LoggerFactory;\n  */\n public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n \n-    /** The Constant serialVersionUID. */\n-    private static final long serialVersionUID = 1339014755670360100L;\n-\n-    /** The Constant LOG. */\n-    private static final Logger LOG = LoggerFactory.getLogger(AbstractJMXEnabledServlet.class);\n-\n-    /** The Constant UNABLE_TO_REGISTER_MBEAN_MSG. */\n-    private static final String UNABLE_TO_REGISTER_MBEAN_MSG = \"Unable to register MBean: \";\n-\n-    /** The Constant UNABLE_TO_DESTORY_MBEAN_MSG. */\n-    private static final String UNABLE_TO_DESTORY_MBEAN_MSG = \"Unable to unregister MBean: \";\n-\n-    /**\n-     * Gets the m bean name.\n-     *\n-     * @return the m bean name\n-     */\n-    public abstract String getMBeanName();\n-\n-    /**\n-     * Gets the m bean instance.\n-     *\n-     * @param sc the sc\n-     * @return the m bean instance\n-     */\n-    public abstract Object getMBeanInstance(ServletContext sc);\n-\n-    /**\n-     * Initializes the JMX enabled servlet calling {@link javax.servlet.http.HttpServlet#init(ServletConfig)} and then\n-     * loading the MBean described by {@link #getMBeanName()} and {@link #getMBeanInstance(ServletContext)}.\n-     *\n-     * @param config the config\n-     * @throws ServletException the servlet exception\n-     * @see javax.servlet.GenericServlet#init()\n-     */\n-    @Override\n-    public void init(ServletConfig config) throws ServletException {\n-        String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n-        if (\"true\".equalsIgnoreCase(enableJMX)) {\n-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();\n-            ObjectName name = null;\n-            try {\n-                name = new ObjectName(getMBeanName());\n-                Object mbean = getMBeanInstance(config.getServletContext());\n-                mbs.registerMBean(mbean, name);\n-            } catch (MalformedObjectNameException e) {\n-                LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n-            } catch (InstanceAlreadyExistsException e) {\n-                LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n-            } catch (MBeanRegistrationException e) {\n-                LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n-            } catch (NotCompliantMBeanException e) {\n-                LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n-            }\n-        }\n-\n-        super.init(config);\n-    }\n-\n-    /**\n-     * Destroys the JMXEnabled servlet buy unregistering previously registered MBeans, then calls the parent destroy\n-     * method.\n-     *\n-     * @see javax.servlet.GenericServlet#destroy()\n-     */\n-    @Override\n-    public void destroy() {\n-        String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n-        if (\"true\".equalsIgnoreCase(enableJMX)) {\n-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();\n-            ObjectName name = null;\n-            try {\n-                name = new ObjectName(getMBeanName());\n-                mbs.unregisterMBean(name);\n-            } catch (InstanceNotFoundException e) {\n-                LOG.error(getDestroyErrorMessage(), e);\n-            } catch (MalformedObjectNameException e) {\n-                LOG.error(getDestroyErrorMessage(), e);\n-            } catch (MBeanRegistrationException e) {\n-                LOG.error(getDestroyErrorMessage(), e);\n-            }\n-        }\n-\n-        super.destroy();\n+  /**\n+   * The Constant serialVersionUID.\n+   */\n+  private static final long serialVersionUID = 1339014755670360100L;\n+\n+  /**\n+   * The Constant LOG.\n+   */\n+  private static final Logger LOG = LoggerFactory.getLogger(AbstractJMXEnabledServlet.class);\n+\n+  /**\n+   * The Constant UNABLE_TO_REGISTER_MBEAN_MSG.\n+   */\n+  private static final String UNABLE_TO_REGISTER_MBEAN_MSG = \"Unable to register MBean: \";\n+\n+  /**\n+   * The Constant UNABLE_TO_DESTORY_MBEAN_MSG.\n+   */\n+  private static final String UNABLE_TO_DESTORY_MBEAN_MSG = \"Unable to unregister MBean: \";\n+\n+  /**\n+   * Gets the m bean name.\n+   *\n+   * @return the m bean name\n+   */\n+  public abstract String getMBeanName();\n+\n+  /**\n+   * Gets the m bean instance.\n+   *\n+   * @param sc the sc\n+   * @return the m bean instance\n+   */\n+  public abstract Object getMBeanInstance(ServletContext sc);\n+\n+  /**\n+   * Initializes the JMX enabled servlet calling {@link javax.servlet.http.HttpServlet#init(ServletConfig)} and then\n+   * loading the MBean described by {@link #getMBeanName()} and {@link #getMBeanInstance(ServletContext)}.\n+   *\n+   * @param config the config\n+   * @throws ServletException the servlet exception\n+   * @see javax.servlet.GenericServlet#init()\n+   */\n+  @Override\n+  public void init(ServletConfig config) throws ServletException {\n+    String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n+    if (\"true\".equalsIgnoreCase(enableJMX)) {\n+      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();\n+      ObjectName name = null;\n+      try {\n+        name = new ObjectName(getMBeanName());\n+        Object mbean = getMBeanInstance(config.getServletContext());\n+        mbs.registerMBean(mbean, name);\n+      } catch (MalformedObjectNameException e) {\n+        LOG.error(getRegistrationErrorMessage(), e);\n+        throw new ServletException(e);\n+      } catch (InstanceAlreadyExistsException e) {\n+        LOG.error(getRegistrationErrorMessage(), e);\n+        throw new ServletException(e);\n+      } catch (MBeanRegistrationException e) {\n+        LOG.error(getRegistrationErrorMessage(), e);\n+        throw new ServletException(e);\n+      } catch (NotCompliantMBeanException e) {\n+        LOG.error(getRegistrationErrorMessage(), e);\n+        throw new ServletException(e);\n+      }\n     }\n \n-    /**\n-     * Gets the error message.\n-     *\n-     * @return the error message\n-     */\n-    private String getRegistrationErrorMessage() {\n-        StringBuilder sb = new StringBuilder();\n-        sb.append(UNABLE_TO_REGISTER_MBEAN_MSG);\n-        sb.append(getMBeanName());\n-        return sb.toString();\n+    super.init(config);\n+  }\n+\n+  /**\n+   * Destroys the JMXEnabled servlet buy unregistering previously registered MBeans, then calls the parent destroy\n+   * method.\n+   *\n+   * @see javax.servlet.GenericServlet#destroy()\n+   */\n+  @Override\n+  public void destroy() {\n+    String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n+    if (\"true\".equalsIgnoreCase(enableJMX)) {\n+      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();\n+      ObjectName name = null;\n+      try {\n+        name = new ObjectName(getMBeanName());\n+        mbs.unregisterMBean(name);\n+      } catch (InstanceNotFoundException e) {\n+        LOG.error(getDestroyErrorMessage(), e);\n+      } catch (MalformedObjectNameException e) {\n+        LOG.error(getDestroyErrorMessage(), e);\n+      } catch (MBeanRegistrationException e) {\n+        LOG.error(getDestroyErrorMessage(), e);\n+      }\n     }\n \n-    /**\n-     * Gets the error message.\n-     *\n-     * @return the error message\n-     */\n-    private String getDestroyErrorMessage() {\n-        StringBuilder sb = new StringBuilder();\n-        sb.append(UNABLE_TO_DESTORY_MBEAN_MSG);\n-        sb.append(getMBeanName());\n-        return sb.toString();\n-    }\n+    super.destroy();\n+  }\n+\n+  /**\n+   * Gets the error message.\n+   *\n+   * @return the error message\n+   */\n+  private String getRegistrationErrorMessage() {\n+    StringBuilder sb = new StringBuilder();\n+    sb.append(UNABLE_TO_REGISTER_MBEAN_MSG);\n+    sb.append(getMBeanName());\n+    return sb.toString();\n+  }\n+\n+  /**\n+   * Gets the error message.\n+   *\n+   * @return the error message\n+   */\n+  private String getDestroyErrorMessage() {\n+    StringBuilder sb = new StringBuilder();\n+    sb.append(UNABLE_TO_DESTORY_MBEAN_MSG);\n+    sb.append(getMBeanName());\n+    return sb.toString();\n+  }\n }\n",
+            "diff_size": 140
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..b3eac051155 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/847/AbstractJMXEnabledServlet.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.gateway;\n \n import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n@@ -99,16 +100,20 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n                 mbs.registerMBean(mbean, name);\n             } catch (MalformedObjectNameException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n+\n+throw new ServletException(e);\n             } catch (InstanceAlreadyExistsException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n+\n+throw new ServletException(e);\n             } catch (MBeanRegistrationException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n+\n+throw new ServletException(e);\n             } catch (NotCompliantMBeanException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n-                throw new ServletException(e);\n+\n+throw new ServletException(e);\n             }\n         }\n \n@@ -151,7 +156,8 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n         StringBuilder sb = new StringBuilder();\n         sb.append(UNABLE_TO_REGISTER_MBEAN_MSG);\n         sb.append(getMBeanName());\n-        return sb.toString();\n+\n+return sb.toString();\n     }\n \n     /**\n@@ -163,6 +169,7 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n         StringBuilder sb = new StringBuilder();\n         sb.append(UNABLE_TO_DESTORY_MBEAN_MSG);\n         sb.append(getMBeanName());\n-        return sb.toString();\n+\n+return sb.toString();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 14
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "110",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "116",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "122",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "152",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "157",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..1f23a95e62c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/847/AbstractJMXEnabledServlet.java\n@@ -27,9 +27,7 @@\n package gov.hhs.fha.nhinc.gateway;\n \n import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n-\n import java.lang.management.ManagementFactory;\n-\n import javax.management.InstanceAlreadyExistsException;\n import javax.management.InstanceNotFoundException;\n import javax.management.MBeanRegistrationException;\n@@ -41,7 +39,6 @@ import javax.servlet.ServletConfig;\n import javax.servlet.ServletContext;\n import javax.servlet.ServletException;\n import javax.servlet.http.HttpServlet;\n-\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n \n@@ -50,9 +47,13 @@ import org.slf4j.LoggerFactory;\n  *\n  * @author msw\n  */\n-public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n+\n+\n+public abstract class AbstractJMXEnabledServlet extends\n+    HttpServlet {\n \n     /** The Constant serialVersionUID. */\n+\n     private static final long serialVersionUID = 1339014755670360100L;\n \n     /** The Constant LOG. */\n@@ -69,6 +70,8 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      *\n      * @return the m bean name\n      */\n+\n+\n     public abstract String getMBeanName();\n \n     /**\n@@ -77,6 +80,8 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      * @param sc the sc\n      * @return the m bean instance\n      */\n+\n+\n     public abstract Object getMBeanInstance(ServletContext sc);\n \n     /**\n@@ -87,6 +92,8 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      * @throws ServletException the servlet exception\n      * @see javax.servlet.GenericServlet#init()\n      */\n+\n+\n     @Override\n     public void init(ServletConfig config) throws ServletException {\n         String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n@@ -100,18 +107,26 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n             } catch (MalformedObjectNameException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n                 throw new ServletException(e);\n-            } catch (InstanceAlreadyExistsException e) {\n+            }\n+\n+\n+catch (InstanceAlreadyExistsException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n                 throw new ServletException(e);\n-            } catch (MBeanRegistrationException e) {\n+            }\n+\n+\n+catch (MBeanRegistrationException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n                 throw new ServletException(e);\n-            } catch (NotCompliantMBeanException e) {\n+            }\n+\n+\n+catch (NotCompliantMBeanException e) {\n                 LOG.error(getRegistrationErrorMessage(), e);\n                 throw new ServletException(e);\n             }\n         }\n-\n         super.init(config);\n     }\n \n@@ -121,6 +136,8 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      *\n      * @see javax.servlet.GenericServlet#destroy()\n      */\n+\n+\n     @Override\n     public void destroy() {\n         String enableJMX = System.getProperty(NhincConstants.JMX_ENABLED_SYSTEM_PROPERTY);\n@@ -132,13 +149,18 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n                 mbs.unregisterMBean(name);\n             } catch (InstanceNotFoundException e) {\n                 LOG.error(getDestroyErrorMessage(), e);\n-            } catch (MalformedObjectNameException e) {\n+            }\n+\n+\n+catch (MalformedObjectNameException e) {\n                 LOG.error(getDestroyErrorMessage(), e);\n-            } catch (MBeanRegistrationException e) {\n+            }\n+\n+\n+catch (MBeanRegistrationException e) {\n                 LOG.error(getDestroyErrorMessage(), e);\n             }\n         }\n-\n         super.destroy();\n     }\n \n@@ -147,6 +169,7 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      *\n      * @return the error message\n      */\n+\n     private String getRegistrationErrorMessage() {\n         StringBuilder sb = new StringBuilder();\n         sb.append(UNABLE_TO_REGISTER_MBEAN_MSG);\n@@ -159,10 +182,12 @@ public abstract class AbstractJMXEnabledServlet extends HttpServlet {\n      *\n      * @return the error message\n      */\n+\n     private String getDestroyErrorMessage() {\n         StringBuilder sb = new StringBuilder();\n         sb.append(UNABLE_TO_DESTORY_MBEAN_MSG);\n         sb.append(getMBeanName());\n         return sb.toString();\n     }\n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 42
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'import' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "import statement should not be line-wrapped.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoLineWrapCheck"
+                },
+                {
+                    "line": "27",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..ede55e4459e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_random/847/AbstractJMXEnabledServlet.java\n@@ -24,9 +24,9 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n-package gov.hhs.fha.nhinc.gateway;\n+package gov.hhs.fha.nhinc.gateway;import\n \n-import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n+gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n \n import java.lang.management.ManagementFactory;\n \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/847/AbstractJMXEnabledServlet.java\nindex e4bd8d02f8a..6e1f616da13 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/847/AbstractJMXEnabledServlet.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/847/AbstractJMXEnabledServlet.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.gateway;\n \n import gov.hhs.fha.nhinc.nhinclib.NhincConstants;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff",
+        "styler_random"
+    ]
+}

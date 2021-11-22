@@ -1,0 +1,79 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "68",
+    "information": {
+        "errors": [
+            {
+                "line": "82",
+                "column": "63",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "        }\n        dest.setActionExitCode(source.getActionExitCode());\n        dest.setExtraProperties(source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n        copyMessagePart(source.getTopMessagePart(), dest.getTopMessagePart());\n        List<? extends ActionReport> subReports = source.getSubActionsReport();\n        if (subReports != null) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/68/InstanceRestCommandExecutor.java\nindex a14480e6be3..bcd547a3fd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/68/InstanceRestCommandExecutor.java\n@@ -79,7 +79,10 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n             return;\n         }\n         dest.setActionExitCode(source.getActionExitCode());\n-        dest.setExtraProperties(source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n+        dest.setExtraProperties(source.getExtraProperties());\n+\n+        //No deep copy. Any change of source is unexpected\n+\n         copyMessagePart(source.getTopMessagePart(), dest.getTopMessagePart());\n         List<? extends ActionReport> subReports = source.getSubActionsReport();\n         if (subReports != null) {\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "87",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/68/InstanceRestCommandExecutor.java\nindex a14480e6be3..a2fbcbcdc15 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/68/InstanceRestCommandExecutor.java\n@@ -30,14 +30,14 @@ import org.glassfish.hk2.api.ServiceLocator;\n import com.sun.enterprise.util.StringUtils;\n \n /**\n- *\n  * Causes execution of an administrative command on one or more remote instances to be triggered from code running\n  * inside the DAS.\n  *\n  * @author Vijay Ramachandran\n  * @author mmares\n  */\n-public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand implements Runnable, InstanceCommand {\n+public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand\n+    implements Runnable, InstanceCommand {\n \n     private Server server;\n     private ParameterMap params;\n@@ -47,10 +47,14 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n     private FailurePolicy failPolicy;\n     private InstanceCommandResult result;\n \n-    private static final LocalStringManagerImpl strings = new LocalStringManagerImpl(InstanceCommandExecutor.class);\n+    private static final LocalStringManagerImpl strings =\n+        new LocalStringManagerImpl(InstanceCommandExecutor.class);\n \n-    public InstanceRestCommandExecutor(ServiceLocator habitat, String name, FailurePolicy fail, FailurePolicy offline, Server server,\n-            String host, int port, Logger logger, ParameterMap p, ActionReport r, InstanceCommandResult res) throws CommandException {\n+    public InstanceRestCommandExecutor(ServiceLocator habitat, String name, FailurePolicy fail,\n+                                       FailurePolicy offline, Server server,\n+                                       String host, int port, Logger logger, ParameterMap p,\n+                                       ActionReport r, InstanceCommandResult res)\n+        throws CommandException {\n         super(habitat, name, host, port, false, \"admin\", \"\", logger);\n         this.server = server;\n         this.params = p;\n@@ -79,7 +83,8 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n             return;\n         }\n         dest.setActionExitCode(source.getActionExitCode());\n-        dest.setExtraProperties(source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n+        dest.setExtraProperties(\n+            source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n         copyMessagePart(source.getTopMessagePart(), dest.getTopMessagePart());\n         List<? extends ActionReport> subReports = source.getSubActionsReport();\n         if (subReports != null) {\n@@ -111,30 +116,39 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n         try {\n             executeCommand(params);\n             copyActionReportContent(super.getActionReport(), aReport);\n-            if (StringUtils.ok(getCommandOutput()))\n-                aReport.setMessage(strings.getLocalString(\"ice.successmessage\", \"{0}:\\n{1}\\n\", getServer().getName(), getCommandOutput()));\n+            if (StringUtils.ok(getCommandOutput())) {\n+                aReport.setMessage(strings\n+                    .getLocalString(\"ice.successmessage\", \"{0}:\\n{1}\\n\", getServer().getName(),\n+                        getCommandOutput()));\n+            }\n         } catch (CommandException cmdEx) {\n             ActionReport.ExitCode finalResult;\n             if (cmdEx.getCause() instanceof java.net.ConnectException) {\n-                finalResult = FailurePolicy.applyFailurePolicy(offlinePolicy, ActionReport.ExitCode.FAILURE);\n-                if (!finalResult.equals(ActionReport.ExitCode.FAILURE))\n+                finalResult =\n+                    FailurePolicy.applyFailurePolicy(offlinePolicy, ActionReport.ExitCode.FAILURE);\n+                if (!finalResult.equals(ActionReport.ExitCode.FAILURE)) {\n                     aReport.setMessage(strings.getLocalString(\"clusterutil.warnoffline\",\n-                            \"WARNING: Instance {0} seems to be offline; command {1} was not replicated to that instance\",\n-                            getServer().getName(), commandName));\n-                else\n+                        \"WARNING: Instance {0} seems to be offline; command {1} was not replicated to that instance\",\n+                        getServer().getName(), commandName));\n+                } else {\n                     aReport.setMessage(strings.getLocalString(\"clusterutil.failoffline\",\n-                            \"FAILURE: Instance {0} seems to be offline; command {1} was not replicated to that instance\",\n-                            getServer().getName(), commandName));\n+                        \"FAILURE: Instance {0} seems to be offline; command {1} was not replicated to that instance\",\n+                        getServer().getName(), commandName));\n+                }\n             } else {\n-                finalResult = FailurePolicy.applyFailurePolicy(failPolicy, ActionReport.ExitCode.FAILURE);\n-                if (finalResult.equals(ActionReport.ExitCode.FAILURE))\n+                finalResult =\n+                    FailurePolicy.applyFailurePolicy(failPolicy, ActionReport.ExitCode.FAILURE);\n+                if (finalResult.equals(ActionReport.ExitCode.FAILURE)) {\n                     aReport.setMessage(\n-                            strings.getLocalString(\"clusterutil.commandFailed\", \"FAILURE: Command {0} failed on server instance {1}: {2}\",\n-                                    commandName, getServer().getName(), cmdEx.getMessage()));\n-                else\n+                        strings.getLocalString(\"clusterutil.commandFailed\",\n+                            \"FAILURE: Command {0} failed on server instance {1}: {2}\",\n+                            commandName, getServer().getName(), cmdEx.getMessage()));\n+                } else {\n                     aReport.setMessage(strings.getLocalString(\"clusterutil.commandWarning\",\n-                            \"WARNING: Command {0} did not complete successfully on server instance {1}: {2}\", commandName,\n-                            getServer().getName(), cmdEx.getMessage()));\n+                        \"WARNING: Command {0} did not complete successfully on server instance {1}: {2}\",\n+                        commandName,\n+                        getServer().getName(), cmdEx.getMessage()));\n+                }\n             }\n             aReport.setActionExitCode(finalResult);\n         }\n",
+            "diff_size": 37
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/68/InstanceRestCommandExecutor.java\nindex a14480e6be3..245188452cb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/68/InstanceRestCommandExecutor.java\n@@ -79,7 +79,9 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n             return;\n         }\n         dest.setActionExitCode(source.getActionExitCode());\n-        dest.setExtraProperties(source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n+        dest.setExtraProperties(source.getExtraProperties());\n+\n+//No deep copy. Any change of source is unexpected\n         copyMessagePart(source.getTopMessagePart(), dest.getTopMessagePart());\n         List<? extends ActionReport> subReports = source.getSubActionsReport();\n         if (subReports != null) {\n@@ -140,4 +142,4 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n         }\n         result.setInstanceCommand(this);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "82",
+                    "column": "63",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/68/InstanceRestCommandExecutor.java\nindex a14480e6be3..bcd547a3fd3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/68/InstanceRestCommandExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/68/InstanceRestCommandExecutor.java\n@@ -79,7 +79,10 @@ public class InstanceRestCommandExecutor extends ServerRemoteRestAdminCommand im\n             return;\n         }\n         dest.setActionExitCode(source.getActionExitCode());\n-        dest.setExtraProperties(source.getExtraProperties()); //No deep copy. Any change of source is unexpected\n+        dest.setExtraProperties(source.getExtraProperties());\n+\n+        //No deep copy. Any change of source is unexpected\n+\n         copyMessagePart(source.getTopMessagePart(), dest.getTopMessagePart());\n         List<? extends ActionReport> subReports = source.getSubActionsReport();\n         if (subReports != null) {\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff",
+        "styler_random"
+    ]
+}

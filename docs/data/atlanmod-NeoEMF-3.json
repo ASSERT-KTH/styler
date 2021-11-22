@@ -1,0 +1,83 @@
+{
+    "project_name": "atlanmod-NeoEMF",
+    "error_id": "3",
+    "information": {
+        "errors": [
+            {
+                "line": "101",
+                "severity": "warning",
+                "message": "'lambda arguments' has incorrect indentation level 12, expected level should be 8.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "    protected final Converter<Id, Object> idConverter = Converter.from(\n            IdConverters.withLong()::convert,\n            o -> IdConverters.withLong().revert(Long.class.cast(o)));\n\n    /**\n     * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "101",
+                    "severity": "warning",
+                    "message": "'lambda arguments' has incorrect indentation level 12, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/intellij/3/AbstractBlueprintsBackend.java\nindex d2476682058..8b49353cf02 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/intellij/3/AbstractBlueprintsBackend.java\n@@ -97,16 +97,16 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      */\n     @Nonnull\n     protected final Converter<Id, Object> idConverter = Converter.from(\n-            IdConverters.withLong()::convert,\n-            o -> IdConverters.withLong().revert(Long.class.cast(o)));\n+        IdConverters.withLong()::convert,\n+        o -> IdConverters.withLong().revert(Long.class.cast(o)));\n \n     /**\n      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.\n      */\n     @Nonnull\n     private final Cache<Id, Vertex> verticesCache = CacheBuilder.builder()\n-            .softValues()\n-            .build();\n+        .softValues()\n+        .build();\n \n     /**\n      * A set that holds indexed {@link ClassBean}.\n@@ -143,7 +143,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * Constructs a new {@code AbstractBlueprintsBackend} wrapping the provided {@code baseGraph}.\n      *\n      * @param baseGraph the base {@link KeyIndexableGraph} used to access the database\n-     *\n      * @see BlueprintsBackendFactory\n      */\n     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {\n@@ -161,7 +160,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * Builds the {@link Id} used to identify a {@link ClassBean} {@link Vertex}.\n      *\n      * @param metaClass the {@link ClassBean} to build an {@link Id} from\n-     *\n      * @return the create {@link Id}\n      */\n     @Nonnull\n@@ -173,17 +171,15 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * Retrieves the base graph of the {@code graph}.\n      *\n      * @param graph the graph from which to retrieve the base graph\n-     *\n      * @return the base graph of the {@code graph}, or {@code graph} is it is not a wrapper.\n-     *\n      * @see com.tinkerpop.blueprints.Features#isWrapper\n      * @see WrapperGraph\n      */\n     @Nonnull\n     private Graph getOrigin(Graph graph) {\n         return graph.getFeatures().isWrapper\n-                ? getOrigin(WrapperGraph.class.cast(graph).getBaseGraph())\n-                : graph;\n+            ? getOrigin(WrapperGraph.class.cast(graph).getBaseGraph())\n+            : graph;\n     }\n \n     /**\n@@ -191,7 +187,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      *\n      * @param feature the feature associated with the property\n      * @param suffix  the suffix of the property\n-     *\n      * @return the formatted property\n      */\n     @Nonnull\n@@ -203,28 +198,26 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * Formats a label.\n      *\n      * @param feature the feature associated with the label\n-     *\n      * @return the formatted label\n      */\n     @Nonnull\n     protected String formatLabel(FeatureBean feature) {\n         return requireUniqueLabels\n-                // TODO Can cause a massive overhead (metaClassNameOf)\n-                ? metaClassNameOf(feature.owner()) + DELIMITER + Integer.toString(feature.id())\n-                : Integer.toString(feature.id());\n+            // TODO Can cause a massive overhead (metaClassNameOf)\n+            ? metaClassNameOf(feature.owner()) + DELIMITER + Integer.toString(feature.id())\n+            : Integer.toString(feature.id());\n     }\n \n     /**\n      * Retrieves or create an index for the given {@code name}.\n      *\n      * @param name the name of the index\n-     *\n      * @return the index\n      */\n     @Nonnull\n     private Index<Vertex> getOrCreateIndex(String name) {\n         return Optional.ofNullable(graph.getIndex(name, Vertex.class))\n-                .orElseGet(() -> graph.createIndex(name, Vertex.class));\n+            .orElseGet(() -> graph.createIndex(name, Vertex.class));\n     }\n \n     /**\n@@ -232,7 +225,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      *\n      * @param key    the key identifying the multi-valued feature\n      * @param vertex the related vertex; {@code vertex.id == key.id}\n-     *\n      * @return the size\n      */\n     @Nonnegative\n@@ -250,8 +242,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n     protected void sizeFor(SingleFeatureBean key, Vertex vertex, @Nonnegative int size) {\n         if (size > 0) {\n             vertex.setProperty(formatProperty(key, PROPERTY_SIZE), size);\n-        }\n-        else {\n+        } else {\n             vertex.removeProperty(formatProperty(key, PROPERTY_SIZE));\n         }\n     }\n@@ -260,8 +251,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n     public void save() {\n         if (graph.getFeatures().supportsTransactions) {\n             graph.commit();\n-        }\n-        else {\n+        } else {\n             graph.shutdown();\n         }\n     }\n@@ -297,9 +287,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n         final Vertex containmentVertex = optContainmentVertex.get();\n \n         return MoreIterables.onlyElement(containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER))\n-                .map(e -> SingleFeatureBean.of(\n-                        idConverter.revert(e.getVertex(Direction.IN).getId()),\n-                        e.getProperty(PROPERTY_CONTAINER_NAME)));\n+            .map(e -> SingleFeatureBean.of(\n+                idConverter.revert(e.getVertex(Direction.IN).getId()),\n+                e.getProperty(PROPERTY_CONTAINER_NAME)));\n     }\n \n     @Override\n@@ -340,9 +330,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n         final Vertex vertex = optVertex.get();\n \n         return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, EDGE_INSTANCE_OF))\n-                .map(v -> ClassBean.of(\n-                        v.getProperty(PROPERTY_INSTANCE_NAME),\n-                        v.getProperty(PROPERTY_INSTANCE_URI)));\n+            .map(v -> ClassBean.of(\n+                v.getProperty(PROPERTY_INSTANCE_NAME),\n+                v.getProperty(PROPERTY_INSTANCE_URI)));\n     }\n \n     @Override\n@@ -381,19 +371,18 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n     @Override\n     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {\n         return metaClasses.stream()\n-                .map(mc -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, mc.name()))\n-                .flatMap(MoreIterables::stream)\n-                .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))\n-                .flatMap(MoreIterables::stream)\n-                .map(v -> idConverter.revert(v.getId()))\n-                .collect(Collectors.toSet());\n+            .map(mc -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, mc.name()))\n+            .flatMap(MoreIterables::stream)\n+            .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))\n+            .flatMap(MoreIterables::stream)\n+            .map(v -> idConverter.revert(v.getId()))\n+            .collect(Collectors.toSet());\n     }\n \n     /**\n      * Returns the name of the meta-class of the specified {@code id}.\n      *\n      * @param id the identifier\n-     *\n      * @return the name of the meta-class\n      */\n     @Nonnull\n@@ -406,7 +395,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * Retrieves the {@link Vertex} corresponding to the provided {@code id}.\n      *\n      * @param id the {@link Id} of the element to find\n-     *\n      * @return an {@link Optional} containing the {@link Vertex}, or {@link Optional#empty()} if it doesn't exist\n      */\n     @Nonnull\n@@ -422,7 +410,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      * created.\n      *\n      * @param id the {@link Id} of the element to find, or create\n-     *\n      * @return the {@link Vertex}\n      */\n     @Nonnull\n",
+            "diff_size": 37
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/naturalize/3/AbstractBlueprintsBackend.java\nindex d2476682058..8f5994a5501 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/naturalize/3/AbstractBlueprintsBackend.java\n@@ -97,8 +97,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n      */\n     @Nonnull\n     protected final Converter<Id, Object> idConverter = Converter.from(\n-            IdConverters.withLong()::convert,\n-            o -> IdConverters.withLong().revert(Long.class.cast(o)));\n+            IdConverters.withLong()::convert, o -> IdConverters.withLong().revert(Long.class.cast(o)));\n \n     /**\n      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.\n@@ -445,4 +444,4 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n     public Graph getGraph() {\n         return graph;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "101",
+                    "severity": "warning",
+                    "message": "'lambda arguments' has incorrect indentation level 12, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "102",
+                    "severity": "warning",
+                    "message": "'o' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_three_grams/3/AbstractBlueprintsBackend.java\nindex d2476682058..9495132c99f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/errored/1/3/AbstractBlueprintsBackend.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/atlanmod-NeoEMF/styler_three_grams/3/AbstractBlueprintsBackend.java\n@@ -98,7 +98,11 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue\n     @Nonnull\n     protected final Converter<Id, Object> idConverter = Converter.from(\n             IdConverters.withLong()::convert,\n-            o -> IdConverters.withLong().revert(Long.class.cast(o)));\n+\n+    o -> IdConverters.withLong().revert(Long.class.cast(o\n+\n+            )\n+            ));\n \n     /**\n      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.\n",
+            "diff_size": 5
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "naturalize"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

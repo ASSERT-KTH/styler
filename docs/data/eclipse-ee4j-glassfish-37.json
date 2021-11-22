@@ -1,0 +1,102 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "37",
+    "information": {
+        "errors": [
+            {
+                "line": "108",
+                "column": "30",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "            corbaObj = CorbaUtils.remoteToCorba(orig, orb);\n            if (corbaObj == null) {\n                return null; // Cannot get CORBA obj; must be JRMP obj\n            }\n        }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "108",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "111",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/37/RemoteToCorbaToAttrs.java\nindex 32ce1302bd4..6fd43ff627c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/37/RemoteToCorbaToAttrs.java\n@@ -30,47 +30,49 @@ import org.glassfish.jndi.toolkit.corba.CorbaUtils;\n import org.omg.CORBA.ORB;\n \n /**\n-  * An DirStateFactory that returns an Attributes when\n-  * given an RMI-IIOP object.\n-  * This factory requires CORBA classes and RMI-IIOP for getting\n-  * the CORBA object of an Remote object.\n-  * <p>\n-  * Try to get the CORBA object for the Remote object (using RMI-IIOP),\n-  * and turn that CORBA object into attributes. Return null if the Remote\n-  * objectis a JRMP implementation or JRMP stub.\n-  * <p>\n-  * The LDAP schema for storing CORBA objects is:\n-  *<blockquote>\n-  * objectClass: top, corbaObject, corbaContainer\n-  * corbaIor: IOR of CORBA object\n-  *</blockquote>\n-  *\n-  * @author Rosanna Lee\n-  */\n+ * An DirStateFactory that returns an Attributes when\n+ * given an RMI-IIOP object.\n+ * This factory requires CORBA classes and RMI-IIOP for getting\n+ * the CORBA object of an Remote object.\n+ * <p>\n+ * Try to get the CORBA object for the Remote object (using RMI-IIOP),\n+ * and turn that CORBA object into attributes. Return null if the Remote\n+ * objectis a JRMP implementation or JRMP stub.\n+ * <p>\n+ * The LDAP schema for storing CORBA objects is:\n+ * <blockquote>\n+ * objectClass: top, corbaObject, corbaContainer\n+ * corbaIor: IOR of CORBA object\n+ * </blockquote>\n+ *\n+ * @author Rosanna Lee\n+ */\n \n public class RemoteToCorbaToAttrs implements DirStateFactory {\n     public RemoteToCorbaToAttrs() {\n     }\n \n     /**\n-      * Returns the attributes required for storing a CORBA object.\n-      * Uses the utility supplied by CorbaToAttrs.\n-      * @param orig A non-null Remote object.\n-      * @param name Ignored\n-      * @param ctx Ignored\n-      * @param env A possibly null environment. Used to get the ORB to use\n-      *   when getting the CORBA object for the Remote object using RMI-IIOP.\n-      * @param inAttrs The possibly null attributes included with the bind.\n-      * @return {null, attrs} where <tt>attrs</tt> is the union of\n-      * <tt>inAttrs</tt> and attributes that represent the CORBA object (of)\n-      * <tt>orig</tt>. null if <tt>orig</tt> cannot be turned into a\n-      * <tt>ObjectImpl</tt>, or if RMI-IIOP is not available.\n-      * @exception ConfigurationException If configuration problems encountered\n-      *   in getting <tt>orig</tt>'s CORBA object, such as RMI-IIOP not available.\n-      * @exception NamingException If some other error occurred.\n-      */\n+     * Returns the attributes required for storing a CORBA object.\n+     * Uses the utility supplied by CorbaToAttrs.\n+     *\n+     * @param orig    A non-null Remote object.\n+     * @param name    Ignored\n+     * @param ctx     Ignored\n+     * @param env     A possibly null environment. Used to get the ORB to use\n+     *                when getting the CORBA object for the Remote object using RMI-IIOP.\n+     * @param inAttrs The possibly null attributes included with the bind.\n+     * @return {null, attrs} where <tt>attrs</tt> is the union of\n+     * <tt>inAttrs</tt> and attributes that represent the CORBA object (of)\n+     * <tt>orig</tt>. null if <tt>orig</tt> cannot be turned into a\n+     * <tt>ObjectImpl</tt>, or if RMI-IIOP is not available.\n+     * @throws ConfigurationException If configuration problems encountered\n+     *                                in getting <tt>orig</tt>'s CORBA object, such as RMI-IIOP not available.\n+     * @throws NamingException        If some other error occurred.\n+     */\n     @Override\n-    public DirStateFactory.Result getStateToBind(Object orig, Name name, Context ctx, Hashtable env, Attributes inAttrs)\n+    public DirStateFactory.Result getStateToBind(Object orig, Name name, Context ctx, Hashtable env,\n+                                                 Attributes inAttrs)\n         throws NamingException {\n         if (orig instanceof Remote) {\n             try {\n@@ -85,9 +87,10 @@ public class RemoteToCorbaToAttrs implements DirStateFactory {\n \n \n     /**\n-      * Gets the connected IIOP stub for Remote object.\n-      */\n-    static DirStateFactory.Result remoteToCorbaToAttrs(Remote orig, Hashtable env, Attributes inAttrs)\n+     * Gets the connected IIOP stub for Remote object.\n+     */\n+    static DirStateFactory.Result remoteToCorbaToAttrs(Remote orig, Hashtable env,\n+                                                       Attributes inAttrs)\n         throws ClassNotFoundException, NamingException {\n         org.omg.CORBA.Object corbaObj;\n \n@@ -116,15 +119,17 @@ public class RemoteToCorbaToAttrs implements DirStateFactory {\n \n     /**\n      * Always returns null.\n+     *\n      * @param orig Ignored\n      * @param name Ignored\n-     * @param ctx Ignored\n-     * @param env Ignored\n+     * @param ctx  Ignored\n+     * @param env  Ignored\n      * @return null\n-     * @exception NamingException Not thrown.\n+     * @throws NamingException Not thrown.\n      */\n     @Override\n-    public Object getStateToBind(Object orig, Name name, Context ctx, Hashtable env) throws NamingException {\n+    public Object getStateToBind(Object orig, Name name, Context ctx, Hashtable env)\n+        throws NamingException {\n         // Cannot just return obj; needs to return Attributes\n         return null;\n     }\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "108",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/37/RemoteToCorbaToAttrs.java\nindex 32ce1302bd4..d727649d1cc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/37/RemoteToCorbaToAttrs.java\n@@ -145,5 +145,4 @@ public class RemoteToCorbaToAttrs implements DirStateFactory {\n     private static ORB getDefaultOrb(Hashtable env) {\n         return CorbaUtils.getOrb(null, -1, env);\n     }\n-}\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "108",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "110",
+                    "column": "14",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 13, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/37/RemoteToCorbaToAttrs.java\nindex 32ce1302bd4..66c83f097c8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/37/RemoteToCorbaToAttrs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/37/RemoteToCorbaToAttrs.java\n@@ -105,8 +105,9 @@ public class RemoteToCorbaToAttrs implements DirStateFactory {\n             // Convert Remote to CORBA using RMI/IIOP\n             corbaObj = CorbaUtils.remoteToCorba(orig, orb);\n             if (corbaObj == null) {\n-                return null; // Cannot get CORBA obj; must be JRMP obj\n-            }\n+                return null;\n+            // Cannot get CORBA obj; must be JRMP obj\n+             }\n         }\n \n         // Convert CORBA object to attributes\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

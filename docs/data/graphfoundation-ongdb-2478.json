@@ -1,0 +1,166 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2478",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "71",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "60",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "66",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2478/InstalledProtocolHandler.java\nindex dc562c063dd..bd2d99c452b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2478/InstalledProtocolHandler.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.net;\n \n import io.netty.channel.ChannelHandler;\n@@ -35,29 +36,27 @@ import org.neo4j.helpers.collection.Pair;\n @ChannelHandler.Sharable\n public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n {\n-    private ConcurrentMap<SocketAddress,ProtocolStack> installedProtocols = new ConcurrentHashMap<>();\n+  private ConcurrentMap<SocketAddress, ProtocolStack> installedProtocols = new ConcurrentHashMap<>();\n \n-    @Override\n-    public void userEventTriggered( ChannelHandlerContext ctx, Object evt ) throws Exception\n+  @Override\n+  public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception\n+  {\n+    if (evt instanceof ServerHandshakeFinishedEvent.Created)\n     {\n-        if ( evt instanceof ServerHandshakeFinishedEvent.Created )\n-        {\n-            ServerHandshakeFinishedEvent.Created created = (ServerHandshakeFinishedEvent.Created) evt;\n-            installedProtocols.put( created.advertisedSocketAddress, created.protocolStack );\n-        }\n-        else if ( evt instanceof ServerHandshakeFinishedEvent.Closed )\n-        {\n-            ServerHandshakeFinishedEvent.Closed closed = (ServerHandshakeFinishedEvent.Closed) evt;\n-            installedProtocols.remove( closed.advertisedSocketAddress );\n-        }\n-        else\n-        {\n-            super.userEventTriggered( ctx, evt );\n-        }\n-    }\n-\n-    public Stream<Pair<SocketAddress,ProtocolStack>> installedProtocols()\n+      ServerHandshakeFinishedEvent.Created created = (ServerHandshakeFinishedEvent.Created) evt;\n+      installedProtocols.put(created.advertisedSocketAddress, created.protocolStack);\n+    } else if (evt instanceof ServerHandshakeFinishedEvent.Closed)\n     {\n-        return installedProtocols.entrySet().stream().map( entry -> Pair.of( entry.getKey(), entry.getValue() ) );\n+      ServerHandshakeFinishedEvent.Closed closed = (ServerHandshakeFinishedEvent.Closed) evt;\n+      installedProtocols.remove(closed.advertisedSocketAddress);\n+    } else\n+    {\n+      super.userEventTriggered(ctx, evt);\n     }\n+  }\n+\n+  public Stream<Pair<SocketAddress, ProtocolStack>> installedProtocols()\n+  {\n+    return installedProtocols.entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue()));\n+  }\n }\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2478/InstalledProtocolHandler.java\nindex dc562c063dd..d81c086e1d1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2478/InstalledProtocolHandler.java\n@@ -60,4 +60,4 @@ public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n     {\n         return installedProtocols.entrySet().stream().map( entry -> Pair.of( entry.getKey(), entry.getValue() ) );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Annotation 'ChannelHandler' should be alone on line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/2478/InstalledProtocolHandler.java\nindex dc562c063dd..29a4ade1011 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2478/InstalledProtocolHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/2478/InstalledProtocolHandler.java\n@@ -22,21 +22,17 @@ package org.neo4j.causalclustering.net;\n import io.netty.channel.ChannelHandler;\n import io.netty.channel.ChannelHandlerContext;\n import io.netty.channel.ChannelInboundHandlerAdapter;\n-\n import java.util.concurrent.ConcurrentHashMap;\n import java.util.concurrent.ConcurrentMap;\n import java.util.stream.Stream;\n-\n import org.neo4j.causalclustering.protocol.handshake.ProtocolStack;\n import org.neo4j.causalclustering.protocol.handshake.ServerHandshakeFinishedEvent;\n import org.neo4j.helpers.SocketAddress;\n import org.neo4j.helpers.collection.Pair;\n \n-@ChannelHandler.Sharable\n-public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n+@ChannelHandler.Sharable public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n {\n     private ConcurrentMap<SocketAddress,ProtocolStack> installedProtocols = new ConcurrentHashMap<>();\n-\n     @Override\n     public void userEventTriggered( ChannelHandlerContext ctx, Object evt ) throws Exception\n     {\n@@ -45,7 +41,8 @@ public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n             ServerHandshakeFinishedEvent.Created created = (ServerHandshakeFinishedEvent.Created) evt;\n             installedProtocols.put( created.advertisedSocketAddress, created.protocolStack );\n         }\n-        else if ( evt instanceof ServerHandshakeFinishedEvent.Closed )\n+        else\n+        if ( evt instanceof ServerHandshakeFinishedEvent.Closed )\n         {\n             ServerHandshakeFinishedEvent.Closed closed = (ServerHandshakeFinishedEvent.Closed) evt;\n             installedProtocols.remove( closed.advertisedSocketAddress );\n@@ -60,4 +57,4 @@ public class InstalledProtocolHandler extends ChannelInboundHandlerAdapter\n     {\n         return installedProtocols.entrySet().stream().map( entry -> Pair.of( entry.getKey(), entry.getValue() ) );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

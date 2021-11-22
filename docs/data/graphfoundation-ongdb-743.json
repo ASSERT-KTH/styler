@@ -1,0 +1,139 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "743",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/743/UTF8Encoder.java\nindex a65af304b63..a00fa68d59a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/743/UTF8Encoder.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.bolt.v1.packstream.utf8;\n \n import java.nio.ByteBuffer;\n@@ -24,43 +25,42 @@ import java.nio.ByteBuffer;\n /**\n  * A non-thread-safe UTF8 encoding interface, delegates to near-zero GC overhead\n  * UTF8 implementations on HotSpot, falls back to stdlib encoder if on other JVM.\n- *\n+ * <p>\n  * This implementation solves a major GC bottleneck in that we don't have to\n  * allocate objects to encode most strings.\n- *\n+ * <p>\n  * We currently do \"bulk\" encoding, where the whole string is turned\n  * into UTF-8 before it gets returned. This is simply a limitation in\n  * PackStream currently in that we need to know the length of utf-8\n  * strings up-front, so we can't stream them out.\n- *\n+ * <p>\n  * This becomes an issue for very large strings, and should be remedied\n  * in Bolt V2 by introducing streaming options for Strings in the same\n  * manner we've discussed adding streaming lists.\n- *\n+ * <p>\n  * Once that is resolved, we could have a method here that took a\n  * WritableByteChannel or similar instead.\n  */\n public interface UTF8Encoder\n {\n-    /**\n-     * @return a ByteBuffer with the encoded string. This will be overwritten\n-     *         the next time you call this method, so use it or loose it!\n-     */\n-    ByteBuffer encode( String input );\n+  /**\n+   * @return a ByteBuffer with the encoded string. This will be overwritten\n+   * the next time you call this method, so use it or loose it!\n+   */\n+  ByteBuffer encode(String input);\n \n-    static UTF8Encoder fastestAvailableEncoder()\n+  static UTF8Encoder fastestAvailableEncoder()\n+  {\n+    try\n+    {\n+      return (UTF8Encoder) Class\n+          .forName(\"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\")\n+          .getConstructor()\n+          .newInstance();\n+    } catch (Throwable e)\n     {\n-        try\n-        {\n-            return (UTF8Encoder)Class\n-                    .forName(\"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\")\n-                    .getConstructor()\n-                    .newInstance();\n-        }\n-        catch ( Throwable e )\n-        {\n-            return new VanillaUTF8Encoder();\n-        }\n+      return new VanillaUTF8Encoder();\n     }\n+  }\n \n }\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/743/UTF8Encoder.java\nindex a65af304b63..398133b296a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/743/UTF8Encoder.java\n@@ -52,15 +52,11 @@ public interface UTF8Encoder\n     {\n         try\n         {\n-            return (UTF8Encoder)Class\n-                    .forName(\"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\")\n-                    .getConstructor()\n-                    .newInstance();\n-        }\n+            return (UTF8Encoder)Class.forName( \"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\").getConstructor().newInstance();\n+    }\n         catch ( Throwable e )\n         {\n             return new VanillaUTF8Encoder();\n         }\n     }\n-\n-}\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/743/UTF8Encoder.java\nindex a65af304b63..7f524903906 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/743/UTF8Encoder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/743/UTF8Encoder.java\n@@ -40,27 +40,24 @@ import java.nio.ByteBuffer;\n  * Once that is resolved, we could have a method here that took a\n  * WritableByteChannel or similar instead.\n  */\n+\n public interface UTF8Encoder\n {\n     /**\n      * @return a ByteBuffer with the encoded string. This will be overwritten\n      *         the next time you call this method, so use it or loose it!\n      */\n-    ByteBuffer encode( String input );\n-\n-    static UTF8Encoder fastestAvailableEncoder()\n-    {\n-        try\n-        {\n-            return (UTF8Encoder)Class\n-                    .forName(\"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\")\n-                    .getConstructor()\n-                    .newInstance();\n-        }\n-        catch ( Throwable e )\n-        {\n-            return new VanillaUTF8Encoder();\n-        }\n-    }\n+    ByteBuffer encode( String input )\n+    ; static UTF8Encoder fastestAvailableEncoder()\n+      {\n+          try\n+          {\n+              return (UTF8Encoder) Class.forName( \"org.neo4j.bolt.v1.packstream.utf8.SunMiscUTF8Encoder\" ).getConstructor().newInstance();\n+          }\n+          catch ( Throwable e )\n+          {\n+              return new VanillaUTF8Encoder();\n+          }\n+      }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

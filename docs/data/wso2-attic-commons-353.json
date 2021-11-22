@@ -1,0 +1,69 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "353",
+    "information": {
+        "errors": [
+            {
+                "line": "61",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 133).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                Element content = DOMUtils.getFirstChildElement(part);\n                if (content != null) {\n                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n                        setOptions(options, content);\n                        msg.removeChild(part);\n                        break;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/353/AuthenticationHelper.java\nindex 8d8fbf96682..1a8822a3308 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/353/AuthenticationHelper.java\n@@ -58,7 +58,8 @@ public class AuthenticationHelper {\n             while (part != null) {\n                 Element content = DOMUtils.getFirstChildElement(part);\n                 if (content != null) {\n-                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n+                    if (AUTHENTICATION_NS.equals(content.\n+                        getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n                         setOptions(options, content);\n                         msg.removeChild(part);\n                         break;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/353/AuthenticationHelper.java\nindex 8d8fbf96682..eb13fed3b07 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/353/AuthenticationHelper.java\n@@ -35,68 +35,69 @@ import org.w3c.dom.Element;\n  */\n public class AuthenticationHelper {\n \n-    private static final Log __log = LogFactory.getLog(AuthenticationHelper.class);\n+  private static final Log __log = LogFactory.getLog(AuthenticationHelper.class);\n \n-    private static final String AUTHENTICATE_ELEMENT = \"authenticate\";\n+  private static final String AUTHENTICATE_ELEMENT = \"authenticate\";\n \n-    private static final String AUTHENTICATION_NS = \"urn:ode.apache.org/authentication\";\n+  private static final String AUTHENTICATION_NS = \"urn:ode.apache.org/authentication\";\n \n-    private static final String USERNAME_ELEMENT = \"username\";\n+  private static final String USERNAME_ELEMENT = \"username\";\n \n-    private static final String PASSWORD_ELEMENT = \"password\";\n+  private static final String PASSWORD_ELEMENT = \"password\";\n \n-    private static final String DOMAIN_ELEMENT = \"domain\";\n+  private static final String DOMAIN_ELEMENT = \"domain\";\n \n-    private static final String REALM_ELEMENT = \"realm\";\n+  private static final String REALM_ELEMENT = \"realm\";\n \n-    private static final String TOKEN_ELEMENT = \"token\";\n+  private static final String TOKEN_ELEMENT = \"token\";\n \n-    public static void setHttpAuthentication(PartnerRoleMessageExchange odeMex, Options options) {\n-        Element msg = odeMex.getRequest().getMessage();\n-        if (msg != null) {\n-            Element part = DOMUtils.getFirstChildElement(msg);\n-            while (part != null) {\n-                Element content = DOMUtils.getFirstChildElement(part);\n-                if (content != null) {\n-                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n-                        setOptions(options, content);\n-                        msg.removeChild(part);\n-                        break;\n-                    }\n-                }\n-                part = DOMUtils.getNextSiblingElement(part);\n-            }\n+  public static void setHttpAuthentication(PartnerRoleMessageExchange odeMex, Options options) {\n+    Element msg = odeMex.getRequest().getMessage();\n+    if (msg != null) {\n+      Element part = DOMUtils.getFirstChildElement(msg);\n+      while (part != null) {\n+        Element content = DOMUtils.getFirstChildElement(part);\n+        if (content != null) {\n+          if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) &&\n+            AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n+            setOptions(options, content);\n+            msg.removeChild(part);\n+            break;\n+          }\n         }\n+        part = DOMUtils.getNextSiblingElement(part);\n+      }\n     }\n+  }\n \n-    protected static void setOptions(Options options, Element auth) {\n-        String username = null;\n-        String password = null;\n-        String domain = null;\n-        String realm = null;\n-        Element e = DOMUtils.getFirstChildElement(auth);\n-        while (e != null) {\n-            if (USERNAME_ELEMENT.equals(e.getLocalName())) {\n-                username = DOMUtils.getTextContent(e);\n-            }\n-            if (PASSWORD_ELEMENT.equals(e.getLocalName())) {\n-                password = DOMUtils.getTextContent(e);\n-            }\n-            if (DOMAIN_ELEMENT.equals(e.getLocalName())) {\n-                domain = DOMUtils.getTextContent(e);\n-            }\n-            if (REALM_ELEMENT.equals(e.getLocalName())) {\n-                realm = DOMUtils.getTextContent(e);\n-            }\n-            e = DOMUtils.getNextSiblingElement(e);\n-        }\n-\n-        HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();\n-        authenticator.setUsername(username);\n-        authenticator.setPassword(password);\n-        authenticator.setDomain(domain);\n-        authenticator.setRealm(realm);\n-        options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);\n+  protected static void setOptions(Options options, Element auth) {\n+    String username = null;\n+    String password = null;\n+    String domain = null;\n+    String realm = null;\n+    Element e = DOMUtils.getFirstChildElement(auth);\n+    while (e != null) {\n+      if (USERNAME_ELEMENT.equals(e.getLocalName())) {\n+        username = DOMUtils.getTextContent(e);\n+      }\n+      if (PASSWORD_ELEMENT.equals(e.getLocalName())) {\n+        password = DOMUtils.getTextContent(e);\n+      }\n+      if (DOMAIN_ELEMENT.equals(e.getLocalName())) {\n+        domain = DOMUtils.getTextContent(e);\n+      }\n+      if (REALM_ELEMENT.equals(e.getLocalName())) {\n+        realm = DOMUtils.getTextContent(e);\n+      }\n+      e = DOMUtils.getNextSiblingElement(e);\n     }\n \n+    HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();\n+    authenticator.setUsername(username);\n+    authenticator.setPassword(password);\n+    authenticator.setDomain(domain);\n+    authenticator.setRealm(realm);\n+    options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);\n+  }\n+\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 133).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/353/AuthenticationHelper.java\nindex 8d8fbf96682..2bcfdb19446 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/353/AuthenticationHelper.java\n@@ -99,4 +99,4 @@ public class AuthenticationHelper {\n         options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/353/AuthenticationHelper.java\nindex 8d8fbf96682..1a8822a3308 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/353/AuthenticationHelper.java\n@@ -58,7 +58,8 @@ public class AuthenticationHelper {\n             while (part != null) {\n                 Element content = DOMUtils.getFirstChildElement(part);\n                 if (content != null) {\n-                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n+                    if (AUTHENTICATION_NS.equals(content.\n+                        getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n                         setOptions(options, content);\n                         msg.removeChild(part);\n                         break;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/353/AuthenticationHelper.java\nindex 8d8fbf96682..0e8ceed7faa 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/353/AuthenticationHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/353/AuthenticationHelper.java\n@@ -58,8 +58,9 @@ public class AuthenticationHelper {\n             while (part != null) {\n                 Element content = DOMUtils.getFirstChildElement(part);\n                 if (content != null) {\n-                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI()) && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n-                        setOptions(options, content);\n+                    if (AUTHENTICATION_NS.equals(content.getNamespaceURI())\n+                                        && AUTHENTICATE_ELEMENT.equals(content.getLocalName())) {\n+                         setOptions(options, content);\n                         msg.removeChild(part);\n                         break;\n                     }\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

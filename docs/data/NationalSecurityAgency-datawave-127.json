@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "127",
+    "information": {
+        "errors": [
+            {
+                "line": "33",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.clientImpl.Namespaces;\nimport org.apache.accumulo.core.clientImpl.Tables;\nimport org.apache.accumulo.start.classloader.vfs.AccumuloVFSClassLoader;\nimport org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/127/InMemoryNamespaceOperations.java\nindex 063792be7ec..e7f9204d23e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/127/InMemoryNamespaceOperations.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package datawave.accumulo.inmemory;\n \n import java.util.HashMap;\n@@ -35,100 +36,108 @@ import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n \n class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n-    \n-    private static final Logger log = LoggerFactory.getLogger(InMemoryNamespaceOperations.class);\n-    \n-    final private InMemoryAccumulo acu;\n-    final private String username;\n-    \n-    InMemoryNamespaceOperations(InMemoryAccumulo acu, String username) {\n-        this.acu = acu;\n-        this.username = username;\n-    }\n-    \n-    @Override\n-    public SortedSet<String> list() {\n-        return new TreeSet<>(acu.namespaces.keySet());\n-    }\n-    \n-    @Override\n-    public boolean exists(String namespace) {\n-        return acu.namespaces.containsKey(namespace);\n+\n+  private static final Logger log = LoggerFactory.getLogger(InMemoryNamespaceOperations.class);\n+\n+  final private InMemoryAccumulo acu;\n+  final private String username;\n+\n+  InMemoryNamespaceOperations(InMemoryAccumulo acu, String username) {\n+    this.acu = acu;\n+    this.username = username;\n+  }\n+\n+  @Override\n+  public SortedSet<String> list() {\n+    return new TreeSet<>(acu.namespaces.keySet());\n+  }\n+\n+  @Override\n+  public boolean exists(String namespace) {\n+    return acu.namespaces.containsKey(namespace);\n+  }\n+\n+  @Override\n+  public void create(String namespace) throws AccumuloException, AccumuloSecurityException, NamespaceExistsException {\n+    if (!namespace.matches(Namespaces.VALID_NAME_REGEX)) {\n+      throw new IllegalArgumentException();\n     }\n-    \n-    @Override\n-    public void create(String namespace) throws AccumuloException, AccumuloSecurityException, NamespaceExistsException {\n-        if (!namespace.matches(Namespaces.VALID_NAME_REGEX))\n-            throw new IllegalArgumentException();\n-        \n-        if (exists(namespace))\n-            throw new NamespaceExistsException(namespace, namespace, \"\");\n-        else\n-            acu.createNamespace(username, namespace);\n+\n+    if (exists(namespace)) {\n+      throw new NamespaceExistsException(namespace, namespace, \"\");\n+    } else {\n+      acu.createNamespace(username, namespace);\n     }\n-    \n-    @Override\n-    public void delete(String namespace) throws AccumuloException, AccumuloSecurityException, NamespaceNotFoundException, NamespaceNotEmptyException {\n-        if (acu.namespaces.get(namespace).getTables(acu).size() > 0) {\n-            throw new NamespaceNotEmptyException(null, namespace, null);\n-        }\n-        acu.namespaces.remove(namespace);\n+  }\n+\n+  @Override\n+  public void delete(String namespace)\n+      throws AccumuloException, AccumuloSecurityException, NamespaceNotFoundException, NamespaceNotEmptyException {\n+    if (acu.namespaces.get(namespace).getTables(acu).size() > 0) {\n+      throw new NamespaceNotEmptyException(null, namespace, null);\n     }\n-    \n-    @Override\n-    public void rename(String oldNamespaceName, String newNamespaceName) throws AccumuloSecurityException, NamespaceNotFoundException, AccumuloException,\n-                    NamespaceExistsException {\n-        if (!exists(oldNamespaceName))\n-            throw new NamespaceNotFoundException(oldNamespaceName, oldNamespaceName, \"\");\n-        if (exists(newNamespaceName))\n-            throw new NamespaceExistsException(newNamespaceName, newNamespaceName, \"\");\n-        \n-        InMemoryNamespace n = acu.namespaces.get(oldNamespaceName);\n-        for (String t : n.getTables(acu)) {\n-            String tt = newNamespaceName + \".\" + Tables.qualify(t).getSecond();\n-            acu.tables.put(tt, acu.tables.remove(t));\n-        }\n-        acu.namespaces.put(newNamespaceName, acu.namespaces.remove(oldNamespaceName));\n+    acu.namespaces.remove(namespace);\n+  }\n+\n+  @Override\n+  public void rename(String oldNamespaceName, String newNamespaceName)\n+      throws AccumuloSecurityException, NamespaceNotFoundException, AccumuloException,\n+      NamespaceExistsException {\n+    if (!exists(oldNamespaceName)) {\n+      throw new NamespaceNotFoundException(oldNamespaceName, oldNamespaceName, \"\");\n     }\n-    \n-    @Override\n-    public void setProperty(String namespace, String property, String value) throws AccumuloException, AccumuloSecurityException {\n-        acu.namespaces.get(namespace).settings.put(property, value);\n+    if (exists(newNamespaceName)) {\n+      throw new NamespaceExistsException(newNamespaceName, newNamespaceName, \"\");\n     }\n-    \n-    @Override\n-    public void removeProperty(String namespace, String property) throws AccumuloException, AccumuloSecurityException {\n-        acu.namespaces.get(namespace).settings.remove(property);\n+\n+    InMemoryNamespace n = acu.namespaces.get(oldNamespaceName);\n+    for (String t : n.getTables(acu)) {\n+      String tt = newNamespaceName + \".\" + Tables.qualify(t).getSecond();\n+      acu.tables.put(tt, acu.tables.remove(t));\n     }\n-    \n-    @Override\n-    public Iterable<Entry<String,String>> getProperties(String namespace) throws NamespaceNotFoundException {\n-        if (!exists(namespace)) {\n-            throw new NamespaceNotFoundException(namespace, namespace, \"\");\n-        }\n-        \n-        return acu.namespaces.get(namespace).settings.entrySet();\n+    acu.namespaces.put(newNamespaceName, acu.namespaces.remove(oldNamespaceName));\n+  }\n+\n+  @Override\n+  public void setProperty(String namespace, String property, String value)\n+      throws AccumuloException, AccumuloSecurityException {\n+    acu.namespaces.get(namespace).settings.put(property, value);\n+  }\n+\n+  @Override\n+  public void removeProperty(String namespace, String property) throws AccumuloException, AccumuloSecurityException {\n+    acu.namespaces.get(namespace).settings.remove(property);\n+  }\n+\n+  @Override\n+  public Iterable<Entry<String, String>> getProperties(String namespace) throws NamespaceNotFoundException {\n+    if (!exists(namespace)) {\n+      throw new NamespaceNotFoundException(namespace, namespace, \"\");\n     }\n-    \n-    @Override\n-    public Map<String,String> namespaceIdMap() {\n-        Map<String,String> result = new HashMap<>();\n-        for (String table : acu.tables.keySet()) {\n-            result.put(table, table);\n-        }\n-        return result;\n+\n+    return acu.namespaces.get(namespace).settings.entrySet();\n+  }\n+\n+  @Override\n+  public Map<String, String> namespaceIdMap() {\n+    Map<String, String> result = new HashMap<>();\n+    for (String table : acu.tables.keySet()) {\n+      result.put(table, table);\n     }\n-    \n-    @Override\n-    public boolean testClassLoad(String namespace, String className, String asTypeName) throws AccumuloException, AccumuloSecurityException,\n-                    NamespaceNotFoundException {\n-        \n-        try {\n-            AccumuloVFSClassLoader.loadClass(className, Class.forName(asTypeName));\n-        } catch (ClassNotFoundException e) {\n-            log.warn(\"Could not load class '\" + className + \"' with type name '\" + asTypeName + \"' in testClassLoad()\", e);\n-            return false;\n-        }\n-        return true;\n+    return result;\n+  }\n+\n+  @Override\n+  public boolean testClassLoad(String namespace, String className, String asTypeName)\n+      throws AccumuloException, AccumuloSecurityException,\n+      NamespaceNotFoundException {\n+\n+    try {\n+      AccumuloVFSClassLoader.loadClass(className, Class.forName(asTypeName));\n+    } catch (ClassNotFoundException e) {\n+      log.warn(\"Could not load class '\" + className + \"' with type name '\" + asTypeName + \"' in testClassLoad()\", e);\n+      return false;\n     }\n+    return true;\n+  }\n }\n",
+            "diff_size": 109
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/127/InMemoryNamespaceOperations.java\nindex 063792be7ec..108cef540ad 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/127/InMemoryNamespaceOperations.java\n@@ -131,4 +131,4 @@ class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n         }\n         return true;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/127/InMemoryNamespaceOperations.java\nindex 063792be7ec..7dca0985c4f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/127/InMemoryNamespaceOperations.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/127/InMemoryNamespaceOperations.java\n@@ -21,7 +21,6 @@ import java.util.Map;\n import java.util.Map.Entry;\n import java.util.SortedSet;\n import java.util.TreeSet;\n-\n import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.NamespaceExistsException;\n@@ -35,38 +34,37 @@ import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n \n class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n-    \n     private static final Logger log = LoggerFactory.getLogger(InMemoryNamespaceOperations.class);\n-    \n+\n     final private InMemoryAccumulo acu;\n+\n     final private String username;\n-    \n+\n     InMemoryNamespaceOperations(InMemoryAccumulo acu, String username) {\n         this.acu = acu;\n         this.username = username;\n     }\n-    \n+\n     @Override\n     public SortedSet<String> list() {\n         return new TreeSet<>(acu.namespaces.keySet());\n     }\n-    \n+\n     @Override\n     public boolean exists(String namespace) {\n         return acu.namespaces.containsKey(namespace);\n     }\n-    \n+\n     @Override\n     public void create(String namespace) throws AccumuloException, AccumuloSecurityException, NamespaceExistsException {\n         if (!namespace.matches(Namespaces.VALID_NAME_REGEX))\n             throw new IllegalArgumentException();\n-        \n         if (exists(namespace))\n             throw new NamespaceExistsException(namespace, namespace, \"\");\n         else\n             acu.createNamespace(username, namespace);\n     }\n-    \n+\n     @Override\n     public void delete(String namespace) throws AccumuloException, AccumuloSecurityException, NamespaceNotFoundException, NamespaceNotEmptyException {\n         if (acu.namespaces.get(namespace).getTables(acu).size() > 0) {\n@@ -74,15 +72,14 @@ class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n         }\n         acu.namespaces.remove(namespace);\n     }\n-    \n+\n     @Override\n-    public void rename(String oldNamespaceName, String newNamespaceName) throws AccumuloSecurityException, NamespaceNotFoundException, AccumuloException,\n-                    NamespaceExistsException {\n+    public void rename(String oldNamespaceName, String newNamespaceName) throws AccumuloSecurityException, NamespaceNotFoundException, AccumuloException, NamespaceExistsException {\n         if (!exists(oldNamespaceName))\n             throw new NamespaceNotFoundException(oldNamespaceName, oldNamespaceName, \"\");\n         if (exists(newNamespaceName))\n             throw new NamespaceExistsException(newNamespaceName, newNamespaceName, \"\");\n-        \n+\n         InMemoryNamespace n = acu.namespaces.get(oldNamespaceName);\n         for (String t : n.getTables(acu)) {\n             String tt = newNamespaceName + \".\" + Tables.qualify(t).getSecond();\n@@ -90,26 +87,27 @@ class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n         }\n         acu.namespaces.put(newNamespaceName, acu.namespaces.remove(oldNamespaceName));\n     }\n-    \n+\n     @Override\n-    public void setProperty(String namespace, String property, String value) throws AccumuloException, AccumuloSecurityException {\n+    public void setProperty(String namespace, String property, String value) throws AccumuloException,\n+        AccumuloSecurityException {\n         acu.namespaces.get(namespace).settings.put(property, value);\n     }\n-    \n+\n     @Override\n-    public void removeProperty(String namespace, String property) throws AccumuloException, AccumuloSecurityException {\n+    public void removeProperty(String namespace, String property) throws AccumuloException,\n+        AccumuloSecurityException {\n         acu.namespaces.get(namespace).settings.remove(property);\n     }\n-    \n+\n     @Override\n     public Iterable<Entry<String,String>> getProperties(String namespace) throws NamespaceNotFoundException {\n         if (!exists(namespace)) {\n             throw new NamespaceNotFoundException(namespace, namespace, \"\");\n         }\n-        \n         return acu.namespaces.get(namespace).settings.entrySet();\n     }\n-    \n+\n     @Override\n     public Map<String,String> namespaceIdMap() {\n         Map<String,String> result = new HashMap<>();\n@@ -118,11 +116,9 @@ class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n         }\n         return result;\n     }\n-    \n+\n     @Override\n-    public boolean testClassLoad(String namespace, String className, String asTypeName) throws AccumuloException, AccumuloSecurityException,\n-                    NamespaceNotFoundException {\n-        \n+    public boolean testClassLoad(String namespace, String className, String asTypeName) throws AccumuloException, AccumuloSecurityException, NamespaceNotFoundException {\n         try {\n             AccumuloVFSClassLoader.loadClass(className, Class.forName(asTypeName));\n         } catch (ClassNotFoundException e) {\n@@ -131,4 +127,4 @@ class InMemoryNamespaceOperations extends NamespaceOperationsHelper {\n         }\n         return true;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 28
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

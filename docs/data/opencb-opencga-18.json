@@ -1,0 +1,76 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "18",
+    "information": {
+        "errors": [
+            {
+                "line": "130",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 142).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n                URI variantsFileUri = StringUtils.isEmpty(variantsFile) ? null : UriUtils.createUri(variantsFile);\n                variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n            }\n        });\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/18/VariantExportStorageOperation.java\nindex 1f411c6bd00..07dae6019ee 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/18/VariantExportStorageOperation.java\n@@ -127,7 +127,7 @@ public class VariantExportStorageOperation extends OpenCgaAnalysis {\n                         new CatalogVariantMetadataFactory(catalogManager, variantStorageEngine.getDBAdaptor(), sessionId);\n \n                 URI variantsFileUri = StringUtils.isEmpty(variantsFile) ? null : UriUtils.createUri(variantsFile);\n-                variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n+        variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n             }\n         });\n     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/18/VariantExportStorageOperation.java\nindex 1f411c6bd00..9bcd2e3a402 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/18/VariantExportStorageOperation.java\n@@ -46,104 +46,104 @@ import java.util.List;\n @Analysis(id = \"variant-export\", type = Analysis.AnalysisType.VARIANT)\n public class VariantExportStorageOperation extends OpenCgaAnalysis {\n \n-    private Query query;\n-    private VariantWriterFactory.VariantOutputFormat outputFormat;\n-    private String variantsFile;\n-    private String outputFileStr;\n-\n-    private DataStore dataStore;\n-    private URI outputFile;\n-\n-    public VariantExportStorageOperation setQuery(Query query) {\n-        this.query = query;\n-        return this;\n-    }\n-\n-    public VariantExportStorageOperation setOutputFormat(VariantWriterFactory.VariantOutputFormat outputFormat) {\n-        this.outputFormat = outputFormat;\n-        return this;\n-    }\n-\n-    public VariantExportStorageOperation setVariantsFile(String variantsFile) {\n-        this.variantsFile = variantsFile;\n-        return this;\n-    }\n-\n-    public VariantExportStorageOperation setOutputFile(String outputFile) {\n-        this.outputFileStr = outputFile;\n-        return this;\n-    }\n-\n-    @Override\n-    protected void check() throws Exception {\n-        super.check();\n-        VariantCatalogQueryUtils catalogUtils = new VariantCatalogQueryUtils(catalogManager);\n-        String study = catalogUtils.getAnyStudy(query, sessionId);\n-        List<String> studies = catalogUtils.getStudies(query, sessionId);\n-        dataStore = variantStorageManager.getDataStore(study, sessionId);\n-\n-        if (!VariantWriterFactory.isStandardOutput(outputFileStr)) {\n-            URI outdirUri;\n-            try {\n-                outdirUri = UriUtils.createUri(outputFileStr);\n-            } catch (URISyntaxException e) {\n-                throw new IllegalArgumentException(e);\n-            }\n-            if (StringUtils.isEmpty(outdirUri.getScheme()) || outdirUri.getScheme().equals(\"file\")) {\n-                String outputFileName;\n-                java.io.File file = Paths.get(outdirUri).toFile();\n-                if (!file.exists() || !file.isDirectory()) {\n-                    outputFileName = outdirUri.resolve(\".\").relativize(outdirUri).toString();\n-                    outdirUri = outdirUri.resolve(\".\");\n-                } else {\n-                    try {\n-                        outdirUri = UriUtils.createDirectoryUri(outputFileStr);\n-                    } catch (URISyntaxException e) {\n-                        throw new IllegalArgumentException(e);\n-                    }\n-                    List<Region> regions = Region.parseRegions(query.getString(VariantQueryParam.REGION.key()));\n-                    outputFileName = buildOutputFileName(studies, regions);\n-                }\n-                outputFile = outdirUri.resolve(outputFileName);\n-            } else {\n-                outputFile = outdirUri;\n-            }\n+  private Query query;\n+  private VariantWriterFactory.VariantOutputFormat outputFormat;\n+  private String variantsFile;\n+  private String outputFileStr;\n+\n+  private DataStore dataStore;\n+  private URI outputFile;\n+\n+  public VariantExportStorageOperation setQuery(Query query) {\n+    this.query = query;\n+    return this;\n+  }\n+\n+  public VariantExportStorageOperation setOutputFormat(VariantWriterFactory.VariantOutputFormat outputFormat) {\n+    this.outputFormat = outputFormat;\n+    return this;\n+  }\n+\n+  public VariantExportStorageOperation setVariantsFile(String variantsFile) {\n+    this.variantsFile = variantsFile;\n+    return this;\n+  }\n+\n+  public VariantExportStorageOperation setOutputFile(String outputFile) {\n+    this.outputFileStr = outputFile;\n+    return this;\n+  }\n+\n+  @Override\n+  protected void check() throws Exception {\n+    super.check();\n+    VariantCatalogQueryUtils catalogUtils = new VariantCatalogQueryUtils(catalogManager);\n+    String study = catalogUtils.getAnyStudy(query, sessionId);\n+    List<String> studies = catalogUtils.getStudies(query, sessionId);\n+    dataStore = variantStorageManager.getDataStore(study, sessionId);\n+\n+    if (!VariantWriterFactory.isStandardOutput(outputFileStr)) {\n+      URI outdirUri;\n+      try {\n+        outdirUri = UriUtils.createUri(outputFileStr);\n+      } catch (URISyntaxException e) {\n+        throw new IllegalArgumentException(e);\n+      }\n+      if (StringUtils.isEmpty(outdirUri.getScheme()) || outdirUri.getScheme().equals(\"file\")) {\n+        String outputFileName;\n+        java.io.File file = Paths.get(outdirUri).toFile();\n+        if (!file.exists() || !file.isDirectory()) {\n+          outputFileName = outdirUri.resolve(\".\").relativize(outdirUri).toString();\n+          outdirUri = outdirUri.resolve(\".\");\n         } else {\n-            outputFile = null;\n+          try {\n+            outdirUri = UriUtils.createDirectoryUri(outputFileStr);\n+          } catch (URISyntaxException e) {\n+            throw new IllegalArgumentException(e);\n+          }\n+          List<Region> regions = Region.parseRegions(query.getString(VariantQueryParam.REGION.key()));\n+          outputFileName = buildOutputFileName(studies, regions);\n         }\n-\n-        params.putIfNotNull(\"query\", query);\n-        params.putIfNotNull(\"outputFormat\", outputFormat);\n-        params.putIfNotNull(\"variantsFile\", variantsFile);\n-        params.putIfNotNull(\"outputFile\", outputFile);\n-        params.putIfNotNull(\"standardOutput\", VariantWriterFactory.isStandardOutput(outputFileStr));\n-    }\n-\n-    @Override\n-    protected void run() throws Exception {\n-        step(() -> {\n-            try (VariantStorageEngine variantStorageEngine = getVariantStorageEngine(dataStore)) {\n-                VariantMetadataFactory metadataExporter =\n-                        new CatalogVariantMetadataFactory(catalogManager, variantStorageEngine.getDBAdaptor(), sessionId);\n-\n-                URI variantsFileUri = StringUtils.isEmpty(variantsFile) ? null : UriUtils.createUri(variantsFile);\n-                variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n-            }\n-        });\n+        outputFile = outdirUri.resolve(outputFileName);\n+      } else {\n+        outputFile = outdirUri;\n+      }\n+    } else {\n+      outputFile = null;\n     }\n \n-    private VariantStorageEngine getVariantStorageEngine(DataStore dataStore) throws StorageEngineException {\n-        return StorageEngineFactory.get(variantStorageManager.getStorageConfiguration())\n-                .getVariantStorageEngine(dataStore.getStorageEngine(), dataStore.getDbName());\n-    }\n-\n-    private String buildOutputFileName(List<String> studyNames, List<Region> regions) {\n-        String studies = String.join(\"_\", studyNames);\n-        if (regions == null || regions.size() != 1) {\n-            return studies + \".export\";\n-        } else {\n-            return studies + '.' + regions.get(0).toString() + \".export\";\n-        }\n+    params.putIfNotNull(\"query\", query);\n+    params.putIfNotNull(\"outputFormat\", outputFormat);\n+    params.putIfNotNull(\"variantsFile\", variantsFile);\n+    params.putIfNotNull(\"outputFile\", outputFile);\n+    params.putIfNotNull(\"standardOutput\", VariantWriterFactory.isStandardOutput(outputFileStr));\n+  }\n+\n+  @Override\n+  protected void run() throws Exception {\n+    step(() -> {\n+      try (VariantStorageEngine variantStorageEngine = getVariantStorageEngine(dataStore)) {\n+        VariantMetadataFactory metadataExporter =\n+            new CatalogVariantMetadataFactory(catalogManager, variantStorageEngine.getDBAdaptor(), sessionId);\n+\n+        URI variantsFileUri = StringUtils.isEmpty(variantsFile) ? null : UriUtils.createUri(variantsFile);\n+        variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n+      }\n+    });\n+  }\n+\n+  private VariantStorageEngine getVariantStorageEngine(DataStore dataStore) throws StorageEngineException {\n+    return StorageEngineFactory.get(variantStorageManager.getStorageConfiguration())\n+        .getVariantStorageEngine(dataStore.getStorageEngine(), dataStore.getDbName());\n+  }\n+\n+  private String buildOutputFileName(List<String> studyNames, List<Region> regions) {\n+    String studies = String.join(\"_\", studyNames);\n+    if (regions == null || regions.size() != 1) {\n+      return studies + \".export\";\n+    } else {\n+      return studies + '.' + regions.get(0).toString() + \".export\";\n     }\n+  }\n \n }\n",
+            "diff_size": 120
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "130",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 142).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/18/VariantExportStorageOperation.java\nindex 1f411c6bd00..807933041be 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/18/VariantExportStorageOperation.java\n@@ -146,4 +146,4 @@ public class VariantExportStorageOperation extends OpenCgaAnalysis {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/18/VariantExportStorageOperation.java\nindex 1f411c6bd00..07dae6019ee 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/18/VariantExportStorageOperation.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/18/VariantExportStorageOperation.java\n@@ -127,7 +127,7 @@ public class VariantExportStorageOperation extends OpenCgaAnalysis {\n                         new CatalogVariantMetadataFactory(catalogManager, variantStorageEngine.getDBAdaptor(), sessionId);\n \n                 URI variantsFileUri = StringUtils.isEmpty(variantsFile) ? null : UriUtils.createUri(variantsFile);\n-                variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n+        variantStorageEngine.exportData(outputFile, outputFormat, variantsFileUri, query, new QueryOptions(params), metadataExporter);\n             }\n         });\n     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "130",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 142).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

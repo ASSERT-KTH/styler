@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "242",
+    "information": {
+        "errors": [
+            {
+                "line": "206",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 127).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        {\n          //          ClassLoader pluginLoader =\n          //            element.getDeclaringExtension().getDeclaringPluginDescriptor().getPlugin().getClass().getClassLoader();\n          //\t\t\t\tmodified to resolve certain situations where the plugin has not been initialized\n\n          Bundle pluginBundle = Platform.getBundle(element.getDeclaringExtension().getContributor().getName());",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "206",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "186",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/242/ValidateWSDLPlugin.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/242/ValidateWSDLPlugin.java\nindex dfcd1cdf159..6bb6006ff57 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/242/ValidateWSDLPlugin.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/242/ValidateWSDLPlugin.java\n@@ -4,7 +4,7 @@\n  * are made available under the terms of the Eclipse Public License v1.0\n  * which accompanies this distribution, and is available at\n  * http://www.eclipse.org/legal/epl-v10.html\n- * \n+ *\n  * Contributors:\n  *     IBM Corporation - initial API and implementation\n  *******************************************************************************/\n@@ -30,8 +30,7 @@ import org.osgi.framework.BundleContext;\n /**\n  * The main plugin class required for eclipse.\n  */\n-public class ValidateWSDLPlugin extends Plugin\n-{\n+public class ValidateWSDLPlugin extends Plugin {\n   protected final String PROPERTIES_FILE = \"validatewsdlui\";\n   protected static ValidateWSDLPlugin instance;\n   protected ResourceBundle resourcebundle = null;\n@@ -40,21 +39,19 @@ public class ValidateWSDLPlugin extends Plugin\n   /**\n    * Constructor.\n    */\n-  public ValidateWSDLPlugin()\n-  {\n+  public ValidateWSDLPlugin() {\n     super();\n   }\n \n   /* (non-Javadoc)\n    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)\n    */\n-  public void start(BundleContext context) throws Exception\n-  {\n+  public void start(BundleContext context) throws Exception {\n     super.start(context);\n     instance = this;\n     wsdlValidatorResourceBundle = ResourceBundle.getBundle(Constants.WSDL_VALIDATOR_PROPERTIES_FILE);\n     resourcebundle = ResourceBundle.getBundle(PROPERTIES_FILE);\n-    \n+\n     LoggerFactory.getInstance().setLogger(new EclipseLogger());\n \n     new WSDLValidatorPluginRegistryReader(\n@@ -66,74 +63,66 @@ public class ValidateWSDLPlugin extends Plugin\n     // register any WSDL 1.1 validators defined\n     new WSDL11ValidatorPluginRegistryReader(\"wsdl11validator\", \"validator\").readRegistry();\n   }\n+\n   /* (non-Javadoc)\n    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)\n    */\n-  public void stop(BundleContext context) throws Exception\n-  {\n+  public void stop(BundleContext context) throws Exception {\n     super.stop(context);\n     XMLCatalog.reset();\n   }\n-  \n+\n   /**\n    * Return the instance of this plugin object.\n-   * \n+   *\n    * @return the instance of this plugin object\n    */\n-  public static ValidateWSDLPlugin getInstance()\n-  {\n+  public static ValidateWSDLPlugin getInstance() {\n     return instance;\n   }\n \n   /**\n    * Get the install URL of this plugin.\n-   * \n+   *\n    * @return the install url of this plugin\n    */\n-  public String getInstallURL()\n-  {\n-    try\n-    {\n+  public String getInstallURL() {\n+    try {\n       return FileLocator.resolve(getBundle().getEntry(\"/\")).getFile();\n-    }\n-    catch (IOException e)\n-    {\n+    } catch (IOException e) {\n       return null;\n     }\n   }\n \n   /*************************************************************\n    * ResourceBundle helper methods\n-   * \n+   *\n    *************************************************************/\n   /**\n    * Returns the resource bundle for this plugin.\n-   * \n+   *\n    * @return the resource bundle for this plugin\n    */\n-  public ResourceBundle getResourceBundle()\n-  {\n+  public ResourceBundle getResourceBundle() {\n     return resourcebundle;\n   }\n \n   /**\n    * Returns the resource bundle for the WSDL validator.\n-   * \n+   *\n    * @return the resource bundle for the WSDL validator\n    */\n-  public ResourceBundle getWSDLValidatorResourceBundle()\n-  {\n+  public ResourceBundle getWSDLValidatorResourceBundle() {\n     return wsdlValidatorResourceBundle;\n   }\n \n   /**\n    * Returns the string for the given id.\n-   * \n+   *\n    * @param stringID - the id for the string\n    * @return the string for the given id\n    */\n-  public String getString(String stringID)\n-  {\n+  public String getString(String stringID) {\n     return getResourceBundle().getString(stringID);\n   }\n }\n@@ -141,8 +130,7 @@ public class ValidateWSDLPlugin extends Plugin\n /**\n  * This class reads the plugin manifests and registers each WSDLExtensionValidator\n  */\n-class WSDLValidatorPluginRegistryReader\n-{\n+class WSDLValidatorPluginRegistryReader {\n   protected static final String PLUGIN_ID = \"org.eclipse.wst.wsdl.validation\";\n   protected static final String ATT_CLASS = \"class\";\n   protected static final String ATT_NAMESPACE = \"namespace\";\n@@ -153,10 +141,9 @@ class WSDLValidatorPluginRegistryReader\n   protected int validatorType;\n \n   /**\n-   * \n+   *\n    */\n-  public WSDLValidatorPluginRegistryReader(String extensionPointId, String tagName, int validatorType)\n-  {\n+  public WSDLValidatorPluginRegistryReader(String extensionPointId, String tagName, int validatorType) {\n     this.extensionPointId = extensionPointId;\n     this.tagName = tagName;\n     this.validatorType = validatorType;\n@@ -165,15 +152,12 @@ class WSDLValidatorPluginRegistryReader\n   /**\n    * read from plugin registry and parse it.\n    */\n-  public void readRegistry()\n-  {\n+  public void readRegistry() {\n     IExtensionRegistry pluginRegistry = Platform.getExtensionRegistry();\n     IExtensionPoint point = pluginRegistry.getExtensionPoint(PLUGIN_ID, extensionPointId);\n-    if (point != null)\n-    {\n+    if (point != null) {\n       IConfigurationElement[] elements = point.getConfigurationElements();\n-      for (int i = 0; i < elements.length; i++)\n-      {\n+      for (int i = 0; i < elements.length; i++) {\n         readElement(elements[i]);\n       }\n     }\n@@ -181,41 +165,34 @@ class WSDLValidatorPluginRegistryReader\n \n   /**\n    * readElement() - parse and deal with an extension like:\n-   *\n+   * <p>\n    * <extension point=\"org.eclipse.validate.wsdl.WSDLExtensionValidator\"\n-   *            id=\"soapValidator\"\n-   *            name=\"SOAP Validator\">>\n-   *   <validator>\n-   *        <run class=\" org.eclipse.validate.wsdl.soap.SOAPValidator\"/>\n-   *   </validator>\n-   *   <attribute name=\"namespace\" value=\"http://schemas.xmlsoap.org/wsdl/soap/\"/>\n+   * id=\"soapValidator\"\n+   * name=\"SOAP Validator\">>\n+   * <validator>\n+   * <run class=\" org.eclipse.validate.wsdl.soap.SOAPValidator\"/>\n+   * </validator>\n+   * <attribute name=\"namespace\" value=\"http://schemas.xmlsoap.org/wsdl/soap/\"/>\n    * </extension>\n    */\n-  protected void readElement(IConfigurationElement element)\n-  {\n-    if (element.getName().equals(tagName))\n-    {\n+  protected void readElement(IConfigurationElement element) {\n+    if (element.getName().equals(tagName)) {\n       String validatorClass = element.getAttribute(ATT_CLASS);\n       String namespace = element.getAttribute(ATT_NAMESPACE);\n \n-      if (validatorClass != null)\n-      {\n-        try\n-        {\n+      if (validatorClass != null) {\n+        try {\n           //          ClassLoader pluginLoader =\n           //            element.getDeclaringExtension().getDeclaringPluginDescriptor().getPlugin().getClass().getClassLoader();\n           //\t\t\t\tmodified to resolve certain situations where the plugin has not been initialized\n \n           Bundle pluginBundle = Platform.getBundle(element.getDeclaringExtension().getContributor().getName());\n-          \n-          if (validatorType == EXT_VALIDATOR)\n-           {\n+\n+          if (validatorType == EXT_VALIDATOR) {\n             EclipseWSDLValidatorDelegate delegate = new EclipseWSDLValidatorDelegate(validatorClass, pluginBundle);\n             WSDLValidator.getInstance().registerWSDLExtensionValidator(namespace, delegate);\n           }\n-        }\n-        catch (Exception e)\n-        {\n+        } catch (Exception e) {\n         }\n       }\n     }\n@@ -224,20 +201,18 @@ class WSDLValidatorPluginRegistryReader\n \n /**\n  * Read WSDl 1.1 extension validators.\n- * \n- *  <extension\n- *     point=\"com.ibm.etools.validation.validator\"\n- *     id=\"wsdlValidator\"\n- *     name=\"%_UI_WSDL_VALIDATOR\">\n- *    <wsdl11validator\n- *       namespace=\"http://schemas.xmlsoap.org/wsdl/soap/\"\n- *       class=\"org.eclipse.wsdl.validate.soap.wsdl11.SOAPValidator\"\n- *       resourcebundle=\"validatewsdlsoap\"/>\n- *   </extension>\n- *  \n+ * <p>\n+ * <extension\n+ * point=\"com.ibm.etools.validation.validator\"\n+ * id=\"wsdlValidator\"\n+ * name=\"%_UI_WSDL_VALIDATOR\">\n+ * <wsdl11validator\n+ * namespace=\"http://schemas.xmlsoap.org/wsdl/soap/\"\n+ * class=\"org.eclipse.wsdl.validate.soap.wsdl11.SOAPValidator\"\n+ * resourcebundle=\"validatewsdlsoap\"/>\n+ * </extension>\n  */\n-class WSDL11ValidatorPluginRegistryReader\n-{\n+class WSDL11ValidatorPluginRegistryReader {\n   protected static final String PLUGIN_ID = \"org.eclipse.wst.wsdl.validation\";\n   protected static final String ATT_CLASS = \"class\";\n   protected static final String ATT_NAMESPACE = \"namespace\";\n@@ -246,12 +221,11 @@ class WSDL11ValidatorPluginRegistryReader\n \n   /**\n    * Constructor.\n-   * \n+   *\n    * @param extensionPointId - the id of the extension point\n-   * @param tagName - the tag name of the extension point\n+   * @param tagName          - the tag name of the extension point\n    */\n-  public WSDL11ValidatorPluginRegistryReader(String extensionPointId, String tagName)\n-  {\n+  public WSDL11ValidatorPluginRegistryReader(String extensionPointId, String tagName) {\n     this.extensionPointId = extensionPointId;\n     this.tagName = tagName;\n   }\n@@ -260,15 +234,12 @@ class WSDL11ValidatorPluginRegistryReader\n    * Read from plugin registry and handle the configuration elements that match\n    * the spedified elements.\n    */\n-  public void readRegistry()\n-  {\n+  public void readRegistry() {\n     IExtensionRegistry pluginRegistry = Platform.getExtensionRegistry();\n     IExtensionPoint point = pluginRegistry.getExtensionPoint(PLUGIN_ID, extensionPointId);\n-    if (point != null)\n-    {\n+    if (point != null) {\n       IConfigurationElement[] elements = point.getConfigurationElements();\n-      for (int i = 0; i < elements.length; i++)\n-      {\n+      for (int i = 0; i < elements.length; i++) {\n         readElement(elements[i]);\n       }\n     }\n@@ -276,26 +247,20 @@ class WSDL11ValidatorPluginRegistryReader\n \n   /**\n    * Parse and deal with the extension points.\n-   * \n+   *\n    * @param element The extension point element.\n    */\n-  protected void readElement(IConfigurationElement element)\n-  {\n-    if (element.getName().equals(tagName))\n-    {\n+  protected void readElement(IConfigurationElement element) {\n+    if (element.getName().equals(tagName)) {\n       String validatorClass = element.getAttribute(ATT_CLASS);\n       String namespace = element.getAttribute(ATT_NAMESPACE);\n \n-      if (validatorClass != null && namespace != null)\n-      {\n-        try\n-        {\n+      if (validatorClass != null && namespace != null) {\n+        try {\n           Bundle pluginBundle = Platform.getBundle(element.getDeclaringExtension().getContributor().getName());\n           WSDL11ValidatorDelegate delegate = new EclipseWSDL11ValidatorDelegate(validatorClass, pluginBundle);\n           WSDLValidator.getInstance().registerWSDL11Validator(namespace, delegate);\n-        }\n-        catch (Exception e)\n-        {\n+        } catch (Exception e) {\n         }\n       }\n     }\n",
+            "diff_size": 100
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "204",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/242/ValidateWSDLPlugin.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/242/ValidateWSDLPlugin.java\nindex dfcd1cdf159..91cfd2c5a48 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/242/ValidateWSDLPlugin.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/242/ValidateWSDLPlugin.java\n@@ -54,10 +54,8 @@ public class ValidateWSDLPlugin extends Plugin\n     instance = this;\n     wsdlValidatorResourceBundle = ResourceBundle.getBundle(Constants.WSDL_VALIDATOR_PROPERTIES_FILE);\n     resourcebundle = ResourceBundle.getBundle(PROPERTIES_FILE);\n-    \n-    LoggerFactory.getInstance().setLogger(new EclipseLogger());\n-\n-    new WSDLValidatorPluginRegistryReader(\n+LoggerFactory.getInstance().setLogger(new EclipseLogger());\n+new WSDLValidatorPluginRegistryReader(\n       \"extvalidator\",\n       \"extvalidator\",\n       WSDLValidatorPluginRegistryReader.EXT_VALIDATOR)\n@@ -207,10 +205,8 @@ class WSDLValidatorPluginRegistryReader\n           //\t\t\t\tmodified to resolve certain situations where the plugin has not been initialized\n \n           Bundle pluginBundle = Platform.getBundle(element.getDeclaringExtension().getContributor().getName());\n-          \n-          if (validatorType == EXT_VALIDATOR)\n-           {\n-            EclipseWSDLValidatorDelegate delegate = new EclipseWSDLValidatorDelegate(validatorClass, pluginBundle);\n+if (validatorType == EXT_VALIDATOR) {\n+    EclipseWSDLValidatorDelegate delegate = new EclipseWSDLValidatorDelegate(validatorClass, pluginBundle);\n             WSDLValidator.getInstance().registerWSDLExtensionValidator(namespace, delegate);\n           }\n         }\n@@ -300,8 +296,4 @@ class WSDL11ValidatorPluginRegistryReader\n       }\n     }\n   }\n-}\n-\n-\n-\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "206",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "206",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

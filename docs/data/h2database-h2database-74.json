@@ -1,0 +1,79 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "74",
+    "information": {
+        "errors": [
+            {
+                "line": "127",
+                "column": "43",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "            return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n        } else {\n            return ValueBoolean.get(not ^ //\n                    (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n        }\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/74/BetweenPredicate.java\nindex c2033705521..1ebe054bd98 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/74/BetweenPredicate.java\n@@ -124,8 +124,9 @@ public final class BetweenPredicate extends Condition {\n         } else if (cmp2 == Integer.MIN_VALUE) {\n             return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n         } else {\n-            return ValueBoolean.get(not ^ //\n-                    (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n+            return ValueBoolean.get(not ^\n+                    //\n+                     (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n         }\n     }\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "139",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/74/BetweenPredicate.java\nindex c2033705521..94eabc63837 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/74/BetweenPredicate.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.expression.condition;\n \n import org.h2.engine.Session;\n@@ -31,8 +32,9 @@ public final class BetweenPredicate extends Condition {\n \n     private Expression a, b;\n \n-    public BetweenPredicate(Expression left, boolean not, boolean whenOperand, boolean symmetric, Expression a,\n-            Expression b) {\n+    public BetweenPredicate(Expression left, boolean not, boolean whenOperand,\n+                            boolean symmetric, Expression a,\n+                            Expression b) {\n         this.left = left;\n         this.not = not;\n         this.whenOperand = whenOperand;\n@@ -48,7 +50,8 @@ public final class BetweenPredicate extends Condition {\n \n     @Override\n     public StringBuilder getUnenclosedSQL(StringBuilder builder, int sqlFlags) {\n-        return getWhenSQL(left.getSQL(builder, sqlFlags, AUTO_PARENTHESES), sqlFlags);\n+        return getWhenSQL(left.getSQL(builder, sqlFlags, AUTO_PARENTHESES),\n+                sqlFlags);\n     }\n \n     @Override\n@@ -80,18 +83,22 @@ public final class BetweenPredicate extends Condition {\n                 return TypedValueExpression.UNKNOWN;\n             }\n             if (aValue != null && bValue != null) {\n-                return ValueExpression.getBoolean(getValue(session, value, aValue, bValue));\n+                return ValueExpression\n+                        .getBoolean(getValue(session, value, aValue, bValue));\n             }\n         }\n         if (symmetric) {\n             if (aValue == ValueNull.INSTANCE || bValue == ValueNull.INSTANCE) {\n                 return TypedValueExpression.UNKNOWN;\n             }\n-        } else if (aValue == ValueNull.INSTANCE && bValue == ValueNull.INSTANCE) {\n+        } else if (aValue == ValueNull.INSTANCE &&\n+                bValue == ValueNull.INSTANCE) {\n             return TypedValueExpression.UNKNOWN;\n         }\n-        if (aValue != null && bValue != null && session.compareWithNull(aValue, bValue, false) == 0) {\n-            return new Comparison(not ? Comparison.NOT_EQUAL : Comparison.EQUAL, left, a, false).optimize(session);\n+        if (aValue != null && bValue != null &&\n+                session.compareWithNull(aValue, bValue, false) == 0) {\n+            return new Comparison(not ? Comparison.NOT_EQUAL : Comparison.EQUAL,\n+                    left, a, false).optimize(session);\n         }\n         return this;\n     }\n@@ -102,7 +109,8 @@ public final class BetweenPredicate extends Condition {\n         if (value == ValueNull.INSTANCE) {\n             return ValueNull.INSTANCE;\n         }\n-        return getValue(session, value, a.getValue(session), b.getValue(session));\n+        return getValue(session, value, a.getValue(session),\n+                b.getValue(session));\n     }\n \n     @Override\n@@ -113,19 +121,25 @@ public final class BetweenPredicate extends Condition {\n         if (left == ValueNull.INSTANCE) {\n             return false;\n         }\n-        return getValue(session, left, a.getValue(session), b.getValue(session)).getBoolean();\n+        return getValue(session, left, a.getValue(session), b.getValue(session))\n+                .getBoolean();\n     }\n \n-    private Value getValue(Session session, Value value, Value aValue, Value bValue) {\n+    private Value getValue(Session session, Value value, Value aValue,\n+                           Value bValue) {\n         int cmp1 = session.compareWithNull(aValue, value, false);\n         int cmp2 = session.compareWithNull(value, bValue, false);\n         if (cmp1 == Integer.MIN_VALUE) {\n-            return symmetric || cmp2 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n+            return symmetric || cmp2 <= 0 ? ValueNull.INSTANCE :\n+                    ValueBoolean.get(not);\n         } else if (cmp2 == Integer.MIN_VALUE) {\n-            return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n+            return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE :\n+                    ValueBoolean.get(not);\n         } else {\n             return ValueBoolean.get(not ^ //\n-                    (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n+                    (symmetric ?\n+                            cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 :\n+                            cmp1 <= 0 && cmp2 <= 0));\n         }\n     }\n \n@@ -140,8 +154,10 @@ public final class BetweenPredicate extends Condition {\n     @Override\n     public void createIndexConditions(Session session, TableFilter filter) {\n         if (!not && !whenOperand && !symmetric) {\n-            Comparison.createIndexConditions(filter, a, left, Comparison.SMALLER_EQUAL);\n-            Comparison.createIndexConditions(filter, left, b, Comparison.SMALLER_EQUAL);\n+            Comparison.createIndexConditions(filter, a, left,\n+                    Comparison.SMALLER_EQUAL);\n+            Comparison.createIndexConditions(filter, left, b,\n+                    Comparison.SMALLER_EQUAL);\n         }\n     }\n \n@@ -168,7 +184,8 @@ public final class BetweenPredicate extends Condition {\n \n     @Override\n     public boolean isEverything(ExpressionVisitor visitor) {\n-        return left.isEverything(visitor) && a.isEverything(visitor) && b.isEverything(visitor);\n+        return left.isEverything(visitor) && a.isEverything(visitor) &&\n+                b.isEverything(visitor);\n     }\n \n     @Override\n@@ -184,14 +201,14 @@ public final class BetweenPredicate extends Condition {\n     @Override\n     public Expression getSubexpression(int index) {\n         switch (index) {\n-        case 0:\n-            return left;\n-        case 1:\n-            return a;\n-        case 2:\n-            return b;\n-        default:\n-            throw new IndexOutOfBoundsException();\n+            case 0:\n+                return left;\n+            case 1:\n+                return a;\n+            case 2:\n+                return b;\n+            default:\n+                throw new IndexOutOfBoundsException();\n         }\n     }\n \n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "127",
+                    "column": "43",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/74/BetweenPredicate.java\nindex c2033705521..d319e70c019 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/naturalize/74/BetweenPredicate.java\n@@ -75,7 +75,7 @@ public final class BetweenPredicate extends Condition {\n         Value value = left.isConstant() ? left.getValue(session) : null,\n                 aValue = a.isConstant() ? a.getValue(session) : null,\n                 bValue = b.isConstant() ? b.getValue(session) : null;\n-        if (value != null) {\n+if (value != null) {\n             if (value == ValueNull.INSTANCE) {\n                 return TypedValueExpression.UNKNOWN;\n             }\n@@ -195,4 +195,4 @@ public final class BetweenPredicate extends Condition {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/74/BetweenPredicate.java\nindex c2033705521..1ebe054bd98 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/74/BetweenPredicate.java\n@@ -124,8 +124,9 @@ public final class BetweenPredicate extends Condition {\n         } else if (cmp2 == Integer.MIN_VALUE) {\n             return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n         } else {\n-            return ValueBoolean.get(not ^ //\n-                    (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n+            return ValueBoolean.get(not ^\n+                    //\n+                     (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n         }\n     }\n \n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/74/BetweenPredicate.java\nindex c2033705521..978fbae8c47 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/74/BetweenPredicate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/74/BetweenPredicate.java\n@@ -124,8 +124,9 @@ public final class BetweenPredicate extends Condition {\n         } else if (cmp2 == Integer.MIN_VALUE) {\n             return symmetric || cmp1 <= 0 ? ValueNull.INSTANCE : ValueBoolean.get(not);\n         } else {\n-            return ValueBoolean.get(not ^ //\n-                    (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n+            return ValueBoolean.get(not ^\n+                //\n+                     (symmetric ? cmp1 <= 0 && cmp2 <= 0 || cmp1 >= 0 && cmp2 >= 0 : cmp1 <= 0 && cmp2 <= 0));\n         }\n     }\n \n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

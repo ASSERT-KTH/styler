@@ -1,0 +1,96 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "1153",
+    "information": {
+        "errors": [
+            {
+                "line": "6",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 102).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in\n * compliance with the License. You may obtain a copy of the License at\n *\n * https://opensource.org/licenses/Apache-2.0",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1153/GBDTParam.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1153/GBDTParam.java\nindex 41552620c86..4aa7e6b98e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1153/GBDTParam.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1153/GBDTParam.java\n@@ -24,22 +24,32 @@ import com.tencent.angel.spark.ml.tree.util.Maths;\n public class GBDTParam extends RegTParam {\n \n   public int numClass; // number of classes/labels\n+\n   public int numTree;  // number of trees\n+\n   public int numThread;  // parallelism\n \n   public boolean histSubtraction;\n+\n   public boolean lighterChildFirst;\n   //public boolean leafwise;  // true if leaf-wise training, false if level-wise training\n \n   public boolean fullHessian;  // whether to use full hessian matrix instead of diagonal\n+\n   public float minChildWeight;  // minimum amount of hessian (weight) allowed for a child\n+\n   public int minNodeInstance;\n+\n   public float regAlpha;  // L1 regularization factor\n+\n   public float regLambda;  // L2 regularization factor\n+\n   public float maxLeafWeight; // maximum leaf weight, default 0 means no constraints\n \n   public String lossFunc; // name of loss function\n+\n   public String[] evalMetrics; // name of eval metric\n+\n   public String multiStrategy; // strategy of multi-class classification (one-tree or multi-tree)\n \n   public int numClassPerTree() {\n@@ -60,6 +70,7 @@ public class GBDTParam extends RegTParam {\n    * @param sumHess sum of hessian values\n    * @return true if satisfied, false otherwise\n    */\n+\n   public boolean satisfyWeight(double sumHess) {\n     return sumHess >= minChildWeight;\n   }\n@@ -75,10 +86,12 @@ public class GBDTParam extends RegTParam {\n    * @param sumHess sum of hessian values\n    * @return true if satisfied, false otherwise\n    */\n+\n   public boolean satisfyWeight(double[] sumHess) {\n     if (minChildWeight == 0.0f) {\n       return true;\n     }\n+\n     double w = 1.0;\n     if (!fullHessian) {\n       for (double h : sumHess) {\n@@ -104,22 +117,25 @@ public class GBDTParam extends RegTParam {\n    * @param sumHess sum of hessian values\n    * @return weight\n    */\n+\n   public double calcWeight(double sumGrad, double sumHess) {\n     if (!satisfyWeight(sumHess) || sumGrad == 0.0) {\n       return 0.0;\n     }\n+\n     double dw;\n     if (regAlpha == 0.0f) {\n       dw = -sumGrad / (sumHess + regLambda);\n     } else {\n       dw = -Maths.thresholdL1(sumGrad, regAlpha) / (sumHess + regLambda);\n     }\n+\n     if (maxLeafWeight != 0.0f) {\n       if (dw > maxLeafWeight) {\n         dw = maxLeafWeight;\n       } else if (dw < -maxLeafWeight) {\n-        dw = -maxLeafWeight;\n-      }\n+               dw = -maxLeafWeight;\n+             }\n     }\n     return dw;\n   }\n@@ -130,6 +146,7 @@ public class GBDTParam extends RegTParam {\n       return weights;\n     }\n     // TODO: regularization\n+\n     if (!fullHessian) {\n       if (regAlpha == 0.0f) {\n         for (int k = 0; k < numClass; k++) {\n@@ -148,13 +165,14 @@ public class GBDTParam extends RegTParam {\n       }\n       addDiagonal(numClass, sumHess, -regLambda);\n     }\n+\n     if (maxLeafWeight != 0.0f) {\n       for (int k = 0; k < numClass; k++) {\n         if (weights[k] > maxLeafWeight) {\n           weights[k] = maxLeafWeight;\n         } else if (weights[k] < -maxLeafWeight) {\n-          weights[k] = -maxLeafWeight;\n-        }\n+                 weights[k] = -maxLeafWeight;\n+               }\n       }\n     }\n     return weights;\n@@ -167,10 +185,12 @@ public class GBDTParam extends RegTParam {\n    * @param sumHess sum of hessian values\n    * @return loss gain\n    */\n+\n   public double calcGain(double sumGrad, double sumHess) {\n     if (!satisfyWeight(sumHess) || sumGrad == 0.0f) {\n       return 0.0f;\n     }\n+\n     if (maxLeafWeight == 0.0f) {\n       if (regAlpha == 0.0f) {\n         return (sumGrad / (sumHess + regLambda)) * sumGrad;\n@@ -194,6 +214,7 @@ public class GBDTParam extends RegTParam {\n       return 0.0;\n     }\n     // TODO: regularization\n+\n     if (!fullHessian) {\n       if (regAlpha == 0.0f) {\n         for (int k = 0; k < numClass; k++) {\n@@ -236,5 +257,5 @@ public class GBDTParam extends RegTParam {\n     sb.append(String.format(\"|evalMetrics = %s\\n\", Arrays.toString(evalMetrics)));\n     return sb.toString();\n   }\n-}\n \n+}\n\\ No newline at end of file\n",
+            "diff_size": 27
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "6",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 102).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

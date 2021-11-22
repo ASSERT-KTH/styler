@@ -1,0 +1,173 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4079",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "67",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "53",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "92",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "101",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4079/DnsHostnameResolver.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4079/DnsHostnameResolver.java\nindex 5245585f814..0947c080ff8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4079/DnsHostnameResolver.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4079/DnsHostnameResolver.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.discovery;\n \n import java.net.InetAddress;\n@@ -32,38 +33,37 @@ import static java.lang.String.format;\n \n public class DnsHostnameResolver implements HostnameResolver\n {\n-    private final Log userLog;\n-    private final Log log;\n-    private final DomainNameResolver domainNameResolver;\n+  private final Log userLog;\n+  private final Log log;\n+  private final DomainNameResolver domainNameResolver;\n+\n+  public DnsHostnameResolver(LogProvider logProvider, LogProvider userLogProvider,\n+                             DomainNameResolver domainNameResolver)\n+  {\n+    log = logProvider.getLog(getClass());\n+    userLog = userLogProvider.getLog(getClass());\n+    this.domainNameResolver = domainNameResolver;\n+  }\n \n-    public DnsHostnameResolver( LogProvider logProvider, LogProvider userLogProvider,\n-            DomainNameResolver domainNameResolver )\n+  @Override\n+  public Collection<AdvertisedSocketAddress> resolve(AdvertisedSocketAddress initialAddress)\n+  {\n+    Set<AdvertisedSocketAddress> addresses = new HashSet<>();\n+    InetAddress[] ipAddresses = new InetAddress[0];\n+    try\n+    {\n+      ipAddresses = domainNameResolver.resolveDomainName(initialAddress.getHostname());\n+    } catch (UnknownHostException e)\n     {\n-        log = logProvider.getLog( getClass() );\n-        userLog = userLogProvider.getLog( getClass() );\n-        this.domainNameResolver = domainNameResolver;\n+      log.error(format(\"Failed to resolve host '%s'\", initialAddress.getHostname()), e);\n     }\n \n-    @Override\n-    public Collection<AdvertisedSocketAddress> resolve( AdvertisedSocketAddress initialAddress )\n+    for (InetAddress ipAddress : ipAddresses)\n     {\n-        Set<AdvertisedSocketAddress> addresses = new HashSet<>();\n-        InetAddress[] ipAddresses = new InetAddress[0];\n-        try\n-        {\n-            ipAddresses = domainNameResolver.resolveDomainName( initialAddress.getHostname() );\n-        }\n-        catch ( UnknownHostException e )\n-        {\n-            log.error( format(\"Failed to resolve host '%s'\", initialAddress.getHostname()), e);\n-        }\n-\n-        for ( InetAddress ipAddress : ipAddresses )\n-        {\n-            addresses.add( new AdvertisedSocketAddress( ipAddress.getHostAddress(), initialAddress.getPort() ) );\n-        }\n-\n-        userLog.info( \"Resolved initial host '%s' to %s\", initialAddress, addresses );\n-        return addresses;\n+      addresses.add(new AdvertisedSocketAddress(ipAddress.getHostAddress(), initialAddress.getPort()));\n     }\n+\n+    userLog.info(\"Resolved initial host '%s' to %s\", initialAddress, addresses);\n+    return addresses;\n+  }\n }\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4079/DnsHostnameResolver.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4079/DnsHostnameResolver.java\nindex 5245585f814..8f8369c5de7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4079/DnsHostnameResolver.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4079/DnsHostnameResolver.java\n@@ -55,7 +55,7 @@ public class DnsHostnameResolver implements HostnameResolver\n         }\n         catch ( UnknownHostException e )\n         {\n-            log.error( format(\"Failed to resolve host '%s'\", initialAddress.getHostname()), e);\n+            log.error( format( \"Failed to resolve host '%s'\", initialAddress.getHostname()), e );\n         }\n \n         for ( InetAddress ipAddress : ipAddresses )\n@@ -66,4 +66,4 @@ public class DnsHostnameResolver implements HostnameResolver\n         userLog.info( \"Resolved initial host '%s' to %s\", initialAddress, addresses );\n         return addresses;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

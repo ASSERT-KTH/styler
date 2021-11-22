@@ -1,0 +1,98 @@
+{
+    "project_name": "Internet2-grouper",
+    "error_id": "25",
+    "information": {
+        "errors": [
+            {
+                "line": "24",
+                "severity": "warning",
+                "message": "Line has trailing spaces.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": " * style license a copy of which has been included with this distribution in\n * the LICENSE.txt file.\n * \n * Created on 24. July 2004 by Joe Walnes\n */\npackage edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.extended;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/intellij/25/GregorianCalendarConverter.java\nindex 5b7129dee5f..b36050f07c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/intellij/25/GregorianCalendarConverter.java\n@@ -1,12 +1,12 @@\n /**\r\n  * Copyright 2014 Internet2\r\n- *\r\n+ * <p>\r\n  * Licensed under the Apache License, Version 2.0 (the \"License\");\r\n  * you may not use this file except in compliance with the License.\r\n  * You may obtain a copy of the License at\r\n- *\r\n- *   http://www.apache.org/licenses/LICENSE-2.0\r\n- *\r\n+ * <p>\r\n+ * http://www.apache.org/licenses/LICENSE-2.0\r\n+ * <p>\r\n  * Unless required by applicable law or agreed to in writing, software\r\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\r\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n@@ -21,9 +21,10 @@\n  * The software in this package is published under the terms of the BSD\r\n  * style license a copy of which has been included with this distribution in\r\n  * the LICENSE.txt file.\r\n- * \r\n+ *\r\n  * Created on 24. July 2004 by Joe Walnes\r\n  */\r\n+\r\n package edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.extended;\r\n \r\n import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.Converter;\r\n@@ -46,39 +47,39 @@ import java.util.TimeZone;\n  */\r\n public class GregorianCalendarConverter implements Converter {\r\n \r\n-    public boolean canConvert(Class type) {\r\n-        return type.equals(GregorianCalendar.class);\r\n-    }\r\n+  public boolean canConvert(Class type) {\r\n+    return type.equals(GregorianCalendar.class);\r\n+  }\r\n \r\n-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {\r\n-        GregorianCalendar calendar = (GregorianCalendar) source;\r\n-        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"time\", long.class);\r\n-        long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis() not available under JDK 1.3\r\n-        writer.setValue(String.valueOf(timeInMillis));\r\n-        writer.endNode();\r\n-        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"timezone\", String.class);\r\n-        writer.setValue(calendar.getTimeZone().getID());\r\n-        writer.endNode();\r\n-    }\r\n+  public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {\r\n+    GregorianCalendar calendar = (GregorianCalendar) source;\r\n+    ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"time\", long.class);\r\n+    long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis() not available under JDK 1.3\r\n+    writer.setValue(String.valueOf(timeInMillis));\r\n+    writer.endNode();\r\n+    ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"timezone\", String.class);\r\n+    writer.setValue(calendar.getTimeZone().getID());\r\n+    writer.endNode();\r\n+  }\r\n \r\n-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {\r\n-        reader.moveDown();\r\n-        long timeInMillis = Long.parseLong(reader.getValue());\r\n-        reader.moveUp();\r\n-        final String timeZone;\r\n-        if (reader.hasMoreChildren()) {\r\n-            reader.moveDown();\r\n-            timeZone = reader.getValue();\r\n-            reader.moveUp();\r\n-        } else { // backward compatibility to XStream 1.1.2 and below\r\n-            timeZone = TimeZone.getDefault().getID();\r\n-        }\r\n+  public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {\r\n+    reader.moveDown();\r\n+    long timeInMillis = Long.parseLong(reader.getValue());\r\n+    reader.moveUp();\r\n+    final String timeZone;\r\n+    if (reader.hasMoreChildren()) {\r\n+      reader.moveDown();\r\n+      timeZone = reader.getValue();\r\n+      reader.moveUp();\r\n+    } else { // backward compatibility to XStream 1.1.2 and below\r\n+      timeZone = TimeZone.getDefault().getID();\r\n+    }\r\n \r\n-        GregorianCalendar result = new GregorianCalendar();\r\n-        result.setTimeZone(TimeZone.getTimeZone(timeZone));\r\n-        result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis() not available under JDK 1.3\r\n+    GregorianCalendar result = new GregorianCalendar();\r\n+    result.setTimeZone(TimeZone.getTimeZone(timeZone));\r\n+    result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis() not available under JDK 1.3\r\n \r\n-        return result;\r\n-    }\r\n+    return result;\r\n+  }\r\n \r\n }\r\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/naturalize/25/GregorianCalendarConverter.java\nindex 5b7129dee5f..71a3e765c17 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/naturalize/25/GregorianCalendarConverter.java\n@@ -44,9 +44,8 @@ import java.util.TimeZone;\n  * @author Joe Walnes\r\n  * @author J&ouml;rg Schaible\r\n  */\r\n-public class GregorianCalendarConverter implements Converter {\r\n-\r\n-    public boolean canConvert(Class type) {\r\n+public class GregorianCalendarConverter implements Converter {\n+  public boolean canConvert(Class type) {\r\n         return type.equals(GregorianCalendar.class);\r\n     }\r\n \r\n@@ -81,4 +80,4 @@ public class GregorianCalendarConverter implements Converter {\n         return result;\r\n     }\r\n \r\n-}\r\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/codebuff/25/GregorianCalendarConverter.java\nindex 5b7129dee5f..2ca1da77881 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/errored/1/25/GregorianCalendarConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Internet2-grouper/codebuff/25/GregorianCalendarConverter.java\n@@ -24,17 +24,16 @@\n  * \r\n  * Created on 24. July 2004 by Joe Walnes\r\n  */\r\n-package edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.extended;\r\n-\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.Converter;\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.MarshallingContext;\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.UnmarshallingContext;\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.HierarchicalStreamReader;\r\n-import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.HierarchicalStreamWriter;\r\n-\r\n-import java.util.Date;\r\n-import java.util.GregorianCalendar;\r\n+package edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.extended;\n+\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.Converter;\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.MarshallingContext;\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.converters.UnmarshallingContext;\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.HierarchicalStreamReader;\n+import edu.internet2.middleware.grouperClientExt.com.thoughtworks.xstream.io.HierarchicalStreamWriter;\n+import java.util.Date;\n+import java.util.GregorianCalendar;\n import java.util.TimeZone;\r\n \r\n /**\r\n@@ -43,42 +42,46 @@ import java.util.TimeZone;\n  *\r\n  * @author Joe Walnes\r\n  * @author J&ouml;rg Schaible\r\n- */\r\n-public class GregorianCalendarConverter implements Converter {\r\n-\r\n-    public boolean canConvert(Class type) {\r\n-        return type.equals(GregorianCalendar.class);\r\n-    }\r\n-\r\n-    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {\r\n-        GregorianCalendar calendar = (GregorianCalendar) source;\r\n-        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"time\", long.class);\r\n-        long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis() not available under JDK 1.3\r\n-        writer.setValue(String.valueOf(timeInMillis));\r\n-        writer.endNode();\r\n-        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"timezone\", String.class);\r\n-        writer.setValue(calendar.getTimeZone().getID());\r\n-        writer.endNode();\r\n-    }\r\n-\r\n-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {\r\n-        reader.moveDown();\r\n-        long timeInMillis = Long.parseLong(reader.getValue());\r\n-        reader.moveUp();\r\n-        final String timeZone;\r\n-        if (reader.hasMoreChildren()) {\r\n-            reader.moveDown();\r\n-            timeZone = reader.getValue();\r\n-            reader.moveUp();\r\n-        } else { // backward compatibility to XStream 1.1.2 and below\r\n-            timeZone = TimeZone.getDefault().getID();\r\n-        }\r\n-\r\n-        GregorianCalendar result = new GregorianCalendar();\r\n-        result.setTimeZone(TimeZone.getTimeZone(timeZone));\r\n-        result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis() not available under JDK 1.3\r\n-\r\n-        return result;\r\n-    }\r\n-\r\n-}\r\n+ */\n+\n+\n+public class GregorianCalendarConverter implements Converter {\n+    public boolean canConvert(Class type) {\n+        return type.equals(GregorianCalendar.class);\n+    }\n+\n+\n+    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {\n+        GregorianCalendar calendar = (GregorianCalendar) source;\n+        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"time\", long.class);\n+\n+        long timeInMillis = calendar.getTime().getTime(); // calendar.getTimeInMillis() not available under JDK 1.3\n+        writer.setValue(String.valueOf(timeInMillis));\n+        writer.endNode();\n+        ExtendedHierarchicalStreamWriterHelper.startNode(writer, \"timezone\", String.class);\n+        writer.setValue(calendar.getTimeZone().getID());\n+        writer.endNode();\n+    }\n+\n+\n+    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {\n+        reader.moveDown();\n+\n+        long timeInMillis = Long.parseLong(reader.getValue());\n+        reader.moveUp();\n+\n+        final String timeZone;\n+\n+        if (reader.hasMoreChildren()) {\n+            reader.moveDown();\n+            timeZone = reader.getValue();\n+            reader.moveUp();\n+        } else { // backward compatibility to XStream 1.1.2 and below\n+            timeZone = TimeZone.getDefault().getID();\n+        }\n+        GregorianCalendar result = new GregorianCalendar();\n+        result.setTimeZone(TimeZone.getTimeZone(timeZone));\n+        result.setTime(new Date(timeInMillis)); // calendar.setTimeInMillis() not available under JDK 1.3\n+        return result;\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 54
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "24",
+                    "severity": "warning",
+                    "message": "Line has trailing spaces.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

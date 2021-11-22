@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "77",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.security.tokens.AuthenticationToken;\nimport org.apache.accumulo.core.client.security.tokens.PasswordToken;\nimport org.apache.accumulo.core.client.impl.Credentials;\nimport org.apache.commons.codec.binary.Base64;\nimport org.apache.hadoop.conf.Configuration;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/77/AccumuloHelper.java\nindex 87288b1d0ab..040b0beea99 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/77/AccumuloHelper.java\n@@ -16,90 +16,87 @@ import org.apache.hadoop.conf.Configuration;\n \n /**\n  * Helper class to validate configuration of Accumulo required parameters\n- * \n- * \n- * \n  */\n public class AccumuloHelper {\n-    \n-    public static final String USERNAME = \"accumulo.username\";\n-    public static final String PASSWORD = \"accumulo.password\";\n-    public static final String INSTANCE_NAME = \"accumulo.instance.name\";\n-    public static final String ZOOKEEPERS = \"accumulo.zookeepers\";\n-    \n-    private String username = null;\n-    private PasswordToken password;\n-    private String instanceName = null;\n-    private String zooKeepers = null;\n-    \n-    public void setup(Configuration config) throws IllegalArgumentException {\n-        username = ConfigurationHelper.isNull(config, USERNAME, String.class);\n-        byte[] pw = Base64.decodeBase64(ConfigurationHelper.isNull(config, PASSWORD, String.class).getBytes());\n-        password = new PasswordToken(pw);\n-        instanceName = ConfigurationHelper.isNull(config, INSTANCE_NAME, String.class);\n-        zooKeepers = ConfigurationHelper.isNull(config, ZOOKEEPERS, String.class);\n-    }\n-    \n-    /**\n-     * @return instance based on zookeepers and instance name set in this object\n-     */\n-    public Instance getInstance() {\n-        return new ZooKeeperInstance(getZookeeperConfig());\n-    }\n-    \n-    public ClientConfiguration getZookeeperConfig() {\n-        return ClientConfiguration.loadDefault().withInstance(instanceName).withZkHosts(zooKeepers);\n-    }\n-    \n-    /**\n-     * @return Accumulo authorization info based on username and password set in this object.\n-     */\n-    public Credentials getCredentials() throws AccumuloSecurityException {\n-        return new Credentials(username, password);\n-    }\n-    \n-    public String getInstanceName() {\n-        return instanceName;\n-    }\n-    \n-    public String getZooKeepers() {\n-        return zooKeepers;\n-    }\n-    \n-    public String getUsername() {\n-        return username;\n-    }\n-    \n-    public byte[] getPassword() {\n-        return password.getPassword();\n-    }\n-    \n-    public AuthenticationToken getAuthToken() {\n-        return password;\n-    }\n-    \n-    /**\n-     * @return Connector to Accumulo given this objects settings.\n-     * @throws AccumuloSecurityException\n-     * @throws AccumuloException\n-     */\n-    public Connector getConnector() throws AccumuloSecurityException, AccumuloException {\n-        return getInstance().getConnector(username, password);\n-    }\n-    \n-    public static void setUsername(Configuration conf, String username) {\n-        conf.set(USERNAME, username);\n-    }\n-    \n-    public static void setPassword(Configuration conf, byte[] password) {\n-        conf.set(PASSWORD, new String(Base64.encodeBase64(password)));\n-    }\n-    \n-    public static void setInstanceName(Configuration conf, String instanceName) {\n-        conf.set(INSTANCE_NAME, instanceName);\n-    }\n-    \n-    public static void setZooKeepers(Configuration conf, String zooKeepers) {\n-        conf.set(ZOOKEEPERS, zooKeepers);\n-    }\n+\n+  public static final String USERNAME = \"accumulo.username\";\n+  public static final String PASSWORD = \"accumulo.password\";\n+  public static final String INSTANCE_NAME = \"accumulo.instance.name\";\n+  public static final String ZOOKEEPERS = \"accumulo.zookeepers\";\n+\n+  private String username = null;\n+  private PasswordToken password;\n+  private String instanceName = null;\n+  private String zooKeepers = null;\n+\n+  public void setup(Configuration config) throws IllegalArgumentException {\n+    username = ConfigurationHelper.isNull(config, USERNAME, String.class);\n+    byte[] pw = Base64.decodeBase64(ConfigurationHelper.isNull(config, PASSWORD, String.class).getBytes());\n+    password = new PasswordToken(pw);\n+    instanceName = ConfigurationHelper.isNull(config, INSTANCE_NAME, String.class);\n+    zooKeepers = ConfigurationHelper.isNull(config, ZOOKEEPERS, String.class);\n+  }\n+\n+  /**\n+   * @return instance based on zookeepers and instance name set in this object\n+   */\n+  public Instance getInstance() {\n+    return new ZooKeeperInstance(getZookeeperConfig());\n+  }\n+\n+  public ClientConfiguration getZookeeperConfig() {\n+    return ClientConfiguration.loadDefault().withInstance(instanceName).withZkHosts(zooKeepers);\n+  }\n+\n+  /**\n+   * @return Accumulo authorization info based on username and password set in this object.\n+   */\n+  public Credentials getCredentials() throws AccumuloSecurityException {\n+    return new Credentials(username, password);\n+  }\n+\n+  public String getInstanceName() {\n+    return instanceName;\n+  }\n+\n+  public String getZooKeepers() {\n+    return zooKeepers;\n+  }\n+\n+  public String getUsername() {\n+    return username;\n+  }\n+\n+  public byte[] getPassword() {\n+    return password.getPassword();\n+  }\n+\n+  public AuthenticationToken getAuthToken() {\n+    return password;\n+  }\n+\n+  /**\n+   * @return Connector to Accumulo given this objects settings.\n+   * @throws AccumuloSecurityException\n+   * @throws AccumuloException\n+   */\n+  public Connector getConnector() throws AccumuloSecurityException, AccumuloException {\n+    return getInstance().getConnector(username, password);\n+  }\n+\n+  public static void setUsername(Configuration conf, String username) {\n+    conf.set(USERNAME, username);\n+  }\n+\n+  public static void setPassword(Configuration conf, byte[] password) {\n+    conf.set(PASSWORD, new String(Base64.encodeBase64(password)));\n+  }\n+\n+  public static void setInstanceName(Configuration conf, String instanceName) {\n+    conf.set(INSTANCE_NAME, instanceName);\n+  }\n+\n+  public static void setZooKeepers(Configuration conf, String zooKeepers) {\n+    conf.set(ZOOKEEPERS, zooKeepers);\n+  }\n }\n",
+            "diff_size": 84
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/77/AccumuloHelper.java\nindex 87288b1d0ab..64e9f055754 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/77/AccumuloHelper.java\n@@ -102,4 +102,4 @@ public class AccumuloHelper {\n     public static void setZooKeepers(Configuration conf, String zooKeepers) {\n         conf.set(ZOOKEEPERS, zooKeepers);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "12",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/77/AccumuloHelper.java\nindex 87288b1d0ab..0c540c87923 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/77/AccumuloHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/77/AccumuloHelper.java\n@@ -1,7 +1,6 @@\n package datawave.ingest.data.config.ingest;\n \n import datawave.ingest.data.config.ConfigurationHelper;\n-\n import org.apache.accumulo.core.client.AccumuloException;\n import org.apache.accumulo.core.client.AccumuloSecurityException;\n import org.apache.accumulo.core.client.ClientConfiguration;\n@@ -20,18 +19,21 @@ import org.apache.hadoop.conf.Configuration;\n  * \n  * \n  */\n+\n+\n public class AccumuloHelper {\n-    \n     public static final String USERNAME = \"accumulo.username\";\n+\n     public static final String PASSWORD = \"accumulo.password\";\n+\n     public static final String INSTANCE_NAME = \"accumulo.instance.name\";\n+\n     public static final String ZOOKEEPERS = \"accumulo.zookeepers\";\n-    \n     private String username = null;\n     private PasswordToken password;\n     private String instanceName = null;\n     private String zooKeepers = null;\n-    \n+\n     public void setup(Configuration config) throws IllegalArgumentException {\n         username = ConfigurationHelper.isNull(config, USERNAME, String.class);\n         byte[] pw = Base64.decodeBase64(ConfigurationHelper.isNull(config, PASSWORD, String.class).getBytes());\n@@ -43,10 +45,11 @@ public class AccumuloHelper {\n     /**\n      * @return instance based on zookeepers and instance name set in this object\n      */\n+\n     public Instance getInstance() {\n         return new ZooKeeperInstance(getZookeeperConfig());\n     }\n-    \n+\n     public ClientConfiguration getZookeeperConfig() {\n         return ClientConfiguration.loadDefault().withInstance(instanceName).withZkHosts(zooKeepers);\n     }\n@@ -54,26 +57,27 @@ public class AccumuloHelper {\n     /**\n      * @return Accumulo authorization info based on username and password set in this object.\n      */\n+\n     public Credentials getCredentials() throws AccumuloSecurityException {\n         return new Credentials(username, password);\n     }\n-    \n+\n     public String getInstanceName() {\n         return instanceName;\n     }\n-    \n+\n     public String getZooKeepers() {\n         return zooKeepers;\n     }\n-    \n+\n     public String getUsername() {\n         return username;\n     }\n-    \n+\n     public byte[] getPassword() {\n         return password.getPassword();\n     }\n-    \n+\n     public AuthenticationToken getAuthToken() {\n         return password;\n     }\n@@ -83,23 +87,25 @@ public class AccumuloHelper {\n      * @throws AccumuloSecurityException\n      * @throws AccumuloException\n      */\n-    public Connector getConnector() throws AccumuloSecurityException, AccumuloException {\n+\n+    public Connector getConnector() throws AccumuloSecurityException,\n+        AccumuloException {\n         return getInstance().getConnector(username, password);\n     }\n-    \n+\n     public static void setUsername(Configuration conf, String username) {\n         conf.set(USERNAME, username);\n     }\n-    \n+\n     public static void setPassword(Configuration conf, byte[] password) {\n         conf.set(PASSWORD, new String(Base64.encodeBase64(password)));\n     }\n-    \n+\n     public static void setInstanceName(Configuration conf, String instanceName) {\n         conf.set(INSTANCE_NAME, instanceName);\n     }\n-    \n+\n     public static void setZooKeepers(Configuration conf, String zooKeepers) {\n         conf.set(ZOOKEEPERS, zooKeepers);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

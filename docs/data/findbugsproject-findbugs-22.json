@@ -1,0 +1,87 @@
+{
+    "project_name": "findbugsproject-findbugs",
+    "error_id": "22",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "     * itp1 : true versions of the ifp1\n  */\n\tObject x;\n\tTestFields(Object x) {\n\t\tthis.x = x;\n\t}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "14",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/22/TestFields.java\nindex 5516cbb8b3a..bf003b7979b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler/22/TestFields.java\n@@ -10,7 +10,7 @@ public class TestFields {\n      * ifp1, ifp2, ifp3 : interprocedural false positives\n      * itp1 : true versions of the ifp1\n   */\n-\tObject x;\n+Object x;\n \tTestFields(Object x) {\n \t\tthis.x = x;\n \t}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/22/TestFields.java\nindex 5516cbb8b3a..a37b7a1228c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/intellij/22/TestFields.java\n@@ -1,7 +1,7 @@\n package v2;\n \n public class TestFields {\n-    \n+\n     /**\n      * Benchmark tests for null pointer defect detectors\n      * This benchmark tests instance field  tracking\n@@ -9,128 +9,170 @@ public class TestFields {\n      * fp1, fp2, fp3, fp4 : false positives versions of the above\n      * ifp1, ifp2, ifp3 : interprocedural false positives\n      * itp1 : true versions of the ifp1\n-  */\n-\tObject x;\n-\tTestFields(Object x) {\n-\t\tthis.x = x;\n-\t}\n+     */\n+    Object x;\n+\n+    TestFields(Object x) {\n+        this.x = x;\n+    }\n+\n     int fp1(int level) {\n         x = null;\n-        if (level > 0)\n+        if (level > 0) {\n             x = new Object();\n-        if (level > 4)\n+        }\n+        if (level > 4) {\n             return x.hashCode();\n+        }\n         return 0;\n     }\n \n     int tp1(int level) {\n         x = null;\n-        if (level > 0)\n+        if (level > 0) {\n             x = new Object();\n-        if (level < 4)\n+        }\n+        if (level < 4) {\n             return x.hashCode();\n+        }\n         return 0;\n     }\n+\n     int fp2(boolean b) {\n         x = null;\n-        if (b)\n+        if (b) {\n             x = new Object();\n-        if (b)\n+        }\n+        if (b) {\n             return x.hashCode();\n+        }\n         return 0;\n     }\n+\n     int tp2(boolean b) {\n         x = null;\n-        if (b)\n+        if (b) {\n             x = new Object();\n-        if (!b)\n+        }\n+        if (!b) {\n             return x.hashCode();\n+        }\n         return 0;\n     }\n \n     int fp3() {\n         Object y = null;\n-        if (x != null)\n+        if (x != null) {\n             y = new Object();\n-        if (y != null)\n+        }\n+        if (y != null) {\n             return x.hashCode() + y.hashCode();\n-        else\n+        } else {\n             return 0;\n+        }\n     }\n+\n     int tp3() {\n-       \tObject y = null;\n-        if (x != null)\n+        Object y = null;\n+        if (x != null) {\n             y = new Object();\n-        if (y != null)\n+        }\n+        if (y != null) {\n             return x.hashCode() + y.hashCode();\n-        else\n+        } else {\n             return x.hashCode();\n+        }\n     }\n+\n     int tp4(boolean b) {\n-    \tx = null;\n+        x = null;\n         Object y = null;\n-        if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n-        if (y != null)\n+        if (b) {\n+            x = \"x\";\n+        }\n+        if (x != null) {\n+            y = \"y\";\n+        }\n+        if (y != null) {\n             return x.hashCode() + y.hashCode();\n-        else\n+        } else {\n             return x.hashCode();\n+        }\n     }\n+\n     int fp4(boolean b) {\n-       \tx = null;\n+        x = null;\n         Object y = null;\n-        if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n-        if (y != null)\n+        if (b) {\n+            x = \"x\";\n+        }\n+        if (x != null) {\n+            y = \"y\";\n+        }\n+        if (y != null) {\n             return x.hashCode() + y.hashCode();\n-        else\n+        } else {\n             return 0;\n+        }\n     }\n+\n     int tp5() {\n-    \tif (x == null) return x.hashCode();\n-    \treturn 0;\n+        if (x == null) {\n+            return x.hashCode();\n+        }\n+        return 0;\n     }\n-   \n+\n     int tp6() {\n-    \tif (x == null) {\n-    \t\tObject y = x;\n-    \t\treturn y.hashCode();\n-    \t}\n-    \treturn 0;\n+        if (x == null) {\n+            Object y = x;\n+            return y.hashCode();\n+        }\n+        return 0;\n     }\n \n \n     int itp1(boolean b) {\n         x = null;\n-        if (b) x = new Object();\n+        if (b) {\n+            x = new Object();\n+        }\n         return helper1(b);\n     }\n \n     int ifp1(boolean b) {\n         x = null;\n-        if (!b)x = new Object();\n-        return helper1(b); \n+        if (!b) {\n+            x = new Object();\n+        }\n+        return helper1(b);\n     }\n+\n     int itp2() {\n-    \tx = null;\n+        x = null;\n         return helper2();\n     }\n \n     int itp3(boolean b) {\n-    \tx = null;\n-        if (b) x = \"x\";   \n+        x = null;\n+        if (b) {\n+            x = \"x\";\n+        }\n         return helper3();\n     }\n+\n     // Bug when x is null and b is false\n     private int helper1(boolean b) {\n-        if (b)\n+        if (b) {\n             return 0;\n+        }\n         return x.hashCode();\n     }\n \n     private int helper2() {\n         return x.hashCode();\n     }\n+\n     private int helper3() {\n         return x.hashCode();\n     }\n",
+            "diff_size": 88
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "15",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/22/TestFields.java\nindex 5516cbb8b3a..ef09fc79c0e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/naturalize/22/TestFields.java\n@@ -10,11 +10,13 @@ public class TestFields {\n      * ifp1, ifp2, ifp3 : interprocedural false positives\n      * itp1 : true versions of the ifp1\n   */\n-\tObject x;\n+\n+    Object x;\n \tTestFields(Object x) {\n-\t\tthis.x = x;\n-\t}\n-    int fp1(int level) {\n+    this.x = x;\n+    }\n+\n+int fp1(int level) {\n         x = null;\n         if (level > 0)\n             x = new Object();\n@@ -58,8 +60,8 @@ public class TestFields {\n             return 0;\n     }\n     int tp3() {\n-       \tObject y = null;\n-        if (x != null)\n+    Object y = null;\n+if (x != null)\n             y = new Object();\n         if (y != null)\n             return x.hashCode() + y.hashCode();\n@@ -67,40 +69,41 @@ public class TestFields {\n             return x.hashCode();\n     }\n     int tp4(boolean b) {\n-    \tx = null;\n-        Object y = null;\n+    x = null;\n+Object y = null;\n         if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n+        if (x != null)\n+    y = \"y\";\n         if (y != null)\n             return x.hashCode() + y.hashCode();\n         else\n             return x.hashCode();\n     }\n     int fp4(boolean b) {\n-       \tx = null;\n-        Object y = null;\n+    x = null;\n+Object y = null;\n         if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n+        if (x != null)\n+    y = \"y\";\n         if (y != null)\n             return x.hashCode() + y.hashCode();\n         else\n             return 0;\n     }\n     int tp5() {\n-    \tif (x == null) return x.hashCode();\n+    if (x == null) return x.hashCode();\n     \treturn 0;\n     }\n-   \n-    int tp6() {\n-    \tif (x == null) {\n-    \t\tObject y = x;\n+\n+int tp6() {\n+    if (x == null) {\n+    Object y = x;\n     \t\treturn y.hashCode();\n-    \t}\n+    }\n     \treturn 0;\n     }\n \n-\n-    int itp1(boolean b) {\n+int itp1(boolean b) {\n         x = null;\n         if (b) x = new Object();\n         return helper1(b);\n@@ -108,18 +111,20 @@ public class TestFields {\n \n     int ifp1(boolean b) {\n         x = null;\n-        if (!b)x = new Object();\n+        if (!b)\n+    x = new Object();\n         return helper1(b); \n     }\n-    int itp2() {\n-    \tx = null;\n-        return helper2();\n+\n+int itp2() {\n+    x = null;\n+return helper2();\n     }\n \n     int itp3(boolean b) {\n-    \tx = null;\n-        if (b) x = \"x\";   \n-        return helper3();\n+    x = null;\n+if (b) x = \"x\";\n+    return helper3();\n     }\n     // Bug when x is null and b is false\n     private int helper1(boolean b) {\n@@ -131,7 +136,8 @@ public class TestFields {\n     private int helper2() {\n         return x.hashCode();\n     }\n-    private int helper3() {\n+\n+private int helper3() {\n         return x.hashCode();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/22/TestFields.java\nindex 5516cbb8b3a..c1e7c846040 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/codebuff/22/TestFields.java\n@@ -1,5 +1,6 @@\n package v2;\n \n+\n public class TestFields {\n     \n     /**\n@@ -10,10 +11,12 @@ public class TestFields {\n      * ifp1, ifp2, ifp3 : interprocedural false positives\n      * itp1 : true versions of the ifp1\n   */\n-\tObject x;\n-\tTestFields(Object x) {\n-\t\tthis.x = x;\n-\t}\n+    Object x;\n+\n+    TestFields(Object x) {\n+        this.x = x;\n+    }\n+\n     int fp1(int level) {\n         x = null;\n         if (level > 0)\n@@ -31,6 +34,7 @@ public class TestFields {\n             return x.hashCode();\n         return 0;\n     }\n+\n     int fp2(boolean b) {\n         x = null;\n         if (b)\n@@ -39,6 +43,7 @@ public class TestFields {\n             return x.hashCode();\n         return 0;\n     }\n+\n     int tp2(boolean b) {\n         x = null;\n         if (b)\n@@ -57,8 +62,9 @@ public class TestFields {\n         else\n             return 0;\n     }\n+\n     int tp3() {\n-       \tObject y = null;\n+        Object y = null;\n         if (x != null)\n             y = new Object();\n         if (y != null)\n@@ -66,72 +72,88 @@ public class TestFields {\n         else\n             return x.hashCode();\n     }\n+\n     int tp4(boolean b) {\n-    \tx = null;\n+        x = null;\n         Object y = null;\n-        if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n+        if (b)\n+            x = \"x\";\n+        if (x != null)\n+            y = \"y\";\n         if (y != null)\n             return x.hashCode() + y.hashCode();\n         else\n             return x.hashCode();\n     }\n+\n     int fp4(boolean b) {\n-       \tx = null;\n+        x = null;\n         Object y = null;\n-        if (b) x = \"x\";\n-        if (x != null) y = \"y\";\n+        if (b)\n+            x = \"x\";\n+        if (x != null)\n+            y = \"y\";\n         if (y != null)\n             return x.hashCode() + y.hashCode();\n         else\n             return 0;\n     }\n+\n     int tp5() {\n-    \tif (x == null) return x.hashCode();\n-    \treturn 0;\n+        if (x == null)\n+            return x.hashCode();\n+        return 0;\n     }\n-   \n+\n     int tp6() {\n-    \tif (x == null) {\n-    \t\tObject y = x;\n-    \t\treturn y.hashCode();\n-    \t}\n-    \treturn 0;\n+        if (x == null) {\n+            Object y = x;\n+            return y.hashCode();\n+        }\n+        return 0;\n     }\n \n-\n     int itp1(boolean b) {\n         x = null;\n-        if (b) x = new Object();\n+        if (b)\n+            x = new Object();\n         return helper1(b);\n     }\n \n     int ifp1(boolean b) {\n         x = null;\n-        if (!b)x = new Object();\n-        return helper1(b); \n+        if (!b)\n+            x = new Object();\n+        return helper1(b);\n     }\n+\n     int itp2() {\n-    \tx = null;\n+        x = null;\n         return helper2();\n     }\n \n     int itp3(boolean b) {\n-    \tx = null;\n-        if (b) x = \"x\";   \n+        x = null;\n+        if (b)\n+            x = \"x\";\n         return helper3();\n     }\n     // Bug when x is null and b is false\n+\n+\n     private int helper1(boolean b) {\n         if (b)\n             return 0;\n         return x.hashCode();\n     }\n \n+\n     private int helper2() {\n         return x.hashCode();\n     }\n+\n+\n     private int helper3() {\n         return x.hashCode();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 50
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "14",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/22/TestFields.java\nindex 5516cbb8b3a..bf003b7979b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/errored/1/22/TestFields.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/findbugsproject-findbugs/styler_random/22/TestFields.java\n@@ -10,7 +10,7 @@ public class TestFields {\n      * ifp1, ifp2, ifp3 : interprocedural false positives\n      * itp1 : true versions of the ifp1\n   */\n-\tObject x;\n+Object x;\n \tTestFields(Object x) {\n \t\tthis.x = x;\n \t}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

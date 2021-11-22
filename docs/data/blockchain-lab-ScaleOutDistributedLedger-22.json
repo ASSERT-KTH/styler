@@ -1,0 +1,221 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "22",
+    "information": {
+        "errors": [
+            {
+                "line": "56",
+                "column": "9",
+                "severity": "warning",
+                "message": "'if' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\tpublic Sha256Hash commitAbstract(BlockAbstract abs) {\n\t\tbyte[] hash = client.commit(abs);\n\t\tif(hash == null) {\n\t\t\tLog.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n\t\t\treturn null;\n\t\t} else {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "56",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/22/TendermintChain.java\nindex 465fd6e9e4e..3f3d8520f4a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/22/TendermintChain.java\n@@ -11,65 +11,65 @@ import nl.tudelft.blockchain.scaleoutdistributedledger.utils.Log;\n import java.util.logging.Level;\n \n public final class TendermintChain implements MainChain {\n-\tprivate ABCIServer handler;\n-\tprivate ABCIClient client;\n-\tprivate TSocket socket;\n+    private ABCIServer handler;\n+    private ABCIClient client;\n+    private TSocket socket;\n \n-\t/**\n-\t * Create and start the connection with Tendermint on the given address.\n-\t *\n-\t * @param addr - the address to connect to\n-\t */\n-\tpublic TendermintChain(String addr) {\n-\t\tSystem.out.println(\"Starting Tendermint cahin on \" + addr);\n-\t\tsocket = new TSocket();\n-\t\thandler = new ABCIServer();\n-\t\tclient = new ABCIClient(addr);\n+    /**\n+     * Create and start the connection with Tendermint on the given address.\n+     *\n+     * @param addr - the address to connect to\n+     */\n+    public TendermintChain(String addr) {\n+        System.out.println(\"Starting Tendermint cahin on \" + addr);\n+        socket = new TSocket();\n+        handler = new ABCIServer();\n+        client = new ABCIClient(addr);\n \n-\t\tsocket.registerListener(handler);\n+        socket.registerListener(handler);\n \n-\t\tThread t = new Thread(socket::start);\n-\t\tt.setName(\"Main Chain Socket\");\n-\t\tt.start();\n-\t}\n+        Thread t = new Thread(socket::start);\n+        t.setName(\"Main Chain Socket\");\n+        t.start();\n+    }\n \n-\t/**\n-\t * Stop the connection to Tendermint.\n-\t * Used for testing.\n-\t */\n-\tprotected void stop() {\n-\t\tsocket.stop();\n-\t}\n+    /**\n+     * Stop the connection to Tendermint.\n+     * Used for testing.\n+     */\n+    protected void stop() {\n+        socket.stop();\n+    }\n \n-\t@SneakyThrows //TODO: remove this method\n-\tpublic static void main(String[] args) {\n-\t\tTendermintChain tmchain = new TendermintChain(\"http://localhost:46657\");\n-\t\ttmchain.isPresent(null);\n-\t\twhile (true) {\n-\t\t\tThread.sleep(1000);\n-\t\t}\n-\t}\n+    @SneakyThrows //TODO: remove this method\n+    public static void main(String[] args) {\n+        TendermintChain tmchain = new TendermintChain(\"http://localhost:46657\");\n+        tmchain.isPresent(null);\n+        while (true) {\n+            Thread.sleep(1000);\n+        }\n+    }\n \n-\t@Override\n-\tpublic Sha256Hash commitAbstract(BlockAbstract abs) {\n-\t\tbyte[] hash = client.commit(abs);\n-\t\tif(hash == null) {\n-\t\t\tLog.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n-\t\t\treturn null;\n-\t\t} else {\n-\t\t\treturn Sha256Hash.withHash(hash);\n-\t\t}\n-\t}\n+    @Override\n+    public Sha256Hash commitAbstract(BlockAbstract abs) {\n+        byte[] hash = client.commit(abs);\n+        if (hash == null) {\n+            Log.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n+            return null;\n+        } else {\n+            return Sha256Hash.withHash(hash);\n+        }\n+    }\n \n-\t@Override\n-\tpublic boolean isPresent(BlockAbstract abs) {\n-\t\treturn client.query(null);\n-\t}\n+    @Override\n+    public boolean isPresent(BlockAbstract abs) {\n+        return client.query(null);\n+    }\n \n-\t@Override\n-\tpublic void connectTo(Node node) {\n-\t\tif (!client.connect(node.getAddress())) {\n-\t\t\tLog.log(Level.WARNING, \"Tendermint failed to connect to peer \" + node.getAddress());\n-\t\t}\n-\t}\n+    @Override\n+    public void connectTo(Node node) {\n+        if (!client.connect(node.getAddress())) {\n+            Log.log(Level.WARNING, \"Tendermint failed to connect to peer \" + node.getAddress());\n+        }\n+    }\n }\n",
+            "diff_size": 53
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "29",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'{' at column 38 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "29",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "45",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "76",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "76",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "36",
+                    "column": "86",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "'{' at column 24 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "44",
+                    "severity": "warning",
+                    "message": "'{' at column 41 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "117",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "49",
+                    "column": "141",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'{' at column 16 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "22",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "26",
+                    "severity": "warning",
+                    "message": "'{' at column 20 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "26",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "75",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'{' at column 41 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "75",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/22/TendermintChain.java\nindex 465fd6e9e4e..573ac10ef1d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/22/TendermintChain.java\n@@ -1,17 +1,23 @@\n package nl.tudelft.blockchain.scaleoutdistributedledger.model.mainchain.tendermint;\n \n import com.github.jtendermint.jabci.socket.TSocket;\n+\n import lombok.SneakyThrows;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.model.BlockAbstract;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.model.Node;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.model.Sha256Hash;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.model.mainchain.MainChain;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.utils.Log;\n \n import java.util.logging.Level;\n \n public final class TendermintChain implements MainChain {\n-\tprivate ABCIServer handler;\n+private ABCIServer handler;\n \tprivate ABCIClient client;\n \tprivate TSocket socket;\n \n@@ -20,56 +26,54 @@ public final class TendermintChain implements MainChain {\n \t *\n \t * @param addr - the address to connect to\n \t */\n-\tpublic TendermintChain(String addr) {\n-\t\tSystem.out.println(\"Starting Tendermint cahin on \" + addr);\n+\tpublic TendermintChain(String addr) {System.out.println(\"Starting Tendermint cahin on \" + addr);\n \t\tsocket = new TSocket();\n \t\thandler = new ABCIServer();\n \t\tclient = new ABCIClient(addr);\n \n \t\tsocket.registerListener(handler);\n \n-\t\tThread t = new Thread(socket::start);\n-\t\tt.setName(\"Main Chain Socket\");\n-\t\tt.start();\n-\t}\n+\t\tThread t = new Thread(socket::start);t.setName(\"Main Chain Socket\");t.start();\n+\n+}\n \n \t/**\n \t * Stop the connection to Tendermint.\n \t * Used for testing.\n \t */\n-\tprotected void stop() {\n-\t\tsocket.stop();\n-\t}\n+\tprotected void stop() {socket.stop();\n+\n+}\n \n \t@SneakyThrows //TODO: remove this method\n-\tpublic static void main(String[] args) {\n-\t\tTendermintChain tmchain = new TendermintChain(\"http://localhost:46657\");\n-\t\ttmchain.isPresent(null);\n-\t\twhile (true) {\n-\t\t\tThread.sleep(1000);\n-\t\t}\n-\t}\n+\tpublic static void main(String[] args) { TendermintChain tmchain = new TendermintChain(\"http://localhost:46657\");tmchain.isPresent(null);\n+\t\twhile (true) {Thread.sleep(1000);\n+\n+}\n+    }\n \n \t@Override\n \tpublic Sha256Hash commitAbstract(BlockAbstract abs) {\n-\t\tbyte[] hash = client.commit(abs);\n-\t\tif(hash == null) {\n-\t\t\tLog.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n+byte[] hash = client.commit(abs);\n+\t\tif(hash == null) {Log.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n \t\t\treturn null;\n-\t\t} else {\n-\t\t\treturn Sha256Hash.withHash(hash);\n-\t\t}\n-\t}\n+\n+} else {\n+return Sha256Hash.withHash(hash);\n+\n+}\n+    }\n \n \t@Override\n \tpublic boolean isPresent(BlockAbstract abs) {\n-\t\treturn client.query(null);\n-\t}\n+return client.query(null);\n+\n+}\n \n \t@Override\n \tpublic void connectTo(Node node) {\n-\t\tif (!client.connect(node.getAddress())) {\n-\t\t\tLog.log(Level.WARNING, \"Tendermint failed to connect to peer \" + node.getAddress());\n-\t\t}\n-\t}\n+if (!client.connect(node.getAddress())) {Log.log(Level.WARNING, \"Tendermint failed to connect to peer \" + node.getAddress());\n+\n }\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "56",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "56",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "16",
+                    "severity": "warning",
+                    "message": "'==' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/22/TendermintChain.java\nindex 465fd6e9e4e..1f491a78cce 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/22/TendermintChain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/22/TendermintChain.java\n@@ -53,7 +53,7 @@ public final class TendermintChain implements MainChain {\n \t@Override\n \tpublic Sha256Hash commitAbstract(BlockAbstract abs) {\n \t\tbyte[] hash = client.commit(abs);\n-\t\tif(hash == null) {\n+\t\tif(hash== null) {\n \t\t\tLog.log(Level.WARNING, \"Tendermint [COMMIT] failed\");\n \t\t\treturn null;\n \t\t} else {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

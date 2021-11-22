@@ -1,0 +1,81 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "237",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.bpmn.deployer;\n\nimport org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\nimport org.activiti.engine.impl.persistence.entity.ResourceEntity;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/237/ResourceNameUtil.java\nindex 50d61460696..13fde66c27e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/237/ResourceNameUtil.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.deployer;\n \n import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/237/ResourceNameUtil.java\nindex 50d61460696..9996d8c8c53 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/237/ResourceNameUtil.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.deployer;\n \n import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\n@@ -22,67 +23,67 @@ import java.util.Map;\n  * Static methods for working with BPMN and image resource names.\n  */\n public class ResourceNameUtil {\n-  \n-  public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { \"bpmn20.xml\", \"bpmn\" };\n-  public static final String[] DIAGRAM_SUFFIXES = new String[] { \"png\", \"jpg\", \"gif\", \"svg\" };\n \n-  public static String stripBpmnFileSuffix(String bpmnFileResource) {\n-    for (String suffix : BPMN_RESOURCE_SUFFIXES) {\n-      if (bpmnFileResource.endsWith(suffix)) {\n-        return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());\n-      }\n+    public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] {\"bpmn20.xml\", \"bpmn\"};\n+    public static final String[] DIAGRAM_SUFFIXES = new String[] {\"png\", \"jpg\", \"gif\", \"svg\"};\n+\n+    public static String stripBpmnFileSuffix(String bpmnFileResource) {\n+        for (String suffix : BPMN_RESOURCE_SUFFIXES) {\n+            if (bpmnFileResource.endsWith(suffix)) {\n+                return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());\n+            }\n+        }\n+        return bpmnFileResource;\n     }\n-    return bpmnFileResource;\n-  }\n \n-  public static String getProcessDiagramResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {\n-    String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(bpmnFileResource);\n-    return bpmnFileResourceBase + processKey + \".\" + diagramSuffix;\n-  }\n-  \n-  /**\n-   * Finds the name of a resource for the diagram for a process definition.  Assumes that the\n-   * process definition's key and (BPMN) resource name are already set.\n-   *\n-   * <p>It will first look for an image resource which matches the process specifically, before\n-   * resorting to an image resource which matches the BPMN 2.0 xml file resource.\n-   *\n-   * <p>Example: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml'\n-   * containing only one process with key 'myProcess', then this method will look for an image resources\n-   * called'abc.myProcess.png' (or .jpg, or .gif, etc.) or 'abc.png' if the previous one wasn't\n-   * found.\n-   *\n-   * <p>Example 2: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml'\n-   * containing three processes (with keys a, b and c), then this method will first look for an image resource\n-   * called 'abc.a.png' before looking for 'abc.png' (likewise for b and c). Note that if abc.a.png,\n-   * abc.b.png and abc.c.png don't exist, all processes will have the same image: abc.png.\n-   *\n-   * @return name of an existing resource, or null if no matching image resource is found in the resources.\n-   */\n-  public static String getProcessDiagramResourceNameFromDeployment(\n-      ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {\n-    \n-    if (StringUtils.isEmpty(processDefinition.getResourceName())) {\n-      throw new IllegalStateException(\"Provided process definition must have its resource name set.\");\n+    public static String getProcessDiagramResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {\n+        String bpmnFileResourceBase = ResourceNameUtil.stripBpmnFileSuffix(bpmnFileResource);\n+        return bpmnFileResourceBase + processKey + \".\" + diagramSuffix;\n     }\n-    \n-    String bpmnResourceBase = stripBpmnFileSuffix(processDefinition.getResourceName());\n-    String key = processDefinition.getKey();\n-    \n-    for (String diagramSuffix : DIAGRAM_SUFFIXES) {\n-      String possibleName = bpmnResourceBase + key + \".\" + diagramSuffix;\n-      if (resources.containsKey(possibleName)) {\n-        return possibleName;\n-      }\n-      \n-      possibleName = bpmnResourceBase + diagramSuffix;\n-      if (resources.containsKey(possibleName)) {\n-        return possibleName;\n-      }\n+\n+    /**\n+     * Finds the name of a resource for the diagram for a process definition.  Assumes that the\n+     * process definition's key and (BPMN) resource name are already set.\n+     *\n+     * <p>It will first look for an image resource which matches the process specifically, before\n+     * resorting to an image resource which matches the BPMN 2.0 xml file resource.\n+     *\n+     * <p>Example: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml'\n+     * containing only one process with key 'myProcess', then this method will look for an image resources\n+     * called'abc.myProcess.png' (or .jpg, or .gif, etc.) or 'abc.png' if the previous one wasn't\n+     * found.\n+     *\n+     * <p>Example 2: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml'\n+     * containing three processes (with keys a, b and c), then this method will first look for an image resource\n+     * called 'abc.a.png' before looking for 'abc.png' (likewise for b and c). Note that if abc.a.png,\n+     * abc.b.png and abc.c.png don't exist, all processes will have the same image: abc.png.\n+     *\n+     * @return name of an existing resource, or null if no matching image resource is found in the resources.\n+     */\n+    public static String getProcessDiagramResourceNameFromDeployment(\n+            ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {\n+\n+        if (StringUtils.isEmpty(processDefinition.getResourceName())) {\n+            throw new IllegalStateException(\"Provided process definition must have its resource name set.\");\n+        }\n+\n+        String bpmnResourceBase = stripBpmnFileSuffix(processDefinition.getResourceName());\n+        String key = processDefinition.getKey();\n+\n+        for (String diagramSuffix : DIAGRAM_SUFFIXES) {\n+            String possibleName = bpmnResourceBase + key + \".\" + diagramSuffix;\n+            if (resources.containsKey(possibleName)) {\n+                return possibleName;\n+            }\n+\n+            possibleName = bpmnResourceBase + diagramSuffix;\n+            if (resources.containsKey(possibleName)) {\n+                return possibleName;\n+            }\n+        }\n+\n+        return null;\n     }\n-    \n-    return null;\n-  }\n-  \n+\n }\n \n",
+            "diff_size": 94
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "25",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "29",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/237/ResourceNameUtil.java\nindex 50d61460696..28ce33e81b0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/237/ResourceNameUtil.java\n@@ -15,21 +15,22 @@ package org.activiti.engine.impl.bpmn.deployer;\n import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\n import org.activiti.engine.impl.persistence.entity.ResourceEntity;\n import org.apache.commons.lang3.StringUtils;\n-\n import java.util.Map;\n \n /**\n  * Static methods for working with BPMN and image resource names.\n  */\n+\n+\n public class ResourceNameUtil {\n-  \n+\n   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { \"bpmn20.xml\", \"bpmn\" };\n   public static final String[] DIAGRAM_SUFFIXES = new String[] { \"png\", \"jpg\", \"gif\", \"svg\" };\n-\n   public static String stripBpmnFileSuffix(String bpmnFileResource) {\n     for (String suffix : BPMN_RESOURCE_SUFFIXES) {\n       if (bpmnFileResource.endsWith(suffix)) {\n-        return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());\n+        return bpmnFileResource.substring(0,\n+                                          bpmnFileResource.length() - suffix.length());\n       }\n     }\n     return bpmnFileResource;\n@@ -59,30 +60,24 @@ public class ResourceNameUtil {\n    *\n    * @return name of an existing resource, or null if no matching image resource is found in the resources.\n    */\n-  public static String getProcessDiagramResourceNameFromDeployment(\n-      ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {\n-    \n+\n+  public static String getProcessDiagramResourceNameFromDeployment(ProcessDefinitionEntity processDefinition, Map<String, ResourceEntity> resources) {\n     if (StringUtils.isEmpty(processDefinition.getResourceName())) {\n       throw new IllegalStateException(\"Provided process definition must have its resource name set.\");\n     }\n-    \n+\n     String bpmnResourceBase = stripBpmnFileSuffix(processDefinition.getResourceName());\n     String key = processDefinition.getKey();\n-    \n     for (String diagramSuffix : DIAGRAM_SUFFIXES) {\n-      String possibleName = bpmnResourceBase + key + \".\" + diagramSuffix;\n-      if (resources.containsKey(possibleName)) {\n-        return possibleName;\n-      }\n-      \n-      possibleName = bpmnResourceBase + diagramSuffix;\n-      if (resources.containsKey(possibleName)) {\n-        return possibleName;\n-      }\n+        String possibleName = bpmnResourceBase + key + \".\" + diagramSuffix;\n+        if (resources.containsKey(possibleName)) {\n+          return possibleName;\n+        }\n+        possibleName = bpmnResourceBase + diagramSuffix;\n+        if (resources.containsKey(possibleName)) {\n+          return possibleName;\n+        }\n     }\n-    \n     return null;\n   }\n-  \n-}\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/237/ResourceNameUtil.java\nindex 50d61460696..13fde66c27e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/237/ResourceNameUtil.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.deployer;\n \n import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/237/ResourceNameUtil.java\nindex 50d61460696..13fde66c27e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/237/ResourceNameUtil.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/237/ResourceNameUtil.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.deployer;\n \n import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

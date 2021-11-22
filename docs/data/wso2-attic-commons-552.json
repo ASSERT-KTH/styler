@@ -1,0 +1,82 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "552",
+    "information": {
+        "errors": [
+            {
+                "line": "99",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 130).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                .append(\"@\").append(CARBON_CLIENT_ID)\n                .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n                .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n                .toString();\n    }\n ",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/552/ObjectMessageProducer.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/552/ObjectMessageProducer.java\nindex d06b3c6b90e..8203aaf5e2f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/552/ObjectMessageProducer.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/552/ObjectMessageProducer.java\n@@ -21,84 +21,82 @@ import javax.naming.NamingException;\n import java.io.Serializable;\n import java.util.Properties;\n \n-class Employee implements java.io.Serializable\n-{\n-   public String name;\n-   public String address;\n-   public transient int SSN;\n-   public int number;\n-   public void mailCheck()\n-   {\n-      System.out.println(\"Mailing a check to \" + name\n-                           + \" \" + address);\n-   }\n+class Employee implements java.io.Serializable {\n+  public String name;\n+  public String address;\n+  public transient int SSN;\n+  public int number;\n+\n+  public void mailCheck() {\n+    System.out.println(\"Mailing a check to \" + name\n+      + \" \" + address);\n+  }\n }\n \n public class ObjectMessageProducer {\n-\t\n-\tpublic static final String QPID_ICF = \"org.wso2.andes.jndi.PropertiesFileInitialContextFactory\";\n-    private static final String CF_NAME_PREFIX = \"connectionfactory.\";\n-    private static final String QUEUE_NAME_PREFIX = \"queue.\";\n-    private static final String CF_NAME = \"qpidConnectionfactory\";\n-    String userName = \"admin\"; \n-    String password = \"admin\";\n-    private static String CARBON_CLIENT_ID = \"carbon\";\n-    private static String CARBON_VIRTUAL_HOST_NAME = \"carbon\";\n-    private static String CARBON_DEFAULT_HOSTNAME = \"localhost\";\n-    private static String CARBON_DEFAULT_PORT = \"5672\";\n-    String topicName = \"SimpleStockQuoteService\";\n-\n-\n- \n-    public static void main(String[] args) throws NamingException, JMSException {\n-    \tObjectMessageProducer queueSender = new ObjectMessageProducer();\n-        queueSender.sendMessages();\n+\n+  public static final String QPID_ICF = \"org.wso2.andes.jndi.PropertiesFileInitialContextFactory\";\n+  private static final String CF_NAME_PREFIX = \"connectionfactory.\";\n+  private static final String QUEUE_NAME_PREFIX = \"queue.\";\n+  private static final String CF_NAME = \"qpidConnectionfactory\";\n+  String userName = \"admin\";\n+  String password = \"admin\";\n+  private static String CARBON_CLIENT_ID = \"carbon\";\n+  private static String CARBON_VIRTUAL_HOST_NAME = \"carbon\";\n+  private static String CARBON_DEFAULT_HOSTNAME = \"localhost\";\n+  private static String CARBON_DEFAULT_PORT = \"5672\";\n+  String topicName = \"SimpleStockQuoteService\";\n+\n+\n+  public static void main(String[] args) throws NamingException, JMSException {\n+    ObjectMessageProducer queueSender = new ObjectMessageProducer();\n+    queueSender.sendMessages();\n+  }\n+\n+  public void sendMessages() throws NamingException, JMSException {\n+\n+    Properties properties = new Properties();\n+    properties.put(Context.INITIAL_CONTEXT_FACTORY, QPID_ICF);\n+    properties.put(CF_NAME_PREFIX + CF_NAME, getTCPConnectionURL(userName, password));\n+    System.out.println(\"getTCPConnectionURL(userName,password) = \" + getTCPConnectionURL(userName, password));\n+    InitialContext ctx = new InitialContext(properties);\n+    // Lookup connection factory\n+    TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(CF_NAME);\n+    TopicConnection topicConnection = connFactory.createTopicConnection();\n+    topicConnection.start();\n+    TopicSession topicSession = topicConnection.createTopicSession(false, QueueSession.AUTO_ACKNOWLEDGE);\n+    // Send message\n+    Topic topic = topicSession.createTopic(topicName);\n+    javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n+\n+\n+    //sending 100 messages to the above created queue here\n+    for (int i = 1; i <= 100; i = i + 1) {\n+\n+\n+      ObjectMessage message = topicSession.createObjectMessage();\n+      Serializable abc = new Employee();\n+      message.setObject(abc);\n+\n+      topicPublisher.send(message);\n+\n     }\n-    \n-    public void sendMessages() throws NamingException, JMSException {\n-    \t\n-    \tProperties properties = new Properties();\n-        properties.put(Context.INITIAL_CONTEXT_FACTORY, QPID_ICF);\n-        properties.put(CF_NAME_PREFIX + CF_NAME, getTCPConnectionURL(userName, password));\n-        System.out.println(\"getTCPConnectionURL(userName,password) = \" + getTCPConnectionURL(userName, password));\n-        InitialContext ctx = new InitialContext(properties);\n-        // Lookup connection factory\n-        TopicConnectionFactory connFactory = (TopicConnectionFactory) ctx.lookup(CF_NAME);\n-        TopicConnection topicConnection = connFactory.createTopicConnection();\n-        topicConnection.start();\n-        TopicSession topicSession = topicConnection.createTopicSession(false, QueueSession.AUTO_ACKNOWLEDGE);\n-        // Send message\n-        Topic topic = topicSession.createTopic(topicName);\n-        javax.jms.TopicPublisher topicPublisher = topicSession.createPublisher(topic);\n-\t\n-\t\n-\t//sending 100 messages to the above created queue here\n-\tfor(int i=1;i<=100;i=i+1){\n-\t\t\n-\t\t\n-\t\tObjectMessage message = topicSession.createObjectMessage();\n-\t\tSerializable abc=new Employee();\n-\t     message.setObject(abc);\n-         \n-\t     topicPublisher.send(message);\n-\t      \n-     }\n-\n-\ttopicSession.close();\n+\n+    topicSession.close();\n     topicConnection.close();\n \n \n+  }\n+\n+  public String getTCPConnectionURL(String username, String password) {\n+    // amqp://{username}:{password}@carbon/carbon?brokerlist='tcp://{hostname}:{port}'\n+    return new StringBuffer()\n+      .append(\"amqp://\").append(username).append(\":\").append(password)\n+      .append(\"@\").append(CARBON_CLIENT_ID)\n+      .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n+      .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n+      .toString();\n+  }\n \n-    }\n-    public String getTCPConnectionURL(String username, String password) {\n-        // amqp://{username}:{password}@carbon/carbon?brokerlist='tcp://{hostname}:{port}'\n-        return new StringBuffer()\n-                .append(\"amqp://\").append(username).append(\":\").append(password)\n-                .append(\"@\").append(CARBON_CLIENT_ID)\n-                .append(\"/\").append(CARBON_VIRTUAL_HOST_NAME)\n-                .append(\"?brokerlist='tcp://\").append(CARBON_DEFAULT_HOSTNAME).append(\":\").append(CARBON_DEFAULT_PORT).append(\"'\")\n-                .toString();\n-    }\n- \n \n }\n",
+            "diff_size": 110
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "99",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

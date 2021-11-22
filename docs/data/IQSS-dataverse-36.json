@@ -1,0 +1,96 @@
+{
+    "project_name": "IQSS-dataverse",
+    "error_id": "36",
+    "information": {
+        "errors": [
+            {
+                "line": "26",
+                "column": "1",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    \n\n\tprivate final DatasetFieldType dsfType;\n\tprivate final Dataset dataset;\n\t\n\tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..74667c2f506 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler/36/SetDatasetCitationDateCommand.java\n@@ -21,9 +21,8 @@ import org.apache.solr.client.solrj.SolrServerException;\n  */\n @RequiredPermissions( Permission.PublishDataset )\n public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n \n-\tprivate final DatasetFieldType dsfType;\n+    private final DatasetFieldType dsfType;\n \tprivate final Dataset dataset;\n \t\n \tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..b051a8c446a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/intellij/36/SetDatasetCitationDateCommand.java\n@@ -16,48 +16,49 @@ import java.util.concurrent.Future;\n import org.apache.solr.client.solrj.SolrServerException;\n \n /**\n- *\n  * @author gdurand\n  */\n-@RequiredPermissions( Permission.PublishDataset )\n-public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n-\n-\tprivate final DatasetFieldType dsfType;\n-\tprivate final Dataset dataset;\n-\t\n-\tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n-\t\tsuper( aRequest, dataset );\n-\t\tthis.dataset = dataset;\n-\t\tthis.dsfType = dsfType;\n-\t}\n-\t\n-\t@Override\n-\tpublic Dataset execute(CommandContext ctxt) throws CommandException {\n-            if ( dsfType == null || dsfType.getFieldType().equals(FieldType.DATE) ) {\n-                dataset.setCitationDateDatasetFieldType(dsfType);           \n-            } else {\n-                throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n-            }\n-            \n-            Dataset savedDataset = ctxt.datasets().merge(dataset);\n-            return savedDataset;\n-\t}\n-        \n-    @Override\n-    public boolean onSuccess(CommandContext ctxt, Object r) {\n-        boolean retVal = true;\n-        Dataset dataset = (Dataset) r;\n-\n-        try {\n-            Future<String> indexString = ctxt.index().indexDataset(dataset, false);\n-        } catch (IOException | SolrServerException e) {\n-            String failureLogText = \"Post set dataset citation date indexing failed. You can kickoff a re-index of this dataset with: \\r\\n curl http://localhost:8080/api/admin/index/datasets/\" + dataset.getId().toString();\n-            failureLogText += \"\\r\\n\" + e.getLocalizedMessage();\n-            LoggingUtil.writeOnSuccessFailureLog(this, failureLogText, dataset);\n-            retVal = false;\n-        }\n-        return retVal;\n-    }\t\n+@RequiredPermissions(Permission.PublishDataset)\n+public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset> {\n+\n+\n+  private final DatasetFieldType dsfType;\n+  private final Dataset dataset;\n+\n+  public SetDatasetCitationDateCommand(DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType) {\n+    super(aRequest, dataset);\n+    this.dataset = dataset;\n+    this.dsfType = dsfType;\n+  }\n+\n+  @Override\n+  public Dataset execute(CommandContext ctxt) throws CommandException {\n+    if (dsfType == null || dsfType.getFieldType().equals(FieldType.DATE)) {\n+      dataset.setCitationDateDatasetFieldType(dsfType);\n+    } else {\n+      throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n+    }\n+\n+    Dataset savedDataset = ctxt.datasets().merge(dataset);\n+    return savedDataset;\n+  }\n+\n+  @Override\n+  public boolean onSuccess(CommandContext ctxt, Object r) {\n+    boolean retVal = true;\n+    Dataset dataset = (Dataset) r;\n+\n+    try {\n+      Future<String> indexString = ctxt.index().indexDataset(dataset, false);\n+    } catch (IOException | SolrServerException e) {\n+      String failureLogText =\n+        \"Post set dataset citation date indexing failed. You can kickoff a re-index of this dataset with: \\r\\n curl http://localhost:8080/api/admin/index/datasets/\" +\n+          dataset.getId().toString();\n+      failureLogText += \"\\r\\n\" + e.getLocalizedMessage();\n+      LoggingUtil.writeOnSuccessFailureLog(this, failureLogText, dataset);\n+      retVal = false;\n+    }\n+    return retVal;\n+  }\n }\n \n",
+            "diff_size": 43
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/naturalize/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..5db3d414db3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/naturalize/36/SetDatasetCitationDateCommand.java\n@@ -21,30 +21,30 @@ import org.apache.solr.client.solrj.SolrServerException;\n  */\n @RequiredPermissions( Permission.PublishDataset )\n public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n \n-\tprivate final DatasetFieldType dsfType;\n+        private final DatasetFieldType dsfType;\n \tprivate final Dataset dataset;\n-\t\n-\tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n-\t\tsuper( aRequest, dataset );\n+\n+public SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n+\t\tsuper(aRequest, dataset );\n \t\tthis.dataset = dataset;\n \t\tthis.dsfType = dsfType;\n-\t}\n-\t\n-\t@Override\n-\tpublic Dataset execute(CommandContext ctxt) throws CommandException {\n-            if ( dsfType == null || dsfType.getFieldType().equals(FieldType.DATE) ) {\n-                dataset.setCitationDateDatasetFieldType(dsfType);           \n-            } else {\n-                throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n+    }\n+\n+@Override\n+public Dataset execute(CommandContext ctxt) throws CommandException {\n+    if ( dsfType == null || dsfType.getFieldType().equals(FieldType.DATE) ) {\n+                dataset.setCitationDateDatasetFieldType(dsfType);\n+    } else {\n+    throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n             }\n             \n             Dataset savedDataset = ctxt.datasets().merge(dataset);\n             return savedDataset;\n-\t}\n-        \n-    @Override\n+    }\n+\n+\n+        @Override\n     public boolean onSuccess(CommandContext ctxt, Object r) {\n         boolean retVal = true;\n         Dataset dataset = (Dataset) r;\n@@ -58,6 +58,5 @@ public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n             retVal = false;\n         }\n         return retVal;\n-    }\t\n-}\n-\n+    }\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 20
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..43b8aa65f37 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/codebuff/36/SetDatasetCitationDateCommand.java\n@@ -19,36 +19,36 @@ import org.apache.solr.client.solrj.SolrServerException;\n  *\n  * @author gdurand\n  */\n-@RequiredPermissions( Permission.PublishDataset )\n-public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n-\n-\tprivate final DatasetFieldType dsfType;\n-\tprivate final Dataset dataset;\n-\t\n-\tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n-\t\tsuper( aRequest, dataset );\n-\t\tthis.dataset = dataset;\n-\t\tthis.dsfType = dsfType;\n-\t}\n-\t\n-\t@Override\n-\tpublic Dataset execute(CommandContext ctxt) throws CommandException {\n-            if ( dsfType == null || dsfType.getFieldType().equals(FieldType.DATE) ) {\n-                dataset.setCitationDateDatasetFieldType(dsfType);           \n-            } else {\n-                throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n-            }\n-            \n-            Dataset savedDataset = ctxt.datasets().merge(dataset);\n-            return savedDataset;\n-\t}\n-        \n+\n+\n+@RequiredPermissions(Permission.PublishDataset)\n+public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset> {\n+\n+    private final DatasetFieldType dsfType;\n+    private final Dataset dataset;\n+\n+    public SetDatasetCitationDateCommand(DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType) {\n+        super(aRequest, dataset);\n+        this.dataset = dataset;\n+        this.dsfType = dsfType;\n+    }\n+\n+    @Override\n+    public Dataset execute(CommandContext ctxt) throws CommandException {\n+        if (dsfType == null || dsfType.getFieldType().equals(FieldType.DATE)) {\n+            dataset.setCitationDateDatasetFieldType(dsfType);\n+        } else {\n+            throw new IllegalCommandException(\"Provided DatasetFieldtype is not a Date\", this);\n+        }\n+\n+        Dataset savedDataset = ctxt.datasets().merge(dataset);\n+        return savedDataset;\n+    }\n+\n     @Override\n     public boolean onSuccess(CommandContext ctxt, Object r) {\n         boolean retVal = true;\n         Dataset dataset = (Dataset) r;\n-\n         try {\n             Future<String> indexString = ctxt.index().indexDataset(dataset, false);\n         } catch (IOException | SolrServerException e) {\n@@ -58,6 +58,6 @@ public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n             retVal = false;\n         }\n         return retVal;\n-    }\t\n-}\n+    }\n \n+}\n\\ No newline at end of file\n",
+            "diff_size": 30
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..74667c2f506 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_random/36/SetDatasetCitationDateCommand.java\n@@ -21,9 +21,8 @@ import org.apache.solr.client.solrj.SolrServerException;\n  */\n @RequiredPermissions( Permission.PublishDataset )\n public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n \n-\tprivate final DatasetFieldType dsfType;\n+    private final DatasetFieldType dsfType;\n \tprivate final Dataset dataset;\n \t\n \tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/36/SetDatasetCitationDateCommand.java\nindex fe14d56562d..74667c2f506 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/errored/1/36/SetDatasetCitationDateCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/IQSS-dataverse/styler_three_grams/36/SetDatasetCitationDateCommand.java\n@@ -21,9 +21,8 @@ import org.apache.solr.client.solrj.SolrServerException;\n  */\n @RequiredPermissions( Permission.PublishDataset )\n public class SetDatasetCitationDateCommand extends AbstractCommand<Dataset>{\n-    \n \n-\tprivate final DatasetFieldType dsfType;\n+    private final DatasetFieldType dsfType;\n \tprivate final Dataset dataset;\n \t\n \tpublic SetDatasetCitationDateCommand( DataverseRequest aRequest, Dataset dataset, DatasetFieldType dsfType ) {\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

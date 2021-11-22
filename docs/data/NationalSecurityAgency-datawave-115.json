@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "115",
+    "information": {
+        "errors": [
+            {
+                "line": "14",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import org.apache.accumulo.core.client.AccumuloClient;\nimport org.apache.accumulo.core.client.TableNotFoundException;\nimport org.apache.accumulo.core.conf.ClientProperty;\nimport org.apache.accumulo.core.data.Range;\nimport org.apache.accumulo.core.security.Authorizations;\nimport org.apache.commons.lang.builder.HashCodeBuilder;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/115/RfileResource.java\nindex 3c186048630..5c844b78bf5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/115/RfileResource.java\n@@ -24,104 +24,107 @@ import com.google.common.collect.Lists;\n import com.google.common.collect.Sets;\n \n public class RfileResource extends BatchResource {\n-    \n-    private static final Logger log = Logger.getLogger(RfileResource.class);\n-    \n-    Configuration conf;\n-    \n-    protected RfileResource(AccumuloClient client) {\n-        super(client);\n-    }\n-    \n-    public RfileResource(AccumuloResource copy) {\n-        super(copy);\n-    }\n-    \n-    /**\n-     * Initializes the scanner resource\n-     * \n-     * @param auths\n-     * @param tableName\n-     * @throws TableNotFoundException\n-     * \n-     */\n-    @Override\n-    protected void init(final String tableName, final Set<Authorizations> auths, Collection<Range> currentRange) throws TableNotFoundException {\n-        Preconditions.checkNotNull(tableName);\n-        Preconditions.checkArgument(null != currentRange && !currentRange.isEmpty());\n-        \n-        // copy the appropriate variables.\n-        ranges = Lists.newArrayList(currentRange);\n-        \n-        this.tableName = tableName;\n-        \n-        this.auths = Sets.newHashSet(auths);\n-        \n-        if (log.isTraceEnabled())\n-            log.trace(\"Creating scanner resource from \" + tableName + \" \" + auths + \" \" + currentRange);\n-        \n-        internalTimer = new StopWatch();\n-        internalTimer.start();\n-        \n-        // let's pre-compute the hashcode.\n-        hashCode += new HashCodeBuilder().append(tableName).append(auths).append(ranges).toHashCode();\n-        \n-        conf = new Configuration();\n-        \n-        AccumuloClient client = getClient();\n-        \n-        Properties clientProperties = client.properties();\n-        final String instanceName = clientProperties.getProperty(ClientProperty.INSTANCE_NAME.getKey());\n-        final String zookeepers = clientProperties.getProperty(ClientProperty.INSTANCE_ZOOKEEPERS.getKey());\n-        \n-        AccumuloHelper.setInstanceName(conf, instanceName);\n-        AccumuloHelper.setUsername(conf, client.whoami());\n-        \n-        AccumuloHelper.setZooKeepers(conf, zookeepers);\n-        BulkInputFormat.setZooKeeperInstance(conf, instanceName, zookeepers);\n-        \n-        conf.set(MultiRfileInputformat.CACHE_METADATA, \"true\");\n-        \n-        baseScanner = new RfileScanner(client, conf, tableName, auths, 1);\n-        ((RfileScanner) baseScanner).setRanges(currentRange);\n-        \n+\n+  private static final Logger log = Logger.getLogger(RfileResource.class);\n+\n+  Configuration conf;\n+\n+  protected RfileResource(AccumuloClient client) {\n+    super(client);\n+  }\n+\n+  public RfileResource(AccumuloResource copy) {\n+    super(copy);\n+  }\n+\n+  /**\n+   * Initializes the scanner resource\n+   *\n+   * @param auths\n+   * @param tableName\n+   * @throws TableNotFoundException\n+   */\n+  @Override\n+  protected void init(final String tableName, final Set<Authorizations> auths, Collection<Range> currentRange)\n+      throws TableNotFoundException {\n+    Preconditions.checkNotNull(tableName);\n+    Preconditions.checkArgument(null != currentRange && !currentRange.isEmpty());\n+\n+    // copy the appropriate variables.\n+    ranges = Lists.newArrayList(currentRange);\n+\n+    this.tableName = tableName;\n+\n+    this.auths = Sets.newHashSet(auths);\n+\n+    if (log.isTraceEnabled()) {\n+      log.trace(\"Creating scanner resource from \" + tableName + \" \" + auths + \" \" + currentRange);\n     }\n-    \n-    /**\n-     * Sets the option on this currently running resource.\n-     * \n-     * @param options\n-     * @return\n-     */\n-    @Override\n-    public AccumuloResource setOptions(SessionOptions options) {\n-        super.setOptions(options);\n-        \n-        if (log.isDebugEnabled()) {\n-            log.debug(\"Setting Options\");\n-        }\n-        if (null != options.getConfiguration() && null != options.getConfiguration().getAccumuloPassword()) {\n-            if (log.isDebugEnabled()) {\n-                log.debug(\"Setting and configuration\");\n-            }\n-            AccumuloHelper.setPassword(conf, options.getConfiguration().getAccumuloPassword().getBytes());\n-            BulkInputFormat.setMemoryInput(conf, getClient().whoami(), options.getConfiguration().getAccumuloPassword().getBytes(), tableName, auths.iterator()\n-                            .next());\n-            ((RfileScanner) baseScanner).setConfiguration(conf);\n-        }\n-        return this;\n+\n+    internalTimer = new StopWatch();\n+    internalTimer.start();\n+\n+    // let's pre-compute the hashcode.\n+    hashCode += new HashCodeBuilder().append(tableName).append(auths).append(ranges).toHashCode();\n+\n+    conf = new Configuration();\n+\n+    AccumuloClient client = getClient();\n+\n+    Properties clientProperties = client.properties();\n+    final String instanceName = clientProperties.getProperty(ClientProperty.INSTANCE_NAME.getKey());\n+    final String zookeepers = clientProperties.getProperty(ClientProperty.INSTANCE_ZOOKEEPERS.getKey());\n+\n+    AccumuloHelper.setInstanceName(conf, instanceName);\n+    AccumuloHelper.setUsername(conf, client.whoami());\n+\n+    AccumuloHelper.setZooKeepers(conf, zookeepers);\n+    BulkInputFormat.setZooKeeperInstance(conf, instanceName, zookeepers);\n+\n+    conf.set(MultiRfileInputformat.CACHE_METADATA, \"true\");\n+\n+    baseScanner = new RfileScanner(client, conf, tableName, auths, 1);\n+    ((RfileScanner) baseScanner).setRanges(currentRange);\n+\n+  }\n+\n+  /**\n+   * Sets the option on this currently running resource.\n+   *\n+   * @param options\n+   * @return\n+   */\n+  @Override\n+  public AccumuloResource setOptions(SessionOptions options) {\n+    super.setOptions(options);\n+\n+    if (log.isDebugEnabled()) {\n+      log.debug(\"Setting Options\");\n     }\n-    \n-    @Override\n-    public String toString() {\n-        \n-        //@formatter:off\n-        String builder = \"RFileScanner\" + \" \" +\n-                \"tableName=\" + tableName + \" \" +\n-                \"auths=\" + auths + \" \" +\n-                \"ranges=\" + ranges + \" \";\n-        //@formatter:on\n-        return builder;\n-        \n+    if (null != options.getConfiguration() && null != options.getConfiguration().getAccumuloPassword()) {\n+      if (log.isDebugEnabled()) {\n+        log.debug(\"Setting and configuration\");\n+      }\n+      AccumuloHelper.setPassword(conf, options.getConfiguration().getAccumuloPassword().getBytes());\n+      BulkInputFormat\n+          .setMemoryInput(conf, getClient().whoami(), options.getConfiguration().getAccumuloPassword().getBytes(),\n+              tableName, auths.iterator()\n+                  .next());\n+      ((RfileScanner) baseScanner).setConfiguration(conf);\n     }\n+    return this;\n+  }\n+\n+  @Override\n+  public String toString() {\n+\n+    //@formatter:off\n+    String builder = \"RFileScanner\" + \" \" +\n+        \"tableName=\" + tableName + \" \" +\n+        \"auths=\" + auths + \" \" +\n+        \"ranges=\" + ranges + \" \";\n+    //@formatter:on\n+    return builder;\n+\n+  }\n }\n",
+            "diff_size": 128
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/115/RfileResource.java\nindex 3c186048630..10501c75022 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/115/RfileResource.java\n@@ -124,4 +124,4 @@ public class RfileResource extends BatchResource {\n         return builder;\n         \n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "12",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/115/RfileResource.java\nindex 3c186048630..647af0a1f22 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/115/RfileResource.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/115/RfileResource.java\n@@ -3,12 +3,10 @@ package datawave.mr.bulk;\n import java.util.Collection;\n import java.util.Properties;\n import java.util.Set;\n-\n import datawave.ingest.data.config.ingest.AccumuloHelper;\n import datawave.query.tables.AccumuloResource;\n import datawave.query.tables.BatchResource;\n import datawave.query.tables.SessionOptions;\n-\n import org.apache.accumulo.core.client.AccumuloClient;\n import org.apache.accumulo.core.client.TableNotFoundException;\n import org.apache.accumulo.core.conf.ClientProperty;\n@@ -18,21 +16,19 @@ import org.apache.commons.lang.builder.HashCodeBuilder;\n import org.apache.commons.lang.time.StopWatch;\n import org.apache.hadoop.conf.Configuration;\n import org.apache.log4j.Logger;\n-\n import com.google.common.base.Preconditions;\n import com.google.common.collect.Lists;\n import com.google.common.collect.Sets;\n \n+\n public class RfileResource extends BatchResource {\n-    \n     private static final Logger log = Logger.getLogger(RfileResource.class);\n-    \n     Configuration conf;\n-    \n+\n     protected RfileResource(AccumuloClient client) {\n         super(client);\n     }\n-    \n+\n     public RfileResource(AccumuloResource copy) {\n         super(copy);\n     }\n@@ -45,6 +41,7 @@ public class RfileResource extends BatchResource {\n      * @throws TableNotFoundException\n      * \n      */\n+\n     @Override\n     protected void init(final String tableName, final Set<Authorizations> auths, Collection<Range> currentRange) throws TableNotFoundException {\n         Preconditions.checkNotNull(tableName);\n@@ -52,39 +49,28 @@ public class RfileResource extends BatchResource {\n         \n         // copy the appropriate variables.\n         ranges = Lists.newArrayList(currentRange);\n-        \n         this.tableName = tableName;\n-        \n         this.auths = Sets.newHashSet(auths);\n-        \n         if (log.isTraceEnabled())\n             log.trace(\"Creating scanner resource from \" + tableName + \" \" + auths + \" \" + currentRange);\n-        \n         internalTimer = new StopWatch();\n         internalTimer.start();\n         \n         // let's pre-compute the hashcode.\n         hashCode += new HashCodeBuilder().append(tableName).append(auths).append(ranges).toHashCode();\n-        \n         conf = new Configuration();\n-        \n+\n         AccumuloClient client = getClient();\n-        \n         Properties clientProperties = client.properties();\n         final String instanceName = clientProperties.getProperty(ClientProperty.INSTANCE_NAME.getKey());\n         final String zookeepers = clientProperties.getProperty(ClientProperty.INSTANCE_ZOOKEEPERS.getKey());\n-        \n         AccumuloHelper.setInstanceName(conf, instanceName);\n         AccumuloHelper.setUsername(conf, client.whoami());\n-        \n         AccumuloHelper.setZooKeepers(conf, zookeepers);\n         BulkInputFormat.setZooKeeperInstance(conf, instanceName, zookeepers);\n-        \n         conf.set(MultiRfileInputformat.CACHE_METADATA, \"true\");\n-        \n         baseScanner = new RfileScanner(client, conf, tableName, auths, 1);\n         ((RfileScanner) baseScanner).setRanges(currentRange);\n-        \n     }\n     \n     /**\n@@ -93,35 +79,32 @@ public class RfileResource extends BatchResource {\n      * @param options\n      * @return\n      */\n+\n     @Override\n     public AccumuloResource setOptions(SessionOptions options) {\n         super.setOptions(options);\n-        \n         if (log.isDebugEnabled()) {\n             log.debug(\"Setting Options\");\n         }\n+\n+\n         if (null != options.getConfiguration() && null != options.getConfiguration().getAccumuloPassword()) {\n             if (log.isDebugEnabled()) {\n                 log.debug(\"Setting and configuration\");\n             }\n             AccumuloHelper.setPassword(conf, options.getConfiguration().getAccumuloPassword().getBytes());\n-            BulkInputFormat.setMemoryInput(conf, getClient().whoami(), options.getConfiguration().getAccumuloPassword().getBytes(), tableName, auths.iterator()\n-                            .next());\n+            BulkInputFormat.setMemoryInput(conf, getClient().whoami(), options.getConfiguration().getAccumuloPassword().getBytes(), tableName, auths.iterator().next());\n             ((RfileScanner) baseScanner).setConfiguration(conf);\n         }\n         return this;\n     }\n-    \n+\n     @Override\n     public String toString() {\n         \n         //@formatter:off\n-        String builder = \"RFileScanner\" + \" \" +\n-                \"tableName=\" + tableName + \" \" +\n-                \"auths=\" + auths + \" \" +\n-                \"ranges=\" + ranges + \" \";\n+        String builder = \"RFileScanner\" + \" \" + \"tableName=\" + tableName + \" \" + \"auths=\" + auths + \" \" + \"ranges=\" + ranges + \" \";\n         //@formatter:on\n         return builder;\n-        \n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "14",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

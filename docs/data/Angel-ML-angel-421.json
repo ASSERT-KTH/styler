@@ -1,0 +1,125 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "421",
+    "information": {
+        "errors": [
+            {
+                "line": "26",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 101).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n        ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n        long[] nodeIds = param.getNodeIds();",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "88",
+                    "severity": "error",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..e5c4d9c33f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler/421/GetOutDegreeFunc.java\n@@ -22,9 +22,9 @@ public class GetOutDegreeFunc extends GetFunc {\n \n     @Override\n     public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n-        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n-        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n-        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n+        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;ServerMatrix\n+        matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n+         ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n         ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n         long[] nodeIds = param.getNodeIds();\n         int[] outDegrees = new int[nodeIds.length];\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..c3119f6d95b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/421/GetOutDegreeFunc.java\n@@ -12,56 +12,56 @@ import java.util.List;\n \n public class GetOutDegreeFunc extends GetFunc {\n \n-    public GetOutDegreeFunc() {\n-        this(null);\n-    }\n-\n-    public GetOutDegreeFunc(GetParam param) {\n-        super(param);\n-    }\n+  public GetOutDegreeFunc() {\n+    this(null);\n+  }\n \n-    @Override\n-    public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n-        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n-        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n-        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n-        ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n-        long[] nodeIds = param.getNodeIds();\n-        int[] outDegrees = new int[nodeIds.length];\n+  public GetOutDegreeFunc(GetParam param) {\n+    super(param);\n+  }\n \n-        for (int i = 0; i < nodeIds.length; i++) {\n-            outDegrees[i] = row.get(nodeIds[i]);\n-        }\n+  @Override\n+  public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n+    PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n+    ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n+    ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n+    ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n+    long[] nodeIds = param.getNodeIds();\n+    int[] outDegrees = new int[nodeIds.length];\n \n-        return new PartGetOutDegreeResult(part.getPartitionKey().getPartitionId(), outDegrees);\n+    for (int i = 0; i < nodeIds.length; i++) {\n+      outDegrees[i] = row.get(nodeIds[i]);\n     }\n \n-    @Override\n-    public GetResult merge(List<PartitionGetResult> partResults) {\n-        Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(\n-                partResults.size());\n-        for (PartitionGetResult result : partResults) {\n-            partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n-        }\n+    return new PartGetOutDegreeResult(part.getPartitionKey().getPartitionId(), outDegrees);\n+  }\n \n-        GetOutDegreeParam param = (GetOutDegreeParam) getParam();\n-        long[] nodeIds = param.getNodeIds();\n-        List<PartitionGetParam> partParams = param.getPartParams();\n+  @Override\n+  public GetResult merge(List<PartitionGetResult> partResults) {\n+    Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(\n+        partResults.size());\n+    for (PartitionGetResult result : partResults) {\n+      partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n+    }\n \n-        Long2IntOpenHashMap nodeIdToDegree = new Long2IntOpenHashMap(nodeIds.length);\n+    GetOutDegreeParam param = (GetOutDegreeParam) getParam();\n+    long[] nodeIds = param.getNodeIds();\n+    List<PartitionGetParam> partParams = param.getPartParams();\n \n-        for (PartitionGetParam partParam : partParams) {\n-            int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n-            int end = ((PartGetOutDegreeParam) partParam).getEndIndex();\n+    Long2IntOpenHashMap nodeIdToDegree = new Long2IntOpenHashMap(nodeIds.length);\n \n-            PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap\n-                    .get(partParam.getPartKey().getPartitionId()));\n-            int[] results = partResult.getNodeIdToOutDegree();\n-            for (int i = start; i < end; i++) {\n-                nodeIdToDegree.put(nodeIds[i], results[i - start]);\n-            }\n-        }\n+    for (PartitionGetParam partParam : partParams) {\n+      int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n+      int end = ((PartGetOutDegreeParam) partParam).getEndIndex();\n \n-        return new GetOutDegreeResult(nodeIdToDegree);\n+      PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap\n+          .get(partParam.getPartKey().getPartitionId()));\n+      int[] results = partResult.getNodeIdToOutDegree();\n+      for (int i = start; i < end; i++) {\n+        nodeIdToDegree.put(nodeIds[i], results[i - start]);\n+      }\n     }\n+\n+    return new GetOutDegreeResult(nodeIdToDegree);\n+  }\n }\n",
+            "diff_size": 61
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 101).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 106).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "56",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 138).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..e9b4c3a618f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/421/GetOutDegreeFunc.java\n@@ -12,17 +12,17 @@ import java.util.List;\n \n public class GetOutDegreeFunc extends GetFunc {\n \n-    public GetOutDegreeFunc() {\n-        this(null);\n+  public GetOutDegreeFunc() {\n+  this(null);\n     }\n \n     public GetOutDegreeFunc(GetParam param) {\n-        super(param);\n+  super(param);\n     }\n \n     @Override\n     public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n-        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n+  PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n         ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n         ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n         ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n@@ -30,18 +30,17 @@ public class GetOutDegreeFunc extends GetFunc {\n         int[] outDegrees = new int[nodeIds.length];\n \n         for (int i = 0; i < nodeIds.length; i++) {\n-            outDegrees[i] = row.get(nodeIds[i]);\n-        }\n+  outDegrees[i] = row.get(nodeIds[i]);\n+  }\n \n         return new PartGetOutDegreeResult(part.getPartitionKey().getPartitionId(), outDegrees);\n     }\n \n     @Override\n     public GetResult merge(List<PartitionGetResult> partResults) {\n-        Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(\n-                partResults.size());\n-        for (PartitionGetResult result : partResults) {\n-            partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n+  Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(partResults.size());\n+for (PartitionGetResult result : partResults) {\n+  partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n         }\n \n         GetOutDegreeParam param = (GetOutDegreeParam) getParam();\n@@ -51,17 +50,16 @@ public class GetOutDegreeFunc extends GetFunc {\n         Long2IntOpenHashMap nodeIdToDegree = new Long2IntOpenHashMap(nodeIds.length);\n \n         for (PartitionGetParam partParam : partParams) {\n-            int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n+  int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n             int end = ((PartGetOutDegreeParam) partParam).getEndIndex();\n \n-            PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap\n-                    .get(partParam.getPartKey().getPartitionId()));\n-            int[] results = partResult.getNodeIdToOutDegree();\n+            PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap.get(partParam.getPartKey().getPartitionId()));\n+int[] results = partResult.getNodeIdToOutDegree();\n             for (int i = start; i < end; i++) {\n-                nodeIdToDegree.put(nodeIds[i], results[i - start]);\n+  nodeIdToDegree.put(nodeIds[i], results[i - start]);\n             }\n-        }\n+  }\n \n         return new GetOutDegreeResult(nodeIdToDegree);\n     }\n-}\n+  }\n\\ No newline at end of file\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "38",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 108).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "50",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..ab4ca779484 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/421/GetOutDegreeFunc.java\n@@ -7,61 +7,53 @@ import com.tencent.angel.ps.storage.partition.ServerPartition;\n import com.tencent.angel.ps.storage.vector.ServerLongIntRow;\n import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;\n import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;\n-\n import java.util.List;\n \n public class GetOutDegreeFunc extends GetFunc {\n \n-    public GetOutDegreeFunc() {\n-        this(null);\n+  public GetOutDegreeFunc() {\n+    this(null);\n+  }\n+\n+  public GetOutDegreeFunc(GetParam param) {\n+    super(param);\n+  }\n+\n+  @Override\n+  public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n+    PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n+    ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n+    ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n+    ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n+    long[] nodeIds = param.getNodeIds();\n+    int[] outDegrees = new int[nodeIds.length];\n+    for (int i = 0; i < nodeIds.length; i++) {\n+      outDegrees[i] = row.get(nodeIds[i]);\n     }\n-\n-    public GetOutDegreeFunc(GetParam param) {\n-        super(param);\n+    return new PartGetOutDegreeResult(part.getPartitionKey().getPartitionId(), outDegrees);\n+  }\n+\n+  @Override\n+  public GetResult merge(List<PartitionGetResult> partResults) {\n+    Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(partResults.size());\n+    for (PartitionGetResult result : partResults) {\n+      partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n     }\n \n-    @Override\n-    public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n-        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n-        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n-        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n-        ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n-        long[] nodeIds = param.getNodeIds();\n-        int[] outDegrees = new int[nodeIds.length];\n-\n-        for (int i = 0; i < nodeIds.length; i++) {\n-            outDegrees[i] = row.get(nodeIds[i]);\n-        }\n-\n-        return new PartGetOutDegreeResult(part.getPartitionKey().getPartitionId(), outDegrees);\n+    GetOutDegreeParam param = (GetOutDegreeParam) getParam();\n+    long[] nodeIds = param.getNodeIds();\n+    List<PartitionGetParam> partParams = param.getPartParams();\n+    Long2IntOpenHashMap nodeIdToDegree = new Long2IntOpenHashMap(nodeIds.length);\n+    for (PartitionGetParam partParam : partParams) {\n+      int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n+      int end = ((PartGetOutDegreeParam) partParam).getEndIndex();\n+      PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap.get(partParam.getPartKey().getPartitionId()));\n+      int[] results = partResult.getNodeIdToOutDegree();\n+      for (int i = start; i < end; i++) {\n+        nodeIdToDegree.put(nodeIds[i], results[i - start]);\n+      }\n     }\n+    return new GetOutDegreeResult(nodeIdToDegree);\n+  }\n \n-    @Override\n-    public GetResult merge(List<PartitionGetResult> partResults) {\n-        Int2ObjectArrayMap<PartitionGetResult> partIdToResultMap = new Int2ObjectArrayMap<>(\n-                partResults.size());\n-        for (PartitionGetResult result : partResults) {\n-            partIdToResultMap.put(((PartGetOutDegreeResult) result).getPartId(), result);\n-        }\n-\n-        GetOutDegreeParam param = (GetOutDegreeParam) getParam();\n-        long[] nodeIds = param.getNodeIds();\n-        List<PartitionGetParam> partParams = param.getPartParams();\n-\n-        Long2IntOpenHashMap nodeIdToDegree = new Long2IntOpenHashMap(nodeIds.length);\n-\n-        for (PartitionGetParam partParam : partParams) {\n-            int start = ((PartGetOutDegreeParam) partParam).getStartIndex();\n-            int end = ((PartGetOutDegreeParam) partParam).getEndIndex();\n-\n-            PartGetOutDegreeResult partResult = (PartGetOutDegreeResult) (partIdToResultMap\n-                    .get(partParam.getPartKey().getPartitionId()));\n-            int[] results = partResult.getNodeIdToOutDegree();\n-            for (int i = start; i < end; i++) {\n-                nodeIdToDegree.put(nodeIds[i], results[i - start]);\n-            }\n-        }\n-\n-        return new GetOutDegreeResult(nodeIdToDegree);\n-    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 72
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "26",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 189).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "26",
+                    "column": "189",
+                    "severity": "error",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..c1610e7d38b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_random/421/GetOutDegreeFunc.java\n@@ -23,8 +23,7 @@ public class GetOutDegreeFunc extends GetFunc {\n     @Override\n     public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n         PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n-        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n-        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n+        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());ServerPartitionpart part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n         ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n         long[] nodeIds = param.getNodeIds();\n         int[] outDegrees = new int[nodeIds.length];\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "26",
+                    "column": "88",
+                    "severity": "error",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/421/GetOutDegreeFunc.java\nindex f6c24abcdd1..e5c4d9c33f2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/421/GetOutDegreeFunc.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/styler_three_grams/421/GetOutDegreeFunc.java\n@@ -22,9 +22,9 @@ public class GetOutDegreeFunc extends GetFunc {\n \n     @Override\n     public PartitionGetResult partitionGet(PartitionGetParam partParam) {\n-        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;\n-        ServerMatrix matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n-        ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n+        PartGetOutDegreeParam param = (PartGetOutDegreeParam) partParam;ServerMatrix\n+        matrix = psContext.getMatrixStorageManager().getMatrix(partParam.getMatrixId());\n+         ServerPartition part = matrix.getPartition(partParam.getPartKey().getPartitionId());\n         ServerLongIntRow row = (ServerLongIntRow) (((RowBasedPartition) part).getRow(0));\n         long[] nodeIds = param.getNodeIds();\n         int[] outDegrees = new int[nodeIds.length];\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

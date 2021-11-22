@@ -1,0 +1,167 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "7",
+    "information": {
+        "errors": [
+            {
+                "line": "91",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 144).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                List<Sample> samples, Software software, Map<String, Object> stats, Map<String, Object> attributes) {\n        this(\"\", type, format, bioformat, null, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n                false, size, software, new FileExperiment(), samples, Collections.emptyList(), \"\", -1, Collections.emptyList(), stats, internal,\n                attributes);\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/7/File.java\nindex bcb7d8de7d3..3f4a0fcbce7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/7/File.java\n@@ -33,441 +33,441 @@ import java.util.Map;\n  */\n public class File extends Annotable {\n \n-    private String id;\n-    private String name;\n-    private String uuid;\n-\n-    /**\n-     * Formats: file, folder, index.\n-     */\n-    private Type type;\n-\n-    /**\n-     * Formats: txt, executable, image, ...\n-     */\n-    private Format format;\n-\n-    /**\n-     * BAM, VCF, ...\n-     */\n-    private Bioformat bioformat;\n-\n-    private String checksum;\n-\n-    private URI uri;\n-    private String path;\n-\n-    private int release;\n-    private String creationDate;\n-    private String modificationDate;\n-    private String description;\n-    private boolean external;\n-\n-    private long size;\n-    private Software software;\n-    private FileExperiment experiment;\n-    private List<Sample> samples;\n-    private String jobId;\n-    private List<String> tags;\n-    private List<FileRelatedFile> relatedFiles;\n-\n-    private Map<String, Object> stats;\n-    private FileInternal internal;\n-    private Map<String, Object> attributes;\n-\n-    public File() {\n-    }\n-\n-    public File(String name, Type type, Format format, Bioformat bioformat, String path, URI uri, String description, FileInternal internal,\n-                long size, int release) {\n-        this(name, type, format, bioformat, uri, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n-                false, size, new Software(), new FileExperiment(), Collections.emptyList(), Collections.emptyList(), \"\", release,\n-                Collections.emptyList(), Collections.emptyMap(), internal, Collections.emptyMap());\n-    }\n-\n-    public File(Type type, Format format, Bioformat bioformat, String path, String description, FileInternal internal, long size,\n-                List<Sample> samples, Software software, Map<String, Object> stats, Map<String, Object> attributes) {\n-        this(\"\", type, format, bioformat, null, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n-                false, size, software, new FileExperiment(), samples, Collections.emptyList(), \"\", -1, Collections.emptyList(), stats, internal,\n-                attributes);\n-    }\n-\n-    public File(String name, Type type, Format format, Bioformat bioformat, URI uri, String path, String checksum, String creationDate,\n-                String modificationDate, String description, boolean external, long size, Software software, FileExperiment experiment,\n-                List<Sample> samples, List<FileRelatedFile> relatedFiles, String jobId, int release, List<AnnotationSet> annotationSets,\n-                Map<String, Object> stats, FileInternal internal, Map<String, Object> attributes) {\n-        this.id = StringUtils.isNotEmpty(path) ? StringUtils.replace(path, \"/\", \":\") : path;\n-        this.name = name;\n-        this.type = type;\n-        this.format = format;\n-        this.bioformat = bioformat;\n-        this.uri = uri;\n-        this.path = path;\n-        this.checksum = checksum;\n-        this.creationDate = creationDate;\n-        this.modificationDate = modificationDate;\n-        this.description = description;\n-        this.release = release;\n-        this.external = external;\n-        this.internal = internal;\n-        this.size = size;\n-        this.software = software;\n-        this.experiment = experiment;\n-        this.samples = samples;\n-        this.tags = Collections.emptyList();\n-        this.relatedFiles = relatedFiles;\n-        this.annotationSets = annotationSets;\n-        this.jobId = jobId;\n-        this.stats = stats;\n-        this.attributes = attributes;\n-    }\n-\n-    public enum Type {\n-        FILE,\n-        DIRECTORY\n-    }\n-\n-    public enum Compression {\n-        GZIP,\n-        BGZIP,\n-        ZIP,\n-        SNAPPY,\n-        NONE,\n-    }\n-\n-    /**\n-     * General format of the file, such as text, or binary, etc.\n-     */\n-    public enum Format {\n-        VCF,\n-        BCF,\n-        GVCF,\n-        TBI,\n-        BIGWIG,\n-\n-        SAM,\n-        BAM,\n-        BAI,\n-        CRAM,\n-        CRAI,\n-        FASTQ,\n-        FASTA,\n-        PED,\n-\n-        TAB_SEPARATED_VALUES, COMMA_SEPARATED_VALUES, XML, PROTOCOL_BUFFER, JSON, AVRO, PARQUET, //Serialization formats\n-\n-        IMAGE,\n-        PLAIN,\n-        BINARY,\n-        EXECUTABLE,\n-        @Deprecated GZIP,\n-        NONE,\n-        UNKNOWN,\n-    }\n-\n-    /**\n-     * Specific format of the biological file, such as variant, alignment, pedigree, etc.\n-     */\n-    public enum Bioformat {\n-        MICROARRAY_EXPRESSION_ONECHANNEL_AGILENT,\n-        MICROARRAY_EXPRESSION_ONECHANNEL_AFFYMETRIX,\n-        MICROARRAY_EXPRESSION_ONECHANNEL_GENEPIX,\n-        MICROARRAY_EXPRESSION_TWOCHANNELS_AGILENT,\n-        MICROARRAY_EXPRESSION_TWOCHANNELS_GENEPIX,\n-        DATAMATRIX_EXPRESSION,\n-        //        DATAMATRIX_SNP,\n+  private String id;\n+  private String name;\n+  private String uuid;\n+\n+  /**\n+   * Formats: file, folder, index.\n+   */\n+  private Type type;\n+\n+  /**\n+   * Formats: txt, executable, image, ...\n+   */\n+  private Format format;\n+\n+  /**\n+   * BAM, VCF, ...\n+   */\n+  private Bioformat bioformat;\n+\n+  private String checksum;\n+\n+  private URI uri;\n+  private String path;\n+\n+  private int release;\n+  private String creationDate;\n+  private String modificationDate;\n+  private String description;\n+  private boolean external;\n+\n+  private long size;\n+  private Software software;\n+  private FileExperiment experiment;\n+  private List<Sample> samples;\n+  private String jobId;\n+  private List<String> tags;\n+  private List<FileRelatedFile> relatedFiles;\n+\n+  private Map<String, Object> stats;\n+  private FileInternal internal;\n+  private Map<String, Object> attributes;\n+\n+  public File() {\n+  }\n+\n+  public File(String name, Type type, Format format, Bioformat bioformat, String path, URI uri, String description, FileInternal internal,\n+              long size, int release) {\n+    this(name, type, format, bioformat, uri, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n+        false, size, new Software(), new FileExperiment(), Collections.emptyList(), Collections.emptyList(), \"\", release,\n+        Collections.emptyList(), Collections.emptyMap(), internal, Collections.emptyMap());\n+  }\n+\n+  public File(Type type, Format format, Bioformat bioformat, String path, String description, FileInternal internal, long size,\n+              List<Sample> samples, Software software, Map<String, Object> stats, Map<String, Object> attributes) {\n+    this(\"\", type, format, bioformat, null, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n+        false, size, software, new FileExperiment(), samples, Collections.emptyList(), \"\", -1, Collections.emptyList(), stats, internal,\n+        attributes);\n+  }\n+\n+  public File(String name, Type type, Format format, Bioformat bioformat, URI uri, String path, String checksum, String creationDate,\n+              String modificationDate, String description, boolean external, long size, Software software, FileExperiment experiment,\n+              List<Sample> samples, List<FileRelatedFile> relatedFiles, String jobId, int release, List<AnnotationSet> annotationSets,\n+              Map<String, Object> stats, FileInternal internal, Map<String, Object> attributes) {\n+    this.id = StringUtils.isNotEmpty(path) ? StringUtils.replace(path, \"/\", \":\") : path;\n+    this.name = name;\n+    this.type = type;\n+    this.format = format;\n+    this.bioformat = bioformat;\n+    this.uri = uri;\n+    this.path = path;\n+    this.checksum = checksum;\n+    this.creationDate = creationDate;\n+    this.modificationDate = modificationDate;\n+    this.description = description;\n+    this.release = release;\n+    this.external = external;\n+    this.internal = internal;\n+    this.size = size;\n+    this.software = software;\n+    this.experiment = experiment;\n+    this.samples = samples;\n+    this.tags = Collections.emptyList();\n+    this.relatedFiles = relatedFiles;\n+    this.annotationSets = annotationSets;\n+    this.jobId = jobId;\n+    this.stats = stats;\n+    this.attributes = attributes;\n+  }\n+\n+  public enum Type {\n+    FILE,\n+    DIRECTORY\n+  }\n+\n+  public enum Compression {\n+    GZIP,\n+    BGZIP,\n+    ZIP,\n+    SNAPPY,\n+    NONE,\n+  }\n+\n+  /**\n+   * General format of the file, such as text, or binary, etc.\n+   */\n+  public enum Format {\n+    VCF,\n+    BCF,\n+    GVCF,\n+    TBI,\n+    BIGWIG,\n+\n+    SAM,\n+    BAM,\n+    BAI,\n+    CRAM,\n+    CRAI,\n+    FASTQ,\n+    FASTA,\n+    PED,\n+\n+    TAB_SEPARATED_VALUES, COMMA_SEPARATED_VALUES, XML, PROTOCOL_BUFFER, JSON, AVRO, PARQUET, //Serialization formats\n+\n+    IMAGE,\n+    PLAIN,\n+    BINARY,\n+    EXECUTABLE,\n+    @Deprecated GZIP,\n+    NONE,\n+    UNKNOWN,\n+  }\n+\n+  /**\n+   * Specific format of the biological file, such as variant, alignment, pedigree, etc.\n+   */\n+  public enum Bioformat {\n+    MICROARRAY_EXPRESSION_ONECHANNEL_AGILENT,\n+    MICROARRAY_EXPRESSION_ONECHANNEL_AFFYMETRIX,\n+    MICROARRAY_EXPRESSION_ONECHANNEL_GENEPIX,\n+    MICROARRAY_EXPRESSION_TWOCHANNELS_AGILENT,\n+    MICROARRAY_EXPRESSION_TWOCHANNELS_GENEPIX,\n+    DATAMATRIX_EXPRESSION,\n+    //        DATAMATRIX_SNP,\n //        IDLIST_GENE,\n //        IDLIST_TRANSCRIPT,\n //        IDLIST_PROTEIN,\n //        IDLIST_SNP,\n //        IDLIST_FUNCTIONALTERMS,\n //        IDLIST_RANKED,\n-        IDLIST,\n-        IDLIST_RANKED,\n-        ANNOTATION_GENEVSANNOTATION,\n-\n-        OTHER_NEWICK,\n-        OTHER_BLAST,\n-        OTHER_INTERACTION,\n-        OTHER_GENOTYPE,\n-        OTHER_PLINK,\n-        OTHER_VCF,\n-        OTHER_PED,\n-\n-        @Deprecated VCF4,\n-\n-        VARIANT,\n-        ALIGNMENT,\n-        COVERAGE,\n-        SEQUENCE,\n-        PEDIGREE,\n-        REFERENCE_GENOME,\n-        NONE,\n-        UNKNOWN\n-    }\n-\n-    @Override\n-    public String toString() {\n-        final StringBuilder sb = new StringBuilder(\"File{\");\n-        sb.append(\"id='\").append(id).append('\\'');\n-        sb.append(\", name='\").append(name).append('\\'');\n-        sb.append(\", uuid='\").append(uuid).append('\\'');\n-        sb.append(\", type=\").append(type);\n-        sb.append(\", format=\").append(format);\n-        sb.append(\", bioformat=\").append(bioformat);\n-        sb.append(\", checksum='\").append(checksum).append('\\'');\n-        sb.append(\", uri=\").append(uri);\n-        sb.append(\", path='\").append(path).append('\\'');\n-        sb.append(\", release=\").append(release);\n-        sb.append(\", creationDate='\").append(creationDate).append('\\'');\n-        sb.append(\", modificationDate='\").append(modificationDate).append('\\'');\n-        sb.append(\", description='\").append(description).append('\\'');\n-        sb.append(\", external=\").append(external);\n-        sb.append(\", internal=\").append(internal);\n-        sb.append(\", size=\").append(size);\n-        sb.append(\", software=\").append(software);\n-        sb.append(\", experiment=\").append(experiment);\n-        sb.append(\", samples=\").append(samples);\n-        sb.append(\", jobId='\").append(jobId).append('\\'');\n-        sb.append(\", tags=\").append(tags);\n-        sb.append(\", relatedFiles=\").append(relatedFiles);\n-        sb.append(\", stats=\").append(stats);\n-        sb.append(\", attributes=\").append(attributes);\n-        sb.append('}');\n-        return sb.toString();\n-    }\n-\n-    @Override\n-    public File setUid(long uid) {\n-        super.setUid(uid);\n-        return this;\n-    }\n-\n-    @Override\n-    public File setStudyUid(long studyUid) {\n-        super.setStudyUid(studyUid);\n-        return this;\n-    }\n-\n-    public String getUuid() {\n-        return uuid;\n-    }\n-\n-    public File setUuid(String uuid) {\n-        this.uuid = uuid;\n-        return this;\n-    }\n-\n-    public String getId() {\n-        return id;\n-    }\n-\n-    public File setId(String id) {\n-        this.id = id;\n-        return this;\n-    }\n-\n-    public String getName() {\n-        return name;\n-    }\n-\n-    public File setName(String name) {\n-        this.name = name;\n-        return this;\n-    }\n-\n-    public Type getType() {\n-        return type;\n-    }\n-\n-    public File setType(Type type) {\n-        this.type = type;\n-        return this;\n-    }\n-\n-    public Format getFormat() {\n-        return format;\n-    }\n-\n-    public File setFormat(Format format) {\n-        this.format = format;\n-        return this;\n-    }\n-\n-    public Bioformat getBioformat() {\n-        return bioformat;\n-    }\n-\n-    public File setBioformat(Bioformat bioformat) {\n-        this.bioformat = bioformat;\n-        return this;\n-    }\n-\n-    public URI getUri() {\n-        return uri;\n-    }\n-\n-    public File setUri(URI uri) {\n-        this.uri = uri;\n-        return this;\n-    }\n-\n-    public String getPath() {\n-        return path;\n-    }\n-\n-    public File setPath(String path) {\n-        this.path = path;\n-        this.id = StringUtils.isNotEmpty(this.path) ? StringUtils.replace(this.path, \"/\", \":\") : this.path;\n-        return this;\n-    }\n-\n-    public String getChecksum() {\n-        return checksum;\n-    }\n-\n-    public File setChecksum(String checksum) {\n-        this.checksum = checksum;\n-        return this;\n-    }\n-\n-    public String getCreationDate() {\n-        return creationDate;\n-    }\n-\n-    public File setCreationDate(String creationDate) {\n-        this.creationDate = creationDate;\n-        return this;\n-    }\n-\n-    public int getRelease() {\n-        return release;\n-    }\n-\n-    public File setRelease(int release) {\n-        this.release = release;\n-        return this;\n-    }\n-\n-    public String getModificationDate() {\n-        return modificationDate;\n-    }\n-\n-    public File setModificationDate(String modificationDate) {\n-        this.modificationDate = modificationDate;\n-        return this;\n-    }\n-\n-    public String getDescription() {\n-        return description;\n-    }\n-\n-    public File setDescription(String description) {\n-        this.description = description;\n-        return this;\n-    }\n-\n-    public boolean isExternal() {\n-        return external;\n-    }\n-\n-    public File setExternal(boolean external) {\n-        this.external = external;\n-        return this;\n-    }\n-\n-    public FileInternal getInternal() {\n-        return internal;\n-    }\n-\n-    public File setInternal(FileInternal internal) {\n-        this.internal = internal;\n-        return this;\n-    }\n-\n-    public long getSize() {\n-        return size;\n-    }\n-\n-    public File setSize(long size) {\n-        this.size = size;\n-        return this;\n-    }\n-\n-    public List<Sample> getSamples() {\n-        return samples;\n-    }\n-\n-    public File setSamples(List<Sample> samples) {\n-        this.samples = samples;\n-        return this;\n-    }\n-\n-    public Software getSoftware() {\n-        return software;\n-    }\n-\n-    public File setSoftware(Software software) {\n-        this.software = software;\n-        return this;\n-    }\n-\n-    public List<String> getTags() {\n-        return tags;\n-    }\n-\n-    public File setTags(List<String> tags) {\n-        this.tags = tags;\n-        return this;\n-    }\n-\n-    public FileExperiment getExperiment() {\n-        return experiment;\n-    }\n-\n-    public File setExperiment(FileExperiment experiment) {\n-        this.experiment = experiment;\n-        return this;\n-    }\n-\n-    public List<FileRelatedFile> getRelatedFiles() {\n-        return relatedFiles;\n-    }\n-\n-    public File setRelatedFiles(List<FileRelatedFile> relatedFiles) {\n-        this.relatedFiles = relatedFiles;\n-        return this;\n-    }\n-\n-    public String getJobId() {\n-        return jobId;\n-    }\n-\n-    public File setJobId(String jobId) {\n-        this.jobId = jobId;\n-        return this;\n-    }\n-\n-    public File setAnnotationSets(List<AnnotationSet> annotationSets) {\n-        super.setAnnotationSets(annotationSets);\n-        return this;\n-    }\n-\n-    public Map<String, Object> getStats() {\n-        return stats;\n-    }\n-\n-    public File setStats(Map<String, Object> stats) {\n-        this.stats = stats;\n-        return this;\n-    }\n-\n-    public Map<String, Object> getAttributes() {\n-        return attributes;\n-    }\n-\n-    public File setAttributes(Map<String, Object> attributes) {\n-        this.attributes = attributes;\n-        return this;\n-    }\n+    IDLIST,\n+    IDLIST_RANKED,\n+    ANNOTATION_GENEVSANNOTATION,\n+\n+    OTHER_NEWICK,\n+    OTHER_BLAST,\n+    OTHER_INTERACTION,\n+    OTHER_GENOTYPE,\n+    OTHER_PLINK,\n+    OTHER_VCF,\n+    OTHER_PED,\n+\n+    @Deprecated VCF4,\n+\n+    VARIANT,\n+    ALIGNMENT,\n+    COVERAGE,\n+    SEQUENCE,\n+    PEDIGREE,\n+    REFERENCE_GENOME,\n+    NONE,\n+    UNKNOWN\n+  }\n+\n+  @Override\n+  public String toString() {\n+    final StringBuilder sb = new StringBuilder(\"File{\");\n+    sb.append(\"id='\").append(id).append('\\'');\n+    sb.append(\", name='\").append(name).append('\\'');\n+    sb.append(\", uuid='\").append(uuid).append('\\'');\n+    sb.append(\", type=\").append(type);\n+    sb.append(\", format=\").append(format);\n+    sb.append(\", bioformat=\").append(bioformat);\n+    sb.append(\", checksum='\").append(checksum).append('\\'');\n+    sb.append(\", uri=\").append(uri);\n+    sb.append(\", path='\").append(path).append('\\'');\n+    sb.append(\", release=\").append(release);\n+    sb.append(\", creationDate='\").append(creationDate).append('\\'');\n+    sb.append(\", modificationDate='\").append(modificationDate).append('\\'');\n+    sb.append(\", description='\").append(description).append('\\'');\n+    sb.append(\", external=\").append(external);\n+    sb.append(\", internal=\").append(internal);\n+    sb.append(\", size=\").append(size);\n+    sb.append(\", software=\").append(software);\n+    sb.append(\", experiment=\").append(experiment);\n+    sb.append(\", samples=\").append(samples);\n+    sb.append(\", jobId='\").append(jobId).append('\\'');\n+    sb.append(\", tags=\").append(tags);\n+    sb.append(\", relatedFiles=\").append(relatedFiles);\n+    sb.append(\", stats=\").append(stats);\n+    sb.append(\", attributes=\").append(attributes);\n+    sb.append('}');\n+    return sb.toString();\n+  }\n+\n+  @Override\n+  public File setUid(long uid) {\n+    super.setUid(uid);\n+    return this;\n+  }\n+\n+  @Override\n+  public File setStudyUid(long studyUid) {\n+    super.setStudyUid(studyUid);\n+    return this;\n+  }\n+\n+  public String getUuid() {\n+    return uuid;\n+  }\n+\n+  public File setUuid(String uuid) {\n+    this.uuid = uuid;\n+    return this;\n+  }\n+\n+  public String getId() {\n+    return id;\n+  }\n+\n+  public File setId(String id) {\n+    this.id = id;\n+    return this;\n+  }\n+\n+  public String getName() {\n+    return name;\n+  }\n+\n+  public File setName(String name) {\n+    this.name = name;\n+    return this;\n+  }\n+\n+  public Type getType() {\n+    return type;\n+  }\n+\n+  public File setType(Type type) {\n+    this.type = type;\n+    return this;\n+  }\n+\n+  public Format getFormat() {\n+    return format;\n+  }\n+\n+  public File setFormat(Format format) {\n+    this.format = format;\n+    return this;\n+  }\n+\n+  public Bioformat getBioformat() {\n+    return bioformat;\n+  }\n+\n+  public File setBioformat(Bioformat bioformat) {\n+    this.bioformat = bioformat;\n+    return this;\n+  }\n+\n+  public URI getUri() {\n+    return uri;\n+  }\n+\n+  public File setUri(URI uri) {\n+    this.uri = uri;\n+    return this;\n+  }\n+\n+  public String getPath() {\n+    return path;\n+  }\n+\n+  public File setPath(String path) {\n+    this.path = path;\n+    this.id = StringUtils.isNotEmpty(this.path) ? StringUtils.replace(this.path, \"/\", \":\") : this.path;\n+    return this;\n+  }\n+\n+  public String getChecksum() {\n+    return checksum;\n+  }\n+\n+  public File setChecksum(String checksum) {\n+    this.checksum = checksum;\n+    return this;\n+  }\n+\n+  public String getCreationDate() {\n+    return creationDate;\n+  }\n+\n+  public File setCreationDate(String creationDate) {\n+    this.creationDate = creationDate;\n+    return this;\n+  }\n+\n+  public int getRelease() {\n+    return release;\n+  }\n+\n+  public File setRelease(int release) {\n+    this.release = release;\n+    return this;\n+  }\n+\n+  public String getModificationDate() {\n+    return modificationDate;\n+  }\n+\n+  public File setModificationDate(String modificationDate) {\n+    this.modificationDate = modificationDate;\n+    return this;\n+  }\n+\n+  public String getDescription() {\n+    return description;\n+  }\n+\n+  public File setDescription(String description) {\n+    this.description = description;\n+    return this;\n+  }\n+\n+  public boolean isExternal() {\n+    return external;\n+  }\n+\n+  public File setExternal(boolean external) {\n+    this.external = external;\n+    return this;\n+  }\n+\n+  public FileInternal getInternal() {\n+    return internal;\n+  }\n+\n+  public File setInternal(FileInternal internal) {\n+    this.internal = internal;\n+    return this;\n+  }\n+\n+  public long getSize() {\n+    return size;\n+  }\n+\n+  public File setSize(long size) {\n+    this.size = size;\n+    return this;\n+  }\n+\n+  public List<Sample> getSamples() {\n+    return samples;\n+  }\n+\n+  public File setSamples(List<Sample> samples) {\n+    this.samples = samples;\n+    return this;\n+  }\n+\n+  public Software getSoftware() {\n+    return software;\n+  }\n+\n+  public File setSoftware(Software software) {\n+    this.software = software;\n+    return this;\n+  }\n+\n+  public List<String> getTags() {\n+    return tags;\n+  }\n+\n+  public File setTags(List<String> tags) {\n+    this.tags = tags;\n+    return this;\n+  }\n+\n+  public FileExperiment getExperiment() {\n+    return experiment;\n+  }\n+\n+  public File setExperiment(FileExperiment experiment) {\n+    this.experiment = experiment;\n+    return this;\n+  }\n+\n+  public List<FileRelatedFile> getRelatedFiles() {\n+    return relatedFiles;\n+  }\n+\n+  public File setRelatedFiles(List<FileRelatedFile> relatedFiles) {\n+    this.relatedFiles = relatedFiles;\n+    return this;\n+  }\n+\n+  public String getJobId() {\n+    return jobId;\n+  }\n+\n+  public File setJobId(String jobId) {\n+    this.jobId = jobId;\n+    return this;\n+  }\n+\n+  public File setAnnotationSets(List<AnnotationSet> annotationSets) {\n+    super.setAnnotationSets(annotationSets);\n+    return this;\n+  }\n+\n+  public Map<String, Object> getStats() {\n+    return stats;\n+  }\n+\n+  public File setStats(Map<String, Object> stats) {\n+    this.stats = stats;\n+    return this;\n+  }\n+\n+  public Map<String, Object> getAttributes() {\n+    return attributes;\n+  }\n+\n+  public File setAttributes(Map<String, Object> attributes) {\n+    this.attributes = attributes;\n+    return this;\n+  }\n }\n",
+            "diff_size": 431
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 255).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/7/File.java\nindex bcb7d8de7d3..6b9f68c17ea 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/7/File.java\n@@ -92,8 +92,7 @@ public class File extends Annotable {\n                 attributes);\n     }\n \n-    public File(String name, Type type, Format format, Bioformat bioformat, URI uri, String path, String checksum, String creationDate,\n-                String modificationDate, String description, boolean external, long size, Software software, FileExperiment experiment,\n+    public File(String name, Type type, Format format, Bioformat bioformat, URI uri, String path, String checksum, String creationDate, String modificationDate, String description, boolean external, long size, Software software, FileExperiment experiment,\n                 List<Sample> samples, List<FileRelatedFile> relatedFiles, String jobId, int release, List<AnnotationSet> annotationSets,\n                 Map<String, Object> stats, FileInternal internal, Map<String, Object> attributes) {\n         this.id = StringUtils.isNotEmpty(path) ? StringUtils.replace(path, \"/\", \":\") : path;\n@@ -470,4 +469,4 @@ public class File extends Annotable {\n         this.attributes = attributes;\n         return this;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "91",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "52",
+                    "severity": "error",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "54",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "61",
+                    "severity": "error",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "')' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "',' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/7/File.java\nindex bcb7d8de7d3..2043ef68bd0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/7/File.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/7/File.java\n@@ -88,8 +88,9 @@ public class File extends Annotable {\n     public File(Type type, Format format, Bioformat bioformat, String path, String description, FileInternal internal, long size,\n                 List<Sample> samples, Software software, Map<String, Object> stats, Map<String, Object> attributes) {\n         this(\"\", type, format, bioformat, null, path, null, TimeUtils.getTime(), TimeUtils.getTime(), description,\n-                false, size, software, new FileExperiment(), samples, Collections.emptyList(), \"\", -1, Collections.emptyList(), stats, internal,\n-                attributes);\n+        false,size, software, new FileExperiment( ) ,samples ,\n+        Collections.emptyList( ), \"\",-1 ,Collections .emptyList(), stats, internal,\n+                 attributes);\n     }\n \n     public File(String name, Type type, Format format, Bioformat bioformat, URI uri, String path, String checksum, String creationDate,\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

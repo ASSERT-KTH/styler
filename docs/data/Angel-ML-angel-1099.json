@@ -1,0 +1,102 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "1099",
+    "information": {
+        "errors": [
+            {
+                "line": "11",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 103).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * https://opensource.org/licenses/BSD-3-Clause\n *\n * Unless required by applicable law or agreed to in writing, software distributed under the License is\n * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n * either express or implied. See the License for the specific language governing permissions and\n * limitations under the License.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "126",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 116).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1099/ADMMSubmitter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1099/ADMMSubmitter.java\nindex 082725b63fb..ee11ca66b15 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/1099/ADMMSubmitter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/1099/ADMMSubmitter.java\n@@ -23,7 +23,6 @@ import com.tencent.angel.conf.AngelConfiguration;\n import com.tencent.angel.conf.MatrixConfiguration;\n import com.tencent.angel.protobuf.generated.MLProtos;\n import com.tencent.angel.AppSubmitter;\n-\n import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n import org.apache.hadoop.conf.Configuration;\n@@ -34,31 +33,42 @@ import org.apache.hadoop.io.Text;\n import org.apache.hadoop.util.LineReader;\n \n public class ADMMSubmitter implements AppSubmitter {\n+\n   private static final Log LOG = LogFactory.getLog(ADMMSubmitter.class);\n \n   // Configuration for ADMM algorithm\n+\n   public static final String K_TRAIN_PATH = \"angel.admmlr.trainPath\";\n+\n   public static final String K_L1_NORM = \"angel.admmlr.norm\";\n+\n   public static final String K_ADMM_ITER = \"angel.admmlr.iter\";\n+\n   public static final String K_LBFGS_ITER = \"angel.admmlr.lbfgsIter\";\n+\n   public static final String K_RHO = \"angel.admmlr.rho\";\n   // public static final String K_MODLE_OUTPUT = \"angel.admmlr.modelOutput\";\n+\n   public static final String K_FEATURE_NUM = \"angel.admmlr.feaNum\";\n+\n   public static final String K_MAXDIM_PATH = \"angel.lr.admm.max.dim.path\";\n+\n   public static final String K_CONF_PATH = \"angel.admmlr.confPath\";\n \n   public static final String W = \"W\";\n+\n   public static final String T = \"t\";\n+\n   public static final String Z = \"z\";\n+\n   public static final String Loss = \"loss\";\n+\n   public static final String AUC = \"auc\";\n \n   @Override\n   public void submit(Configuration conf) throws Exception {\n     conf.setBoolean(AngelConfiguration.ANGEL_JOB_OUTPUT_PATH_DELETEONEXIST, true);\n-\n     AngelClient client = AngelClientFactory.get(conf);\n-\n     String action = conf.get(AngelConfiguration.ANGEL_ACTION_TYPE);\n     if (action.matches(\"train\")) {\n       String path = conf.get(K_CONF_PATH, null);\n@@ -68,7 +78,6 @@ public class ADMMSubmitter implements AppSubmitter {\n \n       String trainPath = conf.get(K_TRAIN_PATH, null);\n       // String modelOutput = conf.get(K_MODLE_OUTPUT, null);\n-\n       conf.set(AngelConfiguration.ANGEL_TRAIN_DATA_PATH, trainPath);\n       // conf.set(AngelConfiguration.ANGEL_JOB_OUTPUT_PATH, modelOutput);\n \n@@ -76,7 +85,6 @@ public class ADMMSubmitter implements AppSubmitter {\n       conf.setInt(AngelConfiguration.ANGEL_TASK_ITERATION_NUMBER, admmIter);\n \n       int psNum = conf.getInt(AngelConfiguration.ANGEL_PS_NUMBER, 1);\n-\n       int feaNum = 0;\n       String maxdimPathStr = conf.get(K_MAXDIM_PATH);\n       if (maxdimPathStr != null) {\n@@ -96,13 +104,11 @@ public class ADMMSubmitter implements AppSubmitter {\n         feaNum = conf.getInt(K_FEATURE_NUM, 1000000);\n       }\n       // int feaNum = conf.getInt(K_FEATURE_NUM, 1000000);\n-\n       LOG.info(\"MAX_DIM=\" + feaNum);\n       LOG.info(\"ANGEL_TRAIN_DATA_PATH=\" + conf.get(AngelConfiguration.ANGEL_TRAIN_DATA_PATH));\n       LOG.info(\"ANGEL_OUTPUT_DIR=\" + conf.get(AngelConfiguration.ANGEL_JOB_OUTPUT_PATH));\n       LOG.info(\"FEATURE_NUM=\" + feaNum);\n       LOG.info(\"ADMM_ITER=\" + admmIter);\n-\n       MatrixContext mContext1 = new MatrixContext(W, 1, feaNum, 1, feaNum / psNum / 10000);\n       client.addMatrix(mContext1);\n \n@@ -114,13 +120,10 @@ public class ADMMSubmitter implements AppSubmitter {\n       // T\n       MatrixContext mContext3 = new MatrixContext(T, 1, 1, 1, 1);\n       client.addMatrix(mContext3);\n-\n       MatrixContext mContext4 = new MatrixContext(Loss, 1, 1, 1, 1);\n       mContext4.setRowType(MLProtos.RowType.T_DOUBLE_DENSE);\n       client.addMatrix(mContext4);\n-\n-      MatrixContext mContext5 =\n-          new MatrixContext(AUC, 1, AucData.bucketNum * 2, 1, AucData.bucketNum / psNum / 10);\n+      MatrixContext mContext5 = new MatrixContext(AUC, 1, AucData.bucketNum * 2, 1, AucData.bucketNum / psNum / 10);\n       mContext5.setRowType(MLProtos.RowType.T_INT_DENSE);\n       mContext5.set(MatrixConfiguration.MATRIX_OPLOG_TYPE, \"DENSE_INT\");\n       client.addMatrix(mContext5);\n@@ -139,10 +142,9 @@ public class ADMMSubmitter implements AppSubmitter {\n       tmpMatrix.set(MatrixConfiguration.MATRIX_HOGWILD, String.valueOf(true));\n       client.addMatrix(tmpMatrix);\n     }\n-\n     client.start();\n     client.waitForCompletion();\n     client.stop();\n   }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 26
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

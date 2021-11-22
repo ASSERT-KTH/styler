@@ -1,0 +1,124 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4497",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4497/PrefetchingIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4497/PrefetchingIterator.java\nindex 1f8dd3aeb2f..dd17abe8d81 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4497/PrefetchingIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4497/PrefetchingIterator.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.helpers.collection;\n \n import java.util.Iterator;\n@@ -25,7 +26,7 @@ import java.util.NoSuchElementException;\n /**\n  * Abstract class for how you usually implement iterators when you don't know\n  * how many objects there are (which is pretty much every time)\n- *\n+ * <p>\n  * Basically the {@link #hasNext()} method will look up the next object and\n  * cache it. The cached object is then set to {@code null} in {@link #next()}.\n  * So you only have to implement one method, {@code fetchNextOrNull} which\n@@ -33,60 +34,60 @@ import java.util.NoSuchElementException;\n  */\n public abstract class PrefetchingIterator<T> implements Iterator<T>\n {\n-    boolean hasFetchedNext;\n-    T nextObject;\n+  boolean hasFetchedNext;\n+  T nextObject;\n \n-    /**\n-     * @return {@code true} if there is a next item to be returned from the next\n-     * call to {@link #next()}.\n-     */\n-    @Override\n-    public boolean hasNext()\n-    {\n-        return peek() != null;\n-    }\n+  /**\n+   * @return {@code true} if there is a next item to be returned from the next\n+   * call to {@link #next()}.\n+   */\n+  @Override\n+  public boolean hasNext()\n+  {\n+    return peek() != null;\n+  }\n \n-    /**\n-     * @return the next element that will be returned from {@link #next()} without\n-     * actually advancing the iterator\n-     */\n-    public T peek()\n+  /**\n+   * @return the next element that will be returned from {@link #next()} without\n+   * actually advancing the iterator\n+   */\n+  public T peek()\n+  {\n+    if (hasFetchedNext)\n     {\n-        if ( hasFetchedNext )\n-        {\n-            return nextObject;\n-        }\n-\n-        nextObject = fetchNextOrNull();\n-        hasFetchedNext = true;\n-        return nextObject;\n+      return nextObject;\n     }\n \n-    /**\n-     * Uses {@link #hasNext()} to try to fetch the next item and returns it\n-     * if found, otherwise it throws a {@link NoSuchElementException}.\n-     *\n-     * @return the next item in the iteration, or throws\n-     * {@link NoSuchElementException} if there's no more items to return.\n-     */\n-    @Override\n-    public T next()\n+    nextObject = fetchNextOrNull();\n+    hasFetchedNext = true;\n+    return nextObject;\n+  }\n+\n+  /**\n+   * Uses {@link #hasNext()} to try to fetch the next item and returns it\n+   * if found, otherwise it throws a {@link NoSuchElementException}.\n+   *\n+   * @return the next item in the iteration, or throws\n+   * {@link NoSuchElementException} if there's no more items to return.\n+   */\n+  @Override\n+  public T next()\n+  {\n+    if (!hasNext())\n     {\n-        if ( !hasNext() )\n-        {\n-            throw new NoSuchElementException();\n-        }\n-        T result = nextObject;\n-        nextObject = null;\n-        hasFetchedNext = false;\n-        return result;\n+      throw new NoSuchElementException();\n     }\n+    T result = nextObject;\n+    nextObject = null;\n+    hasFetchedNext = false;\n+    return result;\n+  }\n \n-    protected abstract T fetchNextOrNull();\n+  protected abstract T fetchNextOrNull();\n \n-    @Override\n-    public void remove()\n-    {\n-        throw new UnsupportedOperationException();\n-    }\n+  @Override\n+  public void remove()\n+  {\n+    throw new UnsupportedOperationException();\n+  }\n }\n",
+            "diff_size": 63
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4497/PrefetchingIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4497/PrefetchingIterator.java\nindex 1f8dd3aeb2f..f72b242e3c2 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4497/PrefetchingIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4497/PrefetchingIterator.java\n@@ -76,7 +76,8 @@ public abstract class PrefetchingIterator<T> implements Iterator<T>\n         {\n             throw new NoSuchElementException();\n         }\n-        T result = nextObject;\n+\n+T result = nextObject;\n         nextObject = null;\n         hasFetchedNext = false;\n         return result;\n@@ -89,4 +90,4 @@ public abstract class PrefetchingIterator<T> implements Iterator<T>\n     {\n         throw new UnsupportedOperationException();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

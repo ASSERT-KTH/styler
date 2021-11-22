@@ -1,0 +1,96 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "335",
+    "information": {
+        "errors": [
+            {
+                "line": "47",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 168).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "@Entity\n@Table(name = \"ODE_MESSAGE\")\n@NamedQueries( { @NamedQuery(name = MessageDAOImpl.DELETE_MESSAGES_BY_PROCESS, query = \"delete from MessageDAOImpl as m where m._messageExchange._process = :process\")})\npublic class MessageDAOImpl implements MessageDAO {\n    private static Log __log = LogFactory.getLog(MessageDAOImpl.class);\n    public final static String DELETE_MESSAGES_BY_PROCESS = \"DELETE_MESSAGES_BY_PROCESS\";",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 153).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/335/MessageDAOImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/335/MessageDAOImpl.java\nindex a657ad45fe3..b9399f12cf0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/335/MessageDAOImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/335/MessageDAOImpl.java\n@@ -44,86 +44,88 @@ import javax.xml.namespace.QName;\n \n @Entity\n @Table(name = \"ODE_MESSAGE\")\n-@NamedQueries( { @NamedQuery(name = MessageDAOImpl.DELETE_MESSAGES_BY_PROCESS, query = \"delete from MessageDAOImpl as m where m._messageExchange._process = :process\")})\n+@NamedQueries({\n+  @NamedQuery(name = MessageDAOImpl.DELETE_MESSAGES_BY_PROCESS, query = \"delete from MessageDAOImpl as m where m._messageExchange._process = :process\")})\n public class MessageDAOImpl implements MessageDAO {\n-    private static Log __log = LogFactory.getLog(MessageDAOImpl.class);\n-    public final static String DELETE_MESSAGES_BY_PROCESS = \"DELETE_MESSAGES_BY_PROCESS\";\n-\n-    @Id\n-    @Column(name = \"MESSAGE_ID\")\n-    @GeneratedValue(strategy = GenerationType.AUTO)\n-    @SuppressWarnings(\"unused\")\n-    private Long _id;\n-    @Basic\n-    @Column(name = \"TYPE\")\n-    private String _type;\n-    @Lob\n-    @Column(name = \"DATA\")\n-    private String _data;\n-    @Lob\n-    @Column(name = \"HEADER\")\n-    private String _header;\n-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })\n-    @Column(name = \"MESSAGE_EXCHANGE_ID\")\n-    private MessageExchangeDAOImpl _messageExchange;\n-\n-    public MessageDAOImpl() {\n+  private static Log __log = LogFactory.getLog(MessageDAOImpl.class);\n+  public final static String DELETE_MESSAGES_BY_PROCESS = \"DELETE_MESSAGES_BY_PROCESS\";\n+\n+  @Id\n+  @Column(name = \"MESSAGE_ID\")\n+  @GeneratedValue(strategy = GenerationType.AUTO)\n+  @SuppressWarnings(\"unused\")\n+  private Long _id;\n+  @Basic\n+  @Column(name = \"TYPE\")\n+  private String _type;\n+  @Lob\n+  @Column(name = \"DATA\")\n+  private String _data;\n+  @Lob\n+  @Column(name = \"HEADER\")\n+  private String _header;\n+  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})\n+  @Column(name = \"MESSAGE_EXCHANGE_ID\")\n+  private MessageExchangeDAOImpl _messageExchange;\n+\n+  public MessageDAOImpl() {\n+  }\n+\n+  public MessageDAOImpl(QName type, MessageExchangeDAOImpl me) {\n+    _type = type.toString();\n+    _messageExchange = me;\n+  }\n+\n+  public Element getData() {\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"getData \" + _id + \" \" + _data);\n     }\n-\n-    public MessageDAOImpl(QName type, MessageExchangeDAOImpl me) {\n-        _type = type.toString();\n-        _messageExchange = me;\n+    try {\n+      return _data == null ? null : DOMUtils.stringToDOM(_data);\n+    } catch (Exception e) {\n+      throw new RuntimeException(e);\n     }\n-\n-    public Element getData() {\n-        if (__log.isDebugEnabled()) {\n-            __log.debug(\"getData \" + _id + \" \" + _data);\n-        }\n-        try {\n-            return _data == null ? null : DOMUtils.stringToDOM(_data);\n-        } catch (Exception e) {\n-            throw new RuntimeException(e);\n-        }\n+  }\n+\n+  public void setData(Element value) {\n+    if (value == null) {\n+      if (__log.isDebugEnabled()) {\n+        __log.debug(\"setData \" + _id + \" null\");\n+      }\n+      return;\n     }\n+    _data = DOMUtils.domToString(value);\n \n-    public void setData(Element value) {\n-        if (value == null) {\n-            if (__log.isDebugEnabled()) {\n-                __log.debug(\"setData \" + _id + \" null\");\n-            }\n-            return;\n-        }\n-        _data = DOMUtils.domToString(value);\n-\n-        if (__log.isDebugEnabled()) {\n-            __log.debug(\"setData \" + _id + \" \" + _data);\n-        }\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"setData \" + _id + \" \" + _data);\n     }\n+  }\n \n-    public Element getHeader() {\n-        try {\n-            return _header == null ? null : DOMUtils.stringToDOM(_header);\n-        } catch (Exception e) {\n-            throw new RuntimeException(e);\n-        }\n+  public Element getHeader() {\n+    try {\n+      return _header == null ? null : DOMUtils.stringToDOM(_header);\n+    } catch (Exception e) {\n+      throw new RuntimeException(e);\n     }\n+  }\n \n-    public void setHeader(Element value) {\n-        if (value == null)\n-            return;\n-        _header = DOMUtils.domToString(value);\n+  public void setHeader(Element value) {\n+    if (value == null) {\n+      return;\n     }\n+    _header = DOMUtils.domToString(value);\n+  }\n \n-    public MessageExchangeDAO getMessageExchange() {\n-        return _messageExchange;\n-    }\n+  public MessageExchangeDAO getMessageExchange() {\n+    return _messageExchange;\n+  }\n \n-    public QName getType() {\n-        return _type == null ? null : QName.valueOf(_type);\n-    }\n+  public QName getType() {\n+    return _type == null ? null : QName.valueOf(_type);\n+  }\n \n-    public void setType(QName type) {\n-        _type = type.toString();\n-    }\n+  public void setType(QName type) {\n+    _type = type.toString();\n+  }\n \n }\n",
+            "diff_size": 84
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/335/MessageDAOImpl.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/335/MessageDAOImpl.java\nindex a657ad45fe3..a07b522795b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/335/MessageDAOImpl.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/335/MessageDAOImpl.java\n@@ -126,4 +126,4 @@ public class MessageDAOImpl implements MessageDAO {\n         _type = type.toString();\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "47",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,185 @@
+{
+    "project_name": "spark-root-laurelin",
+    "error_id": "1",
+    "information": {
+        "errors": [
+            {
+                "line": "5",
+                "column": "1",
+                "severity": "warning",
+                "message": "'package' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * byte ranges from low level I/O\n */\npackage edu.vanderbilt.accre.laurelin.root_proxy;\n\nimport java.io.IOException;\nimport java.nio.ByteBuffer;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/1/ROOTFile.java\nindex 69250703ac5..489e5d96304 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler/1/ROOTFile.java\n@@ -2,6 +2,7 @@\n  * Handles low-level loading C-struct type things and (optionally compressed)\n  * byte ranges from low level I/O\n  */\n+\n package edu.vanderbilt.accre.laurelin.root_proxy;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/1/ROOTFile.java\nindex 69250703ac5..26160986fb4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/intellij/1/ROOTFile.java\n@@ -2,6 +2,7 @@\n  * Handles low-level loading C-struct type things and (optionally compressed)\n  * byte ranges from low level I/O\n  */\n+\n package edu.vanderbilt.accre.laurelin.root_proxy;\n \n import java.io.IOException;\n@@ -63,7 +64,7 @@ public class ROOTFile {\n                     return false;\n                 }\n                 return (((fh == ((CacheKey) obj).fh))\n-                        && (off == ((CacheKey) obj).off));\n+                    && (off == ((CacheKey) obj).off));\n             }\n \n             @Override\n@@ -76,7 +77,8 @@ public class ROOTFile {\n         static LoadingCache<CacheKey, ByteBuffer> cache;\n \n         static {\n-            CacheLoader<CacheKey, ByteBuffer> loader = new CacheLoader<CacheKey, ByteBuffer>() {\n+            CacheLoader<CacheKey, ByteBuffer> loader =\n+                new CacheLoader<CacheKey, ByteBuffer>() {\n                     // FIXME - implement loadAll to get many pages at once\n                     @Override\n                     public ByteBuffer load(CacheKey key) throws Exception {\n@@ -104,7 +106,7 @@ public class ROOTFile {\n             long upperPage = (off + len) / CACHE_PAGE_SIZE;\n \n             if ((len > CACHE_READ_MAX)\n-                    || (lowerPage != upperPage)) {\n+                || (lowerPage != upperPage)) {\n                 /*\n                  *  1) Don't cache very large reads, since they will end up\n                  *     being compressed baskets more often than not (and\n@@ -115,10 +117,12 @@ public class ROOTFile {\n                 ret = fh.read(off, len);\n             } else {\n                 try {\n-                    ret = cache.get(new CacheKey(fh, lowerPage * CACHE_PAGE_SIZE)).duplicate();\n+                    ret =\n+                        cache.get(new CacheKey(fh, lowerPage * CACHE_PAGE_SIZE))\n+                            .duplicate();\n                     long newPos = (off - (CACHE_PAGE_SIZE * lowerPage));\n                     ret.position((int) newPos);\n-                    ret.limit((int)(newPos + len));\n+                    ret.limit((int) (newPos + len));\n                     ret = ret.slice();\n                 } catch (ExecutionException e) {\n                     throw new IOException(e);\n@@ -171,7 +175,7 @@ public class ROOTFile {\n          * This bytebuffer can be a copy of the internal cache\n          */\n         ByteBuffer ret;\n-        try (Event time = profile.startOp(offset, (int)l)) {\n+        try (Event time = profile.startOp(offset, (int) l)) {\n             // This is a call to the actual filesystem\n             ret = fh.read(offset, l);\n             ret.position(0);\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "67",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "80",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "Comment has incorrect indentation level 4, expected is 20, indentation should be the same level as line 81.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'static initialization' child has incorrect indentation level 0, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'static initialization rcurly' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "Block comment has incorrect indentation level 4, expected is 16, indentation should be the same level as line 113.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/1/ROOTFile.java\nindex 69250703ac5..c97455c445b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/naturalize/1/ROOTFile.java\n@@ -2,6 +2,7 @@\n  * Handles low-level loading C-struct type things and (optionally compressed)\n  * byte ranges from low level I/O\n  */\n+\n package edu.vanderbilt.accre.laurelin.root_proxy;\n \n import java.io.IOException;\n@@ -62,9 +63,8 @@ public class ROOTFile {\n                 if (getClass() != obj.getClass()) {\n                     return false;\n                 }\n-                return (((fh == ((CacheKey) obj).fh))\n-                        && (off == ((CacheKey) obj).off));\n-            }\n+                return (((fh == ((CacheKey) obj).fh)) && (off == ((CacheKey) obj).off));\n+    }\n \n             @Override\n             public int hashCode() {\n@@ -77,7 +77,7 @@ public class ROOTFile {\n \n         static {\n             CacheLoader<CacheKey, ByteBuffer> loader = new CacheLoader<CacheKey, ByteBuffer>() {\n-                    // FIXME - implement loadAll to get many pages at once\n+    // FIXME - implement loadAll to get many pages at once\n                     @Override\n                     public ByteBuffer load(CacheKey key) throws Exception {\n                         if (key.fh.getLimit() > key.off + CACHE_PAGE_SIZE) {\n@@ -88,10 +88,8 @@ public class ROOTFile {\n                         }\n                     }\n                 };\n-            cache = CacheBuilder.newBuilder()\n-                .maximumSize(CACHE_PAGE_COUNT)\n-                .build(loader);\n-        }\n+cache = CacheBuilder.newBuilder().maximumSize(CACHE_PAGE_COUNT).build(loader);\n+    }\n \n         protected FileBackedBuf(ROOTFile fh) {\n             this.fh = fh;\n@@ -105,7 +103,7 @@ public class ROOTFile {\n \n             if ((len > CACHE_READ_MAX)\n                     || (lowerPage != upperPage)) {\n-                /*\n+    /*\n                  *  1) Don't cache very large reads, since they will end up\n                  *     being compressed baskets more often than not (and\n                  *     the decompressed versions are what's stored)\n@@ -195,4 +193,4 @@ public class ROOTFile {\n     public Cursor getCursor(long off) {\n         return new Cursor(new FileBackedBuf(this), off);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "5",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'package' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'STATIC_INIT' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "78",
+                    "column": "21",
+                    "severity": "warning",
+                    "message": "Comment has incorrect indentation level 20, expected is 0, indentation should be the same level as line 79.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 0, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "81",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 3, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "82",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 7, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 3, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 7, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "85",
+                    "column": "8",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 7, expected level should be one of the following: 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "86",
+                    "column": "4",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 3, expected level should be one of the following: 20, 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "56",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 55, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/1/ROOTFile.java\nindex 69250703ac5..c3ad9e1d2b3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/codebuff/1/ROOTFile.java\n@@ -7,14 +7,11 @@ package edu.vanderbilt.accre.laurelin.root_proxy;\n import java.io.IOException;\n import java.nio.ByteBuffer;\n import java.util.concurrent.ExecutionException;\n-\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import com.google.common.cache.CacheBuilder;\n import com.google.common.cache.CacheLoader;\n import com.google.common.cache.LoadingCache;\n-\n import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.Event;\n import edu.vanderbilt.accre.laurelin.root_proxy.IOProfile.FileProfiler;\n \n@@ -44,6 +41,7 @@ public class ROOTFile {\n \n         public class CacheKey {\n             public ROOTFile fh;\n+\n             public long off;\n \n             public CacheKey(ROOTFile fh, long off) {\n@@ -56,41 +54,39 @@ public class ROOTFile {\n                 if (this == obj) {\n                     return true;\n                 }\n+\n                 if (obj == null) {\n                     return false;\n                 }\n+\n                 if (getClass() != obj.getClass()) {\n                     return false;\n                 }\n-                return (((fh == ((CacheKey) obj).fh))\n-                        && (off == ((CacheKey) obj).off));\n+                return (((fh == ((CacheKey)obj).fh)) && (off == ((CacheKey)obj).off));\n             }\n \n             @Override\n             public int hashCode() {\n-                return (int) (fh.hashCode() + (off / (2 * 1024 * 1024)));\n+                return (int)(fh.hashCode() + (off / (2 * 1024 * 1024)));\n             }\n \n         }\n \n         static LoadingCache<CacheKey, ByteBuffer> cache;\n-\n         static {\n             CacheLoader<CacheKey, ByteBuffer> loader = new CacheLoader<CacheKey, ByteBuffer>() {\n                     // FIXME - implement loadAll to get many pages at once\n-                    @Override\n-                    public ByteBuffer load(CacheKey key) throws Exception {\n-                        if (key.fh.getLimit() > key.off + CACHE_PAGE_SIZE) {\n-                            return key.fh.read(key.off, CACHE_PAGE_SIZE);\n-                        } else {\n-                            long shortCount = key.fh.getLimit() - key.off;\n-                            return key.fh.read(key.off, shortCount);\n-                        }\n-                    }\n-                };\n-            cache = CacheBuilder.newBuilder()\n-                .maximumSize(CACHE_PAGE_COUNT)\n-                .build(loader);\n+@Override\n+public ByteBuffer load(CacheKey key) throws Exception {\n+   if (key.fh.getLimit() > key.off + CACHE_PAGE_SIZE) {\n+       return key.fh.read(key.off, CACHE_PAGE_SIZE);\n+   } else {\n+       long shortCount = key.fh.getLimit() - key.off;\n+       return key.fh.read(key.off, shortCount);\n+   }\n+}\n+                                                       };\n+            cache = CacheBuilder.newBuilder().maximumSize(CACHE_PAGE_COUNT).build(loader);\n         }\n \n         protected FileBackedBuf(ROOTFile fh) {\n@@ -102,9 +98,7 @@ public class ROOTFile {\n             ByteBuffer ret;\n             long lowerPage = off / CACHE_PAGE_SIZE;\n             long upperPage = (off + len) / CACHE_PAGE_SIZE;\n-\n-            if ((len > CACHE_READ_MAX)\n-                    || (lowerPage != upperPage)) {\n+            if ((len > CACHE_READ_MAX) || (lowerPage != upperPage)) {\n                 /*\n                  *  1) Don't cache very large reads, since they will end up\n                  *     being compressed baskets more often than not (and\n@@ -117,7 +111,7 @@ public class ROOTFile {\n                 try {\n                     ret = cache.get(new CacheKey(fh, lowerPage * CACHE_PAGE_SIZE)).duplicate();\n                     long newPos = (off - (CACHE_PAGE_SIZE * lowerPage));\n-                    ret.position((int) newPos);\n+                    ret.position((int)newPos);\n                     ret.limit((int)(newPos + len));\n                     ret = ret.slice();\n                 } catch (ExecutionException e) {\n@@ -166,6 +160,7 @@ public class ROOTFile {\n      * users must be copies of the internal ByteBuffers we have. Otherwise\n      * we couldn't change the contents without breaking the users\n      */\n+\n     private ByteBuffer readUnsafe(long offset, long l) throws IOException {\n         /*\n          * This bytebuffer can be a copy of the internal cache\n@@ -195,4 +190,4 @@ public class ROOTFile {\n     public Cursor getCursor(long off) {\n         return new Cursor(new FileBackedBuf(this), off);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/1/ROOTFile.java\nindex 69250703ac5..489e5d96304 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_random/1/ROOTFile.java\n@@ -2,6 +2,7 @@\n  * Handles low-level loading C-struct type things and (optionally compressed)\n  * byte ranges from low level I/O\n  */\n+\n package edu.vanderbilt.accre.laurelin.root_proxy;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/1/ROOTFile.java\nindex 69250703ac5..489e5d96304 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/errored/1/1/ROOTFile.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/spark-root-laurelin/styler_three_grams/1/ROOTFile.java\n@@ -2,6 +2,7 @@\n  * Handles low-level loading C-struct type things and (optionally compressed)\n  * byte ranges from low level I/O\n  */\n+\n package edu.vanderbilt.accre.laurelin.root_proxy;\n \n import java.io.IOException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

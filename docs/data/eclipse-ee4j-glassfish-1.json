@@ -1,0 +1,85 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "1",
+    "information": {
+        "errors": [
+            {
+                "line": "88",
+                "column": "21",
+                "severity": "warning",
+                "message": "'new' has incorrect indentation level 20, expected level should be 24.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "                    \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n                    \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n                    new Object[] { m, sessionDescriptor.getName() }));\n                return getDefaultFailedResult();\n            }\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/1/InitHandler.java\nindex 7c6113bc759..349f4677eb1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/1/InitHandler.java\n@@ -85,7 +85,7 @@ public class InitHandler extends AbstractAttributeHandler {\n                     localStrings.getLocalString(\n                     \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n                     \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n-                    new Object[] { m, sessionDescriptor.getName() }));\n+                            new Object[] { m, sessionDescriptor.getName() }));\n                 return getDefaultFailedResult();\n             }\n         }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/1/InitHandler.java\nindex 7c6113bc759..19a0d36d7fc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/1/InitHandler.java\n@@ -34,7 +34,6 @@ import org.jvnet.hk2.annotations.Service;\n \n /**\n  * This handler is responsible for handling the jakarta.ejb.Init attribute\n- *\n  */\n @Service\n @AnnotationHandlerFor(Init.class)\n@@ -44,11 +43,12 @@ public class InitHandler extends AbstractAttributeHandler {\n     }\n \n     protected HandlerProcessingResult processAnnotation(AnnotationInfo ainfo,\n-            EjbContext[] ejbContexts) throws AnnotationProcessorException {\n+                                                        EjbContext[] ejbContexts)\n+        throws AnnotationProcessorException {\n \n         Init init = (Init) ainfo.getAnnotation();\n \n-        for(EjbContext next : ejbContexts) {\n+        for (EjbContext next : ejbContexts) {\n \n             EjbSessionDescriptor sessionDescriptor =\n                 (EjbSessionDescriptor) next.getDescriptor();\n@@ -63,29 +63,29 @@ public class InitHandler extends AbstractAttributeHandler {\n             String adaptedCreateMethodName = init.value();\n \n             try {\n-                if( sessionDescriptor.isRemoteInterfacesSupported() ) {\n+                if (sessionDescriptor.isRemoteInterfacesSupported()) {\n                     addInitMethod(sessionDescriptor, m,\n-                                  adaptedCreateMethodName, false);\n+                        adaptedCreateMethodName, false);\n                     numMatches++;\n                 }\n-            } catch(Exception e) {\n+            } catch (Exception e) {\n             }\n \n             try {\n-                if( sessionDescriptor.isLocalInterfacesSupported() ) {\n+                if (sessionDescriptor.isLocalInterfacesSupported()) {\n                     addInitMethod(sessionDescriptor, m,\n-                                  adaptedCreateMethodName, true);\n+                        adaptedCreateMethodName, true);\n                     numMatches++;\n                 }\n-            } catch(Exception e) {\n+            } catch (Exception e) {\n             }\n \n-            if( numMatches == 0 ) {\n+            if (numMatches == 0) {\n                 log(Level.SEVERE, ainfo,\n                     localStrings.getLocalString(\n-                    \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n-                    \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n-                    new Object[] { m, sessionDescriptor.getName() }));\n+                        \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n+                        \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n+                        new Object[] {m, sessionDescriptor.getName()}));\n                 return getDefaultFailedResult();\n             }\n         }\n@@ -106,26 +106,26 @@ public class InitHandler extends AbstractAttributeHandler {\n         Class homeIntf = cl.loadClass(homeIntfName);\n \n         Method createMethod = null;\n-        if( (adaptedCreateMethodName == null) ||\n-            (adaptedCreateMethodName.equals(\"\")) ) {\n+        if ((adaptedCreateMethodName == null) ||\n+            (adaptedCreateMethodName.equals(\"\"))) {\n             // Can't make any assumptions about matching method name.  Could\n             // be \"create\" or some form of create<METHOD>, so match based on\n             // signature.\n-            for(Method next : homeIntf.getMethods()) {\n-                if( next.getName().startsWith(\"create\") &&\n-                    TypeUtil.sameParamTypes(next, beanMethod) ) {\n+            for (Method next : homeIntf.getMethods()) {\n+                if (next.getName().startsWith(\"create\") &&\n+                    TypeUtil.sameParamTypes(next, beanMethod)) {\n                     createMethod = next;\n                     break;\n                 }\n             }\n-            if( createMethod == null ) {\n+            if (createMethod == null) {\n                 throw new NoSuchMethodException(\"No matching adapted home \" +\n-                                                \"method found for @Init \" +\n-                                                \" method \" + beanMethod);\n+                    \"method found for @Init \" +\n+                    \" method \" + beanMethod);\n             }\n         } else {\n             createMethod = homeIntf.getMethod(adaptedCreateMethodName,\n-                                              beanMethod.getParameterTypes());\n+                beanMethod.getParameterTypes());\n         }\n \n         MethodDescriptor beanMethodDescriptor =\n@@ -133,9 +133,9 @@ public class InitHandler extends AbstractAttributeHandler {\n \n         MethodDescriptor createMethodDescriptor =\n             new MethodDescriptor(createMethod,\n-                                 ( local ?\n-                                   MethodDescriptor.EJB_HOME :\n-                                   MethodDescriptor.EJB_LOCALHOME ));\n+                (local ?\n+                    MethodDescriptor.EJB_HOME :\n+                    MethodDescriptor.EJB_LOCALHOME));\n \n         EjbInitInfo initInfo = new EjbInitInfo();\n \n",
+            "diff_size": 26
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "84",
+                    "column": "21",
+                    "severity": "warning",
+                    "message": "'new' has incorrect indentation level 20, expected level should be 24.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "124",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "132",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/1/InitHandler.java\nindex 7c6113bc759..9104784a1c8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/1/InitHandler.java\n@@ -64,18 +64,14 @@ public class InitHandler extends AbstractAttributeHandler {\n \n             try {\n                 if( sessionDescriptor.isRemoteInterfacesSupported() ) {\n-                    addInitMethod(sessionDescriptor, m,\n-                                  adaptedCreateMethodName, false);\n-                    numMatches++;\n+                    addInitMethod(sessionDescriptor, m, adaptedCreateMethodName, false); numMatches++;\n                 }\n             } catch(Exception e) {\n             }\n \n             try {\n                 if( sessionDescriptor.isLocalInterfacesSupported() ) {\n-                    addInitMethod(sessionDescriptor, m,\n-                                  adaptedCreateMethodName, true);\n-                    numMatches++;\n+                    addInitMethod(sessionDescriptor, m, adaptedCreateMethodName, true); numMatches++;\n                 }\n             } catch(Exception e) {\n             }\n@@ -120,24 +116,20 @@ public class InitHandler extends AbstractAttributeHandler {\n             }\n             if( createMethod == null ) {\n                 throw new NoSuchMethodException(\"No matching adapted home \" +\n-                                                \"method found for @Init \" +\n+    \"method found for @Init \" +\n                                                 \" method \" + beanMethod);\n             }\n         } else {\n-            createMethod = homeIntf.getMethod(adaptedCreateMethodName,\n-                                              beanMethod.getParameterTypes());\n-        }\n+            createMethod = homeIntf.getMethod(adaptedCreateMethodName, beanMethod.getParameterTypes());\n+    }\n \n         MethodDescriptor beanMethodDescriptor =\n             new MethodDescriptor(beanMethod, MethodDescriptor.EJB_BEAN);\n \n         MethodDescriptor createMethodDescriptor =\n-            new MethodDescriptor(createMethod,\n-                                 ( local ?\n-                                   MethodDescriptor.EJB_HOME :\n-                                   MethodDescriptor.EJB_LOCALHOME ));\n-\n-        EjbInitInfo initInfo = new EjbInitInfo();\n+            new MethodDescriptor(createMethod, ( local ? MethodDescriptor.EJB_HOME :\n+                                   MethodDescriptor.EJB_LOCALHOME));\n+EjbInitInfo initInfo = new EjbInitInfo();\n \n         initInfo.setBeanMethod(beanMethodDescriptor);\n         initInfo.setCreateMethod(createMethodDescriptor);\n@@ -154,4 +146,4 @@ public class InitHandler extends AbstractAttributeHandler {\n     public Class<? extends Annotation>[] getTypeDependencies() {\n         return getEjbAnnotationTypes();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 17
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/1/InitHandler.java\nindex 7c6113bc759..85ff4419cb4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/1/InitHandler.java\n@@ -84,8 +84,7 @@ public class InitHandler extends AbstractAttributeHandler {\n                 log(Level.SEVERE, ainfo,\n                     localStrings.getLocalString(\n                     \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n-                    \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n-                    new Object[] { m, sessionDescriptor.getName() }));\n+                    \"Unable to find matching Home create method for Init method {0} on bean {1}.\",new Object[] { m, sessionDescriptor.getName() }));\n                 return getDefaultFailedResult();\n             }\n         }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/1/InitHandler.java\nindex 7c6113bc759..349f4677eb1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/1/InitHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/1/InitHandler.java\n@@ -85,7 +85,7 @@ public class InitHandler extends AbstractAttributeHandler {\n                     localStrings.getLocalString(\n                     \"enterprise.deployment.annotation.handlers.notmatchcreate\",\n                     \"Unable to find matching Home create method for Init method {0} on bean {1}.\",\n-                    new Object[] { m, sessionDescriptor.getName() }));\n+                            new Object[] { m, sessionDescriptor.getName() }));\n                 return getDefaultFailedResult();\n             }\n         }\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

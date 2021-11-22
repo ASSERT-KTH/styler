@@ -1,0 +1,105 @@
+{
+    "project_name": "EMResearch-EMB",
+    "error_id": "80",
+    "information": {
+        "errors": [
+            {
+                "line": "91",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "  @Override\n  public URL getUrl() {\n    return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n  }\n\n  @Override",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/80/SpanishWikipediaRule.java\nindex 100ff775501..0efb3040d5c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/80/SpanishWikipediaRule.java\n@@ -1,6 +1,6 @@\n-/* LanguageTool, a natural language style checker \n+/* LanguageTool, a natural language style checker\n  * Copyright (C) 2018 Daniel Naber (http://www.danielnaber.de)\n- * \n+ *\n  * This library is free software; you can redistribute it and/or\n  * modify it under the terms of the GNU Lesser General Public\n  * License as published by the Free Software Foundation; either\n@@ -16,6 +16,7 @@\n  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301\n  * USA\n  */\n+\n package org.languagetool.rules.es;\n \n import org.languagetool.language.Spanish;\n@@ -34,7 +35,7 @@ import java.net.URL;\n \n \n /**\n- * A rule that matches common Wikipedia errors. \n+ * A rule that matches common Wikipedia errors.\n  * Spanish implementations. Loads the list of words from\n  * <code>/es/wikipedia.txt</code>.\n  *\n@@ -43,56 +44,57 @@ import java.net.URL;\n  */\n public class SpanishWikipediaRule extends AbstractSimpleReplaceRule2 {\n \n-  public static final String WIKIPEDIA_COMMON_ERRORS = \"ES_WIKIPEDIA_COMMON_ERRORS\";\n-  private static final String FILE_NAME = \"/es/wikipedia.txt\";\n-  private static final Locale ES_LOCALE = new Locale(\"es\");  // locale used on case-conversion\n+    public static final String WIKIPEDIA_COMMON_ERRORS = \"ES_WIKIPEDIA_COMMON_ERRORS\";\n+    private static final String FILE_NAME = \"/es/wikipedia.txt\";\n+    private static final Locale ES_LOCALE = new Locale(\"es\");  // locale used on case-conversion\n+\n+    @Override\n+    public final List<String> getFileNames() {\n+        return Collections.singletonList(FILE_NAME);\n+    }\n \n-  @Override\n-  public final List<String> getFileNames() {\n-    return Collections.singletonList(FILE_NAME);\n-  }\n+    public SpanishWikipediaRule(ResourceBundle messages) throws IOException {\n+        super(messages, new Spanish());\n+        super.setCategory(Categories.WIKIPEDIA.getCategory(messages));\n+        setLocQualityIssueType(ITSIssueType.Grammar);\n+        addExamplePair(Example.wrong(\"<marker>a basto</marker>\"),\n+            Example.fixed(\"<marker>abasto</marker>\"));\n+        this.setDefaultOff();\n+    }\n \n-  public SpanishWikipediaRule(ResourceBundle messages) throws IOException {\n-    super(messages, new Spanish());\n-    super.setCategory(Categories.WIKIPEDIA.getCategory(messages));\n-    setLocQualityIssueType(ITSIssueType.Grammar);\n-    addExamplePair(Example.wrong(\"<marker>a basto</marker>\"),\n-                   Example.fixed(\"<marker>abasto</marker>\"));\n-    this.setDefaultOff();\n-  }\n+    @Override\n+    public final String getId() {\n+        return WIKIPEDIA_COMMON_ERRORS;\n+    }\n \n-  @Override\n-  public final String getId() {\n-    return WIKIPEDIA_COMMON_ERRORS;\n-  }\n+    @Override\n+    public String getDescription() {\n+        return \"Errores frecuentes en los art\u00edculos de la Wikipedia\";\n+    }\n \n-  @Override\n-  public String getDescription() {\n-    return \"Errores frecuentes en los art\u00edculos de la Wikipedia\";\n-  }\n+    @Override\n+    public String getShort() {\n+        return \"Error gramatical u ortogr\u00e1fico\";\n+    }\n \n-  @Override\n-  public String getShort() {\n-    return \"Error gramatical u ortogr\u00e1fico\";\n-  }\n-  \n-  @Override\n-  public String getSuggestion() {\n-    return \"'$match' es una expresi\u00f3n err\u00f3nea. Pruebe a utilizar $suggestions\";\n-  }\n+    @Override\n+    public String getSuggestion() {\n+        return \"'$match' es una expresi\u00f3n err\u00f3nea. Pruebe a utilizar $suggestions\";\n+    }\n \n-  @Override\n-  public String getSuggestionsSeparator() {\n-    return \" o \";\n-  }\n+    @Override\n+    public String getSuggestionsSeparator() {\n+        return \" o \";\n+    }\n \n-  @Override\n-  public URL getUrl() {\n-    return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n-  }\n+    @Override\n+    public URL getUrl() {\n+        return Tools\n+            .getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n+    }\n \n-  @Override\n-  public Locale getLocale() {\n-    return ES_LOCALE;\n-  }\n+    @Override\n+    public Locale getLocale() {\n+        return ES_LOCALE;\n+    }\n }\n",
+            "diff_size": 58
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/80/SpanishWikipediaRule.java\nindex 100ff775501..00b96ccad7f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/naturalize/80/SpanishWikipediaRule.java\n@@ -58,7 +58,7 @@ public class SpanishWikipediaRule extends AbstractSimpleReplaceRule2 {\n     setLocQualityIssueType(ITSIssueType.Grammar);\n     addExamplePair(Example.wrong(\"<marker>a basto</marker>\"),\n                    Example.fixed(\"<marker>abasto</marker>\"));\n-    this.setDefaultOff();\n+this.setDefaultOff();\n   }\n \n   @Override\n@@ -95,4 +95,4 @@ public class SpanishWikipediaRule extends AbstractSimpleReplaceRule2 {\n   public Locale getLocale() {\n     return ES_LOCALE;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "92",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/80/SpanishWikipediaRule.java\nindex 100ff775501..5e75de930fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/80/SpanishWikipediaRule.java\n@@ -24,7 +24,6 @@ import org.languagetool.rules.Categories;\n import org.languagetool.rules.Example;\n import org.languagetool.rules.ITSIssueType;\n import org.languagetool.tools.Tools;\n-\n import java.io.IOException;\n import java.util.Collections;\n import java.util.List;\n@@ -41,58 +40,60 @@ import java.net.URL;\n  * @author (adapted from Portuguese version by David M\u00e9ndez)\n  * @since 4.1\n  */\n+\n+\n public class SpanishWikipediaRule extends AbstractSimpleReplaceRule2 {\n \n-  public static final String WIKIPEDIA_COMMON_ERRORS = \"ES_WIKIPEDIA_COMMON_ERRORS\";\n-  private static final String FILE_NAME = \"/es/wikipedia.txt\";\n-  private static final Locale ES_LOCALE = new Locale(\"es\");  // locale used on case-conversion\n+    public static final String WIKIPEDIA_COMMON_ERRORS = \"ES_WIKIPEDIA_COMMON_ERRORS\";\n+    private static final String FILE_NAME = \"/es/wikipedia.txt\";\n+    private static final Locale ES_LOCALE = new Locale(\"es\");  // locale used on case-conversion\n \n-  @Override\n-  public final List<String> getFileNames() {\n+    @Override\n+    public final List<String> getFileNames() {\n     return Collections.singletonList(FILE_NAME);\n-  }\n+    }\n \n-  public SpanishWikipediaRule(ResourceBundle messages) throws IOException {\n+    public SpanishWikipediaRule(ResourceBundle messages) throws IOException {\n     super(messages, new Spanish());\n     super.setCategory(Categories.WIKIPEDIA.getCategory(messages));\n     setLocQualityIssueType(ITSIssueType.Grammar);\n     addExamplePair(Example.wrong(\"<marker>a basto</marker>\"),\n                    Example.fixed(\"<marker>abasto</marker>\"));\n     this.setDefaultOff();\n-  }\n+    }\n \n-  @Override\n-  public final String getId() {\n+    @Override\n+    public final String getId() {\n     return WIKIPEDIA_COMMON_ERRORS;\n-  }\n+    }\n+\n+    @Override\n+    public String getDescription() {\n+        return \"Errores frecuentes en los art\u00edculos de la Wikipedia\";\n+    }\n \n-  @Override\n-  public String getDescription() {\n-    return \"Errores frecuentes en los art\u00edculos de la Wikipedia\";\n-  }\n+    @Override\n+    public String getShort() {\n+        return \"Error gramatical u ortogr\u00e1fico\";\n+    }\n \n-  @Override\n-  public String getShort() {\n-    return \"Error gramatical u ortogr\u00e1fico\";\n-  }\n-  \n-  @Override\n-  public String getSuggestion() {\n-    return \"'$match' es una expresi\u00f3n err\u00f3nea. Pruebe a utilizar $suggestions\";\n-  }\n+    @Override\n+    public String getSuggestion() {\n+        return \"'$match' es una expresi\u00f3n err\u00f3nea. Pruebe a utilizar $suggestions\";\n+    }\n \n-  @Override\n-  public String getSuggestionsSeparator() {\n-    return \" o \";\n-  }\n+    @Override\n+    public String getSuggestionsSeparator() {\n+        return \" o \";\n+    }\n \n-  @Override\n-  public URL getUrl() {\n-    return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n-  }\n+    @Override\n+    public URL getUrl() {\n+        return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n+    }\n \n-  @Override\n-  public Locale getLocale() {\n-    return ES_LOCALE;\n-  }\n-}\n+    @Override\n+    public Locale getLocale() {\n+        return ES_LOCALE;\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 45
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "91",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "91",
+                    "column": "125",
+                    "severity": "warning",
+                    "message": "';' is preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceBeforeCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_three_grams/80/SpanishWikipediaRule.java\nindex 100ff775501..7f536c26e9c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/80/SpanishWikipediaRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_three_grams/80/SpanishWikipediaRule.java\n@@ -88,8 +88,9 @@ public class SpanishWikipediaRule extends AbstractSimpleReplaceRule2 {\n \n   @Override\n   public URL getUrl() {\n-    return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\");\n-  }\n+    return Tools.getUrl(\"https://es.wikipedia.org/wiki/Wikipedia:Lista_de_errores_ortogr%C3%A1ficos_comunes/M%C3%A1quinas\") ;\n+\n+    }\n \n   @Override\n   public Locale getLocale() {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,147 @@
+{
+    "project_name": "ita-social-projects-GreenCity",
+    "error_id": "9",
+    "information": {
+        "errors": [
+            {
+                "line": "34",
+                "column": "116",
+                "severity": "error",
+                "message": "'+' should be on a new line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+            }
+        ]
+    },
+    "source_code": "     * @return list of three recommended {@link EcoNews} instances.\n     */\n    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n            \"WHERE id <> :openedEcoNewsId limit 3\")\n    List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n                                             Long secondTagId, Long thirdTagId, Long openedEcoNewsId);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler/9/EcoNewsRepo.java\nindex 27db31b54ef..c656ae3b91f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler/9/EcoNewsRepo.java\n@@ -31,8 +31,8 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param openedEcoNewsId id of opened eco news.\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n-    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n+    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \"\n+            + \"WHERE id <> :openedEcoNewsId limit 3\")\n     List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n                                              Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "116",
+                    "severity": "error",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/intellij/9/EcoNewsRepo.java\nindex 27db31b54ef..20c9a7b6387 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/intellij/9/EcoNewsRepo.java\n@@ -32,7 +32,7 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n     @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n+        \"WHERE id <> :openedEcoNewsId limit 3\")\n     List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n                                              Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n \n@@ -43,12 +43,12 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @return {@link EcoNews} for specific tags.\n      */\n     @Query(nativeQuery = true, value =\n-            \"SELECT DISTINCT en.* FROM eco_news AS en \"\n-                    + \"INNER JOIN eco_news_tags AS entag \"\n-                    + \"ON en.id = entag.eco_news_id \"\n-                    + \"INNER JOIN tags AS t ON entag.tags_id = t.id \"\n-                    + \"WHERE t.name IN (:tags) \"\n-                    + \"ORDER BY  en.creation_date DESC\")\n+        \"SELECT DISTINCT en.* FROM eco_news AS en \"\n+            + \"INNER JOIN eco_news_tags AS entag \"\n+            + \"ON en.id = entag.eco_news_id \"\n+            + \"INNER JOIN tags AS t ON entag.tags_id = t.id \"\n+            + \"WHERE t.name IN (:tags) \"\n+            + \"ORDER BY  en.creation_date DESC\")\n     Page<EcoNews> find(Pageable pageable, List<String> tags);\n \n     /**\n@@ -66,9 +66,9 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @return list of {@link EcoNews}\n      */\n     @Query(\"select en from EcoNews as en \"\n-            + \"where lower(en.title) like lower(CONCAT('%', :searchQuery, '%')) \"\n-            + \"or lower(en.text) like lower(CONCAT('%', :searchQuery, '%')) \"\n-            + \"or en.id in (select en.id from EcoNews en inner join en.tags entags \"\n-            + \"where lower(entags.name) like lower(CONCAT('%', :searchQuery, '%')))\")\n+        + \"where lower(en.title) like lower(CONCAT('%', :searchQuery, '%')) \"\n+        + \"or lower(en.text) like lower(CONCAT('%', :searchQuery, '%')) \"\n+        + \"or en.id in (select en.id from EcoNews en inner join en.tags entags \"\n+        + \"where lower(entags.name) like lower(CONCAT('%', :searchQuery, '%')))\")\n     Page<EcoNews> searchEcoNews(Pageable pageable, String searchQuery);\n }\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "35",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 136).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Block comment has incorrect indentation level 0, expected is 4, indentation should be the same level as line 43.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/naturalize/9/EcoNewsRepo.java\nindex 27db31b54ef..6a54e9d8f94 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/naturalize/9/EcoNewsRepo.java\n@@ -31,25 +31,22 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param openedEcoNewsId id of opened eco news.\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n-    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n-    List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n-                                             Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n+    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" + \"WHERE id <> :openedEcoNewsId limit 3\")\n+List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId, Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n \n-    /**\n+/**\n      * Method returns {@link EcoNews} for specific tags.\n      *\n      * @param tags list of tags to search.\n      * @return {@link EcoNews} for specific tags.\n      */\n-    @Query(nativeQuery = true, value =\n-            \"SELECT DISTINCT en.* FROM eco_news AS en \"\n+    @Query(nativeQuery = true, value = \"SELECT DISTINCT en.* FROM eco_news AS en \"\n                     + \"INNER JOIN eco_news_tags AS entag \"\n                     + \"ON en.id = entag.eco_news_id \"\n                     + \"INNER JOIN tags AS t ON entag.tags_id = t.id \"\n                     + \"WHERE t.name IN (:tags) \"\n                     + \"ORDER BY  en.creation_date DESC\")\n-    Page<EcoNews> find(Pageable pageable, List<String> tags);\n+Page<EcoNews> find(Pageable pageable, List<String> tags);\n \n     /**\n      * Method returns all {@link EcoNews} by page.\n@@ -70,5 +67,5 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n             + \"or lower(en.text) like lower(CONCAT('%', :searchQuery, '%')) \"\n             + \"or en.id in (select en.id from EcoNews en inner join en.tags entags \"\n             + \"where lower(entags.name) like lower(CONCAT('%', :searchQuery, '%')))\")\n-    Page<EcoNews> searchEcoNews(Pageable pageable, String searchQuery);\n-}\n+Page<EcoNews> searchEcoNews(Pageable pageable, String searchQuery);\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "55",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "56",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "57",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "58",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "81",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "error",
+                    "message": "'+' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 150).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/codebuff/9/EcoNewsRepo.java\nindex 27db31b54ef..05569936fd0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/codebuff/9/EcoNewsRepo.java\n@@ -1,16 +1,15 @@\n package greencity.repository;\n \n import greencity.entity.EcoNews;\n-\n import java.util.Collection;\n import java.util.List;\n-\n import org.springframework.data.domain.Page;\n import org.springframework.data.domain.Pageable;\n import org.springframework.data.jpa.repository.JpaRepository;\n import org.springframework.data.jpa.repository.Query;\n import org.springframework.stereotype.Repository;\n \n+\n @Repository\n public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n     /**\n@@ -18,6 +17,7 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      *\n      * @return list of {@link EcoNews} instances.\n      */\n+\n     @Query(nativeQuery = true, value = \"SELECT * FROM eco_news ORDER BY creation_date DESC LIMIT 3\")\n     List<EcoNews> getThreeLastEcoNews();\n \n@@ -31,10 +31,17 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param openedEcoNewsId id of opened eco news.\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n-    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n-    List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n-                                             Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n+\n+\n+    @Query(\n+        nativeQuery = true,\n+        value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \"\n+        + \"WHERE id <> :openedEcoNewsId limit 3\"\n+    )\n+    List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags,\n+                                             Long firstTagId,\n+                                             Long secondTagId,\n+                                             Long thirdTagId, Long openedEcoNewsId);\n \n     /**\n      * Method returns {@link EcoNews} for specific tags.\n@@ -42,13 +49,13 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param tags list of tags to search.\n      * @return {@link EcoNews} for specific tags.\n      */\n-    @Query(nativeQuery = true, value =\n-            \"SELECT DISTINCT en.* FROM eco_news AS en \"\n-                    + \"INNER JOIN eco_news_tags AS entag \"\n-                    + \"ON en.id = entag.eco_news_id \"\n-                    + \"INNER JOIN tags AS t ON entag.tags_id = t.id \"\n-                    + \"WHERE t.name IN (:tags) \"\n-                    + \"ORDER BY  en.creation_date DESC\")\n+\n+\n+    @Query(nativeQuery = true, value = \"SELECT DISTINCT en.* FROM eco_news AS en \"\n+    + \"INNER JOIN eco_news_tags AS entag \"\n+    + \"ON en.id = entag.eco_news_id \"\n+    + \"INNER JOIN tags AS t ON entag.tags_id = t.id \"\n+    + \"WHERE t.name IN (:tags) \" + \"ORDER BY  en.creation_date DESC\")\n     Page<EcoNews> find(Pageable pageable, List<String> tags);\n \n     /**\n@@ -57,6 +64,8 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param page page of news.\n      * @return all {@link EcoNews} by page.\n      */\n+\n+\n     Page<EcoNews> findAllByOrderByCreationDateDesc(Pageable page);\n \n     /**\n@@ -65,10 +74,11 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param searchQuery query to search\n      * @return list of {@link EcoNews}\n      */\n+\n+\n     @Query(\"select en from EcoNews as en \"\n-            + \"where lower(en.title) like lower(CONCAT('%', :searchQuery, '%')) \"\n-            + \"or lower(en.text) like lower(CONCAT('%', :searchQuery, '%')) \"\n-            + \"or en.id in (select en.id from EcoNews en inner join en.tags entags \"\n-            + \"where lower(entags.name) like lower(CONCAT('%', :searchQuery, '%')))\")\n+    + \"where lower(en.title) like lower(CONCAT('%', :searchQuery, '%')) \"\n+    + \"or lower(en.text) like lower(CONCAT('%', :searchQuery, '%')) \"\n+    + \"or en.id in (select en.id from EcoNews en inner join en.tags entags \" + \"where lower(entags.name) like lower(CONCAT('%', :searchQuery, '%')))\")\n     Page<EcoNews> searchEcoNews(Pageable pageable, String searchQuery);\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 156).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_random/9/EcoNewsRepo.java\nindex 27db31b54ef..ae7d76fdd0c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_random/9/EcoNewsRepo.java\n@@ -31,8 +31,7 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param openedEcoNewsId id of opened eco news.\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n-    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n+    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" + \"WHERE id <> :openedEcoNewsId limit 3\")\n     List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n                                              Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_three_grams/9/EcoNewsRepo.java\nindex 27db31b54ef..c656ae3b91f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/errored/1/9/EcoNewsRepo.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ita-social-projects-GreenCity/styler_three_grams/9/EcoNewsRepo.java\n@@ -31,8 +31,8 @@ public interface EcoNewsRepo extends JpaRepository<EcoNews, Long> {\n      * @param openedEcoNewsId id of opened eco news.\n      * @return list of three recommended {@link EcoNews} instances.\n      */\n-    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \" +\n-            \"WHERE id <> :openedEcoNewsId limit 3\")\n+    @Query(nativeQuery = true, value = \"SELECT * FROM Tags(:countOfTags, :firstTagId, :secondTagId, :thirdTagId) \"\n+            + \"WHERE id <> :openedEcoNewsId limit 3\")\n     List<EcoNews> getThreeRecommendedEcoNews(Integer countOfTags, Long firstTagId,\n                                              Long secondTagId, Long thirdTagId, Long openedEcoNewsId);\n \n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

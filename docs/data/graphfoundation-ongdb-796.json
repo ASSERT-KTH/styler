@@ -1,0 +1,124 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "796",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "18",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "108",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "18",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "73",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/796/Extractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/796/Extractor.java\nindex 282ab5ff889..0e2d14994a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/796/Extractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/796/Extractor.java\n@@ -17,16 +17,18 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.csv.reader;\n \n import org.neo4j.values.storable.CSVHeaderInformation;\n+\n /**\n  * Extracts a value from a part of a {@code char[]} into any type of value, f.ex. a {@link Extractors#string()},\n  * {@link Extractors#long_() long} or {@link Extractors#intArray()}.\n- *\n+ * <p>\n  * An {@link Extractor} is mutable for the single purpose of ability to reuse its value instance. Consider extracting\n  * a primitive int -\n- *\n+ * <p>\n  * Sub-interfaces and implementations can and should specify specific accessors for the purpose\n  * of performance and less garbage, f.ex. where an IntExtractor could have an accessor method for\n  * getting the extracted value as primitive int, to avoid auto-boxing which would arise from calling {@link #value()}.\n@@ -35,36 +37,38 @@ import org.neo4j.values.storable.CSVHeaderInformation;\n  */\n public interface Extractor<T> extends Cloneable\n {\n-    /**\n-     * Extracts value of type {@code T} from the given character data.\n-     * @param data characters in a buffer.\n-     * @param offset offset into the buffer where the value starts.\n-     * @param length number of characters from the offset to extract.\n-     * @param hadQuotes whether or not there were skipped characters, f.ex. quotation.\n-     * @param optionalData optional data to be used for spatial or temporal values or null if csv header did not use it\n-     * @return {@code true} if a value was extracted, otherwise {@code false}.\n-     */\n-    boolean extract( char[] data, int offset, int length, boolean hadQuotes, CSVHeaderInformation optionalData );\n+  /**\n+   * Extracts value of type {@code T} from the given character data.\n+   *\n+   * @param data         characters in a buffer.\n+   * @param offset       offset into the buffer where the value starts.\n+   * @param length       number of characters from the offset to extract.\n+   * @param hadQuotes    whether or not there were skipped characters, f.ex. quotation.\n+   * @param optionalData optional data to be used for spatial or temporal values or null if csv header did not use it\n+   * @return {@code true} if a value was extracted, otherwise {@code false}.\n+   */\n+  boolean extract(char[] data, int offset, int length, boolean hadQuotes, CSVHeaderInformation optionalData);\n \n-    /**\n-     * Extracts value of type {@code T} from the given character data.\n-     * @param data characters in a buffer.\n-     * @param offset offset into the buffer where the value starts.\n-     * @param length number of characters from the offset to extract.\n-     * @param hadQuotes whether or not there were skipped characters, f.ex. quotation.\n-     * @return {@code true} if a value was extracted, otherwise {@code false}.\n-     */\n-    boolean extract( char[] data, int offset, int length, boolean hadQuotes );\n+  /**\n+   * Extracts value of type {@code T} from the given character data.\n+   *\n+   * @param data      characters in a buffer.\n+   * @param offset    offset into the buffer where the value starts.\n+   * @param length    number of characters from the offset to extract.\n+   * @param hadQuotes whether or not there were skipped characters, f.ex. quotation.\n+   * @return {@code true} if a value was extracted, otherwise {@code false}.\n+   */\n+  boolean extract(char[] data, int offset, int length, boolean hadQuotes);\n \n-    /**\n-     * @return the most recently extracted value.\n-     */\n-    T value();\n+  /**\n+   * @return the most recently extracted value.\n+   */\n+  T value();\n \n-    /**\n-     * @return string representation of what type of value of produces. Also used as key in {@link Extractors}.\n-     */\n-    String name();\n+  /**\n+   * @return string representation of what type of value of produces. Also used as key in {@link Extractors}.\n+   */\n+  String name();\n \n-    Extractor<T> clone();\n+  Extractor<T> clone();\n }\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/796/Extractor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/796/Extractor.java\nindex 282ab5ff889..5474a3f70f9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/796/Extractor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/796/Extractor.java\n@@ -20,6 +20,7 @@\n package org.neo4j.csv.reader;\n \n import org.neo4j.values.storable.CSVHeaderInformation;\n+\n /**\n  * Extracts a value from a part of a {@code char[]} into any type of value, f.ex. a {@link Extractors#string()},\n  * {@link Extractors#long_() long} or {@link Extractors#intArray()}.\n@@ -67,4 +68,4 @@ public interface Extractor<T> extends Cloneable\n     String name();\n \n     Extractor<T> clone();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

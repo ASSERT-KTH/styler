@@ -1,0 +1,64 @@
+{
+    "project_name": "wayshall-onetwo",
+    "error_id": "155",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "severity": "error",
+                "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+            }
+        ]
+    },
+    "source_code": "\n\t\t\tJSONObject credential = CosStsClient.getCredential(config);\n//\t\t\tSystem.out.println(credential.toString(4));\n\t\t\treturn credential;\n\t\t} catch (Exception e) {\n\t\t\tthrow new BaseException(\"\u751f\u6210cos\u4e34\u65f6\u79d8\u94a5\u9519\u8bef\uff01\", e);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line matches the illegal pattern 'System\\.out\\.println'.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/155/CosStsService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/intellij/155/CosStsService.java\nindex 9161b43fef2..fc7b01df339 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/errored/1/155/CosStsService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wayshall-onetwo/intellij/155/CosStsService.java\n@@ -13,54 +13,54 @@ import com.tencent.cloud.CosStsClient;\n  */\n \n public class CosStsService {\n-\t\n-\t@Autowired\n-\tprivate CosProperties cosProperties;\n-\t@Autowired\n-\tprivate QCloudBaseProperties baseProperties;\n-\t\n-\tpublic JSONObject getCredential() {\n-\t\tTreeMap<String, Object> config = new TreeMap<String, Object>();\n-\n-\t\ttry {\n-\t\t\t// \u4e91 api \u5bc6\u94a5 SecretId\n-\t\t\tconfig.put(\"secretId\", baseProperties.getSecretId());\n-\t\t\t// \u4e91 api \u5bc6\u94a5 SecretKey\n-\t\t\tconfig.put(\"secretKey\", baseProperties.getSecretKey());\n+\n+  @Autowired\n+  private CosProperties cosProperties;\n+  @Autowired\n+  private QCloudBaseProperties baseProperties;\n+\n+  public JSONObject getCredential() {\n+    TreeMap<String, Object> config = new TreeMap<String, Object>();\n+\n+    try {\n+      // \u4e91 api \u5bc6\u94a5 SecretId\n+      config.put(\"secretId\", baseProperties.getSecretId());\n+      // \u4e91 api \u5bc6\u94a5 SecretKey\n+      config.put(\"secretKey\", baseProperties.getSecretKey());\n \n //\t\t\tif (properties.containsKey(\"https.proxyHost\")) {\n //\t\t\t\tSystem.setProperty(\"https.proxyHost\", properties.getProperty(\"https.proxyHost\"));\n //\t\t\t\tSystem.setProperty(\"https.proxyPort\", properties.getProperty(\"https.proxyPort\"));\n //\t\t\t}\n \n-\t\t\t// \u8bbe\u7f6e\u57df\u540d\n-\t\t\t// config.put(\"host\", \"sts.internal.tencentcloudapi.com\");\n+      // \u8bbe\u7f6e\u57df\u540d\n+      // config.put(\"host\", \"sts.internal.tencentcloudapi.com\");\n \n-\t\t\t// \u4e34\u65f6\u5bc6\u94a5\u6709\u6548\u65f6\u957f\uff0c\u5355\u4f4d\u662f\u79d2\n-\t\t\tconfig.put(\"durationSeconds\", cosProperties.getSts().getDurationInSeconds());\n+      // \u4e34\u65f6\u5bc6\u94a5\u6709\u6548\u65f6\u957f\uff0c\u5355\u4f4d\u662f\u79d2\n+      config.put(\"durationSeconds\", cosProperties.getSts().getDurationInSeconds());\n \n-\t\t\t// \u6362\u6210\u4f60\u7684 bucket\n-\t\t\tconfig.put(\"bucket\", cosProperties.getAppBucketName());\n-\t\t\t// \u6362\u6210 bucket \u6240\u5728\u5730\u533a\n-\t\t\tconfig.put(\"region\", cosProperties.getRegionName());\n+      // \u6362\u6210\u4f60\u7684 bucket\n+      config.put(\"bucket\", cosProperties.getAppBucketName());\n+      // \u6362\u6210 bucket \u6240\u5728\u5730\u533a\n+      config.put(\"region\", cosProperties.getRegionName());\n \n-\t\t\t// \u8fd9\u91cc\u6539\u6210\u5141\u8bb8\u7684\u8def\u5f84\u524d\u7f00\uff0c\u53ef\u4ee5\u6839\u636e\u81ea\u5df1\u7f51\u7ad9\u7684\u7528\u6237\u767b\u5f55\u6001\u5224\u65ad\u5141\u8bb8\u4e0a\u4f20\u7684\u5177\u4f53\u8def\u5f84\uff0c\u4f8b\u5b50\uff1a a.jpg \u6216\u8005 a/* \u6216\u8005 * (\u4f7f\u7528\u901a\u914d\u7b26*\u5b58\u5728\u91cd\u5927\u5b89\u5168\u98ce\u9669,\n-\t\t\t// \u8bf7\u8c28\u614e\u8bc4\u4f30\u4f7f\u7528)\n+      // \u8fd9\u91cc\u6539\u6210\u5141\u8bb8\u7684\u8def\u5f84\u524d\u7f00\uff0c\u53ef\u4ee5\u6839\u636e\u81ea\u5df1\u7f51\u7ad9\u7684\u7528\u6237\u767b\u5f55\u6001\u5224\u65ad\u5141\u8bb8\u4e0a\u4f20\u7684\u5177\u4f53\u8def\u5f84\uff0c\u4f8b\u5b50\uff1a a.jpg \u6216\u8005 a/* \u6216\u8005 * (\u4f7f\u7528\u901a\u914d\u7b26*\u5b58\u5728\u91cd\u5927\u5b89\u5168\u98ce\u9669,\n+      // \u8bf7\u8c28\u614e\u8bc4\u4f30\u4f7f\u7528)\n //\t\t\tconfig.put(\"allowPrefix\", cosProperties.getSts().getAllowPrefix());\n-\t\t\t// \u53ef\u4ee5\u901a\u8fc7 allowPrefixes \u6307\u5b9a\u524d\u7f00\u6570\u7ec4\n-            config.put(\"allowPrefixes\", cosProperties.getSts().getAllowPrefixs());\n+      // \u53ef\u4ee5\u901a\u8fc7 allowPrefixes \u6307\u5b9a\u524d\u7f00\u6570\u7ec4\n+      config.put(\"allowPrefixes\", cosProperties.getSts().getAllowPrefixs());\n \n-\t\t\t// \u5bc6\u94a5\u7684\u6743\u9650\u5217\u8868\u3002\u7b80\u5355\u4e0a\u4f20\u548c\u5206\u7247\u9700\u8981\u4ee5\u4e0b\u7684\u6743\u9650\uff0c\u5176\u4ed6\u6743\u9650\u5217\u8868\u8bf7\u770b\n-\t\t\t// https://cloud.tencent.com/document/product/436/31923\n-\t\t\tString[] allowActions = cosProperties.getSts().getAllowActions();\n-\t\t\tconfig.put(\"allowActions\", allowActions);\n+      // \u5bc6\u94a5\u7684\u6743\u9650\u5217\u8868\u3002\u7b80\u5355\u4e0a\u4f20\u548c\u5206\u7247\u9700\u8981\u4ee5\u4e0b\u7684\u6743\u9650\uff0c\u5176\u4ed6\u6743\u9650\u5217\u8868\u8bf7\u770b\n+      // https://cloud.tencent.com/document/product/436/31923\n+      String[] allowActions = cosProperties.getSts().getAllowActions();\n+      config.put(\"allowActions\", allowActions);\n \n-\t\t\tJSONObject credential = CosStsClient.getCredential(config);\n+      JSONObject credential = CosStsClient.getCredential(config);\n //\t\t\tSystem.out.println(credential.toString(4));\n-\t\t\treturn credential;\n-\t\t} catch (Exception e) {\n-\t\t\tthrow new BaseException(\"\u751f\u6210cos\u4e34\u65f6\u79d8\u94a5\u9519\u8bef\uff01\", e);\n-\t\t}\n-\t}\n+      return credential;\n+    } catch (Exception e) {\n+      throw new BaseException(\"\u751f\u6210cos\u4e34\u65f6\u79d8\u94a5\u9519\u8bef\uff01\", e);\n+    }\n+  }\n \n }\n",
+            "diff_size": 36
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

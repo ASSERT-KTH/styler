@@ -1,0 +1,58 @@
+{
+    "project_name": "RWTH-i5-IDSG-steve",
+    "error_id": "89",
+    "information": {
+        "errors": [
+            {
+                "line": "56",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 137).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        String[] protocols = endpoints.stream().map(e -> e.getVersion().getValue()).toArray(String[]::new);\n\n        OcppWebSocketUpgrader upgradeStrategy = new OcppWebSocketUpgrader(policy, endpoints, chargePointRepository, notificationService);\n\n        DefaultHandshakeHandler handler = new DefaultHandshakeHandler(upgradeStrategy);\n        handler.setSupportedProtocols(protocols);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/89/WebSocketConfiguration.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/89/WebSocketConfiguration.java\nindex 4b94967e707..6c52c912e52 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/errored/1/89/WebSocketConfiguration.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/RWTH-i5-IDSG-steve/intellij/89/WebSocketConfiguration.java\n@@ -33,65 +33,70 @@ import java.util.concurrent.TimeUnit;\n @Slf4j\n public class WebSocketConfiguration implements WebSocketConfigurer {\n \n-    @Autowired private ChargePointRepository chargePointRepository;\n-    @Autowired private NotificationService notificationService;\n+  @Autowired\n+  private ChargePointRepository chargePointRepository;\n+  @Autowired\n+  private NotificationService notificationService;\n \n-    @Autowired private Ocpp12WebSocketEndpoint ocpp12WebSocketEndpoint;\n-    @Autowired private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n+  @Autowired\n+  private Ocpp12WebSocketEndpoint ocpp12WebSocketEndpoint;\n+  @Autowired\n+  private Ocpp15WebSocketEndpoint ocpp15WebSocketEndpoint;\n \n-    public static final long PING_INTERVAL = TimeUnit.MINUTES.toMinutes(15);\n-    private static final long IDLE_TIMEOUT = TimeUnit.HOURS.toMillis(2);\n-    private static final int MAX_MSG_SIZE = 8_388_608; // 8 MB for max message size\n+  public static final long PING_INTERVAL = TimeUnit.MINUTES.toMinutes(15);\n+  private static final long IDLE_TIMEOUT = TimeUnit.HOURS.toMillis(2);\n+  private static final int MAX_MSG_SIZE = 8_388_608; // 8 MB for max message size\n \n-    @Override\n-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {\n-        WebSocketPolicy policy = new WebSocketPolicy(WebSocketBehavior.SERVER);\n-        policy.setMaxTextMessageBufferSize(MAX_MSG_SIZE);\n-        policy.setMaxTextMessageSize(MAX_MSG_SIZE);\n-        policy.setIdleTimeout(IDLE_TIMEOUT);\n+  @Override\n+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {\n+    WebSocketPolicy policy = new WebSocketPolicy(WebSocketBehavior.SERVER);\n+    policy.setMaxTextMessageBufferSize(MAX_MSG_SIZE);\n+    policy.setMaxTextMessageSize(MAX_MSG_SIZE);\n+    policy.setIdleTimeout(IDLE_TIMEOUT);\n \n-        List<AbstractWebSocketEndpoint> endpoints = getEndpoints();\n-        String[] protocols = endpoints.stream().map(e -> e.getVersion().getValue()).toArray(String[]::new);\n+    List<AbstractWebSocketEndpoint> endpoints = getEndpoints();\n+    String[] protocols = endpoints.stream().map(e -> e.getVersion().getValue()).toArray(String[]::new);\n \n-        OcppWebSocketUpgrader upgradeStrategy = new OcppWebSocketUpgrader(policy, endpoints, chargePointRepository, notificationService);\n+    OcppWebSocketUpgrader upgradeStrategy =\n+      new OcppWebSocketUpgrader(policy, endpoints, chargePointRepository, notificationService);\n \n-        DefaultHandshakeHandler handler = new DefaultHandshakeHandler(upgradeStrategy);\n-        handler.setSupportedProtocols(protocols);\n+    DefaultHandshakeHandler handler = new DefaultHandshakeHandler(upgradeStrategy);\n+    handler.setSupportedProtocols(protocols);\n \n-        for (AbstractWebSocketEndpoint endpoint : endpoints) {\n-            registry.addHandler(endpoint, \"/websocket/CentralSystemService/*\")\n-                    .setHandshakeHandler(handler)\n-                    .setAllowedOrigins(\"*\");\n-        }\n+    for (AbstractWebSocketEndpoint endpoint : endpoints) {\n+      registry.addHandler(endpoint, \"/websocket/CentralSystemService/*\")\n+        .setHandshakeHandler(handler)\n+        .setAllowedOrigins(\"*\");\n     }\n+  }\n \n-    /**\n-     * The order affects the choice!\n-     */\n-    private List<AbstractWebSocketEndpoint> getEndpoints() {\n-        return Lists.newArrayList(ocpp15WebSocketEndpoint, ocpp12WebSocketEndpoint);\n-    }\n+  /**\n+   * The order affects the choice!\n+   */\n+  private List<AbstractWebSocketEndpoint> getEndpoints() {\n+    return Lists.newArrayList(ocpp15WebSocketEndpoint, ocpp12WebSocketEndpoint);\n+  }\n \n-    // -------------------------------------------------------------------------\n-    // We don't need no SockJS fallback. But, nevertheless, Spring initializes\n-    // a scheduler for it, to be used in the implementation\n-    // AbstractWebSocketHandlerRegistration.withSockJS(). We don't call\n-    // WebSocketHandlerRegistry.withSockJS() above to add SockJS support,\n-    // so the scheduler is useless.\n-    //\n-    // Hereby, we override the default beans provided by\n-    // org.springframework.web.socket.config.annotation.WebSocketConfigurationSupport\n-    // -------------------------------------------------------------------------\n+  // -------------------------------------------------------------------------\n+  // We don't need no SockJS fallback. But, nevertheless, Spring initializes\n+  // a scheduler for it, to be used in the implementation\n+  // AbstractWebSocketHandlerRegistration.withSockJS(). We don't call\n+  // WebSocketHandlerRegistry.withSockJS() above to add SockJS support,\n+  // so the scheduler is useless.\n+  //\n+  // Hereby, we override the default beans provided by\n+  // org.springframework.web.socket.config.annotation.WebSocketConfigurationSupport\n+  // -------------------------------------------------------------------------\n \n-    @Bean\n-    public HandlerMapping webSocketHandlerMapping() {\n-        ServletWebSocketHandlerRegistry registry = new ServletWebSocketHandlerRegistry();\n-        registerWebSocketHandlers(registry);\n-        return registry.getHandlerMapping();\n-    }\n+  @Bean\n+  public HandlerMapping webSocketHandlerMapping() {\n+    ServletWebSocketHandlerRegistry registry = new ServletWebSocketHandlerRegistry();\n+    registerWebSocketHandlers(registry);\n+    return registry.getHandlerMapping();\n+  }\n \n-    @Bean\n-    public ThreadPoolTaskScheduler defaultSockJsTaskScheduler() {\n-        return null;\n-    }\n+  @Bean\n+  public ThreadPoolTaskScheduler defaultSockJsTaskScheduler() {\n+    return null;\n+  }\n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

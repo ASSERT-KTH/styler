@@ -1,0 +1,96 @@
+{
+    "project_name": "apache-servicecomb-java-chassis",
+    "error_id": "159",
+    "information": {
+        "errors": [
+            {
+                "line": "79",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 125).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      startListen(httpServer, startFuture);\n    } catch (Throwable e) {\n      // vert.x got some states that not print error and execute call back in VertexUtils.blockDeploy, we add a log our self.\n      LOGGER.error(\"\", e);\n      throw e;\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "79",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "79",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "79",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/159/RestServerVerticle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/159/RestServerVerticle.java\nindex a3bd7e823ea..96a267276f1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/159/RestServerVerticle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/159/RestServerVerticle.java\n@@ -151,4 +151,4 @@ public class RestServerVerticle extends AbstractVerticle {\n \n     return serverOptions;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "79",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/159/RestServerVerticle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/159/RestServerVerticle.java\nindex a3bd7e823ea..72df4c2db8c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/159/RestServerVerticle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/159/RestServerVerticle.java\n@@ -18,7 +18,6 @@\n package org.apache.servicecomb.transport.rest.vertx;\n \n import java.util.List;\n-\n import org.apache.servicecomb.core.Endpoint;\n import org.apache.servicecomb.core.transport.AbstractTransport;\n import org.apache.servicecomb.foundation.common.net.URIEndpointObject;\n@@ -33,7 +32,6 @@ import org.apache.servicecomb.transport.rest.vertx.accesslog.parser.impl.Default\n import org.apache.servicecomb.transport.rest.vertx.trace.TracePrepareHandler;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import io.vertx.core.AbstractVerticle;\n import io.vertx.core.Context;\n import io.vertx.core.Future;\n@@ -68,10 +66,12 @@ public class RestServerVerticle extends AbstractVerticle {\n         startFuture.complete();\n         return;\n       }\n+\n       Router mainRouter = Router.router(vertx);\n       mountTracePrepareHandler(mainRouter);\n       mountAccessLogHandler(mainRouter);\n       initDispatcher(mainRouter);\n+\n       HttpServer httpServer = createHttpServer();\n       httpServer.requestHandler(mainRouter::accept);\n       startListen(httpServer, startFuture);\n@@ -90,10 +90,7 @@ public class RestServerVerticle extends AbstractVerticle {\n     if (AccessLogConfiguration.INSTANCE.getAccessLogEnabled()) {\n       String pattern = AccessLogConfiguration.INSTANCE.getAccesslogPattern();\n       LOGGER.info(\"access log enabled, pattern = {}\", pattern);\n-      mainRouter.route()\n-          .handler(new AccessLogHandler(\n-              pattern,\n-              new DefaultAccessLogPatternParser()));\n+      mainRouter.route().handler(new AccessLogHandler(pattern, new DefaultAccessLogPatternParser()));\n     }\n   }\n \n@@ -108,15 +105,15 @@ public class RestServerVerticle extends AbstractVerticle {\n     server.listen(endpointObject.getPort(), endpointObject.getHostOrIp(), ar -> {\n       if (ar.succeeded()) {\n         LOGGER.info(\"rest listen success. address={}:{}\",\n-            endpointObject.getHostOrIp(),\n-            ar.result().actualPort());\n+endpointObject.getHostOrIp(),\n+ar.result().actualPort());\n         startFuture.complete();\n         return;\n       }\n \n       String msg = String.format(\"rest listen failed, address=%s:%d\",\n-          endpointObject.getHostOrIp(),\n-          endpointObject.getPort());\n+endpointObject.getHostOrIp(),\n+endpointObject.getPort());\n       LOGGER.error(msg, ar.cause());\n       startFuture.fail(ar.cause());\n     });\n@@ -136,19 +133,19 @@ public class RestServerVerticle extends AbstractVerticle {\n     if (endpointObject.isHttp2Enabled()) {\n       serverOptions.setUseAlpn(true);\n     }\n+\n     if (endpointObject.isSslEnabled()) {\n-      SSLOptionFactory factory =\n-          SSLOptionFactory.createSSLOptionFactory(SSL_KEY, null);\n+      SSLOptionFactory factory = SSLOptionFactory.createSSLOptionFactory(SSL_KEY, null);\n       SSLOption sslOption;\n       if (factory == null) {\n         sslOption = SSLOption.buildFromYaml(SSL_KEY);\n       } else {\n         sslOption = factory.createSSLOption();\n       }\n+\n       SSLCustom sslCustom = SSLCustom.createSSLCustom(sslOption.getSslCustomClass());\n       VertxTLSBuilder.buildNetServerOptions(sslOption, sslCustom, serverOptions);\n     }\n-\n     return serverOptions;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "79",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

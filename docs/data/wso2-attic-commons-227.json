@@ -1,0 +1,82 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "227",
+    "information": {
+        "errors": [
+            {
+                "line": "74",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 129).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        // The spec requires a static analysis error to be thrown in that case.\n        if (s.getVariableDecl(forEach.getCounterName()) != null)\n            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).setSource(src));\n\n        OXsdTypeVarType counterType = new OXsdTypeVarType(oforEach.getOwner());\n        counterType.simple = true;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/227/ForEachGenerator.java\nindex aa24ff654ce..4d1db262dee 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/227/ForEachGenerator.java\n@@ -71,7 +71,8 @@ public class ForEachGenerator extends DefaultActivityGenerator {\n         // Checking if a variable using the same name as our counter is already defined.\n         // The spec requires a static analysis error to be thrown in that case.\n         if (s.getVariableDecl(forEach.getCounterName()) != null)\n-            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).setSource(src));\n+            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).\n+                    setSource(src));\n \n         OXsdTypeVarType counterType = new OXsdTypeVarType(oforEach.getOwner());\n         counterType.simple = true;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/227/ForEachGenerator.java\nindex aa24ff654ce..5c3f691ba88 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/227/ForEachGenerator.java\n@@ -39,51 +39,59 @@ import org.apache.ode.utils.Namespaces;\n  */\n public class ForEachGenerator extends DefaultActivityGenerator {\n \n-    private static final Log __log = LogFactory.getLog(AssignGenerator.class);\n-    private static final ForEachGeneratorMessages __cmsgs = MessageBundle.getMessages(ForEachGeneratorMessages.class);\n+  private static final Log __log = LogFactory.getLog(AssignGenerator.class);\n+  private static final ForEachGeneratorMessages __cmsgs = MessageBundle.getMessages(ForEachGeneratorMessages.class);\n \n-    public OActivity newInstance(Activity src) {\n-        return new OForEach(_context.getOProcess(), _context.getCurrent());\n-    }\n+  public OActivity newInstance(Activity src) {\n+    return new OForEach(_context.getOProcess(), _context.getCurrent());\n+  }\n \n-    public void compile(OActivity output, Activity src) {\n-        if (__log.isDebugEnabled()) __log.debug(\"Compiling ForEach activity.\");\n-        OForEach oforEach = (OForEach) output;\n-        ForEachActivity forEach = (ForEachActivity) src;\n-        oforEach.parallel = forEach.isParallel();\n-        oforEach.startCounterValue = _context.compileExpr(forEach.getStartCounter());\n-        oforEach.finalCounterValue = _context.compileExpr(forEach.getFinalCounter());\n-        if (forEach.getCompletionCondition() != null) {\n-            oforEach.completionCondition =\n-                    new OForEach.CompletionCondition(_context.getOProcess());\n-            oforEach.completionCondition.successfulBranchesOnly\n-                    = forEach.getCompletionCondition().isSuccessfulBranchesOnly();\n-            oforEach.completionCondition.branchCount = _context.compileExpr(forEach.getCompletionCondition());\n-        }\n+  public void compile(OActivity output, Activity src) {\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"Compiling ForEach activity.\");\n+    }\n+    OForEach oforEach = (OForEach) output;\n+    ForEachActivity forEach = (ForEachActivity) src;\n+    oforEach.parallel = forEach.isParallel();\n+    oforEach.startCounterValue = _context.compileExpr(forEach.getStartCounter());\n+    oforEach.finalCounterValue = _context.compileExpr(forEach.getFinalCounter());\n+    if (forEach.getCompletionCondition() != null) {\n+      oforEach.completionCondition =\n+        new OForEach.CompletionCondition(_context.getOProcess());\n+      oforEach.completionCondition.successfulBranchesOnly\n+        = forEach.getCompletionCondition().isSuccessfulBranchesOnly();\n+      oforEach.completionCondition.branchCount = _context.compileExpr(forEach.getCompletionCondition());\n+    }\n \n-        // ForEach 'adds' a counter variable in inner scope\n-        if (__log.isDebugEnabled()) __log.debug(\"Adding the forEach counter variable to inner scope.\");\n-        if (forEach.getChild() == null) {\n-            throw new CompilationException(__cmsgs.errMissingScopeinForeach().setSource(forEach));\n-        }\n-        \n-        Scope s = forEach.getChild().getScope();\n-        // Checking if a variable using the same name as our counter is already defined.\n-        // The spec requires a static analysis error to be thrown in that case.\n-        if (s.getVariableDecl(forEach.getCounterName()) != null)\n-            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).setSource(src));\n+    // ForEach 'adds' a counter variable in inner scope\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"Adding the forEach counter variable to inner scope.\");\n+    }\n+    if (forEach.getChild() == null) {\n+      throw new CompilationException(__cmsgs.errMissingScopeinForeach().setSource(forEach));\n+    }\n \n-        OXsdTypeVarType counterType = new OXsdTypeVarType(oforEach.getOwner());\n-        counterType.simple = true;\n-        counterType.xsdType = new QName(Namespaces.XML_SCHEMA, \"int\");\n-        OScope.Variable counterVar = new OScope.Variable(oforEach.getOwner(), counterType);\n-        counterVar.name = forEach.getCounterName();\n+    Scope s = forEach.getChild().getScope();\n+    // Checking if a variable using the same name as our counter is already defined.\n+    // The spec requires a static analysis error to be thrown in that case.\n+    if (s.getVariableDecl(forEach.getCounterName()) != null) {\n+      throw new CompilationException(\n+        __cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).setSource(src));\n+    }\n \n-        if (__log.isDebugEnabled()) __log.debug(\"Compiling forEach inner scope.\");\n-        oforEach.innerScope = _context.compileSLC(forEach.getChild(), new OScope.Variable[]{counterVar});\n+    OXsdTypeVarType counterType = new OXsdTypeVarType(oforEach.getOwner());\n+    counterType.simple = true;\n+    counterType.xsdType = new QName(Namespaces.XML_SCHEMA, \"int\");\n+    OScope.Variable counterVar = new OScope.Variable(oforEach.getOwner(), counterType);\n+    counterVar.name = forEach.getCounterName();\n \n-        // oforEach.innerScope.addLocalVariable(counterVar);\n-        oforEach.counterVariable = counterVar;\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"Compiling forEach inner scope.\");\n     }\n+    oforEach.innerScope = _context.compileSLC(forEach.getChild(), new OScope.Variable[] {counterVar});\n+\n+    // oforEach.innerScope.addLocalVariable(counterVar);\n+    oforEach.counterVariable = counterVar;\n+  }\n \n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 126).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/227/ForEachGenerator.java\nindex aa24ff654ce..05d1471415d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/227/ForEachGenerator.java\n@@ -56,8 +56,7 @@ public class ForEachGenerator extends DefaultActivityGenerator {\n         if (forEach.getCompletionCondition() != null) {\n             oforEach.completionCondition =\n                     new OForEach.CompletionCondition(_context.getOProcess());\n-            oforEach.completionCondition.successfulBranchesOnly\n-                    = forEach.getCompletionCondition().isSuccessfulBranchesOnly();\n+            oforEach.completionCondition.successfulBranchesOnly = forEach.getCompletionCondition().isSuccessfulBranchesOnly();\n             oforEach.completionCondition.branchCount = _context.compileExpr(forEach.getCompletionCondition());\n         }\n \n@@ -86,4 +85,4 @@ public class ForEachGenerator extends DefaultActivityGenerator {\n         oforEach.counterVariable = counterVar;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "74",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 129).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/227/ForEachGenerator.java\nindex aa24ff654ce..4d1db262dee 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/227/ForEachGenerator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/227/ForEachGenerator.java\n@@ -71,7 +71,8 @@ public class ForEachGenerator extends DefaultActivityGenerator {\n         // Checking if a variable using the same name as our counter is already defined.\n         // The spec requires a static analysis error to be thrown in that case.\n         if (s.getVariableDecl(forEach.getCounterName()) != null)\n-            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).setSource(src));\n+            throw new CompilationException(__cmsgs.errForEachAndScopeVariableRedundant(forEach.getCounterName()).\n+                    setSource(src));\n \n         OXsdTypeVarType counterType = new OXsdTypeVarType(oforEach.getOwner());\n         counterType.simple = true;\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

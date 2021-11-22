@@ -1,0 +1,104 @@
+{
+    "project_name": "actiontech-txle",
+    "error_id": "14",
+    "information": {
+        "errors": [
+            {
+                "line": "49",
+                "column": "5",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "    String oldLocalTxId = omegaContext.localTxId();\n    try {\n    \t// for auto-compensation By Gannalyo\n    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n    \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n    \t\treturn;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "51",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler/14/CompensationContext.java\nindex 0e33df24a57..c677412dda4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler/14/CompensationContext.java\n@@ -46,8 +46,8 @@ public class CompensationContext {\n     String oldGlobalTxId = omegaContext.globalTxId();\n     String oldLocalTxId = omegaContext.localTxId();\n     try {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n     \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n     \t\treturn;\n     \t}\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/intellij/14/CompensationContext.java\nindex 0e33df24a57..1562dd14918 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/intellij/14/CompensationContext.java\n@@ -26,55 +26,55 @@ import java.util.Map;\n import java.util.concurrent.ConcurrentHashMap;\n \n public class CompensationContext {\n-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n \n-  private final Map<String, CompensationContextInternal> contexts = new ConcurrentHashMap<>();\n-  private final OmegaContext omegaContext;\n+    private final Map<String, CompensationContextInternal> contexts = new ConcurrentHashMap<>();\n+    private final OmegaContext omegaContext;\n \n-  public CompensationContext(OmegaContext omegaContext) {\n-    this.omegaContext = omegaContext;\n-  }\n+    public CompensationContext(OmegaContext omegaContext) {\n+        this.omegaContext = omegaContext;\n+    }\n \n-  public void addCompensationContext(Method compensationMethod, Object target) {\n-    compensationMethod.setAccessible(true);\n-    contexts.put(compensationMethod.toString(), new CompensationContextInternal(target, compensationMethod));\n-  }\n+    public void addCompensationContext(Method compensationMethod, Object target) {\n+        compensationMethod.setAccessible(true);\n+        contexts.put(compensationMethod.toString(), new CompensationContextInternal(target, compensationMethod));\n+    }\n \n-  public void apply(String globalTxId, String localTxId, String compensationMethod, Object... payloads) {\n-    CompensationContextInternal contextInternal = contexts.get(compensationMethod);\n+    public void apply(String globalTxId, String localTxId, String compensationMethod, Object... payloads) {\n+        CompensationContextInternal contextInternal = contexts.get(compensationMethod);\n \n-    String oldGlobalTxId = omegaContext.globalTxId();\n-    String oldLocalTxId = omegaContext.localTxId();\n-    try {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n-    \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n-    \t\treturn;\n-    \t}\n-      omegaContext.setGlobalTxId(globalTxId);\n-      omegaContext.setLocalTxId(localTxId);\n-      contextInternal.compensationMethod.invoke(contextInternal.target, payloads);\n-      LOG.info(\"Compensated transaction with global tx id [{}], local tx id [{}]\", globalTxId, localTxId);\n-    } catch (IllegalAccessException | InvocationTargetException e) {\n-      LOG.error(\n-          \"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString()\n-              + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\",\n-          e);\n-      // Do not report exception here, because it's not convenient for collection business information.\n-    } finally {\n-      omegaContext.setGlobalTxId(oldGlobalTxId);\n-      omegaContext.setLocalTxId(oldLocalTxId);\n+        String oldGlobalTxId = omegaContext.globalTxId();\n+        String oldLocalTxId = omegaContext.localTxId();\n+        try {\n+            // for auto-compensation By Gannalyo\n+            if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n+                contextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n+                return;\n+            }\n+            omegaContext.setGlobalTxId(globalTxId);\n+            omegaContext.setLocalTxId(localTxId);\n+            contextInternal.compensationMethod.invoke(contextInternal.target, payloads);\n+            LOG.info(\"Compensated transaction with global tx id [{}], local tx id [{}]\", globalTxId, localTxId);\n+        } catch (IllegalAccessException | InvocationTargetException e) {\n+            LOG.error(\n+                    \"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString()\n+                            + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\",\n+                    e);\n+            // Do not report exception here, because it's not convenient for collection business information.\n+        } finally {\n+            omegaContext.setGlobalTxId(oldGlobalTxId);\n+            omegaContext.setLocalTxId(oldLocalTxId);\n+        }\n     }\n-  }\n \n-  private static final class CompensationContextInternal {\n-    private final Object target;\n+    private static final class CompensationContextInternal {\n+        private final Object target;\n \n-    private final Method compensationMethod;\n+        private final Method compensationMethod;\n \n-    private CompensationContextInternal(Object target, Method compensationMethod) {\n-      this.target = target;\n-      this.compensationMethod = compensationMethod;\n+        private CompensationContextInternal(Object target, Method compensationMethod) {\n+            this.target = target;\n+            this.compensationMethod = compensationMethod;\n+        }\n     }\n-  }\n }\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/14/CompensationContext.java\nindex 0e33df24a57..dd15b8a672d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/14/CompensationContext.java\n@@ -46,20 +46,18 @@ public class CompensationContext {\n     String oldGlobalTxId = omegaContext.globalTxId();\n     String oldLocalTxId = omegaContext.localTxId();\n     try {\n-    \t// for auto-compensation By Gannalyo\n+    // for auto-compensation By Gannalyo\n     \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n-    \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n+    contextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n     \t\treturn;\n-    \t}\n-      omegaContext.setGlobalTxId(globalTxId);\n+    }\n+omegaContext.setGlobalTxId(globalTxId);\n       omegaContext.setLocalTxId(localTxId);\n       contextInternal.compensationMethod.invoke(contextInternal.target, payloads);\n       LOG.info(\"Compensated transaction with global tx id [{}], local tx id [{}]\", globalTxId, localTxId);\n     } catch (IllegalAccessException | InvocationTargetException e) {\n-      LOG.error(\n-          \"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString()\n-              + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\",\n-          e);\n+      LOG.error(\"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString()\n+              + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\", e);\n       // Do not report exception here, because it's not convenient for collection business information.\n     } finally {\n       omegaContext.setGlobalTxId(oldGlobalTxId);\n@@ -77,4 +75,4 @@ public class CompensationContext {\n       this.compensationMethod = compensationMethod;\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "55",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'|' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/14/CompensationContext.java\nindex 0e33df24a57..a367129798e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/14/CompensationContext.java\n@@ -18,7 +18,6 @@ package org.apache.servicecomb.saga.omega.context;\n import org.apache.servicecomb.saga.common.TxleConstants;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import java.lang.invoke.MethodHandles;\n import java.lang.reflect.InvocationTargetException;\n import java.lang.reflect.Method;\n@@ -26,55 +25,50 @@ import java.util.Map;\n import java.util.concurrent.ConcurrentHashMap;\n \n public class CompensationContext {\n-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n-\n-  private final Map<String, CompensationContextInternal> contexts = new ConcurrentHashMap<>();\n-  private final OmegaContext omegaContext;\n+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n+    private final Map<String, CompensationContextInternal> contexts = new ConcurrentHashMap<>();\n+    private final OmegaContext omegaContext;\n \n-  public CompensationContext(OmegaContext omegaContext) {\n-    this.omegaContext = omegaContext;\n-  }\n-\n-  public void addCompensationContext(Method compensationMethod, Object target) {\n-    compensationMethod.setAccessible(true);\n-    contexts.put(compensationMethod.toString(), new CompensationContextInternal(target, compensationMethod));\n-  }\n+    public CompensationContext(OmegaContext omegaContext) {\n+        this.omegaContext = omegaContext;\n+    }\n \n-  public void apply(String globalTxId, String localTxId, String compensationMethod, Object... payloads) {\n-    CompensationContextInternal contextInternal = contexts.get(compensationMethod);\n+    public void addCompensationContext(Method compensationMethod, Object target) {\n+        compensationMethod.setAccessible(true);\n+        contexts.put(compensationMethod.toString(), new CompensationContextInternal(target, compensationMethod));\n+    }\n \n-    String oldGlobalTxId = omegaContext.globalTxId();\n-    String oldLocalTxId = omegaContext.localTxId();\n-    try {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n-    \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n-    \t\treturn;\n-    \t}\n-      omegaContext.setGlobalTxId(globalTxId);\n-      omegaContext.setLocalTxId(localTxId);\n-      contextInternal.compensationMethod.invoke(contextInternal.target, payloads);\n-      LOG.info(\"Compensated transaction with global tx id [{}], local tx id [{}]\", globalTxId, localTxId);\n-    } catch (IllegalAccessException | InvocationTargetException e) {\n-      LOG.error(\n-          \"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString()\n-              + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\",\n-          e);\n+    public void apply(String globalTxId, String localTxId, String compensationMethod, Object... payloads) {\n+        CompensationContextInternal contextInternal = contexts.get(compensationMethod);\n+        String oldGlobalTxId = omegaContext.globalTxId();\n+        String oldLocalTxId = omegaContext.localTxId();\n+        try {\n+        // for auto-compensation By Gannalyo\n+            if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n+                contextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n+                return;\n+            }\n+            omegaContext.setGlobalTxId(globalTxId);\n+            omegaContext.setLocalTxId(localTxId);\n+            contextInternal.compensationMethod.invoke(contextInternal.target, payloads);\n+            LOG.info(\"Compensated transaction with global tx id [{}], local tx id [{}]\", globalTxId, localTxId);\n+        } catch (IllegalAccessException| InvocationTargetException e) {\n+            LOG.error(\"Pre-checking for compensation method \" + contextInternal.compensationMethod.toString() + \" was somehow skipped, did you forget to configure compensable method checking on service startup?\", e);\n       // Do not report exception here, because it's not convenient for collection business information.\n-    } finally {\n-      omegaContext.setGlobalTxId(oldGlobalTxId);\n-      omegaContext.setLocalTxId(oldLocalTxId);\n+        } finally {\n+            omegaContext.setGlobalTxId(oldGlobalTxId);\n+            omegaContext.setLocalTxId(oldLocalTxId);\n+        }\n     }\n-  }\n \n-  private static final class CompensationContextInternal {\n+    private static final class CompensationContextInternal {\n     private final Object target;\n-\n     private final Method compensationMethod;\n \n     private CompensationContextInternal(Object target, Method compensationMethod) {\n-      this.target = target;\n-      this.compensationMethod = compensationMethod;\n+        this.target = target;\n+        this.compensationMethod = compensationMethod;\n     }\n-  }\n-}\n+    }\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "51",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_random/14/CompensationContext.java\nindex 0e33df24a57..c677412dda4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_random/14/CompensationContext.java\n@@ -46,8 +46,8 @@ public class CompensationContext {\n     String oldGlobalTxId = omegaContext.globalTxId();\n     String oldLocalTxId = omegaContext.localTxId();\n     try {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n     \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n     \t\treturn;\n     \t}\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "51",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_three_grams/14/CompensationContext.java\nindex 0e33df24a57..c677412dda4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/14/CompensationContext.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_three_grams/14/CompensationContext.java\n@@ -46,8 +46,8 @@ public class CompensationContext {\n     String oldGlobalTxId = omegaContext.globalTxId();\n     String oldLocalTxId = omegaContext.localTxId();\n     try {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(compensationMethod)) {\n     \t\tcontextInternal.compensationMethod.invoke(contextInternal.target, globalTxId, localTxId);\n     \t\treturn;\n     \t}\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

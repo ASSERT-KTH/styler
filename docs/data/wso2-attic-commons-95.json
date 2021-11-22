@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "95",
+    "information": {
+        "errors": [
+            {
+                "line": "147",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 132).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        URI result2 = _absoluteDir.toURI().resolve(result);\n        if (__log.isDebugEnabled()) {\n            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child + \" result \" + result + \" resultAbsolute:\" + result2);\n        }\n\n        return result2;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/95/DefaultResourceFinder.java\nindex 861591f1201..677827cc373 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/95/DefaultResourceFinder.java\n@@ -144,10 +144,11 @@ public class DefaultResourceFinder implements ResourceFinder {\n         URI result = parent.resolve(child);\n         URI result2 = _absoluteDir.toURI().resolve(result);\n         if (__log.isDebugEnabled()) {\n-            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child + \" result \" + result + \" resultAbsolute:\" + result2);\n-        }\n+            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child\n+                      + \" result \" + result + \" resultAbsolute:\" + result2);\n+         }\n \n-        return result2;\n+         return result2;\n     }\n \n }\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/95/DefaultResourceFinder.java\nindex 861591f1201..897d68d1d5b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/95/DefaultResourceFinder.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.ode.bpel.compiler;\n \n import java.io.File;\n@@ -33,121 +34,124 @@ import org.apache.commons.logging.LogFactory;\n  * URIs relative to a base URI specified at the time of construction.\n  *\n  * @author Maciej Szefler - m s z e f l e r @ g m a i l . c o m\n- *\n  */\n public class DefaultResourceFinder implements ResourceFinder {\n-    private static final Log __log = LogFactory.getLog(DefaultResourceFinder.class);\n+  private static final Log __log = LogFactory.getLog(DefaultResourceFinder.class);\n+\n+  private File _relativeDir;\n+  private File _absoluteDir;\n+\n+  /**\n+   * Default constructor: resolve relative URIs against current working directory.\n+   */\n+  public DefaultResourceFinder() {\n+    _absoluteDir = new File(\"\");\n+    _relativeDir = _absoluteDir;\n+  }\n+\n+  /**\n+   * Constructor: resolve relative URIs against specified directory.\n+   *\n+   * @param relativeDir base path for relative URLs.\n+   * @param absoluteDir base path for absolute URLs.\n+   */\n+  public DefaultResourceFinder(File relativeDir, File absoluteDir) {\n+    checkDir(\"relativeDir\", relativeDir);\n+    checkDir(\"absoluteDir\", absoluteDir);\n+    _relativeDir = relativeDir;\n+    _absoluteDir = absoluteDir;\n+  }\n+\n+  private void checkDir(String arg, File dir) {\n+    if (dir == null) {\n+      throw new IllegalArgumentException(\"Argument '\" + arg + \"' is null\");\n+    }\n+    if (!dir.exists()) {\n+      throw new IllegalArgumentException(\"Directory does not exist: \" + dir);\n+    }\n+  }\n \n-    private File _relativeDir;\n-    private File _absoluteDir;\n+  public InputStream openResource(URI uri) throws MalformedURLException, IOException {\n+    uri = relativize(uri);\n \n-    /**\n-     * Default constructor: resolve relative URIs against current working directory.\n-     */\n-    public DefaultResourceFinder() {\n-        _absoluteDir = new File(\"\");\n-        _relativeDir = _absoluteDir;\n+    InputStream r = openFileResource(uri);\n+    if (r != null) {\n+      return r;\n     }\n \n-    /**\n-     * Constructor: resolve relative URIs against specified directory.\n-     * @param relativeDir base path for relative URLs.\n-     * @param absoluteDir base path for absolute URLs.\n-     */\n-    public DefaultResourceFinder(File relativeDir, File absoluteDir) {\n-        checkDir(\"relativeDir\", relativeDir);\n-        checkDir(\"absoluteDir\", absoluteDir);\n-        _relativeDir = relativeDir;\n-        _absoluteDir = absoluteDir;\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"trying classpath resource for \" + uri);\n     }\n \n-    private void checkDir(String arg, File dir) {\n-        if (dir == null) {\n-            throw new IllegalArgumentException(\"Argument '\"+arg+\"' is null\");\n-        }\n-        if (!dir.exists()) {\n-            throw new IllegalArgumentException(\"Directory does not exist: \" + dir);\n-        }\n+    r = Thread.currentThread().getContextClassLoader().getResourceAsStream(uri.getPath());\n+    if (r != null) {\n+      return r;\n+    } else {\n+      if (__log.isDebugEnabled()) {\n+        __log.debug(\"classpath resource not found \" + uri);\n+      }\n+      return null;\n     }\n \n-    public InputStream openResource(URI uri) throws MalformedURLException, IOException {\n-        uri = relativize(uri);\n-\n-        InputStream r = openFileResource(uri);\n-        if (r != null) {\n-            return r;\n-        }\n-\n-        if (__log.isDebugEnabled()) {\n-            __log.debug(\"trying classpath resource for \" + uri);\n-        }\n-\n-        r = Thread.currentThread().getContextClassLoader().getResourceAsStream(uri.getPath());\n-        if (r != null) {\n-            return r;\n-        } else {\n-            if (__log.isDebugEnabled()) {\n-                __log.debug(\"classpath resource not found \" + uri);\n-            }\n-            return null;\n-        }\n+  }\n \n+  private InputStream openFileResource(URI uri) throws MalformedURLException, IOException {\n+    URI absolute = _absoluteDir.toURI();\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"openResource: uri=\" + uri + \" relativeDir=\" + _relativeDir + \" absoluteDir=\" + _absoluteDir);\n     }\n \n-    private InputStream openFileResource(URI uri) throws MalformedURLException, IOException {\n-        URI absolute = _absoluteDir.toURI();\n-        if (__log.isDebugEnabled()) {\n-            __log.debug(\"openResource: uri=\"+uri+\" relativeDir=\"+_relativeDir+\" absoluteDir=\"+_absoluteDir);\n-        }\n-\n-        if (uri.isAbsolute() && uri.getScheme().equals(\"file\")) {\n-            try {\n-                return uri.toURL().openStream();\n-            } catch (Exception except) {\n-                __log.debug(\"openResource: unable to open file URL \" + uri + \"; \" + except.toString());\n-                return null;\n-            }\n-        }\n-\n-        // Note that if we get an absolute URI, the relativize operation will simply\n-        // return the absolute URI.\n-        URI relative = _relativeDir.toURI().relativize(uri);\n-        if (relative.isAbsolute() && !(relative.getScheme().equals(\"urn\"))) {\n-           __log.fatal(\"openResource: invalid scheme (should be urn:)  \" + uri);\n-           return null;\n-        }\n-\n-        File f = new File(absolute.getPath(), relative.getPath());\n-        if (f.exists()) {\n-            return new FileInputStream(f);\n-        } else {\n-            if (__log.isDebugEnabled()) {\n-                __log.debug(\"fileNotFound: \" + f);\n-            }\n-            return null;\n-        }\n+    if (uri.isAbsolute() && uri.getScheme().equals(\"file\")) {\n+      try {\n+        return uri.toURL().openStream();\n+      } catch (Exception except) {\n+        __log.debug(\"openResource: unable to open file URL \" + uri + \"; \" + except.toString());\n+        return null;\n+      }\n     }\n \n-    public URI getBaseResourceURI() {\n-        return _absoluteDir.toURI();\n+    // Note that if we get an absolute URI, the relativize operation will simply\n+    // return the absolute URI.\n+    URI relative = _relativeDir.toURI().relativize(uri);\n+    if (relative.isAbsolute() && !(relative.getScheme().equals(\"urn\"))) {\n+      __log.fatal(\"openResource: invalid scheme (should be urn:)  \" + uri);\n+      return null;\n     }\n \n-    private URI relativize(URI u) {\n-        if (u.isAbsolute()) {\n-            return _absoluteDir.toURI().relativize(u);\n-        } else return u;\n+    File f = new File(absolute.getPath(), relative.getPath());\n+    if (f.exists()) {\n+      return new FileInputStream(f);\n+    } else {\n+      if (__log.isDebugEnabled()) {\n+        __log.debug(\"fileNotFound: \" + f);\n+      }\n+      return null;\n     }\n+  }\n \n-    public URI resolve(URI parent, URI child) {\n-        parent = relativize(parent);\n-        child = relativize(child);\n-        URI result = parent.resolve(child);\n-        URI result2 = _absoluteDir.toURI().resolve(result);\n-        if (__log.isDebugEnabled()) {\n-            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child + \" result \" + result + \" resultAbsolute:\" + result2);\n-        }\n+  public URI getBaseResourceURI() {\n+    return _absoluteDir.toURI();\n+  }\n \n-        return result2;\n+  private URI relativize(URI u) {\n+    if (u.isAbsolute()) {\n+      return _absoluteDir.toURI().relativize(u);\n+    } else {\n+      return u;\n     }\n+  }\n+\n+  public URI resolve(URI parent, URI child) {\n+    parent = relativize(parent);\n+    child = relativize(child);\n+    URI result = parent.resolve(child);\n+    URI result2 = _absoluteDir.toURI().resolve(result);\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\n+        \"resolving URI: parent \" + parent + \" child \" + child + \" result \" + result + \" resultAbsolute:\" + result2);\n+    }\n+\n+    return result2;\n+  }\n \n }\n",
+            "diff_size": 161
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "147",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/95/DefaultResourceFinder.java\nindex 861591f1201..68d9bb88c1b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/95/DefaultResourceFinder.java\n@@ -150,4 +150,4 @@ public class DefaultResourceFinder implements ResourceFinder {\n         return result2;\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "147",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/95/DefaultResourceFinder.java\nindex 861591f1201..677827cc373 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/95/DefaultResourceFinder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/95/DefaultResourceFinder.java\n@@ -144,10 +144,11 @@ public class DefaultResourceFinder implements ResourceFinder {\n         URI result = parent.resolve(child);\n         URI result2 = _absoluteDir.toURI().resolve(result);\n         if (__log.isDebugEnabled()) {\n-            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child + \" result \" + result + \" resultAbsolute:\" + result2);\n-        }\n+            __log.debug(\"resolving URI: parent \" + parent + \" child \" + child\n+                      + \" result \" + result + \" resultAbsolute:\" + result2);\n+         }\n \n-        return result2;\n+         return result2;\n     }\n \n }\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

@@ -1,0 +1,170 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "4",
+    "information": {
+        "errors": [
+            {
+                "line": "172",
+                "column": "9",
+                "severity": "error",
+                "message": "'while' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "        long stop = System.currentTimeMillis() + timeout;\n\n        while(System.currentTimeMillis() < stop) {\n            if (cluster.topologyService().allMembers().size() >= expected)\n                return true;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..c0e419e27e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/4/ITRaftCounterServerTest.java\n@@ -169,7 +169,7 @@ class ITRaftCounterServerTest {\n     private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (cluster.topologyService().allMembers().size() >= expected)\n                 return true;\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..47795a6ec77 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/4/ITRaftCounterServerTest.java\n@@ -40,147 +40,174 @@ import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertNotNull;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n-/** */\n+/**\n+ *\n+ */\n class ITRaftCounterServerTest {\n-    /** */\n-    private static final IgniteLogger LOG = IgniteLogger.forClass(ITRaftCounterServerTest.class);\n-\n-    /** */\n-    private static final RaftClientMessageFactory FACTORY = new RaftClientMessageFactoryImpl();\n-\n-    /** Network factory. */\n-    private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n-\n-    /** */\n-    // TODO: IGNITE-14088: Uncomment and use real serializer provider\n-    private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n+  /**\n+   *\n+   */\n+  private static final IgniteLogger LOG = IgniteLogger.forClass(ITRaftCounterServerTest.class);\n+\n+  /**\n+   *\n+   */\n+  private static final RaftClientMessageFactory FACTORY = new RaftClientMessageFactoryImpl();\n+\n+  /**\n+   * Network factory.\n+   */\n+  private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n+\n+  /**\n+   *\n+   */\n+  // TODO: IGNITE-14088: Uncomment and use real serializer provider\n+  private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n //            .registerFactory((short)1000, ???)\n //            .registerFactory((short)1001, ???)\n //            .registerFactory((short)1005, ???)\n //            .registerFactory((short)1006, ???)\n //            .registerFactory((short)1009, ???);\n \n-    /** */\n-    private RaftServer server;\n-\n-    /** */\n-    private ClusterService client;\n-\n-    /** */\n-    private static final String SERVER_ID = \"testServer\";\n-\n-    /** */\n-    private static final String CLIENT_ID = \"testClient\";\n-\n-    /** */\n-    private static final String COUNTER_GROUP_ID_0 = \"counter0\";\n-\n-    /** */\n-    private static final String COUNTER_GROUP_ID_1 = \"counter1\";\n-\n-    /**\n-     * @param testInfo Test info.\n-     */\n-    @BeforeEach\n-    void before(TestInfo testInfo) {\n-        LOG.info(\">>>> Starting test \" + testInfo.getTestMethod().orElseThrow().getName());\n-\n-        server = new RaftServerImpl(SERVER_ID,\n-            20100,\n-            FACTORY,\n-            1000,\n-            Map.of(COUNTER_GROUP_ID_0, new CounterCommandListener(), COUNTER_GROUP_ID_1, new CounterCommandListener()));\n-\n-        client = startClient(CLIENT_ID, 20101, List.of(\"localhost:20100\"));\n-\n-        assertTrue(waitForTopology(client, 2, 1000));\n-    }\n-\n-    /**\n-     * @throws Exception\n-     */\n-    @AfterEach\n-    void after() throws Exception {\n-        server.shutdown();\n-        client.shutdown();\n-    }\n-\n-    /**\n-     */\n-    @Test\n-    public void testRefreshLeader() {\n-        Peer server = new Peer(client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst().orElseThrow());\n-\n-        RaftGroupService service = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n-\n-        Peer leader = service.leader();\n-\n-        assertNotNull(leader);\n-        assertEquals(server.getNode().name(), leader.getNode().name());\n-    }\n-\n-    /**\n-     * @throws Exception\n-     */\n-    @Test\n-    public void testCounterCommandListener() throws Exception {\n-        Peer server = new Peer(client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst().orElseThrow());\n-\n-        RaftGroupService service0 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n-\n-        RaftGroupService service1 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_1, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n-\n-        assertNotNull(service0.leader());\n-        assertNotNull(service1.leader());\n-\n-        assertEquals(2, service0.<Integer>run(new IncrementAndGetCommand(2)).get());\n-        assertEquals(2, service0.<Integer>run(new GetValueCommand()).get());\n-        assertEquals(3, service0.<Integer>run(new IncrementAndGetCommand(1)).get());\n-        assertEquals(3, service0.<Integer>run(new GetValueCommand()).get());\n-\n-        assertEquals(4, service1.<Integer>run(new IncrementAndGetCommand(4)).get());\n-        assertEquals(4, service1.<Integer>run(new GetValueCommand()).get());\n-        assertEquals(7, service1.<Integer>run(new IncrementAndGetCommand(3)).get());\n-        assertEquals(7, service1.<Integer>run(new GetValueCommand()).get());\n-    }\n-\n-    /**\n-     * @param name Node name.\n-     * @param port Local port.\n-     * @param servers Server nodes of the cluster.\n-     * @return The client cluster view.\n-     */\n-    private ClusterService startClient(String name, int port, List<String> servers) {\n-        var context = new ClusterLocalConfiguration(name, port, servers, SERIALIZATION_REGISTRY);\n-        var network = NETWORK_FACTORY.createClusterService(context);\n-        network.start();\n-        return network;\n-    }\n-\n-    /**\n-     * @param cluster The cluster.\n-     * @param expected Expected count.\n-     * @param timeout The timeout in millis.\n-     * @return {@code True} if topology size is equal to expected.\n-     */\n-    private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n-        long stop = System.currentTimeMillis() + timeout;\n-\n-        while(System.currentTimeMillis() < stop) {\n-            if (cluster.topologyService().allMembers().size() >= expected)\n-                return true;\n-\n-            try {\n-                Thread.sleep(50);\n-            }\n-            catch (InterruptedException e) {\n-                return false;\n-            }\n-        }\n-\n+  /**\n+   *\n+   */\n+  private RaftServer server;\n+\n+  /**\n+   *\n+   */\n+  private ClusterService client;\n+\n+  /**\n+   *\n+   */\n+  private static final String SERVER_ID = \"testServer\";\n+\n+  /**\n+   *\n+   */\n+  private static final String CLIENT_ID = \"testClient\";\n+\n+  /**\n+   *\n+   */\n+  private static final String COUNTER_GROUP_ID_0 = \"counter0\";\n+\n+  /**\n+   *\n+   */\n+  private static final String COUNTER_GROUP_ID_1 = \"counter1\";\n+\n+  /**\n+   * @param testInfo Test info.\n+   */\n+  @BeforeEach\n+  void before(TestInfo testInfo) {\n+    LOG.info(\">>>> Starting test \" + testInfo.getTestMethod().orElseThrow().getName());\n+\n+    server = new RaftServerImpl(SERVER_ID,\n+        20100,\n+        FACTORY,\n+        1000,\n+        Map.of(COUNTER_GROUP_ID_0, new CounterCommandListener(), COUNTER_GROUP_ID_1, new CounterCommandListener()));\n+\n+    client = startClient(CLIENT_ID, 20101, List.of(\"localhost:20100\"));\n+\n+    assertTrue(waitForTopology(client, 2, 1000));\n+  }\n+\n+  /**\n+   * @throws Exception\n+   */\n+  @AfterEach\n+  void after() throws Exception {\n+    server.shutdown();\n+    client.shutdown();\n+  }\n+\n+  /**\n+   *\n+   */\n+  @Test\n+  public void testRefreshLeader() {\n+    Peer server = new Peer(\n+        client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst()\n+            .orElseThrow());\n+\n+    RaftGroupService service = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n+        List.of(server), true, 200);\n+\n+    Peer leader = service.leader();\n+\n+    assertNotNull(leader);\n+    assertEquals(server.getNode().name(), leader.getNode().name());\n+  }\n+\n+  /**\n+   * @throws Exception\n+   */\n+  @Test\n+  public void testCounterCommandListener() throws Exception {\n+    Peer server = new Peer(\n+        client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst()\n+            .orElseThrow());\n+\n+    RaftGroupService service0 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n+        List.of(server), true, 200);\n+\n+    RaftGroupService service1 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_1, client, FACTORY, 1000,\n+        List.of(server), true, 200);\n+\n+    assertNotNull(service0.leader());\n+    assertNotNull(service1.leader());\n+\n+    assertEquals(2, service0.<Integer>run(new IncrementAndGetCommand(2)).get());\n+    assertEquals(2, service0.<Integer>run(new GetValueCommand()).get());\n+    assertEquals(3, service0.<Integer>run(new IncrementAndGetCommand(1)).get());\n+    assertEquals(3, service0.<Integer>run(new GetValueCommand()).get());\n+\n+    assertEquals(4, service1.<Integer>run(new IncrementAndGetCommand(4)).get());\n+    assertEquals(4, service1.<Integer>run(new GetValueCommand()).get());\n+    assertEquals(7, service1.<Integer>run(new IncrementAndGetCommand(3)).get());\n+    assertEquals(7, service1.<Integer>run(new GetValueCommand()).get());\n+  }\n+\n+  /**\n+   * @param name    Node name.\n+   * @param port    Local port.\n+   * @param servers Server nodes of the cluster.\n+   * @return The client cluster view.\n+   */\n+  private ClusterService startClient(String name, int port, List<String> servers) {\n+    var context = new ClusterLocalConfiguration(name, port, servers, SERIALIZATION_REGISTRY);\n+    var network = NETWORK_FACTORY.createClusterService(context);\n+    network.start();\n+    return network;\n+  }\n+\n+  /**\n+   * @param cluster  The cluster.\n+   * @param expected Expected count.\n+   * @param timeout  The timeout in millis.\n+   * @return {@code True} if topology size is equal to expected.\n+   */\n+  private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n+    long stop = System.currentTimeMillis() + timeout;\n+\n+    while (System.currentTimeMillis() < stop) {\n+      if (cluster.topologyService().allMembers().size() >= expected) {\n+        return true;\n+      }\n+\n+      try {\n+        Thread.sleep(50);\n+      } catch (InterruptedException e) {\n         return false;\n+      }\n     }\n+\n+    return false;\n+  }\n }\n",
+            "diff_size": 161
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..1383ed54c51 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/4/ITRaftCounterServerTest.java\n@@ -54,6 +54,7 @@ class ITRaftCounterServerTest {\n     /** */\n     // TODO: IGNITE-14088: Uncomment and use real serializer provider\n     private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n+\n //            .registerFactory((short)1000, ???)\n //            .registerFactory((short)1001, ???)\n //            .registerFactory((short)1005, ???)\n@@ -169,7 +170,7 @@ class ITRaftCounterServerTest {\n     private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (cluster.topologyService().allMembers().size() >= expected)\n                 return true;\n \n@@ -183,4 +184,4 @@ class ITRaftCounterServerTest {\n \n         return false;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "53",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "89",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "99",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "106",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "128",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "138",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "159",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "199",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "217",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..4385e3dc983 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/4/ITRaftCounterServerTest.java\n@@ -41,18 +41,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n /** */\n+\n class ITRaftCounterServerTest {\n     /** */\n+\n     private static final IgniteLogger LOG = IgniteLogger.forClass(ITRaftCounterServerTest.class);\n \n     /** */\n+\n+\n     private static final RaftClientMessageFactory FACTORY = new RaftClientMessageFactoryImpl();\n \n     /** Network factory. */\n+\n+\n     private static final ClusterServiceFactory NETWORK_FACTORY = new ScaleCubeClusterServiceFactory();\n \n     /** */\n     // TODO: IGNITE-14088: Uncomment and use real serializer provider\n+\n+\n     private static final MessageSerializationRegistry SERIALIZATION_REGISTRY = new MessageSerializationRegistry();\n //            .registerFactory((short)1000, ???)\n //            .registerFactory((short)1001, ???)\n@@ -61,35 +69,51 @@ class ITRaftCounterServerTest {\n //            .registerFactory((short)1009, ???);\n \n     /** */\n+\n+\n     private RaftServer server;\n \n     /** */\n+\n+\n     private ClusterService client;\n \n     /** */\n+\n+\n     private static final String SERVER_ID = \"testServer\";\n \n     /** */\n+\n+\n     private static final String CLIENT_ID = \"testClient\";\n \n     /** */\n+\n+\n     private static final String COUNTER_GROUP_ID_0 = \"counter0\";\n \n     /** */\n+\n+\n     private static final String COUNTER_GROUP_ID_1 = \"counter1\";\n \n     /**\n      * @param testInfo Test info.\n      */\n-    @BeforeEach\n-    void before(TestInfo testInfo) {\n-        LOG.info(\">>>> Starting test \" + testInfo.getTestMethod().orElseThrow().getName());\n \n-        server = new RaftServerImpl(SERVER_ID,\n+\n+    @BeforeEach void before(TestInfo testInfo) {\n+        LOG.info(\">>>> Starting test \" + testInfo.getTestMethod().orElseThrow()\n+                                                                 .getName());\n+\n+        server = new RaftServerImpl(\n+            SERVER_ID,\n             20100,\n             FACTORY,\n             1000,\n-            Map.of(COUNTER_GROUP_ID_0, new CounterCommandListener(), COUNTER_GROUP_ID_1, new CounterCommandListener()));\n+            Map.of(COUNTER_GROUP_ID_0, new CounterCommandListener(), COUNTER_GROUP_ID_1, new CounterCommandListener())\n+        );\n \n         client = startClient(CLIENT_ID, 20101, List.of(\"localhost:20100\"));\n \n@@ -99,51 +123,68 @@ class ITRaftCounterServerTest {\n     /**\n      * @throws Exception\n      */\n-    @AfterEach\n-    void after() throws Exception {\n+\n+\n+    @AfterEach void after() throws Exception {\n         server.shutdown();\n+\n         client.shutdown();\n     }\n \n     /**\n      */\n-    @Test\n-    public void testRefreshLeader() {\n-        Peer server = new Peer(client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst().orElseThrow());\n \n-        RaftGroupService service = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n+\n+    @Test public void testRefreshLeader() {\n+        Peer server = new Peer(client.topologyService().allMembers()\n+                                                       .stream()\n+                                                       .filter(m -> SERVER_ID.equals(m.name()))\n+                                                       .findFirst()\n+                                                       .orElseThrow());\n+\n+        RaftGroupService service = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000, List.of(server), true, 200);\n \n         Peer leader = service.leader();\n \n         assertNotNull(leader);\n+\n         assertEquals(server.getNode().name(), leader.getNode().name());\n     }\n \n     /**\n      * @throws Exception\n      */\n-    @Test\n-    public void testCounterCommandListener() throws Exception {\n-        Peer server = new Peer(client.topologyService().allMembers().stream().filter(m -> SERVER_ID.equals(m.name())).findFirst().orElseThrow());\n \n-        RaftGroupService service0 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n \n-        RaftGroupService service1 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_1, client, FACTORY, 1000,\n-            List.of(server), true, 200);\n+    @Test public void testCounterCommandListener() throws Exception {\n+        Peer server = new Peer(client.topologyService().allMembers()\n+                                                       .stream()\n+                                                       .filter(m -> SERVER_ID.equals(m.name()))\n+                                                       .findFirst()\n+                                                       .orElseThrow());\n+\n+        RaftGroupService service0 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_0, client, FACTORY, 1000, List.of(server), true, 200);\n+\n+        RaftGroupService service1 = new RaftGroupServiceImpl(COUNTER_GROUP_ID_1, client, FACTORY, 1000, List.of(server), true, 200);\n \n         assertNotNull(service0.leader());\n+\n         assertNotNull(service1.leader());\n \n         assertEquals(2, service0.<Integer>run(new IncrementAndGetCommand(2)).get());\n+\n         assertEquals(2, service0.<Integer>run(new GetValueCommand()).get());\n+\n         assertEquals(3, service0.<Integer>run(new IncrementAndGetCommand(1)).get());\n+\n         assertEquals(3, service0.<Integer>run(new GetValueCommand()).get());\n \n         assertEquals(4, service1.<Integer>run(new IncrementAndGetCommand(4)).get());\n+\n         assertEquals(4, service1.<Integer>run(new GetValueCommand()).get());\n+\n         assertEquals(7, service1.<Integer>run(new IncrementAndGetCommand(3)).get());\n+\n         assertEquals(7, service1.<Integer>run(new GetValueCommand()).get());\n     }\n \n@@ -153,10 +194,15 @@ class ITRaftCounterServerTest {\n      * @param servers Server nodes of the cluster.\n      * @return The client cluster view.\n      */\n+\n+\n     private ClusterService startClient(String name, int port, List<String> servers) {\n         var context = new ClusterLocalConfiguration(name, port, servers, SERIALIZATION_REGISTRY);\n+\n         var network = NETWORK_FACTORY.createClusterService(context);\n+\n         network.start();\n+\n         return network;\n     }\n \n@@ -166,11 +212,14 @@ class ITRaftCounterServerTest {\n      * @param timeout The timeout in millis.\n      * @return {@code True} if topology size is equal to expected.\n      */\n+\n+\n     private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n-            if (cluster.topologyService().allMembers().size() >= expected)\n+        while (System.currentTimeMillis() < stop) {\n+            if (cluster.topologyService().allMembers()\n+                                         .size() >= expected)\n                 return true;\n \n             try {\n@@ -183,4 +232,4 @@ class ITRaftCounterServerTest {\n \n         return false;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 82
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..c0e419e27e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/4/ITRaftCounterServerTest.java\n@@ -169,7 +169,7 @@ class ITRaftCounterServerTest {\n     private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (cluster.topologyService().allMembers().size() >= expected)\n                 return true;\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/4/ITRaftCounterServerTest.java\nindex d24d6f97e97..c0e419e27e7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/4/ITRaftCounterServerTest.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/4/ITRaftCounterServerTest.java\n@@ -169,7 +169,7 @@ class ITRaftCounterServerTest {\n     private boolean waitForTopology(ClusterService cluster, int expected, int timeout) {\n         long stop = System.currentTimeMillis() + timeout;\n \n-        while(System.currentTimeMillis() < stop) {\n+        while (System.currentTimeMillis() < stop) {\n             if (cluster.topologyService().allMembers().size() >= expected)\n                 return true;\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff"
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "61",
+    "information": {
+        "errors": [
+            {
+                "line": "84",
+                "column": "12",
+                "severity": "warning",
+                "message": "'try' child has incorrect indentation level 11, expected level should be 12.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "\n        try {\n           app = deploymentCtx.getModuleMetaData(Application.class);\n\n            DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n            String virtualServers = commandParams.virtualservers;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/61/WebServicesApplication.java\nindex c737253746a..6d82ae50c97 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/61/WebServicesApplication.java\n@@ -81,7 +81,7 @@ public class WebServicesApplication implements ApplicationContainer {\n         cl = startupContext.getClassLoader();\n \n         try {\n-           app = deploymentCtx.getModuleMetaData(Application.class);\n+            app = deploymentCtx.getModuleMetaData(Application.class);\n \n             DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n             String virtualServers = commandParams.virtualservers;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/61/WebServicesApplication.java\nindex c737253746a..ca7d3809d69 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/61/WebServicesApplication.java\n@@ -64,7 +64,8 @@ public class WebServicesApplication implements ApplicationContainer {\n     private Application app;\n     private Set<String> publishedFiles;\n \n-    public WebServicesApplication(DeploymentContext context,  RequestDispatcher dispatcherString, Set<String> publishedFiles){\n+    public WebServicesApplication(DeploymentContext context, RequestDispatcher dispatcherString,\n+                                  Set<String> publishedFiles) {\n         this.deploymentCtx = context;\n         this.dispatcher = dispatcherString;\n         this.ejbendpoints = getEjbEndpoints();\n@@ -81,27 +82,28 @@ public class WebServicesApplication implements ApplicationContainer {\n         cl = startupContext.getClassLoader();\n \n         try {\n-           app = deploymentCtx.getModuleMetaData(Application.class);\n+            app = deploymentCtx.getModuleMetaData(Application.class);\n \n-            DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n+            DeployCommandParameters commandParams = ((DeploymentContext) startupContext)\n+                .getCommandParameters(DeployCommandParameters.class);\n             String virtualServers = commandParams.virtualservers;\n             Iterator<EjbEndpoint> iter = ejbendpoints.iterator();\n             EjbEndpoint ejbendpoint = null;\n-            while(iter.hasNext()) {\n+            while (iter.hasNext()) {\n                 ejbendpoint = iter.next();\n                 String contextRoot = ejbendpoint.contextRoot;\n                 WebServerInfo wsi = new WsUtil().getWebServerInfoForDAS();\n                 URL rootURL = wsi.getWebServerRootURL(ejbendpoint.isSecure);\n                 dispatcher.registerEndpoint(contextRoot, httpHandler, this, virtualServers);\n                 //Fix for issue 13107490 and 17648\n-                if (wsi.getHttpVS() != null && wsi.getHttpVS().getPort()!=0) {\n+                if (wsi.getHttpVS() != null && wsi.getHttpVS().getPort() != 0) {\n                     logger.log(Level.INFO, LogUtils.EJB_ENDPOINT_REGISTRATION,\n-                            new Object[] {app.getAppName(), rootURL + contextRoot});\n+                        new Object[] {app.getAppName(), rootURL + contextRoot});\n                 }\n             }\n \n         } catch (EndpointRegistrationException e) {\n-            logger.log(Level.SEVERE,  LogUtils.ENDPOINT_REGISTRATION_ERROR, e.toString());\n+            logger.log(Level.SEVERE, LogUtils.ENDPOINT_REGISTRATION_ERROR, e.toString());\n         }\n         return true;\n     }\n@@ -113,7 +115,7 @@ public class WebServicesApplication implements ApplicationContainer {\n         Application app = deploymentCtx.getModuleMetaData(Application.class);\n \n         Set<BundleDescriptor> bundles = app.getBundleDescriptors();\n-        for(BundleDescriptor bundle : bundles) {\n+        for (BundleDescriptor bundle : bundles) {\n             collectEjbEndpoints(bundle);\n         }\n \n@@ -126,7 +128,8 @@ public class WebServicesApplication implements ApplicationContainer {\n             for (WebServiceEndpoint endpoint : ws.getEndpoints()) {\n                 //Only add for ejb based endpoints\n                 if (endpoint.implementedByEjbComponent()) {\n-                    ejbendpoints.add(new EjbEndpoint(endpoint.getEndpointAddressUri(), endpoint.isSecure()));\n+                    ejbendpoints.add(\n+                        new EjbEndpoint(endpoint.getEndpointAddressUri(), endpoint.isSecure()));\n                 }\n             }\n         }\n@@ -137,13 +140,13 @@ public class WebServicesApplication implements ApplicationContainer {\n             Iterator<EjbEndpoint> iter = ejbendpoints.iterator();\n             String contextRoot;\n             EjbEndpoint endpoint;\n-            while(iter.hasNext()) {\n+            while (iter.hasNext()) {\n                 endpoint = iter.next();\n                 contextRoot = endpoint.contextRoot;\n                 dispatcher.unregisterEndpoint(contextRoot);\n             }\n         } catch (EndpointRegistrationException e) {\n-            logger.log(Level.SEVERE,  LogUtils.ENDPOINT_UNREGISTRATION_ERROR ,e.toString());\n+            logger.log(Level.SEVERE, LogUtils.ENDPOINT_UNREGISTRATION_ERROR, e.toString());\n             return false;\n         }\n         return true;\n@@ -170,7 +173,7 @@ public class WebServicesApplication implements ApplicationContainer {\n \n         private boolean isSecure;\n \n-        EjbEndpoint(String contextRoot,boolean secure){\n+        EjbEndpoint(String contextRoot, boolean secure) {\n             this.contextRoot = contextRoot;\n             this.isSecure = secure;\n         }\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "84",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'try' child has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "85",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'try' child has incorrect indentation level 0, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/61/WebServicesApplication.java\nindex c737253746a..d263848b3e1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/61/WebServicesApplication.java\n@@ -81,9 +81,8 @@ public class WebServicesApplication implements ApplicationContainer {\n         cl = startupContext.getClassLoader();\n \n         try {\n-           app = deploymentCtx.getModuleMetaData(Application.class);\n-\n-            DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n+    app = deploymentCtx.getModuleMetaData(Application.class);\n+DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n             String virtualServers = commandParams.virtualservers;\n             Iterator<EjbEndpoint> iter = ejbendpoints.iterator();\n             EjbEndpoint ejbendpoint = null;\n@@ -101,7 +100,7 @@ public class WebServicesApplication implements ApplicationContainer {\n             }\n \n         } catch (EndpointRegistrationException e) {\n-            logger.log(Level.SEVERE,  LogUtils.ENDPOINT_REGISTRATION_ERROR, e.toString());\n+            logger.log(Level.SEVERE, LogUtils.ENDPOINT_REGISTRATION_ERROR, e.toString());\n         }\n         return true;\n     }\n@@ -143,7 +142,7 @@ public class WebServicesApplication implements ApplicationContainer {\n                 dispatcher.unregisterEndpoint(contextRoot);\n             }\n         } catch (EndpointRegistrationException e) {\n-            logger.log(Level.SEVERE,  LogUtils.ENDPOINT_UNREGISTRATION_ERROR ,e.toString());\n+            logger.log(Level.SEVERE, LogUtils.ENDPOINT_UNREGISTRATION_ERROR,e.toString());\n             return false;\n         }\n         return true;\n@@ -179,4 +178,4 @@ public class WebServicesApplication implements ApplicationContainer {\n     Set<String> getPublishedFiles() {\n         return publishedFiles;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/61/WebServicesApplication.java\nindex c737253746a..6d82ae50c97 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/61/WebServicesApplication.java\n@@ -81,7 +81,7 @@ public class WebServicesApplication implements ApplicationContainer {\n         cl = startupContext.getClassLoader();\n \n         try {\n-           app = deploymentCtx.getModuleMetaData(Application.class);\n+            app = deploymentCtx.getModuleMetaData(Application.class);\n \n             DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n             String virtualServers = commandParams.virtualservers;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/61/WebServicesApplication.java\nindex c737253746a..6d82ae50c97 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/61/WebServicesApplication.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/61/WebServicesApplication.java\n@@ -81,7 +81,7 @@ public class WebServicesApplication implements ApplicationContainer {\n         cl = startupContext.getClassLoader();\n \n         try {\n-           app = deploymentCtx.getModuleMetaData(Application.class);\n+            app = deploymentCtx.getModuleMetaData(Application.class);\n \n             DeployCommandParameters commandParams = ((DeploymentContext)startupContext).getCommandParameters(DeployCommandParameters.class);\n             String virtualServers = commandParams.virtualservers;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

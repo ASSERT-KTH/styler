@@ -1,0 +1,101 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "78",
+    "information": {
+        "errors": [
+            {
+                "line": "117",
+                "column": "138",
+                "severity": "error",
+                "message": "'+' should be on a new line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+            }
+        ]
+    },
+    "source_code": "            });\n        } else {\n            getErm().addWarning(\"Skipping step \" + HS_METRICS_STEP + \": you need to provide a BAM file, a FASTA file and two BED files,\" +\n                    \" one for the bait intervals and one for the target intervals\");\n        }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "117",
+                    "column": "138",
+                    "severity": "error",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "117",
+                    "column": "132",
+                    "severity": "error",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/78/SampleQcAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/78/SampleQcAnalysis.java\nindex 757c2aa2d98..af0ddfb0ab6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/78/SampleQcAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/78/SampleQcAnalysis.java\n@@ -32,169 +32,170 @@ import java.util.List;\n @Tool(id = SampleQcAnalysis.ID, resource = Enums.Resource.SAMPLE, description = SampleQcAnalysis.DESCRIPTION)\n public class SampleQcAnalysis extends OpenCgaTool {\n \n-    public static final String ID = \"sample-qc\";\n-    public static final String DESCRIPTION = \"Run quality control (QC) for a given sample. It includes FastQC, samtools/flagstat and\"\n-        + \" picard/CollectHsMetrics\";\n-\n-    public  static final String FASTQC_STEP = \"fastqc\";\n-    public  static final String HS_METRICS_STEP = \"hs-metrics\";\n-    public  static final String FLAG_STATS_STEP = \"flag-stats\";\n-\n-    private String studyId;\n-    private String sampleId;\n-    private String fastaFilename;\n-    private String bamFilename;\n-    private String baitFilename;\n-    private String targetFilename;\n-\n-    public SampleQcAnalysis() {\n-    }\n+  public static final String ID = \"sample-qc\";\n+  public static final String DESCRIPTION = \"Run quality control (QC) for a given sample. It includes FastQC, samtools/flagstat and\"\n+      + \" picard/CollectHsMetrics\";\n \n-    @Override\n-    protected void check() throws Exception {\n-        super.check();\n-        setUpStorageEngineExecutor(studyId);\n-\n-        if (StringUtils.isEmpty(studyId)) {\n-            throw new ToolException(\"Missing study ID.\");\n-        }\n-\n-        try {\n-            studyId = catalogManager.getStudyManager().get(studyId, null, token).first().getFqn();\n-        } catch (CatalogException e) {\n-            throw new ToolException(e);\n-        }\n-\n-        // Sanity check\n-        if (StringUtils.isNotEmpty(sampleId)) {\n-            throw new ToolException(\"Missing sample ID.\");\n-        }\n-    }\n+  public static final String FASTQC_STEP = \"fastqc\";\n+  public static final String HS_METRICS_STEP = \"hs-metrics\";\n+  public static final String FLAG_STATS_STEP = \"flag-stats\";\n \n-    @Override\n-    protected List<String> getSteps() {\n-        List<String> steps = new ArrayList<>();\n-        if (canRunFastQc()) {\n-            steps.add(FASTQC_STEP);\n-        }\n-        if (canRunHsMetrics()) {\n-            steps.add(HS_METRICS_STEP);\n-        }\n-        if (canRunFlagStats()) {\n-            steps.add(FLAG_STATS_STEP);\n-        }\n-        return steps;\n-    }\n+  private String studyId;\n+  private String sampleId;\n+  private String fastaFilename;\n+  private String bamFilename;\n+  private String baitFilename;\n+  private String targetFilename;\n \n-    @Override\n-    protected void run() throws ToolException {\n-\n-        SampleQcAnalysisExecutor executor = getToolExecutor(SampleQcAnalysisExecutor.class);\n-\n-        executor.setStudyId(studyId);\n-\n-        if (canRunFastQc()) {\n-            step(FASTQC_STEP, () -> {\n-                executor.setQc(SampleQcAnalysisExecutor.Qc.FASTQC).execute();\n-            });\n-        } else {\n-            getErm().addWarning(\"Skipping step \" + FASTQC_STEP + \": you need to provide a BAM file\");\n-        }\n-\n-        if (canRunFlagStats()) {\n-            step(FLAG_STATS_STEP, () -> {\n-                executor.setQc(SampleQcAnalysisExecutor.Qc.FLAG_STATS).execute();\n-            });\n-        } else {\n-            getErm().addWarning(\"Skipping step \" + FLAG_STATS_STEP + \": you need to provide a BAM file\");\n-        }\n-\n-        if (canRunHsMetrics()) {\n-            step(HS_METRICS_STEP, () -> {\n-                executor.setQc(SampleQcAnalysisExecutor.Qc.HS_METRICS).execute();\n-            });\n-        } else {\n-            getErm().addWarning(\"Skipping step \" + HS_METRICS_STEP + \": you need to provide a BAM file, a FASTA file and two BED files,\" +\n-                    \" one for the bait intervals and one for the target intervals\");\n-        }\n-\n-        // Save results\n-        try {\n-            JacksonUtils.getDefaultObjectMapper().writer().writeValue(getOutDir().resolve(ID + \".report.json\").toFile(),\n-                    executor.getReport());\n-        } catch (IOException e) {\n-            throw new ToolException(e);\n-        }\n-    }\n+  public SampleQcAnalysis() {\n+  }\n \n-    private boolean canRunFlagStats() {\n-        return StringUtils.isEmpty(bamFilename) ? false : true;\n-    }\n+  @Override\n+  protected void check() throws Exception {\n+    super.check();\n+    setUpStorageEngineExecutor(studyId);\n \n-    private boolean canRunHsMetrics() {\n-        if (StringUtils.isEmpty(bamFilename) || StringUtils.isEmpty(fastaFilename) || StringUtils.isEmpty(baitFilename)\n-                || StringUtils.isEmpty(targetFilename)) {\n-            return false;\n-        }\n-        return true;\n+    if (StringUtils.isEmpty(studyId)) {\n+      throw new ToolException(\"Missing study ID.\");\n     }\n \n-    private boolean canRunFastQc() {\n-        return StringUtils.isEmpty(bamFilename) ? false : true;\n+    try {\n+      studyId = catalogManager.getStudyManager().get(studyId, null, token).first().getFqn();\n+    } catch (CatalogException e) {\n+      throw new ToolException(e);\n     }\n \n-    /**\n-     * Study of the samples.\n-     * @param studyId Study id\n-     * @return this\n-     */\n-    public SampleQcAnalysis setStudy(String studyId) {\n-        this.studyId = studyId;\n-        return this;\n+    // Sanity check\n+    if (StringUtils.isNotEmpty(sampleId)) {\n+      throw new ToolException(\"Missing sample ID.\");\n     }\n+  }\n \n-    public String getSampleId() {\n-        return sampleId;\n+  @Override\n+  protected List<String> getSteps() {\n+    List<String> steps = new ArrayList<>();\n+    if (canRunFastQc()) {\n+      steps.add(FASTQC_STEP);\n     }\n-\n-    public SampleQcAnalysis setSampleId(String sampleId) {\n-        this.sampleId = sampleId;\n-        return this;\n+    if (canRunHsMetrics()) {\n+      steps.add(HS_METRICS_STEP);\n+    }\n+    if (canRunFlagStats()) {\n+      steps.add(FLAG_STATS_STEP);\n     }\n+    return steps;\n+  }\n \n-    public String getFastaFilename() {\n-        return fastaFilename;\n-    }\n+  @Override\n+  protected void run() throws ToolException {\n+\n+    SampleQcAnalysisExecutor executor = getToolExecutor(SampleQcAnalysisExecutor.class);\n \n-    public SampleQcAnalysis setFastaFilename(String fastaFilename) {\n-        this.fastaFilename = fastaFilename;\n-        return this;\n+    executor.setStudyId(studyId);\n+\n+    if (canRunFastQc()) {\n+      step(FASTQC_STEP, () -> {\n+        executor.setQc(SampleQcAnalysisExecutor.Qc.FASTQC).execute();\n+      });\n+    } else {\n+      getErm().addWarning(\"Skipping step \" + FASTQC_STEP + \": you need to provide a BAM file\");\n+    }\n+\n+    if (canRunFlagStats()) {\n+      step(FLAG_STATS_STEP, () -> {\n+        executor.setQc(SampleQcAnalysisExecutor.Qc.FLAG_STATS).execute();\n+      });\n+    } else {\n+      getErm().addWarning(\"Skipping step \" + FLAG_STATS_STEP + \": you need to provide a BAM file\");\n+    }\n+\n+    if (canRunHsMetrics()) {\n+      step(HS_METRICS_STEP, () -> {\n+        executor.setQc(SampleQcAnalysisExecutor.Qc.HS_METRICS).execute();\n+      });\n+    } else {\n+      getErm().addWarning(\"Skipping step \" + HS_METRICS_STEP + \": you need to provide a BAM file, a FASTA file and two BED files,\" +\n+          \" one for the bait intervals and one for the target intervals\");\n+    }\n+\n+    // Save results\n+    try {\n+      JacksonUtils.getDefaultObjectMapper().writer().writeValue(getOutDir().resolve(ID + \".report.json\").toFile(),\n+          executor.getReport());\n+    } catch (IOException e) {\n+      throw new ToolException(e);\n+    }\n+  }\n+\n+  private boolean canRunFlagStats() {\n+    return StringUtils.isEmpty(bamFilename) ? false : true;\n+  }\n+\n+  private boolean canRunHsMetrics() {\n+    if (StringUtils.isEmpty(bamFilename) || StringUtils.isEmpty(fastaFilename) || StringUtils.isEmpty(baitFilename)\n+        || StringUtils.isEmpty(targetFilename)) {\n+      return false;\n     }\n+    return true;\n+  }\n+\n+  private boolean canRunFastQc() {\n+    return StringUtils.isEmpty(bamFilename) ? false : true;\n+  }\n+\n+  /**\n+   * Study of the samples.\n+   *\n+   * @param studyId Study id\n+   * @return this\n+   */\n+  public SampleQcAnalysis setStudy(String studyId) {\n+    this.studyId = studyId;\n+    return this;\n+  }\n \n-    public String getBamFilename() {\n-        return bamFilename;\n-    }\n+  public String getSampleId() {\n+    return sampleId;\n+  }\n \n-    public SampleQcAnalysis setBamFilename(String bamFilename) {\n-        this.bamFilename = bamFilename;\n-        return this;\n-    }\n-\n-    public String getBaitFilename() {\n-        return baitFilename;\n-    }\n-\n-    public SampleQcAnalysis setBaitFilename(String baitFilename) {\n-        this.baitFilename = baitFilename;\n-        return this;\n-    }\n-\n-    public String getTargetFilename() {\n-        return targetFilename;\n-    }\n-\n-    public SampleQcAnalysis setTargetFilename(String targetFilename) {\n-        this.targetFilename = targetFilename;\n-        return this;\n-    }\n+  public SampleQcAnalysis setSampleId(String sampleId) {\n+    this.sampleId = sampleId;\n+    return this;\n+  }\n+\n+  public String getFastaFilename() {\n+    return fastaFilename;\n+  }\n+\n+  public SampleQcAnalysis setFastaFilename(String fastaFilename) {\n+    this.fastaFilename = fastaFilename;\n+    return this;\n+  }\n+\n+  public String getBamFilename() {\n+    return bamFilename;\n+  }\n+\n+  public SampleQcAnalysis setBamFilename(String bamFilename) {\n+    this.bamFilename = bamFilename;\n+    return this;\n+  }\n+\n+  public String getBaitFilename() {\n+    return baitFilename;\n+  }\n+\n+  public SampleQcAnalysis setBaitFilename(String baitFilename) {\n+    this.baitFilename = baitFilename;\n+    return this;\n+  }\n+\n+  public String getTargetFilename() {\n+    return targetFilename;\n+  }\n+\n+  public SampleQcAnalysis setTargetFilename(String targetFilename) {\n+    this.targetFilename = targetFilename;\n+    return this;\n+  }\n }\n",
+            "diff_size": 234
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "116",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 203).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/78/SampleQcAnalysis.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/78/SampleQcAnalysis.java\nindex 757c2aa2d98..e369da98ca9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/78/SampleQcAnalysis.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/78/SampleQcAnalysis.java\n@@ -35,8 +35,7 @@ public class SampleQcAnalysis extends OpenCgaTool {\n     public static final String ID = \"sample-qc\";\n     public static final String DESCRIPTION = \"Run quality control (QC) for a given sample. It includes FastQC, samtools/flagstat and\"\n         + \" picard/CollectHsMetrics\";\n-\n-    public  static final String FASTQC_STEP = \"fastqc\";\n+public static final String FASTQC_STEP = \"fastqc\";\n     public  static final String HS_METRICS_STEP = \"hs-metrics\";\n     public  static final String FLAG_STATS_STEP = \"flag-stats\";\n \n@@ -114,8 +113,7 @@ public class SampleQcAnalysis extends OpenCgaTool {\n                 executor.setQc(SampleQcAnalysisExecutor.Qc.HS_METRICS).execute();\n             });\n         } else {\n-            getErm().addWarning(\"Skipping step \" + HS_METRICS_STEP + \": you need to provide a BAM file, a FASTA file and two BED files,\" +\n-                    \" one for the bait intervals and one for the target intervals\");\n+            getErm().addWarning(\"Skipping step \" + HS_METRICS_STEP + \": you need to provide a BAM file, a FASTA file and two BED files,\" + \" one for the bait intervals and one for the target intervals\");\n         }\n \n         // Save results\n@@ -197,4 +195,4 @@ public class SampleQcAnalysis extends OpenCgaTool {\n         this.targetFilename = targetFilename;\n         return this;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "117",
+                    "column": "138",
+                    "severity": "error",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "117",
+                    "column": "138",
+                    "severity": "error",
+                    "message": "'+' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,85 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "20",
+    "information": {
+        "errors": [
+            {
+                "line": "185",
+                "column": "2",
+                "severity": "warning",
+                "message": "'class def rcurly' has incorrect indentation level 1, expected level should be 0.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n\n }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/20/SetWebContextParamCommand.java\nindex d93487e9f45..a0b06c17fac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/20/SetWebContextParamCommand.java\n@@ -182,4 +182,4 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n         }\n     }\n \n- }\n+}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/20/SetWebContextParamCommand.java\nindex d93487e9f45..1c95b5b5487 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/20/SetWebContextParamCommand.java\n@@ -36,33 +36,32 @@ import org.jvnet.hk2.config.SingleConfigCode;\n import org.jvnet.hk2.config.TransactionFailure;\n \n /**\n- *\n  * @author tjquinn\n  */\n-@Service(name=\"set-web-context-param\")\n+@Service(name = \"set-web-context-param\")\n @I18n(\"setWebContextParam.command\")\n @PerLookup\n @RestEndpoints({\n-    @RestEndpoint(configBean=Application.class,\n-        opType=RestEndpoint.OpType.POST,\n-        path=\"set-web-context-param\",\n-        description=\"set-web-context-param\",\n-        params={\n-            @RestParam(name=\"id\", value=\"$parent\")\n+    @RestEndpoint(configBean = Application.class,\n+        opType = RestEndpoint.OpType.POST,\n+        path = \"set-web-context-param\",\n+        description = \"set-web-context-param\",\n+        params = {\n+            @RestParam(name = \"id\", value = \"$parent\")\n         })\n })\n public class SetWebContextParamCommand extends WebModuleConfigCommand {\n \n-    @Param(name=\"name\")\n+    @Param(name = \"name\")\n     private String name;\n \n-    @Param(name=\"value\",optional=true)\n+    @Param(name = \"value\", optional = true)\n     private String value;\n \n-    @Param(name=\"description\", optional=true)\n+    @Param(name = \"description\", optional = true)\n     private String description;\n \n-    @Param(name=\"ignoreDescriptorItem\", optional=true)\n+    @Param(name = \"ignoreDescriptorItem\", optional = true)\n     private Boolean ignoreDescriptorItem;\n \n     @Override\n@@ -81,37 +80,38 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n     }\n \n     private void setContextParam(final Engine owningEngine,\n-            final String paramName,\n-            final String paramValue,\n-            final String description,\n-            final Boolean ignoreDescriptorItem,\n-            final ActionReport report) throws PropertyVetoException, TransactionFailure {\n+                                 final String paramName,\n+                                 final String paramValue,\n+                                 final String description,\n+                                 final Boolean ignoreDescriptorItem,\n+                                 final ActionReport report)\n+        throws PropertyVetoException, TransactionFailure {\n \n         WebModuleConfig config = WebModuleConfig.Duck.webModuleConfig(owningEngine);\n         if (config == null) {\n             createContextParamOnNewWMC(owningEngine, paramName, paramValue,\n-                    description, ignoreDescriptorItem);\n+                description, ignoreDescriptorItem);\n         } else {\n             ContextParam cp = config.getContextParam(paramName);\n             if (cp == null) {\n                 createContextParamOnExistingWMC(config, paramName,\n-                        paramValue, description, ignoreDescriptorItem);\n+                    paramValue, description, ignoreDescriptorItem);\n             } else {\n                 modifyContextParam(cp, paramValue, description,\n-                            ignoreDescriptorItem);\n+                    ignoreDescriptorItem);\n                 succeed(report, \"setWebContextParamOverride\",\n-                        \"Previous context-param setting of {0} for application/module {1} was overridden.\",\n-                        name, appNameAndOptionalModuleName());\n+                    \"Previous context-param setting of {0} for application/module {1} was overridden.\",\n+                    name, appNameAndOptionalModuleName());\n             }\n         }\n     }\n \n     private void createContextParamOnNewWMC(\n-            final Engine owningEngine,\n-            final String paramName,\n-            final String paramValue,\n-            final String description,\n-            final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n+        final Engine owningEngine,\n+        final String paramName,\n+        final String paramValue,\n+        final String description,\n+        final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n \n \n         ConfigSupport.apply(new SingleConfigCode<Engine>() {\n@@ -130,11 +130,11 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n     }\n \n     private void createContextParamOnExistingWMC(\n-            final WebModuleConfig config,\n-            final String paramName,\n-            final String paramValue,\n-            final String description,\n-            final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n+        final WebModuleConfig config,\n+        final String paramName,\n+        final String paramValue,\n+        final String description,\n+        final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n \n         ConfigSupport.apply(new SingleConfigCode<WebModuleConfig>() {\n \n@@ -149,10 +149,10 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n     }\n \n     private void modifyContextParam(\n-            final ContextParam param,\n-            final String paramValue,\n-            final String description,\n-            final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n+        final ContextParam param,\n+        final String paramValue,\n+        final String description,\n+        final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n         ConfigSupport.apply(new SingleConfigCode<ContextParam>() {\n \n             @Override\n@@ -164,10 +164,11 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n     }\n \n     private void set(final ContextParam param,\n-            final String paramName,\n-            final String paramValue,\n-            final String description,\n-            final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n+                     final String paramName,\n+                     final String paramValue,\n+                     final String description,\n+                     final Boolean ignoreDescriptorItem)\n+        throws PropertyVetoException, TransactionFailure {\n         if (ignoreDescriptorItem != null) {\n             param.setIgnoreDescriptorItem(ignoreDescriptorItem.toString());\n         }\n@@ -182,4 +183,4 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n         }\n     }\n \n- }\n+}\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "101",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 0, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "114",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "181",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'class def rcurly' has incorrect indentation level 4, expected level should be 0.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/20/SetWebContextParamCommand.java\nindex d93487e9f45..8f76f6c750d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/20/SetWebContextParamCommand.java\n@@ -97,9 +97,8 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n                 createContextParamOnExistingWMC(config, paramName,\n                         paramValue, description, ignoreDescriptorItem);\n             } else {\n-                modifyContextParam(cp, paramValue, description,\n-                            ignoreDescriptorItem);\n-                succeed(report, \"setWebContextParamOverride\",\n+                modifyContextParam(cp, paramValue, description, ignoreDescriptorItem);\n+succeed(report, \"setWebContextParamOverride\",\n                         \"Previous context-param setting of {0} for application/module {1} was overridden.\",\n                         name, appNameAndOptionalModuleName());\n             }\n@@ -112,9 +111,7 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n             final String paramValue,\n             final String description,\n             final Boolean ignoreDescriptorItem) throws PropertyVetoException, TransactionFailure {\n-\n-\n-        ConfigSupport.apply(new SingleConfigCode<Engine>() {\n+    ConfigSupport.apply(new SingleConfigCode<Engine>() {\n \n             @Override\n             public Object run(Engine e) throws PropertyVetoException, TransactionFailure {\n@@ -181,5 +178,4 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n             param.setParamName(paramName);\n         }\n     }\n-\n- }\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/20/SetWebContextParamCommand.java\nindex d93487e9f45..a0b06c17fac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/20/SetWebContextParamCommand.java\n@@ -182,4 +182,4 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n         }\n     }\n \n- }\n+}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/20/SetWebContextParamCommand.java\nindex d93487e9f45..a0b06c17fac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/20/SetWebContextParamCommand.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/20/SetWebContextParamCommand.java\n@@ -182,4 +182,4 @@ public class SetWebContextParamCommand extends WebModuleConfigCommand {\n         }\n     }\n \n- }\n+}\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

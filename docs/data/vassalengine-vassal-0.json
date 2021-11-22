@@ -1,0 +1,62 @@
+{
+    "project_name": "vassalengine-vassal",
+    "error_id": "0",
+    "information": {
+        "errors": [
+            {
+                "line": "214",
+                "column": "33",
+                "severity": "error",
+                "message": "'(' is preceded with whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+            }
+        ]
+    },
+    "source_code": "   * @param node Parser Node\n   */\n  protected boolean processNode (SimpleNode node) {\n    if (node == null) {\n      return true;\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler/0/BeanShellExpressionValidator.java\nindex 6e93cefe976..d852bdf24ac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler/0/BeanShellExpressionValidator.java\n@@ -211,7 +211,7 @@ public class BeanShellExpressionValidator {\n    * Assignments are not allowed in an expression, so flag as an error\n    * @param node Parser Node\n    */\n-  protected boolean processNode (SimpleNode node) {\n+  protected boolean processNode(SimpleNode node) {\n     if (node == null) {\n       return true;\n     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/intellij/0/BeanShellExpressionValidator.java\nindex 6e93cefe976..212289066c0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/intellij/0/BeanShellExpressionValidator.java\n@@ -15,6 +15,7 @@\n  * License along with this library; if not, copies are available\n  * at http://www.opensource.org.\n  */\n+\n package bsh;\n \n import java.io.StringReader;\n@@ -24,15 +25,14 @@ import java.util.List;\n import java.util.Set;\n \n /**\n- * Validate a single line BeanShell expression. \n+ * Validate a single line BeanShell expression.\n  * Build a list of variable references in the expression.\n- * \n- * This Class must be defined in package bsh to allow access to \n+ * <p>\n+ * This Class must be defined in package bsh to allow access to\n  * package visible elements in the bsh library.\n- *\n  */\n public class BeanShellExpressionValidator {\n-  \n+\n   protected String expression;\n   protected List<String> variables = new ArrayList<>();\n   protected List<String> stringVariables = new ArrayList<>();\n@@ -43,18 +43,18 @@ public class BeanShellExpressionValidator {\n   /**\n    * List of all Java 15 String functions that can be applied to property names directly within Beanshell.\n    * (i.e. those with return values and argument types that Vassal supports).\n-   *\n+   * <p>\n    * This list is used to recognize and evaluate constructs of the form\n-   *\n-   *    stringVariable.function()\n-   *\n+   * <p>\n+   * stringVariable.function()\n+   * <p>\n    * And allow stringVariable to be used directly within beanshell with Java syntax,\n    * rather than having to resort to\n-   *\n-   *    GetProperty(\"stringVariable\").function()\n-   *\n+   * <p>\n+   * GetProperty(\"stringVariable\").function()\n    */\n   private static final Set<String> supportedStringFunctions;\n+\n   static {\n     supportedStringFunctions = new HashSet<>();\n     supportedStringFunctions.add(\".compareTo\");\n@@ -91,27 +91,30 @@ public class BeanShellExpressionValidator {\n \n   /**\n    * Build a new Validator and validate the expression\n+   *\n    * @param expression Expression to validate\n    */\n   public BeanShellExpressionValidator(String expression) {\n-    this.expression = expression; \n+    this.expression = expression;\n     valid = validate();\n   }\n-  \n+\n   /**\n    * Is the expression valid?\n+   *\n    * @return valid\n    */\n   public boolean isValid() {\n     return valid;\n   }\n-  \n+\n   protected void setValid(boolean b) {\n     valid = b;\n   }\n \n   /**\n    * Return a list of Variable references in the expression that we know must be Strings\n+   *\n    * @return List of variables\n    */\n   public List<String> getStringVariables() {\n@@ -120,70 +123,70 @@ public class BeanShellExpressionValidator {\n \n   /**\n    * Return a list of Variable references in the expression\n+   *\n    * @return List of variables\n    */\n   public List<String> getVariables() {\n     return variables;\n   }\n-  \n+\n   /**\n    * Return a list of Methods called by the expression\n+   *\n    * @return List of Methods\n    */\n   public List<String> getMethods() {\n     return methods;\n   }\n-  \n+\n   /**\n    * Return an Error Message if no valid\n+   *\n    * @return Error message\n    */\n   public String getError() {\n     return error;\n   }\n-  \n+\n   protected void setError(String s) {\n     error = s;\n   }\n-  \n+\n   /**\n    * Validate the expression\n-   * \n+   *\n    * @return Expression validity\n    */\n   protected boolean validate() {\n     final String expr = stripBraces(expression);\n-    \n+\n     setError(\"\");\n     try {\n       Parser p = new Parser(new StringReader(expr + \";\"));\n-      for (;;) {\n+      for (; ; ) {\n         if (p.Line()) {\n           return true;\n-        } \n-        else {\n+        } else {\n           final SimpleNode node = p.popNode();\n-          if (! processNode(node)) {\n+          if (!processNode(node)) {\n             return false;\n           }\n         }\n       }\n-    }\n-    catch (ParseException e) {\n+    } catch (ParseException e) {\n       setError(e.getMessage());\n       return false;\n-    }\n-    catch (TokenMgrError e) {\n+    } catch (TokenMgrError e) {\n       setError(e.getMessage());\n       return false;\n     }\n   }\n-  \n+\n   /**\n    * If the expression is surrounded by Vassal expression braces {}\n    * replace them with spaces so that it will validate and report errors\n    * in the correct location\n-   * \n+   *\n    * @param s Expression\n    * @return stripped expression\n    */\n@@ -196,67 +199,63 @@ public class BeanShellExpressionValidator {\n       for (int i = 0; i < s.length(); i++) {\n         if (i == start || i == end) {\n           buffer.append(' ');\n-        }\n-        else {\n-          buffer.append(s.charAt(i));        \n+        } else {\n+          buffer.append(s.charAt(i));\n         }\n       }\n       expr = buffer.toString();\n     }\n     return expr;\n   }\n-  \n+\n   /**\n    * Process a Parser Node and extract any Variable and Method references.\n    * Assignments are not allowed in an expression, so flag as an error\n+   *\n    * @param node Parser Node\n    */\n-  protected boolean processNode (SimpleNode node) {\n+  protected boolean processNode(SimpleNode node) {\n     if (node == null) {\n       return true;\n     }\n-    \n+\n     if (node instanceof BSHAmbiguousName) {\n       final String name = node.getText().trim();\n       if ((node.parent instanceof BSHMethodInvocation)) {\n-        if (! methods.contains(name)) {\n+        if (!methods.contains(name)) {\n           // Check for x.y() where y is a String method. x will be a property name we need to report\n           // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens\n           String[] tokens = name.split(\" \");\n           // Only 1 Token, it's a straight method, we're not interested.\n           if (tokens.length == 1) {\n-            if (! methods.contains(name)) {\n+            if (!methods.contains(name)) {\n               methods.add(name);\n             }\n-          }\n-          else {\n+          } else {\n             // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a String variable\n             if (supportedStringFunctions.contains(tokens[1])) {\n-              if (! stringVariables.contains(tokens[0])) {\n+              if (!stringVariables.contains(tokens[0])) {\n                 stringVariables.add(tokens[0]);\n               }\n             }\n           }\n         }\n-      }\n-      else if (! variables.contains(name)) {\n+      } else if (!variables.contains(name)) {\n         variables.add(name);\n       }\n-    }\n-    else if (node instanceof BSHAssignment) {\n+    } else if (node instanceof BSHAssignment) {\n       setError(\"Assignments (=) not allowed in Expressions. See Help\");\n       return false;\n-    }\n-    else {\n+    } else {\n       if (node.children != null) {\n         for (int i = 0; i < node.children.length; i++) {\n-          if (! processNode(node.getChild(i))) {\n+          if (!processNode(node.getChild(i))) {\n             return false;\n           }\n         }\n       }\n     }\n     return true;\n-  }  \n-  \n+  }\n+\n }\n\\ No newline at end of file\n",
+            "diff_size": 60
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_random/0/BeanShellExpressionValidator.java\nindex 6e93cefe976..d852bdf24ac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_random/0/BeanShellExpressionValidator.java\n@@ -211,7 +211,7 @@ public class BeanShellExpressionValidator {\n    * Assignments are not allowed in an expression, so flag as an error\n    * @param node Parser Node\n    */\n-  protected boolean processNode (SimpleNode node) {\n+  protected boolean processNode(SimpleNode node) {\n     if (node == null) {\n       return true;\n     }\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_three_grams/0/BeanShellExpressionValidator.java\nindex 6e93cefe976..d852bdf24ac 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/errored/1/0/BeanShellExpressionValidator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/vassalengine-vassal/styler_three_grams/0/BeanShellExpressionValidator.java\n@@ -211,7 +211,7 @@ public class BeanShellExpressionValidator {\n    * Assignments are not allowed in an expression, so flag as an error\n    * @param node Parser Node\n    */\n-  protected boolean processNode (SimpleNode node) {\n+  protected boolean processNode(SimpleNode node) {\n     if (node == null) {\n       return true;\n     }\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

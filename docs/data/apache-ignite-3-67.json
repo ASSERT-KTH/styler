@@ -1,0 +1,136 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "67",
+    "information": {
+        "errors": [
+            {
+                "line": "34",
+                "column": "5",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "    extends BytecodeExpression {\n    private final BytecodeExpression length;\n    private final ParameterizedType elementType;\n\n    @Nullable\n    private final List<BytecodeExpression> elements;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..390fb6e4367 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/67/NewArrayBytecodeExpression.java\n@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;\n class NewArrayBytecodeExpression\n     extends BytecodeExpression {\n     private final BytecodeExpression length;\n+\n     private final ParameterizedType elementType;\n \n     @Nullable\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..9107c03af5a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/67/NewArrayBytecodeExpression.java\n@@ -11,6 +11,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package com.facebook.presto.bytecode.expression;\n \n import com.facebook.presto.bytecode.BytecodeBlock;\n@@ -30,70 +31,71 @@ import static java.util.Objects.requireNonNull;\n \n class NewArrayBytecodeExpression\n     extends BytecodeExpression {\n-    private final BytecodeExpression length;\n-    private final ParameterizedType elementType;\n+  private final BytecodeExpression length;\n \n-    @Nullable\n-    private final List<BytecodeExpression> elements;\n+  private final ParameterizedType elementType;\n \n-    NewArrayBytecodeExpression(ParameterizedType type, int length) {\n-        this(type, constantInt(length));\n-    }\n+  @Nullable\n+  private final List<BytecodeExpression> elements;\n \n-    NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length) {\n-        this(type, length, null);\n-    }\n+  NewArrayBytecodeExpression(ParameterizedType type, int length) {\n+    this(type, constantInt(length));\n+  }\n \n-    NewArrayBytecodeExpression(ParameterizedType type, Collection<BytecodeExpression> elements) {\n-        this(type, constantInt(elements.size()), elements);\n-    }\n+  NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length) {\n+    this(type, length, null);\n+  }\n \n-    private NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length,\n-        Collection<BytecodeExpression> elements) {\n-        super(type);\n-        requireNonNull(type, \"type is null\");\n-        checkArgument(type.getArrayComponentType() != null, \"type %s must be array type\", type);\n-        this.elementType = type.getArrayComponentType();\n-        this.length = requireNonNull(length, \"length is null\");\n-        this.elements = (elements == null) ? null : List.copyOf(elements);\n-    }\n+  NewArrayBytecodeExpression(ParameterizedType type, Collection<BytecodeExpression> elements) {\n+    this(type, constantInt(elements.size()), elements);\n+  }\n \n-    @Override\n-    public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n-        BytecodeBlock bytecodeBlock;\n-        if (elementType.isPrimitive()) {\n-            bytecodeBlock = new BytecodeBlock()\n-                .append(length)\n-                .append(TypeInstruction.newPrimitiveArray(elementType));\n-        }\n-        else {\n-            bytecodeBlock = new BytecodeBlock()\n-                .append(length)\n-                .append(TypeInstruction.newObjectArray(elementType));\n-        }\n-        if (elements != null) {\n-            for (int i = 0; i < elements.size(); i++) {\n-                BytecodeExpression element = elements.get(i);\n-                bytecodeBlock\n-                    .dup()\n-                    .append(constantInt(i))\n-                    .append(element)\n-                    .append(getArrayOpCode(elementType).getStore());\n-            }\n-        }\n-        return bytecodeBlock;\n-    }\n+  private NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length,\n+                                     Collection<BytecodeExpression> elements) {\n+    super(type);\n+    requireNonNull(type, \"type is null\");\n+    checkArgument(type.getArrayComponentType() != null, \"type %s must be array type\", type);\n+    this.elementType = type.getArrayComponentType();\n+    this.length = requireNonNull(length, \"length is null\");\n+    this.elements = (elements == null) ? null : List.copyOf(elements);\n+  }\n \n-    @Override\n-    protected String formatOneLine() {\n-        if (elements == null) {\n-            return \"new \" + elementType.getSimpleName() + \"[\" + length + \"]\";\n-        }\n-        return \"new \" + elementType.getSimpleName() + \"[] {\" + elements.stream().map(BytecodeExpression::toString).collect(Collectors.joining(\", \")) + \"}\";\n+  @Override\n+  public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+    BytecodeBlock bytecodeBlock;\n+    if (elementType.isPrimitive()) {\n+      bytecodeBlock = new BytecodeBlock()\n+          .append(length)\n+          .append(TypeInstruction.newPrimitiveArray(elementType));\n+    } else {\n+      bytecodeBlock = new BytecodeBlock()\n+          .append(length)\n+          .append(TypeInstruction.newObjectArray(elementType));\n     }\n+    if (elements != null) {\n+      for (int i = 0; i < elements.size(); i++) {\n+        BytecodeExpression element = elements.get(i);\n+        bytecodeBlock\n+            .dup()\n+            .append(constantInt(i))\n+            .append(element)\n+            .append(getArrayOpCode(elementType).getStore());\n+      }\n+    }\n+    return bytecodeBlock;\n+  }\n \n-    @Override\n-    public List<BytecodeNode> getChildNodes() {\n-        return List.of();\n+  @Override\n+  protected String formatOneLine() {\n+    if (elements == null) {\n+      return \"new \" + elementType.getSimpleName() + \"[\" + length + \"]\";\n     }\n+    return \"new \" + elementType.getSimpleName() + \"[] {\" +\n+        elements.stream().map(BytecodeExpression::toString).collect(Collectors.joining(\", \")) + \"}\";\n+  }\n+\n+  @Override\n+  public List<BytecodeNode> getChildNodes() {\n+    return List.of();\n+  }\n }\n",
+            "diff_size": 83
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "34",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..31b1a86e7ec 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/67/NewArrayBytecodeExpression.java\n@@ -96,4 +96,4 @@ class NewArrayBytecodeExpression\n     public List<BytecodeNode> getChildNodes() {\n         return List.of();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "36",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "104",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..c2a8e5eff67 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/67/NewArrayBytecodeExpression.java\n@@ -28,72 +28,80 @@ import static com.facebook.presto.bytecode.BytecodeUtils.checkArgument;\n import static com.facebook.presto.bytecode.expression.BytecodeExpressions.constantInt;\n import static java.util.Objects.requireNonNull;\n \n-class NewArrayBytecodeExpression\n-    extends BytecodeExpression {\n+class NewArrayBytecodeExpression extends BytecodeExpression {\n+\n     private final BytecodeExpression length;\n+\n+\n     private final ParameterizedType elementType;\n \n+\n     @Nullable\n     private final List<BytecodeExpression> elements;\n \n+\n     NewArrayBytecodeExpression(ParameterizedType type, int length) {\n         this(type, constantInt(length));\n     }\n \n+\n     NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length) {\n         this(type, length, null);\n     }\n \n+\n     NewArrayBytecodeExpression(ParameterizedType type, Collection<BytecodeExpression> elements) {\n         this(type, constantInt(elements.size()), elements);\n     }\n \n-    private NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length,\n-        Collection<BytecodeExpression> elements) {\n+\n+    private NewArrayBytecodeExpression(ParameterizedType type, BytecodeExpression length, Collection<BytecodeExpression> elements) {\n         super(type);\n+\n         requireNonNull(type, \"type is null\");\n+\n         checkArgument(type.getArrayComponentType() != null, \"type %s must be array type\", type);\n         this.elementType = type.getArrayComponentType();\n         this.length = requireNonNull(length, \"length is null\");\n         this.elements = (elements == null) ? null : List.copyOf(elements);\n     }\n \n-    @Override\n-    public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n+\n+    @Override public BytecodeNode getBytecode(MethodGenerationContext generationContext) {\n         BytecodeBlock bytecodeBlock;\n+\n         if (elementType.isPrimitive()) {\n-            bytecodeBlock = new BytecodeBlock()\n-                .append(length)\n-                .append(TypeInstruction.newPrimitiveArray(elementType));\n+            bytecodeBlock = new BytecodeBlock().append(length)\n+                                               .append(TypeInstruction.newPrimitiveArray(elementType));\n         }\n         else {\n-            bytecodeBlock = new BytecodeBlock()\n-                .append(length)\n-                .append(TypeInstruction.newObjectArray(elementType));\n+            bytecodeBlock = new BytecodeBlock().append(length)\n+                                               .append(TypeInstruction.newObjectArray(elementType));\n         }\n         if (elements != null) {\n             for (int i = 0; i < elements.size(); i++) {\n                 BytecodeExpression element = elements.get(i);\n-                bytecodeBlock\n-                    .dup()\n-                    .append(constantInt(i))\n-                    .append(element)\n-                    .append(getArrayOpCode(elementType).getStore());\n+\n+                bytecodeBlock.dup().append(constantInt(i))\n+                                   .append(element).append(getArrayOpCode(elementType).getStore());\n             }\n         }\n+\n         return bytecodeBlock;\n     }\n \n-    @Override\n-    protected String formatOneLine() {\n+\n+    @Override protected String formatOneLine() {\n         if (elements == null) {\n             return \"new \" + elementType.getSimpleName() + \"[\" + length + \"]\";\n         }\n-        return \"new \" + elementType.getSimpleName() + \"[] {\" + elements.stream().map(BytecodeExpression::toString).collect(Collectors.joining(\", \")) + \"}\";\n+\n+        return \"new \" + elementType.getSimpleName() + \"[] {\" + elements.stream().map(BytecodeExpression::toString)\n+                                                                                .collect(Collectors.joining(\", \")) + \"}\";\n     }\n \n-    @Override\n-    public List<BytecodeNode> getChildNodes() {\n+\n+    @Override public List<BytecodeNode> getChildNodes() {\n         return List.of();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 35
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..390fb6e4367 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/67/NewArrayBytecodeExpression.java\n@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;\n class NewArrayBytecodeExpression\n     extends BytecodeExpression {\n     private final BytecodeExpression length;\n+\n     private final ParameterizedType elementType;\n \n     @Nullable\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/67/NewArrayBytecodeExpression.java\nindex 7e2c25a2f3f..390fb6e4367 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/67/NewArrayBytecodeExpression.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/67/NewArrayBytecodeExpression.java\n@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;\n class NewArrayBytecodeExpression\n     extends BytecodeExpression {\n     private final BytecodeExpression length;\n+\n     private final ParameterizedType elementType;\n \n     @Nullable\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

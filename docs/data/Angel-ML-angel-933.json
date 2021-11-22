@@ -1,0 +1,134 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "933",
+    "information": {
+        "errors": [
+            {
+                "line": "11",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 103).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * https://opensource.org/licenses/BSD-3-Clause\n *\n * Unless required by applicable law or agreed to in writing, software distributed under the License is\n * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n * either express or implied. See the License for the specific language governing permissions and\n * limitations under the License.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/933/SnapshotDumper.java\nindex 75ed3225eca..de5f089ad7e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/intellij/933/SnapshotDumper.java\n@@ -62,7 +62,7 @@ public class SnapshotDumper {\n   /**\n    * Need dump matrices\n    */\n-  private final String [] needDumpMatrices;\n+  private final String[] needDumpMatrices;\n \n   /**\n    * Snapshot base directory path\n@@ -81,6 +81,7 @@ public class SnapshotDumper {\n \n   /**\n    * Create a SnapshotDumper\n+   *\n    * @param context PS context\n    */\n   public SnapshotDumper(PSContext context) {\n@@ -90,17 +91,17 @@ public class SnapshotDumper {\n     mode = context.getRunningMode();\n \n     backupIntervalMs = context.getConf().getInt(\n-      AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS,\n-      AngelConf.DEFAULT_ANGEL_PS_BACKUP_INTERVAL_MS);\n+        AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS,\n+        AngelConf.DEFAULT_ANGEL_PS_BACKUP_INTERVAL_MS);\n \n     outputDir = context.getConf().get(AngelConf.ANGEL_JOB_TMP_OUTPUT_PATH);\n     baseDirPath = new Path(outputDir + Path.SEPARATOR\n-      + ModelFilesConstent.snapshotDirName + Path.SEPARATOR\n-      + context.getPSAttemptId().getPsId() + Path.SEPARATOR\n-      + String.valueOf(context.getPSAttemptId().getIndex()));\n+        + ModelFilesConstent.snapshotDirName + Path.SEPARATOR\n+        + context.getPSAttemptId().getPsId() + Path.SEPARATOR\n+        + String.valueOf(context.getPSAttemptId().getIndex()));\n \n     String matricesStr = context.getConf().get(AngelConf.ANGEL_PS_BACKUP_MATRICES);\n-    if(matricesStr == null) {\n+    if (matricesStr == null) {\n       needDumpMatrices = null;\n     } else {\n       needDumpMatrices = matricesStr.split(\",\");\n@@ -141,25 +142,26 @@ public class SnapshotDumper {\n \n   /**\n    * Write snapshot\n+   *\n    * @throws Exception\n    */\n   private void writeSnapshots() throws Exception {\n     List<Integer> matrixIds = null;\n-    if(needDumpMatrices == null) {\n+    if (needDumpMatrices == null) {\n       matrixIds = new ArrayList<>(context.getMatrixMetaManager().getMatrixMetas().keySet());\n     } else {\n       matrixIds = toMatrixIds();\n     }\n \n-    if(matrixIds.isEmpty()) {\n+    if (matrixIds.isEmpty()) {\n       return;\n     }\n \n     List<Integer> needDumpMatrices = filter(matrixIds);\n-    if(needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n+    if (needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n       FileSystem fs = baseDirPath.getFileSystem(context.getConf());\n       Path tmpPath = HdfsUtil.toTmpPath(baseDirPath);\n-      if(fs.exists(tmpPath)) {\n+      if (fs.exists(tmpPath)) {\n         fs.delete(tmpPath, true);\n       }\n       context.getMatrixStorageManager().save(filter(matrixIds), tmpPath);\n@@ -169,6 +171,7 @@ public class SnapshotDumper {\n \n   /**\n    * Get the matrices that need dump\n+   *\n    * @param matrixIds all matrices\n    * @return the matrices that need dump\n    * @throws ServiceException\n@@ -176,8 +179,8 @@ public class SnapshotDumper {\n   private List<Integer> filter(List<Integer> matrixIds) throws ServiceException {\n     int size = matrixIds.size();\n     List<Integer> ret = new ArrayList<>(size);\n-    for(int i = 0; i < size; i++) {\n-      if(checkNeedDump(matrixIds.get(i))) {\n+    for (int i = 0; i < size; i++) {\n+      if (checkNeedDump(matrixIds.get(i))) {\n         ret.add(matrixIds.get(i));\n       }\n     }\n@@ -187,16 +190,17 @@ public class SnapshotDumper {\n \n   /**\n    * Is this matrix need dump\n+   *\n    * @param matrixId matrix id\n    * @return true mean need dump\n    * @throws ServiceException\n    */\n   private boolean checkNeedDump(int matrixId) throws ServiceException {\n-    if(mode == RunningMode.ANGEL_PS) {\n+    if (mode == RunningMode.ANGEL_PS) {\n       return true;\n     } else {\n       MasterClient master = context.getMaster();\n-      if(master == null) {\n+      if (master == null) {\n         return false;\n       } else {\n         int iteration = context.getMaster().getIteration();\n@@ -207,9 +211,9 @@ public class SnapshotDumper {\n \n   private List<Integer> toMatrixIds() {\n     List<Integer> matrixIds = new ArrayList<>(needDumpMatrices.length);\n-    for(int i = 0; i < needDumpMatrices.length; i++) {\n+    for (int i = 0; i < needDumpMatrices.length; i++) {\n       MatrixMeta meta = context.getMatrixMetaManager().getMatrixMeta(needDumpMatrices[i]);\n-      if(meta != null) {\n+      if (meta != null) {\n         matrixIds.add(meta.getId());\n       }\n     }\n@@ -218,8 +222,8 @@ public class SnapshotDumper {\n   }\n \n   public void stop() {\n-    if(!stopped.getAndSet(true)) {\n-      if(dumpDispatcher != null) {\n+    if (!stopped.getAndSet(true)) {\n+      if (dumpDispatcher != null) {\n         dumpDispatcher.interrupt();\n       }\n     }\n",
+            "diff_size": 23
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "96",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 107).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/933/SnapshotDumper.java\nindex 75ed3225eca..6fd3fa3600b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/933/SnapshotDumper.java\n@@ -62,7 +62,7 @@ public class SnapshotDumper {\n   /**\n    * Need dump matrices\n    */\n-  private final String [] needDumpMatrices;\n+  private final String[] needDumpMatrices;\n \n   /**\n    * Snapshot base directory path\n@@ -89,18 +89,16 @@ public class SnapshotDumper {\n     lastIteration = 0;\n     mode = context.getRunningMode();\n \n-    backupIntervalMs = context.getConf().getInt(\n-      AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS,\n+    backupIntervalMs = context.getConf().getInt(AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS,\n       AngelConf.DEFAULT_ANGEL_PS_BACKUP_INTERVAL_MS);\n \n     outputDir = context.getConf().get(AngelConf.ANGEL_JOB_TMP_OUTPUT_PATH);\n-    baseDirPath = new Path(outputDir + Path.SEPARATOR\n-      + ModelFilesConstent.snapshotDirName + Path.SEPARATOR\n+    baseDirPath = new Path(outputDir + Path.SEPARATOR + ModelFilesConstent.snapshotDirName + Path.SEPARATOR\n       + context.getPSAttemptId().getPsId() + Path.SEPARATOR\n       + String.valueOf(context.getPSAttemptId().getIndex()));\n \n     String matricesStr = context.getConf().get(AngelConf.ANGEL_PS_BACKUP_MATRICES);\n-    if(matricesStr == null) {\n+    if (matricesStr == null) {\n       needDumpMatrices = null;\n     } else {\n       needDumpMatrices = matricesStr.split(\",\");\n@@ -145,21 +143,21 @@ public class SnapshotDumper {\n    */\n   private void writeSnapshots() throws Exception {\n     List<Integer> matrixIds = null;\n-    if(needDumpMatrices == null) {\n+    if (needDumpMatrices == null) {\n       matrixIds = new ArrayList<>(context.getMatrixMetaManager().getMatrixMetas().keySet());\n     } else {\n       matrixIds = toMatrixIds();\n     }\n \n-    if(matrixIds.isEmpty()) {\n+    if (matrixIds.isEmpty()) {\n       return;\n     }\n \n     List<Integer> needDumpMatrices = filter(matrixIds);\n-    if(needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n+    if (needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n       FileSystem fs = baseDirPath.getFileSystem(context.getConf());\n       Path tmpPath = HdfsUtil.toTmpPath(baseDirPath);\n-      if(fs.exists(tmpPath)) {\n+      if (fs.exists(tmpPath)) {\n         fs.delete(tmpPath, true);\n       }\n       context.getMatrixStorageManager().save(filter(matrixIds), tmpPath);\n@@ -176,7 +174,7 @@ public class SnapshotDumper {\n   private List<Integer> filter(List<Integer> matrixIds) throws ServiceException {\n     int size = matrixIds.size();\n     List<Integer> ret = new ArrayList<>(size);\n-    for(int i = 0; i < size; i++) {\n+    for (int i = 0; i < size; i++) {\n       if(checkNeedDump(matrixIds.get(i))) {\n         ret.add(matrixIds.get(i));\n       }\n@@ -196,7 +194,7 @@ public class SnapshotDumper {\n       return true;\n     } else {\n       MasterClient master = context.getMaster();\n-      if(master == null) {\n+      if (master == null) {\n         return false;\n       } else {\n         int iteration = context.getMaster().getIteration();\n@@ -207,9 +205,9 @@ public class SnapshotDumper {\n \n   private List<Integer> toMatrixIds() {\n     List<Integer> matrixIds = new ArrayList<>(needDumpMatrices.length);\n-    for(int i = 0; i < needDumpMatrices.length; i++) {\n+    for (int i = 0; i < needDumpMatrices.length; i++) {\n       MatrixMeta meta = context.getMatrixMetaManager().getMatrixMeta(needDumpMatrices[i]);\n-      if(meta != null) {\n+      if (meta != null) {\n         matrixIds.add(meta.getId());\n       }\n     }\n@@ -224,4 +222,4 @@ public class SnapshotDumper {\n       }\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 15
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "93",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 134).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 217).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "117",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 101).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "128",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 104).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/933/SnapshotDumper.java\nindex 75ed3225eca..3f7fb1b4a44 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/933/SnapshotDumper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/933/SnapshotDumper.java\n@@ -28,7 +28,6 @@ import org.apache.commons.logging.Log;\n import org.apache.commons.logging.LogFactory;\n import org.apache.hadoop.fs.FileSystem;\n import org.apache.hadoop.fs.Path;\n-\n import java.util.ArrayList;\n import java.util.List;\n import java.util.concurrent.atomic.AtomicBoolean;\n@@ -36,7 +35,9 @@ import java.util.concurrent.atomic.AtomicBoolean;\n /**\n  * Snapshot dumper, it dump the matrices to hdfs once in a while\n  */\n+\n public class SnapshotDumper {\n+\n   private static final Log LOG = LogFactory.getLog(SnapshotDumper.class);\n   /**\n    * PS context\n@@ -62,7 +63,7 @@ public class SnapshotDumper {\n   /**\n    * Need dump matrices\n    */\n-  private final String [] needDumpMatrices;\n+  private final String[] needDumpMatrices;\n \n   /**\n    * Snapshot base directory path\n@@ -83,24 +84,17 @@ public class SnapshotDumper {\n    * Create a SnapshotDumper\n    * @param context PS context\n    */\n+\n   public SnapshotDumper(PSContext context) {\n     this.context = context;\n     stopped = new AtomicBoolean(false);\n     lastIteration = 0;\n     mode = context.getRunningMode();\n-\n-    backupIntervalMs = context.getConf().getInt(\n-      AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS,\n-      AngelConf.DEFAULT_ANGEL_PS_BACKUP_INTERVAL_MS);\n-\n+    backupIntervalMs = context.getConf().getInt(AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS, AngelConf.DEFAULT_ANGEL_PS_BACKUP_INTERVAL_MS);\n     outputDir = context.getConf().get(AngelConf.ANGEL_JOB_TMP_OUTPUT_PATH);\n-    baseDirPath = new Path(outputDir + Path.SEPARATOR\n-      + ModelFilesConstent.snapshotDirName + Path.SEPARATOR\n-      + context.getPSAttemptId().getPsId() + Path.SEPARATOR\n-      + String.valueOf(context.getPSAttemptId().getIndex()));\n-\n+    baseDirPath = new Path(outputDir + Path.SEPARATOR + ModelFilesConstent.snapshotDirName + Path.SEPARATOR + context.getPSAttemptId().getPsId() + Path.SEPARATOR + String.valueOf(context.getPSAttemptId().getIndex()));\n     String matricesStr = context.getConf().get(AngelConf.ANGEL_PS_BACKUP_MATRICES);\n-    if(matricesStr == null) {\n+    if (matricesStr == null) {\n       needDumpMatrices = null;\n     } else {\n       needDumpMatrices = matricesStr.split(\",\");\n@@ -110,31 +104,32 @@ public class SnapshotDumper {\n   /**\n    * Init\n    */\n-  public void init() {\n-  }\n+\n+  public void init() {}\n \n   /**\n    * Start dump dispatcher\n    */\n+\n   public void start() {\n     LOG.info(\"Start snapshot dumper\");\n-    dumpDispatcher = new Thread(() -> {\n-      while (!stopped.get() && !Thread.currentThread().isInterrupted()) {\n-        try {\n-          Thread.sleep(backupIntervalMs);\n-          try {\n-            LOG.info(\"to writeSnapshots\");\n-            writeSnapshots();\n-          } catch (Exception ioe) {\n-            LOG.error(\"write snapshots error: \", ioe);\n-          }\n-        } catch (InterruptedException e) {\n-          if (!stopped.get()) {\n-            LOG.warn(\"Snapshot dump dispatcher is interrupted. Returning.\");\n-          }\n-        }\n-      }\n-    });\n+    dumpDispatcher = new Thread(()-> {\n+                                  while (!stopped.get() && !Thread.currentThread().isInterrupted()) {\n+                                    try {\n+                                      Thread.sleep(backupIntervalMs);\n+                                      try {\n+                                        LOG.info(\"to writeSnapshots\");\n+                                        writeSnapshots();\n+                                      } catch (Exception ioe) {\n+                                        LOG.error(\"write snapshots error: \", ioe);\n+                                      }\n+                                    } catch (InterruptedException e) {\n+                                      if (!stopped.get()) {\n+                                        LOG.warn(\"Snapshot dump dispatcher is interrupted. Returning.\");\n+                                      }\n+                                    }\n+                                  }\n+                                });\n     dumpDispatcher.setName(\"snapshot-dump-dispatcher\");\n     dumpDispatcher.start();\n   }\n@@ -143,23 +138,24 @@ public class SnapshotDumper {\n    * Write snapshot\n    * @throws Exception\n    */\n+\n   private void writeSnapshots() throws Exception {\n     List<Integer> matrixIds = null;\n-    if(needDumpMatrices == null) {\n+    if (needDumpMatrices == null) {\n       matrixIds = new ArrayList<>(context.getMatrixMetaManager().getMatrixMetas().keySet());\n     } else {\n       matrixIds = toMatrixIds();\n     }\n \n-    if(matrixIds.isEmpty()) {\n+    if (matrixIds.isEmpty()) {\n       return;\n     }\n \n     List<Integer> needDumpMatrices = filter(matrixIds);\n-    if(needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n+    if (needDumpMatrices != null && !needDumpMatrices.isEmpty()) {\n       FileSystem fs = baseDirPath.getFileSystem(context.getConf());\n       Path tmpPath = HdfsUtil.toTmpPath(baseDirPath);\n-      if(fs.exists(tmpPath)) {\n+      if (fs.exists(tmpPath)) {\n         fs.delete(tmpPath, true);\n       }\n       context.getMatrixStorageManager().save(filter(matrixIds), tmpPath);\n@@ -173,15 +169,15 @@ public class SnapshotDumper {\n    * @return the matrices that need dump\n    * @throws ServiceException\n    */\n+\n   private List<Integer> filter(List<Integer> matrixIds) throws ServiceException {\n     int size = matrixIds.size();\n     List<Integer> ret = new ArrayList<>(size);\n-    for(int i = 0; i < size; i++) {\n-      if(checkNeedDump(matrixIds.get(i))) {\n+    for (int i = 0; i < size; i++) {\n+      if (checkNeedDump(matrixIds.get(i))) {\n         ret.add(matrixIds.get(i));\n       }\n     }\n-\n     return ret;\n   }\n \n@@ -191,12 +187,13 @@ public class SnapshotDumper {\n    * @return true mean need dump\n    * @throws ServiceException\n    */\n+\n   private boolean checkNeedDump(int matrixId) throws ServiceException {\n-    if(mode == RunningMode.ANGEL_PS) {\n+    if (mode == RunningMode.ANGEL_PS) {\n       return true;\n     } else {\n       MasterClient master = context.getMaster();\n-      if(master == null) {\n+      if (master == null) {\n         return false;\n       } else {\n         int iteration = context.getMaster().getIteration();\n@@ -207,21 +204,20 @@ public class SnapshotDumper {\n \n   private List<Integer> toMatrixIds() {\n     List<Integer> matrixIds = new ArrayList<>(needDumpMatrices.length);\n-    for(int i = 0; i < needDumpMatrices.length; i++) {\n+    for (int i = 0; i < needDumpMatrices.length; i++) {\n       MatrixMeta meta = context.getMatrixMetaManager().getMatrixMeta(needDumpMatrices[i]);\n-      if(meta != null) {\n+      if (meta != null) {\n         matrixIds.add(meta.getId());\n       }\n     }\n-\n     return matrixIds;\n   }\n \n   public void stop() {\n-    if(!stopped.getAndSet(true)) {\n-      if(dumpDispatcher != null) {\n+    if (!stopped.getAndSet(true)) {\n+      if (dumpDispatcher != null) {\n         dumpDispatcher.interrupt();\n       }\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 54
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

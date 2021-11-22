@@ -1,0 +1,167 @@
+{
+    "project_name": "ppati000-visualDFA",
+    "error_id": "18",
+    "information": {
+        "errors": [
+            {
+                "line": "89",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                    // Fourth if currentVal is bottom, tmp remains untouched since join(bottom, x) = x for all x\n                    // Also if tmp equals currentVal, tmp remains untouched, since nothing would change\n                    // But if tmp does not equal currentVal and currentVal is not bottom, we have to compare them bit by bit\n                } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n                    BitValue[] bitValues = new BitValue[length];\n                    for (int i = 0; i < length; i++) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "89",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/intellij/18/ConstantBitsJoin.java\nindex 581382ec09a..93018717196 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/intellij/18/ConstantBitsJoin.java\n@@ -11,118 +11,118 @@ import soot.jimple.internal.JimpleLocal;\n \n /**\n  * @author Nils Jessen\n- * \n- *         A {@code ConstantBitsJoin} performs the join for a {@code ConstantBitsAnalysis}.\n+ * <p>\n+ * A {@code ConstantBitsJoin} performs the join for a {@code ConstantBitsAnalysis}.\n  */\n public class ConstantBitsJoin implements Join<ConstantBitsElement> {\n \n-    @Override\n-    public ConstantBitsElement join(Set<ConstantBitsElement> elements) {\n-        if (elements.isEmpty()) {\n-            throw new IllegalArgumentException(\"elements must not be empty\");\n+  @Override\n+  public ConstantBitsElement join(Set<ConstantBitsElement> elements) {\n+    if (elements.isEmpty()) {\n+      throw new IllegalArgumentException(\"elements must not be empty\");\n+    }\n+\n+    Iterator<ConstantBitsElement> it = elements.iterator();\n+    ConstantBitsElement refElement = it.next();\n+    Map<JimpleLocal, BitValueArray> refMap = refElement.getLocalMap();\n+    while (it.hasNext()) {\n+      ConstantBitsElement compElement = it.next();\n+      Map<JimpleLocal, BitValueArray> compMap = compElement.getLocalMap();\n+      for (Map.Entry<JimpleLocal, BitValueArray> entry : refMap.entrySet()) {\n+        if (!compMap.containsKey(entry.getKey())) {\n+          throw new IllegalArgumentException(\"locals not matching\");\n         }\n+      }\n \n-        Iterator<ConstantBitsElement> it = elements.iterator();\n-        ConstantBitsElement refElement = it.next();\n-        Map<JimpleLocal, BitValueArray> refMap = refElement.getLocalMap();\n-        while (it.hasNext()) {\n-            ConstantBitsElement compElement = it.next();\n-            Map<JimpleLocal, BitValueArray> compMap = compElement.getLocalMap();\n-            for (Map.Entry<JimpleLocal, BitValueArray> entry : refMap.entrySet()) {\n-                if (!compMap.containsKey(entry.getKey())) {\n-                    throw new IllegalArgumentException(\"locals not matching\");\n-                }\n-            }\n+      for (Map.Entry<JimpleLocal, BitValueArray> entry : compMap.entrySet()) {\n+        if (!refMap.containsKey(entry.getKey())) {\n+          throw new IllegalArgumentException(\"locals not matching\");\n+        }\n+      }\n+    }\n \n-            for (Map.Entry<JimpleLocal, BitValueArray> entry : compMap.entrySet()) {\n-                if (!refMap.containsKey(entry.getKey())) {\n-                    throw new IllegalArgumentException(\"locals not matching\");\n-                }\n-            }\n+    ConstantBitsElement result = new ConstantBitsElement();\n+    for (Map.Entry<JimpleLocal, BitValueArray> entry : refMap.entrySet()) {\n+      Iterator<ConstantBitsElement> elementIt = elements.iterator();\n+      JimpleLocal local = entry.getKey();\n+\n+      if (!elementIt.hasNext()) {\n+        assert false : \"elements must not be empty is checked above!\";\n+      }\n+\n+      BitValueArray tmp = elementIt.next().getValue(local);\n+      int length = tmp.getLength();\n+      BitValueArray top;\n+      BitValueArray bottom;\n+      if (length == BitValueArray.INT_SIZE) {\n+        top = BitValueArray.getIntTop();\n+        bottom = BitValueArray.getIntBottom();\n+      } else if (length == BitValueArray.LONG_SIZE) {\n+        top = BitValueArray.getLongTop();\n+        bottom = BitValueArray.getLongBottom();\n+      } else {\n+        throw new IllegalStateException(\"BitValueArrays must be of size INT_SIZE or LONG_SIZE\");\n+      }\n+\n+      boolean broke = false;\n+      while (elementIt.hasNext()) {\n+        ConstantBitsElement current = elementIt.next();\n+        BitValueArray currentVal = current.getValue(local);\n+\n+        if (currentVal.getLength() != length) {\n+          // First check if BitValueArrays to be joined are of same size\n+          throw new IllegalStateException(\"Unable to join BitValueArrays of different size!\");\n         }\n \n-        ConstantBitsElement result = new ConstantBitsElement();\n-        for (Map.Entry<JimpleLocal, BitValueArray> entry : refMap.entrySet()) {\n-            Iterator<ConstantBitsElement> elementIt = elements.iterator();\n-            JimpleLocal local = entry.getKey();\n-            \n-            if (!elementIt.hasNext()) {\n-                assert false : \"elements must not be empty is checked above!\";\n-            }\n-            \n-            BitValueArray tmp = elementIt.next().getValue(local);\n-            int length = tmp.getLength();\n-            BitValueArray top;\n-            BitValueArray bottom;\n-            if (length == BitValueArray.INT_SIZE) {\n-                top = BitValueArray.getIntTop();\n-                bottom = BitValueArray.getIntBottom();\n-            } else if (length == BitValueArray.LONG_SIZE) {\n-                top = BitValueArray.getLongTop();\n-                bottom = BitValueArray.getLongBottom();\n-            } else {\n-                throw new IllegalStateException(\"BitValueArrays must be of size INT_SIZE or LONG_SIZE\");\n-            }\n+        if (tmp.equals(top) || currentVal.equals(top)) {\n+          // Second if one is TOP, if so, no need to check further\n+          result.setValue(local, top);\n+          broke = true;\n+          break;\n \n-            boolean broke = false;\n-            while (elementIt.hasNext()) {\n-                ConstantBitsElement current = elementIt.next();\n-                BitValueArray currentVal = current.getValue(local);\n-\n-                if (currentVal.getLength() != length) {\n-                    // First check if BitValueArrays to be joined are of same size\n-                    throw new IllegalStateException(\"Unable to join BitValueArrays of different size!\");\n-                }\n-\n-                if (tmp.equals(top) || currentVal.equals(top)) {\n-                    // Second if one is TOP, if so, no need to check further\n-                    result.setValue(local, top);\n-                    broke = true;\n-                    break;\n-\n-                } else if (tmp.equals(bottom)) {\n-                    // Third if tmp is bottom, new tmp is currentVal since join(bottom, x) = x for all x\n-                    tmp = currentVal;\n-\n-                    // Fourth if currentVal is bottom, tmp remains untouched since join(bottom, x) = x for all x\n-                    // Also if tmp equals currentVal, tmp remains untouched, since nothing would change\n-                    // But if tmp does not equal currentVal and currentVal is not bottom, we have to compare them bit by bit\n-                } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n-                    BitValue[] bitValues = new BitValue[length];\n-                    for (int i = 0; i < length; i++) {\n-                        BitValue currentValBit = currentVal.getBitValues()[i];\n-                        BitValue tmpBit = tmp.getBitValues()[i];\n-                        \n-                        if (currentValBit.equals(BitValue.TOP) || tmpBit.equals(BitValue.TOP)) {\n-                            // If one of the two bits is TOP, the resulting bit is TOP\n-                            bitValues[i] = BitValue.TOP;\n-                            \n-                        } else if (currentValBit.equals(BitValue.BOTTOM)) {\n-                            // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n-                            bitValues[i] = tmpBit;\n-                        } else if (tmp.getBitValues()[i].equals(BitValue.BOTTOM)) {\n-                            // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n-                            bitValues[i] = currentValBit;\n-                            \n-                        } else if (currentValBit.equals(tmpBit)) {\n-                            // If they are the same, we just take one of them\n-                            bitValues[i] = currentValBit;\n-                            \n-                        } else {\n-                            // If they are both neither bottom nor the same, the resulting bit is TOP\n-                            bitValues[i] = BitValue.TOP;\n-                        }\n-                    }\n-                    tmp = new BitValueArray(bitValues);\n-                }\n+        } else if (tmp.equals(bottom)) {\n+          // Third if tmp is bottom, new tmp is currentVal since join(bottom, x) = x for all x\n+          tmp = currentVal;\n \n+          // Fourth if currentVal is bottom, tmp remains untouched since join(bottom, x) = x for all x\n+          // Also if tmp equals currentVal, tmp remains untouched, since nothing would change\n+          // But if tmp does not equal currentVal and currentVal is not bottom, we have to compare them bit by bit\n+        } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n+          BitValue[] bitValues = new BitValue[length];\n+          for (int i = 0; i < length; i++) {\n+            BitValue currentValBit = currentVal.getBitValues()[i];\n+            BitValue tmpBit = tmp.getBitValues()[i];\n+\n+            if (currentValBit.equals(BitValue.TOP) || tmpBit.equals(BitValue.TOP)) {\n+              // If one of the two bits is TOP, the resulting bit is TOP\n+              bitValues[i] = BitValue.TOP;\n+\n+            } else if (currentValBit.equals(BitValue.BOTTOM)) {\n+              // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n+              bitValues[i] = tmpBit;\n+            } else if (tmp.getBitValues()[i].equals(BitValue.BOTTOM)) {\n+              // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n+              bitValues[i] = currentValBit;\n+\n+            } else if (currentValBit.equals(tmpBit)) {\n+              // If they are the same, we just take one of them\n+              bitValues[i] = currentValBit;\n+\n+            } else {\n+              // If they are both neither bottom nor the same, the resulting bit is TOP\n+              bitValues[i] = BitValue.TOP;\n             }\n-            if (!broke) {\n-                result.setValue(local, tmp);\n-            }\n+          }\n+          tmp = new BitValueArray(bitValues);\n         }\n \n-        return result;\n+      }\n+      if (!broke) {\n+        result.setValue(local, tmp);\n+      }\n     }\n-    \n+\n+    return result;\n+  }\n+\n }\n",
+            "diff_size": 171
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "29",
+                    "severity": "warning",
+                    "message": "':' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "57",
+                    "column": "15",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "3",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "19",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "94",
+                    "column": "3",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "100",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "28",
+                    "severity": "warning",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "108",
+                    "column": "39",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "112",
+                    "column": "31",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "120",
+                    "column": "3",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "128",
+                    "column": "35",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "7",
+                    "severity": "warning",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/codebuff/18/ConstantBitsJoin.java\nindex 581382ec09a..f4fa716d47b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/codebuff/18/ConstantBitsJoin.java\n@@ -3,7 +3,6 @@ package dfa.analyses;\n import java.util.Iterator;\n import java.util.Map;\n import java.util.Set;\n-\n import dfa.analyses.ConstantBitsElement.BitValue;\n import dfa.analyses.ConstantBitsElement.BitValueArray;\n import dfa.framework.Join;\n@@ -14,6 +13,8 @@ import soot.jimple.internal.JimpleLocal;\n  * \n  *         A {@code ConstantBitsJoin} performs the join for a {@code ConstantBitsAnalysis}.\n  */\n+\n+\n public class ConstantBitsJoin implements Join<ConstantBitsElement> {\n \n     @Override\n@@ -45,78 +46,109 @@ public class ConstantBitsJoin implements Join<ConstantBitsElement> {\n         for (Map.Entry<JimpleLocal, BitValueArray> entry : refMap.entrySet()) {\n             Iterator<ConstantBitsElement> elementIt = elements.iterator();\n             JimpleLocal local = entry.getKey();\n-            \n             if (!elementIt.hasNext()) {\n-                assert false : \"elements must not be empty is checked above!\";\n+                assert false: \"elements must not be empty is checked above!\";\n             }\n-            \n+\n             BitValueArray tmp = elementIt.next().getValue(local);\n             int length = tmp.getLength();\n             BitValueArray top;\n             BitValueArray bottom;\n-            if (length == BitValueArray.INT_SIZE) {\n+            if(length == BitValueArray.INT_SIZE) {\n                 top = BitValueArray.getIntTop();\n                 bottom = BitValueArray.getIntBottom();\n-            } else if (length == BitValueArray.LONG_SIZE) {\n-                top = BitValueArray.getLongTop();\n-                bottom = BitValueArray.getLongBottom();\n-            } else {\n-                throw new IllegalStateException(\"BitValueArrays must be of size INT_SIZE or LONG_SIZE\");\n             }\n \n+\n+else\n+\n+if(length == BitValueArray.LONG_SIZE) {\n+    top = BitValueArray.getLongTop();\n+    bottom = BitValueArray.getLongBottom();\n+}\n+\n+\n+            else {\n+    throw new IllegalStateException(\"BitValueArrays must be of size INT_SIZE or LONG_SIZE\");\n+}\n+\n             boolean broke = false;\n             while (elementIt.hasNext()) {\n                 ConstantBitsElement current = elementIt.next();\n                 BitValueArray currentVal = current.getValue(local);\n-\n                 if (currentVal.getLength() != length) {\n                     // First check if BitValueArrays to be joined are of same size\n                     throw new IllegalStateException(\"Unable to join BitValueArrays of different size!\");\n                 }\n \n-                if (tmp.equals(top) || currentVal.equals(top)) {\n+                if(tmp.equals(top) || currentVal.equals(top)) {\n                     // Second if one is TOP, if so, no need to check further\n                     result.setValue(local, top);\n                     broke = true;\n                     break;\n+                }\n+\n+\n+else\n \n-                } else if (tmp.equals(bottom)) {\n+if(tmp.equals(bottom)) {\n                     // Third if tmp is bottom, new tmp is currentVal since join(bottom, x) = x for all x\n-                    tmp = currentVal;\n+    tmp = currentVal;\n \n                     // Fourth if currentVal is bottom, tmp remains untouched since join(bottom, x) = x for all x\n                     // Also if tmp equals currentVal, tmp remains untouched, since nothing would change\n                     // But if tmp does not equal currentVal and currentVal is not bottom, we have to compare them bit by bit\n-                } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n-                    BitValue[] bitValues = new BitValue[length];\n-                    for (int i = 0; i < length; i++) {\n-                        BitValue currentValBit = currentVal.getBitValues()[i];\n-                        BitValue tmpBit = tmp.getBitValues()[i];\n-                        \n-                        if (currentValBit.equals(BitValue.TOP) || tmpBit.equals(BitValue.TOP)) {\n+}\n+\n+\n+                else\n+\n+                    if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n+                        BitValue[] bitValues = new BitValue [length];\n+                        for(int i = 0;i < length;\n+i++) {\n+                            BitValue currentValBit = currentVal.getBitValues()[i];\n+                            BitValue tmpBit = tmp.getBitValues()[i];\n+                            if(currentValBit.equals(BitValue.TOP) || tmpBit.equals(BitValue.TOP)) {\n                             // If one of the two bits is TOP, the resulting bit is TOP\n-                            bitValues[i] = BitValue.TOP;\n-                            \n-                        } else if (currentValBit.equals(BitValue.BOTTOM)) {\n+                                bitValues[i] = BitValue.TOP;\n+                            }\n+\n+\n+else\n+\n+if(currentValBit.equals(BitValue.BOTTOM)) {\n                             // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n-                            bitValues[i] = tmpBit;\n-                        } else if (tmp.getBitValues()[i].equals(BitValue.BOTTOM)) {\n+    bitValues[i] = tmpBit;\n+}\n+\n+\n+                            else\n+\n+                                if(tmp.getBitValues()[i].equals(BitValue.BOTTOM)) {\n                             // If one of the bits is BOTTOM, the resulting bit is whatever the other bit was\n-                            bitValues[i] = currentValBit;\n-                            \n-                        } else if (currentValBit.equals(tmpBit)) {\n+                                    bitValues[i] = currentValBit;\n+                                }\n+\n+\n+else\n+\n+    if(currentValBit.equals(tmpBit)) {\n                             // If they are the same, we just take one of them\n-                            bitValues[i] = currentValBit;\n-                            \n-                        } else {\n+        bitValues[i] = currentValBit;\n+    }\n+\n+\n+else {\n                             // If they are both neither bottom nor the same, the resulting bit is TOP\n-                            bitValues[i] = BitValue.TOP;\n+        bitValues[i] = BitValue.TOP;\n+    }\n                         }\n-                    }\n-                    tmp = new BitValueArray(bitValues);\n-                }\n \n+                        tmp = new BitValueArray(bitValues);\n+                    }\n             }\n+\n             if (!broke) {\n                 result.setValue(local, tmp);\n             }\n@@ -124,5 +156,5 @@ public class ConstantBitsJoin implements Join<ConstantBitsElement> {\n \n         return result;\n     }\n-    \n-}\n+\n+}\n\\ No newline at end of file\n",
+            "diff_size": 81
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "89",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "90",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/styler_three_grams/18/ConstantBitsJoin.java\nindex 581382ec09a..5a50946a991 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/errored/1/18/ConstantBitsJoin.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/ppati000-visualDFA/styler_three_grams/18/ConstantBitsJoin.java\n@@ -86,8 +86,9 @@ public class ConstantBitsJoin implements Join<ConstantBitsElement> {\n \n                     // Fourth if currentVal is bottom, tmp remains untouched since join(bottom, x) = x for all x\n                     // Also if tmp equals currentVal, tmp remains untouched, since nothing would change\n+\n                     // But if tmp does not equal currentVal and currentVal is not bottom, we have to compare them bit by bit\n-                } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n+                    } else if (!tmp.equals(currentVal) && !currentVal.equals(bottom)) {\n                     BitValue[] bitValues = new BitValue[length];\n                     for (int i = 0; i < length; i++) {\n                         BitValue currentValBit = currentVal.getBitValues()[i];\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,591 @@
+{
+    "project_name": "CONNECT-Solution-CONNECT",
+    "error_id": "1066",
+    "information": {
+        "errors": [
+            {
+                "line": "27",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\npackage gov.hhs.fha.nhinc.docrepository.adapter.dao;\n\nimport gov.hhs.fha.nhinc.docrepository.adapter.model.EventCode;\nimport gov.hhs.fha.nhinc.docrepository.adapter.persistence.HibernateUtil;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/1066/EventCodeDao.java\nindex ce16cdc4c1b..b367914b26c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/intellij/1066/EventCodeDao.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.docrepository.adapter.dao;\n \n import gov.hhs.fha.nhinc.docrepository.adapter.model.EventCode;\n@@ -62,372 +63,372 @@ import org.slf4j.LoggerFactory;\n \n public class EventCodeDao {\n \n-    /**\n-     * The Constant LOG.\n-     */\n-    private static final Logger LOG = LoggerFactory.getLogger(EventCodeDao.class);\n+  /**\n+   * The Constant LOG.\n+   */\n+  private static final Logger LOG = LoggerFactory.getLogger(EventCodeDao.class);\n \n-    /**\n-     * The Constant EBXML_EVENT_CODE_LIST.\n-     */\n-    private static final String EBXML_EVENT_CODE_LIST = \"$XDSDocumentEntryEventCodeList\";\n+  /**\n+   * The Constant EBXML_EVENT_CODE_LIST.\n+   */\n+  private static final String EBXML_EVENT_CODE_LIST = \"$XDSDocumentEntryEventCodeList\";\n \n-    private static HibernateUtil hibernateUtil = HibernateUtilFactory.getDocRepoHibernateUtil();\n+  private static HibernateUtil hibernateUtil = HibernateUtilFactory.getDocRepoHibernateUtil();\n \n-    /**\n-     * Gets the session factory.\n-     *\n-     * @return the session factory\n-     */\n-    protected SessionFactory getSessionFactory() {\n-        return hibernateUtil.getSessionFactory();\n-    }\n+  /**\n+   * Gets the session factory.\n+   *\n+   * @return the session factory\n+   */\n+  protected SessionFactory getSessionFactory() {\n+    return hibernateUtil.getSessionFactory();\n+  }\n \n-    /**\n-     * Gets the session.\n-     *\n-     * @param sessionFactory the session factory\n-     * @return the session\n-     */\n-    protected Session getSession(SessionFactory sessionFactory) {\n-        Session session = null;\n-        if (sessionFactory != null) {\n-            session = sessionFactory.openSession();\n-        }\n-        return session;\n+  /**\n+   * Gets the session.\n+   *\n+   * @param sessionFactory the session factory\n+   * @return the session\n+   */\n+  protected Session getSession(SessionFactory sessionFactory) {\n+    Session session = null;\n+    if (sessionFactory != null) {\n+      session = sessionFactory.openSession();\n     }\n+    return session;\n+  }\n \n-    /**\n-     * Delete an event code record.\n-     *\n-     * @param eventCode EventCode record to delete.\n-     */\n-    public void delete(EventCode eventCode) {\n-        Session sess = null;\n-        Transaction trans = null;\n+  /**\n+   * Delete an event code record.\n+   *\n+   * @param eventCode EventCode record to delete.\n+   */\n+  public void delete(EventCode eventCode) {\n+    Session sess = null;\n+    Transaction trans = null;\n+    try {\n+      SessionFactory fact = getSessionFactory();\n+      if (fact != null) {\n+        sess = getSession(fact);\n+        if (sess != null) {\n+          trans = sess.beginTransaction();\n+          sess.delete(eventCode);\n+        } else {\n+          LOG.error(\"Failed to obtain a session from the sessionFactory\");\n+        }\n+      } else {\n+        LOG.error(\"Session factory was null\");\n+      }\n+    } finally {\n+      if (trans != null) {\n         try {\n-            SessionFactory fact = getSessionFactory();\n-            if (fact != null) {\n-                sess = getSession(fact);\n-                if (sess != null) {\n-                    trans = sess.beginTransaction();\n-                    sess.delete(eventCode);\n-                } else {\n-                    LOG.error(\"Failed to obtain a session from the sessionFactory\");\n-                }\n-            } else {\n-                LOG.error(\"Session factory was null\");\n-            }\n-        } finally {\n-            if (trans != null) {\n-                try {\n-                    trans.commit();\n-                } catch (HibernateException he) {\n-                    LOG.error(\"Failed to commit transaction: {}\", he.getMessage(), he);\n-                }\n-            }\n-            if (sess != null) {\n-                try {\n-                    sess.close();\n-                } catch (HibernateException he) {\n-                    LOG.error(\"Failed to close session: {}\", he.getMessage(), he);\n-                }\n-            }\n+          trans.commit();\n+        } catch (HibernateException he) {\n+          LOG.error(\"Failed to commit transaction: {}\", he.getMessage(), he);\n         }\n-    }\n-\n-    /**\n-     * Event code query.\n-     *\n-     * @param slots the slots\n-     * @return the list\n-     */\n-    @SuppressWarnings(\"unchecked\")\n-    public List<EventCode> eventCodeQuery(List<SlotType1> slots) {\n-        List<EventCode> eventCodes = null;\n-        List<String> eventCodesList = new ArrayList<>();\n-        List<String> eventCodeSchemeList = new ArrayList<>();\n-        Session sess = null;\n+      }\n+      if (sess != null) {\n         try {\n-            sess = getSession(getSessionFactory());\n+          sess.close();\n+        } catch (HibernateException he) {\n+          LOG.error(\"Failed to close session: {}\", he.getMessage(), he);\n+        }\n+      }\n+    }\n+  }\n \n-            if (sess != null) {\n-                Criteria criteria = sess.createCriteria(EventCode.class);\n-                DetachedCriteria subCriteria = DetachedCriteria.forClass(EventCode.class);\n-                Criterion andCondition = Restrictions.conjunction();\n-                Disjunction orCondition = Restrictions.disjunction();\n-                String[] alias = new String[1];\n-                alias[0] = \"documentid\";\n-                Type[] types = new Type[1];\n-                types[0] = org.hibernate.type.StandardBasicTypes.INTEGER;\n-                List<String> classCodes;\n-                List<String> orValues;\n-                int eventCodeSlotSize = 0;\n-                HashMap<String, String> hashMap = new HashMap<>();\n-                if (slots != null) {\n-                    for (SlotType1 slot : slots) {\n+  /**\n+   * Event code query.\n+   *\n+   * @param slots the slots\n+   * @return the list\n+   */\n+  @SuppressWarnings(\"unchecked\")\n+  public List<EventCode> eventCodeQuery(List<SlotType1> slots) {\n+    List<EventCode> eventCodes = null;\n+    List<String> eventCodesList = new ArrayList<>();\n+    List<String> eventCodeSchemeList = new ArrayList<>();\n+    Session sess = null;\n+    try {\n+      sess = getSession(getSessionFactory());\n \n-                        boolean slotContainsName = slot.getName() != null && slot.getName().length() > 0;\n-                        boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null\n-                                && !slot.getValueList().getValue().isEmpty();\n+      if (sess != null) {\n+        Criteria criteria = sess.createCriteria(EventCode.class);\n+        DetachedCriteria subCriteria = DetachedCriteria.forClass(EventCode.class);\n+        Criterion andCondition = Restrictions.conjunction();\n+        Disjunction orCondition = Restrictions.disjunction();\n+        String[] alias = new String[1];\n+        alias[0] = \"documentid\";\n+        Type[] types = new Type[1];\n+        types[0] = org.hibernate.type.StandardBasicTypes.INTEGER;\n+        List<String> classCodes;\n+        List<String> orValues;\n+        int eventCodeSlotSize = 0;\n+        HashMap<String, String> hashMap = new HashMap<>();\n+        if (slots != null) {\n+          for (SlotType1 slot : slots) {\n \n-                        if (slotContainsName && slotHasValues && slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n-                            eventCodeSlotSize++;\n-                            ValueListType valueListType = slot.getValueList();\n-                            List<String> slotValues = valueListType.getValue();\n-                            classCodes = new ArrayList<>();\n-                            for (int j = 0; j < slotValues.size(); j++) {\n-                                parseParamFormattedString(slotValues.get(j), classCodes);\n-                                if (slotValues.get(j).contains(\",\")) {\n-                                    orValues = Arrays.asList(slotValues.get(j).split(\"\\\\,\"));\n-                                    for (int l = 0; l < orValues.size(); l++) {\n-                                        String innereventCode = getEventCode(classCodes.get(l), \"eventCode\");\n-                                        String innereventCodeScheme = getEventCode(classCodes.get(l),\n-                                                \"eventCodeScheme\");\n-                                        andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode),\n-                                                Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n-                                        orCondition.add(andCondition);\n-                                        eventCodesList.add(innereventCode);\n-                                        eventCodeSchemeList.add(innereventCodeScheme);\n-                                        hashMap.put(innereventCode + \"^^\" + innereventCodeScheme,\n-                                                Integer.toString(eventCodeSlotSize));\n-                                    }\n-                                } else {\n-                                    String eventCode = getEventCode(classCodes.get(j), \"eventCode\");\n-                                    String eventCodeScheme = getEventCode(classCodes.get(j), \"eventCodeScheme\");\n-                                    orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode),\n-                                            Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n-                                    eventCodesList.add(eventCode);\n-                                    eventCodeSchemeList.add(eventCodeScheme);\n-                                    hashMap.put(eventCode + \"^^\" + eventCodeScheme,\n-                                            Integer.toString(eventCodeSlotSize));\n-                                }\n-                            }\n+            boolean slotContainsName = slot.getName() != null && slot.getName().length() > 0;\n+            boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null\n+                && !slot.getValueList().getValue().isEmpty();\n \n-                        }\n-                    }\n+            if (slotContainsName && slotHasValues && slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n+              eventCodeSlotSize++;\n+              ValueListType valueListType = slot.getValueList();\n+              List<String> slotValues = valueListType.getValue();\n+              classCodes = new ArrayList<>();\n+              for (int j = 0; j < slotValues.size(); j++) {\n+                parseParamFormattedString(slotValues.get(j), classCodes);\n+                if (slotValues.get(j).contains(\",\")) {\n+                  orValues = Arrays.asList(slotValues.get(j).split(\"\\\\,\"));\n+                  for (int l = 0; l < orValues.size(); l++) {\n+                    String innereventCode = getEventCode(classCodes.get(l), \"eventCode\");\n+                    String innereventCodeScheme = getEventCode(classCodes.get(l),\n+                        \"eventCodeScheme\");\n+                    andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode),\n+                        Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n+                    orCondition.add(andCondition);\n+                    eventCodesList.add(innereventCode);\n+                    eventCodeSchemeList.add(innereventCodeScheme);\n+                    hashMap.put(innereventCode + \"^^\" + innereventCodeScheme,\n+                        Integer.toString(eventCodeSlotSize));\n+                  }\n+                } else {\n+                  String eventCode = getEventCode(classCodes.get(j), \"eventCode\");\n+                  String eventCodeScheme = getEventCode(classCodes.get(j), \"eventCodeScheme\");\n+                  orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode),\n+                      Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n+                  eventCodesList.add(eventCode);\n+                  eventCodeSchemeList.add(eventCodeScheme);\n+                  hashMap.put(eventCode + \"^^\" + eventCodeScheme,\n+                      Integer.toString(eventCodeSlotSize));\n                 }\n-                String groupBy = \"documentid\" + \" having \" + \"count(*) >= \" + eventCodeSlotSize;\n-                subCriteria.add(orCondition);\n+              }\n \n-                subCriteria.setProjection(Projections.projectionList()\n-                        .add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n+            }\n+          }\n+        }\n+        String groupBy = \"documentid\" + \" having \" + \"count(*) >= \" + eventCodeSlotSize;\n+        subCriteria.add(orCondition);\n \n-                criteria.add(Subqueries.propertyIn(\"document\", subCriteria));\n-                criteria.addOrder(Order.asc(\"document\"));\n-                eventCodes = criteria.list();\n-                List<Long> documentIds;\n-                documentIds = getDocumentIds(eventCodes);\n-                List<Long> uniqueDocumentIds;\n-                uniqueDocumentIds = getUniqueDocumentIds(documentIds);\n-                boolean present;\n-                List<Long> documentNotPresent = new ArrayList<>();\n-                for (int i = 0; i < uniqueDocumentIds.size(); i++) {\n-                    present = documentInAllSlots(eventCodes, eventCodeSlotSize, hashMap, uniqueDocumentIds.get(i));\n-                    if (!present) {\n-                        documentNotPresent.add(uniqueDocumentIds.get(i));\n-                    }\n-                }\n-                eventCodes = resultEventCodesList(documentNotPresent, eventCodes);\n-                eventCodes = eventCodes == null ? new ArrayList<EventCode>() : eventCodes;\n+        subCriteria.setProjection(Projections.projectionList()\n+            .add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n \n-            } else {\n-                LOG.error(\"Session was null\");\n-            }\n-        } finally {\n-            if (sess != null) {\n-                try {\n-                    sess.close();\n-                } catch (HibernateException he) {\n-                    LOG.error(\"Failed to close session: {}\", he.getMessage(), he);\n-                }\n-            }\n+        criteria.add(Subqueries.propertyIn(\"document\", subCriteria));\n+        criteria.addOrder(Order.asc(\"document\"));\n+        eventCodes = criteria.list();\n+        List<Long> documentIds;\n+        documentIds = getDocumentIds(eventCodes);\n+        List<Long> uniqueDocumentIds;\n+        uniqueDocumentIds = getUniqueDocumentIds(documentIds);\n+        boolean present;\n+        List<Long> documentNotPresent = new ArrayList<>();\n+        for (int i = 0; i < uniqueDocumentIds.size(); i++) {\n+          present = documentInAllSlots(eventCodes, eventCodeSlotSize, hashMap, uniqueDocumentIds.get(i));\n+          if (!present) {\n+            documentNotPresent.add(uniqueDocumentIds.get(i));\n+          }\n         }\n-        return eventCodes;\n-    }\n+        eventCodes = resultEventCodesList(documentNotPresent, eventCodes);\n+        eventCodes = eventCodes == null ? new ArrayList<EventCode>() : eventCodes;\n \n-    /**\n-     * Gets the document ids.\n-     *\n-     * @param eventCodes the event codes\n-     * @return the document ids\n-     */\n-    protected List<Long> getDocumentIds(List<EventCode> eventCodes) {\n-        List<Long> documentIds = new ArrayList<>();\n-        for (int i = 0; i < eventCodes.size(); i++) {\n-            documentIds.add(eventCodes.get(i).getDocument().getDocumentid());\n+      } else {\n+        LOG.error(\"Session was null\");\n+      }\n+    } finally {\n+      if (sess != null) {\n+        try {\n+          sess.close();\n+        } catch (HibernateException he) {\n+          LOG.error(\"Failed to close session: {}\", he.getMessage(), he);\n         }\n-        return documentIds;\n+      }\n     }\n+    return eventCodes;\n+  }\n \n-    /**\n-     * Gets the unique document ids.\n-     *\n-     * @param documentIds the document ids\n-     * @return the unique document ids\n-     */\n-    private List<Long> getUniqueDocumentIds(List<Long> documentIds) {\n-        Set<Long> uniqueDocumentRef = new HashSet<>(documentIds);\n-        documentIds.clear();\n-        documentIds.addAll(uniqueDocumentRef);\n-        return documentIds;\n+  /**\n+   * Gets the document ids.\n+   *\n+   * @param eventCodes the event codes\n+   * @return the document ids\n+   */\n+  protected List<Long> getDocumentIds(List<EventCode> eventCodes) {\n+    List<Long> documentIds = new ArrayList<>();\n+    for (int i = 0; i < eventCodes.size(); i++) {\n+      documentIds.add(eventCodes.get(i).getDocument().getDocumentid());\n     }\n+    return documentIds;\n+  }\n \n-    /**\n-     * Result event codes list.\n-     *\n-     * @param documentNotPresent the document not present\n-     * @param eventCodes the event codes\n-     * @return the list\n-     */\n-    private List<EventCode> resultEventCodesList(List<Long> documentNotPresent, List<EventCode> eventCodes) {\n+  /**\n+   * Gets the unique document ids.\n+   *\n+   * @param documentIds the document ids\n+   * @return the unique document ids\n+   */\n+  private List<Long> getUniqueDocumentIds(List<Long> documentIds) {\n+    Set<Long> uniqueDocumentRef = new HashSet<>(documentIds);\n+    documentIds.clear();\n+    documentIds.addAll(uniqueDocumentRef);\n+    return documentIds;\n+  }\n \n-        for (int i = 0; i < documentNotPresent.size(); i++) {\n-            int eventCodesSize = eventCodes.size();\n-            for (int j = 0; j < eventCodesSize; j++) {\n-                int index = eventCodes.size() - 1;\n-                if (eventCodes.get(index).getDocument().getDocumentid().equals(documentNotPresent.get(i))) {\n-                    eventCodes.remove(index);\n-                }\n-            }\n+  /**\n+   * Result event codes list.\n+   *\n+   * @param documentNotPresent the document not present\n+   * @param eventCodes         the event codes\n+   * @return the list\n+   */\n+  private List<EventCode> resultEventCodesList(List<Long> documentNotPresent, List<EventCode> eventCodes) {\n+\n+    for (int i = 0; i < documentNotPresent.size(); i++) {\n+      int eventCodesSize = eventCodes.size();\n+      for (int j = 0; j < eventCodesSize; j++) {\n+        int index = eventCodes.size() - 1;\n+        if (eventCodes.get(index).getDocument().getDocumentid().equals(documentNotPresent.get(i))) {\n+          eventCodes.remove(index);\n         }\n-        return eventCodes;\n+      }\n     }\n+    return eventCodes;\n+  }\n \n-    /**\n-     * Document in all slots.\n-     *\n-     * @param eventCodes the event codes\n-     * @param eventCodeSlotSize the event code slot size\n-     * @param hashMap the hash map\n-     * @param documentId the document id\n-     * @return true, if successful\n-     */\n-    private boolean documentInAllSlots(List<EventCode> eventCodes, int eventCodeSlotSize,\n-            HashMap<String, String> hashMap, Long documentId) {\n-        boolean slotsPresent = false;\n-        for (int i = 1; i <= eventCodeSlotSize; i++) {\n-            slotsPresent = findDocumentId(hashMap, documentId, eventCodes, i);\n-            if (slotsPresent) {\n-                continue;\n-            } else {\n-                slotsPresent = false;\n-                return slotsPresent;\n-            }\n-        }\n+  /**\n+   * Document in all slots.\n+   *\n+   * @param eventCodes        the event codes\n+   * @param eventCodeSlotSize the event code slot size\n+   * @param hashMap           the hash map\n+   * @param documentId        the document id\n+   * @return true, if successful\n+   */\n+  private boolean documentInAllSlots(List<EventCode> eventCodes, int eventCodeSlotSize,\n+                                     HashMap<String, String> hashMap, Long documentId) {\n+    boolean slotsPresent = false;\n+    for (int i = 1; i <= eventCodeSlotSize; i++) {\n+      slotsPresent = findDocumentId(hashMap, documentId, eventCodes, i);\n+      if (slotsPresent) {\n+        continue;\n+      } else {\n+        slotsPresent = false;\n         return slotsPresent;\n+      }\n     }\n+    return slotsPresent;\n+  }\n \n-    /**\n-     * Find document id.\n-     *\n-     * @param hashMap the hash map\n-     * @param documentId the document id\n-     * @param eventCodes the event codes\n-     * @param slotIndex the slot index\n-     * @return true, if successful\n-     */\n-    protected boolean findDocumentId(HashMap<String, String> hashMap, Long documentId, List<EventCode> eventCodes,\n-            int slotIndex) {\n-        java.util.Iterator<Entry<String, String>> entries = hashMap.entrySet().iterator();\n-        boolean doucmentPresent = false;\n-        while (entries.hasNext()) {\n-            Entry<String, String> entry = entries.next();\n-            String key = entry.getKey();\n-            String value = entry.getValue();\n-            for (int j = 0; j < eventCodes.size(); j++) {\n-                if (slotIndex == Integer.parseInt(value)\n-                        && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme())\n-                                .equals(key)) {\n-                    Long extractedDocumentid = eventCodes.get(j).getDocument().getDocumentid();\n-                    if (extractedDocumentid.equals(documentId)) {\n-                        doucmentPresent = true;\n-                    }\n-                }\n-\n-            }\n+  /**\n+   * Find document id.\n+   *\n+   * @param hashMap    the hash map\n+   * @param documentId the document id\n+   * @param eventCodes the event codes\n+   * @param slotIndex  the slot index\n+   * @return true, if successful\n+   */\n+  protected boolean findDocumentId(HashMap<String, String> hashMap, Long documentId, List<EventCode> eventCodes,\n+                                   int slotIndex) {\n+    java.util.Iterator<Entry<String, String>> entries = hashMap.entrySet().iterator();\n+    boolean doucmentPresent = false;\n+    while (entries.hasNext()) {\n+      Entry<String, String> entry = entries.next();\n+      String key = entry.getKey();\n+      String value = entry.getValue();\n+      for (int j = 0; j < eventCodes.size(); j++) {\n+        if (slotIndex == Integer.parseInt(value)\n+            && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme())\n+            .equals(key)) {\n+          Long extractedDocumentid = eventCodes.get(j).getDocument().getDocumentid();\n+          if (extractedDocumentid.equals(documentId)) {\n+            doucmentPresent = true;\n+          }\n         }\n-        return doucmentPresent;\n-    }\n \n-    /**\n-     * Event code found.\n-     *\n-     * @param eventCodesList the event codes list\n-     * @param eventCode the event code\n-     * @param eventCodes the event codes\n-     * @return true, if successful\n-     */\n-    protected boolean eventCodeFound(List<String> eventCodesList, String eventCode, List<EventCode> eventCodes) {\n-        boolean contains = false;\n-        for (int i = 0; i < eventCodesList.size(); i++) {\n-            if (eventCodesList.get(i).equals(eventCode)) {\n-                contains = true;\n-            }\n-        }\n-        return contains;\n+      }\n+    }\n+    return doucmentPresent;\n+  }\n \n+  /**\n+   * Event code found.\n+   *\n+   * @param eventCodesList the event codes list\n+   * @param eventCode      the event code\n+   * @param eventCodes     the event codes\n+   * @return true, if successful\n+   */\n+  protected boolean eventCodeFound(List<String> eventCodesList, String eventCode, List<EventCode> eventCodes) {\n+    boolean contains = false;\n+    for (int i = 0; i < eventCodesList.size(); i++) {\n+      if (eventCodesList.get(i).equals(eventCode)) {\n+        contains = true;\n+      }\n     }\n+    return contains;\n \n-    /**\n-     * Gets the event code.\n-     *\n-     * @param eventCodeParam the event code param\n-     * @param paramName the param name\n-     * @return the event code\n-     */\n-    private String getEventCode(String eventCodeParam, String paramName) {\n-        String[] eventCodeList;\n-        String separate = \"\\\\^\\\\^\";\n-        eventCodeList = eventCodeParam.split(separate);\n-        if (\"eventCode\".equalsIgnoreCase(paramName)) {\n-            return eventCodeList[0];\n-        } else {\n-            return eventCodeList[1];\n-        }\n+  }\n+\n+  /**\n+   * Gets the event code.\n+   *\n+   * @param eventCodeParam the event code param\n+   * @param paramName      the param name\n+   * @return the event code\n+   */\n+  private String getEventCode(String eventCodeParam, String paramName) {\n+    String[] eventCodeList;\n+    String separate = \"\\\\^\\\\^\";\n+    eventCodeList = eventCodeParam.split(separate);\n+    if (\"eventCode\".equalsIgnoreCase(paramName)) {\n+      return eventCodeList[0];\n+    } else {\n+      return eventCodeList[1];\n     }\n+  }\n \n-    /**\n-     * Parses the param formatted string.\n-     *\n-     * @param paramFormattedString the param formatted string\n-     * @param resultCollection the result collection\n-     */\n-    public void parseParamFormattedString(String paramFormattedString, List<String> resultCollection) {\n-        if (paramFormattedString != null && resultCollection != null) {\n-            if (paramFormattedString.startsWith(\"(\")) {\n-                String working = paramFormattedString.substring(1);\n-                int endIndex = working.indexOf(\")\");\n-                if (endIndex != -1) {\n-                    working = working.substring(0, endIndex);\n-                }\n-                String[] multiValueString = working.split(\",\");\n-                if (multiValueString != null) {\n-                    for (String element : multiValueString) {\n-                        String singleValue = element;\n-                        if (singleValue != null) {\n-                            singleValue = singleValue.trim();\n-                            if (singleValue.startsWith(\"'\")) {\n-                                singleValue = singleValue.substring(1);\n-                                int endTickIndex = singleValue.indexOf(\"'\");\n-                                if (endTickIndex != -1) {\n-                                    singleValue = singleValue.substring(0, endTickIndex);\n-                                }\n-                            }\n-                        }\n-                        resultCollection.add(singleValue);\n-                        if (LOG.isDebugEnabled()) {\n-                            LOG.debug(\"Added single value: {} to query parameters\", singleValue);\n-                        }\n-                    }\n-                }\n-            } else {\n-                resultCollection.add(paramFormattedString);\n-                if (LOG.isDebugEnabled()) {\n-                    LOG.debug(\"No wrapper on status - adding status: {} to query parameters\", paramFormattedString);\n+  /**\n+   * Parses the param formatted string.\n+   *\n+   * @param paramFormattedString the param formatted string\n+   * @param resultCollection     the result collection\n+   */\n+  public void parseParamFormattedString(String paramFormattedString, List<String> resultCollection) {\n+    if (paramFormattedString != null && resultCollection != null) {\n+      if (paramFormattedString.startsWith(\"(\")) {\n+        String working = paramFormattedString.substring(1);\n+        int endIndex = working.indexOf(\")\");\n+        if (endIndex != -1) {\n+          working = working.substring(0, endIndex);\n+        }\n+        String[] multiValueString = working.split(\",\");\n+        if (multiValueString != null) {\n+          for (String element : multiValueString) {\n+            String singleValue = element;\n+            if (singleValue != null) {\n+              singleValue = singleValue.trim();\n+              if (singleValue.startsWith(\"'\")) {\n+                singleValue = singleValue.substring(1);\n+                int endTickIndex = singleValue.indexOf(\"'\");\n+                if (endTickIndex != -1) {\n+                  singleValue = singleValue.substring(0, endTickIndex);\n                 }\n+              }\n             }\n+            resultCollection.add(singleValue);\n+            if (LOG.isDebugEnabled()) {\n+              LOG.debug(\"Added single value: {} to query parameters\", singleValue);\n+            }\n+          }\n+        }\n+      } else {\n+        resultCollection.add(paramFormattedString);\n+        if (LOG.isDebugEnabled()) {\n+          LOG.debug(\"No wrapper on status - adding status: {} to query parameters\", paramFormattedString);\n         }\n+      }\n     }\n+  }\n \n }\n",
+            "diff_size": 445
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "171",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 163).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "187",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "188",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 136).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "192",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 135).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "197",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 164).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "200",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "209",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "307",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "331",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "341",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 157).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/1066/EventCodeDao.java\nindex ce16cdc4c1b..3fddac0b776 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/naturalize/1066/EventCodeDao.java\n@@ -24,6 +24,7 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n+\n package gov.hhs.fha.nhinc.docrepository.adapter.dao;\n \n import gov.hhs.fha.nhinc.docrepository.adapter.model.EventCode;\n@@ -59,7 +60,6 @@ import org.slf4j.LoggerFactory;\n  *\n  * @author Neil Webb, msw\n  */\n-\n public class EventCodeDao {\n \n     /**\n@@ -71,8 +71,7 @@ public class EventCodeDao {\n      * The Constant EBXML_EVENT_CODE_LIST.\n      */\n     private static final String EBXML_EVENT_CODE_LIST = \"$XDSDocumentEntryEventCodeList\";\n-\n-    private static HibernateUtil hibernateUtil = HibernateUtilFactory.getDocRepoHibernateUtil();\n+private static HibernateUtil hibernateUtil = HibernateUtilFactory.getDocRepoHibernateUtil();\n \n     /**\n      * Gets the session factory.\n@@ -93,7 +92,8 @@ public class EventCodeDao {\n         Session session = null;\n         if (sessionFactory != null) {\n             session = sessionFactory.openSession();\n-        }\n+\n+    }\n         return session;\n     }\n \n@@ -104,7 +104,8 @@ public class EventCodeDao {\n      */\n     public void delete(EventCode eventCode) {\n         Session sess = null;\n-        Transaction trans = null;\n+\n+Transaction trans = null;\n         try {\n             SessionFactory fact = getSessionFactory();\n             if (fact != null) {\n@@ -150,8 +151,7 @@ public class EventCodeDao {\n         Session sess = null;\n         try {\n             sess = getSession(getSessionFactory());\n-\n-            if (sess != null) {\n+if (sess != null) {\n                 Criteria criteria = sess.createCriteria(EventCode.class);\n                 DetachedCriteria subCriteria = DetachedCriteria.forClass(EventCode.class);\n                 Criterion andCondition = Restrictions.conjunction();\n@@ -168,52 +168,46 @@ public class EventCodeDao {\n                     for (SlotType1 slot : slots) {\n \n                         boolean slotContainsName = slot.getName() != null && slot.getName().length() > 0;\n-                        boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null\n-                                && !slot.getValueList().getValue().isEmpty();\n-\n-                        if (slotContainsName && slotHasValues && slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n+                        boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null && !slot.getValueList().getValue().isEmpty();\n+if (slotContainsName && slotHasValues && slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n                             eventCodeSlotSize++;\n                             ValueListType valueListType = slot.getValueList();\n                             List<String> slotValues = valueListType.getValue();\n                             classCodes = new ArrayList<>();\n-                            for (int j = 0; j < slotValues.size(); j++) {\n+                            for (int j = 0;\n+j < slotValues.size();\n+j++) {\n                                 parseParamFormattedString(slotValues.get(j), classCodes);\n                                 if (slotValues.get(j).contains(\",\")) {\n                                     orValues = Arrays.asList(slotValues.get(j).split(\"\\\\,\"));\n-                                    for (int l = 0; l < orValues.size(); l++) {\n+                                    for (int l = 0;\n+l < orValues.size();\n+l++) {\n                                         String innereventCode = getEventCode(classCodes.get(l), \"eventCode\");\n-                                        String innereventCodeScheme = getEventCode(classCodes.get(l),\n-                                                \"eventCodeScheme\");\n-                                        andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode),\n-                                                Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n-                                        orCondition.add(andCondition);\n+                                        String innereventCodeScheme = getEventCode(classCodes.get(l), \"eventCodeScheme\");\n+andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode), Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n+orCondition.add(andCondition);\n                                         eventCodesList.add(innereventCode);\n                                         eventCodeSchemeList.add(innereventCodeScheme);\n-                                        hashMap.put(innereventCode + \"^^\" + innereventCodeScheme,\n-                                                Integer.toString(eventCodeSlotSize));\n-                                    }\n+                                        hashMap.put(innereventCode + \"^^\" + innereventCodeScheme, Integer.toString(eventCodeSlotSize));\n+    }\n                                 } else {\n                                     String eventCode = getEventCode(classCodes.get(j), \"eventCode\");\n                                     String eventCodeScheme = getEventCode(classCodes.get(j), \"eventCodeScheme\");\n-                                    orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode),\n-                                            Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n-                                    eventCodesList.add(eventCode);\n+                                    orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode), Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n+eventCodesList.add(eventCode);\n                                     eventCodeSchemeList.add(eventCodeScheme);\n-                                    hashMap.put(eventCode + \"^^\" + eventCodeScheme,\n-                                            Integer.toString(eventCodeSlotSize));\n-                                }\n+                                    hashMap.put(eventCode + \"^^\" + eventCodeScheme, Integer.toString(eventCodeSlotSize));\n+    }\n                             }\n-\n-                        }\n+    }\n                     }\n                 }\n                 String groupBy = \"documentid\" + \" having \" + \"count(*) >= \" + eventCodeSlotSize;\n                 subCriteria.add(orCondition);\n \n-                subCriteria.setProjection(Projections.projectionList()\n-                        .add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n-\n-                criteria.add(Subqueries.propertyIn(\"document\", subCriteria));\n+                subCriteria.setProjection(Projections.projectionList().add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n+criteria.add(Subqueries.propertyIn(\"document\", subCriteria));\n                 criteria.addOrder(Order.asc(\"document\"));\n                 eventCodes = criteria.list();\n                 List<Long> documentIds;\n@@ -222,7 +216,9 @@ public class EventCodeDao {\n                 uniqueDocumentIds = getUniqueDocumentIds(documentIds);\n                 boolean present;\n                 List<Long> documentNotPresent = new ArrayList<>();\n-                for (int i = 0; i < uniqueDocumentIds.size(); i++) {\n+                for (int i = 0;\n+i < uniqueDocumentIds.size();\n+i++) {\n                     present = documentInAllSlots(eventCodes, eventCodeSlotSize, hashMap, uniqueDocumentIds.get(i));\n                     if (!present) {\n                         documentNotPresent.add(uniqueDocumentIds.get(i));\n@@ -230,8 +226,7 @@ public class EventCodeDao {\n                 }\n                 eventCodes = resultEventCodesList(documentNotPresent, eventCodes);\n                 eventCodes = eventCodes == null ? new ArrayList<EventCode>() : eventCodes;\n-\n-            } else {\n+    } else {\n                 LOG.error(\"Session was null\");\n             }\n         } finally {\n@@ -254,9 +249,12 @@ public class EventCodeDao {\n      */\n     protected List<Long> getDocumentIds(List<EventCode> eventCodes) {\n         List<Long> documentIds = new ArrayList<>();\n-        for (int i = 0; i < eventCodes.size(); i++) {\n+        for (int i = 0;\n+i < eventCodes.size();\n+i++) {\n             documentIds.add(eventCodes.get(i).getDocument().getDocumentid());\n-        }\n+\n+    }\n         return documentIds;\n     }\n \n@@ -270,7 +268,8 @@ public class EventCodeDao {\n         Set<Long> uniqueDocumentRef = new HashSet<>(documentIds);\n         documentIds.clear();\n         documentIds.addAll(uniqueDocumentRef);\n-        return documentIds;\n+\n+return documentIds;\n     }\n \n     /**\n@@ -281,10 +280,12 @@ public class EventCodeDao {\n      * @return the list\n      */\n     private List<EventCode> resultEventCodesList(List<Long> documentNotPresent, List<EventCode> eventCodes) {\n-\n-        for (int i = 0; i < documentNotPresent.size(); i++) {\n+    for (int i = 0;\n+i < documentNotPresent.size();\n+i++) {\n             int eventCodesSize = eventCodes.size();\n-            for (int j = 0; j < eventCodesSize; j++) {\n+            for (int j = 0;\n+j < eventCodesSize; j++) {\n                 int index = eventCodes.size() - 1;\n                 if (eventCodes.get(index).getDocument().getDocumentid().equals(documentNotPresent.get(i))) {\n                     eventCodes.remove(index);\n@@ -303,10 +304,10 @@ public class EventCodeDao {\n      * @param documentId the document id\n      * @return true, if successful\n      */\n-    private boolean documentInAllSlots(List<EventCode> eventCodes, int eventCodeSlotSize,\n-            HashMap<String, String> hashMap, Long documentId) {\n+    private boolean documentInAllSlots(List<EventCode> eventCodes, int eventCodeSlotSize, HashMap<String, String> hashMap, Long documentId) {\n         boolean slotsPresent = false;\n-        for (int i = 1; i <= eventCodeSlotSize; i++) {\n+        for (int i = 1;\n+i <= eventCodeSlotSize; i++) {\n             slotsPresent = findDocumentId(hashMap, documentId, eventCodes, i);\n             if (slotsPresent) {\n                 continue;\n@@ -327,25 +328,23 @@ public class EventCodeDao {\n      * @param slotIndex the slot index\n      * @return true, if successful\n      */\n-    protected boolean findDocumentId(HashMap<String, String> hashMap, Long documentId, List<EventCode> eventCodes,\n-            int slotIndex) {\n+    protected boolean findDocumentId(HashMap<String, String> hashMap, Long documentId, List<EventCode> eventCodes, int slotIndex) {\n         java.util.Iterator<Entry<String, String>> entries = hashMap.entrySet().iterator();\n         boolean doucmentPresent = false;\n         while (entries.hasNext()) {\n             Entry<String, String> entry = entries.next();\n             String key = entry.getKey();\n             String value = entry.getValue();\n-            for (int j = 0; j < eventCodes.size(); j++) {\n-                if (slotIndex == Integer.parseInt(value)\n-                        && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme())\n-                                .equals(key)) {\n-                    Long extractedDocumentid = eventCodes.get(j).getDocument().getDocumentid();\n+            for (int j = 0;\n+j < eventCodes.size();\n+j++) {\n+                if (slotIndex == Integer.parseInt(value) && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme()).equals(key)) {\n+    Long extractedDocumentid = eventCodes.get(j).getDocument().getDocumentid();\n                     if (extractedDocumentid.equals(documentId)) {\n                         doucmentPresent = true;\n                     }\n                 }\n-\n-            }\n+    }\n         }\n         return doucmentPresent;\n     }\n@@ -360,13 +359,14 @@ public class EventCodeDao {\n      */\n     protected boolean eventCodeFound(List<String> eventCodesList, String eventCode, List<EventCode> eventCodes) {\n         boolean contains = false;\n-        for (int i = 0; i < eventCodesList.size(); i++) {\n+        for (int i = 0;\n+i < eventCodesList.size();\n+i++) {\n             if (eventCodesList.get(i).equals(eventCode)) {\n                 contains = true;\n             }\n         }\n         return contains;\n-\n     }\n \n     /**\n@@ -430,4 +430,4 @@ public class EventCodeDao {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 75
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "117",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "119",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "122",
+                    "column": "17",
+                    "severity": "error",
+                    "message": "'}' at column 17 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "128",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "134",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "171",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "176",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'String' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "177",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "'String' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "179",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'Type' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "180",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "'Type' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "189",
+                    "column": "101",
+                    "severity": "error",
+                    "message": "'>' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "191",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "192",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "193",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "193",
+                    "column": "61",
+                    "severity": "error",
+                    "message": "'&&' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "198",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "198",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "198",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "201",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "203",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "203",
+                    "column": "53",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "203",
+                    "column": "54",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "206",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "207",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 176).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "211",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 135).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "213",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'}' at column 33 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "219",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 164).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "222",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "230",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "241",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "241",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "241",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "250",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "'?' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "250",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "':' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "251",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "257",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "282",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "282",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "282",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "312",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "312",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "312",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "315",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "315",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "315",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "340",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "340",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'<=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "340",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'<=' should be on a new line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.OperatorWrapCheck"
+                },
+                {
+                    "line": "344",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "346",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "374",
+                    "column": "14",
+                    "severity": "error",
+                    "message": "'while' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "378",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "378",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "378",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "380",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 157).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "404",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'for' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "404",
+                    "column": "25",
+                    "severity": "error",
+                    "message": "'<' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "404",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'<' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "422",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'String' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "425",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "427",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "445",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'if' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "453",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'String' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoWhitespaceAfterCheck"
+                },
+                {
+                    "line": "475",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'}' at column 13 should be on the same line as the next part of a multi-block statement (one that directly contains multiple blocks: if/else-if/else, do/while or try/catch/finally).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/1066/EventCodeDao.java\nindex ce16cdc4c1b..b8be53b3df1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/codebuff/1066/EventCodeDao.java\n@@ -60,18 +60,19 @@ import org.slf4j.LoggerFactory;\n  * @author Neil Webb, msw\n  */\n \n+\n public class EventCodeDao {\n \n     /**\n      * The Constant LOG.\n      */\n+\n     private static final Logger LOG = LoggerFactory.getLogger(EventCodeDao.class);\n \n     /**\n      * The Constant EBXML_EVENT_CODE_LIST.\n      */\n     private static final String EBXML_EVENT_CODE_LIST = \"$XDSDocumentEntryEventCodeList\";\n-\n     private static HibernateUtil hibernateUtil = HibernateUtilFactory.getDocRepoHibernateUtil();\n \n     /**\n@@ -79,6 +80,8 @@ public class EventCodeDao {\n      *\n      * @return the session factory\n      */\n+\n+\n     protected SessionFactory getSessionFactory() {\n         return hibernateUtil.getSessionFactory();\n     }\n@@ -89,6 +92,8 @@ public class EventCodeDao {\n      * @param sessionFactory the session factory\n      * @return the session\n      */\n+\n+\n     protected Session getSession(SessionFactory sessionFactory) {\n         Session session = null;\n         if (sessionFactory != null) {\n@@ -102,23 +107,34 @@ public class EventCodeDao {\n      *\n      * @param eventCode EventCode record to delete.\n      */\n+\n+\n     public void delete(EventCode eventCode) {\n         Session sess = null;\n         Transaction trans = null;\n         try {\n             SessionFactory fact = getSessionFactory();\n-            if (fact != null) {\n+            if(fact != null) {\n                 sess = getSession(fact);\n-                if (sess != null) {\n+                if(sess != null) {\n                     trans = sess.beginTransaction();\n                     sess.delete(eventCode);\n-                } else {\n+                }\n+\n+\n+else {\n                     LOG.error(\"Failed to obtain a session from the sessionFactory\");\n                 }\n-            } else {\n+            }\n+\n+\n+else {\n                 LOG.error(\"Session factory was null\");\n             }\n-        } finally {\n+        }\n+\n+\n+finally {\n             if (trans != null) {\n                 try {\n                     trans.commit();\n@@ -142,6 +158,8 @@ public class EventCodeDao {\n      * @param slots the slots\n      * @return the list\n      */\n+\n+\n     @SuppressWarnings(\"unchecked\")\n     public List<EventCode> eventCodeQuery(List<SlotType1> slots) {\n         List<EventCode> eventCodes = null;\n@@ -150,69 +168,66 @@ public class EventCodeDao {\n         Session sess = null;\n         try {\n             sess = getSession(getSessionFactory());\n-\n-            if (sess != null) {\n+            if(sess != null) {\n                 Criteria criteria = sess.createCriteria(EventCode.class);\n                 DetachedCriteria subCriteria = DetachedCriteria.forClass(EventCode.class);\n                 Criterion andCondition = Restrictions.conjunction();\n                 Disjunction orCondition = Restrictions.disjunction();\n-                String[] alias = new String[1];\n-                alias[0] = \"documentid\";\n-                Type[] types = new Type[1];\n-                types[0] = org.hibernate.type.StandardBasicTypes.INTEGER;\n+                String [] alias = new\n+                                      String [ 1];\n+                alias[ 0] = \"documentid\";\n+                Type [] types = new\n+                                    Type [ 1];\n+                types[ 0] = org.hibernate.type.StandardBasicTypes.INTEGER;\n                 List<String> classCodes;\n                 List<String> orValues;\n+\n                 int eventCodeSlotSize = 0;\n                 HashMap<String, String> hashMap = new HashMap<>();\n                 if (slots != null) {\n                     for (SlotType1 slot : slots) {\n+                        boolean slotContainsName = slot.getName() != null && slot.getName().length()> 0;\n \n-                        boolean slotContainsName = slot.getName() != null && slot.getName().length() > 0;\n-                        boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null\n-                                && !slot.getValueList().getValue().isEmpty();\n-\n-                        if (slotContainsName && slotHasValues && slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n+                        boolean slotHasValues = slot.getValueList() != null && slot.getValueList().getValue() != null && !\n+                                                                                                                             slot.getValueList().getValue().isEmpty();\n+                        if (slotContainsName&& slotHasValues&& slot.getName().equals(EBXML_EVENT_CODE_LIST)) {\n                             eventCodeSlotSize++;\n                             ValueListType valueListType = slot.getValueList();\n                             List<String> slotValues = valueListType.getValue();\n                             classCodes = new ArrayList<>();\n-                            for (int j = 0; j < slotValues.size(); j++) {\n+                            for(int j = 0; j<slotValues.size();\n+j++) {\n                                 parseParamFormattedString(slotValues.get(j), classCodes);\n-                                if (slotValues.get(j).contains(\",\")) {\n+                                if(slotValues.get(j).contains(\",\")) {\n                                     orValues = Arrays.asList(slotValues.get(j).split(\"\\\\,\"));\n-                                    for (int l = 0; l < orValues.size(); l++) {\n+                                    for(int l = 0; l<orValues.size();\n+l++) {\n                                         String innereventCode = getEventCode(classCodes.get(l), \"eventCode\");\n-                                        String innereventCodeScheme = getEventCode(classCodes.get(l),\n-                                                \"eventCodeScheme\");\n-                                        andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode),\n-                                                Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n+                                        String innereventCodeScheme = getEventCode(classCodes.get(l), \"eventCodeScheme\");\n+                                        andCondition = Restrictions.and(Restrictions.eq(\"eventCode\", innereventCode), Restrictions.eq(\"eventCodeScheme\", innereventCodeScheme));\n                                         orCondition.add(andCondition);\n                                         eventCodesList.add(innereventCode);\n                                         eventCodeSchemeList.add(innereventCodeScheme);\n-                                        hashMap.put(innereventCode + \"^^\" + innereventCodeScheme,\n-                                                Integer.toString(eventCodeSlotSize));\n+                                        hashMap.put(innereventCode + \"^^\" + innereventCodeScheme, Integer.toString(eventCodeSlotSize));\n                                     }\n-                                } else {\n+                                }\n+\n+\n+else {\n                                     String eventCode = getEventCode(classCodes.get(j), \"eventCode\");\n                                     String eventCodeScheme = getEventCode(classCodes.get(j), \"eventCodeScheme\");\n-                                    orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode),\n-                                            Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n+                                    orCondition.add(Restrictions.and(Restrictions.eq(\"eventCode\", eventCode), Restrictions.eq(\"eventCodeScheme\", eventCodeScheme)));\n                                     eventCodesList.add(eventCode);\n                                     eventCodeSchemeList.add(eventCodeScheme);\n-                                    hashMap.put(eventCode + \"^^\" + eventCodeScheme,\n-                                            Integer.toString(eventCodeSlotSize));\n+                                    hashMap.put(eventCode + \"^^\" + eventCodeScheme, Integer.toString(eventCodeSlotSize));\n                                 }\n                             }\n-\n                         }\n                     }\n                 }\n                 String groupBy = \"documentid\" + \" having \" + \"count(*) >= \" + eventCodeSlotSize;\n                 subCriteria.add(orCondition);\n-\n-                subCriteria.setProjection(Projections.projectionList()\n-                        .add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n-\n+                subCriteria.setProjection(Projections.projectionList().add(Projections.sqlGroupProjection(\"documentid\", groupBy, alias, types)));\n                 criteria.add(Subqueries.propertyIn(\"document\", subCriteria));\n                 criteria.addOrder(Order.asc(\"document\"));\n                 eventCodes = criteria.list();\n@@ -220,21 +235,29 @@ public class EventCodeDao {\n                 documentIds = getDocumentIds(eventCodes);\n                 List<Long> uniqueDocumentIds;\n                 uniqueDocumentIds = getUniqueDocumentIds(documentIds);\n+\n                 boolean present;\n                 List<Long> documentNotPresent = new ArrayList<>();\n-                for (int i = 0; i < uniqueDocumentIds.size(); i++) {\n+                for(int i = 0; i<uniqueDocumentIds.size();\n+i++) {\n                     present = documentInAllSlots(eventCodes, eventCodeSlotSize, hashMap, uniqueDocumentIds.get(i));\n-                    if (!present) {\n+                    if (!\n+                            present) {\n                         documentNotPresent.add(uniqueDocumentIds.get(i));\n                     }\n                 }\n                 eventCodes = resultEventCodesList(documentNotPresent, eventCodes);\n-                eventCodes = eventCodes == null ? new ArrayList<EventCode>() : eventCodes;\n+                eventCodes = eventCodes == null? new ArrayList<EventCode>(): eventCodes;\n+            }\n \n-            } else {\n+\n+else {\n                 LOG.error(\"Session was null\");\n             }\n-        } finally {\n+        }\n+\n+\n+finally {\n             if (sess != null) {\n                 try {\n                     sess.close();\n@@ -252,9 +275,12 @@ public class EventCodeDao {\n      * @param eventCodes the event codes\n      * @return the document ids\n      */\n+\n+\n     protected List<Long> getDocumentIds(List<EventCode> eventCodes) {\n         List<Long> documentIds = new ArrayList<>();\n-        for (int i = 0; i < eventCodes.size(); i++) {\n+        for(int i = 0; i<eventCodes.size();\n+i++) {\n             documentIds.add(eventCodes.get(i).getDocument().getDocumentid());\n         }\n         return documentIds;\n@@ -266,6 +292,7 @@ public class EventCodeDao {\n      * @param documentIds the document ids\n      * @return the unique document ids\n      */\n+\n     private List<Long> getUniqueDocumentIds(List<Long> documentIds) {\n         Set<Long> uniqueDocumentRef = new HashSet<>(documentIds);\n         documentIds.clear();\n@@ -280,11 +307,13 @@ public class EventCodeDao {\n      * @param eventCodes the event codes\n      * @return the list\n      */\n-    private List<EventCode> resultEventCodesList(List<Long> documentNotPresent, List<EventCode> eventCodes) {\n \n-        for (int i = 0; i < documentNotPresent.size(); i++) {\n+    private List<EventCode> resultEventCodesList(List<Long> documentNotPresent, List<EventCode> eventCodes) {\n+        for(int i = 0; i<documentNotPresent.size();\n+i++) {\n             int eventCodesSize = eventCodes.size();\n-            for (int j = 0; j < eventCodesSize; j++) {\n+            for(int j = 0; j<eventCodesSize;\n+j++) {\n                 int index = eventCodes.size() - 1;\n                 if (eventCodes.get(index).getDocument().getDocumentid().equals(documentNotPresent.get(i))) {\n                     eventCodes.remove(index);\n@@ -303,14 +332,21 @@ public class EventCodeDao {\n      * @param documentId the document id\n      * @return true, if successful\n      */\n-    private boolean documentInAllSlots(List<EventCode> eventCodes, int eventCodeSlotSize,\n-            HashMap<String, String> hashMap, Long documentId) {\n+\n+    private boolean documentInAllSlots(List<EventCode> eventCodes,\n+        int eventCodeSlotSize,\n+        HashMap<String, String> hashMap, Long documentId) {\n         boolean slotsPresent = false;\n-        for (int i = 1; i <= eventCodeSlotSize; i++) {\n+        for(int i = 1; i<=\n+                           eventCodeSlotSize;\n+i++) {\n             slotsPresent = findDocumentId(hashMap, documentId, eventCodes, i);\n-            if (slotsPresent) {\n+            if(slotsPresent) {\n                 continue;\n-            } else {\n+            }\n+\n+\n+else {\n                 slotsPresent = false;\n                 return slotsPresent;\n             }\n@@ -327,24 +363,26 @@ public class EventCodeDao {\n      * @param slotIndex the slot index\n      * @return true, if successful\n      */\n-    protected boolean findDocumentId(HashMap<String, String> hashMap, Long documentId, List<EventCode> eventCodes,\n-            int slotIndex) {\n+\n+\n+    protected boolean findDocumentId(HashMap<String, String> hashMap,\n+        Long documentId,\n+        List<EventCode> eventCodes, int slotIndex) {\n         java.util.Iterator<Entry<String, String>> entries = hashMap.entrySet().iterator();\n+\n         boolean doucmentPresent = false;\n-        while (entries.hasNext()) {\n+        while(entries.hasNext()) {\n             Entry<String, String> entry = entries.next();\n             String key = entry.getKey();\n             String value = entry.getValue();\n-            for (int j = 0; j < eventCodes.size(); j++) {\n-                if (slotIndex == Integer.parseInt(value)\n-                        && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme())\n-                                .equals(key)) {\n+            for(int j = 0; j<eventCodes.size();\n+j++) {\n+                if (slotIndex == Integer.parseInt(value) && (eventCodes.get(j).getEventCode() + \"^^\" + eventCodes.get(j).getEventCodeScheme()).equals(key)) {\n                     Long extractedDocumentid = eventCodes.get(j).getDocument().getDocumentid();\n                     if (extractedDocumentid.equals(documentId)) {\n                         doucmentPresent = true;\n                     }\n                 }\n-\n             }\n         }\n         return doucmentPresent;\n@@ -358,15 +396,18 @@ public class EventCodeDao {\n      * @param eventCodes the event codes\n      * @return true, if successful\n      */\n-    protected boolean eventCodeFound(List<String> eventCodesList, String eventCode, List<EventCode> eventCodes) {\n+\n+\n+    protected boolean eventCodeFound(List<String> eventCodesList,\n+        String eventCode, List<EventCode> eventCodes) {\n         boolean contains = false;\n-        for (int i = 0; i < eventCodesList.size(); i++) {\n+        for(int i = 0; i<eventCodesList.size();\n+i++) {\n             if (eventCodesList.get(i).equals(eventCode)) {\n                 contains = true;\n             }\n         }\n         return contains;\n-\n     }\n \n     /**\n@@ -376,14 +417,18 @@ public class EventCodeDao {\n      * @param paramName the param name\n      * @return the event code\n      */\n+\n     private String getEventCode(String eventCodeParam, String paramName) {\n-        String[] eventCodeList;\n+        String [] eventCodeList;\n         String separate = \"\\\\^\\\\^\";\n         eventCodeList = eventCodeParam.split(separate);\n-        if (\"eventCode\".equalsIgnoreCase(paramName)) {\n-            return eventCodeList[0];\n-        } else {\n-            return eventCodeList[1];\n+        if(\"eventCode\".equalsIgnoreCase(paramName)) {\n+            return eventCodeList[ 0];\n+        }\n+\n+\n+else {\n+            return eventCodeList[ 1];\n         }\n     }\n \n@@ -393,15 +438,19 @@ public class EventCodeDao {\n      * @param paramFormattedString the param formatted string\n      * @param resultCollection the result collection\n      */\n+\n+\n     public void parseParamFormattedString(String paramFormattedString, List<String> resultCollection) {\n         if (paramFormattedString != null && resultCollection != null) {\n-            if (paramFormattedString.startsWith(\"(\")) {\n+            if(paramFormattedString.startsWith(\"(\")) {\n                 String working = paramFormattedString.substring(1);\n+\n                 int endIndex = working.indexOf(\")\");\n-                if (endIndex != -1) {\n+                if (endIndex != -\n+                                    1) {\n                     working = working.substring(0, endIndex);\n                 }\n-                String[] multiValueString = working.split(\",\");\n+                String [] multiValueString = working.split(\",\");\n                 if (multiValueString != null) {\n                     for (String element : multiValueString) {\n                         String singleValue = element;\n@@ -409,8 +458,10 @@ public class EventCodeDao {\n                             singleValue = singleValue.trim();\n                             if (singleValue.startsWith(\"'\")) {\n                                 singleValue = singleValue.substring(1);\n+\n                                 int endTickIndex = singleValue.indexOf(\"'\");\n-                                if (endTickIndex != -1) {\n+                                if (endTickIndex != -\n+                                                        1) {\n                                     singleValue = singleValue.substring(0, endTickIndex);\n                                 }\n                             }\n@@ -421,7 +472,10 @@ public class EventCodeDao {\n                         }\n                     }\n                 }\n-            } else {\n+            }\n+\n+\n+else {\n                 resultCollection.add(paramFormattedString);\n                 if (LOG.isDebugEnabled()) {\n                     LOG.debug(\"No wrapper on status - adding status: {} to query parameters\", paramFormattedString);\n@@ -430,4 +484,4 @@ public class EventCodeDao {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 143
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "27",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "package statement should not be line-wrapped.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.NoLineWrapCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/1066/EventCodeDao.java\nindex ce16cdc4c1b..449bfb4889e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/errored/1/1066/EventCodeDao.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/CONNECT-Solution-CONNECT/styler_three_grams/1066/EventCodeDao.java\n@@ -24,7 +24,10 @@\n  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n  */\n-package gov.hhs.fha.nhinc.docrepository.adapter.dao;\n+\n+package gov.hhs.fha.nhinc.docrepository.\n+\n+adapter .dao;\n \n import gov.hhs.fha.nhinc.docrepository.adapter.model.EventCode;\n import gov.hhs.fha.nhinc.docrepository.adapter.persistence.HibernateUtil;\n",
+            "diff_size": 4
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "258",
+    "information": {
+        "errors": [
+            {
+                "line": "61",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 142).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "        ConfigurationContext configContext = null;\n\n        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n        String trpUrl = getProperty(\"trpurl\", null);\n        String prxUrl = getProperty(\"prxurl\", null);\n        String repo = getProperty(\"repository\", \"client_repo\");",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/258/JSONClient.java\nindex 96b41c4a500..703f0bfd0bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/258/JSONClient.java\n@@ -58,7 +58,8 @@ public class JSONClient {\n         ServiceClient serviceClient;\n         ConfigurationContext configContext = null;\n \n-        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n+        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.\n+                HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n         String trpUrl = getProperty(\"trpurl\", null);\n         String prxUrl = getProperty(\"prxurl\", null);\n         String repo = getProperty(\"repository\", \"client_repo\");\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/258/JSONClient.java\nindex 96b41c4a500..d357ccb01c6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/258/JSONClient.java\n@@ -36,78 +36,79 @@ import java.net.URL;\n \n public class JSONClient {\n \n-    public static void main(String[] args) {\n-        try {\n-            executeClient();\n-        } catch (Exception e) {\n-            e.printStackTrace();\n-        }\n-        System.exit(0);\n+  public static void main(String[] args) {\n+    try {\n+      executeClient();\n+    } catch (Exception e) {\n+      e.printStackTrace();\n     }\n+    System.exit(0);\n+  }\n \n-    private static String getProperty(String name, String def) {\n-        String result = System.getProperty(name);\n-        if (result == null || result.length() == 0) {\n-            result = def;\n-        }\n-        return result;\n+  private static String getProperty(String name, String def) {\n+    String result = System.getProperty(name);\n+    if (result == null || result.length() == 0) {\n+      result = def;\n     }\n+    return result;\n+  }\n \n-    public static void executeClient() throws Exception {\n-        Options options = new Options();\n-        ServiceClient serviceClient;\n-        ConfigurationContext configContext = null;\n+  public static void executeClient() throws Exception {\n+    Options options = new Options();\n+    ServiceClient serviceClient;\n+    ConfigurationContext configContext = null;\n \n-        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n-        String trpUrl = getProperty(\"trpurl\", null);\n-        String prxUrl = getProperty(\"prxurl\", null);\n-        String repo = getProperty(\"repository\", \"client_repo\");\n-        String symbol = getProperty(\"symbol\", \"IBM\");\n+    String addUrl = getProperty(\"addurl\",\n+      \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n+    String trpUrl = getProperty(\"trpurl\", null);\n+    String prxUrl = getProperty(\"prxurl\", null);\n+    String repo = getProperty(\"repository\", \"client_repo\");\n+    String symbol = getProperty(\"symbol\", \"IBM\");\n \n-        if (repo != null && !\"null\".equals(repo)) {\n-            configContext =\n-                    ConfigurationContextFactory.\n-                            createConfigurationContextFromFileSystem(repo,\n-                                    repo + File.separator + \"conf\" + File.separator + \"axis2.xml\");\n-            serviceClient = new ServiceClient(configContext, null);\n-        } else {\n-            serviceClient = new ServiceClient();\n-        }\n+    if (repo != null && !\"null\".equals(repo)) {\n+      configContext =\n+        ConfigurationContextFactory.\n+          createConfigurationContextFromFileSystem(repo,\n+            repo + File.separator + \"conf\" + File.separator + \"axis2.xml\");\n+      serviceClient = new ServiceClient(configContext, null);\n+    } else {\n+      serviceClient = new ServiceClient();\n+    }\n \n-        if (trpUrl != null && !\"null\".equals(trpUrl)) {\n-            options.setProperty(Constants.Configuration.TRANSPORT_URL, trpUrl);\n-        }\n-        if (prxUrl != null && !\"null\".equals(prxUrl)) {\n-            HttpTransportProperties.ProxyProperties proxyProperties =\n-                    new HttpTransportProperties.ProxyProperties();\n-            URL url = new URL(prxUrl);\n-            proxyProperties.setProxyName(url.getHost());\n-            proxyProperties.setProxyPort(url.getPort());\n-            proxyProperties.setUserName(\"\");\n-            proxyProperties.setPassWord(\"\");\n-            proxyProperties.setDomain(\"\");\n-            options.setProperty(HTTPConstants.PROXY, proxyProperties);\n-        }\n+    if (trpUrl != null && !\"null\".equals(trpUrl)) {\n+      options.setProperty(Constants.Configuration.TRANSPORT_URL, trpUrl);\n+    }\n+    if (prxUrl != null && !\"null\".equals(prxUrl)) {\n+      HttpTransportProperties.ProxyProperties proxyProperties =\n+        new HttpTransportProperties.ProxyProperties();\n+      URL url = new URL(prxUrl);\n+      proxyProperties.setProxyName(url.getHost());\n+      proxyProperties.setProxyPort(url.getPort());\n+      proxyProperties.setUserName(\"\");\n+      proxyProperties.setPassWord(\"\");\n+      proxyProperties.setDomain(\"\");\n+      options.setProperty(HTTPConstants.PROXY, proxyProperties);\n+    }\n \n-        serviceClient.engageModule(\"addressing\");\n-        options.setTo(new EndpointReference(addUrl));\n-        options.setAction(\"urn:getQuote\");\n-        options.setProperty(Constants.Configuration.MESSAGE_TYPE, \"application/json\");\n-        serviceClient.setOptions(options);\n-        OMElement payload =\n-                AXIOMUtil.stringToOM(\"<getQuote><request><symbol>\" + symbol + \"</symbol>\" +\n-                        \"</request></getQuote>\");\n+    serviceClient.engageModule(\"addressing\");\n+    options.setTo(new EndpointReference(addUrl));\n+    options.setAction(\"urn:getQuote\");\n+    options.setProperty(Constants.Configuration.MESSAGE_TYPE, \"application/json\");\n+    serviceClient.setOptions(options);\n+    OMElement payload =\n+      AXIOMUtil.stringToOM(\"<getQuote><request><symbol>\" + symbol + \"</symbol>\" +\n+        \"</request></getQuote>\");\n \n-        OMElement response = serviceClient.sendReceive(payload);\n-        if (response.getLocalName().equals(\"getQuoteResponse\")) {\n-            OMElement last = response.getFirstElement().getFirstChildWithName(new QName(\"last\"));\n-            System.out.println(\"Standard :: Stock price = $\" + last.getText());\n-        } else {\n-            throw new Exception(\"Unexpected response : \" + response);\n-        }\n-        Thread.sleep(1000);\n-        if (configContext != null) {\n-            configContext.terminate();\n-        }\n+    OMElement response = serviceClient.sendReceive(payload);\n+    if (response.getLocalName().equals(\"getQuoteResponse\")) {\n+      OMElement last = response.getFirstElement().getFirstChildWithName(new QName(\"last\"));\n+      System.out.println(\"Standard :: Stock price = $\" + last.getText());\n+    } else {\n+      throw new Exception(\"Unexpected response : \" + response);\n+    }\n+    Thread.sleep(1000);\n+    if (configContext != null) {\n+      configContext.terminate();\n     }\n+  }\n }\n",
+            "diff_size": 70
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 142).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/258/JSONClient.java\nindex 96b41c4a500..090c4a43f79 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/258/JSONClient.java\n@@ -110,4 +110,4 @@ public class JSONClient {\n             configContext.terminate();\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/258/JSONClient.java\nindex 96b41c4a500..703f0bfd0bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_random/258/JSONClient.java\n@@ -58,7 +58,8 @@ public class JSONClient {\n         ServiceClient serviceClient;\n         ConfigurationContext configContext = null;\n \n-        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n+        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.\n+                HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n         String trpUrl = getProperty(\"trpurl\", null);\n         String prxUrl = getProperty(\"prxurl\", null);\n         String repo = getProperty(\"repository\", \"client_repo\");\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/258/JSONClient.java\nindex 96b41c4a500..bdb290217e5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/258/JSONClient.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/258/JSONClient.java\n@@ -58,7 +58,8 @@ public class JSONClient {\n         ServiceClient serviceClient;\n         ConfigurationContext configContext = null;\n \n-        String addUrl = getProperty(\"addurl\", \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n+        String addUrl = getProperty(\"addurl\"\n+                , \"http://\" + PropertyLoader.HOST_NAME + \":\" + PropertyLoader.NHTTP_PORT + \"/services/JSONProxy\");\n         String trpUrl = getProperty(\"trpurl\", null);\n         String prxUrl = getProperty(\"prxurl\", null);\n         String repo = getProperty(\"repository\", \"client_repo\");\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

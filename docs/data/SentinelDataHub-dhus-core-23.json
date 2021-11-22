@@ -1,0 +1,146 @@
+{
+    "project_name": "SentinelDataHub-dhus-core",
+    "error_id": "23",
+    "information": {
+        "errors": [
+            {
+                "line": "95",
+                "severity": "error",
+                "message": "Line is longer than 80 characters (found 81).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n   /**\n    * Creates a new {@link Synchronizer} from the given type and cron expression.\n    * The newly created {@link Synchronizer} is flagged as not active and is not\n    * run by the executor.\n    *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "105",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 82).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "106",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "159",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "165",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 89).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/23/ISynchronizerService.java\nindex 90b0a0b88e6..e5e607aa5bc 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/23/ISynchronizerService.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package fr.gael.dhus.service;\n \n import java.text.ParseException;\n@@ -33,149 +34,163 @@ import fr.gael.dhus.sync.Synchronizer;\n import fr.gael.dhus.sync.SynchronizerStatus;\n \n public interface ISynchronizerService extends\n-      ApplicationListener<ContextClosedEvent>\n+    ApplicationListener<ContextClosedEvent>\n {\n-   /**\n-    * Possible statuses for the {@link Synchronizer} executor.\n-    */\n-   enum Status\n-   {\n-      /** The executor is running. */\n-      RUNNING,\n-      /** The executor is stopped. */\n-      STOPPED\n-   }\n-\n-   /**\n-    * Returns the status of the executor.\n-    * @return {@link Status#RUNNING} or {@link Status#STOPPED}.\n-    */\n-   Status getStatus ();\n-\n-   /**\n-    * If the executor is not started yet, add all the active\n-    * {@link Synchronizer} in the executor and starts the\n-    * executor.\n-    */\n-   void startSynchronization ();\n-\n-   /**\n-    * Stops the executor.\n-    */\n-   void stopSynchronization ();\n-\n-   /**\n-    * Returns a {@link SynchronizerConf} by its identifier.\n-    * @param id {@link SynchronizerConf} identifier.\n-    * @return a {@link SynchronizerConf} or {@code null} if not found.\n-    */\n-   SynchronizerConf getSynchronizerConfById (long id);\n-\n-   /**\n-    * Returns all {@link SynchronizerConf}.\n-    * @return a Iterator of {@link SynchronizerConf}.\n-    */\n-   Iterator<SynchronizerConf> getSynchronizerConfs ();\n-\n-   /**\n-    * Returns all {@link SynchronizerConf} of given type.\n-    * @param type java path to an implementation of {@link Synchronizer}.\n-    * @return a Iterator of {@link SynchronizerConf}.\n-    * @see SynchronizerConf#setType(java.lang.String)\n-    */\n-   Iterator<SynchronizerConf> getSynchronizerConfs (String type);\n-\n-   /**\n-    * Returns how many {@link SynchronizerConf} exist in the database.\n-    * @return count.\n-    */\n-   int count ();\n-\n-   /**\n-    * Creates a new {@link Synchronizer} from the given type and cron expression.\n-    * The newly created {@link Synchronizer} is flagged as not active and is not\n-    * run by the executor.\n-    *\n-    * @see SynchronizerConf#setCronExpression(String)\n-    *\n-    * @param label see {@link SynchronizerConf#getLabel()}, can be null.\n-    * @param type see {@link SynchronizerConf#getType()}.\n-    * @param cron_exp the pace of the synchronization.\n-    *\n-    * @return the newly created {@link SynchronizerConf}.\n-    *\n-    * @throws ParseException failed to parse the given cron expression.\n-    */\n-   SynchronizerConf createSynchronizer (String label, String type,\n-         String cron_exp) throws ParseException;\n-\n-   /**\n-    * Removes a {@link Synchronizer} with the given identifier.\n-    * The removed {@link Synchronizer} won't be run any longer.\n-    * @param id {@link SynchronizerConf} identifier.\n-    */\n-   void removeSynchronizer (long id);\n-\n-   /**\n-    * Sets a {@link Synchronizer} active and adds it in the executor.\n-    * @param id {@link SynchronizerConf} identifier.\n-    * @throws InvokeSynchronizerException Synchronizer invocation failure.\n-    */\n-   void activateSynchronizer (long id)\n-         throws InvokeSynchronizerException;\n-\n-   /**\n-    * Sets a {@link Synchronizer} inactive and removes it from the executor.\n-    * @param id {@link SynchronizerConf} identifier.\n-    */\n-   void deactivateSynchronizer (long id);\n-\n-   /**\n-    * Enables the batch mode of the executor.\n-    * @param enable {@code true} to enable the batch mode.\n-    */\n-   void enableBatchMode (boolean enable);\n-\n-   /**\n-    * Returns {@code true} if the batch mod is enabled.\n-    * @return {@code true} if the batch mod is enabled.\n-    */\n-   boolean isBatchModeEnabled ();\n-\n-   /**\n-    * Saves the configuration of a {@link Synchronizer}.\n-    * First it deactivates the synchronizer with the given ID, then it saves its\n-    * configuration, then it reactivates the synchronizer if its {@code active}\n-    * field is set to {@code true}.\n-    * @param sc configuration.\n-    * @throws InvokeSynchronizerException if the given configuration does not\n-    *         allow instanciation of a {@link Synchronizer}.\n-    */\n-   void saveSynchronizerConf (SynchronizerConf sc)\n-         throws InvokeSynchronizerException;\n-\n-   /**\n-    * Saves the given synchronizer's configuration back in the databse.\n-    * This method is intended to be used by Synchronizers themselves, this\n-    * method does no tests at all to avoid deadlocks.\n-    * <p>\n-    * This method is unsafe and you should probably be using\n-    * {@link #saveSynchronizerConf(SynchronizerConf)} instead.\n-    * @param s to save.\n-    */\n-   void saveSynchronizer (Synchronizer s);\n-\n-   /**\n-    * Returns the status of the given {@link Synchronizer}.\n-    * @param sc an instance of SynchronizerConf that exists in the database.\n-    * @return status.\n-    */\n-   SynchronizerStatus getStatus(SynchronizerConf sc);\n-\n-   /**\n-    * Starts the {@link Executor} after every webapps have been installed.\n-    * Called by main start in {@link DHuS}\n-    * <b>YOU MUST NOT CALL THIS METHOD!</b>\n-    */\n-   void init ();\n+    /**\n+     * Possible statuses for the {@link Synchronizer} executor.\n+     */\n+    enum Status\n+    {\n+        /**\n+         * The executor is running.\n+         */\n+        RUNNING,\n+        /**\n+         * The executor is stopped.\n+         */\n+        STOPPED\n+    }\n+\n+    /**\n+     * Returns the status of the executor.\n+     *\n+     * @return {@link Status#RUNNING} or {@link Status#STOPPED}.\n+     */\n+    Status getStatus();\n+\n+    /**\n+     * If the executor is not started yet, add all the active\n+     * {@link Synchronizer} in the executor and starts the\n+     * executor.\n+     */\n+    void startSynchronization();\n+\n+    /**\n+     * Stops the executor.\n+     */\n+    void stopSynchronization();\n+\n+    /**\n+     * Returns a {@link SynchronizerConf} by its identifier.\n+     *\n+     * @param id {@link SynchronizerConf} identifier.\n+     * @return a {@link SynchronizerConf} or {@code null} if not found.\n+     */\n+    SynchronizerConf getSynchronizerConfById(long id);\n+\n+    /**\n+     * Returns all {@link SynchronizerConf}.\n+     *\n+     * @return a Iterator of {@link SynchronizerConf}.\n+     */\n+    Iterator<SynchronizerConf> getSynchronizerConfs();\n+\n+    /**\n+     * Returns all {@link SynchronizerConf} of given type.\n+     *\n+     * @param type java path to an implementation of {@link Synchronizer}.\n+     * @return a Iterator of {@link SynchronizerConf}.\n+     * @see SynchronizerConf#setType(java.lang.String)\n+     */\n+    Iterator<SynchronizerConf> getSynchronizerConfs(String type);\n+\n+    /**\n+     * Returns how many {@link SynchronizerConf} exist in the database.\n+     *\n+     * @return count.\n+     */\n+    int count();\n+\n+    /**\n+     * Creates a new {@link Synchronizer} from the given type and cron expression.\n+     * The newly created {@link Synchronizer} is flagged as not active and is not\n+     * run by the executor.\n+     *\n+     * @param label    see {@link SynchronizerConf#getLabel()}, can be null.\n+     * @param type     see {@link SynchronizerConf#getType()}.\n+     * @param cron_exp the pace of the synchronization.\n+     * @return the newly created {@link SynchronizerConf}.\n+     * @throws ParseException failed to parse the given cron expression.\n+     * @see SynchronizerConf#setCronExpression(String)\n+     */\n+    SynchronizerConf createSynchronizer(String label, String type,\n+                                        String cron_exp) throws ParseException;\n+\n+    /**\n+     * Removes a {@link Synchronizer} with the given identifier.\n+     * The removed {@link Synchronizer} won't be run any longer.\n+     *\n+     * @param id {@link SynchronizerConf} identifier.\n+     */\n+    void removeSynchronizer(long id);\n+\n+    /**\n+     * Sets a {@link Synchronizer} active and adds it in the executor.\n+     *\n+     * @param id {@link SynchronizerConf} identifier.\n+     * @throws InvokeSynchronizerException Synchronizer invocation failure.\n+     */\n+    void activateSynchronizer(long id)\n+        throws InvokeSynchronizerException;\n+\n+    /**\n+     * Sets a {@link Synchronizer} inactive and removes it from the executor.\n+     *\n+     * @param id {@link SynchronizerConf} identifier.\n+     */\n+    void deactivateSynchronizer(long id);\n+\n+    /**\n+     * Enables the batch mode of the executor.\n+     *\n+     * @param enable {@code true} to enable the batch mode.\n+     */\n+    void enableBatchMode(boolean enable);\n+\n+    /**\n+     * Returns {@code true} if the batch mod is enabled.\n+     *\n+     * @return {@code true} if the batch mod is enabled.\n+     */\n+    boolean isBatchModeEnabled();\n+\n+    /**\n+     * Saves the configuration of a {@link Synchronizer}.\n+     * First it deactivates the synchronizer with the given ID, then it saves its\n+     * configuration, then it reactivates the synchronizer if its {@code active}\n+     * field is set to {@code true}.\n+     *\n+     * @param sc configuration.\n+     * @throws InvokeSynchronizerException if the given configuration does not\n+     *                                     allow instanciation of a {@link Synchronizer}.\n+     */\n+    void saveSynchronizerConf(SynchronizerConf sc)\n+        throws InvokeSynchronizerException;\n+\n+    /**\n+     * Saves the given synchronizer's configuration back in the databse.\n+     * This method is intended to be used by Synchronizers themselves, this\n+     * method does no tests at all to avoid deadlocks.\n+     * <p>\n+     * This method is unsafe and you should probably be using\n+     * {@link #saveSynchronizerConf(SynchronizerConf)} instead.\n+     *\n+     * @param s to save.\n+     */\n+    void saveSynchronizer(Synchronizer s);\n+\n+    /**\n+     * Returns the status of the given {@link Synchronizer}.\n+     *\n+     * @param sc an instance of SynchronizerConf that exists in the database.\n+     * @return status.\n+     */\n+    SynchronizerStatus getStatus(SynchronizerConf sc);\n+\n+    /**\n+     * Starts the {@link Executor} after every webapps have been installed.\n+     * Called by main start in {@link DHuS}\n+     * <b>YOU MUST NOT CALL THIS METHOD!</b>\n+     */\n+    void init();\n }\n",
+            "diff_size": 159
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "35",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 85).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/23/ISynchronizerService.java\nindex 90b0a0b88e6..127b2acb4c7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/23/ISynchronizerService.java\n@@ -32,8 +32,7 @@ import fr.gael.dhus.sync.Executor;\n import fr.gael.dhus.sync.Synchronizer;\n import fr.gael.dhus.sync.SynchronizerStatus;\n \n-public interface ISynchronizerService extends\n-      ApplicationListener<ContextClosedEvent>\n+public interface ISynchronizerService extends ApplicationListener<ContextClosedEvent>\n {\n    /**\n     * Possible statuses for the {@link Synchronizer} executor.\n@@ -42,7 +41,8 @@ public interface ISynchronizerService extends\n    {\n       /** The executor is running. */\n       RUNNING,\n-      /** The executor is stopped. */\n+\n+/** The executor is stopped. */\n       STOPPED\n    }\n \n@@ -109,7 +109,7 @@ public interface ISynchronizerService extends\n    SynchronizerConf createSynchronizer (String label, String type,\n          String cron_exp) throws ParseException;\n \n-   /**\n+/**\n     * Removes a {@link Synchronizer} with the given identifier.\n     * The removed {@link Synchronizer} won't be run any longer.\n     * @param id {@link SynchronizerConf} identifier.\n@@ -124,7 +124,7 @@ public interface ISynchronizerService extends\n    void activateSynchronizer (long id)\n          throws InvokeSynchronizerException;\n \n-   /**\n+/**\n     * Sets a {@link Synchronizer} inactive and removes it from the executor.\n     * @param id {@link SynchronizerConf} identifier.\n     */\n@@ -154,7 +154,7 @@ public interface ISynchronizerService extends\n    void saveSynchronizerConf (SynchronizerConf sc)\n          throws InvokeSynchronizerException;\n \n-   /**\n+/**\n     * Saves the given synchronizer's configuration back in the databse.\n     * This method is intended to be used by Synchronizers themselves, this\n     * method does no tests at all to avoid deadlocks.\n@@ -178,4 +178,4 @@ public interface ISynchronizerService extends\n     * <b>YOU MUST NOT CALL THIS METHOD!</b>\n     */\n    void init ();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "34",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 85).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "94",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "108",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 106).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "151",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 86).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/23/ISynchronizerService.java\nindex 90b0a0b88e6..5d4ad4e7d66 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/23/ISynchronizerService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/23/ISynchronizerService.java\n@@ -21,10 +21,8 @@ package fr.gael.dhus.service;\n \n import java.text.ParseException;\n import java.util.Iterator;\n-\n import org.springframework.context.ApplicationListener;\n import org.springframework.context.event.ContextClosedEvent;\n-\n import fr.gael.dhus.DHuS;\n import fr.gael.dhus.database.object.SynchronizerConf;\n import fr.gael.dhus.service.exception.InvokeSynchronizerException;\n@@ -32,12 +30,13 @@ import fr.gael.dhus.sync.Executor;\n import fr.gael.dhus.sync.Synchronizer;\n import fr.gael.dhus.sync.SynchronizerStatus;\n \n-public interface ISynchronizerService extends\n-      ApplicationListener<ContextClosedEvent>\n+\n+public interface ISynchronizerService extends ApplicationListener<ContextClosedEvent>\n {\n    /**\n     * Possible statuses for the {@link Synchronizer} executor.\n     */\n+\n    enum Status\n    {\n       /** The executor is running. */\n@@ -106,8 +105,7 @@ public interface ISynchronizerService extends\n     *\n     * @throws ParseException failed to parse the given cron expression.\n     */\n-   SynchronizerConf createSynchronizer (String label, String type,\n-         String cron_exp) throws ParseException;\n+   SynchronizerConf createSynchronizer (String label, String type, String cron_exp) throws ParseException;\n \n    /**\n     * Removes a {@link Synchronizer} with the given identifier.\n@@ -121,8 +119,7 @@ public interface ISynchronizerService extends\n     * @param id {@link SynchronizerConf} identifier.\n     * @throws InvokeSynchronizerException Synchronizer invocation failure.\n     */\n-   void activateSynchronizer (long id)\n-         throws InvokeSynchronizerException;\n+   void activateSynchronizer (long id) throws InvokeSynchronizerException;\n \n    /**\n     * Sets a {@link Synchronizer} inactive and removes it from the executor.\n@@ -151,8 +148,7 @@ public interface ISynchronizerService extends\n     * @throws InvokeSynchronizerException if the given configuration does not\n     *         allow instanciation of a {@link Synchronizer}.\n     */\n-   void saveSynchronizerConf (SynchronizerConf sc)\n-         throws InvokeSynchronizerException;\n+   void saveSynchronizerConf (SynchronizerConf sc) throws InvokeSynchronizerException;\n \n    /**\n     * Saves the given synchronizer's configuration back in the databse.\n@@ -170,7 +166,7 @@ public interface ISynchronizerService extends\n     * @param sc an instance of SynchronizerConf that exists in the database.\n     * @return status.\n     */\n-   SynchronizerStatus getStatus(SynchronizerConf sc);\n+   SynchronizerStatus getStatus (SynchronizerConf sc);\n \n    /**\n     * Starts the {@link Executor} after every webapps have been installed.\n@@ -178,4 +174,4 @@ public interface ISynchronizerService extends\n     * <b>YOU MUST NOT CALL THIS METHOD!</b>\n     */\n    void init ();\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "95",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 81).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "532",
+    "information": {
+        "errors": [
+            {
+                "line": "46",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 122).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Override\n    public synchronized void send(long timeStamp, StreamEvent currentEvent, StreamEvent expiredEvent, String groupByKey) {\n        this.timeStamp = timeStamp;\n        if (currentEvent != null) {\n            if (currentEvent instanceof ListEvent) {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/532/AllPerEventOutputRateManager.java\nindex da3a18797b0..ac4ab00c38c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/532/AllPerEventOutputRateManager.java\n@@ -43,8 +43,9 @@ public class AllPerEventOutputRateManager extends OutputRateManager {\n     }\n \n     @Override\n-    public synchronized void send(long timeStamp, StreamEvent currentEvent, StreamEvent expiredEvent, String groupByKey) {\n-        this.timeStamp = timeStamp;\n+    public synchronized void send(long timeStamp, StreamEvent currentEvent,\n+            StreamEvent expiredEvent, String groupByKey) {\n+         this.timeStamp = timeStamp;\n         if (currentEvent != null) {\n             if (currentEvent instanceof ListEvent) {\n                 for (int i = 0, size = ((ListEvent) currentEvent).getActiveEvents(); i < size; i++) {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/532/AllPerEventOutputRateManager.java\nindex da3a18797b0..bc67e3c366d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/532/AllPerEventOutputRateManager.java\n@@ -1,20 +1,21 @@\n /*\n-*  Copyright (c) 2005-2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n-*\n-*  WSO2 Inc. licenses this file to you under the Apache License,\n-*  Version 2.0 (the \"License\"); you may not use this file except\n-*  in compliance with the License.\n-*  You may obtain a copy of the License at\n-*\n-*    http://www.apache.org/licenses/LICENSE-2.0\n-*\n-* Unless required by applicable law or agreed to in writing,\n-* software distributed under the License is distributed on an\n-* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n-* KIND, either express or implied.  See the License for the\n-* specific language governing permissions and limitations\n-* under the License.\n-*/\n+ *  Copyright (c) 2005-2013, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n+ *\n+ *  WSO2 Inc. licenses this file to you under the Apache License,\n+ *  Version 2.0 (the \"License\"); you may not use this file except\n+ *  in compliance with the License.\n+ *  You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing,\n+ * software distributed under the License is distributed on an\n+ * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n+ * KIND, either express or implied.  See the License for the\n+ * specific language governing permissions and limitations\n+ * under the License.\n+ */\n+\n package org.wso2.siddhi.core.query.output.ratelimit.event;\n \n import org.wso2.siddhi.core.event.ListEvent;\n@@ -27,97 +28,97 @@ import java.util.ArrayList;\n import java.util.List;\n \n public class AllPerEventOutputRateManager extends OutputRateManager {\n-    private final Integer value;\n+  private final Integer value;\n \n-    private volatile int counter = 0;\n-    private long timeStamp;\n-    private List<InEvent> currentEventList;\n-    private List<InEvent> expiredEventList;\n-    private List<InEvent> allEventList;\n+  private volatile int counter = 0;\n+  private long timeStamp;\n+  private List<InEvent> currentEventList;\n+  private List<InEvent> expiredEventList;\n+  private List<InEvent> allEventList;\n \n-    public AllPerEventOutputRateManager(Integer value) {\n-        this.value = value;\n-        currentEventList = new ArrayList<InEvent>(value);\n-        expiredEventList = new ArrayList<InEvent>(value);\n-        allEventList = new ArrayList<InEvent>(value);\n-    }\n+  public AllPerEventOutputRateManager(Integer value) {\n+    this.value = value;\n+    currentEventList = new ArrayList<InEvent>(value);\n+    expiredEventList = new ArrayList<InEvent>(value);\n+    allEventList = new ArrayList<InEvent>(value);\n+  }\n \n-    @Override\n-    public synchronized void send(long timeStamp, StreamEvent currentEvent, StreamEvent expiredEvent, String groupByKey) {\n-        this.timeStamp = timeStamp;\n-        if (currentEvent != null) {\n-            if (currentEvent instanceof ListEvent) {\n-                for (int i = 0, size = ((ListEvent) currentEvent).getActiveEvents(); i < size; i++) {\n-                    currentEventList.add((InEvent) ((ListEvent) currentEvent).getEvent(i));\n-                    allEventList.add((InEvent) ((ListEvent) currentEvent).getEvent(i));\n-                    if (++counter == value) {\n-                        sendEvents();\n-                        this.timeStamp = timeStamp;\n-                    }\n-                }\n-            } else {\n-                currentEventList.add((InEvent) currentEvent);\n-                allEventList.add((InEvent) currentEvent);\n-                if (++counter == value) {\n-                    sendEvents();\n-                    this.timeStamp = timeStamp;\n-                }\n-            }\n+  @Override\n+  public synchronized void send(long timeStamp, StreamEvent currentEvent, StreamEvent expiredEvent, String groupByKey) {\n+    this.timeStamp = timeStamp;\n+    if (currentEvent != null) {\n+      if (currentEvent instanceof ListEvent) {\n+        for (int i = 0, size = ((ListEvent) currentEvent).getActiveEvents(); i < size; i++) {\n+          currentEventList.add((InEvent) ((ListEvent) currentEvent).getEvent(i));\n+          allEventList.add((InEvent) ((ListEvent) currentEvent).getEvent(i));\n+          if (++counter == value) {\n+            sendEvents();\n+            this.timeStamp = timeStamp;\n+          }\n+        }\n+      } else {\n+        currentEventList.add((InEvent) currentEvent);\n+        allEventList.add((InEvent) currentEvent);\n+        if (++counter == value) {\n+          sendEvents();\n+          this.timeStamp = timeStamp;\n+        }\n+      }\n+    }\n+    if (expiredEvent != null) {\n+      if (expiredEvent instanceof ListEvent) {\n+        for (int i = 0, size = ((ListEvent) expiredEvent).getActiveEvents(); i < size; i++) {\n+          expiredEventList.add((InEvent) ((ListEvent) expiredEvent).getEvent(i));\n+          allEventList.add((InEvent) ((ListEvent) expiredEvent).getEvent(i));\n+          if (++counter == value) {\n+            sendEvents();\n+            this.timeStamp = timeStamp;\n+          }\n         }\n-        if (expiredEvent != null) {\n-            if (expiredEvent instanceof ListEvent) {\n-                for (int i = 0, size = ((ListEvent) expiredEvent).getActiveEvents(); i < size; i++) {\n-                    expiredEventList.add((InEvent) ((ListEvent) expiredEvent).getEvent(i));\n-                    allEventList.add((InEvent) ((ListEvent) expiredEvent).getEvent(i));\n-                    if (++counter == value) {\n-                        sendEvents();\n-                        this.timeStamp = timeStamp;\n-                    }\n-                }\n-            } else {\n-                expiredEventList.add((InEvent) expiredEvent);\n-                allEventList.add((InEvent) expiredEvent);\n-                if (++counter == value) {\n-                    sendEvents();\n-                    this.timeStamp = timeStamp;\n-                }\n-            }\n+      } else {\n+        expiredEventList.add((InEvent) expiredEvent);\n+        allEventList.add((InEvent) expiredEvent);\n+        if (++counter == value) {\n+          sendEvents();\n+          this.timeStamp = timeStamp;\n         }\n+      }\n     }\n+  }\n \n-    private void sendEvents() {\n-        StreamEvent currentEvent = null;\n-        StreamEvent expiredEvent = null;\n-        StreamEvent allEvent = null;\n+  private void sendEvents() {\n+    StreamEvent currentEvent = null;\n+    StreamEvent expiredEvent = null;\n+    StreamEvent allEvent = null;\n \n-        if (currentEventList.size() == 1) {\n-            currentEvent = new InEvent(currentEventList.get(0));\n-        } else if (currentEventList.size() >= 1) {\n-            InEvent[] events = new InEvent[currentEventList.size()];\n-            currentEventList.toArray(events);\n-            currentEvent = new InListEvent(events);\n-        }\n+    if (currentEventList.size() == 1) {\n+      currentEvent = new InEvent(currentEventList.get(0));\n+    } else if (currentEventList.size() >= 1) {\n+      InEvent[] events = new InEvent[currentEventList.size()];\n+      currentEventList.toArray(events);\n+      currentEvent = new InListEvent(events);\n+    }\n \n-        if (expiredEventList.size() == 1) {\n-            expiredEvent = new InEvent(expiredEventList.get(0));\n-        } else if (expiredEventList.size() >= 1) {\n-            InEvent[] events = new InEvent[expiredEventList.size()];\n-            expiredEventList.toArray(events);\n-            expiredEvent = new InListEvent(events);\n-        }\n+    if (expiredEventList.size() == 1) {\n+      expiredEvent = new InEvent(expiredEventList.get(0));\n+    } else if (expiredEventList.size() >= 1) {\n+      InEvent[] events = new InEvent[expiredEventList.size()];\n+      expiredEventList.toArray(events);\n+      expiredEvent = new InListEvent(events);\n+    }\n \n-        if (allEventList.size() == 1) {\n-            allEvent = new InEvent(allEventList.get(0));\n-        } else if (allEventList.size() >= 1) {\n-            InEvent[] events = new InEvent[allEventList.size()];\n-            allEventList.toArray(events);\n-            allEvent = new InListEvent(events);\n-        }\n-        sendToCallBacks(timeStamp, currentEvent, expiredEvent, allEvent);\n-        timeStamp = 0;\n-        currentEventList.clear();\n-        expiredEventList.clear();\n-        allEventList.clear();\n-        counter=0;\n+    if (allEventList.size() == 1) {\n+      allEvent = new InEvent(allEventList.get(0));\n+    } else if (allEventList.size() >= 1) {\n+      InEvent[] events = new InEvent[allEventList.size()];\n+      allEventList.toArray(events);\n+      allEvent = new InListEvent(events);\n     }\n+    sendToCallBacks(timeStamp, currentEvent, expiredEvent, allEvent);\n+    timeStamp = 0;\n+    currentEventList.clear();\n+    expiredEventList.clear();\n+    allEventList.clear();\n+    counter = 0;\n+  }\n }\n",
+            "diff_size": 118
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "46",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/532/AllPerEventOutputRateManager.java\nindex da3a18797b0..fc9eb9322d4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/532/AllPerEventOutputRateManager.java\n@@ -120,4 +120,4 @@ public class AllPerEventOutputRateManager extends OutputRateManager {\n         allEventList.clear();\n         counter=0;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "46",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 122).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/532/AllPerEventOutputRateManager.java\nindex da3a18797b0..ac4ab00c38c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/532/AllPerEventOutputRateManager.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/532/AllPerEventOutputRateManager.java\n@@ -43,8 +43,9 @@ public class AllPerEventOutputRateManager extends OutputRateManager {\n     }\n \n     @Override\n-    public synchronized void send(long timeStamp, StreamEvent currentEvent, StreamEvent expiredEvent, String groupByKey) {\n-        this.timeStamp = timeStamp;\n+    public synchronized void send(long timeStamp, StreamEvent currentEvent,\n+            StreamEvent expiredEvent, String groupByKey) {\n+         this.timeStamp = timeStamp;\n         if (currentEvent != null) {\n             if (currentEvent instanceof ListEvent) {\n                 for (int i = 0, size = ((ListEvent) currentEvent).getActiveEvents(); i < size; i++) {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

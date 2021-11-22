@@ -1,0 +1,124 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3197",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3197/PrefetchingRawIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3197/PrefetchingRawIterator.java\nindex c4690305c7b..66c6246501d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3197/PrefetchingRawIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3197/PrefetchingRawIterator.java\n@@ -17,66 +17,67 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.collection;\n \n import java.util.NoSuchElementException;\n \n public abstract class PrefetchingRawIterator<T, EXCEPTION extends Exception> implements RawIterator<T, EXCEPTION>\n {\n-    boolean hasFetchedNext;\n-    T nextObject;\n+  boolean hasFetchedNext;\n+  T nextObject;\n \n-    /**\n-     * @return {@code true} if there is a next item to be returned from the next\n-     * call to {@link #next()}.\n-     */\n-    @Override\n-    public boolean hasNext() throws EXCEPTION\n-    {\n-        return peek() != null;\n-    }\n+  /**\n+   * @return {@code true} if there is a next item to be returned from the next\n+   * call to {@link #next()}.\n+   */\n+  @Override\n+  public boolean hasNext() throws EXCEPTION\n+  {\n+    return peek() != null;\n+  }\n \n-    /**\n-     * @return the next element that will be returned from {@link #next()} without\n-     * actually advancing the iterator\n-     */\n-    public T peek() throws EXCEPTION\n+  /**\n+   * @return the next element that will be returned from {@link #next()} without\n+   * actually advancing the iterator\n+   */\n+  public T peek() throws EXCEPTION\n+  {\n+    if (hasFetchedNext)\n     {\n-        if ( hasFetchedNext )\n-        {\n-            return nextObject;\n-        }\n-\n-        nextObject = fetchNextOrNull();\n-        hasFetchedNext = true;\n-        return nextObject;\n+      return nextObject;\n     }\n \n-    /**\n-     * Uses {@link #hasNext()} to try to fetch the next item and returns it\n-     * if found, otherwise it throws a {@link java.util.NoSuchElementException}.\n-     *\n-     * @return the next item in the iteration, or throws\n-     * {@link java.util.NoSuchElementException} if there's no more items to return.\n-     */\n-    @Override\n-    public T next() throws EXCEPTION\n+    nextObject = fetchNextOrNull();\n+    hasFetchedNext = true;\n+    return nextObject;\n+  }\n+\n+  /**\n+   * Uses {@link #hasNext()} to try to fetch the next item and returns it\n+   * if found, otherwise it throws a {@link java.util.NoSuchElementException}.\n+   *\n+   * @return the next item in the iteration, or throws\n+   * {@link java.util.NoSuchElementException} if there's no more items to return.\n+   */\n+  @Override\n+  public T next() throws EXCEPTION\n+  {\n+    if (!hasNext())\n     {\n-        if ( !hasNext() )\n-        {\n-            throw new NoSuchElementException();\n-        }\n-        T result = nextObject;\n-        nextObject = null;\n-        hasFetchedNext = false;\n-        return result;\n+      throw new NoSuchElementException();\n     }\n+    T result = nextObject;\n+    nextObject = null;\n+    hasFetchedNext = false;\n+    return result;\n+  }\n \n-    protected abstract T fetchNextOrNull() throws EXCEPTION;\n+  protected abstract T fetchNextOrNull() throws EXCEPTION;\n \n-    @Override\n-    public void remove()\n-    {\n-        throw new UnsupportedOperationException();\n-    }\n+  @Override\n+  public void remove()\n+  {\n+    throw new UnsupportedOperationException();\n+  }\n }\n",
+            "diff_size": 62
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3197/PrefetchingRawIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3197/PrefetchingRawIterator.java\nindex c4690305c7b..1900f6100f4 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3197/PrefetchingRawIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3197/PrefetchingRawIterator.java\n@@ -66,7 +66,8 @@ public abstract class PrefetchingRawIterator<T, EXCEPTION extends Exception> imp\n         {\n             throw new NoSuchElementException();\n         }\n-        T result = nextObject;\n+\n+T result = nextObject;\n         nextObject = null;\n         hasFetchedNext = false;\n         return result;\n@@ -79,4 +80,4 @@ public abstract class PrefetchingRawIterator<T, EXCEPTION extends Exception> imp\n     {\n         throw new UnsupportedOperationException();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "76",
+    "information": {
+        "errors": [
+            {
+                "line": "3",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "package datawave.webservice.query.runner;\n\nimport org.apache.accumulo.core.util.Pair;\nimport org.apache.log4j.Logger;\n\nimport javax.annotation.Resource;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/76/AccumuloConnectionRequestBean.java\nindex 53df5b7aa1c..4f00626b913 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/76/AccumuloConnectionRequestBean.java\n@@ -16,60 +16,60 @@ import java.util.concurrent.ConcurrentHashMap;\n @Singleton\n // CDI singleton\n public class AccumuloConnectionRequestBean {\n-    \n-    private static Logger log = Logger.getLogger(AccumuloConnectionRequestBean.class);\n-    \n-    @Resource\n-    private EJBContext ctx;\n-    \n-    private Map<String,Pair<Principal,Thread>> getConnectionThreadMap = new ConcurrentHashMap<>();\n-    \n-    public boolean cancelConnectionRequest(String id) {\n-        return cancelConnectionRequest(id, ctx.getCallerPrincipal());\n-    }\n-    \n-    public boolean cancelConnectionRequest(String id, Principal principal) {\n-        // this call checks that the Principal used for the connection request and th connection cancel are the same\n-        // if query is waiting for an accumulo connection in create or reset, then interrupt it\n-        boolean connectionRequestCanceled = false;\n-        try {\n-            Pair<Principal,Thread> connectionRequestPair = getConnectionThreadMap.get(id);\n-            if (connectionRequestPair != null) {\n-                String connectionRequestPrincipalName = principal.getName();\n-                String connectionCancelPrincipalName = connectionRequestPair.getFirst().getName();\n-                if (connectionRequestPrincipalName.equals(connectionCancelPrincipalName)) {\n-                    connectionRequestPair.getSecond().interrupt();\n-                    connectionRequestCanceled = true;\n-                }\n-            }\n-        } catch (Exception e) {\n-            log.error(e.getMessage(), e);\n-        }\n-        return connectionRequestCanceled;\n-    }\n-    \n-    public boolean adminCancelConnectionRequest(String id) {\n-        // it is assumed that admin status is already checked, so this call does not check the calling Principals\n-        // if query is waiting for an accumulo connection in create or reset, then interrupt it\n-        boolean connectionRequestCanceled = false;\n-        try {\n-            Pair<Principal,Thread> connectionRequestPair = getConnectionThreadMap.get(id);\n-            if (connectionRequestPair != null) {\n-                connectionRequestPair.getSecond().interrupt();\n-                connectionRequestCanceled = true;\n-            }\n-        } catch (Exception e) {\n-            log.error(e.getMessage(), e);\n+\n+  private static Logger log = Logger.getLogger(AccumuloConnectionRequestBean.class);\n+\n+  @Resource\n+  private EJBContext ctx;\n+\n+  private Map<String, Pair<Principal, Thread>> getConnectionThreadMap = new ConcurrentHashMap<>();\n+\n+  public boolean cancelConnectionRequest(String id) {\n+    return cancelConnectionRequest(id, ctx.getCallerPrincipal());\n+  }\n+\n+  public boolean cancelConnectionRequest(String id, Principal principal) {\n+    // this call checks that the Principal used for the connection request and th connection cancel are the same\n+    // if query is waiting for an accumulo connection in create or reset, then interrupt it\n+    boolean connectionRequestCanceled = false;\n+    try {\n+      Pair<Principal, Thread> connectionRequestPair = getConnectionThreadMap.get(id);\n+      if (connectionRequestPair != null) {\n+        String connectionRequestPrincipalName = principal.getName();\n+        String connectionCancelPrincipalName = connectionRequestPair.getFirst().getName();\n+        if (connectionRequestPrincipalName.equals(connectionCancelPrincipalName)) {\n+          connectionRequestPair.getSecond().interrupt();\n+          connectionRequestCanceled = true;\n         }\n-        return connectionRequestCanceled;\n-    }\n-    \n-    public void requestBegin(String id) {\n-        Pair<Principal,Thread> connectionRequestPair = new Pair<>(ctx.getCallerPrincipal(), Thread.currentThread());\n-        getConnectionThreadMap.put(id, connectionRequestPair);\n+      }\n+    } catch (Exception e) {\n+      log.error(e.getMessage(), e);\n     }\n-    \n-    public void requestEnd(String id) {\n-        getConnectionThreadMap.remove(id);\n+    return connectionRequestCanceled;\n+  }\n+\n+  public boolean adminCancelConnectionRequest(String id) {\n+    // it is assumed that admin status is already checked, so this call does not check the calling Principals\n+    // if query is waiting for an accumulo connection in create or reset, then interrupt it\n+    boolean connectionRequestCanceled = false;\n+    try {\n+      Pair<Principal, Thread> connectionRequestPair = getConnectionThreadMap.get(id);\n+      if (connectionRequestPair != null) {\n+        connectionRequestPair.getSecond().interrupt();\n+        connectionRequestCanceled = true;\n+      }\n+    } catch (Exception e) {\n+      log.error(e.getMessage(), e);\n     }\n+    return connectionRequestCanceled;\n+  }\n+\n+  public void requestBegin(String id) {\n+    Pair<Principal, Thread> connectionRequestPair = new Pair<>(ctx.getCallerPrincipal(), Thread.currentThread());\n+    getConnectionThreadMap.put(id, connectionRequestPair);\n+  }\n+\n+  public void requestEnd(String id) {\n+    getConnectionThreadMap.remove(id);\n+  }\n }\n",
+            "diff_size": 76
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/76/AccumuloConnectionRequestBean.java\nindex 53df5b7aa1c..68aa3db57e1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/76/AccumuloConnectionRequestBean.java\n@@ -72,4 +72,4 @@ public class AccumuloConnectionRequestBean {\n     public void requestEnd(String id) {\n         getConnectionThreadMap.remove(id);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/76/AccumuloConnectionRequestBean.java\nindex 53df5b7aa1c..b9b56299550 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/76/AccumuloConnectionRequestBean.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/76/AccumuloConnectionRequestBean.java\n@@ -2,7 +2,6 @@ package datawave.webservice.query.runner;\n \n import org.apache.accumulo.core.util.Pair;\n import org.apache.log4j.Logger;\n-\n import javax.annotation.Resource;\n import javax.ejb.EJBContext;\n import javax.inject.Singleton;\n@@ -13,21 +12,20 @@ import java.util.concurrent.ConcurrentHashMap;\n /**\n  * For storing a map of queryId to Thread that is requesting an AccumuloConnection\n  */\n+\n @Singleton\n // CDI singleton\n public class AccumuloConnectionRequestBean {\n-    \n     private static Logger log = Logger.getLogger(AccumuloConnectionRequestBean.class);\n-    \n+\n     @Resource\n     private EJBContext ctx;\n-    \n     private Map<String,Pair<Principal,Thread>> getConnectionThreadMap = new ConcurrentHashMap<>();\n-    \n+\n     public boolean cancelConnectionRequest(String id) {\n         return cancelConnectionRequest(id, ctx.getCallerPrincipal());\n     }\n-    \n+\n     public boolean cancelConnectionRequest(String id, Principal principal) {\n         // this call checks that the Principal used for the connection request and th connection cancel are the same\n         // if query is waiting for an accumulo connection in create or reset, then interrupt it\n@@ -47,7 +45,7 @@ public class AccumuloConnectionRequestBean {\n         }\n         return connectionRequestCanceled;\n     }\n-    \n+\n     public boolean adminCancelConnectionRequest(String id) {\n         // it is assumed that admin status is already checked, so this call does not check the calling Principals\n         // if query is waiting for an accumulo connection in create or reset, then interrupt it\n@@ -63,13 +61,13 @@ public class AccumuloConnectionRequestBean {\n         }\n         return connectionRequestCanceled;\n     }\n-    \n+\n     public void requestBegin(String id) {\n         Pair<Principal,Thread> connectionRequestPair = new Pair<>(ctx.getCallerPrincipal(), Thread.currentThread());\n         getConnectionThreadMap.put(id, connectionRequestPair);\n     }\n-    \n+\n     public void requestEnd(String id) {\n         getConnectionThreadMap.remove(id);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "3",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

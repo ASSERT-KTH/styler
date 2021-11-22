@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "218",
+    "information": {
+        "errors": [
+            {
+                "line": "37",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 144).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " */\npublic class ExpressionLanguageRuntimeRegistry {\n    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n\n    public ExpressionLanguageRuntimeRegistry() {\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/218/ExpressionLanguageRuntimeRegistry.java\nindex dcfb80ac10a..f49e1dc008f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/218/ExpressionLanguageRuntimeRegistry.java\n@@ -34,9 +34,10 @@ import java.util.Map;\n  * with random exceptions from not-quite perfect expression runtime imlementation.\n  */\n public class ExpressionLanguageRuntimeRegistry {\n-    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n+    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new\n+            HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n \n-    public ExpressionLanguageRuntimeRegistry() {\n+     public ExpressionLanguageRuntimeRegistry() {\n     }\n \n     public void registerRuntime(OExpressionLanguage oelang) throws ConfigurationException {\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/218/ExpressionLanguageRuntimeRegistry.java\nindex dcfb80ac10a..863b741907e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/218/ExpressionLanguageRuntimeRegistry.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.ode.bpel.rtrep.v2;\n \n import org.apache.ode.bpel.common.FaultException;\n@@ -29,105 +30,106 @@ import java.util.List;\n import java.util.Map;\n \n /**\n- * A registry of {@link ExpressionLanguageRuntime} objects that is able to map a given expression to the appropriate \n+ * A registry of {@link ExpressionLanguageRuntime} objects that is able to map a given expression to the appropriate\n  * language runtime. We also do some exception guarding here so that the core of the engine does not have to deal\n  * with random exceptions from not-quite perfect expression runtime imlementation.\n  */\n public class ExpressionLanguageRuntimeRegistry {\n-    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n-\n-    public ExpressionLanguageRuntimeRegistry() {\n-    }\n+  private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes =\n+    new HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n \n-    public void registerRuntime(OExpressionLanguage oelang) throws ConfigurationException {\n-        String className = oelang.properties.get(\"runtime-class\");\n-        try {\n-            Class cls = Class.forName(className);\n-            ExpressionLanguageRuntime elangRT = (ExpressionLanguageRuntime) cls.newInstance();\n-            elangRT.initialize(oelang.properties);\n-            _runtimes.put(oelang, elangRT);\n-        } catch (IllegalAccessException e) {\n-            throw new ConfigurationException(\"Illegal Access Error\", e);\n-        } catch (InstantiationException e) {\n-            throw new ConfigurationException(\"Instantiation Error\", e);\n-        } catch (ClassNotFoundException e) {\n-            throw new ConfigurationException(\"Class Not Found Error: \" + className, e);\n-        }\n+  public ExpressionLanguageRuntimeRegistry() {\n+  }\n \n+  public void registerRuntime(OExpressionLanguage oelang) throws ConfigurationException {\n+    String className = oelang.properties.get(\"runtime-class\");\n+    try {\n+      Class cls = Class.forName(className);\n+      ExpressionLanguageRuntime elangRT = (ExpressionLanguageRuntime) cls.newInstance();\n+      elangRT.initialize(oelang.properties);\n+      _runtimes.put(oelang, elangRT);\n+    } catch (IllegalAccessException e) {\n+      throw new ConfigurationException(\"Illegal Access Error\", e);\n+    } catch (InstantiationException e) {\n+      throw new ConfigurationException(\"Instantiation Error\", e);\n+    } catch (ClassNotFoundException e) {\n+      throw new ConfigurationException(\"Class Not Found Error: \" + className, e);\n     }\n \n-    public String evaluateAsString(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateAsString(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n-    }\n+  }\n \n-    public boolean evaluateAsBoolean(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateAsBoolean(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public String evaluateAsString(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateAsString(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    public Number evaluateAsNumber(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateAsNumber(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public boolean evaluateAsBoolean(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateAsBoolean(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    public List evaluate(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluate(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public Number evaluateAsNumber(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateAsNumber(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    public Node evaluateNode(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateNode(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public List evaluate(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluate(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    public Calendar evaluateAsDate(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateAsDate(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public Node evaluateNode(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateNode(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    public Duration evaluateAsDuration(OExpression cexp, EvaluationContext ctx) throws FaultException {\n-        try {\n-            return findRuntime(cexp).evaluateAsDuration(cexp, ctx);\n-        } catch (FaultException fe) {\n-            throw fe;\n-        } catch (Throwable t) {\n-            throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n-        }\n+  public Calendar evaluateAsDate(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateAsDate(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n \n-    private ExpressionLanguageRuntime findRuntime(OExpression cexp) {\n-        return _runtimes.get(cexp.expressionLanguage);\n+  public Duration evaluateAsDuration(OExpression cexp, EvaluationContext ctx) throws FaultException {\n+    try {\n+      return findRuntime(cexp).evaluateAsDuration(cexp, ctx);\n+    } catch (FaultException fe) {\n+      throw fe;\n+    } catch (Throwable t) {\n+      throw new FaultException(cexp.getOwner().constants.qnSubLanguageExecutionFault, t.toString(), t);\n     }\n+  }\n+\n+  private ExpressionLanguageRuntime findRuntime(OExpression cexp) {\n+    return _runtimes.get(cexp.expressionLanguage);\n+  }\n \n }\n",
+            "diff_size": 108
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/218/ExpressionLanguageRuntimeRegistry.java\nindex dcfb80ac10a..a2d6ca8806f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/218/ExpressionLanguageRuntimeRegistry.java\n@@ -130,4 +130,4 @@ public class ExpressionLanguageRuntimeRegistry {\n         return _runtimes.get(cexp.expressionLanguage);\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "37",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/218/ExpressionLanguageRuntimeRegistry.java\nindex dcfb80ac10a..f49e1dc008f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/218/ExpressionLanguageRuntimeRegistry.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/218/ExpressionLanguageRuntimeRegistry.java\n@@ -34,9 +34,10 @@ import java.util.Map;\n  * with random exceptions from not-quite perfect expression runtime imlementation.\n  */\n public class ExpressionLanguageRuntimeRegistry {\n-    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n+    private final Map<OExpressionLanguage, ExpressionLanguageRuntime> _runtimes = new\n+            HashMap<OExpressionLanguage, ExpressionLanguageRuntime>();\n \n-    public ExpressionLanguageRuntimeRegistry() {\n+     public ExpressionLanguageRuntimeRegistry() {\n     }\n \n     public void registerRuntime(OExpressionLanguage oelang) throws ConfigurationException {\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

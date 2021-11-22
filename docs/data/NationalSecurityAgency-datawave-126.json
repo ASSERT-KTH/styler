@@ -1,0 +1,104 @@
+{
+    "project_name": "NationalSecurityAgency-datawave",
+    "error_id": "126",
+    "information": {
+        "errors": [
+            {
+                "line": "21",
+                "severity": "error",
+                "message": "Accumulo non-public classes imported",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+            }
+        ]
+    },
+    "source_code": "import static java.nio.charset.StandardCharsets.UTF_8;\n\nimport org.apache.accumulo.core.trace.thrift.TInfo;\nimport org.apache.htrace.Sampler;\nimport org.apache.htrace.TraceInfo;\nimport org.apache.htrace.wrappers.TraceProxy;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "22",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/126/Trace.java\nindex 5d6b4e01a74..8480be8df8c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/intellij/126/Trace.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package datawave.webservice.query.runner;\n \n import static java.nio.charset.StandardCharsets.UTF_8;\n@@ -26,112 +27,112 @@ import org.apache.htrace.wrappers.TraceRunnable;\n \n /**\n  * Utility class for tracing within Accumulo. Not intended for client use!\n- *\n  */\n public class Trace {\n-    /**\n-     * Start a trace span with a given description.\n-     */\n-    public static Span on(String description) {\n-        return on(description, Sampler.ALWAYS);\n-    }\n-    \n-    /**\n-     * Start a trace span with a given description with the given sampler.\n-     */\n-    public static <T> Span on(String description, Sampler<T> sampler) {\n-        return new Span(org.apache.htrace.Trace.startSpan(description, sampler));\n-    }\n-    \n-    /**\n-     * Finish the current trace.\n-     */\n-    public static void off() {\n-        org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n-        if (span != null) {\n-            span.stop();\n-            // close() will no-op, but ensure safety if the implementation changes\n-            org.apache.htrace.Tracer.getInstance().continueSpan(null).close();\n-        }\n-    }\n-    \n-    /**\n-     * @deprecated since 1.7, use {@link #off()} instead\n-     */\n-    @Deprecated\n-    public static void offNoFlush() {\n-        off();\n-    }\n-    \n-    /**\n-     * Returns whether tracing is currently on.\n-     */\n-    public static boolean isTracing() {\n-        return org.apache.htrace.Trace.isTracing();\n-    }\n-    \n-    /**\n-     * Return the current span.\n-     *\n-     * @deprecated since 1.7 -- it is better to save the span you create in a local variable and call its methods, rather than retrieving the current span\n-     */\n-    @Deprecated\n-    public static Span currentTrace() {\n-        return new Span(org.apache.htrace.Trace.currentSpan());\n-    }\n-    \n-    /**\n-     * Get the trace id of the current span.\n-     */\n-    public static long currentTraceId() {\n-        return org.apache.htrace.Trace.currentSpan().getTraceId();\n-    }\n-    \n-    /**\n-     * Start a new span with a given name, if already tracing.\n-     */\n-    public static Span start(String description) {\n-        return new Span(org.apache.htrace.Trace.startSpan(description));\n-    }\n-    \n-    /**\n-     * Continue a trace by starting a new span with a given parent and description.\n-     */\n-    public static Span trace(TInfo info, String description) {\n-        if (info.traceId == 0) {\n-            return Span.NULL_SPAN;\n-        }\n-        TraceInfo ti = new TraceInfo(info.traceId, info.parentId);\n-        return new Span(org.apache.htrace.Trace.startSpan(description, ti));\n-    }\n-    \n-    /**\n-     * Add data to the current span.\n-     */\n-    public static void data(String k, String v) {\n-        org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n-        if (span != null)\n-            span.addKVAnnotation(k.getBytes(UTF_8), v.getBytes(UTF_8));\n+  /**\n+   * Start a trace span with a given description.\n+   */\n+  public static Span on(String description) {\n+    return on(description, Sampler.ALWAYS);\n+  }\n+\n+  /**\n+   * Start a trace span with a given description with the given sampler.\n+   */\n+  public static <T> Span on(String description, Sampler<T> sampler) {\n+    return new Span(org.apache.htrace.Trace.startSpan(description, sampler));\n+  }\n+\n+  /**\n+   * Finish the current trace.\n+   */\n+  public static void off() {\n+    org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n+    if (span != null) {\n+      span.stop();\n+      // close() will no-op, but ensure safety if the implementation changes\n+      org.apache.htrace.Tracer.getInstance().continueSpan(null).close();\n     }\n-    \n-    /**\n-     * Wrap a runnable in a TraceRunnable, if tracing.\n-     */\n-    public static Runnable wrap(Runnable runnable) {\n-        if (isTracing()) {\n-            return new TraceRunnable(org.apache.htrace.Trace.currentSpan(), runnable);\n-        } else {\n-            return runnable;\n-        }\n+  }\n+\n+  /**\n+   * @deprecated since 1.7, use {@link #off()} instead\n+   */\n+  @Deprecated\n+  public static void offNoFlush() {\n+    off();\n+  }\n+\n+  /**\n+   * Returns whether tracing is currently on.\n+   */\n+  public static boolean isTracing() {\n+    return org.apache.htrace.Trace.isTracing();\n+  }\n+\n+  /**\n+   * Return the current span.\n+   *\n+   * @deprecated since 1.7 -- it is better to save the span you create in a local variable and call its methods, rather than retrieving the current span\n+   */\n+  @Deprecated\n+  public static Span currentTrace() {\n+    return new Span(org.apache.htrace.Trace.currentSpan());\n+  }\n+\n+  /**\n+   * Get the trace id of the current span.\n+   */\n+  public static long currentTraceId() {\n+    return org.apache.htrace.Trace.currentSpan().getTraceId();\n+  }\n+\n+  /**\n+   * Start a new span with a given name, if already tracing.\n+   */\n+  public static Span start(String description) {\n+    return new Span(org.apache.htrace.Trace.startSpan(description));\n+  }\n+\n+  /**\n+   * Continue a trace by starting a new span with a given parent and description.\n+   */\n+  public static Span trace(TInfo info, String description) {\n+    if (info.traceId == 0) {\n+      return Span.NULL_SPAN;\n     }\n-    \n-    // Wrap all calls to the given object with spans\n-    public static <T> T wrapAll(T instance) {\n-        return TraceProxy.trace(instance);\n+    TraceInfo ti = new TraceInfo(info.traceId, info.parentId);\n+    return new Span(org.apache.htrace.Trace.startSpan(description, ti));\n+  }\n+\n+  /**\n+   * Add data to the current span.\n+   */\n+  public static void data(String k, String v) {\n+    org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n+    if (span != null) {\n+      span.addKVAnnotation(k.getBytes(UTF_8), v.getBytes(UTF_8));\n     }\n-    \n-    // Sample trace all calls to the given object\n-    public static <T,V> T wrapAll(T instance, Sampler<V> dist) {\n-        return TraceProxy.trace(instance, dist);\n+  }\n+\n+  /**\n+   * Wrap a runnable in a TraceRunnable, if tracing.\n+   */\n+  public static Runnable wrap(Runnable runnable) {\n+    if (isTracing()) {\n+      return new TraceRunnable(org.apache.htrace.Trace.currentSpan(), runnable);\n+    } else {\n+      return runnable;\n     }\n+  }\n+\n+  // Wrap all calls to the given object with spans\n+  public static <T> T wrapAll(T instance) {\n+    return TraceProxy.trace(instance);\n+  }\n+\n+  // Sample trace all calls to the given object\n+  public static <T, V> T wrapAll(T instance, Sampler<V> dist) {\n+    return TraceProxy.trace(instance, dist);\n+  }\n }\n",
+            "diff_size": 164
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/126/Trace.java\nindex 5d6b4e01a74..4b5ec4cab51 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/naturalize/126/Trace.java\n@@ -134,4 +134,4 @@ public class Trace {\n     public static <T,V> T wrapAll(T instance, Sampler<V> dist) {\n         return TraceProxy.trace(instance, dist);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/126/Trace.java\nindex 5d6b4e01a74..919bf5e4fed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/errored/1/126/Trace.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/NationalSecurityAgency-datawave/codebuff/126/Trace.java\n@@ -28,6 +28,8 @@ import org.apache.htrace.wrappers.TraceRunnable;\n  * Utility class for tracing within Accumulo. Not intended for client use!\n  *\n  */\n+\n+\n public class Trace {\n     /**\n      * Start a trace span with a given description.\n@@ -39,6 +41,7 @@ public class Trace {\n     /**\n      * Start a trace span with a given description with the given sampler.\n      */\n+\n     public static <T> Span on(String description, Sampler<T> sampler) {\n         return new Span(org.apache.htrace.Trace.startSpan(description, sampler));\n     }\n@@ -46,6 +49,7 @@ public class Trace {\n     /**\n      * Finish the current trace.\n      */\n+\n     public static void off() {\n         org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n         if (span != null) {\n@@ -58,6 +62,7 @@ public class Trace {\n     /**\n      * @deprecated since 1.7, use {@link #off()} instead\n      */\n+\n     @Deprecated\n     public static void offNoFlush() {\n         off();\n@@ -66,6 +71,7 @@ public class Trace {\n     /**\n      * Returns whether tracing is currently on.\n      */\n+\n     public static boolean isTracing() {\n         return org.apache.htrace.Trace.isTracing();\n     }\n@@ -75,6 +81,7 @@ public class Trace {\n      *\n      * @deprecated since 1.7 -- it is better to save the span you create in a local variable and call its methods, rather than retrieving the current span\n      */\n+\n     @Deprecated\n     public static Span currentTrace() {\n         return new Span(org.apache.htrace.Trace.currentSpan());\n@@ -83,6 +90,7 @@ public class Trace {\n     /**\n      * Get the trace id of the current span.\n      */\n+\n     public static long currentTraceId() {\n         return org.apache.htrace.Trace.currentSpan().getTraceId();\n     }\n@@ -90,6 +98,7 @@ public class Trace {\n     /**\n      * Start a new span with a given name, if already tracing.\n      */\n+\n     public static Span start(String description) {\n         return new Span(org.apache.htrace.Trace.startSpan(description));\n     }\n@@ -97,10 +106,12 @@ public class Trace {\n     /**\n      * Continue a trace by starting a new span with a given parent and description.\n      */\n+\n     public static Span trace(TInfo info, String description) {\n         if (info.traceId == 0) {\n             return Span.NULL_SPAN;\n         }\n+\n         TraceInfo ti = new TraceInfo(info.traceId, info.parentId);\n         return new Span(org.apache.htrace.Trace.startSpan(description, ti));\n     }\n@@ -108,6 +119,7 @@ public class Trace {\n     /**\n      * Add data to the current span.\n      */\n+\n     public static void data(String k, String v) {\n         org.apache.htrace.Span span = org.apache.htrace.Trace.currentSpan();\n         if (span != null)\n@@ -117,6 +129,7 @@ public class Trace {\n     /**\n      * Wrap a runnable in a TraceRunnable, if tracing.\n      */\n+\n     public static Runnable wrap(Runnable runnable) {\n         if (isTracing()) {\n             return new TraceRunnable(org.apache.htrace.Trace.currentSpan(), runnable);\n@@ -126,12 +139,14 @@ public class Trace {\n     }\n     \n     // Wrap all calls to the given object with spans\n+\n     public static <T> T wrapAll(T instance) {\n         return TraceProxy.trace(instance);\n     }\n     \n     // Sample trace all calls to the given object\n+\n     public static <T,V> T wrapAll(T instance, Sampler<V> dist) {\n         return TraceProxy.trace(instance, dist);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 16
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "21",
+                    "severity": "error",
+                    "message": "Accumulo non-public classes imported",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

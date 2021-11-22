@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3027",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "70",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "69",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3027/UnknownAddressMonitor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3027/UnknownAddressMonitor.java\nindex 05c5ab67425..7a4932ac1bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3027/UnknownAddressMonitor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3027/UnknownAddressMonitor.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.messaging.address;\n \n import java.time.Clock;\n@@ -31,27 +32,27 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;\n \n public class UnknownAddressMonitor\n {\n-    private final Log log;\n-    private final Clock clock;\n-    private final long timeLimitMs;\n-    private Map<MemberId,CappedLogger> loggers = new ConcurrentHashMap<>();\n+  private final Log log;\n+  private final Clock clock;\n+  private final long timeLimitMs;\n+  private Map<MemberId, CappedLogger> loggers = new ConcurrentHashMap<>();\n \n-    public UnknownAddressMonitor( Log log, Clock clock, long timeLimitMs )\n-    {\n-        this.log = log;\n-        this.clock = clock;\n-        this.timeLimitMs = timeLimitMs;\n-    }\n+  public UnknownAddressMonitor(Log log, Clock clock, long timeLimitMs)\n+  {\n+    this.log = log;\n+    this.clock = clock;\n+    this.timeLimitMs = timeLimitMs;\n+  }\n \n-    public void logAttemptToSendToMemberWithNoKnownAddress( MemberId to )\n+  public void logAttemptToSendToMemberWithNoKnownAddress(MemberId to)\n+  {\n+    CappedLogger cappedLogger = loggers.get(to);\n+    if (cappedLogger == null)\n     {\n-        CappedLogger cappedLogger = loggers.get( to );\n-        if ( cappedLogger == null )\n-        {\n-            cappedLogger = new CappedLogger( log );\n-            cappedLogger.setTimeLimit( timeLimitMs, MILLISECONDS, clock );\n-            loggers.put( to, cappedLogger );\n-        }\n-        cappedLogger.info(String.format(\"No address found for %s, probably because the member has been shut down.\", to)  );\n+      cappedLogger = new CappedLogger(log);\n+      cappedLogger.setTimeLimit(timeLimitMs, MILLISECONDS, clock);\n+      loggers.put(to, cappedLogger);\n     }\n+    cappedLogger.info(String.format(\"No address found for %s, probably because the member has been shut down.\", to));\n+  }\n }\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3027/UnknownAddressMonitor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3027/UnknownAddressMonitor.java\nindex 05c5ab67425..eadb3f8123c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3027/UnknownAddressMonitor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3027/UnknownAddressMonitor.java\n@@ -52,6 +52,6 @@ public class UnknownAddressMonitor\n             cappedLogger.setTimeLimit( timeLimitMs, MILLISECONDS, clock );\n             loggers.put( to, cappedLogger );\n         }\n-        cappedLogger.info(String.format(\"No address found for %s, probably because the member has been shut down.\", to)  );\n+        cappedLogger.info(String.format( \"No address found for %s, probably because the member has been shut down.\", to) );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

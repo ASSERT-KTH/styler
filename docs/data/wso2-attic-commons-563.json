@@ -1,0 +1,90 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "563",
+    "information": {
+        "errors": [
+            {
+                "line": "66",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 127).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            if (nextState instanceof OrSequenceState) {\n                //System.out.println(\"->\" + ((OrSequenceState) nextState).getPartnerState().getStateNumber());\n                ((OrSequenceState) nextState).getPartnerState().getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n            }\n            nextState.getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "66",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/563/SequenceStreamPacker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/563/SequenceStreamPacker.java\nindex a5187c95b1a..e89e49afa5f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/563/SequenceStreamPacker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/563/SequenceStreamPacker.java\n@@ -1,20 +1,21 @@\n /*\n-*  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n-*\n-*  WSO2 Inc. licenses this file to you under the Apache License,\n-*  Version 2.0 (the \"License\"); you may not use this file except\n-*  in compliance with the License.\n-*  You may obtain a copy of the License at\n-*\n-*    http://www.apache.org/licenses/LICENSE-2.0\n-*\n-* Unless required by applicable law or agreed to in writing,\n-* software distributed under the License is distributed on an\n-* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n-* KIND, either express or implied.  See the License for the\n-* specific language governing permissions and limitations\n-* under the License.\n-*/\n+ *  Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.\n+ *\n+ *  WSO2 Inc. licenses this file to you under the Apache License,\n+ *  Version 2.0 (the \"License\"); you may not use this file except\n+ *  in compliance with the License.\n+ *  You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing,\n+ * software distributed under the License is distributed on an\n+ * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n+ * KIND, either express or implied.  See the License for the\n+ * specific language governing permissions and limitations\n+ * under the License.\n+ */\n+\n package org.wso2.siddhi.core.stream.packer.sequence;\n \n import org.wso2.siddhi.core.event.AtomicEvent;\n@@ -27,45 +28,45 @@ import org.wso2.siddhi.core.stream.recevier.sequence.SequenceSingleStreamReceive\n \n public class SequenceStreamPacker extends SingleStreamPacker {\n \n-    protected SequenceSingleStreamReceiver streamReceiver;\n-    protected SequenceState state;\n-    protected SequenceState nextState;\n+  protected SequenceSingleStreamReceiver streamReceiver;\n+  protected SequenceState state;\n+  protected SequenceState nextState;\n \n-    public SequenceStreamPacker(SequenceState state) {\n-        this.state = state;\n-        this.nextState = state.getNextState();\n-    }\n+  public SequenceStreamPacker(SequenceState state) {\n+    this.state = state;\n+    this.nextState = state.getNextState();\n+  }\n \n-    public void setStreamReceiver(SequenceSingleStreamReceiver streamReceiver) {\n-        this.streamReceiver = streamReceiver;\n-    }\n+  public void setStreamReceiver(SequenceSingleStreamReceiver streamReceiver) {\n+    this.streamReceiver = streamReceiver;\n+  }\n \n-    @Override\n-    public void process(ComplexEvent complexEvent) {\n-        //System.out.println(\"sp state=\" + state.getStateNumber() + \" event=\" + complexEvent);\n-        setEventState((StateEvent) complexEvent);\n-        if (state.isLast()) {\n-            sendEvent((StateEvent)complexEvent);\n-        }\n-        passToStreamReceivers((StateEvent) complexEvent);\n+  @Override\n+  public void process(ComplexEvent complexEvent) {\n+    //System.out.println(\"sp state=\" + state.getStateNumber() + \" event=\" + complexEvent);\n+    setEventState((StateEvent) complexEvent);\n+    if (state.isLast()) {\n+      sendEvent((StateEvent) complexEvent);\n     }\n+    passToStreamReceivers((StateEvent) complexEvent);\n+  }\n \n-    protected void setEventState(StateEvent eventBundle) {\n-        eventBundle.setEventState(state.getStateNumber());\n-    }\n+  protected void setEventState(StateEvent eventBundle) {\n+    eventBundle.setEventState(state.getStateNumber());\n+  }\n \n-    protected void sendEvent(AtomicEvent atomicEvent) {\n-        queryProjector.process(atomicEvent);\n-    }\n+  protected void sendEvent(AtomicEvent atomicEvent) {\n+    queryProjector.process(atomicEvent);\n+  }\n \n-    protected void passToStreamReceivers(StateEvent eventBundle) {\n-        if (nextState != null) {\n-            //System.out.println(\"->\" + nextState.getStateNumber());\n-            if (nextState instanceof OrSequenceState) {\n-                //System.out.println(\"->\" + ((OrSequenceState) nextState).getPartnerState().getStateNumber());\n-                ((OrSequenceState) nextState).getPartnerState().getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n-            }\n-            nextState.getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n-        }\n+  protected void passToStreamReceivers(StateEvent eventBundle) {\n+    if (nextState != null) {\n+      //System.out.println(\"->\" + nextState.getStateNumber());\n+      if (nextState instanceof OrSequenceState) {\n+        //System.out.println(\"->\" + ((OrSequenceState) nextState).getPartnerState().getStateNumber());\n+        ((OrSequenceState) nextState).getPartnerState().getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n+      }\n+      nextState.getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n     }\n+  }\n }\n",
+            "diff_size": 53
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "66",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/563/SequenceStreamPacker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/563/SequenceStreamPacker.java\nindex a5187c95b1a..60606ff5e7e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/563/SequenceStreamPacker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/563/SequenceStreamPacker.java\n@@ -68,4 +68,4 @@ public class SequenceStreamPacker extends SingleStreamPacker {\n             nextState.getSequenceSingleStreamReceiver().addToNextEvents(eventBundle);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "66",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "66",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "88",
+    "information": {
+        "errors": [
+            {
+                "line": "92",
+                "column": "12",
+                "severity": "warning",
+                "message": "'if' child has incorrect indentation level 11, expected level should be 12.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "        ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n        if (managedJobConfig == null ) {\n           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n            report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n            report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n            return;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/88/ConfigureManagedJobs.java\nindex 724d64fa93e..2584769774c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/88/ConfigureManagedJobs.java\n@@ -89,7 +89,7 @@ public class ConfigureManagedJobs implements AdminCommand {\n \n         ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n         if (managedJobConfig == null ) {\n-           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n+            logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n             return;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/88/ConfigureManagedJobs.java\nindex 724d64fa93e..d625df2b45a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/88/ConfigureManagedJobs.java\n@@ -36,7 +36,6 @@ import java.util.logging.Logger;\n import org.glassfish.kernel.KernelLoggerInfo;\n \n \n-\n /**\n  * This command manages configured jobs\n  * Managed jobs are commands which are annotated with @ManagedJob ,@Progress\n@@ -46,52 +45,50 @@ import org.glassfish.kernel.KernelLoggerInfo;\n  * to purge the jobs according to the criteria specified.\n  * Definition of parameters:\n  * job-retention-period - Time period to store the jobs. Defaults 24 hours.\n- *\n+ * <p>\n  * job-inactivity-period  -Time period after which we expire an inactive, non responsive command\n- *\n+ * <p>\n  * initial-delay - Initial delay after which the cleanup service should start purging\n  * This is useful when the server restarts will provide some time for the Job Manager to\n  * bootstrap\n- *\n+ * <p>\n  * poll-interval - The time interval after which the JobCleanupService should poll for expired jobs\n- *\n-\n  *\n  * @author Bhakti Mehta\n  */\n @Service(name = \"configure-managed-jobs\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n-@AccessRequired(resource=\"domain/managed-job-config\", action=\"update\")\n+@AccessRequired(resource = \"domain/managed-job-config\", action = \"update\")\n public class ConfigureManagedJobs implements AdminCommand {\n \n     @Inject\n     Domain domain;\n \n-    @Param(name=\"in-memory-retention-period\", optional=true)\n+    @Param(name = \"in-memory-retention-period\", optional = true)\n     String inMemoryRetentionPeriod;\n \n-    @Param(name=\"job-retention-period\", optional=true)\n+    @Param(name = \"job-retention-period\", optional = true)\n     String jobRetentionPeriod;\n \n-    @Param(name=\"cleanup-initial-delay\", optional=true)\n+    @Param(name = \"cleanup-initial-delay\", optional = true)\n     String initialDelay;\n \n-    @Param(name=\"cleanup-poll-interval\", optional=true)\n+    @Param(name = \"cleanup-poll-interval\", optional = true)\n     String pollInterval;\n \n \n-\n     @Override\n     public void execute(AdminCommandContext context) {\n         ActionReport report = context.getActionReport();\n-        Logger logger= context.getLogger();\n+        Logger logger = context.getLogger();\n \n         ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n-        if (managedJobConfig == null ) {\n-           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n+        if (managedJobConfig == null) {\n+            logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n-            report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n+            report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle()\n+                .getString(KernelLoggerInfo.getFailManagedJobConfig));\n             return;\n         }\n \n@@ -99,22 +96,27 @@ public class ConfigureManagedJobs implements AdminCommand {\n             ConfigSupport.apply(new SingleConfigCode<ManagedJobConfig>() {\n \n                 @Override\n-                public Object run(ManagedJobConfig param) throws PropertyVetoException, TransactionFailure {\n+                public Object run(ManagedJobConfig param)\n+                    throws PropertyVetoException, TransactionFailure {\n \n-                    if (inMemoryRetentionPeriod != null)\n+                    if (inMemoryRetentionPeriod != null) {\n                         param.setInMemoryRetentionPeriod(inMemoryRetentionPeriod);\n-                    if (jobRetentionPeriod != null)\n+                    }\n+                    if (jobRetentionPeriod != null) {\n                         param.setJobRetentionPeriod(jobRetentionPeriod);\n-                    if (pollInterval != null)\n+                    }\n+                    if (pollInterval != null) {\n                         param.setPollInterval(pollInterval);\n-                    if (initialDelay != null)\n+                    }\n+                    if (initialDelay != null) {\n                         param.setInitialDelay(initialDelay);\n+                    }\n \n                     return param;\n                 }\n             }, managedJobConfig);\n \n-        } catch(TransactionFailure e) {\n+        } catch (TransactionFailure e) {\n             logger.warning(KernelLoggerInfo.configFailManagedJobConfig);\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setMessage(e.getMessage());\n",
+            "diff_size": 28
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "92",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "1",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 0, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/88/ConfigureManagedJobs.java\nindex 724d64fa93e..cf090b54ea8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/88/ConfigureManagedJobs.java\n@@ -85,12 +85,12 @@ public class ConfigureManagedJobs implements AdminCommand {\n     @Override\n     public void execute(AdminCommandContext context) {\n         ActionReport report = context.getActionReport();\n-        Logger logger= context.getLogger();\n+        Logger logger = context.getLogger();\n \n         ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n         if (managedJobConfig == null ) {\n-           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n-            report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n+    logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n+report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n             return;\n         }\n@@ -122,7 +122,4 @@ public class ConfigureManagedJobs implements AdminCommand {\n \n     }\n \n-}\n-\n-\n-\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/88/ConfigureManagedJobs.java\nindex 724d64fa93e..2584769774c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/88/ConfigureManagedJobs.java\n@@ -89,7 +89,7 @@ public class ConfigureManagedJobs implements AdminCommand {\n \n         ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n         if (managedJobConfig == null ) {\n-           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n+            logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n             return;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/88/ConfigureManagedJobs.java\nindex 724d64fa93e..2584769774c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/88/ConfigureManagedJobs.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/88/ConfigureManagedJobs.java\n@@ -89,7 +89,7 @@ public class ConfigureManagedJobs implements AdminCommand {\n \n         ManagedJobConfig managedJobConfig = domain.getExtensionByType(ManagedJobConfig.class);\n         if (managedJobConfig == null ) {\n-           logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n+            logger.warning(KernelLoggerInfo.getFailManagedJobConfig);\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setMessage(KernelLoggerInfo.getLogger().getResourceBundle().getString(KernelLoggerInfo.getFailManagedJobConfig));\n             return;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

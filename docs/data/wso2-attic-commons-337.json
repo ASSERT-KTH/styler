@@ -1,0 +1,68 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "337",
+    "information": {
+        "errors": [
+            {
+                "line": "50",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 132).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    \n    protected OdeInternalInstance getBpelRuntime() {\n        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.activeJacobThread().getExtension(OdeRTInstanceContext.class);\n        assert nativeApi != null;\n        return nativeApi;\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/337/BpelJacobRunnable.java\nindex 95115fddda8..181a0d5862e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/337/BpelJacobRunnable.java\n@@ -47,7 +47,8 @@ public abstract class BpelJacobRunnable extends JacobRunnable {\n     protected ScopeFrame _scopeFrame;\n     \n     protected OdeInternalInstance getBpelRuntime() {\n-        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.activeJacobThread().getExtension(OdeRTInstanceContext.class);\n+        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.\n+            activeJacobThread().getExtension(OdeRTInstanceContext.class);\n         assert nativeApi != null;\n         return nativeApi;\n     }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/337/BpelJacobRunnable.java\nindex 95115fddda8..6f119919416 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/337/BpelJacobRunnable.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\n  * under the License.\n  */\n+\n package org.apache.ode.bpel.rtrep.v2;\n \n import org.apache.commons.logging.Log;\n@@ -37,75 +38,80 @@ import javax.xml.namespace.QName;\n  * Base class extended by all BPEL-related abstractions. Provides methods for\n  * manipulating the BPEL database, creating faults, and accessing the native\n  * facilities.\n- *\n+ * <p>\n  * Created on Jan 12, 2004 at 5:41:27 PM.\n+ *\n  * @author Maciej Szefler\n  */\n public abstract class BpelJacobRunnable extends JacobRunnable {\n-    private static final Log __log = LogFactory.getLog(BpelJacobRunnable.class);\n-\n-    protected ScopeFrame _scopeFrame;\n-    \n-    protected OdeInternalInstance getBpelRuntime() {\n-        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.activeJacobThread().getExtension(OdeRTInstanceContext.class);\n-        assert nativeApi != null;\n-        return nativeApi;\n-    }\n+  private static final Log __log = LogFactory.getLog(BpelJacobRunnable.class);\n \n-    protected Log log() {\n-        return __log;\n-    }\n-    \n-    protected final FaultData createFault(QName fault, Element faultMsg, OVarType faultType, OBase location){\n-        return new FaultData(fault, faultMsg, faultType, location);\n+  protected ScopeFrame _scopeFrame;\n+\n+  protected OdeInternalInstance getBpelRuntime() {\n+    OdeInternalInstance nativeApi =\n+      (OdeInternalInstance) JacobVPU.activeJacobThread().getExtension(OdeRTInstanceContext.class);\n+    assert nativeApi != null;\n+    return nativeApi;\n+  }\n+\n+  protected Log log() {\n+    return __log;\n+  }\n+\n+  protected final FaultData createFault(QName fault, Element faultMsg, OVarType faultType, OBase location) {\n+    return new FaultData(fault, faultMsg, faultType, location);\n+  }\n+\n+  protected final FaultData createFault(QName fault, OBase location, String faultExplanation) {\n+    return new FaultData(fault, location, faultExplanation);\n+  }\n+\n+  protected final FaultData createFault(QName fault, OBase location) {\n+    return createFault(fault, location, null);\n+  }\n+\n+  protected JacobRunnable createChild(ActivityInfo childInfo, ScopeFrame scopeFrame, LinkFrame linkFrame) {\n+    return new ACTIVITYGUARD(childInfo, scopeFrame, linkFrame);\n+  }\n+\n+  protected void initializeCorrelation(CorrelationSetInstance cset, VariableInstance variable)\n+    throws FaultException {\n+    if (__log.isDebugEnabled()) {\n+      __log.debug(\"Initializing correlation set \" + cset.declaration.name);\n     }\n-    \n-    protected final FaultData createFault(QName fault, OBase location, String faultExplanation) {\n-        return new FaultData(fault, location,faultExplanation);\n+    // if correlation set is already initialized, then skip\n+    if (getBpelRuntime().isCorrelationInitialized(cset)) {\n+      // if already set, we ignore\n+      if (__log.isDebugEnabled()) {\n+        __log.debug(\"OCorrelation set \" + cset + \" is already set: ignoring\");\n+      }\n+      throw new FaultException(cset.declaration.getOwner().constants.qnCorrelationViolation);\n     }\n \n-    protected final FaultData createFault(QName fault, OBase location){\n-        return createFault(fault, location, null);\n-    }\n+    String[] propNames = new String[cset.declaration.properties.size()];\n+    String[] propValues = new String[cset.declaration.properties.size()];\n \n-    protected JacobRunnable createChild(ActivityInfo childInfo, ScopeFrame scopeFrame, LinkFrame linkFrame) {\n-        return new ACTIVITYGUARD(childInfo, scopeFrame, linkFrame);\n+    for (int i = 0; i < cset.declaration.properties.size(); ++i) {\n+      OProcess.OProperty property = cset.declaration.properties.get(i);\n+      propValues[i] = getBpelRuntime().readProperty(variable, property);\n+      propNames[i] = property.name.toString();\n+      if (__log.isDebugEnabled()) {\n+        __log.debug(\"Setting correlation property \" + propNames[i] + \"=\" + propValues[i]);\n+      }\n     }\n \n-    protected void initializeCorrelation(CorrelationSetInstance cset, VariableInstance variable)\n-            throws FaultException {\n-        if (__log.isDebugEnabled()) {\n-          __log.debug(\"Initializing correlation set \" + cset.declaration.name);\n-        }\n-        // if correlation set is already initialized, then skip\n-        if (getBpelRuntime().isCorrelationInitialized(cset)) {\n-          // if already set, we ignore\n-            if (__log.isDebugEnabled()) __log.debug(\"OCorrelation set \" + cset + \" is already set: ignoring\");\n-            throw new FaultException(cset.declaration.getOwner().constants.qnCorrelationViolation);\n-        }\n-\n-        String[] propNames = new String[cset.declaration.properties.size()];\n-        String[] propValues = new String[cset.declaration.properties.size()];\n-\n-        for (int i = 0; i < cset.declaration.properties.size(); ++i) {\n-            OProcess.OProperty property = cset.declaration.properties.get(i);\n-            propValues[i] = getBpelRuntime().readProperty(variable, property);\n-            propNames[i] = property.name.toString();\n-            if (__log.isDebugEnabled())\n-              __log.debug(\"Setting correlation property \" + propNames[i] + \"=\" + propValues[i]);\n-        }\n-\n-        CorrelationKey ckeyVal = new CorrelationKey(cset.declaration.getId(), propValues);\n-        ckeyVal.setUnique(cset.declaration.isUnique());\n-        getBpelRuntime().writeCorrelation(cset,ckeyVal);\n-    }\n+    CorrelationKey ckeyVal = new CorrelationKey(cset.declaration.getId(), propValues);\n+    ckeyVal.setUnique(cset.declaration.isUnique());\n+    getBpelRuntime().writeCorrelation(cset, ckeyVal);\n+  }\n \n-    Node initializeVariable(VariableInstance var, Node val) throws ExternalVariableModuleException {\n-        return getBpelRuntime().initializeVariable(var, _scopeFrame, val);\n-    }\n+  Node initializeVariable(VariableInstance var, Node val) throws ExternalVariableModuleException {\n+    return getBpelRuntime().initializeVariable(var, _scopeFrame, val);\n+  }\n \n-    protected long genMonotonic() {\n-        return getBpelRuntime().genId();\n-    }\n+  protected long genMonotonic() {\n+    return getBpelRuntime().genId();\n+  }\n \n }\n",
+            "diff_size": 95
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "50",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 132).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/337/BpelJacobRunnable.java\nindex 95115fddda8..181a0d5862e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/337/BpelJacobRunnable.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/337/BpelJacobRunnable.java\n@@ -47,7 +47,8 @@ public abstract class BpelJacobRunnable extends JacobRunnable {\n     protected ScopeFrame _scopeFrame;\n     \n     protected OdeInternalInstance getBpelRuntime() {\n-        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.activeJacobThread().getExtension(OdeRTInstanceContext.class);\n+        OdeInternalInstance nativeApi = (OdeInternalInstance) JacobVPU.\n+            activeJacobThread().getExtension(OdeRTInstanceContext.class);\n         assert nativeApi != null;\n         return nativeApi;\n     }\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

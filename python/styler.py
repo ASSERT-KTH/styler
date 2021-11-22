@@ -47,7 +47,7 @@ def run_preprocess(project, protocol):
 
     return output
 
-def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, save_checkpoint_steps=20000, gpu=True):
+def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_size, train_steps=20000, save_checkpoint_steps=20000, gpu=True):
     preprocessed_dir = get_preprocessed_dir_by_protocol(project, protocol)
     model_dir = get_model_dir(project)
 
@@ -67,7 +67,7 @@ def run_train(project, protocol, global_attention, layers, rnn_size, word_vec_si
         '-learning_rate 0.10',
         '-adagrad_accumulator_init 0.1',
         '-bridge',
-        '-train_steps 20000',
+        f'-train_steps {train_steps}',
         f'-save_checkpoint_steps {save_checkpoint_steps}',
         f'-save_model {model_dir}/{protocol}-{global_attention}-{layers}-{rnn_size}-{word_vec_size}-model'
     ]
@@ -128,46 +128,64 @@ def get_files_without_errors(checkstyle_result):
 def get_files_with_errors(checkstyle_result):
     return [ file for file, result in checkstyle_result.items() if len(result['errors']) > 0 ]
 
-def create_corpus(dir, name, checkstyle_dir, checkstyle_jar):
+def create_corpus(repo, dataset_info, dir, name, checkstyle_dir, checkstyle_jar):
     if dir.endswith('/'):
         dir = dir[:-1]
     corpus_dir = get_corpus_dir(name)
 
-    (output, returncode) = checkstyle.check(
-        checkstyle_file_path=checkstyle_dir,
-        file_to_checkstyle_path=dir,
-        checkstyle_jar=checkstyle_jar,
-        only_targeted=True,
-        only_java=True
-    )
-
-    files_without_errors = get_files_without_errors(output)
-    files_with_errors = get_files_with_errors(output)
-
-    logger.debug(f'Found {len(files_without_errors)} files with no errors.')
-    logger.debug(f'Found {len(files_with_errors)} files with errors.')
-
-    def is_good_candidate(file_path):
-        if not file_path.endswith('.java'):
-            return False
-        return True
-
-    candidate_files = filter(is_good_candidate, files_without_errors)
-
     create_dir(corpus_dir)
     shutil.copy(checkstyle_dir, os.path.join(corpus_dir, 'checkstyle.xml'))
-    for id, file in tqdm(enumerate(candidate_files), desc='Copy'):
-        file_target_dir = os.path.join(corpus_dir, f'data/{id}')
-        file_name = file.split('/')[-1]
-        file_target = os.path.join(file_target_dir, file_name)
-        create_dir(file_target_dir)
-        shutil.copy(file, file_target)
 
-    corpus_info = {
-        'grammar': 'Java8',
-        'indent': '4'
-    }
-    save_json(corpus_dir, 'corpus.json', corpus_info)
+    default_branch = None
+    commits = []
+    checkstyle_last_modification_commit = dataset_info["checkstyle_last_modification_commit"]
+    wd = os.getcwd()
+    os.chdir(repo.git.rev_parse('--show-toplevel'))
+    cmd_commit_list = 'git log --pretty=format:%H'
+    p2 = subprocess.Popen(shlex.split(cmd_commit_list), stdout=subprocess.PIPE)
+    commit_list_array = p2.communicate()[0].decode("utf-8")
+    commit_list = commit_list_array.split('\n')
+    commits = commit_list[:commit_list.index(checkstyle_last_modification_commit)] + [checkstyle_last_modification_commit]
+    commits.reverse()
+    os.chdir(wd)
+    
+    for commit in commits:
+        logger.debug(f'Checking out {commit}')
+        repo.git.checkout(commit)
+
+        (output, returncode) = checkstyle.check(
+            checkstyle_file_path=checkstyle_dir,
+            file_to_checkstyle_path=dir,
+            checkstyle_jar=checkstyle_jar,
+            only_targeted=True,
+            only_java=True
+        )
+
+        files_without_errors = get_files_without_errors(output)
+        files_with_errors = get_files_with_errors(output)
+
+        logger.debug(f'Found {len(files_without_errors)} files with no errors.')
+        logger.debug(f'Found {len(files_with_errors)} files with errors.')
+
+        def is_good_candidate(file_path):
+            if not file_path.endswith('.java'):
+                return False
+            return True
+
+        candidate_files = filter(is_good_candidate, files_without_errors)
+
+        files = 0
+        for id, file in tqdm(enumerate(candidate_files), desc='Copy'):
+            file_target_dir = os.path.join(corpus_dir, f'data/{id}')
+            file_name = file.split('/')[-1]
+            file_target = os.path.join(file_target_dir, file_name)
+            create_dir(file_target_dir)
+            shutil.copy(file, file_target)
+            files += 1
+
+        if files > 1:
+            break
+
     return corpus_dir
 
 def get_batch_results(checkstyle_results, n_batch=5):
@@ -309,11 +327,13 @@ def join_protocols(name, protocols_repairs, checkstyle_jar):
         shutil.copy(path, folder)
     return best_proposals
 
-def gen_training_data(project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
+def gen_training_data(repo, dataset_info, project_path, checkstyle_file_path, checkstyle_jar, project_name, corpus_dir=None):
     protocols = (('random', 'three_grams'))
     try:
-        if corpus_dir is None and project_path is None:
+        if corpus_dir is None:
             corpus_dir = create_corpus(
+                repo,
+                dataset_info,
                 project_path,
                 project_name,
                 checkstyle_file_path,
@@ -329,7 +349,7 @@ def gen_training_data(project_path, checkstyle_file_path, checkstyle_jar, projec
             synthetic_error_generator.gen_dataset(corpus, share, core_config['DATASHARE'].getint('number_of_synthetic_errors'), synthetic_dataset_dir_by_protocol, checkstyle_jar, protocol=protocol)
             gotify.notify('[data generation]', f'Done {protocol} on {project_name}')
     except:
-        logger.exception("Something whent wrong during the generation training data")
+        logger.exception("Something went wrong during the training data generation.")
         #delete_dir_if_exists(get_corpus_dir(project_name))
 
         for protocol in protocols:
@@ -385,20 +405,22 @@ def main(args):
 
         checkstyle_jar = dataset_info["checkstyle_jar"]
 
+        (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
         if os.path.exists(get_corpus_dir(errors_dataset_name)):
             corpus_dir = get_corpus_dir(errors_dataset_name)
-            repo_dir = None
-        else:
-            (repo_user, repo_name) = dataset_info['repo_url'].split('/')[-2:]
-
+            #repo_dir = None
+            #repo = git_helper.open_repo(repo_user, repo_name)
+        #else:
             repo, repo_dir = git_helper.clone_repo(repo_user, repo_name, https=True)
-            repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
+            #repo.git.checkout(dataset_info["checkstyle_last_modification_commit"])
+
+        repo, repo_dir = git_helper.open_repo(repo_user, repo_name)
 
         checkstyle_file_path = os.path.join(errors_dataset_dir, 'checkstyle.xml')
 
         logger.debug("Starting data generation")
 
-        gen_training_data(repo_dir, checkstyle_file_path, checkstyle_jar, errors_dataset_name, corpus_dir=corpus_dir)
+        gen_training_data(repo, dataset_info, repo_dir, checkstyle_file_path, checkstyle_jar, errors_dataset_name, corpus_dir=corpus_dir)
 
         gotify.notify('[done][data generation]', errors_dataset_name)
 
@@ -437,9 +459,10 @@ def main(args):
         layers = args[5]
         rnn_size = args[6]
         word_vec_size = args[7]
-        save_checkpoint_steps = 20000
-        gpu = args[8]
-        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, save_checkpoint_steps, gpu)
+        train_steps = args[8]
+        save_checkpoint_steps = args[9]
+        gpu = args[10]
+        run_train(project_name, protocol, global_attention, layers, rnn_size, word_vec_size, train_steps, save_checkpoint_steps, gpu)
 
         time_elapsed = datetime.now() - start_time
         logger.debug('Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))

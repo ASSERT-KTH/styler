@@ -1,0 +1,178 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4276",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "43",
+                    "column": "80",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "38",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "79",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "82",
+                    "column": "94",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "83",
+                    "column": "130",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4276/ServerMessageDecoder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4276/ServerMessageDecoder.java\nindex b4535bdafe4..3e053396c7e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4276/ServerMessageDecoder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4276/ServerMessageDecoder.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.protocol.handshake;\n \n import io.netty.buffer.ByteBuf;\n@@ -38,54 +39,54 @@ import org.neo4j.helpers.collection.Pair;\n  */\n public class ServerMessageDecoder extends ByteToMessageDecoder\n {\n-    @Override\n-    protected void decode( ChannelHandlerContext ctx, ByteBuf in, List<Object> out )\n-    {\n-        int messageCode = in.readInt();\n+  @Override\n+  protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)\n+  {\n+    int messageCode = in.readInt();\n \n-        switch ( messageCode )\n-        {\n-        case InitialMagicMessage.MESSAGE_CODE:\n-        {\n-            String magic = StringMarshal.unmarshal( in );\n-            out.add( new InitialMagicMessage( magic ) );\n-            return;\n-        }\n-        case 1:\n-        {\n-            ApplicationProtocolRequest applicationProtocolRequest = decodeProtocolRequest( ApplicationProtocolRequest::new, in, ByteBuf::readInt );\n-            out.add( applicationProtocolRequest );\n-            return;\n-        }\n-        case 2:\n-            ModifierProtocolRequest modifierProtocolRequest = decodeProtocolRequest( ModifierProtocolRequest::new, in, StringMarshal::unmarshal );\n-            out.add( modifierProtocolRequest );\n-            return;\n-        case 3:\n-        {\n-            String protocolName = StringMarshal.unmarshal( in );\n-            int version = in.readInt();\n-            int numberOfModifierProtocols = in.readInt();\n-            List<Pair<String,String>> modifierProtocols = Stream.generate( () -> Pair.of( StringMarshal.unmarshal( in ), StringMarshal.unmarshal( in ) ) )\n-                    .limit( numberOfModifierProtocols )\n-                    .collect( Collectors.toList() );\n-            out.add( new SwitchOverRequest( protocolName, version, modifierProtocols ) );\n-            return;\n-        }\n-        default:\n-            // TODO\n-            return;\n-        }\n+    switch (messageCode)\n+    {\n+      case InitialMagicMessage.MESSAGE_CODE:\n+      {\n+        String magic = StringMarshal.unmarshal(in);\n+        out.add(new InitialMagicMessage(magic));\n+        return;\n+      }\n+      case 1:\n+      {\n+        ApplicationProtocolRequest applicationProtocolRequest = decodeProtocolRequest(ApplicationProtocolRequest::new, in, ByteBuf::readInt);\n+        out.add(applicationProtocolRequest);\n+        return;\n+      }\n+      case 2:\n+        ModifierProtocolRequest modifierProtocolRequest = decodeProtocolRequest(ModifierProtocolRequest::new, in, StringMarshal::unmarshal);\n+        out.add(modifierProtocolRequest);\n+        return;\n+      case 3:\n+      {\n+        String protocolName = StringMarshal.unmarshal(in);\n+        int version = in.readInt();\n+        int numberOfModifierProtocols = in.readInt();\n+        List<Pair<String, String>> modifierProtocols = Stream.generate(() -> Pair.of(StringMarshal.unmarshal(in), StringMarshal.unmarshal(in)))\n+            .limit(numberOfModifierProtocols)\n+            .collect(Collectors.toList());\n+        out.add(new SwitchOverRequest(protocolName, version, modifierProtocols));\n+        return;\n+      }\n+      default:\n+        // TODO\n+        return;\n     }\n+  }\n \n-    private <U extends Comparable<U>, T extends BaseProtocolRequest<U>> T decodeProtocolRequest( BiFunction<String,Set<U>,T> constructor, ByteBuf in,\n-            Function<ByteBuf,U> versionDecoder )\n-    {\n-        String protocolName = StringMarshal.unmarshal( in );\n-        int versionArrayLength = in.readInt();\n+  private <U extends Comparable<U>, T extends BaseProtocolRequest<U>> T decodeProtocolRequest(BiFunction<String, Set<U>, T> constructor, ByteBuf in,\n+                                                                                              Function<ByteBuf, U> versionDecoder)\n+  {\n+    String protocolName = StringMarshal.unmarshal(in);\n+    int versionArrayLength = in.readInt();\n \n-        Set<U> versions = Stream.generate( () -> versionDecoder.apply( in ) ).limit( versionArrayLength ).collect( Collectors.toSet() );\n+    Set<U> versions = Stream.generate(() -> versionDecoder.apply(in)).limit(versionArrayLength).collect(Collectors.toSet());\n \n-        return constructor.apply( protocolName, versions );\n-    }\n+    return constructor.apply(protocolName, versions);\n+  }\n }\n",
+            "diff_size": 47
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "68",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 189).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "79",
+                    "severity": "error",
+                    "message": "Line is longer than 160 characters (found 186).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4276/ServerMessageDecoder.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4276/ServerMessageDecoder.java\nindex b4535bdafe4..7308cf1ae44 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4276/ServerMessageDecoder.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4276/ServerMessageDecoder.java\n@@ -42,8 +42,7 @@ public class ServerMessageDecoder extends ByteToMessageDecoder\n     protected void decode( ChannelHandlerContext ctx, ByteBuf in, List<Object> out )\n     {\n         int messageCode = in.readInt();\n-\n-        switch ( messageCode )\n+switch ( messageCode )\n         {\n         case InitialMagicMessage.MESSAGE_CODE:\n         {\n@@ -66,26 +65,23 @@ public class ServerMessageDecoder extends ByteToMessageDecoder\n             String protocolName = StringMarshal.unmarshal( in );\n             int version = in.readInt();\n             int numberOfModifierProtocols = in.readInt();\n-            List<Pair<String,String>> modifierProtocols = Stream.generate( () -> Pair.of( StringMarshal.unmarshal( in ), StringMarshal.unmarshal( in ) ) )\n-                    .limit( numberOfModifierProtocols )\n+            List<Pair<String,String>> modifierProtocols = Stream.generate( () -> Pair.of( StringMarshal.unmarshal( in ), StringMarshal.unmarshal( in ) ) ).limit( numberOfModifierProtocols )\n                     .collect( Collectors.toList() );\n-            out.add( new SwitchOverRequest( protocolName, version, modifierProtocols ) );\n+out.add( new SwitchOverRequest( protocolName, version, modifierProtocols ) );\n             return;\n         }\n-        default:\n+    default:\n             // TODO\n             return;\n         }\n     }\n \n-    private <U extends Comparable<U>, T extends BaseProtocolRequest<U>> T decodeProtocolRequest( BiFunction<String,Set<U>,T> constructor, ByteBuf in,\n-            Function<ByteBuf,U> versionDecoder )\n+    private <U extends Comparable<U>, T extends BaseProtocolRequest<U>> T decodeProtocolRequest( BiFunction<String,Set<U>,T> constructor, ByteBuf in, Function<ByteBuf,U> versionDecoder )\n     {\n         String protocolName = StringMarshal.unmarshal( in );\n         int versionArrayLength = in.readInt();\n \n         Set<U> versions = Stream.generate( () -> versionDecoder.apply( in ) ).limit( versionArrayLength ).collect( Collectors.toSet() );\n-\n-        return constructor.apply( protocolName, versions );\n+return constructor.apply( protocolName, versions );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

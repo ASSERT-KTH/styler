@@ -1,0 +1,144 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3279",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "23",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "56",
+                    "column": "65",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "59",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "74",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3279/LockService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3279/LockService.java\nindex 9b453f10754..fa4a1e02660 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3279/LockService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3279/LockService.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.locking;\n \n \n@@ -24,57 +25,57 @@ package org.neo4j.kernel.impl.locking;\n  * Note: This is confusing to you. What is the difference between this and {@link Locks}? Well. {@link Locks} is the\n  * primary locking component in neo. However, there are lower layers that use a separate locking mechanism (this),\n  * which they can do under very strict rules of engagement.\n- *\n+ * <p>\n  * This implementation should be removed, and it's usage should be replaced by using the regular lock manager.\n- *\n- *\n- *\n+ * <p>\n+ * <p>\n+ * <p>\n  * An implementation of this interface must guarantee that locking is completely fair:\n  * - Locks should be assigned in the order which they were claimed.\n  * - If a write lock is waiting, new read locks may not be issued.\n- *\n+ * <p>\n  * It is acceptable for an implementation to limit the number of allowed concurrent read locks.\n- *\n+ * <p>\n  * Write locks must be exclusive. No more than one writer may lock the same resource at any given time, and no other\n  * lock types may be issued while a write lock is held.\n- *\n+ * <p>\n  * The simples possible solution issues the same type of mutually exclusive locks for each lock type.\n  *\n  * @see AbstractLockService for implementation details.\n  */\n public interface LockService\n {\n-    enum LockType\n-    {\n-        READ_LOCK,\n-        WRITE_LOCK\n-    }\n+  enum LockType\n+  {\n+    READ_LOCK,\n+    WRITE_LOCK\n+  }\n \n-    Lock acquireNodeLock( long nodeId, LockType type );\n+  Lock acquireNodeLock(long nodeId, LockType type);\n \n-    Lock acquireRelationshipLock( long relationhipId, LockType type );\n+  Lock acquireRelationshipLock(long relationhipId, LockType type);\n \n-    Lock NO_LOCK = new Lock()\n+  Lock NO_LOCK = new Lock()\n+  {\n+    @Override\n+    public void release()\n     {\n-        @Override\n-        public void release()\n-        {\n-           // Nothing to release, I'm not a lock, mind you\n-        }\n-    };\n+      // Nothing to release, I'm not a lock, mind you\n+    }\n+  };\n \n-    LockService NO_LOCK_SERVICE = new LockService()\n+  LockService NO_LOCK_SERVICE = new LockService()\n+  {\n+    @Override\n+    public Lock acquireNodeLock(long nodeId, LockType type)\n     {\n-        @Override\n-        public Lock acquireNodeLock( long nodeId, LockType type )\n-        {\n-            return NO_LOCK;\n-        }\n+      return NO_LOCK;\n+    }\n \n-        @Override\n-        public Lock acquireRelationshipLock( long relationhipId, LockType type )\n-        {\n-            return NO_LOCK;\n-        }\n-    };\n+    @Override\n+    public Lock acquireRelationshipLock(long relationhipId, LockType type)\n+    {\n+      return NO_LOCK;\n+    }\n+  };\n }\n",
+            "diff_size": 40
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

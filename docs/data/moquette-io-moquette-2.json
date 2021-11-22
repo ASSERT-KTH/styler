@@ -1,0 +1,134 @@
+{
+    "project_name": "moquette-io-moquette",
+    "error_id": "2",
+    "information": {
+        "errors": [
+            {
+                "line": "87",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 127).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            session = new TransientSession(clientID, this.willMessages);\n        } else {\n            DurableSession durableSession = new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n            durableSession.reloadAllSubscriptionsFromStore();\n            session = durableSession;\n        }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "87",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler/2/SessionsRepository.java\nindex 9ebed215146..70a5ce05e75 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler/2/SessionsRepository.java\n@@ -85,7 +85,7 @@ public class SessionsRepository {\n             session = new TransientSession(clientID, this.willMessages);\n         } else {\n             DurableSession durableSession = new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n-            durableSession.reloadAllSubscriptionsFromStore();\n+                    durableSession.reloadAllSubscriptionsFromStore();\n             session = durableSession;\n         }\n         this.sessionsCache.put(clientID, session);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/2/SessionsRepository.java\nindex 9ebed215146..436517231a3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/intellij/2/SessionsRepository.java\n@@ -13,6 +13,7 @@\n  *\n  * You may elect to redistribute this code under either of these licenses.\n  */\n+\n package io.moquette.spi.impl;\n \n import io.moquette.persistence.PersistentSession;\n@@ -32,127 +33,128 @@ import java.util.concurrent.TimeUnit;\n \n public class SessionsRepository {\n \n-    /**\n-     * Task to be scheduled to execute the cleaning of persisted sessions (clean flag=false) older than a\n-     * defined period.\n-     */\n-    private class SessionCleanerTask implements Runnable {\n+  /**\n+   * Task to be scheduled to execute the cleaning of persisted sessions (clean flag=false) older than a\n+   * defined period.\n+   */\n+  private class SessionCleanerTask implements Runnable {\n \n-        @Override\n-        public void run() {\n-            wipeExpiredSessions();\n-        }\n+    @Override\n+    public void run() {\n+      wipeExpiredSessions();\n     }\n-\n-    private static final Logger LOG = LoggerFactory.getLogger(SessionsRepository.class);\n-    private final ISessionsStore sessions;\n-    private ISubscriptionsStore subscriptionsStore;\n-    private ScheduledExecutorService scheduler;\n-    private final ConcurrentMap<String, ClientSession> sessionsCache = new ConcurrentHashMap<>();\n-    // maps clientID to Will testament, if specified on CONNECT\n-    // maps clientID to Will testament, if specified on CONNECT\n-    private ConcurrentMap<String, WillMessage> willMessages = new ConcurrentHashMap<>();\n-\n-    public SessionsRepository(ISessionsStore sessionsStore, ScheduledExecutorService scheduler) {\n-        this.sessions = sessionsStore;\n-        this.subscriptionsStore = sessionsStore.subscriptionStore();\n-        this.scheduler = scheduler;\n+  }\n+\n+  private static final Logger LOG = LoggerFactory.getLogger(SessionsRepository.class);\n+  private final ISessionsStore sessions;\n+  private ISubscriptionsStore subscriptionsStore;\n+  private ScheduledExecutorService scheduler;\n+  private final ConcurrentMap<String, ClientSession> sessionsCache = new ConcurrentHashMap<>();\n+  // maps clientID to Will testament, if specified on CONNECT\n+  // maps clientID to Will testament, if specified on CONNECT\n+  private ConcurrentMap<String, WillMessage> willMessages = new ConcurrentHashMap<>();\n+\n+  public SessionsRepository(ISessionsStore sessionsStore, ScheduledExecutorService scheduler) {\n+    this.sessions = sessionsStore;\n+    this.subscriptionsStore = sessionsStore.subscriptionStore();\n+    this.scheduler = scheduler;\n+  }\n+\n+  @SuppressWarnings(\"FutureReturnValueIgnored\")\n+  public void init() {\n+    SessionCleanerTask cleanerTask = new SessionCleanerTask();\n+    this.scheduler.schedule(cleanerTask, 1, TimeUnit.HOURS);\n+  }\n+\n+  public ClientSession sessionForClient(String clientID) {\n+    LOG.debug(\"Retrieving session. CId={}\", clientID);\n+    if (this.sessionsCache.containsKey(clientID)) {\n+      return this.sessionsCache.get(clientID);\n     }\n \n-    @SuppressWarnings(\"FutureReturnValueIgnored\")\n-    public void init() {\n-        SessionCleanerTask cleanerTask = new SessionCleanerTask();\n-        this.scheduler.schedule(cleanerTask, 1, TimeUnit.HOURS);\n+    if (!this.sessions.contains(clientID)) {\n+      LOG.warn(\"Session does not exist. CId={}\", clientID);\n+      return null;\n     }\n-\n-    public ClientSession sessionForClient(String clientID) {\n-        LOG.debug(\"Retrieving session. CId={}\", clientID);\n-        if (this.sessionsCache.containsKey(clientID)) {\n-            return this.sessionsCache.get(clientID);\n-        }\n-\n-        if (!this.sessions.contains(clientID)) {\n-            LOG.warn(\"Session does not exist. CId={}\", clientID);\n-            return null;\n-        }\n-        PersistentSession storedSession = this.sessions.loadSessionByKey(clientID);\n-        return newClientSessionAndCacheIt(storedSession.clientID, storedSession.cleanSession);\n+    PersistentSession storedSession = this.sessions.loadSessionByKey(clientID);\n+    return newClientSessionAndCacheIt(storedSession.clientID, storedSession.cleanSession);\n+  }\n+\n+  private ClientSession newClientSessionAndCacheIt(String clientID, boolean cleanSession) {\n+    ClientSession session;\n+    if (cleanSession) {\n+      session = new TransientSession(clientID, this.willMessages);\n+    } else {\n+      DurableSession durableSession =\n+          new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n+      durableSession.reloadAllSubscriptionsFromStore();\n+      session = durableSession;\n     }\n-\n-    private ClientSession newClientSessionAndCacheIt(String clientID, boolean cleanSession) {\n-        ClientSession session;\n-        if (cleanSession) {\n-            session = new TransientSession(clientID, this.willMessages);\n-        } else {\n-            DurableSession durableSession = new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n-            durableSession.reloadAllSubscriptionsFromStore();\n-            session = durableSession;\n-        }\n-        this.sessionsCache.put(clientID, session);\n-        return session;\n+    this.sessionsCache.put(clientID, session);\n+    return session;\n+  }\n+\n+  public ClientSession createNewSession(String clientID, boolean cleanSession) {\n+    if (sessions.contains(clientID)) {\n+      LOG.error(\"Unable to create a new session: the client ID is already in use. CId={}, cleanSession={}\",\n+          clientID, cleanSession);\n+      throw new IllegalArgumentException(\"Can't create a session with the ID of an already existing\" + clientID);\n     }\n-\n-    public ClientSession createNewSession(String clientID, boolean cleanSession) {\n-        if (sessions.contains(clientID)) {\n-            LOG.error(\"Unable to create a new session: the client ID is already in use. CId={}, cleanSession={}\",\n-                clientID, cleanSession);\n-            throw new IllegalArgumentException(\"Can't create a session with the ID of an already existing\" + clientID);\n-        }\n-        LOG.debug(\"Creating new session. CId={}, cleanSession={}\", clientID, cleanSession);\n-        if (!cleanSession) {\n-            sessions.createNewDurableSession(clientID);\n-        }\n-        return newClientSessionAndCacheIt(clientID, cleanSession);\n+    LOG.debug(\"Creating new session. CId={}, cleanSession={}\", clientID, cleanSession);\n+    if (!cleanSession) {\n+      sessions.createNewDurableSession(clientID);\n     }\n+    return newClientSessionAndCacheIt(clientID, cleanSession);\n+  }\n \n-    public Collection<ClientSession> getAllSessions() {\n-        Collection<ClientSession> result = new ArrayList<>();\n-        for (PersistentSession persistentSession : this.sessions.listAllSessions()) {\n-            result.add(sessionForClient(persistentSession.clientID));\n-        }\n-        return result;\n+  public Collection<ClientSession> getAllSessions() {\n+    Collection<ClientSession> result = new ArrayList<>();\n+    for (PersistentSession persistentSession : this.sessions.listAllSessions()) {\n+      result.add(sessionForClient(persistentSession.clientID));\n     }\n-\n-    ClientSession createOrLoadClientSession(String clientId, boolean cleanSession) {\n-        ClientSession clientSession = this.sessionForClient(clientId);\n-        if (clientSession == null) {\n-            clientSession = this.createNewSession(clientId, cleanSession);\n-        } else {\n-            //session was already present\n-            if (!clientSession.isCleanSession() && cleanSession) {\n-                //remove from storage & create new transient session\n-                //TODO existing subscription from durable session has to be copied into the new transient?\n-                sessions.removeDurableSession(clientId);\n-                clientSession = this.createNewSession(clientId, true);\n-            } /*else {\n+    return result;\n+  }\n+\n+  ClientSession createOrLoadClientSession(String clientId, boolean cleanSession) {\n+    ClientSession clientSession = this.sessionForClient(clientId);\n+    if (clientSession == null) {\n+      clientSession = this.createNewSession(clientId, cleanSession);\n+    } else {\n+      //session was already present\n+      if (!clientSession.isCleanSession() && cleanSession) {\n+        //remove from storage & create new transient session\n+        //TODO existing subscription from durable session has to be copied into the new transient?\n+        sessions.removeDurableSession(clientId);\n+        clientSession = this.createNewSession(clientId, true);\n+      } /*else {\n                 clientSession.cleanSession(cleanSession);\n                 this.updateCleanStatus(clientId, cleanSession);\n             }*/\n-        }\n-        if (cleanSession) {\n-            LOG.info(\"Cleaning session. CId={}\", clientId);\n-            clientSession.cleanSession();\n-        }\n-        return clientSession;\n     }\n-\n-    public void disconnect(String clientId) {\n-        LOG.debug(\"Removing session from repository's cache\");\n-        ClientSession clientSession = this.sessionForClient(clientId);\n-        if (clientSession == null) {\n-            return;\n-        }\n-\n-        sessionsCache.remove(clientId);\n-        this.sessions.trackSessionClose(LocalDateTime.now(), clientId);\n+    if (cleanSession) {\n+      LOG.info(\"Cleaning session. CId={}\", clientId);\n+      clientSession.cleanSession();\n     }\n+    return clientSession;\n+  }\n+\n+  public void disconnect(String clientId) {\n+    LOG.debug(\"Removing session from repository's cache\");\n+    ClientSession clientSession = this.sessionForClient(clientId);\n+    if (clientSession == null) {\n+      return;\n+    }\n+\n+    sessionsCache.remove(clientId);\n+    this.sessions.trackSessionClose(LocalDateTime.now(), clientId);\n+  }\n \n-    private void wipeExpiredSessions() {\n-        final LocalDateTime pin = LocalDateTime.now().minus(6, ChronoUnit.DAYS);\n-        final Set<String> expiredSessionsIds = this.sessions.sessionOlderThan(pin);\n-        for (String expiredSession : expiredSessionsIds) {\n-            this.sessions.removeDurableSession(expiredSession);\n-            this.subscriptionsStore.wipeSubscriptions(expiredSession);\n-        }\n+  private void wipeExpiredSessions() {\n+    final LocalDateTime pin = LocalDateTime.now().minus(6, ChronoUnit.DAYS);\n+    final Set<String> expiredSessionsIds = this.sessions.sessionOlderThan(pin);\n+    for (String expiredSession : expiredSessionsIds) {\n+      this.sessions.removeDurableSession(expiredSession);\n+      this.subscriptionsStore.wipeSubscriptions(expiredSession);\n     }\n+  }\n }\n",
+            "diff_size": 138
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "87",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/2/SessionsRepository.java\nindex 9ebed215146..904cd5b00f3 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/naturalize/2/SessionsRepository.java\n@@ -155,4 +155,4 @@ public class SessionsRepository {\n             this.subscriptionsStore.wipeSubscriptions(expiredSession);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "89",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/2/SessionsRepository.java\nindex 9ebed215146..36ec781ad28 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/codebuff/2/SessionsRepository.java\n@@ -19,7 +19,6 @@ import io.moquette.persistence.PersistentSession;\n import io.moquette.spi.*;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import java.time.LocalDateTime;\n import java.time.temporal.ChronoUnit;\n import java.util.ArrayList;\n@@ -30,12 +29,14 @@ import java.util.concurrent.ConcurrentMap;\n import java.util.concurrent.ScheduledExecutorService;\n import java.util.concurrent.TimeUnit;\n \n+\n public class SessionsRepository {\n \n     /**\n      * Task to be scheduled to execute the cleaning of persisted sessions (clean flag=false) older than a\n      * defined period.\n      */\n+\n     private class SessionCleanerTask implements Runnable {\n \n         @Override\n@@ -75,6 +76,7 @@ public class SessionsRepository {\n             LOG.warn(\"Session does not exist. CId={}\", clientID);\n             return null;\n         }\n+\n         PersistentSession storedSession = this.sessions.loadSessionByKey(clientID);\n         return newClientSessionAndCacheIt(storedSession.clientID, storedSession.cleanSession);\n     }\n@@ -95,7 +97,8 @@ public class SessionsRepository {\n     public ClientSession createNewSession(String clientID, boolean cleanSession) {\n         if (sessions.contains(clientID)) {\n             LOG.error(\"Unable to create a new session: the client ID is already in use. CId={}, cleanSession={}\",\n-                clientID, cleanSession);\n+                clientID,\n+                cleanSession);\n             throw new IllegalArgumentException(\"Can't create a session with the ID of an already existing\" + clientID);\n         }\n         LOG.debug(\"Creating new session. CId={}, cleanSession={}\", clientID, cleanSession);\n@@ -129,6 +132,7 @@ public class SessionsRepository {\n                 this.updateCleanStatus(clientId, cleanSession);\n             }*/\n         }\n+\n         if (cleanSession) {\n             LOG.info(\"Cleaning session. CId={}\", clientId);\n             clientSession.cleanSession();\n@@ -142,7 +146,6 @@ public class SessionsRepository {\n         if (clientSession == null) {\n             return;\n         }\n-\n         sessionsCache.remove(clientId);\n         this.sessions.trackSessionClose(LocalDateTime.now(), clientId);\n     }\n@@ -155,4 +158,4 @@ public class SessionsRepository {\n             this.subscriptionsStore.wipeSubscriptions(expiredSession);\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "87",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler_random/2/SessionsRepository.java\nindex 9ebed215146..70a5ce05e75 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler_random/2/SessionsRepository.java\n@@ -85,7 +85,7 @@ public class SessionsRepository {\n             session = new TransientSession(clientID, this.willMessages);\n         } else {\n             DurableSession durableSession = new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n-            durableSession.reloadAllSubscriptionsFromStore();\n+                    durableSession.reloadAllSubscriptionsFromStore();\n             session = durableSession;\n         }\n         this.sessionsCache.put(clientID, session);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "87",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'=' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "41",
+                    "severity": "warning",
+                    "message": "'=' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "59",
+                    "severity": "warning",
+                    "message": "'(' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "87",
+                    "column": "69",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "13",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "27",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler_three_grams/2/SessionsRepository.java\nindex 9ebed215146..0bf06c25939 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/errored/1/2/SessionsRepository.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/moquette-io-moquette/styler_three_grams/2/SessionsRepository.java\n@@ -84,8 +84,8 @@ public class SessionsRepository {\n         if (cleanSession) {\n             session = new TransientSession(clientID, this.willMessages);\n         } else {\n-            DurableSession durableSession = new DurableSession(clientID, this.sessions, this.subscriptionsStore, willMessages);\n-            durableSession.reloadAllSubscriptionsFromStore();\n+            DurableSessiondurableSession=newDurableSession( clientID,this.sessions, this.subscriptionsStore\n+            ,willMessages);durableSession.reloadAllSubscriptionsFromStore.reloadAllSubscriptionsFromStore();\n             session = durableSession;\n         }\n         this.sessionsCache.put(clientID, session);\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

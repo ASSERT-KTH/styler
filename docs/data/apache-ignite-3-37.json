@@ -1,0 +1,206 @@
+{
+    "project_name": "apache-ignite-3",
+    "error_id": "37",
+    "information": {
+        "errors": [
+            {
+                "line": "50",
+                "column": "5",
+                "severity": "error",
+                "message": "'VARIABLE_DEF' should be separated from previous line.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n    private final Executor executor;\n    private final RaftClientMessagesFactory factory;\n\n    public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n        this.executor = executor;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/37/ActionRequestProcessor.java\nindex c73df6d9b7e..b026fc11835 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler/37/ActionRequestProcessor.java\n@@ -47,6 +47,7 @@ import org.apache.ignite.internal.raft.server.impl.JRaftServerImpl;\n  */\n public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n     private final Executor executor;\n+\n     private final RaftClientMessagesFactory factory;\n \n     public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/37/ActionRequestProcessor.java\nindex c73df6d9b7e..e3324aae9da 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/intellij/37/ActionRequestProcessor.java\n@@ -14,6 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.apache.ignite.raft.jraft.rpc.impl.client;\n \n import java.io.Serializable;\n@@ -46,162 +47,178 @@ import org.apache.ignite.internal.raft.server.impl.JRaftServerImpl;\n  * Process action request.\n  */\n public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n-    private final Executor executor;\n-    private final RaftClientMessagesFactory factory;\n+  private final Executor executor;\n \n-    public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n-        this.executor = executor;\n-        this.factory = factory;\n-    }\n+  private final RaftClientMessagesFactory factory;\n \n-    /** {@inheritDoc} */\n-    @Override public void handleRequest(RpcContext rpcCtx, ActionRequest request) {\n-        Node node = rpcCtx.getNodeManager().get(request.groupId(), PeerId.parsePeer(rpcCtx.getLocalAddress()));\n+  public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n+    this.executor = executor;\n+    this.factory = factory;\n+  }\n \n-        if (node == null) {\n-            rpcCtx.sendResponse(factory.raftErrorResponse().errorCode(RaftErrorCode.ILLEGAL_STATE).build());\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public void handleRequest(RpcContext rpcCtx, ActionRequest request) {\n+    Node node = rpcCtx.getNodeManager().get(request.groupId(), PeerId.parsePeer(rpcCtx.getLocalAddress()));\n \n-            return;\n-        }\n+    if (node == null) {\n+      rpcCtx.sendResponse(factory.raftErrorResponse().errorCode(RaftErrorCode.ILLEGAL_STATE).build());\n+\n+      return;\n+    }\n \n-        if (request.command() instanceof WriteCommand) {\n-            node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())),\n-                new CommandClosureImpl<>(request.command()) {\n-                    @Override public void result(Serializable res) {\n-                        rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                    }\n+    if (request.command() instanceof WriteCommand) {\n+      node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())),\n+          new CommandClosureImpl<>(request.command()) {\n+            @Override\n+            public void result(Serializable res) {\n+              rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n+            }\n \n-                    @Override public void run(Status status) {\n-                        assert !status.isOk() : status;\n+            @Override\n+            public void run(Status status) {\n+              assert !status.isOk() : status;\n \n-                        sendError(rpcCtx, status, node);\n-                    }\n-                }));\n-        }\n-        else {\n-            if (request.readOnlySafe()) {\n-                node.readIndex(BytesUtil.EMPTY_BYTES, new ReadIndexClosure() {\n-                    @Override public void run(Status status, long index, byte[] reqCtx) {\n-                        if (status.isOk()) {\n-                            JRaftServerImpl.DelegatingStateMachine fsm =\n-                                (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n-\n-                            try {\n-                                fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n-                                    @Override public ReadCommand command() {\n-                                        return (ReadCommand) request.command();\n-                                    }\n-\n-                                    @Override public void result(Serializable res) {\n-                                        rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                                    }\n-                                }).iterator());\n-                            }\n-                            catch (Exception e) {\n-                                sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n-                            }\n-                        }\n-                        else\n-                            sendError(rpcCtx, status, node);\n-                    }\n-                });\n+              sendError(rpcCtx, status, node);\n+            }\n+          }));\n+    } else {\n+      if (request.readOnlySafe()) {\n+        node.readIndex(BytesUtil.EMPTY_BYTES, new ReadIndexClosure() {\n+          @Override\n+          public void run(Status status, long index, byte[] reqCtx) {\n+            if (status.isOk()) {\n+              JRaftServerImpl.DelegatingStateMachine fsm =\n+                  (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+\n+              try {\n+                fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n+                  @Override\n+                  public ReadCommand command() {\n+                    return (ReadCommand) request.command();\n+                  }\n+\n+                  @Override\n+                  public void result(Serializable res) {\n+                    rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n+                  }\n+                }).iterator());\n+              } catch (Exception e) {\n+                sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n+              }\n+            } else {\n+              sendError(rpcCtx, status, node);\n             }\n-            else {\n-                // TODO asch remove copy paste, batching https://issues.apache.org/jira/browse/IGNITE-14832\n-                JRaftServerImpl.DelegatingStateMachine fsm =\n-                    (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n-\n-                try {\n-                    fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n-                        @Override public ReadCommand command() {\n-                            return (ReadCommand) request.command();\n-                        }\n-\n-                        @Override public void result(Serializable res) {\n-                            rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                        }\n-                    }).iterator());\n-                }\n-                catch (Exception e) {\n-                    sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n-                }\n+          }\n+        });\n+      } else {\n+        // TODO asch remove copy paste, batching https://issues.apache.org/jira/browse/IGNITE-14832\n+        JRaftServerImpl.DelegatingStateMachine fsm =\n+            (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+\n+        try {\n+          fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n+            @Override\n+            public ReadCommand command() {\n+              return (ReadCommand) request.command();\n             }\n+\n+            @Override\n+            public void result(Serializable res) {\n+              rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n+            }\n+          }).iterator());\n+        } catch (Exception e) {\n+          sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n         }\n+      }\n     }\n-\n-    /** {@inheritDoc} */\n-    @Override public String interest() {\n-        return ActionRequest.class.getName();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public String interest() {\n+    return ActionRequest.class.getName();\n+  }\n+\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public Executor executor() {\n+    return executor;\n+  }\n+\n+  /**\n+   * @param node          The node.\n+   * @param corellationId Corellation id.\n+   * @param errorCode     Error code.\n+   * @param newLeader     New leader.\n+   */\n+  private void sendError(RpcContext ctx, RaftErrorCode errorCode, String msg) {\n+    RaftErrorResponseBuilder resp = factory.raftErrorResponse().errorCode(errorCode).errorMessage(msg);\n+\n+    ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n+  }\n+\n+  /**\n+   * @param ctx    The context.\n+   * @param status The status.\n+   * @param node   Raft node.\n+   */\n+  private void sendError(RpcContext ctx, Status status, Node node) {\n+    RaftError raftError = status.getRaftError();\n+\n+    RaftErrorCode raftErrorCode = RaftErrorCode.ILLEGAL_STATE;\n+\n+    PeerId newLeader = null;\n+\n+    if (raftError == RaftError.EPERM) {\n+      newLeader = node.getLeaderId();\n+      PeerId myId = node.getNodeId().getPeerId();\n+\n+      raftErrorCode = newLeader == null || myId.equals(newLeader) ?\n+          RaftErrorCode.NO_LEADER : RaftErrorCode.LEADER_CHANGED;\n+    } else if (status.getRaftError() == RaftError.ESTATEMACHINE) {\n+      raftErrorCode = RaftErrorCode.STATE_MACHINE;\n     }\n \n-    /** {@inheritDoc} */\n-    @Override public Executor executor() {\n-        return executor;\n+    RaftErrorResponseBuilder resp =\n+        factory.raftErrorResponse().errorCode(raftErrorCode).errorMessage(status.getErrorMsg());\n+\n+    if (newLeader != null) {\n+      resp.newLeader(new Peer(newLeader.getEndpoint().toString()));\n     }\n \n+    ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n+  }\n+\n+  /**\n+   *\n+   */\n+  private abstract static class CommandClosureImpl<T extends Command> implements Closure, CommandClosure<T> {\n     /**\n-     * @param node The node.\n-     * @param corellationId Corellation id.\n-     * @param errorCode Error code.\n-     * @param newLeader New leader.\n+     *\n      */\n-    private void sendError(RpcContext ctx, RaftErrorCode errorCode, String msg) {\n-        RaftErrorResponseBuilder resp = factory.raftErrorResponse().errorCode(errorCode).errorMessage(msg);\n-\n-        ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n-    }\n+    private final T command;\n \n     /**\n-     * @param ctx The context.\n-     * @param status The status.\n-     * @param node Raft node.\n+     * @param command The command.\n      */\n-    private void sendError(RpcContext ctx, Status status, Node node) {\n-        RaftError raftError = status.getRaftError();\n-\n-        RaftErrorCode raftErrorCode = RaftErrorCode.ILLEGAL_STATE;\n-\n-        PeerId newLeader = null;\n-\n-        if (raftError == RaftError.EPERM) {\n-            newLeader = node.getLeaderId();\n-            PeerId myId = node.getNodeId().getPeerId();\n-\n-            raftErrorCode = newLeader == null || myId.equals(newLeader) ?\n-                RaftErrorCode.NO_LEADER : RaftErrorCode.LEADER_CHANGED;\n-        }\n-        else if (status.getRaftError() == RaftError.ESTATEMACHINE)\n-            raftErrorCode = RaftErrorCode.STATE_MACHINE;\n-\n-        RaftErrorResponseBuilder resp =\n-            factory.raftErrorResponse().errorCode(raftErrorCode).errorMessage(status.getErrorMsg());\n-\n-        if (newLeader != null) {\n-            resp.newLeader(new Peer(newLeader.getEndpoint().toString()));\n-        }\n-\n-        ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n+    CommandClosureImpl(T command) {\n+      this.command = command;\n     }\n \n     /**\n-     *\n+     * {@inheritDoc}\n      */\n-    private abstract static class CommandClosureImpl<T extends Command> implements Closure, CommandClosure<T> {\n-        /**\n-         *\n-         */\n-        private final T command;\n-\n-        /**\n-         * @param command The command.\n-         */\n-        CommandClosureImpl(T command) {\n-            this.command = command;\n-        }\n-\n-        /** {@inheritDoc} */\n-        @Override public T command() {\n-            return command;\n-        }\n+    @Override\n+    public T command() {\n+      return command;\n     }\n+  }\n }\n",
+            "diff_size": 209
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' should be separated from previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "88",
+                    "column": "91",
+                    "severity": "error",
+                    "message": "'>' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "112",
+                    "column": "79",
+                    "severity": "error",
+                    "message": "'>' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/37/ActionRequestProcessor.java\nindex c73df6d9b7e..61f69927230 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/naturalize/37/ActionRequestProcessor.java\n@@ -65,8 +65,7 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n         }\n \n         if (request.command() instanceof WriteCommand) {\n-            node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())),\n-                new CommandClosureImpl<>(request.command()) {\n+            node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())), new CommandClosureImpl<>(request.command()) {\n                     @Override public void result(Serializable res) {\n                         rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n                     }\n@@ -83,11 +82,10 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n                 node.readIndex(BytesUtil.EMPTY_BYTES, new ReadIndexClosure() {\n                     @Override public void run(Status status, long index, byte[] reqCtx) {\n                         if (status.isOk()) {\n-                            JRaftServerImpl.DelegatingStateMachine fsm =\n-                                (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+                            JRaftServerImpl.DelegatingStateMachine fsm = (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n \n                             try {\n-                                fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n+                                fsm.getListener().onRead(List.<CommandClosure<ReadCommand>> of(new CommandClosure<ReadCommand>() {\n                                     @Override public ReadCommand command() {\n                                         return (ReadCommand) request.command();\n                                     }\n@@ -108,11 +106,10 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n             }\n             else {\n                 // TODO asch remove copy paste, batching https://issues.apache.org/jira/browse/IGNITE-14832\n-                JRaftServerImpl.DelegatingStateMachine fsm =\n-                    (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+                JRaftServerImpl.DelegatingStateMachine fsm = (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n \n                 try {\n-                    fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n+                    fsm.getListener().onRead(List.<CommandClosure<ReadCommand>> of(new CommandClosure<ReadCommand>() {\n                         @Override public ReadCommand command() {\n                             return (ReadCommand) request.command();\n                         }\n@@ -204,4 +201,4 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n             return command;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'VARIABLE_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "81",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "There is more than 1 empty line after this line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "84",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "51",
+                    "severity": "error",
+                    "message": "There is more than 1 empty line after this line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "107",
+                    "column": "62",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "127",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "There is more than 1 empty line after this line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "134",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "150",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "157",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "169",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "183",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "215",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "227",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'CTOR_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "234",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'METHOD_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/37/ActionRequestProcessor.java\nindex c73df6d9b7e..40a533db511 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/codebuff/37/ActionRequestProcessor.java\n@@ -45,57 +45,70 @@ import org.apache.ignite.internal.raft.server.impl.JRaftServerImpl;\n /**\n  * Process action request.\n  */\n+\n+\n public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n+\n     private final Executor executor;\n+\n+\n     private final RaftClientMessagesFactory factory;\n \n+\n     public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n         this.executor = executor;\n         this.factory = factory;\n     }\n \n     /** {@inheritDoc} */\n+\n+\n     @Override public void handleRequest(RpcContext rpcCtx, ActionRequest request) {\n         Node node = rpcCtx.getNodeManager().get(request.groupId(), PeerId.parsePeer(rpcCtx.getLocalAddress()));\n \n         if (node == null) {\n-            rpcCtx.sendResponse(factory.raftErrorResponse().errorCode(RaftErrorCode.ILLEGAL_STATE).build());\n+            rpcCtx.sendResponse(factory.raftErrorResponse().errorCode(RaftErrorCode.ILLEGAL_STATE)\n+                                                           .build());\n \n             return;\n         }\n-\n         if (request.command() instanceof WriteCommand) {\n-            node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())),\n-                new CommandClosureImpl<>(request.command()) {\n-                    @Override public void result(Serializable res) {\n-                        rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                    }\n+            node.apply(new Task(ByteBuffer.wrap(JDKMarshaller.DEFAULT.marshall(request.command())), new CommandClosureImpl<>(request.command()) {\n \n-                    @Override public void run(Status status) {\n-                        assert !status.isOk() : status;\n+                           @Override public void result(Serializable res) {\n+                               rpcCtx.sendResponse(factory.actionResponse().result(res)\n+                                                                           .build());\n+                           }\n \n-                        sendError(rpcCtx, status, node);\n-                    }\n-                }));\n+\n+                           @Override public void run(Status status) {\n+                               assert !status.isOk() : status;\n+\n+                               sendError(rpcCtx, status, node);\n+                           }\n+                       }));\n         }\n         else {\n             if (request.readOnlySafe()) {\n                 node.readIndex(BytesUtil.EMPTY_BYTES, new ReadIndexClosure() {\n+\n                     @Override public void run(Status status, long index, byte[] reqCtx) {\n                         if (status.isOk()) {\n-                            JRaftServerImpl.DelegatingStateMachine fsm =\n-                                (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+                            JRaftServerImpl.DelegatingStateMachine fsm = (JRaftServerImpl.DelegatingStateMachine)node.getOptions().getFsm();\n \n                             try {\n                                 fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n-                                    @Override public ReadCommand command() {\n-                                        return (ReadCommand) request.command();\n-                                    }\n-\n-                                    @Override public void result(Serializable res) {\n-                                        rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                                    }\n-                                }).iterator());\n+\n+                                                             @Override public ReadCommand command() {\n+                                                                 return (ReadCommand)request.command();\n+                                                             }\n+\n+\n+                                                             @Override public void result(Serializable res) {\n+                                                                 rpcCtx.sendResponse(factory.actionResponse().result(res)\n+                                                                                                             .build());\n+                                                             }\n+                                                         }).iterator());\n                             }\n                             catch (Exception e) {\n                                 sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n@@ -108,19 +121,21 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n             }\n             else {\n                 // TODO asch remove copy paste, batching https://issues.apache.org/jira/browse/IGNITE-14832\n-                JRaftServerImpl.DelegatingStateMachine fsm =\n-                    (JRaftServerImpl.DelegatingStateMachine) node.getOptions().getFsm();\n+                JRaftServerImpl.DelegatingStateMachine fsm = (JRaftServerImpl.DelegatingStateMachine)node.getOptions().getFsm();\n \n                 try {\n                     fsm.getListener().onRead(List.<CommandClosure<ReadCommand>>of(new CommandClosure<ReadCommand>() {\n-                        @Override public ReadCommand command() {\n-                            return (ReadCommand) request.command();\n-                        }\n \n-                        @Override public void result(Serializable res) {\n-                            rpcCtx.sendResponse(factory.actionResponse().result(res).build());\n-                        }\n-                    }).iterator());\n+                                                 @Override public ReadCommand command() {\n+                                                     return (ReadCommand)request.command();\n+                                                 }\n+\n+\n+                                                 @Override public void result(Serializable res) {\n+                                                     rpcCtx.sendResponse(factory.actionResponse().result(res)\n+                                                                                                 .build());\n+                                                 }\n+                                             }).iterator());\n                 }\n                 catch (Exception e) {\n                     sendError(rpcCtx, RaftErrorCode.STATE_MACHINE, e.getMessage());\n@@ -130,11 +145,15 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n     }\n \n     /** {@inheritDoc} */\n+\n+\n     @Override public String interest() {\n         return ActionRequest.class.getName();\n     }\n \n     /** {@inheritDoc} */\n+\n+\n     @Override public Executor executor() {\n         return executor;\n     }\n@@ -145,10 +164,13 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n      * @param errorCode Error code.\n      * @param newLeader New leader.\n      */\n+\n+\n     private void sendError(RpcContext ctx, RaftErrorCode errorCode, String msg) {\n-        RaftErrorResponseBuilder resp = factory.raftErrorResponse().errorCode(errorCode).errorMessage(msg);\n+        RaftErrorResponseBuilder resp = factory.raftErrorResponse().errorCode(errorCode)\n+                                                                   .errorMessage(msg);\n \n-        ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n+        ctx.sendResponse(((RaftErrorResponseBuilder)resp).build());\n     }\n \n     /**\n@@ -156,6 +178,8 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n      * @param status The status.\n      * @param node Raft node.\n      */\n+\n+\n     private void sendError(RpcContext ctx, Status status, Node node) {\n         RaftError raftError = status.getRaftError();\n \n@@ -165,43 +189,50 @@ public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n \n         if (raftError == RaftError.EPERM) {\n             newLeader = node.getLeaderId();\n+\n             PeerId myId = node.getNodeId().getPeerId();\n \n-            raftErrorCode = newLeader == null || myId.equals(newLeader) ?\n-                RaftErrorCode.NO_LEADER : RaftErrorCode.LEADER_CHANGED;\n+            raftErrorCode = newLeader == null || myId.equals(newLeader) ? RaftErrorCode.NO_LEADER : RaftErrorCode.LEADER_CHANGED;\n         }\n         else if (status.getRaftError() == RaftError.ESTATEMACHINE)\n             raftErrorCode = RaftErrorCode.STATE_MACHINE;\n \n-        RaftErrorResponseBuilder resp =\n-            factory.raftErrorResponse().errorCode(raftErrorCode).errorMessage(status.getErrorMsg());\n+        RaftErrorResponseBuilder resp = factory.raftErrorResponse().errorCode(raftErrorCode)\n+                                                                   .errorMessage(status.getErrorMsg());\n \n         if (newLeader != null) {\n             resp.newLeader(new Peer(newLeader.getEndpoint().toString()));\n         }\n \n-        ctx.sendResponse(((RaftErrorResponseBuilder) resp).build());\n+        ctx.sendResponse(((RaftErrorResponseBuilder)resp).build());\n     }\n \n     /**\n      *\n      */\n+\n+\n     private abstract static class CommandClosureImpl<T extends Command> implements Closure, CommandClosure<T> {\n         /**\n          *\n          */\n+\n         private final T command;\n \n         /**\n          * @param command The command.\n          */\n+\n+\n         CommandClosureImpl(T command) {\n             this.command = command;\n         }\n \n         /** {@inheritDoc} */\n+\n+\n         @Override public T command() {\n             return command;\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 81
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/37/ActionRequestProcessor.java\nindex c73df6d9b7e..b026fc11835 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_random/37/ActionRequestProcessor.java\n@@ -47,6 +47,7 @@ import org.apache.ignite.internal.raft.server.impl.JRaftServerImpl;\n  */\n public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n     private final Executor executor;\n+\n     private final RaftClientMessagesFactory factory;\n \n     public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/37/ActionRequestProcessor.java\nindex c73df6d9b7e..b026fc11835 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/errored/1/37/ActionRequestProcessor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-ignite-3/styler_three_grams/37/ActionRequestProcessor.java\n@@ -47,6 +47,7 @@ import org.apache.ignite.internal.raft.server.impl.JRaftServerImpl;\n  */\n public class ActionRequestProcessor implements RpcProcessor<ActionRequest> {\n     private final Executor executor;\n+\n     private final RaftClientMessagesFactory factory;\n \n     public ActionRequestProcessor(Executor executor, RaftClientMessagesFactory factory) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

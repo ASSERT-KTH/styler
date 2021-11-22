@@ -1,0 +1,173 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "2448",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "38",
+                    "column": "72",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "40",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "51",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "57",
+                    "column": "19",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2448/OutputFormatProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2448/OutputFormatProvider.java\nindex 33f8ab97373..4b6238a32b5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2448/OutputFormatProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/2448/OutputFormatProvider.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.server.rest.repr;\n \n import javax.ws.rs.WebApplicationException;\n@@ -32,29 +33,28 @@ import org.neo4j.server.database.InjectableProvider;\n @Provider\n public final class OutputFormatProvider extends InjectableProvider<OutputFormat>\n {\n-    private final RepresentationFormatRepository repository;\n+  private final RepresentationFormatRepository repository;\n \n-    public OutputFormatProvider( RepresentationFormatRepository repository )\n-    {\n-        super( OutputFormat.class );\n-        this.repository = repository;\n-    }\n+  public OutputFormatProvider(RepresentationFormatRepository repository)\n+  {\n+    super(OutputFormat.class);\n+    this.repository = repository;\n+  }\n \n-    @Override\n-    public OutputFormat getValue( HttpContext context )\n+  @Override\n+  public OutputFormat getValue(HttpContext context)\n+  {\n+    try\n+    {\n+      HttpRequestContext request = context.getRequest();\n+      return repository.outputFormat(request.getAcceptableMediaTypes(),\n+          request.getBaseUri(),\n+          request.getRequestHeaders());\n+    } catch (MediaTypeNotSupportedException e)\n     {\n-        try\n-        {\n-            HttpRequestContext request = context.getRequest();\n-            return repository.outputFormat( request.getAcceptableMediaTypes(),\n-                    request.getBaseUri(),\n-                    request.getRequestHeaders() );\n-        }\n-        catch ( MediaTypeNotSupportedException e )\n-        {\n-            throw new WebApplicationException( Response.status( Status.NOT_ACCEPTABLE )\n-                    .entity( e.getMessage() )\n-                    .build() );\n-        }\n+      throw new WebApplicationException(Response.status(Status.NOT_ACCEPTABLE)\n+          .entity(e.getMessage())\n+          .build());\n     }\n+  }\n }\n",
+            "diff_size": 31
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2448/OutputFormatProvider.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2448/OutputFormatProvider.java\nindex 33f8ab97373..031d585f464 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/2448/OutputFormatProvider.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/2448/OutputFormatProvider.java\n@@ -46,15 +46,11 @@ public final class OutputFormatProvider extends InjectableProvider<OutputFormat>\n         try\n         {\n             HttpRequestContext request = context.getRequest();\n-            return repository.outputFormat( request.getAcceptableMediaTypes(),\n-                    request.getBaseUri(),\n-                    request.getRequestHeaders() );\n-        }\n+            return repository.outputFormat( request.getAcceptableMediaTypes(), request.getBaseUri(), request.getRequestHeaders() );\n+    }\n         catch ( MediaTypeNotSupportedException e )\n         {\n-            throw new WebApplicationException( Response.status( Status.NOT_ACCEPTABLE )\n-                    .entity( e.getMessage() )\n-                    .build() );\n-        }\n+            throw new WebApplicationException( Response.status( Status.NOT_ACCEPTABLE ).entity( e.getMessage() ).build() );\n+    }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

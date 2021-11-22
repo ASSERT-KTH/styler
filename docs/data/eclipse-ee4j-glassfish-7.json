@@ -1,0 +1,71 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "7",
+    "information": {
+        "errors": [
+            {
+                "line": "99",
+                "column": "33",
+                "severity": "warning",
+                "message": "'if' child has incorrect indentation level 32, expected level should be 16.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "                binding.setBusinessMethod(md);\n            } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                Class cl = c.getDeclaringClass();\n                Class[] ctorParamTypes = c.getParameterTypes();\n                String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/7/InterceptorsHandler.java\nindex defcb9c5039..63c62382cd7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/7/InterceptorsHandler.java\n@@ -96,7 +96,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n                     new MethodDescriptor(m, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n             } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n-                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n+                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                 Class cl = c.getDeclaringClass();\n                 Class[] ctorParamTypes = c.getParameterTypes();\n                 String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/7/InterceptorsHandler.java\nindex defcb9c5039..b4ca34db1be 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/7/InterceptorsHandler.java\n@@ -48,7 +48,6 @@ import static com.sun.enterprise.deployment.LifecycleCallbackDescriptor.Callback\n \n /**\n  * This handler is responsible for handling jakarta.ejb.Interceptors\n- *\n  */\n @Service\n @AnnotationHandlerFor(Interceptors.class)\n@@ -62,21 +61,22 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n     }\n \n     protected HandlerProcessingResult processAnnotation(AnnotationInfo ainfo,\n-            EjbContext[] ejbContexts) throws AnnotationProcessorException {\n+                                                        EjbContext[] ejbContexts)\n+        throws AnnotationProcessorException {\n \n         Interceptors interceptors = (Interceptors) ainfo.getAnnotation();\n \n \n         EjbBundleDescriptorImpl ejbBundle =\n-            ((EjbDescriptor)ejbContexts[0].getDescriptor()).\n+            ((EjbDescriptor) ejbContexts[0].getDescriptor()).\n                 getEjbBundleDescriptor();\n \n         // Process each of the interceptor classes.\n-        for(Class interceptor : interceptors.value()) {\n+        for (Class interceptor : interceptors.value()) {\n             processInterceptorClass(interceptor, ejbBundle, ainfo);\n         }\n \n-        for(EjbContext next : ejbContexts) {\n+        for (EjbContext next : ejbContexts) {\n \n             EjbDescriptor ejbDescriptor = (EjbDescriptor) next.getDescriptor();\n \n@@ -86,22 +86,23 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n \n             binding.setEjbName(ejbDescriptor.getName());\n \n-            for(Class interceptor : interceptors.value()) {\n+            for (Class interceptor : interceptors.value()) {\n                 binding.appendInterceptorClass(interceptor.getName());\n             }\n \n-            if(ElementType.METHOD.equals(ainfo.getElementType())) {\n+            if (ElementType.METHOD.equals(ainfo.getElementType())) {\n                 Method m = (Method) ainfo.getAnnotatedElement();\n                 MethodDescriptor md =\n                     new MethodDescriptor(m, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n-            } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n-                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n+            } else if (ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n+                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                 Class cl = c.getDeclaringClass();\n                 Class[] ctorParamTypes = c.getParameterTypes();\n-                String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n+                String[] parameterClassNames =\n+                    (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n                 MethodDescriptor md = new MethodDescriptor(cl.getSimpleName(), null,\n-                        parameterClassNames, MethodDescriptor.EJB_BEAN);\n+                    parameterClassNames, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n             }\n \n@@ -120,7 +121,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n     }\n \n     private void processInterceptorClass(Class interceptorClass,\n-            EjbBundleDescriptorImpl ejbBundle, AnnotationInfo ainfo)\n+                                         EjbBundleDescriptorImpl ejbBundle, AnnotationInfo ainfo)\n         throws AnnotationProcessorException {\n \n         Set<LifecycleCallbackDescriptor> aroundInvokeDescriptors =\n@@ -133,17 +134,17 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n             new HashSet<LifecycleCallbackDescriptor>();\n \n         ComponentDefinition cdef = new ComponentDefinition(interceptorClass);\n-        for(Method m : cdef.getMethods()) {\n-            if( m.getAnnotation(AroundInvoke.class) != null ) {\n+        for (Method m : cdef.getMethods()) {\n+            if (m.getAnnotation(AroundInvoke.class) != null) {\n                 aroundInvokeDescriptors.add(getLifecycleCallbackDescriptor(m));\n             }\n-            if( m.getAnnotation(AroundTimeout.class) != null ) {\n+            if (m.getAnnotation(AroundTimeout.class) != null) {\n                 aroundTimeoutDescriptors.add(getLifecycleCallbackDescriptor(m));\n             }\n-            if( m.getAnnotation(PostActivate.class) != null ) {\n+            if (m.getAnnotation(PostActivate.class) != null) {\n                 postActivateDescriptors.add(getLifecycleCallbackDescriptor(m));\n             }\n-            if( m.getAnnotation(PrePassivate.class) != null ) {\n+            if (m.getAnnotation(PrePassivate.class) != null) {\n                 prePassivateDescriptors.add(getLifecycleCallbackDescriptor(m));\n             }\n         }\n@@ -181,7 +182,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n         ProcessingContext procContext = ainfo.getProcessingContext();\n         procContext.pushHandler(ejbInterceptorContext);\n         procContext.getProcessor().process(\n-            procContext, new Class[] { interceptorClass });\n+            procContext, new Class[] {interceptorClass});\n         return;\n     }\n \n",
+            "diff_size": 20
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "99",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 4, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/7/InterceptorsHandler.java\nindex defcb9c5039..188f42e941f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/7/InterceptorsHandler.java\n@@ -96,7 +96,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n                     new MethodDescriptor(m, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n             } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n-                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n+    Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                 Class cl = c.getDeclaringClass();\n                 Class[] ctorParamTypes = c.getParameterTypes();\n                 String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n@@ -200,4 +200,4 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n         lccDesc.setLifecycleCallbackMethod(m.getName());\n         return lccDesc;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/7/InterceptorsHandler.java\nindex defcb9c5039..63c62382cd7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/7/InterceptorsHandler.java\n@@ -96,7 +96,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n                     new MethodDescriptor(m, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n             } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n-                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n+                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                 Class cl = c.getDeclaringClass();\n                 Class[] ctorParamTypes = c.getParameterTypes();\n                 String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/7/InterceptorsHandler.java\nindex defcb9c5039..63c62382cd7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/7/InterceptorsHandler.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/7/InterceptorsHandler.java\n@@ -96,7 +96,7 @@ public class InterceptorsHandler extends AbstractAttributeHandler {\n                     new MethodDescriptor(m, MethodDescriptor.EJB_BEAN);\n                 binding.setBusinessMethod(md);\n             } else if(ElementType.CONSTRUCTOR.equals(ainfo.getElementType())) {\n-                                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n+                Constructor c = (Constructor) ainfo.getAnnotatedElement();\n                 Class cl = c.getDeclaringClass();\n                 Class[] ctorParamTypes = c.getParameterTypes();\n                 String[] parameterClassNames = (new MethodDescriptor()).getParameterClassNamesFor(null, ctorParamTypes);\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

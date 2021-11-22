@@ -1,0 +1,98 @@
+{
+    "project_name": "intuit-Tank",
+    "error_id": "106",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 141).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            EntityManager em = dao.getEM();\n            Query query = em\n                    .createNativeQuery(\"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n            @SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n            for (Object[] set : results) {\n                Integer id = (Integer) set[0];",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/106/UpdateScriptGroups.java\nindex 06aaa11b3fa..5332311264d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/intellij/106/UpdateScriptGroups.java\n@@ -1,6 +1,7 @@\n /**\n  * Copyright 2011 Intuit Inc. All Rights Reserved\n  */\n+\n package com.intuit.tank.util;\n \n /*\n@@ -33,83 +34,83 @@ import com.intuit.tank.project.Workload;\n \n /**\n  * ProductDaoTest\n- * \n+ *\n  * @author dangleton\n- * \n  */\n @Named\n public class UpdateScriptGroups {\n \n-    private ScriptGroupDao dao = new ScriptGroupDao();\n-    private WorkloadDao workloadDao = new WorkloadDao();\n-    private Map<Integer, Workload> workloadMap = new HashMap<Integer, Workload>();\n-    private Map<Integer, List<ScriptGroup>> scriptGroupMap = new HashMap<Integer, List<ScriptGroup>>();\n-\n-    private static boolean running = false;\n-\n-    public boolean isDisabled() {\n-        return running;\n-    }\n-\n-    public synchronized void upgrade() {\n-        if (!running) {\n-            // running = true;\n-            EntityManager em = dao.getEM();\n-            Query query = em\n-                    .createNativeQuery(\"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n-            @SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n-            for (Object[] set : results) {\n-                Integer id = (Integer) set[0];\n-                Integer workloadId = (Integer) set[1];\n-                if (workloadId != null) {\n-                    updateScriptGroup(id, workloadId);\n-                } else {\n-                    deleteScriptGroup(id);\n-                }\n-            }\n-            for (Workload w : workloadMap.values()) {\n-                workloadDao.saveOrUpdate(w);\n-            }\n+  private ScriptGroupDao dao = new ScriptGroupDao();\n+  private WorkloadDao workloadDao = new WorkloadDao();\n+  private Map<Integer, Workload> workloadMap = new HashMap<Integer, Workload>();\n+  private Map<Integer, List<ScriptGroup>> scriptGroupMap = new HashMap<Integer, List<ScriptGroup>>();\n+\n+  private static boolean running = false;\n+\n+  public boolean isDisabled() {\n+    return running;\n+  }\n+\n+  public synchronized void upgrade() {\n+    if (!running) {\n+      // running = true;\n+      EntityManager em = dao.getEM();\n+      Query query = em\n+        .createNativeQuery(\n+          \"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n+      @SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n+      for (Object[] set : results) {\n+        Integer id = (Integer) set[0];\n+        Integer workloadId = (Integer) set[1];\n+        if (workloadId != null) {\n+          updateScriptGroup(id, workloadId);\n+        } else {\n+          deleteScriptGroup(id);\n         }\n+      }\n+      for (Workload w : workloadMap.values()) {\n+        workloadDao.saveOrUpdate(w);\n+      }\n     }\n+  }\n \n-    private void deleteScriptGroup(Integer id) {\n-        dao.delete(id);\n-\n-    }\n+  private void deleteScriptGroup(Integer id) {\n+    dao.delete(id);\n \n-    private void updateScriptGroup(Integer id, Integer workloadId) {\n-        Workload workload = workloadMap.get(workloadId);\n-        if (workload == null) {\n-            workload = workloadDao.findById(workloadId);\n-            if (workload == null) {\n-                deleteScriptGroup(id);\n-                return;\n-            }\n-            workloadMap.put(workloadId, workload);\n-        }\n-        List<TestPlan> testPlans = workload.getTestPlans();\n+  }\n \n-        if (testPlans.isEmpty()) {\n-            // create a testPlan\n-            TestPlan plan = TestPlan.builder().name(\"Main\").usersPercentage(100).build();\n-            workload.addTestPlan(plan);\n-        }\n-        ScriptGroup scriptGroup = dao.findById(id);\n-        testPlans.get(0).addScriptGroup(copyGroup(scriptGroup));\n+  private void updateScriptGroup(Integer id, Integer workloadId) {\n+    Workload workload = workloadMap.get(workloadId);\n+    if (workload == null) {\n+      workload = workloadDao.findById(workloadId);\n+      if (workload == null) {\n         deleteScriptGroup(id);\n+        return;\n+      }\n+      workloadMap.put(workloadId, workload);\n     }\n+    List<TestPlan> testPlans = workload.getTestPlans();\n \n-    private ScriptGroup copyGroup(ScriptGroup copyFrom) {\n-        ScriptGroup sg = ScriptGroup.builder().name(copyFrom.getName()).loop(copyFrom.getLoop()).build();\n-        for (ScriptGroupStep step : copyFrom.getScriptGroupSteps()) {\n-            sg.addScriptGroupStep(copyStep(step));\n-        }\n-        return sg;\n+    if (testPlans.isEmpty()) {\n+      // create a testPlan\n+      TestPlan plan = TestPlan.builder().name(\"Main\").usersPercentage(100).build();\n+      workload.addTestPlan(plan);\n     }\n-\n-    private ScriptGroupStep copyStep(ScriptGroupStep copyFrom) {\n-        return ScriptGroupStep.builder().loop(copyFrom.getLoop()).script(copyFrom.getScript()).build();\n+    ScriptGroup scriptGroup = dao.findById(id);\n+    testPlans.get(0).addScriptGroup(copyGroup(scriptGroup));\n+    deleteScriptGroup(id);\n+  }\n+\n+  private ScriptGroup copyGroup(ScriptGroup copyFrom) {\n+    ScriptGroup sg = ScriptGroup.builder().name(copyFrom.getName()).loop(copyFrom.getLoop()).build();\n+    for (ScriptGroupStep step : copyFrom.getScriptGroupSteps()) {\n+      sg.addScriptGroupStep(copyStep(step));\n     }\n+    return sg;\n+  }\n+\n+  private ScriptGroupStep copyStep(ScriptGroupStep copyFrom) {\n+    return ScriptGroupStep.builder().loop(copyFrom.getLoop()).script(copyFrom.getScript()).build();\n+  }\n \n }\n",
+            "diff_size": 85
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/106/UpdateScriptGroups.java\nindex 06aaa11b3fa..d7791f2d3dd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/naturalize/106/UpdateScriptGroups.java\n@@ -57,7 +57,8 @@ public class UpdateScriptGroups {\n             EntityManager em = dao.getEM();\n             Query query = em\n                     .createNativeQuery(\"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n-            @SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n+\n+@SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n             for (Object[] set : results) {\n                 Integer id = (Integer) set[0];\n                 Integer workloadId = (Integer) set[1];\n@@ -112,4 +113,4 @@ public class UpdateScriptGroups {\n         return ScriptGroupStep.builder().loop(copyFrom.getLoop()).script(copyFrom.getScript()).build();\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 149).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/106/UpdateScriptGroups.java\nindex 06aaa11b3fa..df457c8e62d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/errored/1/106/UpdateScriptGroups.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/intuit-Tank/codebuff/106/UpdateScriptGroups.java\n@@ -16,14 +16,14 @@ package com.intuit.tank.util;\n  * #L%\n  */\n \n+\n+\n import java.util.HashMap;\n import java.util.List;\n import java.util.Map;\n-\n import javax.inject.Named;\n import javax.persistence.EntityManager;\n import javax.persistence.Query;\n-\n import com.intuit.tank.dao.ScriptGroupDao;\n import com.intuit.tank.dao.WorkloadDao;\n import com.intuit.tank.project.ScriptGroup;\n@@ -37,6 +37,7 @@ import com.intuit.tank.project.Workload;\n  * @author dangleton\n  * \n  */\n+\n @Named\n public class UpdateScriptGroups {\n \n@@ -44,19 +45,19 @@ public class UpdateScriptGroups {\n     private WorkloadDao workloadDao = new WorkloadDao();\n     private Map<Integer, Workload> workloadMap = new HashMap<Integer, Workload>();\n     private Map<Integer, List<ScriptGroup>> scriptGroupMap = new HashMap<Integer, List<ScriptGroup>>();\n-\n     private static boolean running = false;\n \n+\n     public boolean isDisabled() {\n         return running;\n     }\n \n+\n     public synchronized void upgrade() {\n         if (!running) {\n             // running = true;\n             EntityManager em = dao.getEM();\n-            Query query = em\n-                    .createNativeQuery(\"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n+            Query query = em.createNativeQuery(\"select id, workload_id from script_group where test_plan_id is null order by workload_id, position\");\n             @SuppressWarnings(\"unchecked\") List<Object[]> results = query.getResultList();\n             for (Object[] set : results) {\n                 Integer id = (Integer) set[0];\n@@ -75,7 +76,6 @@ public class UpdateScriptGroups {\n \n     private void deleteScriptGroup(Integer id) {\n         dao.delete(id);\n-\n     }\n \n     private void updateScriptGroup(Integer id, Integer workloadId) {\n@@ -89,7 +89,6 @@ public class UpdateScriptGroups {\n             workloadMap.put(workloadId, workload);\n         }\n         List<TestPlan> testPlans = workload.getTestPlans();\n-\n         if (testPlans.isEmpty()) {\n             // create a testPlan\n             TestPlan plan = TestPlan.builder().name(\"Main\").usersPercentage(100).build();\n@@ -112,4 +111,4 @@ public class UpdateScriptGroups {\n         return ScriptGroupStep.builder().loop(copyFrom.getLoop()).script(copyFrom.getScript()).build();\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "59",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 141).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

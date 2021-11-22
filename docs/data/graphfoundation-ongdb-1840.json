@@ -1,0 +1,138 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1840",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2018 \"Neo Technology,\"\n * Network Engine for Objects in Lund AB [http://neotechnology.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "50",
+                    "column": "108",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "116",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "11",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "76",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1840/MultiRetryStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1840/MultiRetryStrategy.java\nindex 274b166fa42..3c17c897a96 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1840/MultiRetryStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1840/MultiRetryStrategy.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.causalclustering.discovery;\n \n import java.util.function.Function;\n@@ -31,44 +32,44 @@ import org.neo4j.logging.LogProvider;\n  * encountered.\n  * There is a fixed delay between each retry.\n  *\n- * @param <INPUT> the type of input of the retriable function\n+ * @param <INPUT>  the type of input of the retriable function\n  * @param <OUTPUT> the type of output of the retriable function\n  */\n-public class MultiRetryStrategy<INPUT, OUTPUT> implements RetryStrategy<INPUT,OUTPUT>\n+public class MultiRetryStrategy<INPUT, OUTPUT> implements RetryStrategy<INPUT, OUTPUT>\n {\n-    private final long delayInMillis;\n-    private final long retries;\n-    private final LogProvider logProvider;\n-    private final LongConsumer sleeper;\n+  private final long delayInMillis;\n+  private final long retries;\n+  private final LogProvider logProvider;\n+  private final LongConsumer sleeper;\n \n-    /**\n-     * @param delayInMillis number of milliseconds between each attempt at getting the desired result\n-     * @param retries the number of attempts to perform before giving up\n-     * @param logProvider {@see LogProvider}\n-     */\n-    public MultiRetryStrategy( long delayInMillis, long retries, LogProvider logProvider, LongConsumer sleeper )\n-    {\n-        this.delayInMillis = delayInMillis;\n-        this.retries = retries;\n-        this.logProvider = logProvider;\n-        this.sleeper = sleeper;\n-    }\n+  /**\n+   * @param delayInMillis number of milliseconds between each attempt at getting the desired result\n+   * @param retries       the number of attempts to perform before giving up\n+   * @param logProvider   {@see LogProvider}\n+   */\n+  public MultiRetryStrategy(long delayInMillis, long retries, LogProvider logProvider, LongConsumer sleeper)\n+  {\n+    this.delayInMillis = delayInMillis;\n+    this.retries = retries;\n+    this.logProvider = logProvider;\n+    this.sleeper = sleeper;\n+  }\n \n-    /**\n-     * {@inheritDoc}\n-     */\n-    @Override\n-    public OUTPUT apply( INPUT retriableInput, Function<INPUT,OUTPUT> retriable, Predicate<OUTPUT> wasRetrySuccessful )\n+  /**\n+   * {@inheritDoc}\n+   */\n+  @Override\n+  public OUTPUT apply(INPUT retriableInput, Function<INPUT, OUTPUT> retriable, Predicate<OUTPUT> wasRetrySuccessful)\n+  {\n+    Log log = logProvider.getLog(MultiRetryStrategy.class);\n+    OUTPUT result = retriable.apply(retriableInput);\n+    int currentIteration = 0;\n+    while (!wasRetrySuccessful.test(result) && currentIteration++ < retries)\n     {\n-        Log log = logProvider.getLog( MultiRetryStrategy.class );\n-        OUTPUT result = retriable.apply( retriableInput );\n-        int currentIteration = 0;\n-        while ( !wasRetrySuccessful.test( result ) && currentIteration++ < retries )\n-        {\n-            log.debug( \"Try attempt was unsuccessful for input: %s\\n\", retriableInput );\n-            sleeper.accept( delayInMillis );\n-            result = retriable.apply( retriableInput );\n-        }\n-        return result;\n+      log.debug(\"Try attempt was unsuccessful for input: %s\\n\", retriableInput);\n+      sleeper.accept(delayInMillis);\n+      result = retriable.apply(retriableInput);\n     }\n+    return result;\n+  }\n }\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1840/MultiRetryStrategy.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1840/MultiRetryStrategy.java\nindex 274b166fa42..1b5af4a9b94 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1840/MultiRetryStrategy.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1840/MultiRetryStrategy.java\n@@ -34,7 +34,7 @@ import org.neo4j.logging.LogProvider;\n  * @param <INPUT> the type of input of the retriable function\n  * @param <OUTPUT> the type of output of the retriable function\n  */\n-public class MultiRetryStrategy<INPUT, OUTPUT> implements RetryStrategy<INPUT,OUTPUT>\n+public class MultiRetryStrategy<INPUT,OUTPUT> implements RetryStrategy<INPUT,OUTPUT>\n {\n     private final long delayInMillis;\n     private final long retries;\n@@ -69,6 +69,7 @@ public class MultiRetryStrategy<INPUT, OUTPUT> implements RetryStrategy<INPUT,OU\n             sleeper.accept( delayInMillis );\n             result = retriable.apply( retriableInput );\n         }\n-        return result;\n+\n+return result;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

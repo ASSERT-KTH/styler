@@ -1,0 +1,138 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "753",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "103",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "103",
+                    "column": "52",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "140",
+                    "column": "26",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "140",
+                    "column": "50",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/753/KernelTransaction.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/753/KernelTransaction.java\nindex 9572106aa62..cc3f91c9091 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/753/KernelTransaction.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/753/KernelTransaction.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.api;\n \n import org.neo4j.graphdb.NotInTransactionException;\n@@ -35,135 +36,139 @@ import org.neo4j.kernel.impl.api.ClockContext;\n  */\n public interface KernelTransaction extends Transaction, AssertOpen\n {\n-    interface CloseListener\n-    {\n-        /**\n-         * @param txId On success, the actual id of the current transaction if writes have been performed, 0 otherwise.\n-         * On rollback, always -1.\n-         */\n-        void notify( long txId );\n-    }\n-\n-    /**\n-     * Acquires a new {@link Statement} for this transaction which allows for reading and writing data from and\n-     * to the underlying database. After the group of reads and writes have been performed the statement\n-     * must be {@link Statement#close() released}.\n-     *\n-     * @return a {@link Statement} with access to underlying database.\n-     */\n-    Statement acquireStatement();\n-\n-    /**\n-     * @return the security context this transaction is currently executing in.\n-     * @throws NotInTransactionException if the transaction is closed.\n-     */\n-    SecurityContext securityContext();\n-\n-    /**\n-     * @return the subject executing this transaction, or {@link AuthSubject#ANONYMOUS} if the transaction is closed.\n-     */\n-    AuthSubject subjectOrAnonymous();\n-\n-    /**\n-     * @return The timestamp of the last transaction that was committed to the store when this transaction started.\n-     */\n-    long lastTransactionTimestampWhenStarted();\n-\n-    /**\n-     * @return The id of the last transaction that was committed to the store when this transaction started.\n-     */\n-    long lastTransactionIdWhenStarted();\n-\n-    /**\n-     * @return start time of this transaction, i.e. basically {@link System#currentTimeMillis()} when user called\n-     * {@link org.neo4j.internal.kernel.api.Session#beginTransaction(Type)}.\n-     */\n-    long startTime();\n-\n-    /**\n-     * @return start time of this transaction, i.e. basically {@link System#nanoTime()} when user called\n-     * {@link org.neo4j.internal.kernel.api.Session#beginTransaction(Type)}.\n-     */\n-    long startTimeNanos();\n-\n-    /**\n-     * Timeout for transaction in milliseconds.\n-     * @return transaction timeout in milliseconds.\n-     */\n-    long timeout();\n-\n-    /**\n-     * Register a {@link CloseListener} to be invoked after commit, but before transaction events \"after\" hooks\n-     * are invoked.\n-     * @param listener {@link CloseListener} to get these notifications.\n-     */\n-    void registerCloseListener( CloseListener listener );\n-\n-    /**\n-     * Kernel transaction type\n-     *\n-     * Implicit if created internally in the database\n-     * Explicit if created by the end user\n-     *\n-     * @return the transaction type: implicit or explicit\n-     */\n-    Type transactionType();\n-\n-    /**\n-     * Return transaction id that assigned during transaction commit process.\n-     * @see org.neo4j.kernel.impl.api.TransactionCommitProcess\n-     * @return transaction id.\n-     * @throws IllegalStateException if transaction id is not assigned yet\n-     */\n-    long getTransactionId();\n-\n-    /**\n-     * Return transaction commit time (in millis) that assigned during transaction commit process.\n-     * @see org.neo4j.kernel.impl.api.TransactionCommitProcess\n-     * @return transaction commit time\n-     * @throws IllegalStateException if commit time is not assigned yet\n-     */\n-    long getCommitTime();\n-\n-    /**\n-     * Temporarily override this transaction's SecurityContext. The override should be reverted using\n-     * the returned {@link Revertable}.\n-     *\n-     * @param context the temporary SecurityContext.\n-     * @return {@link Revertable} which reverts to the original SecurityContext.\n-     */\n-    Revertable overrideWith( SecurityContext context );\n-\n-    /**\n-     * Clocks associated with this transaction.\n-     */\n-    ClockContext clocks();\n-\n-    /**\n-     * USE WITH CAUTION:\n-     * The internal node cursor instance used to serve kernel API calls. If some kernel API call\n-     * is made while this cursor is used, it might get corrupted and return wrong results.\n-     */\n-    NodeCursor ambientNodeCursor();\n-\n-    /**\n-     * USE WITH CAUTION:\n-     * The internal relationship scan cursor instance used to serve kernel API calls. If some kernel\n-     * API call is made while this cursor is used, it might get corrupted and return wrong results.\n-     */\n-    RelationshipScanCursor ambientRelationshipCursor();\n-\n-    /**\n-     * USE WITH CAUTION:\n-     * The internal property cursor instance used to serve kernel API calls. If some kernel\n-     * API call is made while this cursor is used, it might get corrupted and return wrong results.\n-     */\n-    PropertyCursor ambientPropertyCursor();\n-\n-    @FunctionalInterface\n-    interface Revertable extends AutoCloseable\n-    {\n-        @Override\n-        void close();\n-    }\n+  interface CloseListener\n+  {\n+    /**\n+     * @param txId On success, the actual id of the current transaction if writes have been performed, 0 otherwise.\n+     *             On rollback, always -1.\n+     */\n+    void notify(long txId);\n+  }\n+\n+  /**\n+   * Acquires a new {@link Statement} for this transaction which allows for reading and writing data from and\n+   * to the underlying database. After the group of reads and writes have been performed the statement\n+   * must be {@link Statement#close() released}.\n+   *\n+   * @return a {@link Statement} with access to underlying database.\n+   */\n+  Statement acquireStatement();\n+\n+  /**\n+   * @return the security context this transaction is currently executing in.\n+   * @throws NotInTransactionException if the transaction is closed.\n+   */\n+  SecurityContext securityContext();\n+\n+  /**\n+   * @return the subject executing this transaction, or {@link AuthSubject#ANONYMOUS} if the transaction is closed.\n+   */\n+  AuthSubject subjectOrAnonymous();\n+\n+  /**\n+   * @return The timestamp of the last transaction that was committed to the store when this transaction started.\n+   */\n+  long lastTransactionTimestampWhenStarted();\n+\n+  /**\n+   * @return The id of the last transaction that was committed to the store when this transaction started.\n+   */\n+  long lastTransactionIdWhenStarted();\n+\n+  /**\n+   * @return start time of this transaction, i.e. basically {@link System#currentTimeMillis()} when user called\n+   * {@link org.neo4j.internal.kernel.api.Session#beginTransaction(Type)}.\n+   */\n+  long startTime();\n+\n+  /**\n+   * @return start time of this transaction, i.e. basically {@link System#nanoTime()} when user called\n+   * {@link org.neo4j.internal.kernel.api.Session#beginTransaction(Type)}.\n+   */\n+  long startTimeNanos();\n+\n+  /**\n+   * Timeout for transaction in milliseconds.\n+   *\n+   * @return transaction timeout in milliseconds.\n+   */\n+  long timeout();\n+\n+  /**\n+   * Register a {@link CloseListener} to be invoked after commit, but before transaction events \"after\" hooks\n+   * are invoked.\n+   *\n+   * @param listener {@link CloseListener} to get these notifications.\n+   */\n+  void registerCloseListener(CloseListener listener);\n+\n+  /**\n+   * Kernel transaction type\n+   * <p>\n+   * Implicit if created internally in the database\n+   * Explicit if created by the end user\n+   *\n+   * @return the transaction type: implicit or explicit\n+   */\n+  Type transactionType();\n+\n+  /**\n+   * Return transaction id that assigned during transaction commit process.\n+   *\n+   * @return transaction id.\n+   * @throws IllegalStateException if transaction id is not assigned yet\n+   * @see org.neo4j.kernel.impl.api.TransactionCommitProcess\n+   */\n+  long getTransactionId();\n+\n+  /**\n+   * Return transaction commit time (in millis) that assigned during transaction commit process.\n+   *\n+   * @return transaction commit time\n+   * @throws IllegalStateException if commit time is not assigned yet\n+   * @see org.neo4j.kernel.impl.api.TransactionCommitProcess\n+   */\n+  long getCommitTime();\n+\n+  /**\n+   * Temporarily override this transaction's SecurityContext. The override should be reverted using\n+   * the returned {@link Revertable}.\n+   *\n+   * @param context the temporary SecurityContext.\n+   * @return {@link Revertable} which reverts to the original SecurityContext.\n+   */\n+  Revertable overrideWith(SecurityContext context);\n+\n+  /**\n+   * Clocks associated with this transaction.\n+   */\n+  ClockContext clocks();\n+\n+  /**\n+   * USE WITH CAUTION:\n+   * The internal node cursor instance used to serve kernel API calls. If some kernel API call\n+   * is made while this cursor is used, it might get corrupted and return wrong results.\n+   */\n+  NodeCursor ambientNodeCursor();\n+\n+  /**\n+   * USE WITH CAUTION:\n+   * The internal relationship scan cursor instance used to serve kernel API calls. If some kernel\n+   * API call is made while this cursor is used, it might get corrupted and return wrong results.\n+   */\n+  RelationshipScanCursor ambientRelationshipCursor();\n+\n+  /**\n+   * USE WITH CAUTION:\n+   * The internal property cursor instance used to serve kernel API calls. If some kernel\n+   * API call is made while this cursor is used, it might get corrupted and return wrong results.\n+   */\n+  PropertyCursor ambientPropertyCursor();\n+\n+  @FunctionalInterface\n+  interface Revertable extends AutoCloseable\n+  {\n+    @Override\n+    void close();\n+  }\n }\n",
+            "diff_size": 136
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/753/KernelTransaction.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/753/KernelTransaction.java\nindex 9572106aa62..7232c4139ba 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/753/KernelTransaction.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/753/KernelTransaction.java\n@@ -166,4 +166,4 @@ public interface KernelTransaction extends Transaction, AssertOpen\n         @Override\n         void close();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

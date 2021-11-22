@@ -1,0 +1,63 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "21",
+    "information": {
+        "errors": [
+            {
+                "line": "73",
+                "column": "68",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Inject\n    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n\n    /**\n     * Executes the command with the command parameters passed as Properties",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/21/ListManagedScheduledExecutorServices.java\nindex 45850bd5fc9..5835c199162 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/21/ListManagedScheduledExecutorServices.java\n@@ -70,8 +70,9 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedScheduledExecutorService defaultService;\n \n+    // make sure default has been created\n     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/21/ListManagedScheduledExecutorServices.java\nindex 45850bd5fc9..4250d4945a1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/21/ListManagedScheduledExecutorServices.java\n@@ -39,26 +39,27 @@ import org.glassfish.concurrent.runtime.deployer.DefaultManagedScheduledExecutor\n \n /**\n  * List Managed Scheduled Executor Service Resources command\n- *\n  */\n-@TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE, CommandTarget.CLUSTERED_INSTANCE })\n-@ExecuteOn(value={RuntimeType.DAS})\n-@Service(name=\"list-managed-scheduled-executor-services\")\n+@TargetType(value = {CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.CLUSTER,\n+    CommandTarget.STANDALONE_INSTANCE, CommandTarget.CLUSTERED_INSTANCE})\n+@ExecuteOn(value = {RuntimeType.DAS})\n+@Service(name = \"list-managed-scheduled-executor-services\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @I18n(\"list.managed.scheduled.executor.service\")\n @RestEndpoints({\n-    @RestEndpoint(configBean=Resources.class,\n-        opType=RestEndpoint.OpType.GET,\n-        path=\"list-managed-scheduled-executor-services\",\n-        description=\"List Managed Scheduled Executor Services\")\n+    @RestEndpoint(configBean = Resources.class,\n+        opType = RestEndpoint.OpType.GET,\n+        path = \"list-managed-scheduled-executor-services\",\n+        description = \"List Managed Scheduled Executor Services\")\n })\n public class ListManagedScheduledExecutorServices implements AdminCommand {\n \n-    final private static LocalStringManagerImpl localStrings = new LocalStringManagerImpl(ListManagedScheduledExecutorServices.class);\n+    final private static LocalStringManagerImpl localStrings =\n+        new LocalStringManagerImpl(ListManagedScheduledExecutorServices.class);\n \n     @Param(primary = true, optional = true, defaultValue = SystemPropertyConstants.DAS_SERVER_NAME)\n-    private String target ;\n+    private String target;\n \n     @Inject\n     private Domain domain;\n@@ -70,7 +71,8 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedScheduledExecutorService defaultService;\n+        // make sure default has been created\n \n     /**\n      * Executes the command with the command parameters passed as Properties\n@@ -83,16 +85,17 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n         final ActionReport report = context.getActionReport();\n \n         try {\n-            Collection<ManagedScheduledExecutorService> managedScheduledExecutorServices = domain.getResources().getResources(ManagedScheduledExecutorService.class);\n-            List<Map<String,String>> resourcesList = new ArrayList<Map<String, String>>();\n+            Collection<ManagedScheduledExecutorService> managedScheduledExecutorServices =\n+                domain.getResources().getResources(ManagedScheduledExecutorService.class);\n+            List<Map<String, String>> resourcesList = new ArrayList<Map<String, String>>();\n             List<DefaultResourceProxy> drps = habitat.getAllServices(DefaultResourceProxy.class);\n \n             for (ManagedScheduledExecutorService managedScheduledExecutorService : managedScheduledExecutorServices) {\n                 String jndiName = managedScheduledExecutorService.getJndiName();\n-                if(bindableResourcesHelper.resourceExists(jndiName, target)){\n+                if (bindableResourcesHelper.resourceExists(jndiName, target)) {\n                     ActionReport.MessagePart part = report.getTopMessagePart().addChild();\n                     part.setMessage(jndiName);\n-                    Map<String,String> resourceNameMap = new HashMap<String,String>();\n+                    Map<String, String> resourceNameMap = new HashMap<String, String>();\n                     String logicalName = DefaultResourceProxy.Util.getLogicalName(drps, jndiName);\n                     if (logicalName != null) {\n                         resourceNameMap.put(\"logical-jndi-name\", logicalName);\n@@ -105,7 +108,9 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n             extraProperties.put(\"managedScheduledExecutorServices\", resourcesList);\n             report.setExtraProperties(extraProperties);\n         } catch (Exception e) {\n-            report.setMessage(localStrings.getLocalString(\"list.managed.scheduled.executor.service.failed\", \"List managed scheduled executor services failed\"));\n+            report.setMessage(localStrings\n+                .getLocalString(\"list.managed.scheduled.executor.service.failed\",\n+                    \"List managed scheduled executor services failed\"));\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setFailureCause(e);\n             return;\n",
+            "diff_size": 22
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/21/ListManagedScheduledExecutorServices.java\nindex 45850bd5fc9..4c680071e20 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/21/ListManagedScheduledExecutorServices.java\n@@ -70,7 +70,9 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedScheduledExecutorService defaultService;\n+\n+// make sure default has been created\n \n     /**\n      * Executes the command with the command parameters passed as Properties\n@@ -112,4 +114,4 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n         }\n         report.setActionExitCode(ActionReport.ExitCode.SUCCESS);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/21/ListManagedScheduledExecutorServices.java\nindex 45850bd5fc9..5039c00f803 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/21/ListManagedScheduledExecutorServices.java\n@@ -70,9 +70,10 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedScheduledExecutorService defaultService;\n \n-    /**\n+    // make sure default has been created /**\n+     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n      *\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/21/ListManagedScheduledExecutorServices.java\nindex 45850bd5fc9..5835c199162 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/21/ListManagedScheduledExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/21/ListManagedScheduledExecutorServices.java\n@@ -70,8 +70,9 @@ public class ListManagedScheduledExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedScheduledExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedScheduledExecutorService defaultService;\n \n+    // make sure default has been created\n     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "codebuff"
+    ]
+}

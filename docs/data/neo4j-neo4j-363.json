@@ -1,0 +1,130 @@
+{
+    "project_name": "neo4j-neo4j",
+    "error_id": "363",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "47",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "45",
+                    "column": "34",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "47",
+                    "column": "57",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/363/NativeIndexFileFilter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/363/NativeIndexFileFilter.java\nindex 022a5d17f00..d6815c78f19 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/errored/1/363/NativeIndexFileFilter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/neo4j-neo4j/intellij/363/NativeIndexFileFilter.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.internal;\n \n import java.nio.file.Path;\n@@ -28,39 +29,39 @@ import org.neo4j.kernel.api.index.IndexDirectoryStructure;\n  * A filter which only matches native index files.\n  * This class contains logic that is really index provider specific, but to ask index providers becomes tricky since\n  * they aren't always available and this filter is also expected to be used in offline scenarios.\n- *\n+ * <p>\n  * The basic idea is to include everything except known lucene files (or directories known to include lucene files).\n  */\n public class NativeIndexFileFilter implements Predicate<Path>\n {\n     private final Path indexRoot;\n \n-    public NativeIndexFileFilter( Path storeDir )\n+    public NativeIndexFileFilter(Path storeDir)\n     {\n-        indexRoot = IndexDirectoryStructure.baseSchemaIndexFolder( storeDir ).toAbsolutePath();\n+        indexRoot = IndexDirectoryStructure.baseSchemaIndexFolder(storeDir).toAbsolutePath();\n     }\n \n     @Override\n-    public boolean test( Path path )\n+    public boolean test(Path path)\n     {\n-        if ( !path.toAbsolutePath().startsWith( indexRoot ) )\n+        if (!path.toAbsolutePath().startsWith(indexRoot))\n         {\n             // This file isn't even under the schema/index root directory\n             return false;\n         }\n \n-        Path schemaPath = indexRoot.relativize( path );\n+        Path schemaPath = indexRoot.relativize(path);\n         int nameCount = schemaPath.getNameCount();\n \n         // - schema/index/lucene\n         // - schema/index/lucene_native-1.0\n         // - schema/index/lucene_native-2.0\n         boolean isDeprecatedProviderFile = nameCount >= 1 && (\n-                schemaPath.getName( 0 ).toString().equals( \"lucene\" ) ||\n-                        schemaPath.getName( 0 ).toString().equals( \"lucene_native-1.0\" ) ||\n-                        schemaPath.getName( 0 ).toString().equals( \"lucene_native-2.0\" ));\n+          schemaPath.getName(0).toString().equals(\"lucene\") ||\n+            schemaPath.getName(0).toString().equals(\"lucene_native-1.0\") ||\n+            schemaPath.getName(0).toString().equals(\"lucene_native-2.0\"));\n         // - schema/index/lucene_native-x.y/<indexId>/lucene-x.y/x/.....\n-        boolean isFusionLuceneProviderFile = nameCount >= 3 && schemaPath.getName( 2 ).toString().startsWith( \"lucene-\" );\n+        boolean isFusionLuceneProviderFile = nameCount >= 3 && schemaPath.getName(2).toString().startsWith(\"lucene-\");\n \n         return !isDeprecatedProviderFile && !isFusionLuceneProviderFile;\n     }\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

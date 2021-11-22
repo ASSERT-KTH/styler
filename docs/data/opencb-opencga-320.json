@@ -1,0 +1,82 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "320",
+    "information": {
+        "errors": [
+            {
+                "line": "43",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 168).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "public class FileRanges extends OpenCGAWSServer {\n\n    public FileRanges(@Context UriInfo uriInfo, @Context HttpServletRequest httpServletRequest, @Context HttpHeaders headerParam) throws IOException, VersionException {\n        super(uriInfo, httpServletRequest, headerParam);\n    }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/320/FileRanges.java\nindex eb39c13ef36..0e3a86a0a69 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler/320/FileRanges.java\n@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;\n public class FileRanges extends OpenCGAWSServer {\n \n     public FileRanges(@Context UriInfo uriInfo, @Context HttpServletRequest httpServletRequest, @Context HttpHeaders headerParam) throws IOException, VersionException {\n-        super(uriInfo, httpServletRequest, headerParam);\n+super(uriInfo, httpServletRequest, headerParam);\n     }\n \n     @GET\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/320/FileRanges.java\nindex eb39c13ef36..74f81f3cc9c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/320/FileRanges.java\n@@ -40,62 +40,63 @@ import java.util.concurrent.TimeUnit;\n @Produces(\"application/json\")\n public class FileRanges extends OpenCGAWSServer {\n \n-    public FileRanges(@Context UriInfo uriInfo, @Context HttpServletRequest httpServletRequest, @Context HttpHeaders headerParam) throws IOException, VersionException {\n-        super(uriInfo, httpServletRequest, headerParam);\n-    }\n+  public FileRanges(@Context UriInfo uriInfo, @Context HttpServletRequest httpServletRequest, @Context HttpHeaders headerParam)\n+      throws IOException, VersionException {\n+    super(uriInfo, httpServletRequest, headerParam);\n+  }\n \n-    @GET\n-    @Path(\"/ranges/{file}\")\n-    @ApiOperation(value = \"Fetch alignment files using HTTP Ranges protocol\")\n-    @Produces(\"text/plain\")\n-    public Response getRanges(@Context HttpHeaders headers,\n-                              @ApiParam(value = \"File id, name or path\") @PathParam(\"file\") String fileIdStr,\n-                              @ApiParam(value = \"Study [[user@]project:]study where study and project can be either the id or alias\")\n-                              @QueryParam(\"study\") String studyStr) {\n+  @GET\n+  @Path(\"/ranges/{file}\")\n+  @ApiOperation(value = \"Fetch alignment files using HTTP Ranges protocol\")\n+  @Produces(\"text/plain\")\n+  public Response getRanges(@Context HttpHeaders headers,\n+                            @ApiParam(value = \"File id, name or path\") @PathParam(\"file\") String fileIdStr,\n+                            @ApiParam(value = \"Study [[user@]project:]study where study and project can be either the id or alias\")\n+                            @QueryParam(\"study\") String studyStr) {\n \n-        try {\n-            DataResult<File> queryResult = catalogManager.getFileManager().get(studyStr, fileIdStr, this.queryOptions, token);\n-            File file = queryResult.getResults().get(0);\n+    try {\n+      DataResult<File> queryResult = catalogManager.getFileManager().get(studyStr, fileIdStr, this.queryOptions, token);\n+      File file = queryResult.getResults().get(0);\n \n-            List<String> rangeList = headers.getRequestHeader(\"range\");\n-            if (rangeList != null) {\n-                long from;\n-                long to;\n-                String[] acceptedRanges = rangeList.get(0).split(\"=\")[1].split(\"-\");\n-                from = Long.parseLong(acceptedRanges[0]);\n-                to = Long.parseLong(acceptedRanges[1]);\n-                int length = (int) (to - from) + 1;\n-                ByteBuffer buf = ByteBuffer.allocate(length);\n+      List<String> rangeList = headers.getRequestHeader(\"range\");\n+      if (rangeList != null) {\n+        long from;\n+        long to;\n+        String[] acceptedRanges = rangeList.get(0).split(\"=\")[1].split(\"-\");\n+        from = Long.parseLong(acceptedRanges[0]);\n+        to = Long.parseLong(acceptedRanges[1]);\n+        int length = (int) (to - from) + 1;\n+        ByteBuffer buf = ByteBuffer.allocate(length);\n \n-                logger.debug(\"from: {} , to: {}, length:{}\", from, to, length);\n-                StopWatch t = StopWatch.createStarted();\n+        logger.debug(\"from: {} , to: {}, length:{}\", from, to, length);\n+        StopWatch t = StopWatch.createStarted();\n \n-                java.nio.file.Path filePath = Paths.get(file.getUri());\n-                try (FileChannel fc = (FileChannel.open(filePath, StandardOpenOption.READ))) {\n-                    fc.position(from);\n-                    fc.read(buf);\n-                }\n+        java.nio.file.Path filePath = Paths.get(file.getUri());\n+        try (FileChannel fc = (FileChannel.open(filePath, StandardOpenOption.READ))) {\n+          fc.position(from);\n+          fc.read(buf);\n+        }\n \n-                t.stop();\n-                logger.debug(\"Skip {}B and read {}B in {}s\", from, length, t.getTime(TimeUnit.MILLISECONDS) / 1000.0);\n+        t.stop();\n+        logger.debug(\"Skip {}B and read {}B in {}s\", from, length, t.getTime(TimeUnit.MILLISECONDS) / 1000.0);\n \n-                return Response.ok(buf.array(), MediaType.APPLICATION_OCTET_STREAM_TYPE)\n-                        .header(\"Accept-Ranges\", \"bytes\")\n-                        .header(\"Access-Control-Allow-Origin\", \"*\")\n-                        .header(\"Access-Control-Allow-Headers\", \"x-requested-with, content-type, range\")\n-                        .header(\"Access-Control-Allow-Credentials\", \"true\")\n-                        .header(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\")\n-                        .header(\"Content-Range\", \"bytes \" + from + \"-\" + to + \"/\" + file.getSize())\n-                        .header(\"Content-length\", to - from + 1)\n-                        .status(Response.Status.PARTIAL_CONTENT).build();\n+        return Response.ok(buf.array(), MediaType.APPLICATION_OCTET_STREAM_TYPE)\n+            .header(\"Accept-Ranges\", \"bytes\")\n+            .header(\"Access-Control-Allow-Origin\", \"*\")\n+            .header(\"Access-Control-Allow-Headers\", \"x-requested-with, content-type, range\")\n+            .header(\"Access-Control-Allow-Credentials\", \"true\")\n+            .header(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\")\n+            .header(\"Content-Range\", \"bytes \" + from + \"-\" + to + \"/\" + file.getSize())\n+            .header(\"Content-length\", to - from + 1)\n+            .status(Response.Status.PARTIAL_CONTENT).build();\n \n-            } else {\n-                DataInputStream stream = catalogManager.getFileManager().download(studyStr, fileIdStr, -1, -1, token);\n-                return createOkResponse(stream, MediaType.APPLICATION_OCTET_STREAM_TYPE, file.getName());\n-            }\n-        } catch (Exception e) {\n-            return createErrorResponse(e);\n-        }\n+      } else {\n+        DataInputStream stream = catalogManager.getFileManager().download(studyStr, fileIdStr, -1, -1, token);\n+        return createOkResponse(stream, MediaType.APPLICATION_OCTET_STREAM_TYPE, file.getName());\n+      }\n+    } catch (Exception e) {\n+      return createErrorResponse(e);\n     }\n+  }\n \n }\n",
+            "diff_size": 50
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/320/FileRanges.java\nindex eb39c13ef36..eb7da6a0c0d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/320/FileRanges.java\n@@ -52,8 +52,7 @@ public class FileRanges extends OpenCGAWSServer {\n                               @ApiParam(value = \"File id, name or path\") @PathParam(\"file\") String fileIdStr,\n                               @ApiParam(value = \"Study [[user@]project:]study where study and project can be either the id or alias\")\n                               @QueryParam(\"study\") String studyStr) {\n-\n-        try {\n+    try {\n             DataResult<File> queryResult = catalogManager.getFileManager().get(studyStr, fileIdStr, this.queryOptions, token);\n             File file = queryResult.getResults().get(0);\n \n@@ -98,4 +97,4 @@ public class FileRanges extends OpenCGAWSServer {\n         }\n     }\n \n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "43",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/320/FileRanges.java\nindex eb39c13ef36..0e3a86a0a69 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/320/FileRanges.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_random/320/FileRanges.java\n@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;\n public class FileRanges extends OpenCGAWSServer {\n \n     public FileRanges(@Context UriInfo uriInfo, @Context HttpServletRequest httpServletRequest, @Context HttpHeaders headerParam) throws IOException, VersionException {\n-        super(uriInfo, httpServletRequest, headerParam);\n+super(uriInfo, httpServletRequest, headerParam);\n     }\n \n     @GET\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

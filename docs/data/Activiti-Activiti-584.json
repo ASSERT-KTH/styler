@@ -1,0 +1,82 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "584",
+    "information": {
+        "errors": [
+            {
+                "line": "18",
+                "severity": "error",
+                "message": "'package' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\npackage org.activiti.engine.impl.cmd;\n\nimport java.io.Serializable;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/584/GetTaskVariableInstanceCmd.java\nindex 688067a3754..4752cbf734d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/584/GetTaskVariableInstanceCmd.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "18",
+                    "severity": "error",
+                    "message": "'package' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "30",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/584/GetTaskVariableInstanceCmd.java\nindex 688067a3754..af31db4e465 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/584/GetTaskVariableInstanceCmd.java\n@@ -18,7 +18,6 @@\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n-\n import org.activiti.engine.ActivitiIllegalArgumentException;\n import org.activiti.engine.ActivitiObjectNotFoundException;\n import org.activiti.engine.impl.interceptor.Command;\n@@ -27,46 +26,44 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;\n import org.activiti.engine.impl.persistence.entity.VariableInstance;\n import org.activiti.engine.task.Task;\n \n-public class GetTaskVariableInstanceCmd implements Command<VariableInstance>, Serializable {\n-\n-    private static final long serialVersionUID = 1L;\n-    protected String taskId;\n-    protected String variableName;\n-    protected boolean isLocal;\n-\n-    public GetTaskVariableInstanceCmd(String taskId, String variableName, boolean isLocal) {\n-        this.taskId = taskId;\n-        this.variableName = variableName;\n-        this.isLocal = isLocal;\n-    }\n-\n-    @Override\n-    public VariableInstance execute(CommandContext commandContext) {\n-        if (taskId == null) {\n-            throw new ActivitiIllegalArgumentException(\"taskId is null\");\n-        }\n-        if (variableName == null) {\n-            throw new ActivitiIllegalArgumentException(\"variableName is null\");\n-        }\n \n-        TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);\n+public class GetTaskVariableInstanceCmd implements Command<VariableInstance>, Serializable {\n \n-        if (task == null) {\n-            throw new ActivitiObjectNotFoundException(\"task \" + taskId + \" doesn't exist\", Task.class);\n-        }\n+  private static final long serialVersionUID = 1L;\n+  protected String taskId;\n+  protected String variableName;\n+  protected boolean isLocal;\n \n-        VariableInstance variableEntity;\n+  public GetTaskVariableInstanceCmd(String taskId, String variableName, boolean isLocal) {\n+    this.taskId = taskId;\n+    this.variableName = variableName;\n+    this.isLocal = isLocal;\n+  }\n \n-        if (isLocal) {\n-            variableEntity = task.getVariableInstanceLocal(variableName, false);\n-        } else {\n-            variableEntity = task.getVariableInstance(variableName, false);\n-        }\n+  @Override\n+  public VariableInstance execute(CommandContext commandContext) {\n+    if (taskId == null) {\n+      throw new ActivitiIllegalArgumentException(\"taskId is null\");\n+    }\n+    if (variableName == null) {\n+      throw new ActivitiIllegalArgumentException(\"variableName is null\");\n+    }\n \n-        if (variableEntity != null) {\n-            variableEntity.getValue();\n-        }\n+    TaskEntity task = commandContext.getTaskEntityManager().findById(taskId);\n+    if (task == null) {\n+      throw new ActivitiObjectNotFoundException(\"task \" + taskId + \" doesn't exist\",\n+                                                Task.class);\n+    }\n \n-        return variableEntity;\n+    VariableInstance variableEntity;\n+    if (isLocal) {\n+      variableEntity = task.getVariableInstanceLocal(variableName, false);\n+    } else {\n+      variableEntity = task.getVariableInstance(variableName, false);\n+    }\n+    if (variableEntity != null) {\n+      variableEntity.getValue();\n     }\n-}\n+    return variableEntity;\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 56
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/584/GetTaskVariableInstanceCmd.java\nindex 688067a3754..4752cbf734d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/584/GetTaskVariableInstanceCmd.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/584/GetTaskVariableInstanceCmd.java\nindex 688067a3754..4752cbf734d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/584/GetTaskVariableInstanceCmd.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/584/GetTaskVariableInstanceCmd.java\n@@ -14,7 +14,6 @@\n  * limitations under the License.\n  */\n \n-\n package org.activiti.engine.impl.cmd;\n \n import java.io.Serializable;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff"
+    ]
+}

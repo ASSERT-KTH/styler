@@ -1,0 +1,356 @@
+{
+    "project_name": "couchbase-couchbase-jvm-core",
+    "error_id": "74",
+    "information": {
+        "errors": [
+            {
+                "line": "54",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 127).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    }\n\n    private static Observable<StatResponse> sendStatRequests(final ClusterFacade core, final String bucket, final String key) {\n        return Observable.defer(new Func0<Observable<StatResponse>>() {\n            @Override\n            public Observable<StatResponse> call() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "54",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/74/Stat.java\nindex 912b68aaa03..729bf1e9eab 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/intellij/74/Stat.java\n@@ -51,40 +51,41 @@ public class Stat {\n         return sendStatRequests(core, bucket, key);\n     }\n \n-    private static Observable<StatResponse> sendStatRequests(final ClusterFacade core, final String bucket, final String key) {\n+    private static Observable<StatResponse> sendStatRequests(final ClusterFacade core, final String bucket,\n+                                                             final String key) {\n         return Observable.defer(new Func0<Observable<StatResponse>>() {\n             @Override\n             public Observable<StatResponse> call() {\n                 return core\n-                        .<GetClusterConfigResponse>send(new GetClusterConfigRequest())\n-                        .map(new Func1<GetClusterConfigResponse, List<InetAddress>>() {\n-                            @Override\n-                            public List<InetAddress> call(GetClusterConfigResponse response) {\n-                                CouchbaseBucketConfig conf =\n-                                        (CouchbaseBucketConfig) response.config().bucketConfig(bucket);\n-                                List<InetAddress> hostnames = new ArrayList<InetAddress>();\n-                                for (NodeInfo nodeInfo : conf.nodes()) {\n-                                    if (nodeInfo.services().containsKey(ServiceType.BINARY)) {\n-                                        hostnames.add(nodeInfo.hostname());\n-                                    }\n+                    .<GetClusterConfigResponse>send(new GetClusterConfigRequest())\n+                    .map(new Func1<GetClusterConfigResponse, List<InetAddress>>() {\n+                        @Override\n+                        public List<InetAddress> call(GetClusterConfigResponse response) {\n+                            CouchbaseBucketConfig conf =\n+                                (CouchbaseBucketConfig) response.config().bucketConfig(bucket);\n+                            List<InetAddress> hostnames = new ArrayList<InetAddress>();\n+                            for (NodeInfo nodeInfo : conf.nodes()) {\n+                                if (nodeInfo.services().containsKey(ServiceType.BINARY)) {\n+                                    hostnames.add(nodeInfo.hostname());\n                                 }\n-                                return hostnames;\n                             }\n-                        })\n-                        .flatMap(new Func1<List<InetAddress>, Observable<StatResponse>>() {\n-                            @Override\n-                            public Observable<StatResponse> call(List<InetAddress> hostnames) {\n-                                List<Observable<StatResponse>> stats = new ArrayList<Observable<StatResponse>>();\n-                                for (InetAddress hostname : hostnames) {\n-                                    stats.add(core.<StatResponse>send(new StatRequest(key, hostname, bucket)));\n-                                }\n-                                if (stats.size() == 1) {\n-                                    return stats.get(0);\n-                                } else {\n-                                    return Observable.mergeDelayError(Observable.from(stats));\n-                                }\n+                            return hostnames;\n+                        }\n+                    })\n+                    .flatMap(new Func1<List<InetAddress>, Observable<StatResponse>>() {\n+                        @Override\n+                        public Observable<StatResponse> call(List<InetAddress> hostnames) {\n+                            List<Observable<StatResponse>> stats = new ArrayList<Observable<StatResponse>>();\n+                            for (InetAddress hostname : hostnames) {\n+                                stats.add(core.<StatResponse>send(new StatRequest(key, hostname, bucket)));\n+                            }\n+                            if (stats.size() == 1) {\n+                                return stats.get(0);\n+                            } else {\n+                                return Observable.mergeDelayError(Observable.from(stats));\n                             }\n-                        });\n+                        }\n+                    });\n             }\n         });\n     }\n",
+            "diff_size": 30
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "56",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "58",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 19, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 23, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "60",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 159).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "61",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 100, expected level should be one of the following: 27, 31.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "62",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 104, expected level should be one of the following: 31, 35.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "63",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 196).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "64",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 104, expected level should be one of the following: 31, 35.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "64",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 163).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "65",
+                    "severity": "warning",
+                    "message": "'for' has incorrect indentation level 104, expected level should be one of the following: 31, 35.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "65",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "66",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 108, expected level should be one of the following: 35, 39.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "66",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 166).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "67",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 112, expected level should be one of the following: 39, 43.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "67",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 147).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "68",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 108, expected level should be one of the following: 35, 39.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "69",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 104, expected level should be one of the following: 31, 35.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "70",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 104, expected level should be one of the following: 31, 35.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "70",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 121).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "71",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 100, expected level should be one of the following: 27, 31.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "72",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 96, expected level should be one of the following: 23, 27.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "72",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 165).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "73",
+                    "severity": "warning",
+                    "message": "'method def modifier' has incorrect indentation level 102, expected level should be one of the following: 100, 104.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "74",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 169).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "warning",
+                    "message": "'method def' child has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 187).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "76",
+                    "severity": "warning",
+                    "message": "'for' has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "76",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "warning",
+                    "message": "'for' child has incorrect indentation level 110, expected level should be one of the following: 108, 112.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 185).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "warning",
+                    "message": "'for rcurly' has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "warning",
+                    "message": "'if' has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "80",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "81",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 110, expected level should be one of the following: 108, 112.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "81",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 130).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "82",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "83",
+                    "severity": "warning",
+                    "message": "'else' child has incorrect indentation level 110, expected level should be one of the following: 108, 112.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "83",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 168).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "84",
+                    "severity": "warning",
+                    "message": "'else rcurly' has incorrect indentation level 106, expected level should be one of the following: 104, 108.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "85",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 102, expected level should be one of the following: 100, 104.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "86",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 98, expected level should be one of the following: 96, 100.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "87",
+                    "severity": "warning",
+                    "message": "'method def rcurly' has incorrect indentation level 19, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "88",
+                    "severity": "warning",
+                    "message": "'object def rcurly' has incorrect indentation level 15, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/74/Stat.java\nindex 912b68aaa03..a83042c8185 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/codebuff/74/Stat.java\n@@ -27,7 +27,6 @@ import com.couchbase.client.core.service.ServiceType;\n import rx.Observable;\n import rx.functions.Func0;\n import rx.functions.Func1;\n-\n import java.net.InetAddress;\n import java.util.ArrayList;\n import java.util.List;\n@@ -46,46 +45,46 @@ import java.util.List;\n  * @author Sergey Avseyev\n  * @since 1.2.1\n  */\n+\n public class Stat {\n+\n+\n     public static Observable<StatResponse> call(final ClusterFacade core, final String bucket, final String key) {\n         return sendStatRequests(core, bucket, key);\n     }\n \n     private static Observable<StatResponse> sendStatRequests(final ClusterFacade core, final String bucket, final String key) {\n         return Observable.defer(new Func0<Observable<StatResponse>>() {\n-            @Override\n-            public Observable<StatResponse> call() {\n-                return core\n-                        .<GetClusterConfigResponse>send(new GetClusterConfigRequest())\n-                        .map(new Func1<GetClusterConfigResponse, List<InetAddress>>() {\n-                            @Override\n-                            public List<InetAddress> call(GetClusterConfigResponse response) {\n-                                CouchbaseBucketConfig conf =\n-                                        (CouchbaseBucketConfig) response.config().bucketConfig(bucket);\n-                                List<InetAddress> hostnames = new ArrayList<InetAddress>();\n-                                for (NodeInfo nodeInfo : conf.nodes()) {\n-                                    if (nodeInfo.services().containsKey(ServiceType.BINARY)) {\n-                                        hostnames.add(nodeInfo.hostname());\n-                                    }\n-                                }\n-                                return hostnames;\n-                            }\n-                        })\n-                        .flatMap(new Func1<List<InetAddress>, Observable<StatResponse>>() {\n-                            @Override\n-                            public Observable<StatResponse> call(List<InetAddress> hostnames) {\n-                                List<Observable<StatResponse>> stats = new ArrayList<Observable<StatResponse>>();\n-                                for (InetAddress hostname : hostnames) {\n-                                    stats.add(core.<StatResponse>send(new StatRequest(key, hostname, bucket)));\n-                                }\n-                                if (stats.size() == 1) {\n-                                    return stats.get(0);\n-                                } else {\n-                                    return Observable.mergeDelayError(Observable.from(stats));\n-                                }\n-                            }\n-                        });\n-            }\n-        });\n+                   @Override\n+                   public Observable<StatResponse> call() {\n+                       return core.<GetClusterConfigResponse>send(new GetClusterConfigRequest()).map(new Func1<GetClusterConfigResponse, List<InetAddress>>() {\n+                                                                                                    @Override\n+                                                                                                    public List<InetAddress> call(GetClusterConfigResponse response) {\n+                                                                                                        CouchbaseBucketConfig conf = (CouchbaseBucketConfig) response.config().bucketConfig(bucket);\n+                                                                                                        List<InetAddress> hostnames = new ArrayList<InetAddress>();\n+                                                                                                        for (NodeInfo nodeInfo : conf.nodes()) {\n+                                                                                                            if (nodeInfo.services().containsKey(ServiceType.BINARY)) {\n+                                                                                                                hostnames.add(nodeInfo.hostname());\n+                                                                                                            }\n+                                                                                                        }\n+                                                                                                        return hostnames;\n+                                                                                                    }\n+                                                                                                }).flatMap(new Func1<List<InetAddress>, Observable<StatResponse>>() {\n+                                                                                                      @Override\n+                                                                                                      public Observable<StatResponse> call(List<InetAddress> hostnames) {\n+                                                                                                          List<Observable<StatResponse>> stats = new ArrayList<Observable<StatResponse>>();\n+                                                                                                          for (InetAddress hostname : hostnames) {\n+                                                                                                              stats.add(core.<StatResponse>send(new StatRequest(key, hostname, bucket)));\n+                                                                                                          }\n+\n+                                                                                                          if (stats.size() == 1) {\n+                                                                                                              return stats.get(0);\n+                                                                                                          } else {\n+                                                                                                              return Observable.mergeDelayError(Observable.from(stats));\n+                                                                                                          }\n+                                                                                                      }\n+                                                                                                  });\n+                   }\n+               });\n     }\n }\n\\ No newline at end of file\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "54",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 127).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "54",
+                    "column": "30",
+                    "severity": "warning",
+                    "message": "GenericWhitespace '<' is followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "10",
+                    "severity": "warning",
+                    "message": "GenericWhitespace '>' should followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.GenericWhitespaceCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/74/Stat.java\nindex 912b68aaa03..db9441dd391 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/errored/1/74/Stat.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/couchbase-couchbase-jvm-core/styler_three_grams/74/Stat.java\n@@ -51,8 +51,9 @@ public class Stat {\n         return sendStatRequests(core, bucket, key);\n     }\n \n-    private static Observable<StatResponse> sendStatRequests(final ClusterFacade core, final String bucket, final String key) {\n-        return Observable.defer(new Func0<Observable<StatResponse>>() {\n+    private staticObservable< StatResponse\n+        >sendStatRequests(final ClusterFacade core, final String bucket, final String key) {\n+        return ObservableObservable.defer(new Func0<Observable<StatResponse>>() {\n             @Override\n             public Observable<StatResponse> call() {\n                 return core\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

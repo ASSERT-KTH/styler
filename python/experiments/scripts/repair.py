@@ -12,37 +12,37 @@ from functools import reduce
 def get_jar_path(jar_file):
     return os.path.join(os.path.dirname(__file__), 'jars', jar_file)
 
-def call_repair_tool(tool, orig_dir, ugly_dir, output_dir, dataset_metadata):
+def call_repair_tool(tool, violation_free_dir, ugly_dir, output_dir, dataset_metadata):
     """
     Call a repair tool
     """
     if tool == 'naturalize':
-        call_naturalize(orig_dir, ugly_dir, output_dir)
+        call_naturalize(violation_free_dir, ugly_dir, output_dir)
     if tool == 'naturalize_sniper':
-        call_naturalize_sniper(orig_dir, ugly_dir, output_dir)
+        call_naturalize_sniper(violation_free_dir, ugly_dir, output_dir)
     if tool == 'codebuff':
-        call_codebuff(orig_dir, ugly_dir, output_dir, grammar=dataset_metadata['grammar'], indent=dataset_metadata['indent'])
+        call_codebuff(violation_free_dir, ugly_dir, output_dir, grammar=dataset_metadata['grammar'], indent=dataset_metadata['indent'])
     if tool == 'codebuff_sniper':
-        call_codebuff_sniper(orig_dir, ugly_dir, output_dir[:-7],output_dir)
+        call_codebuff_sniper(violation_free_dir, ugly_dir, output_dir[:-7],output_dir)
     return move_parse_exception_files(output_dir, None)
 
 
-def call_naturalize(orig_dir, ugly_dir, output_dir):
+def call_naturalize(violation_free_dir, ugly_dir, output_dir):
     """
     Call a Naturalize
     """
-    args = ["-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+    args = ["-t " + violation_free_dir, "-o " + output_dir, "-f " + ugly_dir]
     return call_java(get_jar_path('naturalize.jar'), args)
 
 
-def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
+def call_naturalize_sniper(violation_free_dir, ugly_dir, output_dir):
     """
     Call naturalize sniper.
     The dir needs to contain the metadata
     """
     create_dir(output_dir)
     # TODO rebuild with sniper ...
-    args = ["-mode snipper", "-t " + orig_dir, "-o " + output_dir, "-f " + ugly_dir]
+    args = ["-mode snipper", "-t " + violation_free_dir, "-o " + output_dir, "-f " + ugly_dir]
     uglies = get_uglies(ugly_dir)
     for ugly in uglies:
         path = ugly.get_errored_path()
@@ -53,16 +53,16 @@ def call_naturalize_sniper(orig_dir, ugly_dir, output_dir):
     return call_java(get_jar_path('naturalize.jar'), args)
 
 
-def call_codebuff(orig_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
+def call_codebuff(violation_free_dir, ugly_dir, output_dir, grammar = "Java8", indent=2):
     """
     Call codebuff.
     """
-    args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + orig_dir, "-files java", "-comment LINE_COMMENT", "-indent " + str(indent), "-o " + output_dir]
+    args = ["-g org.antlr.codebuff." + grammar, "-rule compilationUnit", "-corpus " + violation_free_dir, "-files java", "-comment LINE_COMMENT", "-indent " + str(indent), "-o " + output_dir]
     args.append(ugly_dir)
     return call_java(get_jar_path('codebuff-1.5.1.jar'), args)
 
 
-def call_codebuff_sniper(orig_dir, ugly_dir, codebuff_dir, output_dir):
+def call_codebuff_sniper(violation_free_dir, ugly_dir, codebuff_dir, output_dir):
     """
     Call Codebuff sniper.
     The dir needs to contain the metadata

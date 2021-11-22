@@ -1,0 +1,88 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "230",
+    "information": {
+        "errors": [
+            {
+                "line": "41",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 137).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "public class XMLCatalog implements IXMLCatalog\n{\n  //private final static String _APACHE_FEATURE_CONTINUE_AFTER_FATAL_ERROR = \"http://apache.org/xml/features/continue-after-fatal-error\";\n\n  private final static String _APACHE_FEATURE_NAMESPACE_PREFIXES = \"http://xml.org/sax/features/namespace-prefixes\";\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "40",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/230/XMLCatalog.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/230/XMLCatalog.java\nindex 99c631375f3..ad0dc5f3474 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/230/XMLCatalog.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/230/XMLCatalog.java\n@@ -4,7 +4,7 @@\n  * are made available under the terms of the Eclipse Public License v1.0\n  * which accompanies this distribution, and is available at\n  * http://www.eclipse.org/legal/epl-v10.html\n- * \n+ *\n  * Contributors:\n  *     IBM Corporation - initial API and implementation\n  *******************************************************************************/\n@@ -36,8 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;\n  * of an XML catalog. Method definitions are provided for the catalog to set a\n  * location in the catalog and resolve an entity from the catalog.\n  */\n-public class XMLCatalog implements IXMLCatalog\n-{\n+public class XMLCatalog implements IXMLCatalog {\n   //private final static String _APACHE_FEATURE_CONTINUE_AFTER_FATAL_ERROR = \"http://apache.org/xml/features/continue-after-fatal-error\";\n \n   private final static String _APACHE_FEATURE_NAMESPACE_PREFIXES = \"http://xml.org/sax/features/namespace-prefixes\";\n@@ -47,7 +46,7 @@ public class XMLCatalog implements IXMLCatalog\n   //private final static String _APACHE_FEATURE_VALIDATION = \"http://xml.org/sax/features/validation\";\n \n   //private final static String _APACHE_FEATURE_VALIDATION_SCHEMA = \"http://apache.org/xml/features/validation/schema\";\n-  \n+\n   private final static String FILE_PROTOCOL = \"file:///\";\n \n   private static IXMLCatalog instance = null;\n@@ -70,53 +69,37 @@ public class XMLCatalog implements IXMLCatalog\n   /**\n    * Return an instance of the XML catalog. Assigns all registered schemas to\n    * the XML catalog.\n-   * \n+   *\n    * @return The instance of the XML catalog.\n    */\n-  public static IXMLCatalog getInstance()\n-  {\n-    if (instance == null)\n-    {\n+  public static IXMLCatalog getInstance() {\n+    if (instance == null) {\n       instance = new XMLCatalog();\n \n       // Add the registered entities to the catalog.\n       Iterator entityIter = entities.iterator();\n-      while (entityIter.hasNext())\n-      {\n+      while (entityIter.hasNext()) {\n         XMLCatalogEntityHolder entity = (XMLCatalogEntityHolder) entityIter.next();\n         instance.addEntryToCatalog(entity.getPublicId(), entity.getSystemId());\n       }\n \n       // Add the schemas in the schema directories to the catalog.\n-      if (schemadirs.size() > 0)\n-      {\n+      if (schemadirs.size() > 0) {\n         SAXParser saxParser = null;\n-        try\n-        {\n+        try {\n           SAXParserFactory parserfactory = new SAXParserFactoryImpl();\n           parserfactory.setFeature(_APACHE_FEATURE_NAMESPACE_PREFIXES, true);\n           parserfactory.setFeature(_APACHE_FEATURE_NAMESPACES, true);\n           saxParser = parserfactory.newSAXParser();\n-        }\n-        catch (FactoryConfigurationError e)\n-        {\n-        }\n-        catch (SAXNotRecognizedException e)\n-        {\n-        }\n-        catch (ParserConfigurationException e)\n-        {\n-        }\n-        catch (SAXNotSupportedException e)\n-        {\n-        }\n-        catch (SAXException e)\n-        {\n+        } catch (FactoryConfigurationError e) {\n+        } catch (SAXNotRecognizedException e) {\n+        } catch (ParserConfigurationException e) {\n+        } catch (SAXNotSupportedException e) {\n+        } catch (SAXException e) {\n         }\n         Iterator schemadirIter = schemadirs.iterator();\n         SchemaNamespaceHandler handler = ((XMLCatalog) instance).new SchemaNamespaceHandler();\n-        while (schemadirIter.hasNext())\n-        {\n+        while (schemadirIter.hasNext()) {\n           String schemadir = (String) schemadirIter.next();\n           registerSchemasForDir(instance, schemadir, saxParser, handler);\n         }\n@@ -128,62 +111,46 @@ public class XMLCatalog implements IXMLCatalog\n   /**\n    * Register the schemas in the given directory and all subdirectories with the\n    * XML catalog.\n-   * \n-   * @param catalog\n-   *          The catalog to register the schemas with.\n-   * @param schemadir\n-   *          The schema directory to search for schema files.\n-   * @param parser\n-   *          The SAXParser to use to parse the schemas for their\n-   *          targetNamespace.\n-   * @param handler\n-   *          The handler to use to get the targetNamespace.\n+   *\n+   * @param catalog   The catalog to register the schemas with.\n+   * @param schemadir The schema directory to search for schema files.\n+   * @param parser    The SAXParser to use to parse the schemas for their\n+   *                  targetNamespace.\n+   * @param handler   The handler to use to get the targetNamespace.\n    */\n   private static void registerSchemasForDir(IXMLCatalog catalog, String schemadir, SAXParser parser,\n-      SchemaNamespaceHandler handler)\n-  {\n+                                            SchemaNamespaceHandler handler) {\n     // Remove file: and file:/ from beginning of file location if they are present.\n-    if(schemadir.startsWith(\"file:\"))\n-    {\n+    if (schemadir.startsWith(\"file:\")) {\n       schemadir = schemadir.substring(5);\n     }\n-    while(schemadir.startsWith(\"//\"))\n-    {\n+    while (schemadir.startsWith(\"//\")) {\n       schemadir = schemadir.substring(1);\n     }\n-    \n+\n     File dir = new File(schemadir);\n-    if (dir.isDirectory())\n-    {\n+    if (dir.isDirectory()) {\n       File[] files = dir.listFiles();\n       int numfiles = files.length;\n-      for (int i = 0; i < numfiles; i++)\n-      {\n+      for (int i = 0; i < numfiles; i++) {\n         File tempfile = files[i];\n         String tempfilepath = tempfile.getAbsolutePath();\n-        tempfilepath = tempfilepath.replace('\\\\','/');\n-        while(tempfilepath.startsWith(\"/\"))\n-        {\n+        tempfilepath = tempfilepath.replace('\\\\', '/');\n+        while (tempfilepath.startsWith(\"/\")) {\n           tempfilepath = tempfilepath.substring(1);\n         }\n         tempfilepath = FILE_PROTOCOL + tempfilepath;\n-        if (tempfile.isDirectory())\n-        {\n+        if (tempfile.isDirectory()) {\n           registerSchemasForDir(catalog, tempfilepath, parser, handler);\n-        } else\n-        {\n+        } else {\n           handler.reset();\n-          try\n-          {\n+          try {\n             parser.parse(tempfilepath, handler);\n-          }\n-          catch (Exception e)\n-          {\n+          } catch (Exception e) {\n             // TODO: log error.\n           }\n           String targetNamespace = handler.getTargetNamespace();\n-          if (targetNamespace != null)\n-          {\n+          if (targetNamespace != null) {\n             catalog.addEntryToCatalog(targetNamespace, tempfilepath);\n           }\n         }\n@@ -194,24 +161,18 @@ public class XMLCatalog implements IXMLCatalog\n   /**\n    * Get the instance of the extension XML catalog. Returns the instance if one\n    * is registered and can be created, null otherwise.\n-   * \n+   *\n    * @return The instance of the extension XML catalog if one is registered,\n-   *         null otherwise.\n+   * null otherwise.\n    */\n-  public static IXMLCatalog getExtensionCatalogInstance()\n-  {\n-    if (extXMLCatalogInstance == null)\n-    {\n-      if (extxmlcatalogclass != null && extclassLoader != null)\n-      {\n-        try\n-        {\n+  public static IXMLCatalog getExtensionCatalogInstance() {\n+    if (extXMLCatalogInstance == null) {\n+      if (extxmlcatalogclass != null && extclassLoader != null) {\n+        try {\n           Class catalogClass = extclassLoader != null ? extclassLoader.loadClass(extxmlcatalogclass) : Class\n-              .forName(extxmlcatalogclass);\n+            .forName(extxmlcatalogclass);\n           extXMLCatalogInstance = (IXMLCatalog) catalogClass.newInstance();\n-        }\n-        catch (Exception e)\n-        {\n+        } catch (Exception e) {\n           //TODO: Log error\n         }\n       }\n@@ -221,14 +182,11 @@ public class XMLCatalog implements IXMLCatalog\n \n   /**\n    * Set the class of the XML catalog to be used.\n-   * \n-   * @param xmlcatalog\n-   *          The class of the XML catalog to be used.\n-   * @param classloader\n-   *          The classloader to use to load the catalog.\n+   *\n+   * @param xmlcatalog  The class of the XML catalog to be used.\n+   * @param classloader The classloader to use to load the catalog.\n    */\n-  public static void setExtensionXMLCatalog(String xmlcatalog, ClassLoader classloader)\n-  {\n+  public static void setExtensionXMLCatalog(String xmlcatalog, ClassLoader classloader) {\n     extxmlcatalogclass = xmlcatalog;\n     extclassLoader = classloader;\n   }\n@@ -237,8 +195,7 @@ public class XMLCatalog implements IXMLCatalog\n    * Resets the instance of the XML catalog to null. For deleting the catalog if\n    * necessary.\n    */\n-  public static void reset()\n-  {\n+  public static void reset() {\n     instance = null;\n     extxmlcatalogclass = null;\n     extclassLoader = null;\n@@ -250,57 +207,48 @@ public class XMLCatalog implements IXMLCatalog\n   /**\n    * Add a schema directory to be checked for schemas to register in the\n    * catalog.\n-   * \n-   * @param schemadir\n-   *          The directory to check for schemas.\n+   *\n+   * @param schemadir The directory to check for schemas.\n    */\n-  public static void addSchemaDir(String schemadir)\n-  {\n+  public static void addSchemaDir(String schemadir) {\n     schemadirs.add(schemadir);\n   }\n \n   /**\n    * Add an entity to the catalog.\n-   * \n-   * @param entity\n-   *          The entity to add to the catalog.\n+   *\n+   * @param entity The entity to add to the catalog.\n    */\n-  public static void addEntity(XMLCatalogEntityHolder entity)\n-  {\n+  public static void addEntity(XMLCatalogEntityHolder entity) {\n     entities.add(entity);\n   }\n \n   /*\n    * (non-Javadoc)\n-   * \n+   *\n    * @see org.eclipse.wsdl.validate.internal.xml.IXMLCatalog#addEntryToCatalog(java.lang.String,\n    *      java.lang.String)\n    */\n-  public void addEntryToCatalog(String publicId, String systemId)\n-  {\n+  public void addEntryToCatalog(String publicId, String systemId) {\n     catalog.put(publicId, systemId);\n   }\n \n   /*\n    * (non-Javadoc)\n-   * \n+   *\n    * @see org.eclipse.wsdl.validate.internal.xml.IXMLCatalog#resolveEntityLocation(java.lang.String,\n    *      java.lang.String)\n    */\n-  public String resolveEntityLocation(String publicId, String systemId)\n-  {\n+  public String resolveEntityLocation(String publicId, String systemId) {\n     String resolvedlocation = null;\n     // First try to resolve using the ext catalog.\n     IXMLCatalog extcatalog = getExtensionCatalogInstance();\n-    if (extcatalog != null)\n-    {\n+    if (extcatalog != null) {\n       resolvedlocation = extcatalog.resolveEntityLocation(publicId, systemId);\n     }\n-    if (resolvedlocation == null)\n-    {\n+    if (resolvedlocation == null) {\n       // if there's no system id use the public id\n-      if (systemId == null || systemId.equals(\"\"))\n-      {\n+      if (systemId == null || systemId.equals(\"\")) {\n         systemId = publicId;\n       }\n       resolvedlocation = (String) catalog.get(systemId);\n@@ -311,8 +259,7 @@ public class XMLCatalog implements IXMLCatalog\n   /**\n    * A handler used in parsing to get the targetNamespace string of a schema.\n    */\n-  protected class SchemaNamespaceHandler extends DefaultHandler\n-  {\n+  protected class SchemaNamespaceHandler extends DefaultHandler {\n     private final String TARGET_NAMESPACE = \"targetNamespace\";\n \n     private final String SCHEMA = \"schema\";\n@@ -321,20 +268,16 @@ public class XMLCatalog implements IXMLCatalog\n \n     /**\n      * @see org.xml.sax.ContentHandler#startElement(java.lang.String,\n-     *      java.lang.String, java.lang.String, org.xml.sax.Attributes)\n+     * java.lang.String, java.lang.String, org.xml.sax.Attributes)\n      */\n-    public void startElement(String uri, String localname, String arg2, Attributes attributes) throws SAXException\n-    {\n-      if (localname.equals(SCHEMA))\n-      {\n+    public void startElement(String uri, String localname, String arg2, Attributes attributes) throws SAXException {\n+      if (localname.equals(SCHEMA)) {\n \n         int numAtts = attributes.getLength();\n-        for (int i = 0; i < numAtts; i++)\n-        {\n+        for (int i = 0; i < numAtts; i++) {\n \n           String attname = attributes.getQName(i);\n-          if (attname.equals(TARGET_NAMESPACE))\n-          {\n+          if (attname.equals(TARGET_NAMESPACE)) {\n             targetNamespace = attributes.getValue(i);\n           }\n         }\n@@ -345,19 +288,17 @@ public class XMLCatalog implements IXMLCatalog\n \n     /**\n      * Return the targetNamespace found by parsing the file.\n-     * \n+     *\n      * @return The targetNamespace found by parsing the file.\n      */\n-    public String getTargetNamespace()\n-    {\n+    public String getTargetNamespace() {\n       return targetNamespace;\n     }\n \n     /**\n      * Reset the state of the handler so it can be reused.\n      */\n-    public void reset()\n-    {\n+    public void reset() {\n       targetNamespace = null;\n     }\n   }\n",
+            "diff_size": 128
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "41",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 137).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

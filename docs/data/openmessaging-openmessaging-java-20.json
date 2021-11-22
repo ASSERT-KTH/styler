@@ -1,0 +1,152 @@
+{
+    "project_name": "openmessaging-openmessaging-java",
+    "error_id": "20",
+    "information": {
+        "errors": [
+            {
+                "line": "65",
+                "severity": "error",
+                "message": "Prohibit invoking System.out.println in source code !",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "                //The message sent to the sourceQueue will be delivered to anotherConsumer by the routing rule\n                //In this case, the push consumer will only receive the message with red color.\n                System.out.println(\"Received a red message: \" + message);\n                context.ack();\n            }\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler/20/RoutingApp.java\nindex ba267444f97..a8aad93f7cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler/20/RoutingApp.java\n@@ -62,7 +62,7 @@ public class RoutingApp {\n             public void onReceived(Message message, Context context) {\n                 //The message sent to the sourceQueue will be delivered to anotherConsumer by the routing rule\n                 //In this case, the push consumer will only receive the message with red color.\n-                System.out.println(\"Received a red message: \" + message);\n+                    System.out.println(\"Received a red message: \" + message);\n                 context.ack();\n             }\n \n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "32",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "48",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "62",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "65",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'object def rcurly' has incorrect indentation level 4, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/naturalize/20/RoutingApp.java\nindex ba267444f97..297af87e795 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/naturalize/20/RoutingApp.java\n@@ -28,10 +28,8 @@ import io.openmessaging.producer.Producer;\n public class RoutingApp {\n     public static void main(String[] args) {\n         //Load and start the vendor implementation from a specific OMS driver URL.\n-        final MessagingAccessPoint messagingAccessPoint =\n-            OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east\");\n-\n-        String destinationQueue = \"NS://DESTINATION_QUEUE\";\n+        final MessagingAccessPoint messagingAccessPoint = OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east\");\n+String destinationQueue = \"NS://DESTINATION_QUEUE\";\n         String sourceQueue = \"NS://SOURCE_QUEUE\";\n         //Fetch a ResourceManager to create source Queue, destination Queue, and the Routing instance.\n         ResourceManager resourceManager = messagingAccessPoint.resourceManager();\n@@ -47,8 +45,7 @@ public class RoutingApp {\n         //Send messages to the source queue ahead of the routing\n         final Producer producer = messagingAccessPoint.createProducer();\n         producer.start();\n-\n-        Message message = producer.createMessage(sourceQueue, \"RED_COLOR\".getBytes());\n+Message message = producer.createMessage(sourceQueue, \"RED_COLOR\".getBytes());\n         message.properties().put(\"color\", \"green\").put(\"shape\", \"round\");\n \n         producer.send(message);\n@@ -65,8 +62,7 @@ public class RoutingApp {\n                 System.out.println(\"Received a red message: \" + message);\n                 context.ack();\n             }\n-\n-        });\n+    });\n \n         //Register a shutdown hook to close the opened endpoints.\n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n@@ -76,6 +72,5 @@ public class RoutingApp {\n                 consumer.stop();\n             }\n         }));\n-\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "57",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'method def modifier' has incorrect indentation level 0, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "61",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "61",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 4, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'method def' child has incorrect indentation level 4, expected level should be one of the following: 16, 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'method def rcurly' has incorrect indentation level 0, expected level should be one of the following: 12, 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "64",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'object def rcurly' has incorrect indentation level 0, expected level should be one of the following: 8, 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/codebuff/20/RoutingApp.java\nindex ba267444f97..9bdc0eff52a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/codebuff/20/RoutingApp.java\n@@ -28,9 +28,7 @@ import io.openmessaging.producer.Producer;\n public class RoutingApp {\n     public static void main(String[] args) {\n         //Load and start the vendor implementation from a specific OMS driver URL.\n-        final MessagingAccessPoint messagingAccessPoint =\n-            OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east\");\n-\n+        final MessagingAccessPoint messagingAccessPoint = OMS.getMessagingAccessPoint(\"oms:rocketmq://alice@rocketmq.apache.org/us-east\");\n         String destinationQueue = \"NS://DESTINATION_QUEUE\";\n         String sourceQueue = \"NS://SOURCE_QUEUE\";\n         //Fetch a ResourceManager to create source Queue, destination Queue, and the Routing instance.\n@@ -40,33 +38,30 @@ public class RoutingApp {\n         resourceManager.createQueue(destinationQueue);\n         //Create the source queue.\n         resourceManager.createQueue(sourceQueue);\n-\n         resourceManager.routing(sourceQueue, destinationQueue);\n         resourceManager.filter(destinationQueue, \"name = 'kaka'\");\n \n         //Send messages to the source queue ahead of the routing\n+\n         final Producer producer = messagingAccessPoint.createProducer();\n         producer.start();\n-\n         Message message = producer.createMessage(sourceQueue, \"RED_COLOR\".getBytes());\n         message.properties().put(\"color\", \"green\").put(\"shape\", \"round\");\n-\n         producer.send(message);\n \n         //Consume messages from the queue behind the routing.\n+\n         final Consumer consumer = messagingAccessPoint.createConsumer();\n         consumer.start();\n-\n         consumer.bindQueue(destinationQueue, new MessageListener() {\n-            @Override\n-            public void onReceived(Message message, Context context) {\n+@Override\n+public void onReceived(Message message, Context context) {\n                 //The message sent to the sourceQueue will be delivered to anotherConsumer by the routing rule\n                 //In this case, the push consumer will only receive the message with red color.\n-                System.out.println(\"Received a red message: \" + message);\n-                context.ack();\n-            }\n-\n-        });\n+    System.out.println(\"Received a red message: \" + message);\n+    context.ack();\n+}\n+});\n \n         //Register a shutdown hook to close the opened endpoints.\n         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {\n@@ -76,6 +71,5 @@ public class RoutingApp {\n                 consumer.stop();\n             }\n         }));\n-\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 18
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "65",
+                    "severity": "error",
+                    "message": "Prohibit invoking System.out.println in source code !",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_three_grams/20/RoutingApp.java\nindex ba267444f97..a8aad93f7cd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/errored/1/20/RoutingApp.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/openmessaging-openmessaging-java/styler_three_grams/20/RoutingApp.java\n@@ -62,7 +62,7 @@ public class RoutingApp {\n             public void onReceived(Message message, Context context) {\n                 //The message sent to the sourceQueue will be delivered to anotherConsumer by the routing rule\n                 //In this case, the push consumer will only receive the message with red color.\n-                System.out.println(\"Received a red message: \" + message);\n+                    System.out.println(\"Received a red message: \" + message);\n                 context.ack();\n             }\n \n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

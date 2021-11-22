@@ -1,0 +1,304 @@
+{
+    "project_name": "farao-community-farao-core",
+    "error_id": "28",
+    "information": {
+        "errors": [
+            {
+                "line": "26",
+                "column": "1",
+                "severity": "error",
+                "message": "'/*' has more than 1 empty lines before.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": "\n\n/**\n * Convert a single GlskPoint to LinearGlsk\n * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n */",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..ecf3fdb4a8c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler/28/GlskPointLinearGlskConverter.java\n@@ -22,7 +22,6 @@ import java.util.Map;\n import java.util.Objects;\n import java.util.stream.Collectors;\n \n-\n /**\n  * Convert a single GlskPoint to LinearGlsk\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "27",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'/*' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/intellij/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..fdc0e5cff85 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/intellij/28/GlskPointLinearGlskConverter.java\n@@ -4,6 +4,7 @@\n  * License, v. 2.0. If a copy of the MPL was not distributed with this\n  * file, You can obtain one at http://mozilla.org/MPL/2.0/.\n  */\n+\n package com.farao_community.farao.commons.data.glsk_file.actors;\n \n import com.farao_community.farao.commons.FaraoException;\n@@ -25,6 +26,7 @@ import java.util.stream.Collectors;\n \n /**\n  * Convert a single GlskPoint to LinearGlsk\n+ *\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n  */\n public final class GlskPointLinearGlskConverter {\n@@ -35,7 +37,7 @@ public final class GlskPointLinearGlskConverter {\n     }\n \n     /**\n-     * @param network IIDM network\n+     * @param network   IIDM network\n      * @param glskPoint GLSK Point\n      * @return farao-core LinearGlsk\n      */\n@@ -81,8 +83,8 @@ public final class GlskPointLinearGlskConverter {\n     }\n \n     /**\n-     * @param network iidm network\n-     * @param glskShiftKey country type shiftkey\n+     * @param network       iidm network\n+     * @param glskShiftKey  country type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n     private static void convertCountryProportional(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap) {\n@@ -92,16 +94,16 @@ public final class GlskPointLinearGlskConverter {\n             //Generator A04\n             //calculate sum P of country's generators\n             double totalCountryP = network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .mapToDouble(Generator::getTargetP).sum();\n+                .mapToDouble(Generator::getTargetP).sum();\n             //calculate factor of each generator\n             network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));\n+                .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n             double totalCountryLoad = network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .mapToDouble(Load::getP0).sum();\n+                .mapToDouble(Load::getP0).sum();\n             network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalCountryLoad));\n+                .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalCountryLoad));\n         } else {\n             //unknown PsrType\n             throw new FaraoException(\"convertCountryProportional PsrType not supported\");\n@@ -109,8 +111,8 @@ public final class GlskPointLinearGlskConverter {\n     }\n \n     /**\n-     * @param network iidm network\n-     * @param glskShiftKey explicit type shiftkey\n+     * @param network       iidm network\n+     * @param glskShiftKey  explicit type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n     private static void convertExplicitProportional(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap, TypeGlskFile typeGlskFile) {\n@@ -118,19 +120,19 @@ public final class GlskPointLinearGlskConverter {\n         if (glskShiftKey.getPsrType().equals(\"A04\")) {\n             //Generator A04\n             List<String> generatorsList = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile)).collect(Collectors.toList());\n+                .map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile)).collect(Collectors.toList());\n             double totalP = network.getGeneratorStream().filter(generator -> generatorsList.contains(generator.getId()))\n-                    .mapToDouble(Generator::getTargetP).sum();\n+                .mapToDouble(Generator::getTargetP).sum();\n             network.getGeneratorStream().filter(generator -> generatorsList.contains(generator.getId()))\n-                    .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalP));\n+                .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalP));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n             List<String> loadsList = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .map(loadResource -> loadResource.getLoadId(typeGlskFile)).collect(Collectors.toList());\n+                .map(loadResource -> loadResource.getLoadId(typeGlskFile)).collect(Collectors.toList());\n             double totalLoad = network.getLoadStream().filter(load -> loadsList.contains(load.getId()))\n-                    .mapToDouble(Load::getP0).sum();\n+                .mapToDouble(Load::getP0).sum();\n             network.getLoadStream().filter(load -> loadsList.contains(load.getId()))\n-                    .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalLoad));\n+                .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalLoad));\n         } else {\n             //unknown PsrType\n             throw new FaraoException(\"convertExplicitProportional PsrType not supported\");\n@@ -138,8 +140,8 @@ public final class GlskPointLinearGlskConverter {\n     }\n \n     /**\n-     * @param network iidm network\n-     * @param glskShiftKey parcitipation factor type shiftkey\n+     * @param network       iidm network\n+     * @param glskShiftKey  parcitipation factor type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n     private static void convertParticipationFactor(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap, TypeGlskFile typeGlskFile) {\n@@ -148,20 +150,20 @@ public final class GlskPointLinearGlskConverter {\n             //Generator A04\n             List<GlskRegisteredResource> generatorsResourceList = glskShiftKey.getRegisteredResourceArrayList();\n             double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n-                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n+                .filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n+                .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n \n             generatorsResourceList.stream().filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n-                    .forEach(generatorResource -> linearGlskMap.put(generatorResource.getGeneratorId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));\n+                .forEach(generatorResource -> linearGlskMap.put(generatorResource.getGeneratorId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n             List<GlskRegisteredResource> loadsResourceList = glskShiftKey.getRegisteredResourceArrayList();\n             double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n-                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n+                .filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n+                .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n \n             loadsResourceList.stream().filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n-                    .forEach(loadResource -> linearGlskMap.put(loadResource.getLoadId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));\n+                .forEach(loadResource -> linearGlskMap.put(loadResource.getLoadId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));\n         } else {\n             //unknown PsrType\n             throw new FaraoException(\"convertParticipationFactor PsrType not supported\");\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/naturalize/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..b7f763cde13 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/naturalize/28/GlskPointLinearGlskConverter.java\n@@ -22,7 +22,6 @@ import java.util.Map;\n import java.util.Objects;\n import java.util.stream.Collectors;\n \n-\n /**\n  * Convert a single GlskPoint to LinearGlsk\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n@@ -93,7 +92,8 @@ public final class GlskPointLinearGlskConverter {\n             //calculate sum P of country's generators\n             double totalCountryP = network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n                     .mapToDouble(Generator::getTargetP).sum();\n-            //calculate factor of each generator\n+\n+//calculate factor of each generator\n             network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n                     .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n@@ -167,4 +167,4 @@ public final class GlskPointLinearGlskConverter {\n             throw new FaraoException(\"convertParticipationFactor PsrType not supported\");\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "25",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'/*' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "66",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 23, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "67",
+                    "column": "24",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 23, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "69",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 30, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'if' has incorrect indentation level 30, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 34, expected level should be 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "72",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 30, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "'else' child has incorrect indentation level 34, expected level should be 20.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "74",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'else rcurly' has incorrect indentation level 30, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "75",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 26, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "76",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'else' child has incorrect indentation level 30, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "77",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'else rcurly' has incorrect indentation level 26, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "110",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "117",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "122",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'glskShiftKey' has incorrect indentation level 0, expected level should be 23.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "123",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "125",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'else' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "126",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'else rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "148",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "151",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "154",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "155",
+                    "column": "1",
+                    "severity": "error",
+                    "message": "'glskShiftKey' has incorrect indentation level 0, expected level should be 23.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "156",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "158",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'else' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "159",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'else rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "180",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "181",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "185",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'if' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "186",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'if rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "188",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'else' child has incorrect indentation level 19, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "189",
+                    "column": "16",
+                    "severity": "error",
+                    "message": "'else rcurly' has incorrect indentation level 15, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/codebuff/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..6ffc8a69e53 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/codebuff/28/GlskPointLinearGlskConverter.java\n@@ -15,7 +15,6 @@ import com.powsybl.iidm.network.Network;\n import com.powsybl.sensitivity.factors.variables.LinearGlsk;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import java.util.HashMap;\n import java.util.List;\n import java.util.Map;\n@@ -27,6 +26,8 @@ import java.util.stream.Collectors;\n  * Convert a single GlskPoint to LinearGlsk\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n  */\n+\n+\n public final class GlskPointLinearGlskConverter {\n     private static final Logger LOGGER = LoggerFactory.getLogger(GlskPointLinearGlskConverter.class);\n \n@@ -39,9 +40,10 @@ public final class GlskPointLinearGlskConverter {\n      * @param glskPoint GLSK Point\n      * @return farao-core LinearGlsk\n      */\n-    public static LinearGlsk convert(Network network, GlskPoint glskPoint, TypeGlskFile typeGlskFile) {\n \n+    public static LinearGlsk convert(Network network, GlskPoint glskPoint, TypeGlskFile typeGlskFile) {\n         Map<String, Float> linearGlskMap = new HashMap<>();\n+\n         String linearGlskId = glskPoint.getSubjectDomainmRID() + \":\" + glskPoint.getPointInterval().toString();\n \n         //LinearGlsk is used as SensitivityFactor.sensitivityVariable in FlowBasedComputation;\n@@ -51,32 +53,29 @@ public final class GlskPointLinearGlskConverter {\n         //but this change need to be in Powsybl-core\n \n         String linearGlskName = glskPoint.getSubjectDomainmRID(); //name of LinearGlsk is country's EIC code; or NetworkArea's ID in the future\n-\n         Objects.requireNonNull(glskPoint.getGlskShiftKeys());\n-\n         if (glskPoint.getGlskShiftKeys().size() > 2) {\n             throw new FaraoException(\"Multi (GSK+LSK) shift keys not supported yet...\");\n         }\n-\n         for (GlskShiftKey glskShiftKey : glskPoint.getGlskShiftKeys()) {\n-            if (glskShiftKey.getBusinessType().equals(\"B42\") && glskShiftKey.getRegisteredResourceArrayList().isEmpty()) {\n+            if (glskShiftKey.getBusinessType().equals(\"B42\") &&\n+                glskShiftKey.getRegisteredResourceArrayList().isEmpty()) {\n                 LOGGER.debug(\"GLSK Type B42, empty registered resources list --> country (proportional) GLSK\");\n                 convertCountryProportional(network, glskShiftKey, linearGlskMap);\n             } else if (glskShiftKey.getBusinessType().equals(\"B42\") && !glskShiftKey.getRegisteredResourceArrayList().isEmpty()) {\n-                LOGGER.debug(\"GLSK Type B42, not empty registered resources list --> (explicit/manual) proportional GSK\");\n-                convertExplicitProportional(network, glskShiftKey, linearGlskMap, typeGlskFile);\n-            } else if (glskShiftKey.getBusinessType().equals(\"B43\")) {\n-                LOGGER.debug(\"GLSK Type B43 --> participation factor proportional GSK\");\n-                if (glskShiftKey.getRegisteredResourceArrayList().isEmpty()) {\n-                    throw new FaraoException(\"Empty Registered Resources List in B43 type shift key.\");\n-                } else {\n-                    convertParticipationFactor(network, glskShiftKey, linearGlskMap, typeGlskFile);\n-                }\n-            } else {\n-                throw new FaraoException(\"convert not supported\");\n-            }\n+                       LOGGER.debug(\"GLSK Type B42, not empty registered resources list --> (explicit/manual) proportional GSK\");\n+                       convertExplicitProportional(network, glskShiftKey, linearGlskMap, typeGlskFile);\n+                   } else if (glskShiftKey.getBusinessType().equals(\"B43\")) {\n+                              LOGGER.debug(\"GLSK Type B43 --> participation factor proportional GSK\");\n+                              if (glskShiftKey.getRegisteredResourceArrayList().isEmpty()) {\n+                                  throw new FaraoException(\"Empty Registered Resources List in B43 type shift key.\");\n+                              } else {\n+                                  convertParticipationFactor(network, glskShiftKey, linearGlskMap, typeGlskFile);\n+                              }\n+                          } else {\n+                              throw new FaraoException(\"convert not supported\");\n+                          }\n         }\n-\n         return new LinearGlsk(linearGlskId, linearGlskName, linearGlskMap);\n     }\n \n@@ -85,27 +84,46 @@ public final class GlskPointLinearGlskConverter {\n      * @param glskShiftKey country type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n+\n     private static void convertCountryProportional(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap) {\n         Country country = new EICode(glskShiftKey.getSubjectDomainmRID()).getCountry();\n         //Generator A04 or Load A05\n+\n         if (glskShiftKey.getPsrType().equals(\"A04\")) {\n             //Generator A04\n             //calculate sum P of country's generators\n-            double totalCountryP = network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .mapToDouble(Generator::getTargetP).sum();\n+            double totalCountryP = network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel()\n+                                                                                                           .getSubstation()\n+                                                                                                           .getCountry()\n+                                                                                                           .orElse(null)\n+                                                                                                           .equals(country))\n+                                                               .mapToDouble(Generator::getTargetP)\n+                                                               .sum();\n             //calculate factor of each generator\n-            network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));\n+            network.getGeneratorStream().filter(generator -> generator.getTerminal().getVoltageLevel()\n+                                                                                    .getSubstation()\n+                                                                                    .getCountry()\n+                                                                                    .orElse(null)\n+                                                                                    .equals(country)).forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalCountryP));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n-            double totalCountryLoad = network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .mapToDouble(Load::getP0).sum();\n-            network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel().getSubstation().getCountry().orElse(null).equals(country))\n-                    .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalCountryLoad));\n-        } else {\n+                   double totalCountryLoad = network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel()\n+                                                                                                      .getSubstation()\n+                                                                                                      .getCountry()\n+                                                                                                      .orElse(null)\n+                                                                                                      .equals(country))\n+                                                                    .mapToDouble(Load::getP0)\n+                                                                    .sum();\n+                   network.getLoadStream().filter(load -> load.getTerminal().getVoltageLevel()\n+                                                                            .getSubstation()\n+                                                                            .getCountry()\n+                                                                            .orElse(null)\n+                                                                            .equals(country)).forEach(load -> linearGlskMap.put(load.getId(),\n+glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalCountryLoad));\n+               } else {\n             //unknown PsrType\n-            throw new FaraoException(\"convertCountryProportional PsrType not supported\");\n-        }\n+                   throw new FaraoException(\"convertCountryProportional PsrType not supported\");\n+               }\n     }\n \n     /**\n@@ -113,28 +131,32 @@ public final class GlskPointLinearGlskConverter {\n      * @param glskShiftKey explicit type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n+\n     private static void convertExplicitProportional(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap, TypeGlskFile typeGlskFile) {\n         //Generator A04 or Load A05\n         if (glskShiftKey.getPsrType().equals(\"A04\")) {\n             //Generator A04\n             List<String> generatorsList = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile)).collect(Collectors.toList());\n+                                                                                       .map(generatorResource -> generatorResource.getGeneratorId(typeGlskFile))\n+                                                                                       .collect(Collectors.toList());\n             double totalP = network.getGeneratorStream().filter(generator -> generatorsList.contains(generator.getId()))\n-                    .mapToDouble(Generator::getTargetP).sum();\n-            network.getGeneratorStream().filter(generator -> generatorsList.contains(generator.getId()))\n-                    .forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalP));\n+                                                        .mapToDouble(Generator::getTargetP)\n+                                                        .sum();\n+            network.getGeneratorStream().filter(generator -> generatorsList.contains(generator.getId())).forEach(generator -> linearGlskMap.put(generator.getId(), glskShiftKey.getQuantity().floatValue() * (float) generator.getTargetP() / (float) totalP));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n-            List<String> loadsList = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .map(loadResource -> loadResource.getLoadId(typeGlskFile)).collect(Collectors.toList());\n-            double totalLoad = network.getLoadStream().filter(load -> loadsList.contains(load.getId()))\n-                    .mapToDouble(Load::getP0).sum();\n-            network.getLoadStream().filter(load -> loadsList.contains(load.getId()))\n-                    .forEach(load -> linearGlskMap.put(load.getId(), glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalLoad));\n-        } else {\n+                   List<String> loadsList = glskShiftKey.getRegisteredResourceArrayList().stream()\n+                                                                                         .map(loadResource -> loadResource.getLoadId(typeGlskFile))\n+                                                                                         .collect(Collectors.toList());\n+                   double totalLoad = network.getLoadStream().filter(load -> loadsList.contains(load.getId()))\n+                                                             .mapToDouble(Load::getP0)\n+                                                             .sum();\n+                   network.getLoadStream().filter(load -> loadsList.contains(load.getId())).forEach(load -> linearGlskMap.put(load.getId(),\n+glskShiftKey.getQuantity().floatValue() * (float) load.getP0() / (float) totalLoad));\n+               } else {\n             //unknown PsrType\n-            throw new FaraoException(\"convertExplicitProportional PsrType not supported\");\n-        }\n+                   throw new FaraoException(\"convertExplicitProportional PsrType not supported\");\n+               }\n     }\n \n     /**\n@@ -142,29 +164,28 @@ public final class GlskPointLinearGlskConverter {\n      * @param glskShiftKey parcitipation factor type shiftkey\n      * @param linearGlskMap linearGlsk to be filled\n      */\n+\n     private static void convertParticipationFactor(Network network, GlskShiftKey glskShiftKey, Map<String, Float> linearGlskMap, TypeGlskFile typeGlskFile) {\n         //Generator A04 or Load A05\n         if (glskShiftKey.getPsrType().equals(\"A04\")) {\n             //Generator A04\n             List<GlskRegisteredResource> generatorsResourceList = glskShiftKey.getRegisteredResourceArrayList();\n             double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n-                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n-\n-            generatorsResourceList.stream().filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n-                    .forEach(generatorResource -> linearGlskMap.put(generatorResource.getGeneratorId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));\n+                                                                              .filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null)\n+                                                                              .mapToDouble(GlskRegisteredResource::getParticipationFactor)\n+                                                                              .sum();\n+            generatorsResourceList.stream().filter(generatorResource -> network.getGenerator(generatorResource.getGeneratorId(typeGlskFile)) != null).forEach(generatorResource -> linearGlskMap.put(generatorResource.getGeneratorId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) generatorResource.getParticipationFactor() / (float) totalFactor));\n         } else if (glskShiftKey.getPsrType().equals(\"A05\")) {\n             //Load A05\n-            List<GlskRegisteredResource> loadsResourceList = glskShiftKey.getRegisteredResourceArrayList();\n-            double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()\n-                    .filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n-                    .mapToDouble(GlskRegisteredResource::getParticipationFactor).sum();\n-\n-            loadsResourceList.stream().filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n-                    .forEach(loadResource -> linearGlskMap.put(loadResource.getLoadId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));\n-        } else {\n+                   List<GlskRegisteredResource> loadsResourceList = glskShiftKey.getRegisteredResourceArrayList();\n+                   double totalFactor = glskShiftKey.getRegisteredResourceArrayList().stream()\n+                                                                                     .filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null)\n+                                                                                     .mapToDouble(GlskRegisteredResource::getParticipationFactor)\n+                                                                                     .sum();\n+                   loadsResourceList.stream().filter(loadResource -> network.getLoad(loadResource.getLoadId(typeGlskFile)) != null).forEach(loadResource -> linearGlskMap.put(loadResource.getLoadId(typeGlskFile), glskShiftKey.getQuantity().floatValue() * (float) loadResource.getParticipationFactor() / (float) totalFactor));\n+               } else {\n             //unknown PsrType\n-            throw new FaraoException(\"convertParticipationFactor PsrType not supported\");\n-        }\n+                   throw new FaraoException(\"convertParticipationFactor PsrType not supported\");\n+               }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 88
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler_random/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..ecf3fdb4a8c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler_random/28/GlskPointLinearGlskConverter.java\n@@ -22,7 +22,6 @@ import java.util.Map;\n import java.util.Objects;\n import java.util.stream.Collectors;\n \n-\n /**\n  * Convert a single GlskPoint to LinearGlsk\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler_three_grams/28/GlskPointLinearGlskConverter.java\nindex 851864b0d8e..ecf3fdb4a8c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/errored/1/28/GlskPointLinearGlskConverter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/farao-community-farao-core/styler_three_grams/28/GlskPointLinearGlskConverter.java\n@@ -22,7 +22,6 @@ import java.util.Map;\n import java.util.Objects;\n import java.util.stream.Collectors;\n \n-\n /**\n  * Convert a single GlskPoint to LinearGlsk\n  * @author Pengbo Wang {@literal <pengbo.wang@rte-international.com>}\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff"
+    ]
+}

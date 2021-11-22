@@ -1,0 +1,71 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "57",
+    "information": {
+        "errors": [
+            {
+                "line": "72",
+                "column": "59",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Inject\n    private DefaultManagedExecutorService defaultService; // make sure default has been created\n\n    /**\n     * Executes the command with the command parameters passed as Properties",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/57/ListManagedExecutorServices.java\nindex 0b386232bb2..8a7fe2ffd45 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/57/ListManagedExecutorServices.java\n@@ -69,8 +69,9 @@ public class ListManagedExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedExecutorService defaultService;\n \n+    // make sure default has been created\n     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "73",
+                    "column": "59",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/57/ListManagedExecutorServices.java\nindex 0b386232bb2..e45189c607a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/57/ListManagedExecutorServices.java\n@@ -38,26 +38,27 @@ import org.glassfish.concurrent.runtime.deployer.DefaultManagedExecutorService;\n \n /**\n  * List Managed Executor Service Resources command\n- *\n  */\n-@TargetType(value={CommandTarget.DAS,CommandTarget.DOMAIN, CommandTarget.CLUSTER, CommandTarget.STANDALONE_INSTANCE, CommandTarget.CLUSTERED_INSTANCE })\n-@ExecuteOn(value={RuntimeType.DAS})\n-@Service(name=\"list-managed-executor-services\")\n+@TargetType(value = {CommandTarget.DAS, CommandTarget.DOMAIN, CommandTarget.CLUSTER,\n+    CommandTarget.STANDALONE_INSTANCE, CommandTarget.CLUSTERED_INSTANCE})\n+@ExecuteOn(value = {RuntimeType.DAS})\n+@Service(name = \"list-managed-executor-services\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @I18n(\"list.managed.executor.services\")\n @RestEndpoints({\n-    @RestEndpoint(configBean=Resources.class,\n-        opType=RestEndpoint.OpType.GET,\n-        path=\"list-managed-executor-services\",\n-        description=\"List Managed Executor Services\")\n+    @RestEndpoint(configBean = Resources.class,\n+        opType = RestEndpoint.OpType.GET,\n+        path = \"list-managed-executor-services\",\n+        description = \"List Managed Executor Services\")\n })\n public class ListManagedExecutorServices implements AdminCommand {\n \n-    final private static LocalStringManagerImpl localStrings = new LocalStringManagerImpl(ListManagedExecutorServices.class);\n+    final private static LocalStringManagerImpl localStrings =\n+        new LocalStringManagerImpl(ListManagedExecutorServices.class);\n \n     @Param(primary = true, optional = true, defaultValue = SystemPropertyConstants.DAS_SERVER_NAME)\n-    private String target ;\n+    private String target;\n \n     @Inject\n     private Domain domain;\n@@ -82,16 +83,17 @@ public class ListManagedExecutorServices implements AdminCommand {\n         final ActionReport report = context.getActionReport();\n \n         try {\n-            Collection<ManagedExecutorService> managedExecutorServices = domain.getResources().getResources(ManagedExecutorService.class);\n-            List<Map<String,String>> resourcesList = new ArrayList<Map<String, String>>();\n+            Collection<ManagedExecutorService> managedExecutorServices =\n+                domain.getResources().getResources(ManagedExecutorService.class);\n+            List<Map<String, String>> resourcesList = new ArrayList<Map<String, String>>();\n             List<DefaultResourceProxy> drps = habitat.getAllServices(DefaultResourceProxy.class);\n \n             for (ManagedExecutorService managedExecutorService : managedExecutorServices) {\n                 String jndiName = managedExecutorService.getJndiName();\n-                if(bindableResourcesHelper.resourceExists(jndiName, target)){\n+                if (bindableResourcesHelper.resourceExists(jndiName, target)) {\n                     ActionReport.MessagePart part = report.getTopMessagePart().addChild();\n                     part.setMessage(jndiName);\n-                    Map<String,String> resourceNameMap = new HashMap<String,String>();\n+                    Map<String, String> resourceNameMap = new HashMap<String, String>();\n                     String logicalName = DefaultResourceProxy.Util.getLogicalName(drps, jndiName);\n                     if (logicalName != null) {\n                         resourceNameMap.put(\"logical-jndi-name\", logicalName);\n@@ -105,7 +107,8 @@ public class ListManagedExecutorServices implements AdminCommand {\n             extraProperties.put(\"managedExecutorServices\", resourcesList);\n             report.setExtraProperties(extraProperties);\n         } catch (Exception e) {\n-            report.setMessage(localStrings.getLocalString(\"list.managed.executor.service.failed\", \"List managed executor services failed\"));\n+            report.setMessage(localStrings.getLocalString(\"list.managed.executor.service.failed\",\n+                \"List managed executor services failed\"));\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setFailureCause(e);\n             return;\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "naturalize",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/57/ListManagedExecutorServices.java\nindex 0b386232bb2..37202ae8f26 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/57/ListManagedExecutorServices.java\n@@ -69,7 +69,9 @@ public class ListManagedExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedExecutorService defaultService;\n+\n+// make sure default has been created\n \n     /**\n      * Executes the command with the command parameters passed as Properties\n@@ -112,4 +114,4 @@ public class ListManagedExecutorServices implements AdminCommand {\n         }\n         report.setActionExitCode(ActionReport.ExitCode.SUCCESS);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/57/ListManagedExecutorServices.java\nindex 0b386232bb2..407e3703c64 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/57/ListManagedExecutorServices.java\n@@ -69,9 +69,10 @@ public class ListManagedExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedExecutorService defaultService;\n \n-    /**\n+    // make sure default has been created /**\n+     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n      *\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/57/ListManagedExecutorServices.java\nindex 0b386232bb2..8a7fe2ffd45 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/57/ListManagedExecutorServices.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/57/ListManagedExecutorServices.java\n@@ -69,8 +69,9 @@ public class ListManagedExecutorServices implements AdminCommand {\n     private ServiceLocator habitat;\n \n     @Inject\n-    private DefaultManagedExecutorService defaultService; // make sure default has been created\n+    private DefaultManagedExecutorService defaultService;\n \n+    // make sure default has been created\n     /**\n      * Executes the command with the command parameters passed as Properties\n      * where the keys are the parameter names and the values the parameter values\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "codebuff"
+    ]
+}

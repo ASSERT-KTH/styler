@@ -1,0 +1,104 @@
+{
+    "project_name": "Angel-ML-angel",
+    "error_id": "416",
+    "information": {
+        "errors": [
+            {
+                "line": "11",
+                "severity": "error",
+                "message": "Line is longer than 100 characters (found 103).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": " * https://opensource.org/licenses/BSD-3-Clause\n *\n * Unless required by applicable law or agreed to in writing, software distributed under the License is\n * distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,\n * either express or implied. See the License for the specific language governing permissions and\n * limitations under the License.",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/416/ServerSparseIntRow.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/416/ServerSparseIntRow.java\nindex 22cde3081d1..53278205e33 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/416/ServerSparseIntRow.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/naturalize/416/ServerSparseIntRow.java\n@@ -89,8 +89,7 @@ public class ServerSparseIntRow extends ServerRow {\n         case T_INT_SPARSE:\n           updateIntSparse(buf, size);\n           break;\n-\n-        case T_INT_DENSE:\n+  case T_INT_DENSE:\n           updateIntDense(buf, size);\n           break;\n         default:\n@@ -217,4 +216,4 @@ public class ServerSparseIntRow extends ServerRow {\n       lock.readLock().unlock();\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/416/ServerSparseIntRow.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/416/ServerSparseIntRow.java\nindex 22cde3081d1..fd45c0edbd1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/errored/1/416/ServerSparseIntRow.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Angel-ML-angel/codebuff/416/ServerSparseIntRow.java\n@@ -19,7 +19,6 @@ package com.tencent.angel.ps.impl.matrix;\n import com.tencent.angel.protobuf.generated.MLProtos;\n import com.tencent.angel.protobuf.generated.MLProtos.RowType;\n import io.netty.buffer.ByteBuf;\n-\n import it.unimi.dsi.fastutil.ints.Int2IntMap;\n import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;\n import java.io.DataInputStream;\n@@ -29,6 +28,7 @@ import java.io.IOException;\n /**\n  * The class represent sparse int row on parameter server.\n  */\n+\n public class ServerSparseIntRow extends ServerRow {\n \n   private Int2IntOpenHashMap hashMap;\n@@ -67,6 +67,7 @@ public class ServerSparseIntRow extends ServerRow {\n     try {\n       lock.writeLock().lock();\n       super.readFrom(input);\n+\n       int nnz = input.readInt();\n       for (int i = 0; i < nnz; i++) {\n         hashMap.addTo(input.readInt(), input.readInt());\n@@ -82,21 +83,20 @@ public class ServerSparseIntRow extends ServerRow {\n   }\n \n   @Override\n-  public void update(RowType rowType, ByteBuf buf, int size) {\n+  public void update(\n+    RowType rowType, ByteBuf buf, int size) {\n     try {\n       lock.writeLock().lock();\n       switch (rowType) {\n         case T_INT_SPARSE:\n           updateIntSparse(buf, size);\n           break;\n-\n         case T_INT_DENSE:\n           updateIntDense(buf, size);\n           break;\n         default:\n           break;\n       }\n-\n       updateRowVersion();\n     } finally {\n       lock.writeLock().unlock();\n@@ -141,10 +141,12 @@ public class ServerSparseIntRow extends ServerRow {\n     try {\n       lock.writeLock().lock();\n       super.deserialize(buf);\n+\n       int elemNum = buf.readInt();\n       if (hashMap == null) {\n         hashMap = new Int2IntOpenHashMap(elemNum);\n       }\n+\n       for (int i = 0; i < elemNum; i++) {\n         hashMap.put(buf.readInt(), buf.readInt());\n       }\n@@ -199,6 +201,7 @@ public class ServerSparseIntRow extends ServerRow {\n   public void mergeTo(int[] indexes, int[] values, int startPos, int len) {\n     try {\n       lock.readLock().lock();\n+\n       int writeLen = len < hashMap.size() ? len : hashMap.size();\n       if (writeLen == 0) {\n         return;\n@@ -217,4 +220,4 @@ public class ServerSparseIntRow extends ServerRow {\n       lock.readLock().unlock();\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 11
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "11",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

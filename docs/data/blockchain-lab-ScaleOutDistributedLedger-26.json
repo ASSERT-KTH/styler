@@ -1,0 +1,167 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "26",
+    "information": {
+        "errors": [
+            {
+                "line": "133",
+                "severity": "warning",
+                "message": "Line is longer than 160 characters (found 165).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n\t\t} catch (Exception e) {\n\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n\t\t\treturn false;\n\t\t}\n\t}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler/26/BlockAbstract.java\nindex 1faabf13b24..3620924223f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler/26/BlockAbstract.java\n@@ -130,8 +130,8 @@ public class BlockAbstract implements Serializable {\n \n \t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n \t\t} catch (Exception e) {\n-\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n-\t\t\treturn false;\n+  //TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n+   return false;\n \t\t}\n \t}\n }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "134",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 165).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/26/BlockAbstract.java\nindex 1faabf13b24..8cab232b7ce 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/26/BlockAbstract.java\n@@ -18,120 +18,121 @@ import java.util.logging.Level;\n  */\n public class BlockAbstract implements Serializable {\n \n-\tprivate static final long serialVersionUID = 1L;\n-\n-\t@Getter\n-\tprivate final Node owner;\n-\n-\t@Getter\n-\tprivate final int blockNumber;\n-\n-\t@Getter\n-\tprivate final Sha256Hash blockHash;\n-\n-\t@Getter\n-\tprivate final byte[] signature;\n-\n-\t@Setter\n-\tprivate Optional<Boolean> onMainChain; // any means unknown\n-\n-\t@Setter\t@Getter\n-\tprivate Sha256Hash abstractHash;\n-\n-\t/**\n-\t * Constructor.\n-\t *\n-\t * @param owner       - the owner of the block this abstract is for.\n-\t * @param blockNumber - the number of the block this abstract is for.\n-\t * @param blockHash   - the hash of the block this abstract is for.\n-\t * @param signature   - the signature for the block by the owner.\n-\t */\n-\tpublic BlockAbstract(Node owner, int blockNumber, Sha256Hash blockHash, byte[] signature) {\n-\t\tthis.owner = owner;\n-\t\tthis.blockNumber = blockNumber;\n-\t\tthis.blockHash = blockHash;\n-\t\tthis.signature = signature;\n-\t\tthis.onMainChain = Optional.empty();\n-\t}\n-\n-\t/**\n-\t * Convert this abstract to a byte array.\n-\t * Performs the inverse of {@link BlockAbstract#fromBytes(byte[])}.\n-\t *\n-\t * @return - the byte array conversion; or null if serialization fails.\n-\t */\n-\tpublic byte[] toBytes() {\n-\t\tbyte[] ret;\n-\t\ttry {\n-\t\t\t// TODO: this is probably not safe\n-\t\t\tObject[] toSerialize = {this.owner.getId(), this.blockNumber, this.blockHash, this.signature};\n-\t\t\tret = SerializationUtils.serialize(toSerialize);\n-\t\t} catch (SerializationException e) {\n-\t\t\tLog.log(Level.WARNING, \"Could not serialize the BlockAbstract to bytes\", e);\n-\t\t\tret = null;\n-\t\t}\n-\t\treturn ret;\n-\t}\n-\n-\t/**\n-\t * Construct a {@link BlockAbstract} from a byte array.\n-\t * Performs the inverse of {@link BlockAbstract#toBytes()}.\n-\t *\n-\t * @param bytes - the data to construct from\n-\t * @return - the abstract represented by the bytes; null if the deserialization fails.\n-\t */\n-\tpublic static BlockAbstract fromBytes(byte[] bytes) {\n-\t\tBlockAbstract block;\n-\t\ttry {\n-\t\t\t//TODO: make this safe\n-\t\t\tObject[] list = SerializationUtils.deserialize(bytes);\n-\t\t\tblock = new BlockAbstract(new Node((Integer) list[0]), (Integer) list[1], (Sha256Hash) list[2], (byte[]) list[3]);\n-\t\t} catch (SerializationException | ClassCastException e) {\n-\t\t\tLog.log(Level.WARNING, \"Could not deserialize BlockAbstract from bytes\", e);\n-\t\t\tblock = null;\n-\t\t}\n-\t\treturn block;\n-\t}\n-\n-\t/**\n-\t * Returns the boolean onMainChain, and gets it if it is not present.\n-\t *\n-\t * @return - boolean identifying if this abstract is on the main chain.\n-\t */\n-\tpublic boolean isOnMainChain() {\n-\t\tif (!this.onMainChain.isPresent()) {\n-\t\t\tthis.onMainChain = Optional.of(Application.getMainChain().isPresent(this));\n-\t\t}\n-\t\treturn this.onMainChain.get();\n-\t}\n-\n-\t/**\n-\t * Checks if the given blocks corresponds with the blockHash in this abstract.\n-\t *\n-\t * @param block - the block to check\n-\t * @return - boolean identifying if the blockhash was correct or not.\n-\t */\n-\tpublic boolean checkBlockHash(Block block) {\n-\t\treturn this.blockHash.equals(block.getHash());\n-\t}\n-\n-\t/**\n-\t * Checks if the signature included in this abstract is valid.\n-\t *\n-\t * @return - boolean identifying if the signature is valid.\n-\t */\n-\tpublic boolean checkSignature() {\n-\t\ttry {\n-\t\t\tByteArrayOutputStream outputStream = new ByteArrayOutputStream();\n-\t\t\toutputStream.write(Utils.intToByteArray(this.owner.getId()));\n-\t\t\toutputStream.write(Utils.intToByteArray(this.blockNumber));\n-\t\t\toutputStream.write(this.blockHash.getBytes());\n-\t\t\tbyte[] attrInBytes = outputStream.toByteArray();\n-\n-\t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n-\t\t} catch (Exception e) {\n-\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n-\t\t\treturn false;\n-\t\t}\n-\t}\n+    private static final long serialVersionUID = 1L;\n+\n+    @Getter\n+    private final Node owner;\n+\n+    @Getter\n+    private final int blockNumber;\n+\n+    @Getter\n+    private final Sha256Hash blockHash;\n+\n+    @Getter\n+    private final byte[] signature;\n+\n+    @Setter\n+    private Optional<Boolean> onMainChain; // any means unknown\n+\n+    @Setter\n+    @Getter\n+    private Sha256Hash abstractHash;\n+\n+    /**\n+     * Constructor.\n+     *\n+     * @param owner       - the owner of the block this abstract is for.\n+     * @param blockNumber - the number of the block this abstract is for.\n+     * @param blockHash   - the hash of the block this abstract is for.\n+     * @param signature   - the signature for the block by the owner.\n+     */\n+    public BlockAbstract(Node owner, int blockNumber, Sha256Hash blockHash, byte[] signature) {\n+        this.owner = owner;\n+        this.blockNumber = blockNumber;\n+        this.blockHash = blockHash;\n+        this.signature = signature;\n+        this.onMainChain = Optional.empty();\n+    }\n+\n+    /**\n+     * Convert this abstract to a byte array.\n+     * Performs the inverse of {@link BlockAbstract#fromBytes(byte[])}.\n+     *\n+     * @return - the byte array conversion; or null if serialization fails.\n+     */\n+    public byte[] toBytes() {\n+        byte[] ret;\n+        try {\n+            // TODO: this is probably not safe\n+            Object[] toSerialize = {this.owner.getId(), this.blockNumber, this.blockHash, this.signature};\n+            ret = SerializationUtils.serialize(toSerialize);\n+        } catch (SerializationException e) {\n+            Log.log(Level.WARNING, \"Could not serialize the BlockAbstract to bytes\", e);\n+            ret = null;\n+        }\n+        return ret;\n+    }\n+\n+    /**\n+     * Construct a {@link BlockAbstract} from a byte array.\n+     * Performs the inverse of {@link BlockAbstract#toBytes()}.\n+     *\n+     * @param bytes - the data to construct from\n+     * @return - the abstract represented by the bytes; null if the deserialization fails.\n+     */\n+    public static BlockAbstract fromBytes(byte[] bytes) {\n+        BlockAbstract block;\n+        try {\n+            //TODO: make this safe\n+            Object[] list = SerializationUtils.deserialize(bytes);\n+            block = new BlockAbstract(new Node((Integer) list[0]), (Integer) list[1], (Sha256Hash) list[2], (byte[]) list[3]);\n+        } catch (SerializationException | ClassCastException e) {\n+            Log.log(Level.WARNING, \"Could not deserialize BlockAbstract from bytes\", e);\n+            block = null;\n+        }\n+        return block;\n+    }\n+\n+    /**\n+     * Returns the boolean onMainChain, and gets it if it is not present.\n+     *\n+     * @return - boolean identifying if this abstract is on the main chain.\n+     */\n+    public boolean isOnMainChain() {\n+        if (!this.onMainChain.isPresent()) {\n+            this.onMainChain = Optional.of(Application.getMainChain().isPresent(this));\n+        }\n+        return this.onMainChain.get();\n+    }\n+\n+    /**\n+     * Checks if the given blocks corresponds with the blockHash in this abstract.\n+     *\n+     * @param block - the block to check\n+     * @return - boolean identifying if the blockhash was correct or not.\n+     */\n+    public boolean checkBlockHash(Block block) {\n+        return this.blockHash.equals(block.getHash());\n+    }\n+\n+    /**\n+     * Checks if the signature included in this abstract is valid.\n+     *\n+     * @return - boolean identifying if the signature is valid.\n+     */\n+    public boolean checkSignature() {\n+        try {\n+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();\n+            outputStream.write(Utils.intToByteArray(this.owner.getId()));\n+            outputStream.write(Utils.intToByteArray(this.blockNumber));\n+            outputStream.write(this.blockHash.getBytes());\n+            byte[] attrInBytes = outputStream.toByteArray();\n+\n+            return RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n+        } catch (Exception e) {\n+            //TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n+            return false;\n+        }\n+    }\n }\n",
+            "diff_size": 117
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "79",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "'{' at column 36 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "79",
+                    "column": "36",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "93",
+                    "column": "57",
+                    "severity": "warning",
+                    "message": "'{' at column 54 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "99",
+                    "column": "57",
+                    "severity": "warning",
+                    "message": "'{' at column 57 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "99",
+                    "column": "57",
+                    "severity": "warning",
+                    "message": "'{' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "136",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 237).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'{' at column 5 should have line break after.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "71",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "132",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "132",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "191",
+                    "severity": "warning",
+                    "message": "';' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "191",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                },
+                {
+                    "line": "136",
+                    "column": "237",
+                    "severity": "warning",
+                    "message": "Only one statement per line allowed.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/26/BlockAbstract.java\nindex 1faabf13b24..0ed2e63ec7b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/26/BlockAbstract.java\n@@ -1,24 +1,32 @@\n package nl.tudelft.blockchain.scaleoutdistributedledger.model;\n \n import lombok.Getter;\n+\n import lombok.Setter;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.Application;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.utils.Log;\n+\n import nl.tudelft.blockchain.scaleoutdistributedledger.utils.Utils;\n+\n import org.apache.commons.lang3.SerializationException;\n+\n import org.apache.commons.lang3.SerializationUtils;\n \n import java.io.ByteArrayOutputStream;\n+\n import java.io.Serializable;\n+\n import java.util.Optional;\n+\n import java.util.logging.Level;\n \n /**\n  * BlockAbstract class.\n  */\n public class BlockAbstract implements Serializable {\n-\n-\tprivate static final long serialVersionUID = 1L;\n+private static final long serialVersionUID = 1L;\n \n \t@Getter\n \tprivate final Node owner;\n@@ -35,7 +43,7 @@ public class BlockAbstract implements Serializable {\n \t@Setter\n \tprivate Optional<Boolean> onMainChain; // any means unknown\n \n-\t@Setter\t@Getter\n+\t@Setter@Getter\n \tprivate Sha256Hash abstractHash;\n \n \t/**\n@@ -47,12 +55,13 @@ public class BlockAbstract implements Serializable {\n \t * @param signature   - the signature for the block by the owner.\n \t */\n \tpublic BlockAbstract(Node owner, int blockNumber, Sha256Hash blockHash, byte[] signature) {\n-\t\tthis.owner = owner;\n+this.owner = owner;\n \t\tthis.blockNumber = blockNumber;\n \t\tthis.blockHash = blockHash;\n \t\tthis.signature = signature;\n \t\tthis.onMainChain = Optional.empty();\n-\t}\n+\n+}\n \n \t/**\n \t * Convert this abstract to a byte array.\n@@ -61,17 +70,18 @@ public class BlockAbstract implements Serializable {\n \t * @return - the byte array conversion; or null if serialization fails.\n \t */\n \tpublic byte[] toBytes() {\n-\t\tbyte[] ret;\n+byte[] ret;\n \t\ttry {\n-\t\t\t// TODO: this is probably not safe\n+// TODO: this is probably not safe\n \t\t\tObject[] toSerialize = {this.owner.getId(), this.blockNumber, this.blockHash, this.signature};\n \t\t\tret = SerializationUtils.serialize(toSerialize);\n-\t\t} catch (SerializationException e) {\n-\t\t\tLog.log(Level.WARNING, \"Could not serialize the BlockAbstract to bytes\", e);\n+\n+} catch (SerializationException e) {Log.log(Level.WARNING, \"Could not serialize the BlockAbstract to bytes\", e);\n \t\t\tret = null;\n-\t\t}\n+}\n \t\treturn ret;\n-\t}\n+\n+}\n \n \t/**\n \t * Construct a {@link BlockAbstract} from a byte array.\n@@ -80,18 +90,18 @@ public class BlockAbstract implements Serializable {\n \t * @param bytes - the data to construct from\n \t * @return - the abstract represented by the bytes; null if the deserialization fails.\n \t */\n-\tpublic static BlockAbstract fromBytes(byte[] bytes) {\n-\t\tBlockAbstract block;\n+\tpublic static BlockAbstract fromBytes(byte[] bytes) { BlockAbstract block;\n \t\ttry {\n-\t\t\t//TODO: make this safe\n+//TODO: make this safe\n \t\t\tObject[] list = SerializationUtils.deserialize(bytes);\n \t\t\tblock = new BlockAbstract(new Node((Integer) list[0]), (Integer) list[1], (Sha256Hash) list[2], (byte[]) list[3]);\n-\t\t} catch (SerializationException | ClassCastException e) {\n-\t\t\tLog.log(Level.WARNING, \"Could not deserialize BlockAbstract from bytes\", e);\n+\n+} catch (SerializationException | ClassCastException e) {Log.log(Level.WARNING, \"Could not deserialize BlockAbstract from bytes\", e);\n \t\t\tblock = null;\n-\t\t}\n+}\n \t\treturn block;\n-\t}\n+\n+}\n \n \t/**\n \t * Returns the boolean onMainChain, and gets it if it is not present.\n@@ -99,11 +109,12 @@ public class BlockAbstract implements Serializable {\n \t * @return - boolean identifying if this abstract is on the main chain.\n \t */\n \tpublic boolean isOnMainChain() {\n-\t\tif (!this.onMainChain.isPresent()) {\n-\t\t\tthis.onMainChain = Optional.of(Application.getMainChain().isPresent(this));\n-\t\t}\n+if (!this.onMainChain.isPresent()) {\n+this.onMainChain = Optional.of(Application.getMainChain().isPresent(this));\n+}\n \t\treturn this.onMainChain.get();\n-\t}\n+\n+}\n \n \t/**\n \t * Checks if the given blocks corresponds with the blockHash in this abstract.\n@@ -112,8 +123,9 @@ public class BlockAbstract implements Serializable {\n \t * @return - boolean identifying if the blockhash was correct or not.\n \t */\n \tpublic boolean checkBlockHash(Block block) {\n-\t\treturn this.blockHash.equals(block.getHash());\n-\t}\n+return this.blockHash.equals(block.getHash());\n+\n+}\n \n \t/**\n \t * Checks if the signature included in this abstract is valid.\n@@ -121,17 +133,15 @@ public class BlockAbstract implements Serializable {\n \t * @return - boolean identifying if the signature is valid.\n \t */\n \tpublic boolean checkSignature() {\n-\t\ttry {\n-\t\t\tByteArrayOutputStream outputStream = new ByteArrayOutputStream();\n-\t\t\toutputStream.write(Utils.intToByteArray(this.owner.getId()));\n-\t\t\toutputStream.write(Utils.intToByteArray(this.blockNumber));\n-\t\t\toutputStream.write(this.blockHash.getBytes());\n+try { ByteArrayOutputStream outputStream = new ByteArrayOutputStream();outputStream.write(Utils.intToByteArray(this.owner.getId()));outputStream.write(Utils.intToByteArray(this.blockNumber));outputStream.write(this.blockHash.getBytes());\n \t\t\tbyte[] attrInBytes = outputStream.toByteArray();\n \n \t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n-\t\t} catch (Exception e) {\n-\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n+\n+} catch (Exception e) {\n+//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n \t\t\treturn false;\n-\t\t}\n-\t}\n+\n }\n+    }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 50
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "132",
+                    "severity": "warning",
+                    "message": "Line is longer than 160 characters (found 185).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/26/BlockAbstract.java\nindex 1faabf13b24..408738ee914 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/26/BlockAbstract.java\n@@ -129,9 +129,8 @@ public class BlockAbstract implements Serializable {\n \t\t\tbyte[] attrInBytes = outputStream.toByteArray();\n \n \t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n-\t\t} catch (Exception e) {\n-\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n-\t\t\treturn false;\n+\t\t} catch (Exception e) { //TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n+      return false;\n \t\t}\n \t}\n }\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/26/BlockAbstract.java\nindex 1faabf13b24..3620924223f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/26/BlockAbstract.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/26/BlockAbstract.java\n@@ -130,8 +130,8 @@ public class BlockAbstract implements Serializable {\n \n \t\t\treturn RSAKey.verify(attrInBytes, this.signature, this.owner.getPublicKey());\n \t\t} catch (Exception e) {\n-\t\t\t//TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n-\t\t\treturn false;\n+  //TODO: we are potentially swallowing a huge stack of exceptions here; this should really only be catching relevant exceptions (e.g. signature exception)\n+   return false;\n \t\t}\n \t}\n }\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

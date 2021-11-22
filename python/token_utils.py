@@ -1,4 +1,7 @@
 from javalang import tokenizer as javalang_tokenizer
+import os
+import re
+import core
 
 def is_whitespace_token(token: str) -> bool:
     if ( 'SP' in token or 'TB' in token or 'NL' in token ) and '_' in token:
@@ -32,6 +35,35 @@ def get_line_indent(line):
             indent+=1
         else:
             return indent
+
+def most_frequent(List):
+    return max(set(List), key = List.count)
+
+def get_project_indent(project_dir):
+    indent_files = []
+    for folder in os.walk(project_dir):
+        for file_name in folder[2]:
+            file_path = os.path.join(folder[0], file_name)
+            if file_path.endswith('.java'):
+                file_content = core.open_file(file_path).strip()
+
+                # remove comments
+                file_content = re.sub(r'//.*|("(?:\\[^"]|\\"|.)*?")|(?s)/\*.*?\*/', '', file_content, flags=re.MULTILINE)
+
+                indent_lines = []
+                for line in file_content.split('\n'):
+                    leading_spaces = len(line) - len(line.lstrip())
+                    if leading_spaces > 0:
+                        indent_lines.append(leading_spaces)
+                leading_spaces_file = min(indent_lines, default="EMPTY")
+                if leading_spaces_file != "EMPTY":
+                    indent_files.append(leading_spaces_file)
+    if len(indent_files) == 0:
+        return 4
+    return most_frequent(indent_files)
+    
+if __name__ == '__main__':
+    get_project_indent('/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/projects/Activiti-Activiti/corpus/data')
 
 def get_token_value(token):
     if isinstance(token, javalang_tokenizer.Keyword):

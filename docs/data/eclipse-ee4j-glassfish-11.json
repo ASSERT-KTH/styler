@@ -1,0 +1,85 @@
+{
+    "project_name": "eclipse-ee4j-glassfish",
+    "error_id": "11",
+    "information": {
+        "errors": [
+            {
+                "line": "95",
+                "column": "18",
+                "severity": "warning",
+                "message": "'if' child has incorrect indentation level 17, expected level should be 16.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": "            }\n            if (!foundWSM) {\n                 report.setMessage(localStrings.getLocalString(\n                        \"list.connector.work.security.maps.workSecurityMapNotFound\",\n                        \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n                                \"resource adapter {0} is not associated with any work security map.\", raName));",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/11/ListConnectorWorkSecurityMaps.java\nindex 0df1655c1de..40cd25682a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler/11/ListConnectorWorkSecurityMaps.java\n@@ -92,7 +92,7 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                 }\n             }\n             if (!foundWSM) {\n-                 report.setMessage(localStrings.getLocalString(\n+                report.setMessage(localStrings.getLocalString(\n                         \"list.connector.work.security.maps.workSecurityMapNotFound\",\n                         \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n                                 \"resource adapter {0} is not associated with any work security map.\", raName));\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/11/ListConnectorWorkSecurityMaps.java\nindex 0df1655c1de..5cbe54703c7 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/intellij/11/ListConnectorWorkSecurityMaps.java\n@@ -39,27 +39,26 @@ import jakarta.inject.Inject;\n \n /**\n  * List Connector Work Security Maps\n- *\n  */\n-@Service(name=\"list-connector-work-security-maps\")\n+@Service(name = \"list-connector-work-security-maps\")\n @PerLookup\n @CommandLock(CommandLock.LockType.NONE)\n @I18n(\"list.connector.work.security.maps\")\n @RestEndpoints({\n-    @RestEndpoint(configBean=SecurityService.class,\n-        opType=RestEndpoint.OpType.GET,\n-        path=\"list-connector-work-security-maps\",\n-        description=\"List Connector Work Security Maps\")\n+    @RestEndpoint(configBean = SecurityService.class,\n+        opType = RestEndpoint.OpType.GET,\n+        path = \"list-connector-work-security-maps\",\n+        description = \"List Connector Work Security Maps\")\n })\n public class ListConnectorWorkSecurityMaps implements AdminCommand {\n \n     final private static LocalStringManagerImpl localStrings =\n-            new LocalStringManagerImpl(ListConnectorWorkSecurityMaps.class);\n+        new LocalStringManagerImpl(ListConnectorWorkSecurityMaps.class);\n \n-    @Param(name=\"securitymap\", optional=true)\n+    @Param(name = \"securitymap\", optional = true)\n     String securityMap;\n \n-    @Param(name=\"resource-adapter-name\", primary=true)\n+    @Param(name = \"resource-adapter-name\", primary = true)\n     String raName;\n \n     @Inject\n@@ -78,7 +77,7 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n         try {\n             boolean foundWSM = false;\n             Collection<WorkSecurityMap> workSecurityMaps =\n-                    domain.getResources().getResources(WorkSecurityMap.class);\n+                domain.getResources().getResources(WorkSecurityMap.class);\n             for (WorkSecurityMap wsm : workSecurityMaps) {\n                 if (wsm.getResourceAdapterName().equals(raName)) {\n                     if (securityMap == null) {\n@@ -92,19 +91,21 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                 }\n             }\n             if (!foundWSM) {\n-                 report.setMessage(localStrings.getLocalString(\n-                        \"list.connector.work.security.maps.workSecurityMapNotFound\",\n-                        \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n-                                \"resource adapter {0} is not associated with any work security map.\", raName));\n+                report.setMessage(localStrings.getLocalString(\n+                    \"list.connector.work.security.maps.workSecurityMapNotFound\",\n+                    \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n+                        \"resource adapter {0} is not associated with any work security map.\",\n+                    raName));\n             }\n \n         } catch (Exception e) {\n             Logger.getLogger(ListConnectorWorkSecurityMaps.class.getName()).log(Level.SEVERE,\n-                    \"list-connector-work-security-maps failed\", e);\n+                \"list-connector-work-security-maps failed\", e);\n             report.setMessage(localStrings.getLocalString(\"\" +\n                     \"list.connector.work.security.maps.fail\",\n-                    \"Unable to list connector work security map {0} for resource adapter {1}\", securityMap, raName) + \" \" +\n-                    e.getLocalizedMessage());\n+                \"Unable to list connector work security map {0} for resource adapter {1}\",\n+                securityMap, raName) + \" \" +\n+                e.getLocalizedMessage());\n             report.setActionExitCode(ActionReport.ExitCode.FAILURE);\n             report.setFailureCause(e);\n             return;\n@@ -120,17 +121,17 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n         for (PrincipalMap map : principalList) {\n             final ActionReport.MessagePart part = mp.addChild();\n             part.setMessage(localStrings.getLocalString(\n-                    \"list.connector.work.security.maps.eisPrincipalAndMappedPrincipal\",\n-                    \"{0}: EIS principal={1}, mapped principal={2}\",\n-                    wsm.getName(), map.getEisPrincipal(), map.getMappedPrincipal()));\n+                \"list.connector.work.security.maps.eisPrincipalAndMappedPrincipal\",\n+                \"{0}: EIS principal={1}, mapped principal={2}\",\n+                wsm.getName(), map.getEisPrincipal(), map.getMappedPrincipal()));\n         }\n \n         for (GroupMap map : groupList) {\n             final ActionReport.MessagePart part = mp.addChild();\n             part.setMessage(localStrings.getLocalString(\n-                    \"list.connector.work.security.maps.eisGroupAndMappedGroup\",\n-                    \"{0}: EIS group={1}, mapped group={2}\",\n-                    wsm.getName(), map.getEisGroup(), map.getMappedGroup()));\n+                \"list.connector.work.security.maps.eisGroupAndMappedGroup\",\n+                \"{0}: EIS group={1}, mapped group={2}\",\n+                wsm.getName(), map.getEisGroup(), map.getMappedGroup()));\n         }\n     }\n }\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "95",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if' child has incorrect indentation level 4, expected level should be 16.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "99",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'if rcurly' has incorrect indentation level 4, expected level should be 12.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "100",
+                    "column": "5",
+                    "severity": "warning",
+                    "message": "'try rcurly' has incorrect indentation level 4, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/11/ListConnectorWorkSecurityMaps.java\nindex 0df1655c1de..847b26181e6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/naturalize/11/ListConnectorWorkSecurityMaps.java\n@@ -92,13 +92,12 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                 }\n             }\n             if (!foundWSM) {\n-                 report.setMessage(localStrings.getLocalString(\n+    report.setMessage(localStrings.getLocalString(\n                         \"list.connector.work.security.maps.workSecurityMapNotFound\",\n                         \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n                                 \"resource adapter {0} is not associated with any work security map.\", raName));\n-            }\n-\n-        } catch (Exception e) {\n+    }\n+    } catch (Exception e) {\n             Logger.getLogger(ListConnectorWorkSecurityMaps.class.getName()).log(Level.SEVERE,\n                     \"list-connector-work-security-maps failed\", e);\n             report.setMessage(localStrings.getLocalString(\"\" +\n@@ -133,4 +132,4 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                     wsm.getName(), map.getEisGroup(), map.getMappedGroup()));\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/11/ListConnectorWorkSecurityMaps.java\nindex 0df1655c1de..40cd25682a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_random/11/ListConnectorWorkSecurityMaps.java\n@@ -92,7 +92,7 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                 }\n             }\n             if (!foundWSM) {\n-                 report.setMessage(localStrings.getLocalString(\n+                report.setMessage(localStrings.getLocalString(\n                         \"list.connector.work.security.maps.workSecurityMapNotFound\",\n                         \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n                                 \"resource adapter {0} is not associated with any work security map.\", raName));\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/11/ListConnectorWorkSecurityMaps.java\nindex 0df1655c1de..40cd25682a0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/errored/1/11/ListConnectorWorkSecurityMaps.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/eclipse-ee4j-glassfish/styler_three_grams/11/ListConnectorWorkSecurityMaps.java\n@@ -92,7 +92,7 @@ public class ListConnectorWorkSecurityMaps implements AdminCommand {\n                 }\n             }\n             if (!foundWSM) {\n-                 report.setMessage(localStrings.getLocalString(\n+                report.setMessage(localStrings.getLocalString(\n                         \"list.connector.work.security.maps.workSecurityMapNotFound\",\n                         \"Nothing to list. Either the resource adapter {0} does not exist or the\" +\n                                 \"resource adapter {0} is not associated with any work security map.\", raName));\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

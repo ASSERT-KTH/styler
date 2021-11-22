@@ -1,0 +1,70 @@
+{
+    "project_name": "junkdog-artemis-odb",
+    "error_id": "34",
+    "information": {
+        "errors": [
+            {
+                "line": "42",
+                "severity": "error",
+                "message": "Line is longer than 105 characters (found 124).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\tprivate void injectProfilerStubs(ClassMetadata meta) {\n\t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n\t\tfv.visitEnd();\n\n\t\tif (!meta.foundInitialize)",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler/34/ProfilerTransmuter.java\nindex 39fa88b42ae..f0e912f388c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler/34/ProfilerTransmuter.java\n@@ -39,7 +39,8 @@ public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opco\n \t\n \tprivate void injectProfilerStubs(ClassMetadata meta) {\n \t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n+\t\tFieldVisitor fv=cw .visitField(ACC_PRIVATE |ACC_FINAL , \"$profiler\", meta .profilerClass .\n+\t\t\tgetDescriptor (), null, null);\n \t\tfv.visitEnd();\n \n \t\tif (!meta.foundInitialize)\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/intellij/34/ProfilerTransmuter.java\nindex 39fa88b42ae..9e9862d5e4a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/intellij/34/ProfilerTransmuter.java\n@@ -15,42 +15,47 @@ import com.artemis.weaver.profile.ProfileVisitor;\n  * access packed components with direct field access, syntactically.\n  */\n public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opcodes {\n-\tprivate ClassReader cr;\n-\tprivate ClassWriter cw;\n-\tprivate final ClassMetadata meta;\n-\t\n-\tpublic ProfilerTransmuter(String file, ClassMetadata meta, ClassReader cr) {\n-\t\tsuper(file);\n-\t\tthis.meta = meta;\n-\t\tthis.cr = cr;\n-\t}\n-\t\n-\t@Override\n-\tprotected Void process(String file) {\n-\t\tinjectProfilerStubs(meta);\n-\t\t\n-\t\tClassVisitor cv = new ProfileVisitor(cw, meta);\n-\t\tcv = new ProfileAnnotationRemoverWeaver(cv);\n-\t\tcr.accept(cv, ClassReader.EXPAND_FRAMES);\n-\t\t\n-\t\tClassUtil.writeClass(cw, file);\n-\t\treturn null;\n-\t}\n-\t\n-\tprivate void injectProfilerStubs(ClassMetadata meta) {\n-\t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n-\t\tfv.visitEnd();\n-\n-\t\tif (!meta.foundInitialize)\n-\t\t\tClassUtil.injectMethodStub(cw, \"initialize\");\n-\t\tif (!meta.foundBegin)\n-\t\t\tClassUtil.injectMethodStub(cw, \"begin\");\n-\t\tif (!meta.foundEnd)\n-\t\t\tClassUtil.injectMethodStub(cw, \"end\");\n-\n-\t\tcr.accept(cw, 0);\n-\t\tcr = new ClassReader(cw.toByteArray());\n-\t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t}\n+    private ClassReader cr;\n+    private ClassWriter cw;\n+    private final ClassMetadata meta;\n+\n+    public ProfilerTransmuter(String file, ClassMetadata meta, ClassReader cr) {\n+        super(file);\n+        this.meta = meta;\n+        this.cr = cr;\n+    }\n+\n+    @Override\n+    protected Void process(String file) {\n+        injectProfilerStubs(meta);\n+\n+        ClassVisitor cv = new ProfileVisitor(cw, meta);\n+        cv = new ProfileAnnotationRemoverWeaver(cv);\n+        cr.accept(cv, ClassReader.EXPAND_FRAMES);\n+\n+        ClassUtil.writeClass(cw, file);\n+        return null;\n+    }\n+\n+    private void injectProfilerStubs(ClassMetadata meta) {\n+        cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n+        FieldVisitor fv =\n+                cw.visitField(ACC_PRIVATE | ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(),\n+                        null, null);\n+        fv.visitEnd();\n+\n+        if (!meta.foundInitialize) {\n+            ClassUtil.injectMethodStub(cw, \"initialize\");\n+        }\n+        if (!meta.foundBegin) {\n+            ClassUtil.injectMethodStub(cw, \"begin\");\n+        }\n+        if (!meta.foundEnd) {\n+            ClassUtil.injectMethodStub(cw, \"end\");\n+        }\n+\n+        cr.accept(cw, 0);\n+        cr = new ClassReader(cw.toByteArray());\n+        cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n+    }\n }\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "42",
+                    "severity": "error",
+                    "message": "Line is longer than 105 characters (found 124).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/naturalize/34/ProfilerTransmuter.java\nindex 39fa88b42ae..e8bb1cc029f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/naturalize/34/ProfilerTransmuter.java\n@@ -53,4 +53,4 @@ public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opco\n \t\tcr = new ClassReader(cw.toByteArray());\n \t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n \t}\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/codebuff/34/ProfilerTransmuter.java\nindex 39fa88b42ae..9c929cd3523 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/codebuff/34/ProfilerTransmuter.java\n@@ -5,7 +5,6 @@ import org.objectweb.asm.ClassVisitor;\n import org.objectweb.asm.ClassWriter;\n import org.objectweb.asm.FieldVisitor;\n import org.objectweb.asm.Opcodes;\n-\n import com.artemis.ClassUtil;\n import com.artemis.meta.ClassMetadata;\n import com.artemis.weaver.profile.ProfileVisitor;\n@@ -14,43 +13,48 @@ import com.artemis.weaver.profile.ProfileVisitor;\n  * Rewrites access to packed components so that related classes can\n  * access packed components with direct field access, syntactically.\n  */\n+\n public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opcodes {\n-\tprivate ClassReader cr;\n-\tprivate ClassWriter cw;\n-\tprivate final ClassMetadata meta;\n-\t\n-\tpublic ProfilerTransmuter(String file, ClassMetadata meta, ClassReader cr) {\n-\t\tsuper(file);\n-\t\tthis.meta = meta;\n-\t\tthis.cr = cr;\n-\t}\n-\t\n-\t@Override\n-\tprotected Void process(String file) {\n-\t\tinjectProfilerStubs(meta);\n-\t\t\n-\t\tClassVisitor cv = new ProfileVisitor(cw, meta);\n-\t\tcv = new ProfileAnnotationRemoverWeaver(cv);\n-\t\tcr.accept(cv, ClassReader.EXPAND_FRAMES);\n-\t\t\n-\t\tClassUtil.writeClass(cw, file);\n-\t\treturn null;\n-\t}\n-\t\n-\tprivate void injectProfilerStubs(ClassMetadata meta) {\n-\t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n-\t\tfv.visitEnd();\n-\n-\t\tif (!meta.foundInitialize)\n-\t\t\tClassUtil.injectMethodStub(cw, \"initialize\");\n-\t\tif (!meta.foundBegin)\n-\t\t\tClassUtil.injectMethodStub(cw, \"begin\");\n-\t\tif (!meta.foundEnd)\n-\t\t\tClassUtil.injectMethodStub(cw, \"end\");\n-\n-\t\tcr.accept(cw, 0);\n-\t\tcr = new ClassReader(cw.toByteArray());\n-\t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t}\n-}\n+ private ClassReader cr;\n+\n+ private ClassWriter cw;\n+\n+ private final ClassMetadata meta;\n+\n+ public ProfilerTransmuter(String file, ClassMetadata meta, ClassReader cr) {\n+  super(file);\n+  this.meta = meta;\n+  this.cr = cr;\n+ }\n+\n+ @Override\n+ protected Void process(String file) {\n+  injectProfilerStubs(meta);\n+\n+  ClassVisitor cv = new ProfileVisitor(cw, meta);\n+  cv = new ProfileAnnotationRemoverWeaver(cv);\n+  cr.accept(cv, ClassReader.EXPAND_FRAMES);\n+  ClassUtil.writeClass(cw, file);\n+  return null;\n+ }\n+\n+ private void injectProfilerStubs(ClassMetadata meta) {\n+  cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n+\n+  FieldVisitor fv = cw.visitField(ACC_PRIVATE| ACC_FINAL,\n+                     \"$profiler\",\n+                     meta.profilerClass.getDescriptor(),\n+                     null,\n+                     null);\n+  fv.visitEnd();\n+  if (!meta.foundInitialize)\n+   ClassUtil.injectMethodStub(cw, \"initialize\");\n+  if (!meta.foundBegin)\n+   ClassUtil.injectMethodStub(cw, \"begin\");\n+  if (!meta.foundEnd)\n+   ClassUtil.injectMethodStub(cw, \"end\");\n+  cr.accept(cw, 0);\n+  cr = new ClassReader(cw.toByteArray());\n+  cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n+ }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 45
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler_random/34/ProfilerTransmuter.java\nindex 39fa88b42ae..e7e2556b158 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler_random/34/ProfilerTransmuter.java\n@@ -39,8 +39,9 @@ public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opco\n \t\n \tprivate void injectProfilerStubs(ClassMetadata meta) {\n \t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n-\t\tfv.visitEnd();\n+\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\",\n+\t\tmeta.profilerClass.getDescriptor(), null, null);\n+\t\t\tfv.visitEnd();\n \n \t\tif (!meta.foundInitialize)\n \t\t\tClassUtil.injectMethodStub(cw, \"initialize\");\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler_three_grams/34/ProfilerTransmuter.java\nindex 39fa88b42ae..f0e912f388c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/errored/1/34/ProfilerTransmuter.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/junkdog-artemis-odb/styler_three_grams/34/ProfilerTransmuter.java\n@@ -39,7 +39,8 @@ public class ProfilerTransmuter extends CallableTransmuter<Void> implements Opco\n \t\n \tprivate void injectProfilerStubs(ClassMetadata meta) {\n \t\tcw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);\n-\t\tFieldVisitor fv = cw.visitField(ACC_PRIVATE|ACC_FINAL, \"$profiler\", meta.profilerClass.getDescriptor(), null, null);\n+\t\tFieldVisitor fv=cw .visitField(ACC_PRIVATE |ACC_FINAL , \"$profiler\", meta .profilerClass .\n+\t\t\tgetDescriptor (), null, null);\n \t\tfv.visitEnd();\n \n \t\tif (!meta.foundInitialize)\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize"
+    ]
+}

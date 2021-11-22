@@ -1,0 +1,218 @@
+{
+    "project_name": "dzhw-metadatamanagement",
+    "error_id": "54",
+    "information": {
+        "errors": [
+            {
+                "line": "32",
+                "severity": "error",
+                "message": "'<' has incorrect indentation level 2, expected level should be 4.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+            }
+        ]
+    },
+    "source_code": " */\npublic class GenericDomainObjectCrudHelper\n  <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n\n  private final S repository;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "'<' has incorrect indentation level 2, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 103).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/54/GenericDomainObjectCrudHelper.java\nindex 2c91c211660..d3518cd1bfd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/intellij/54/GenericDomainObjectCrudHelper.java\n@@ -25,11 +25,10 @@ import eu.dzhw.fdz.metadatamanagement.searchmanagement.service.ElasticsearchUpda\n  *\n  * @param <S> The {@link BaseRepository} managing the data access.\n  * @param <T> The {@link AbstractRdcDomainObject}.\n- * \n  * @author Ren\u00e9 Reitmann\n  */\n public class GenericDomainObjectCrudHelper\n-  <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n+    <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n \n   private final S repository;\n \n@@ -48,9 +47,9 @@ public class GenericDomainObjectCrudHelper\n    * @param repository The repository managing the data access for the domain objects.\n    */\n   public GenericDomainObjectCrudHelper(S repository,\n-      ApplicationEventPublisher applicationEventPublisher,\n-      ElasticsearchUpdateQueueService elasticsearchUpdateQueueService,\n-      ElasticsearchType elasticsearchType) {\n+                                       ApplicationEventPublisher applicationEventPublisher,\n+                                       ElasticsearchUpdateQueueService elasticsearchUpdateQueueService,\n+                                       ElasticsearchType elasticsearchType) {\n     this.repository = repository;\n     this.applicationEventPublisher = applicationEventPublisher;\n     this.elasticsearchUpdateQueueService = elasticsearchUpdateQueueService;\n@@ -59,23 +58,23 @@ public class GenericDomainObjectCrudHelper\n \n   /**\n    * Create the given {@link AbstractRdcDomainObject}. Updates elasticsearch as well.\n-   * \n-   * @param domainObject The {@link AbstractRdcDomainObject} to be created.\n+   *\n+   * @param domainObject             The {@link AbstractRdcDomainObject} to be created.\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    * @return The created {@link AbstractRdcDomainObject}.\n    */\n   public T create(T domainObject, boolean forceElasticsearchUpdate) {\n     return doCreate(domainObject, forceElasticsearchUpdate);\n   }\n-  \n+\n   private T doCreate(T domainObject, boolean forceElasticsearchUpdate) {\n     applicationEventPublisher.publishEvent(new BeforeCreateEvent(domainObject));\n     // insert is not captured by javers!\n     T persisted = repository.save(domainObject);\n-    if (elasticsearchUpdateQueueService != null && forceElasticsearchUpdate) {      \n+    if (elasticsearchUpdateQueueService != null && forceElasticsearchUpdate) {\n       elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n           ElasticsearchUpdateQueueAction.UPSERT);\n-      if (forceElasticsearchUpdate) {        \n+      if (forceElasticsearchUpdate) {\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -87,8 +86,8 @@ public class GenericDomainObjectCrudHelper\n   /**\n    * Save (update or create) the given {@link AbstractRdcDomainObject}. Updates elasticsearch as\n    * well.\n-   * \n-   * @param domainObject The {@link AbstractRdcDomainObject} to be saved.\n+   *\n+   * @param domainObject             The {@link AbstractRdcDomainObject} to be saved.\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    * @return The saved {@link AbstractRdcDomainObject}.\n    */\n@@ -103,10 +102,10 @@ public class GenericDomainObjectCrudHelper\n         defaultIgnoreProperties.toArray(new String[defaultIgnoreProperties.size()]));\n     applicationEventPublisher.publishEvent(new BeforeSaveEvent(toBeSaved));\n     T persisted = repository.save(toBeSaved);\n-    if (elasticsearchUpdateQueueService != null) {      \n+    if (elasticsearchUpdateQueueService != null) {\n       elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n           ElasticsearchUpdateQueueAction.UPSERT);\n-      if (forceElasticsearchUpdate) {        \n+      if (forceElasticsearchUpdate) {\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -117,17 +116,17 @@ public class GenericDomainObjectCrudHelper\n \n   /**\n    * Delete the given {@link AbstractRdcDomainObject}. Updates elasticsearch as well.\n-   * \n-   * @param domainObject The {@link AbstractRdcDomainObject} to be deleted.\n+   *\n+   * @param domainObject             The {@link AbstractRdcDomainObject} to be deleted.\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    */\n   public void delete(T domainObject, boolean forceElasticsearchUpdate) {\n     applicationEventPublisher.publishEvent(new BeforeDeleteEvent(domainObject));\n     repository.delete(domainObject);\n-    if (elasticsearchUpdateQueueService != null) {      \n+    if (elasticsearchUpdateQueueService != null) {\n       elasticsearchUpdateQueueService.enqueue(domainObject.getId(), this.elasticsearchType,\n           ElasticsearchUpdateQueueAction.DELETE);\n-      if (forceElasticsearchUpdate) {        \n+      if (forceElasticsearchUpdate) {\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -137,7 +136,7 @@ public class GenericDomainObjectCrudHelper\n \n   /**\n    * Find the {@link AbstractRdcDomainObject} by the given id.\n-   * \n+   *\n    * @param id The id of the domain object.\n    * @return An optional domain object.\n    */\n",
+            "diff_size": 19
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "31",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 116).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "75",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "106",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 128).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "127",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 131).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/54/GenericDomainObjectCrudHelper.java\nindex 2c91c211660..4d74d2a259d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/naturalize/54/GenericDomainObjectCrudHelper.java\n@@ -28,8 +28,7 @@ import eu.dzhw.fdz.metadatamanagement.searchmanagement.service.ElasticsearchUpda\n  * \n  * @author Ren\u00e9 Reitmann\n  */\n-public class GenericDomainObjectCrudHelper\n-  <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n+public class GenericDomainObjectCrudHelper<T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n \n   private final S repository;\n \n@@ -73,9 +72,9 @@ public class GenericDomainObjectCrudHelper\n     // insert is not captured by javers!\n     T persisted = repository.save(domainObject);\n     if (elasticsearchUpdateQueueService != null && forceElasticsearchUpdate) {      \n-      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.UPSERT);\n-      if (forceElasticsearchUpdate) {        \n+      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType, ElasticsearchUpdateQueueAction.UPSERT);\n+      if (forceElasticsearchUpdate) {\n+\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -104,9 +103,9 @@ public class GenericDomainObjectCrudHelper\n     applicationEventPublisher.publishEvent(new BeforeSaveEvent(toBeSaved));\n     T persisted = repository.save(toBeSaved);\n     if (elasticsearchUpdateQueueService != null) {      \n-      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.UPSERT);\n-      if (forceElasticsearchUpdate) {        \n+      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType, ElasticsearchUpdateQueueAction.UPSERT);\n+      if (forceElasticsearchUpdate) {\n+\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -125,9 +124,9 @@ public class GenericDomainObjectCrudHelper\n     applicationEventPublisher.publishEvent(new BeforeDeleteEvent(domainObject));\n     repository.delete(domainObject);\n     if (elasticsearchUpdateQueueService != null) {      \n-      elasticsearchUpdateQueueService.enqueue(domainObject.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.DELETE);\n-      if (forceElasticsearchUpdate) {        \n+      elasticsearchUpdateQueueService.enqueue(domainObject.getId(), this.elasticsearchType, ElasticsearchUpdateQueueAction.DELETE);\n+      if (forceElasticsearchUpdate) {\n+\n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n       }\n@@ -144,4 +143,4 @@ public class GenericDomainObjectCrudHelper\n   public Optional<T> read(String id) {\n     return repository.findById(id);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 12
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "'S' has incorrect indentation level 2, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "39",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 145).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "50",
+                    "severity": "error",
+                    "message": "'ApplicationEventPublisher' has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "51",
+                    "severity": "error",
+                    "message": "'ElasticsearchUpdateQueueService' has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "52",
+                    "severity": "error",
+                    "message": "'ElasticsearchType' has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "77",
+                    "severity": "error",
+                    "message": "'persisted' has incorrect indentation level 0, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "79",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "106",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "107",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 6.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "108",
+                    "severity": "error",
+                    "message": "'defaultIgnoreProperties' has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "113",
+                    "severity": "error",
+                    "message": "'persisted' has incorrect indentation level 0, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "114",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "115",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "137",
+                    "severity": "error",
+                    "message": "'domainObject' has incorrect indentation level 0, expected level should be 10.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "138",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "139",
+                    "severity": "error",
+                    "message": "'method call' child has incorrect indentation level 0, expected level should be 8.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/54/GenericDomainObjectCrudHelper.java\nindex 2c91c211660..695b8dc7cfd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/codebuff/54/GenericDomainObjectCrudHelper.java\n@@ -4,7 +4,6 @@ import java.util.Arrays;\n import java.util.Collections;\n import java.util.List;\n import java.util.Optional;\n-\n import org.springframework.beans.BeanUtils;\n import org.springframework.context.ApplicationEventPublisher;\n import org.springframework.data.rest.core.event.AfterCreateEvent;\n@@ -13,7 +12,6 @@ import org.springframework.data.rest.core.event.AfterSaveEvent;\n import org.springframework.data.rest.core.event.BeforeCreateEvent;\n import org.springframework.data.rest.core.event.BeforeDeleteEvent;\n import org.springframework.data.rest.core.event.BeforeSaveEvent;\n-\n import eu.dzhw.fdz.metadatamanagement.common.domain.AbstractRdcDomainObject;\n import eu.dzhw.fdz.metadatamanagement.common.repository.BaseRepository;\n import eu.dzhw.fdz.metadatamanagement.searchmanagement.domain.ElasticsearchUpdateQueueAction;\n@@ -28,17 +26,17 @@ import eu.dzhw.fdz.metadatamanagement.searchmanagement.service.ElasticsearchUpda\n  * \n  * @author Ren\u00e9 Reitmann\n  */\n-public class GenericDomainObjectCrudHelper\n-  <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n \n+\n+public class GenericDomainObjectCrudHelper<T extends AbstractRdcDomainObject,\n+  S extends BaseRepository<T, String>> {\n   private final S repository;\n \n   private final ApplicationEventPublisher applicationEventPublisher;\n \n   private final ElasticsearchUpdateQueueService elasticsearchUpdateQueueService;\n \n-  private static final List<String> defaultIgnoreProperties =\n-      Collections.unmodifiableList(Arrays.asList(\"createdDate\", \"createdBy\", \"version\"));\n+  private static final List<String> defaultIgnoreProperties = Collections.unmodifiableList(Arrays.asList(\"createdDate\", \"createdBy\", \"version\"));\n \n   private final ElasticsearchType elasticsearchType;\n \n@@ -47,10 +45,11 @@ public class GenericDomainObjectCrudHelper\n    *\n    * @param repository The repository managing the data access for the domain objects.\n    */\n+\n   public GenericDomainObjectCrudHelper(S repository,\n-      ApplicationEventPublisher applicationEventPublisher,\n-      ElasticsearchUpdateQueueService elasticsearchUpdateQueueService,\n-      ElasticsearchType elasticsearchType) {\n+ApplicationEventPublisher applicationEventPublisher,\n+ElasticsearchUpdateQueueService elasticsearchUpdateQueueService,\n+ElasticsearchType elasticsearchType) {\n     this.repository = repository;\n     this.applicationEventPublisher = applicationEventPublisher;\n     this.elasticsearchUpdateQueueService = elasticsearchUpdateQueueService;\n@@ -64,17 +63,20 @@ public class GenericDomainObjectCrudHelper\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    * @return The created {@link AbstractRdcDomainObject}.\n    */\n+\n   public T create(T domainObject, boolean forceElasticsearchUpdate) {\n     return doCreate(domainObject, forceElasticsearchUpdate);\n   }\n-  \n+\n   private T doCreate(T domainObject, boolean forceElasticsearchUpdate) {\n     applicationEventPublisher.publishEvent(new BeforeCreateEvent(domainObject));\n     // insert is not captured by javers!\n     T persisted = repository.save(domainObject);\n-    if (elasticsearchUpdateQueueService != null && forceElasticsearchUpdate) {      \n-      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.UPSERT);\n+    if (elasticsearchUpdateQueueService != null && forceElasticsearchUpdate) {\n+      elasticsearchUpdateQueueService.enqueue(\n+persisted.getId(),\n+this.elasticsearchType,\n+ElasticsearchUpdateQueueAction.UPSERT);\n       if (forceElasticsearchUpdate) {        \n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n@@ -92,6 +94,7 @@ public class GenericDomainObjectCrudHelper\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    * @return The saved {@link AbstractRdcDomainObject}.\n    */\n+\n   public T save(T domainObject, boolean forceElasticsearchUpdate) {\n     T toBeSaved = domainObject;\n     Optional<T> optional = repository.findById(domainObject.getId());\n@@ -99,13 +102,17 @@ public class GenericDomainObjectCrudHelper\n       return doCreate(domainObject, forceElasticsearchUpdate);\n     }\n     toBeSaved = optional.get();\n-    BeanUtils.copyProperties(domainObject, toBeSaved,\n-        defaultIgnoreProperties.toArray(new String[defaultIgnoreProperties.size()]));\n+    BeanUtils.copyProperties(\n+domainObject,\n+toBeSaved,\n+defaultIgnoreProperties.toArray(new String[defaultIgnoreProperties.size()]));\n     applicationEventPublisher.publishEvent(new BeforeSaveEvent(toBeSaved));\n     T persisted = repository.save(toBeSaved);\n-    if (elasticsearchUpdateQueueService != null) {      \n-      elasticsearchUpdateQueueService.enqueue(persisted.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.UPSERT);\n+    if (elasticsearchUpdateQueueService != null) {\n+      elasticsearchUpdateQueueService.enqueue(\n+persisted.getId(),\n+this.elasticsearchType,\n+ElasticsearchUpdateQueueAction.UPSERT);\n       if (forceElasticsearchUpdate) {        \n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n@@ -121,12 +128,15 @@ public class GenericDomainObjectCrudHelper\n    * @param domainObject The {@link AbstractRdcDomainObject} to be deleted.\n    * @param forceElasticsearchUpdate true if the search index shall be updated immediately.\n    */\n+\n   public void delete(T domainObject, boolean forceElasticsearchUpdate) {\n     applicationEventPublisher.publishEvent(new BeforeDeleteEvent(domainObject));\n     repository.delete(domainObject);\n-    if (elasticsearchUpdateQueueService != null) {      \n-      elasticsearchUpdateQueueService.enqueue(domainObject.getId(), this.elasticsearchType,\n-          ElasticsearchUpdateQueueAction.DELETE);\n+    if (elasticsearchUpdateQueueService != null) {\n+      elasticsearchUpdateQueueService.enqueue(\n+domainObject.getId(),\n+this.elasticsearchType,\n+ElasticsearchUpdateQueueAction.DELETE);\n       if (forceElasticsearchUpdate) {        \n         // flush the current changes\n         elasticsearchUpdateQueueService.processQueueItems(this.elasticsearchType);\n@@ -141,7 +151,8 @@ public class GenericDomainObjectCrudHelper\n    * @param id The id of the domain object.\n    * @return An optional domain object.\n    */\n+\n   public Optional<T> read(String id) {\n     return repository.findById(id);\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 38
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "31",
+                    "severity": "error",
+                    "message": "Line is longer than 100 characters (found 116).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/styler_random/54/GenericDomainObjectCrudHelper.java\nindex 2c91c211660..3e4d2ddb133 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/errored/1/54/GenericDomainObjectCrudHelper.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/dzhw-metadatamanagement/styler_random/54/GenericDomainObjectCrudHelper.java\n@@ -28,8 +28,7 @@ import eu.dzhw.fdz.metadatamanagement.searchmanagement.service.ElasticsearchUpda\n  * \n  * @author Ren\u00e9 Reitmann\n  */\n-public class GenericDomainObjectCrudHelper\n-  <T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n+public class GenericDomainObjectCrudHelper<T extends AbstractRdcDomainObject, S extends BaseRepository<T, String>> {\n \n   private final S repository;\n \n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "32",
+                    "severity": "error",
+                    "message": "'<' has incorrect indentation level 2, expected level should be 4.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

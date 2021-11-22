@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "49",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.bpmn.helper;\n\nimport org.activiti.engine.ActivitiIllegalArgumentException;\nimport org.activiti.engine.delegate.Expression;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/49/DelegateExpressionActivitiEventListener.java\nindex e29375b12cf..6b42348f3ed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/49/DelegateExpressionActivitiEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import org.activiti.engine.ActivitiIllegalArgumentException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/49/DelegateExpressionActivitiEventListener.java\nindex e29375b12cf..29fdf09c0fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/49/DelegateExpressionActivitiEventListener.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import org.activiti.engine.ActivitiIllegalArgumentException;\n@@ -23,44 +24,42 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;\n  * An {@link ActivitiEventListener} implementation which resolves an expression to a delegate {@link ActivitiEventListener} instance and uses this for event notification. <br>\n  * <br>\n  * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.\n- * \n-\n  */\n public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {\n \n-  protected Expression expression;\n-  protected boolean failOnException = false;\n+    protected Expression expression;\n+    protected boolean failOnException = false;\n \n-  public DelegateExpressionActivitiEventListener(Expression expression, Class<?> entityClass) {\n-    this.expression = expression;\n-    setEntityClass(entityClass);\n-  }\n+    public DelegateExpressionActivitiEventListener(Expression expression, Class<?> entityClass) {\n+        this.expression = expression;\n+        setEntityClass(entityClass);\n+    }\n \n-  @Override\n-  public void onEvent(ActivitiEvent event) {\n-    if (isValidEvent(event)) {\n-      Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, new NoExecutionVariableScope());\n-      if (delegate instanceof ActivitiEventListener) {\n-        // Cache result of isFailOnException() from delegate-instance\n-        // until next event is received. This prevents us from having to resolve\n-        // the expression twice when an error occurs.\n-        failOnException = ((ActivitiEventListener) delegate).isFailOnException();\n+    @Override\n+    public void onEvent(ActivitiEvent event) {\n+        if (isValidEvent(event)) {\n+            Object delegate = DelegateExpressionUtil.resolveDelegateExpression(expression, new NoExecutionVariableScope());\n+            if (delegate instanceof ActivitiEventListener) {\n+                // Cache result of isFailOnException() from delegate-instance\n+                // until next event is received. This prevents us from having to resolve\n+                // the expression twice when an error occurs.\n+                failOnException = ((ActivitiEventListener) delegate).isFailOnException();\n \n-        // Call the delegate\n-        ((ActivitiEventListener) delegate).onEvent(event);\n-      } else {\n+                // Call the delegate\n+                ((ActivitiEventListener) delegate).onEvent(event);\n+            } else {\n \n-        // Force failing, since the exception we're about to throw\n-        // cannot be ignored, because it did not originate from the listener itself\n-        failOnException = true;\n-        throw new ActivitiIllegalArgumentException(\"Delegate expression \" + expression + \" did not resolve to an implementation of \" + ActivitiEventListener.class.getName());\n-      }\n+                // Force failing, since the exception we're about to throw\n+                // cannot be ignored, because it did not originate from the listener itself\n+                failOnException = true;\n+                throw new ActivitiIllegalArgumentException(\"Delegate expression \" + expression + \" did not resolve to an implementation of \" + ActivitiEventListener.class.getName());\n+            }\n+        }\n     }\n-  }\n \n-  @Override\n-  public boolean isFailOnException() {\n-    return failOnException;\n-  }\n+    @Override\n+    public boolean isFailOnException() {\n+        return failOnException;\n+    }\n \n }\n",
+            "diff_size": 34
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "31",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/49/DelegateExpressionActivitiEventListener.java\nindex e29375b12cf..55ff0543d8e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/49/DelegateExpressionActivitiEventListener.java\n@@ -26,6 +26,8 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;\n  * \n \n  */\n+\n+\n public class DelegateExpressionActivitiEventListener extends BaseDelegateEventListener {\n \n   protected Expression expression;\n@@ -62,5 +64,4 @@ public class DelegateExpressionActivitiEventListener extends BaseDelegateEventLi\n   public boolean isFailOnException() {\n     return failOnException;\n   }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/49/DelegateExpressionActivitiEventListener.java\nindex e29375b12cf..6b42348f3ed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/49/DelegateExpressionActivitiEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import org.activiti.engine.ActivitiIllegalArgumentException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/49/DelegateExpressionActivitiEventListener.java\nindex e29375b12cf..6b42348f3ed 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/49/DelegateExpressionActivitiEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/49/DelegateExpressionActivitiEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import org.activiti.engine.ActivitiIllegalArgumentException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

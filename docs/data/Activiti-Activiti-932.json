@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "932",
+    "information": {
+        "errors": [
+            {
+                "line": "16",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.core.common.spring.project;\n\nimport java.io.FileNotFoundException;\nimport java.io.IOException;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/932/ApplicationUpgradeContextService.java\nindex 943df96bbb2..e9fab55106e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/932/ApplicationUpgradeContextService.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.core.common.spring.project;\n \n import java.io.FileNotFoundException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/932/ApplicationUpgradeContextService.java\nindex 943df96bbb2..db0b023768f 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/932/ApplicationUpgradeContextService.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.core.common.spring.project;\n \n import java.io.FileNotFoundException;\n@@ -57,15 +58,15 @@ public class ApplicationUpgradeContextService {\n \n     private ProjectManifest read(InputStream inputStream) throws IOException {\n         return objectMapper.readValue(inputStream,\n-                                      ProjectManifest.class);\n+                ProjectManifest.class);\n     }\n \n     public ProjectManifest loadProjectManifest() throws IOException {\n         Optional<Resource> resourceOptional = retrieveResource();\n \n         return read(resourceOptional\n-                        .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n-                        .getInputStream());\n+                .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n+                .getInputStream());\n     }\n \n     public boolean hasProjectManifest() {\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "16",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "28",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/932/ApplicationUpgradeContextService.java\nindex 943df96bbb2..7c22b97541c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/932/ApplicationUpgradeContextService.java\n@@ -19,64 +19,56 @@ import java.io.FileNotFoundException;\n import java.io.IOException;\n import java.io.InputStream;\n import java.util.Optional;\n-\n import com.fasterxml.jackson.databind.ObjectMapper;\n import org.activiti.core.common.project.model.ProjectManifest;\n import org.springframework.core.io.Resource;\n import org.springframework.core.io.support.ResourcePatternResolver;\n \n-public class ApplicationUpgradeContextService {\n-\n-    private String projectManifestFilePath;\n \n-    private Integer enforcedAppVersion;\n+public class ApplicationUpgradeContextService {\n \n-    private final ObjectMapper objectMapper;\n+  private String projectManifestFilePath;\n \n-    private ResourcePatternResolver resourceLoader;\n+  private Integer enforcedAppVersion;\n \n-    public ApplicationUpgradeContextService(String path,\n-                                            Integer enforcedAppVersion,\n-                                            ObjectMapper objectMapper,\n-                                            ResourcePatternResolver resourceLoader) {\n-        this.projectManifestFilePath = path;\n-        this.enforcedAppVersion = enforcedAppVersion;\n-        this.objectMapper = objectMapper;\n-        this.resourceLoader = resourceLoader;\n-    }\n+  private final ObjectMapper objectMapper;\n \n-    private Optional<Resource> retrieveResource() {\n+  private ResourcePatternResolver resourceLoader;\n \n-        Resource resource = resourceLoader.getResource(projectManifestFilePath);\n-        if (resource.exists()) {\n-            return Optional.of(resource);\n-        } else {\n-            return Optional.empty();\n-        }\n-    }\n+  public ApplicationUpgradeContextService(String path, Integer enforcedAppVersion, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {\n+    this.projectManifestFilePath = path;\n+    this.enforcedAppVersion = enforcedAppVersion;\n+    this.objectMapper = objectMapper;\n+    this.resourceLoader = resourceLoader;\n+  }\n \n-    private ProjectManifest read(InputStream inputStream) throws IOException {\n-        return objectMapper.readValue(inputStream,\n-                                      ProjectManifest.class);\n+  private Optional<Resource> retrieveResource() {\n+    Resource resource = resourceLoader.getResource(projectManifestFilePath);\n+    if (resource.exists()) {\n+      return Optional.of(resource);\n+    } else {\n+      return Optional.empty();\n     }\n+  }\n \n-    public ProjectManifest loadProjectManifest() throws IOException {\n-        Optional<Resource> resourceOptional = retrieveResource();\n+  private ProjectManifest read(InputStream inputStream) throws IOException {\n+    return objectMapper.readValue(inputStream, ProjectManifest.class);\n+  }\n \n-        return read(resourceOptional\n-                        .orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\"))\n-                        .getInputStream());\n-    }\n+  public ProjectManifest loadProjectManifest() throws IOException {\n+    Optional<Resource> resourceOptional = retrieveResource();\n+    return read(resourceOptional.orElseThrow(() -> new FileNotFoundException(\"'\" + projectManifestFilePath + \"' manifest not found.\")).getInputStream());\n+  }\n \n-    public boolean hasProjectManifest() {\n-        return retrieveResource().isPresent();\n-    }\n+  public boolean hasProjectManifest() {\n+    return retrieveResource().isPresent();\n+  }\n \n-    public boolean hasEnforcedAppVersion() {\n-        return this.enforcedAppVersion > 0;\n-    }\n+  public boolean hasEnforcedAppVersion() {\n+    return this.enforcedAppVersion > 0;\n+  }\n \n-    public Integer getEnforcedAppVersion() {\n-        return this.enforcedAppVersion;\n-    }\n-}\n+  public Integer getEnforcedAppVersion() {\n+    return this.enforcedAppVersion;\n+  }\n+}\n\\ No newline at end of file\n",
+            "diff_size": 48
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/932/ApplicationUpgradeContextService.java\nindex 943df96bbb2..e9fab55106e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/932/ApplicationUpgradeContextService.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.core.common.spring.project;\n \n import java.io.FileNotFoundException;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/932/ApplicationUpgradeContextService.java\nindex 943df96bbb2..e9fab55106e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/932/ApplicationUpgradeContextService.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/932/ApplicationUpgradeContextService.java\n@@ -13,6 +13,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.core.common.spring.project;\n \n import java.io.FileNotFoundException;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

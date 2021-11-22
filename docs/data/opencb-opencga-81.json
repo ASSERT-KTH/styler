@@ -1,0 +1,91 @@
+{
+    "project_name": "opencb-opencga",
+    "error_id": "81",
+    "information": {
+        "errors": [
+            {
+                "line": "48",
+                "severity": "error",
+                "message": "Line is longer than 140 characters (found 146).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "                for (Individual individual : getIndividuals()) {\n                    // Sample is never null, it was checked previously\n                    Sample sample = GeneticChecksUtils.getValidSampleByIndividualId(getStudyId(), individual.getId(), catalogManager, getToken());\n\n                    // Compute ratios: X-chrom / autosomic-chroms and Y-chrom / autosomic-chroms\n                    double[] ratios = InferredSexComputation.computeRatios(getStudyId(), sample.getId(), assembly, fileManager,",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/81/GeneticChecksLocalAnalysisExecutor.java\nindex 7f105507e07..dbe9a9d0e5a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/intellij/81/GeneticChecksLocalAnalysisExecutor.java\n@@ -18,86 +18,86 @@ import org.opencb.opencga.core.tools.variant.GeneticChecksAnalysisExecutor;\n import java.util.ArrayList;\n import java.util.List;\n \n-@ToolExecutor(id=\"opencga-local\", tool = GeneticChecksAnalysis.ID,\n-        framework = ToolExecutor.Framework.LOCAL, source = ToolExecutor.Source.STORAGE)\n+@ToolExecutor(id = \"opencga-local\", tool = GeneticChecksAnalysis.ID,\n+    framework = ToolExecutor.Framework.LOCAL, source = ToolExecutor.Source.STORAGE)\n public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExecutor implements StorageToolExecutor {\n \n-    @Override\n-    public void run() throws ToolException {\n-        switch (getGeneticCheck()) {\n-\n-            case INFERRED_SEX: {\n-\n-                // Get managers\n-                AlignmentStorageManager alignmentStorageManager = getAlignmentStorageManager();\n-                CatalogManager catalogManager = alignmentStorageManager.getCatalogManager();\n-                FileManager fileManager = catalogManager.getFileManager();\n-\n-                // Get assembly\n-                String assembly;\n-                try {\n-                    assembly = GeneticChecksUtils.getAssembly(getStudyId(), alignmentStorageManager.getCatalogManager(), getToken());\n-                } catch (CatalogException e) {\n-                    throw new ToolException(e);\n-                }\n-\n-                // Infer the sex for each individual\n-                List<InferredSexReport> sexReportList = new ArrayList<>();\n-                for (Individual individual : getIndividuals()) {\n-                    // Sample is never null, it was checked previously\n-                    Sample sample = GeneticChecksUtils.getValidSampleByIndividualId(getStudyId(), individual.getId(), catalogManager, getToken());\n-\n-                    // Compute ratios: X-chrom / autosomic-chroms and Y-chrom / autosomic-chroms\n-                    double[] ratios = InferredSexComputation.computeRatios(getStudyId(), sample.getId(), assembly, fileManager,\n-                            alignmentStorageManager, getToken());\n-\n-                    // Add sex report to the list\n-                    // TODO infer sex from ratios\n-                    sexReportList.add(new InferredSexReport(individual.getId(), sample.getId(), individual.getSex().name(),\n-                            individual.getKaryotypicSex().name(), ratios[0], ratios[1], \"\"));\n-                }\n-\n-                // Set sex report\n-                getReport().setInferredSexReport(sexReportList);\n-                break;\n-            }\n-            case RELATEDNESS: {\n-\n-                // Get managers\n-                VariantStorageManager variantStorageManager = getVariantStorageManager();\n-                CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n-\n-                // Get sample IDs from individuals\n-                List<String> sampleIds = GeneticChecksUtils.getSampleIds(getStudyId(), getIndividuals(), catalogManager, getToken());\n-\n-                // Run IBD/IBS computation using PLINK in docker\n-                RelatednessReport relatednessReport = IBDComputation.compute(getStudyId(), sampleIds, getMinorAlleleFreq(), getOutDir(),\n-                        variantStorageManager, getToken());\n-\n-                // Set relatedness report\n-                getReport().setRelatednessReport(relatednessReport);\n-                break;\n-            }\n-            case MENDELIAN_ERRORS: {\n-\n-                // Get managers\n-                VariantStorageManager variantStorageManager = getVariantStorageManager();\n-                CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n-\n-                // Get sample IDs from individuals\n-                List<String> sampleIds = GeneticChecksUtils.getSampleIds(getStudyId(), getIndividuals(), catalogManager, getToken());\n-\n-                // Compute mendelian inconsitencies\n-                MendelianErrorsReport mendelianErrorsReport = MendelianInconsistenciesComputation.compute(getStudyId(), sampleIds,\n-                        getOutDir(), variantStorageManager, getToken());\n-\n-                // Set relatedness report\n-                getReport().setMendelianErrorsReport(mendelianErrorsReport);\n-                break;\n-            }\n-            default: {\n-                throw new ToolException(\"Unknown genetic check: \" + getGeneticCheck());\n-            }\n+  @Override\n+  public void run() throws ToolException {\n+    switch (getGeneticCheck()) {\n+\n+      case INFERRED_SEX: {\n+\n+        // Get managers\n+        AlignmentStorageManager alignmentStorageManager = getAlignmentStorageManager();\n+        CatalogManager catalogManager = alignmentStorageManager.getCatalogManager();\n+        FileManager fileManager = catalogManager.getFileManager();\n+\n+        // Get assembly\n+        String assembly;\n+        try {\n+          assembly = GeneticChecksUtils.getAssembly(getStudyId(), alignmentStorageManager.getCatalogManager(), getToken());\n+        } catch (CatalogException e) {\n+          throw new ToolException(e);\n+        }\n+\n+        // Infer the sex for each individual\n+        List<InferredSexReport> sexReportList = new ArrayList<>();\n+        for (Individual individual : getIndividuals()) {\n+          // Sample is never null, it was checked previously\n+          Sample sample = GeneticChecksUtils.getValidSampleByIndividualId(getStudyId(), individual.getId(), catalogManager, getToken());\n+\n+          // Compute ratios: X-chrom / autosomic-chroms and Y-chrom / autosomic-chroms\n+          double[] ratios = InferredSexComputation.computeRatios(getStudyId(), sample.getId(), assembly, fileManager,\n+              alignmentStorageManager, getToken());\n+\n+          // Add sex report to the list\n+          // TODO infer sex from ratios\n+          sexReportList.add(new InferredSexReport(individual.getId(), sample.getId(), individual.getSex().name(),\n+              individual.getKaryotypicSex().name(), ratios[0], ratios[1], \"\"));\n         }\n+\n+        // Set sex report\n+        getReport().setInferredSexReport(sexReportList);\n+        break;\n+      }\n+      case RELATEDNESS: {\n+\n+        // Get managers\n+        VariantStorageManager variantStorageManager = getVariantStorageManager();\n+        CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n+\n+        // Get sample IDs from individuals\n+        List<String> sampleIds = GeneticChecksUtils.getSampleIds(getStudyId(), getIndividuals(), catalogManager, getToken());\n+\n+        // Run IBD/IBS computation using PLINK in docker\n+        RelatednessReport relatednessReport = IBDComputation.compute(getStudyId(), sampleIds, getMinorAlleleFreq(), getOutDir(),\n+            variantStorageManager, getToken());\n+\n+        // Set relatedness report\n+        getReport().setRelatednessReport(relatednessReport);\n+        break;\n+      }\n+      case MENDELIAN_ERRORS: {\n+\n+        // Get managers\n+        VariantStorageManager variantStorageManager = getVariantStorageManager();\n+        CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n+\n+        // Get sample IDs from individuals\n+        List<String> sampleIds = GeneticChecksUtils.getSampleIds(getStudyId(), getIndividuals(), catalogManager, getToken());\n+\n+        // Compute mendelian inconsitencies\n+        MendelianErrorsReport mendelianErrorsReport = MendelianInconsistenciesComputation.compute(getStudyId(), sampleIds,\n+            getOutDir(), variantStorageManager, getToken());\n+\n+        // Set relatedness report\n+        getReport().setMendelianErrorsReport(mendelianErrorsReport);\n+        break;\n+      }\n+      default: {\n+        throw new ToolException(\"Unknown genetic check: \" + getGeneticCheck());\n+      }\n     }\n+  }\n }\n",
+            "diff_size": 121
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "46",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/81/GeneticChecksLocalAnalysisExecutor.java\nindex 7f105507e07..83bb6efa6bf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/naturalize/81/GeneticChecksLocalAnalysisExecutor.java\n@@ -18,17 +18,15 @@ import org.opencb.opencga.core.tools.variant.GeneticChecksAnalysisExecutor;\n import java.util.ArrayList;\n import java.util.List;\n \n-@ToolExecutor(id=\"opencga-local\", tool = GeneticChecksAnalysis.ID,\n+@ToolExecutor(id = \"opencga-local\", tool = GeneticChecksAnalysis.ID,\n         framework = ToolExecutor.Framework.LOCAL, source = ToolExecutor.Source.STORAGE)\n public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExecutor implements StorageToolExecutor {\n \n     @Override\n     public void run() throws ToolException {\n         switch (getGeneticCheck()) {\n-\n-            case INFERRED_SEX: {\n-\n-                // Get managers\n+    case INFERRED_SEX: {\n+    // Get managers\n                 AlignmentStorageManager alignmentStorageManager = getAlignmentStorageManager();\n                 CatalogManager catalogManager = alignmentStorageManager.getCatalogManager();\n                 FileManager fileManager = catalogManager.getFileManager();\n@@ -62,8 +60,7 @@ public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExe\n                 break;\n             }\n             case RELATEDNESS: {\n-\n-                // Get managers\n+    // Get managers\n                 VariantStorageManager variantStorageManager = getVariantStorageManager();\n                 CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n \n@@ -79,8 +76,7 @@ public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExe\n                 break;\n             }\n             case MENDELIAN_ERRORS: {\n-\n-                // Get managers\n+    // Get managers\n                 VariantStorageManager variantStorageManager = getVariantStorageManager();\n                 CatalogManager catalogManager = variantStorageManager.getCatalogManager();\n \n@@ -100,4 +96,4 @@ public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExe\n             }\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 10
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "48",
+                    "severity": "error",
+                    "message": "Line is longer than 140 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "50",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' should be on the previous line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.MethodParamPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/81/GeneticChecksLocalAnalysisExecutor.java\nindex 7f105507e07..22eed4f5c3b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/errored/1/81/GeneticChecksLocalAnalysisExecutor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/opencb-opencga/styler_three_grams/81/GeneticChecksLocalAnalysisExecutor.java\n@@ -45,7 +45,9 @@ public class GeneticChecksLocalAnalysisExecutor extends GeneticChecksAnalysisExe\n                 List<InferredSexReport> sexReportList = new ArrayList<>();\n                 for (Individual individual : getIndividuals()) {\n                     // Sample is never null, it was checked previously\n-                    Sample sample = GeneticChecksUtils.getValidSampleByIndividualId(getStudyId(), individual.getId(), catalogManager, getToken());\n+                    Sample sample = GeneticChecksUtils.getValidSampleByIndividualId(\n+                    getStudyId\n+                    (), individual.getId(), catalogManager, getToken());\n \n                     // Compute ratios: X-chrom / autosomic-chroms and Y-chrom / autosomic-chroms\n                     double[] ratios = InferredSexComputation.computeRatios(getStudyId(), sample.getId(), assembly, fileManager,\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

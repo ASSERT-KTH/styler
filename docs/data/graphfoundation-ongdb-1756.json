@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1756",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "62",
+                    "column": "30",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "133",
+                    "column": "20",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "133",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "190",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "190",
+                    "column": "71",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "201",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "201",
+                    "column": "80",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1756/TransactionData.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1756/TransactionData.java\nindex 1928aff908e..9eaedb8386b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1756/TransactionData.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1756/TransactionData.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.graphdb.event;\n \n import java.util.Map;\n@@ -37,163 +38,166 @@ import org.neo4j.graphdb.Relationship;\n public interface TransactionData\n {\n \n-    /**\n-     * Get the nodes that were created during the transaction.\n-     *\n-     * @return all nodes that were created during the transaction.\n-     */\n-    Iterable<Node> createdNodes();\n-\n-    /**\n-     * Get the nodes that were deleted during the transaction.\n-     *\n-     * @return all nodes that were deleted during the transaction.\n-     */\n-    Iterable<Node> deletedNodes();\n-\n-    /**\n-     * Returns whether or not {@code node} is deleted in this transaction.\n-     * @param node the {@link Node} to check whether or not it is deleted\n-     * in this transaction.\n-     * @return whether or not {@code node} is deleted in this transaction.\n-     */\n-    boolean isDeleted( Node node );\n-\n-    /**\n-     * Get the properties that had a value assigned or overwritten on a node\n-     * during the transaction. All the properties of nodes created\n-     * during the transaction will be returned by this method as well. Only the\n-     * values that are present at the end of the transaction will be returned,\n-     * whereas all previously assigned values of properties that have been\n-     * assigned multiple times during the transaction will not be returned.\n-     *\n-     * @return all properties that have been assigned on nodes.\n-     */\n-    Iterable<PropertyEntry<Node>> assignedNodeProperties();\n-\n-    /**\n-     * Get the properties that had a value removed from a node during the\n-     * transaction. Values are considered to be removed if the value is\n-     * overwritten by calling {@link Node#setProperty(String, Object)} with a\n-     * property that has a previous value, or if the property is explicitly\n-     * removed by calling {@link Node#removeProperty(String)}. Only the values\n-     * that were present before the transaction are returned by this method, all\n-     * previous values of properties that have been assigned multiple times\n-     * during the transaction will not be returned. This is also true for\n-     * properties that had no value before the transaction, was assigned during\n-     * the transaction, and then removed during the same transaction. Deleting\n-     * a node will cause all its currently assigned properties to be added to\n-     * this list as well.\n-     *\n-     * @return all properties that have been removed from nodes.\n-     */\n-    Iterable<PropertyEntry<Node>> removedNodeProperties();\n-\n-    /**\n-     * Get all new labels that have been assigned during the transaction. This\n-     * will return one entry for each label added to each node. All labels assigned\n-     * to nodes that were created in the transaction will also be included.\n-     *\n-     * @return all labels assigned on nodes.\n-     */\n-    Iterable<LabelEntry> assignedLabels();\n-\n-    /**\n-     * Get all labels that have been removed from nodes during the transaction.\n-     *\n-     * @return all labels removed from nodes.\n-     */\n-    Iterable<LabelEntry> removedLabels();\n-\n-    /**\n-     * Get the relationships that were created during the transaction.\n-     *\n-     * @return all relationships that were created during the transaction.\n-     */\n-    Iterable<Relationship> createdRelationships();\n-\n-    /**\n-     * Get the relationships that were deleted during the transaction.\n-     *\n-     * @return all relationships that were deleted during the transaction.\n-     */\n-    Iterable<Relationship> deletedRelationships();\n-\n-    /**\n-     * Returns whether or not {@code relationship} is deleted in this\n-     * transaction.\n-     *\n-     * @param relationship the {@link Relationship} to check whether or not it\n-     *            is deleted in this transaction.\n-     * @return whether or not {@code relationship} is deleted in this\n-     *         transaction.\n-     */\n-    boolean isDeleted( Relationship relationship );\n-\n-    /**\n-     * Get the properties that had a value assigned on a relationship during the\n-     * transaction. If the property had a value on that relationship before the\n-     * transaction started the previous value will be returned by\n-     * {@link #removedRelationshipProperties()}. All the properties of\n-     * relationships created during the transaction will be returned by this\n-     * method as well. Only the values that are present at the end of the\n-     * transaction will be returned by this method, all previously assigned\n-     * values of properties that have been assigned multiple times during the\n-     * transaction will not be returned.\n-     *\n-     * @return all properties that have been assigned on relationships.\n-     */\n-    Iterable<PropertyEntry<Relationship>> assignedRelationshipProperties();\n-\n-    /**\n-     * Get the properties that had a value removed from a relationship during\n-     * the transaction. Values are considered to be removed if the value is\n-     * overwritten by calling {@link Relationship#setProperty(String, Object)}\n-     * with a property that has a previous value, or if the property is\n-     * explicitly removed by calling {@link Relationship#removeProperty(String)}\n-     * . Only the values that were present before the transaction are returned\n-     * by this method, all previous values of properties that have been assigned\n-     * multiple times during the transaction will not be returned. This is also\n-     * true for properties that had no value before the transaction, was\n-     * assigned during the transaction, and then removed during the same\n-     * transaction. Deleting a relationship will cause all its currently\n-     * assigned properties to be added to this list as well.\n-     *\n-     * @return all properties that have been removed from relationships.\n-     */\n-    Iterable<PropertyEntry<Relationship>> removedRelationshipProperties();\n-\n-    /**\n-     * Get the username under which authorization state this transaction is running.\n-     *\n-     * @return the username of the user who initiated the transaction.\n-     */\n-    String username();\n-\n-    /**\n-     * Applications that start transactions may attach additional application specific meta-data to each transaction.\n-     *\n-     * @return The application specific meta-data map associated with this transaction.\n-     */\n-    Map<String,Object> metaData();\n-\n-    /**\n-     * Return transaction id that assigned during transaction commit process.\n-     * @return transaction id.\n-     * @throws IllegalStateException if transaction id is not assigned yet\n-     */\n-    default long getTransactionId()\n-    {\n-        throw new IllegalStateException( \"Transaction id is not available.\" );\n-    }\n-\n-    /**\n-     * Return transaction commit time (in millis) that assigned during transaction commit process.\n-     * @return transaction commit time\n-     * @throws IllegalStateException if commit time is not assigned yet\n-     */\n-    default long getCommitTime()\n-    {\n-        throw new IllegalStateException( \"Transaction commit time it not available.\" );\n-    }\n+  /**\n+   * Get the nodes that were created during the transaction.\n+   *\n+   * @return all nodes that were created during the transaction.\n+   */\n+  Iterable<Node> createdNodes();\n+\n+  /**\n+   * Get the nodes that were deleted during the transaction.\n+   *\n+   * @return all nodes that were deleted during the transaction.\n+   */\n+  Iterable<Node> deletedNodes();\n+\n+  /**\n+   * Returns whether or not {@code node} is deleted in this transaction.\n+   *\n+   * @param node the {@link Node} to check whether or not it is deleted\n+   *             in this transaction.\n+   * @return whether or not {@code node} is deleted in this transaction.\n+   */\n+  boolean isDeleted(Node node);\n+\n+  /**\n+   * Get the properties that had a value assigned or overwritten on a node\n+   * during the transaction. All the properties of nodes created\n+   * during the transaction will be returned by this method as well. Only the\n+   * values that are present at the end of the transaction will be returned,\n+   * whereas all previously assigned values of properties that have been\n+   * assigned multiple times during the transaction will not be returned.\n+   *\n+   * @return all properties that have been assigned on nodes.\n+   */\n+  Iterable<PropertyEntry<Node>> assignedNodeProperties();\n+\n+  /**\n+   * Get the properties that had a value removed from a node during the\n+   * transaction. Values are considered to be removed if the value is\n+   * overwritten by calling {@link Node#setProperty(String, Object)} with a\n+   * property that has a previous value, or if the property is explicitly\n+   * removed by calling {@link Node#removeProperty(String)}. Only the values\n+   * that were present before the transaction are returned by this method, all\n+   * previous values of properties that have been assigned multiple times\n+   * during the transaction will not be returned. This is also true for\n+   * properties that had no value before the transaction, was assigned during\n+   * the transaction, and then removed during the same transaction. Deleting\n+   * a node will cause all its currently assigned properties to be added to\n+   * this list as well.\n+   *\n+   * @return all properties that have been removed from nodes.\n+   */\n+  Iterable<PropertyEntry<Node>> removedNodeProperties();\n+\n+  /**\n+   * Get all new labels that have been assigned during the transaction. This\n+   * will return one entry for each label added to each node. All labels assigned\n+   * to nodes that were created in the transaction will also be included.\n+   *\n+   * @return all labels assigned on nodes.\n+   */\n+  Iterable<LabelEntry> assignedLabels();\n+\n+  /**\n+   * Get all labels that have been removed from nodes during the transaction.\n+   *\n+   * @return all labels removed from nodes.\n+   */\n+  Iterable<LabelEntry> removedLabels();\n+\n+  /**\n+   * Get the relationships that were created during the transaction.\n+   *\n+   * @return all relationships that were created during the transaction.\n+   */\n+  Iterable<Relationship> createdRelationships();\n+\n+  /**\n+   * Get the relationships that were deleted during the transaction.\n+   *\n+   * @return all relationships that were deleted during the transaction.\n+   */\n+  Iterable<Relationship> deletedRelationships();\n+\n+  /**\n+   * Returns whether or not {@code relationship} is deleted in this\n+   * transaction.\n+   *\n+   * @param relationship the {@link Relationship} to check whether or not it\n+   *                     is deleted in this transaction.\n+   * @return whether or not {@code relationship} is deleted in this\n+   * transaction.\n+   */\n+  boolean isDeleted(Relationship relationship);\n+\n+  /**\n+   * Get the properties that had a value assigned on a relationship during the\n+   * transaction. If the property had a value on that relationship before the\n+   * transaction started the previous value will be returned by\n+   * {@link #removedRelationshipProperties()}. All the properties of\n+   * relationships created during the transaction will be returned by this\n+   * method as well. Only the values that are present at the end of the\n+   * transaction will be returned by this method, all previously assigned\n+   * values of properties that have been assigned multiple times during the\n+   * transaction will not be returned.\n+   *\n+   * @return all properties that have been assigned on relationships.\n+   */\n+  Iterable<PropertyEntry<Relationship>> assignedRelationshipProperties();\n+\n+  /**\n+   * Get the properties that had a value removed from a relationship during\n+   * the transaction. Values are considered to be removed if the value is\n+   * overwritten by calling {@link Relationship#setProperty(String, Object)}\n+   * with a property that has a previous value, or if the property is\n+   * explicitly removed by calling {@link Relationship#removeProperty(String)}\n+   * . Only the values that were present before the transaction are returned\n+   * by this method, all previous values of properties that have been assigned\n+   * multiple times during the transaction will not be returned. This is also\n+   * true for properties that had no value before the transaction, was\n+   * assigned during the transaction, and then removed during the same\n+   * transaction. Deleting a relationship will cause all its currently\n+   * assigned properties to be added to this list as well.\n+   *\n+   * @return all properties that have been removed from relationships.\n+   */\n+  Iterable<PropertyEntry<Relationship>> removedRelationshipProperties();\n+\n+  /**\n+   * Get the username under which authorization state this transaction is running.\n+   *\n+   * @return the username of the user who initiated the transaction.\n+   */\n+  String username();\n+\n+  /**\n+   * Applications that start transactions may attach additional application specific meta-data to each transaction.\n+   *\n+   * @return The application specific meta-data map associated with this transaction.\n+   */\n+  Map<String, Object> metaData();\n+\n+  /**\n+   * Return transaction id that assigned during transaction commit process.\n+   *\n+   * @return transaction id.\n+   * @throws IllegalStateException if transaction id is not assigned yet\n+   */\n+  default long getTransactionId()\n+  {\n+    throw new IllegalStateException(\"Transaction id is not available.\");\n+  }\n+\n+  /**\n+   * Return transaction commit time (in millis) that assigned during transaction commit process.\n+   *\n+   * @return transaction commit time\n+   * @throws IllegalStateException if commit time is not assigned yet\n+   */\n+  default long getCommitTime()\n+  {\n+    throw new IllegalStateException(\"Transaction commit time it not available.\");\n+  }\n }\n",
+            "diff_size": 163
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1756/TransactionData.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1756/TransactionData.java\nindex 1928aff908e..0f61b741057 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1756/TransactionData.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1756/TransactionData.java\n@@ -36,7 +36,6 @@ import org.neo4j.graphdb.Relationship;\n  */\n public interface TransactionData\n {\n-\n     /**\n      * Get the nodes that were created during the transaction.\n      *\n@@ -196,4 +195,4 @@ public interface TransactionData\n     {\n         throw new IllegalStateException( \"Transaction commit time it not available.\" );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

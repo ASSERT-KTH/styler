@@ -1,0 +1,138 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "3488",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "15",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "92",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3488/Step.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3488/Step.java\nindex b01d50740c3..548b533e04b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3488/Step.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/3488/Step.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.unsafe.impl.batchimport.staging;\n \n import org.neo4j.unsafe.impl.batchimport.Parallelizable;\n@@ -27,7 +28,7 @@ import org.neo4j.unsafe.impl.batchimport.stats.StepStats;\n  * Batches are typically received from an upstream step, or produced in the step itself. If there are more steps\n  * {@link #setDownstream(Step) downstream} then processed batches are passed down. Each step has maximum\n  * \"work-ahead\" size where it awaits the downstream step to catch up if the queue size goes beyond that number.\n- *\n+ * <p>\n  * Batches are associated with a ticket, which is simply a long value incremented for each batch.\n  * It's the first step that is responsible for generating these tickets, which will stay unchanged with\n  * each batch all the way through the stage. Steps that have multiple threads processing batches can process\n@@ -38,60 +39,61 @@ import org.neo4j.unsafe.impl.batchimport.stats.StepStats;\n  */\n public interface Step<T> extends Parallelizable, AutoCloseable, Panicable\n {\n-    /**\n-     * Whether or not tickets arrive in {@link #receive(long, Object)} ordered by ticket number.\n-     */\n-    int ORDER_SEND_DOWNSTREAM = 0x1;\n-    int RECYCLE_BATCHES = 0x2;\n+  /**\n+   * Whether or not tickets arrive in {@link #receive(long, Object)} ordered by ticket number.\n+   */\n+  int ORDER_SEND_DOWNSTREAM = 0x1;\n+  int RECYCLE_BATCHES = 0x2;\n \n-    /**\n-     * Starts the processing in this step, such that calls to {@link #receive(long, Object)} can be accepted.\n-     *\n-     * @param orderingGuarantees which ordering guarantees that will be upheld.\n-     */\n-    void start( int orderingGuarantees );\n+  /**\n+   * Starts the processing in this step, such that calls to {@link #receive(long, Object)} can be accepted.\n+   *\n+   * @param orderingGuarantees which ordering guarantees that will be upheld.\n+   */\n+  void start(int orderingGuarantees);\n \n-    /**\n-     * @return name of this step.\n-     */\n-    String name();\n+  /**\n+   * @return name of this step.\n+   */\n+  String name();\n \n-    /**\n-     * Receives a batch from upstream, queues it for processing.\n-     *\n-     * @param ticket ticket associates with the batch. Tickets are generated by producing steps and must follow\n-     * each batch all the way through a stage.\n-     * @param batch the batch object to queue for processing.\n-     * @return how long it time (millis) was spent waiting for a spot in the queue.\n-     */\n-    long receive( long ticket, T batch );\n+  /**\n+   * Receives a batch from upstream, queues it for processing.\n+   *\n+   * @param ticket ticket associates with the batch. Tickets are generated by producing steps and must follow\n+   *               each batch all the way through a stage.\n+   * @param batch  the batch object to queue for processing.\n+   * @return how long it time (millis) was spent waiting for a spot in the queue.\n+   */\n+  long receive(long ticket, T batch);\n \n-    /**\n-     * @return statistics about this step at this point in time.\n-     */\n-    StepStats stats();\n+  /**\n+   * @return statistics about this step at this point in time.\n+   */\n+  StepStats stats();\n \n-    /**\n-     * Called by upstream to let this step know that it will not send any more batches.\n-     */\n-    void endOfUpstream();\n+  /**\n+   * Called by upstream to let this step know that it will not send any more batches.\n+   */\n+  void endOfUpstream();\n \n-    /**\n-     * @return {@code true} if this step has received AND processed all batches from upstream, or in\n-     * the case of a producer, that this step has produced all batches.\n-     */\n-    boolean isCompleted();\n+  /**\n+   * @return {@code true} if this step has received AND processed all batches from upstream, or in\n+   * the case of a producer, that this step has produced all batches.\n+   */\n+  boolean isCompleted();\n \n-    /**\n-     * Called by the {@link Stage} when setting up the stage. This will form a pipeline of steps,\n-     * making up the stage.\n-     * @param downstreamStep {@link Step} to send batches to downstream.\n-     */\n-    void setDownstream( Step<?> downstreamStep );\n+  /**\n+   * Called by the {@link Stage} when setting up the stage. This will form a pipeline of steps,\n+   * making up the stage.\n+   *\n+   * @param downstreamStep {@link Step} to send batches to downstream.\n+   */\n+  void setDownstream(Step<?> downstreamStep);\n \n-    /**\n-     * Closes any resources kept open by this step. Called after a {@link Stage} is executed, whether successful or not.\n-     */\n-    @Override\n-    void close() throws Exception;\n+  /**\n+   * Closes any resources kept open by this step. Called after a {@link Stage} is executed, whether successful or not.\n+   */\n+  @Override\n+  void close() throws Exception;\n }\n",
+            "diff_size": 51
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3488/Step.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3488/Step.java\nindex b01d50740c3..00e13890adf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/3488/Step.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/3488/Step.java\n@@ -94,4 +94,4 @@ public interface Step<T> extends Parallelizable, AutoCloseable, Panicable\n      */\n     @Override\n     void close() throws Exception;\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

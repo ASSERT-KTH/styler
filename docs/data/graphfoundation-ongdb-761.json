@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "761",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "53",
+                    "column": "92",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "48",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "8",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "68",
+                    "column": "44",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/761/GlobalStoreLocker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/761/GlobalStoreLocker.java\nindex 5bfc948dda1..6b5478bcb5d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/761/GlobalStoreLocker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/761/GlobalStoreLocker.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.internal.locker;\n \n import java.io.File;\n@@ -40,45 +41,45 @@ import org.neo4j.kernel.StoreLockException;\n  * It is strongly recommended that, within a program, a unique channel be used to acquire all locks on any given file.\n  * </b>\n  * </p>\n- *\n+ * <p>\n  * The guarantee is achieved by tracking all locked files over all instances of {@link GlobalStoreLocker}.\n- *\n+ * <p>\n  * Class guarantee visibility of locked files over multiple thread but do not guarantee atomicity of operations.\n  */\n public class GlobalStoreLocker extends StoreLocker\n {\n-    private static final Set<File> lockedFiles = Collections.newSetFromMap( new ConcurrentHashMap<>() );\n+  private static final Set<File> lockedFiles = Collections.newSetFromMap(new ConcurrentHashMap<>());\n \n-    public GlobalStoreLocker( FileSystemAbstraction fileSystemAbstraction, File storeDirectory )\n-    {\n-        super( fileSystemAbstraction, storeDirectory );\n-    }\n+  public GlobalStoreLocker(FileSystemAbstraction fileSystemAbstraction, File storeDirectory)\n+  {\n+    super(fileSystemAbstraction, storeDirectory);\n+  }\n \n-    @Override\n-    public void checkLock() throws StoreLockException\n-    {\n-        super.checkLock();\n-        lockedFiles.add( storeLockFile );\n-    }\n+  @Override\n+  public void checkLock() throws StoreLockException\n+  {\n+    super.checkLock();\n+    lockedFiles.add(storeLockFile);\n+  }\n \n-    @Override\n-    protected boolean haveLockAlready()\n+  @Override\n+  protected boolean haveLockAlready()\n+  {\n+    if (lockedFiles.contains(storeLockFile))\n     {\n-        if ( lockedFiles.contains( storeLockFile ) )\n-        {\n-            if ( storeLockFileLock != null )\n-            {\n-                return true;\n-            }\n-            throw unableToObtainLockException();\n-        }\n-        return false;\n+      if (storeLockFileLock != null)\n+      {\n+        return true;\n+      }\n+      throw unableToObtainLockException();\n     }\n+    return false;\n+  }\n \n-    @Override\n-    protected void releaseLock() throws IOException\n-    {\n-        lockedFiles.remove( storeLockFile );\n-        super.releaseLock();\n-    }\n+  @Override\n+  protected void releaseLock() throws IOException\n+  {\n+    lockedFiles.remove(storeLockFile);\n+    super.releaseLock();\n+  }\n }\n",
+            "diff_size": 35
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/761/GlobalStoreLocker.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/761/GlobalStoreLocker.java\nindex 5bfc948dda1..4a60b431d05 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/761/GlobalStoreLocker.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/761/GlobalStoreLocker.java\n@@ -81,4 +81,4 @@ public class GlobalStoreLocker extends StoreLocker\n         lockedFiles.remove( storeLockFile );\n         super.releaseLock();\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

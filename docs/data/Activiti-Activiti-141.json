@@ -1,0 +1,75 @@
+{
+    "project_name": "Activiti-Activiti",
+    "error_id": "141",
+    "information": {
+        "errors": [
+            {
+                "line": "13",
+                "severity": "error",
+                "message": "'package' should be separated from previous statement.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+            }
+        ]
+    },
+    "source_code": " * limitations under the License.\n */\npackage org.activiti.engine.impl.bpmn.helper;\n\nimport java.util.List;\n",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/141/SignalThrowingEventListener.java\nindex f2a04d4d8d6..2c0c54269fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler/141/SignalThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/141/SignalThrowingEventListener.java\nindex f2a04d4d8d6..221aa73835e 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/intellij/141/SignalThrowingEventListener.java\n@@ -1,15 +1,16 @@\n /* Licensed under the Apache License, Version 2.0 (the \"License\");\n  * you may not use this file except in compliance with the License.\n  * You may obtain a copy of the License at\n- * \n+ *\n  *      http://www.apache.org/licenses/LICENSE-2.0\n- * \n+ *\n  * Unless required by applicable law or agreed to in writing, software\n  * distributed under the License is distributed on an \"AS IS\" BASIS,\n  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n@@ -25,53 +26,50 @@ import org.activiti.engine.repository.ProcessDefinition;\n \n /**\n  * An {@link ActivitiEventListener} that throws a signal event when an event is dispatched to it.\n- * \n-\n- * \n  */\n public class SignalThrowingEventListener extends BaseDelegateEventListener {\n \n-  protected String signalName;\n-  protected boolean processInstanceScope = true;\n+    protected String signalName;\n+    protected boolean processInstanceScope = true;\n \n-  @Override\n-  public void onEvent(ActivitiEvent event) {\n-    if (isValidEvent(event)) {\n+    @Override\n+    public void onEvent(ActivitiEvent event) {\n+        if (isValidEvent(event)) {\n \n-      if (event.getProcessInstanceId() == null && processInstanceScope) {\n-        throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance\");\n-      }\n+            if (event.getProcessInstanceId() == null && processInstanceScope) {\n+                throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance\");\n+            }\n \n-      CommandContext commandContext = Context.getCommandContext();\n-      EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();\n-      List<SignalEventSubscriptionEntity> subscriptionEntities = null;\n-      if (processInstanceScope) {\n-        subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);\n-      } else {\n-        String tenantId = null;\n-        if (event.getProcessDefinitionId() != null) {\n-          ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());\n-          tenantId = processDefinition.getTenantId();\n-        }\n-        subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(signalName, tenantId);\n-      }\n+            CommandContext commandContext = Context.getCommandContext();\n+            EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();\n+            List<SignalEventSubscriptionEntity> subscriptionEntities = null;\n+            if (processInstanceScope) {\n+                subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);\n+            } else {\n+                String tenantId = null;\n+                if (event.getProcessDefinitionId() != null) {\n+                    ProcessDefinition processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());\n+                    tenantId = processDefinition.getTenantId();\n+                }\n+                subscriptionEntities = eventSubscriptionEntityManager.findSignalEventSubscriptionsByEventName(signalName, tenantId);\n+            }\n \n-      for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {\n-        eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, false);\n-      }\n+            for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {\n+                eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, false);\n+            }\n+        }\n     }\n-  }\n \n-  public void setSignalName(String signalName) {\n-    this.signalName = signalName;\n-  }\n+    public void setSignalName(String signalName) {\n+        this.signalName = signalName;\n+    }\n \n-  public void setProcessInstanceScope(boolean processInstanceScope) {\n-    this.processInstanceScope = processInstanceScope;\n-  }\n+    public void setProcessInstanceScope(boolean processInstanceScope) {\n+        this.processInstanceScope = processInstanceScope;\n+    }\n \n-  @Override\n-  public boolean isFailOnException() {\n-    return true;\n-  }\n+    @Override\n+    public boolean isFailOnException() {\n+        return true;\n+    }\n }\n",
+            "diff_size": 42
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "13",
+                    "severity": "error",
+                    "message": "'package' should be separated from previous statement.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                },
+                {
+                    "line": "33",
+                    "severity": "error",
+                    "message": "'CLASS_DEF' has more than 1 empty lines before.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/141/SignalThrowingEventListener.java\nindex f2a04d4d8d6..a52762f61a6 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/codebuff/141/SignalThrowingEventListener.java\n@@ -13,7 +13,6 @@\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n-\n import org.activiti.engine.ActivitiIllegalArgumentException;\n import org.activiti.engine.delegate.event.ActivitiEvent;\n import org.activiti.engine.delegate.event.ActivitiEventListener;\n@@ -29,6 +28,8 @@ import org.activiti.engine.repository.ProcessDefinition;\n \n  * \n  */\n+\n+\n public class SignalThrowingEventListener extends BaseDelegateEventListener {\n \n   protected String signalName;\n@@ -37,7 +38,6 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {\n   @Override\n   public void onEvent(ActivitiEvent event) {\n     if (isValidEvent(event)) {\n-\n       if (event.getProcessInstanceId() == null && processInstanceScope) {\n         throw new ActivitiIllegalArgumentException(\"Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance\");\n       }\n@@ -57,7 +57,7 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {\n       }\n \n       for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {\n-        eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, false);\n+          eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, false);\n       }\n     }\n   }\n@@ -74,4 +74,4 @@ public class SignalThrowingEventListener extends BaseDelegateEventListener {\n   public boolean isFailOnException() {\n     return true;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 6
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/141/SignalThrowingEventListener.java\nindex f2a04d4d8d6..2c0c54269fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_random/141/SignalThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/141/SignalThrowingEventListener.java\nindex f2a04d4d8d6..2c0c54269fd 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/errored/1/141/SignalThrowingEventListener.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/Activiti-Activiti/styler_three_grams/141/SignalThrowingEventListener.java\n@@ -10,6 +10,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n+\n package org.activiti.engine.impl.bpmn.helper;\n \n import java.util.List;\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff"
+    ]
+}

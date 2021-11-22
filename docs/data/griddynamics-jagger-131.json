@@ -1,0 +1,84 @@
+{
+    "project_name": "griddynamics-jagger",
+    "error_id": "131",
+    "information": {
+        "errors": [
+            {
+                "line": "86",
+                "severity": "warning",
+                "message": "Line is longer than 150 characters (found 282).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "\n    @Override\n    public Service distribute(final ExecutorService executor, final String sessionId, final String taskId, final Multimap<NodeType, NodeId> availableNodes, final Coordinator coordinator, final CompositeTask task, final DistributionListener listener, final NodeContext nodeContext) {\n        log.debug(\"Composite task {} with id {} distribute configuration started\", task, taskId);\n\n        Function<CompositableTask, Service> convertToRunnable = new Function<CompositableTask, Service>() {",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/131/CompositeTaskDistributor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/131/CompositeTaskDistributor.java\nindex aa1b9ab8bac..ccdc7fdc0ef 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/131/CompositeTaskDistributor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/intellij/131/CompositeTaskDistributor.java\n@@ -83,7 +83,9 @@ public class CompositeTaskDistributor implements TaskDistributor<CompositeTask>\n     }\n \n     @Override\n-    public Service distribute(final ExecutorService executor, final String sessionId, final String taskId, final Multimap<NodeType, NodeId> availableNodes, final Coordinator coordinator, final CompositeTask task, final DistributionListener listener, final NodeContext nodeContext) {\n+    public Service distribute(final ExecutorService executor, final String sessionId, final String taskId,\n+                              final Multimap<NodeType, NodeId> availableNodes, final Coordinator coordinator, final CompositeTask task,\n+                              final DistributionListener listener, final NodeContext nodeContext) {\n         log.debug(\"Composite task {} with id {} distribute configuration started\", task, taskId);\n \n         Function<CompositableTask, Service> convertToRunnable = new Function<CompositableTask, Service>() {\n@@ -111,18 +113,18 @@ public class CompositeTaskDistributor implements TaskDistributor<CompositeTask>\n                 try {\n                     taskExecutionStatusProvider.setStatus(taskId, TaskData.ExecutionStatus.IN_PROGRESS);\n                     TestGroupListener compositeTestGroupListener = TestGroupListener.Composer.compose(ProviderUtil\n-                                                                                                              .provideElements(\n-                                                                                                                      task.getListeners(),\n-                                                                                                                      sessionId,\n-                                                                                                                      taskId,\n-                                                                                                                      nodeContext,\n-                                                                                                                      JaggerPlace.TEST_GROUP_LISTENER\n-                                                                                                              ));\n+                            .provideElements(\n+                                    task.getListeners(),\n+                                    sessionId,\n+                                    taskId,\n+                                    nodeContext,\n+                                    JaggerPlace.TEST_GROUP_LISTENER\n+                            ));\n                     TestGroupInfo testGroupInfo = new TestGroupInfo(task, sessionId);\n                     compositeTestGroupListener.onStart(testGroupInfo);\n-        \n+\n                     long startTime = System.currentTimeMillis();\n-        \n+\n                     List<Future<State>> futures = Lists.newLinkedList();\n                     for (Service service : Iterables.concat(leading, attendant)) {\n                         ListenableFuture<State> future = service.start();\n@@ -140,7 +142,7 @@ public class CompositeTaskDistributor implements TaskDistributor<CompositeTask>\n                     }\n                     testGroupInfo.setDuration(System.currentTimeMillis() - startTime);\n                     compositeTestGroupListener.onStop(testGroupInfo);\n-        \n+\n                     taskExecutionStatusProvider.setStatus(taskId, TaskData.ExecutionStatus.SUCCEEDED);\n                 } catch (Exception e) {\n                     log.error(\"Composite task failure: \", e);\n",
+            "diff_size": 13
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "86",
+                    "severity": "warning",
+                    "message": "Line is longer than 150 characters (found 282).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "118",
+                    "severity": "warning",
+                    "message": "Line is longer than 150 characters (found 152).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "120",
+                    "severity": "warning",
+                    "message": "'try' child has incorrect indentation level 0, expected level should be one of the following: 20, 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                },
+                {
+                    "line": "122",
+                    "severity": "warning",
+                    "message": "'try' child has incorrect indentation level 0, expected level should be one of the following: 20, 24, 28.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/131/CompositeTaskDistributor.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/naturalize/131/CompositeTaskDistributor.java\nindex aa1b9ab8bac..ec54f3c9f31 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/errored/1/131/CompositeTaskDistributor.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/griddynamics-jagger/naturalize/131/CompositeTaskDistributor.java\n@@ -110,18 +110,16 @@ public class CompositeTaskDistributor implements TaskDistributor<CompositeTask>\n             protected void run() throws Exception {\n                 try {\n                     taskExecutionStatusProvider.setStatus(taskId, TaskData.ExecutionStatus.IN_PROGRESS);\n-                    TestGroupListener compositeTestGroupListener = TestGroupListener.Composer.compose(ProviderUtil\n-                                                                                                              .provideElements(\n+                    TestGroupListener compositeTestGroupListener = TestGroupListener.Composer.compose(ProviderUtil.provideElements(\n                                                                                                                       task.getListeners(),\n                                                                                                                       sessionId,\n                                                                                                                       taskId,\n                                                                                                                       nodeContext,\n-                                                                                                                      JaggerPlace.TEST_GROUP_LISTENER\n-                                                                                                              ));\n-                    TestGroupInfo testGroupInfo = new TestGroupInfo(task, sessionId);\n+                                                                                                                      JaggerPlace.TEST_GROUP_LISTENER));\n+\n+TestGroupInfo testGroupInfo = new TestGroupInfo(task, sessionId);\n                     compositeTestGroupListener.onStart(testGroupInfo);\n-        \n-                    long startTime = System.currentTimeMillis();\n+long startTime = System.currentTimeMillis();\n         \n                     List<Future<State>> futures = Lists.newLinkedList();\n                     for (Service service : Iterables.concat(leading, attendant)) {\n@@ -227,4 +225,4 @@ public class CompositeTaskDistributor implements TaskDistributor<CompositeTask>\n \n         return new ListenableService<CompositeTask>(serviceToExecute, executor, sessionId, taskId, task, listener, Collections.EMPTY_MAP);\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

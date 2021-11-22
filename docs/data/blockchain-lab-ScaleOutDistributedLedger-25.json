@@ -1,0 +1,86 @@
+{
+    "project_name": "blockchain-lab-ScaleOutDistributedLedger",
+    "error_id": "25",
+    "information": {
+        "errors": [
+            {
+                "line": "59",
+                "column": "9",
+                "severity": "warning",
+                "message": "'while' is not followed by whitespace.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+            }
+        ]
+    },
+    "source_code": "\n        ListIterator<Block> iterator = chainView.listIterator();\n        while(iterator.hasNext()) {\n            Block block = iterator.next();\n            if (block.getTransactions().contains(transaction)) {\n                if (seen) return false;",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler/25/Proof.java\nindex b13fcb433de..5d7d6bbdeb5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler/25/Proof.java\n@@ -55,8 +55,8 @@ public class Proof {\n         ChainView chainView = new ChainView(transaction.getSender().getChain(), chainUpdates.get(transaction.getSender()));\n         if (!chainView.isValid()) return false;\n \n-        ListIterator<Block> iterator = chainView.listIterator();\n-        while(iterator.hasNext()) {\n+        ListIterator<Block> iterator = chainView.listIterator(); while\n+            (iterator.hasNext()) {\n             Block block = iterator.next();\n             if (block.getTransactions().contains(transaction)) {\n                 if (seen) return false;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/25/Proof.java\nindex b13fcb433de..f0ccbc13cd8 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/intellij/25/Proof.java\n@@ -20,6 +20,7 @@ public class Proof {\n \n     /**\n      * Constructor.\n+     *\n      * @param transaction - the transaction to be proven.\n      */\n     public Proof(Transaction transaction) {\n@@ -29,6 +30,7 @@ public class Proof {\n \n     /**\n      * Add a block to the proof.\n+     *\n      * @param block - the block to be added\n      */\n     public void addBlock(Block block) {\n@@ -37,6 +39,7 @@ public class Proof {\n \n     /**\n      * Verifies this proof.\n+     *\n      * @return - boolean indicating if this proof is valid.\n      */\n     public boolean verify() {\n@@ -45,6 +48,7 @@ public class Proof {\n \n     /**\n      * Verifies the given transaction using this proof.\n+     *\n      * @param transaction - the transaction to verify\n      * @return - boolean indicating if this transaction is valid.\n      */\n@@ -53,29 +57,39 @@ public class Proof {\n         boolean seen = false;\n \n         ChainView chainView = new ChainView(transaction.getSender().getChain(), chainUpdates.get(transaction.getSender()));\n-        if (!chainView.isValid()) return false;\n+        if (!chainView.isValid()) {\n+            return false;\n+        }\n \n         ListIterator<Block> iterator = chainView.listIterator();\n-        while(iterator.hasNext()) {\n+        while (iterator.hasNext()) {\n             Block block = iterator.next();\n             if (block.getTransactions().contains(transaction)) {\n-                if (seen) return false;\n+                if (seen) {\n+                    return false;\n+                }\n                 seen = true;\n             }\n             // TODO: check block hash (hash function needed) if not genesis block\n             BlockAbstract blockAbstract = block.getBlockAbstract();\n             if (blockAbstract.isOnMainChain()) {\n                 absmark = blockAbstract.getBlockNumber();\n-                if (!blockAbstract.checkBlockHash(block) || !blockAbstract.checkSignature()) return false;\n+                if (!blockAbstract.checkBlockHash(block) || !blockAbstract.checkSignature()) {\n+                    return false;\n+                }\n             }\n         }\n \n         OptionalInt blockNumber = transaction.getBlockNumber();\n-        if (!blockNumber.isPresent() || absmark < blockNumber.getAsInt()) return false;\n+        if (!blockNumber.isPresent() || absmark < blockNumber.getAsInt()) {\n+            return false;\n+        }\n \n         // Verify source transaction\n         for (Transaction sourceTransaction : transaction.getSource()) {\n-            if (!verify(sourceTransaction)) return false;\n+            if (!verify(sourceTransaction)) {\n+                return false;\n+            }\n         }\n         return true;\n     }\n",
+            "diff_size": 20
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "61",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'while' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'}' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/25/Proof.java\nindex b13fcb433de..bee6f0c40c1 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/naturalize/25/Proof.java\n@@ -3,16 +3,18 @@ package nl.tudelft.blockchain.scaleoutdistributedledger.model;\n import lombok.Getter;\n \n import java.util.HashMap;\n+\n import java.util.List;\n+\n import java.util.ListIterator;\n+\n import java.util.OptionalInt;\n \n /**\n  * Proof class.\n  */\n public class Proof {\n-\n-    @Getter\n+@Getter\n     private final Transaction transaction;\n \n     @Getter\n@@ -68,9 +70,7 @@ public class Proof {\n                 absmark = blockAbstract.getBlockNumber();\n                 if (!blockAbstract.checkBlockHash(block) || !blockAbstract.checkSignature()) return false;\n             }\n-        }\n-\n-        OptionalInt blockNumber = transaction.getBlockNumber();\n+        }OptionalInt blockNumber = transaction.getBlockNumber();\n         if (!blockNumber.isPresent() || absmark < blockNumber.getAsInt()) return false;\n \n         // Verify source transaction\n@@ -79,4 +79,4 @@ public class Proof {\n         }\n         return true;\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 9
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/25/Proof.java\nindex b13fcb433de..5d7d6bbdeb5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_random/25/Proof.java\n@@ -55,8 +55,8 @@ public class Proof {\n         ChainView chainView = new ChainView(transaction.getSender().getChain(), chainUpdates.get(transaction.getSender()));\n         if (!chainView.isValid()) return false;\n \n-        ListIterator<Block> iterator = chainView.listIterator();\n-        while(iterator.hasNext()) {\n+        ListIterator<Block> iterator = chainView.listIterator(); while\n+            (iterator.hasNext()) {\n             Block block = iterator.next();\n             if (block.getTransactions().contains(transaction)) {\n                 if (seen) return false;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "60",
+                    "column": "9",
+                    "severity": "warning",
+                    "message": "'while' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/25/Proof.java\nindex b13fcb433de..ea1cc83a4d9 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/errored/1/25/Proof.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/blockchain-lab-ScaleOutDistributedLedger/styler_three_grams/25/Proof.java\n@@ -56,6 +56,7 @@ public class Proof {\n         if (!chainView.isValid()) return false;\n \n         ListIterator<Block> iterator = chainView.listIterator();\n+\n         while(iterator.hasNext()) {\n             Block block = iterator.next();\n             if (block.getTransactions().contains(transaction)) {\n",
+            "diff_size": 1
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_random"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_three_grams"
+    ]
+}

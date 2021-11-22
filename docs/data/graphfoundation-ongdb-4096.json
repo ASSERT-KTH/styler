@@ -1,0 +1,173 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4096",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "35",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "35",
+                    "column": "62",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "46",
+                    "column": "45",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "58",
+                    "column": "21",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "42",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "60",
+                    "column": "61",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "63",
+                    "column": "7",
+                    "severity": "error",
+                    "message": "'}' at column 7 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "31",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "70",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4096/SecondaryUnitPrepareIdSequence.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4096/SecondaryUnitPrepareIdSequence.java\nindex 3c17d6a8a95..71ef3e33727 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4096/SecondaryUnitPrepareIdSequence.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4096/SecondaryUnitPrepareIdSequence.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.unsafe.impl.batchimport.store;\n \n import java.util.function.LongFunction;\n@@ -30,46 +31,45 @@ import org.neo4j.kernel.impl.store.id.IdSequence;\n  */\n public class SecondaryUnitPrepareIdSequence implements PrepareIdSequence\n {\n+  @Override\n+  public LongFunction<IdSequence> apply(IdSequence idSequence)\n+  {\n+    return new NeighbourIdSequence();\n+  }\n+\n+  private static class NeighbourIdSequence implements LongFunction<IdSequence>, IdSequence\n+  {\n+    private long id;\n+    private boolean returned;\n+\n     @Override\n-    public LongFunction<IdSequence> apply( IdSequence idSequence )\n+    public IdSequence apply(long firstUnitId)\n     {\n-        return new NeighbourIdSequence();\n+      this.id = firstUnitId;\n+      returned = false;\n+      return this;\n     }\n \n-    private static class NeighbourIdSequence implements LongFunction<IdSequence>, IdSequence\n+    @Override\n+    public long nextId()\n     {\n-        private long id;\n-        private boolean returned;\n-\n-        @Override\n-        public IdSequence apply( long firstUnitId )\n+      try\n+      {\n+        if (returned)\n         {\n-            this.id = firstUnitId;\n-            returned = false;\n-            return this;\n-        }\n-\n-        @Override\n-        public long nextId()\n-        {\n-            try\n-            {\n-                if ( returned )\n-                {\n-                    throw new IllegalStateException( \"Already returned\" );\n-                }\n-                return id + 1;\n-            }\n-            finally\n-            {\n-                returned = true;\n-            }\n+          throw new IllegalStateException(\"Already returned\");\n         }\n+        return id + 1;\n+      } finally\n+      {\n+        returned = true;\n+      }\n+    }\n \n-        @Override\n-        public IdRange nextIdBatch( int size )\n-        {\n-            throw new UnsupportedOperationException();\n-        }\n+    @Override\n+    public IdRange nextIdBatch(int size)\n+    {\n+      throw new UnsupportedOperationException();\n     }\n+  }\n }\n",
+            "diff_size": 55
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4096/SecondaryUnitPrepareIdSequence.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4096/SecondaryUnitPrepareIdSequence.java\nindex 3c17d6a8a95..5d9ac1129af 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4096/SecondaryUnitPrepareIdSequence.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4096/SecondaryUnitPrepareIdSequence.java\n@@ -58,7 +58,8 @@ public class SecondaryUnitPrepareIdSequence implements PrepareIdSequence\n                 {\n                     throw new IllegalStateException( \"Already returned\" );\n                 }\n-                return id + 1;\n+\n+return id + 1;\n             }\n             finally\n             {\n@@ -72,4 +73,4 @@ public class SecondaryUnitPrepareIdSequence implements PrepareIdSequence\n             throw new UnsupportedOperationException();\n         }\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "project_name": "h2database-h2database",
+    "error_id": "144",
+    "information": {
+        "errors": [
+            {
+                "line": "91",
+                "column": "114",
+                "severity": "warning",
+                "message": "Don't use trailing comments.",
+                "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+            }
+        ]
+    },
+    "source_code": "            for (ConstraintDomain constraint : constraints) {\n                Expression checkCondition = constraint.getCheckConstraint(session, null);\n                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(), //\n                        false);\n                check.setDomainName(targetDomain.getName());\n                check.setCheckExpression(checkCondition);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/144/DropDomain.java\nindex 82d408f6f00..ccfeb843401 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler/144/DropDomain.java\n@@ -88,8 +88,9 @@ public class DropDomain extends SchemaCommand {\n         if (constraints != null && !constraints.isEmpty()) {\n             for (ConstraintDomain constraint : constraints) {\n                 Expression checkCondition = constraint.getCheckConstraint(session, null);\n-                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(), //\n-                        false);\n+                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(),\n+                    //\n+                         false);\n                 check.setDomainName(targetDomain.getName());\n                 check.setCheckExpression(checkCondition);\n                 check.update();\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "104",
+                    "column": "59",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/144/DropDomain.java\nindex 82d408f6f00..52f5479dbd5 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/intellij/144/DropDomain.java\n@@ -3,6 +3,7 @@\n  * and the EPL 1.0 (https://h2database.com/html/license.html).\n  * Initial Developer: H2 Group\n  */\n+\n package org.h2.command.ddl;\n \n import java.util.ArrayList;\n@@ -30,7 +31,8 @@ public class DropDomain extends SchemaCommand {\n \n     public DropDomain(Session session, Schema schema) {\n         super(session, schema);\n-        dropAction = session.getDatabase().getSettings().dropRestrict ? ConstraintActionType.RESTRICT\n+        dropAction = session.getDatabase().getSettings().dropRestrict ?\n+                ConstraintActionType.RESTRICT\n                 : ConstraintActionType.CASCADE;\n     }\n \n@@ -53,7 +55,9 @@ public class DropDomain extends SchemaCommand {\n                 throw DbException.get(ErrorCode.DOMAIN_NOT_FOUND_1, typeName);\n             }\n         } else {\n-            AlterDomain.copy(session, domain, this::copyColumn, this::copyDomain, true);\n+            AlterDomain\n+                    .copy(session, domain, this::copyColumn, this::copyDomain,\n+                            true);\n             session.getDatabase().removeSchemaObject(session, domain);\n         }\n         return 0;\n@@ -62,15 +66,20 @@ public class DropDomain extends SchemaCommand {\n     private boolean copyColumn(Domain domain, Column targetColumn) {\n         Table targetTable = targetColumn.getTable();\n         if (dropAction == ConstraintActionType.RESTRICT) {\n-            throw DbException.get(ErrorCode.CANNOT_DROP_2, typeName, targetTable.getCreateSQL());\n+            throw DbException.get(ErrorCode.CANNOT_DROP_2, typeName,\n+                    targetTable.getCreateSQL());\n         }\n         String columnName = targetColumn.getName();\n         ArrayList<ConstraintDomain> constraints = domain.getConstraints();\n         if (constraints != null && !constraints.isEmpty()) {\n             for (ConstraintDomain constraint : constraints) {\n-                Expression checkCondition = constraint.getCheckConstraint(session, columnName);\n-                AlterTableAddConstraint check = new AlterTableAddConstraint(session, targetTable.getSchema(),\n-                        CommandInterface.ALTER_TABLE_ADD_CONSTRAINT_CHECK, false);\n+                Expression checkCondition =\n+                        constraint.getCheckConstraint(session, columnName);\n+                AlterTableAddConstraint check =\n+                        new AlterTableAddConstraint(session,\n+                                targetTable.getSchema(),\n+                                CommandInterface.ALTER_TABLE_ADD_CONSTRAINT_CHECK,\n+                                false);\n                 check.setTableName(targetTable.getName());\n                 check.setCheckExpression(checkCondition);\n                 check.update();\n@@ -82,14 +91,18 @@ public class DropDomain extends SchemaCommand {\n \n     private boolean copyDomain(Domain domain, Domain targetDomain) {\n         if (dropAction == ConstraintActionType.RESTRICT) {\n-            throw DbException.get(ErrorCode.CANNOT_DROP_2, typeName, targetDomain.getTraceSQL());\n+            throw DbException.get(ErrorCode.CANNOT_DROP_2, typeName,\n+                    targetDomain.getTraceSQL());\n         }\n         ArrayList<ConstraintDomain> constraints = domain.getConstraints();\n         if (constraints != null && !constraints.isEmpty()) {\n             for (ConstraintDomain constraint : constraints) {\n-                Expression checkCondition = constraint.getCheckConstraint(session, null);\n-                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(), //\n-                        false);\n+                Expression checkCondition =\n+                        constraint.getCheckConstraint(session, null);\n+                AlterDomainAddConstraint check =\n+                        new AlterDomainAddConstraint(session,\n+                                targetDomain.getSchema(), //\n+                                false);\n                 check.setDomainName(targetDomain.getName());\n                 check.setCheckExpression(checkCondition);\n                 check.update();\n@@ -99,7 +112,8 @@ public class DropDomain extends SchemaCommand {\n         return true;\n     }\n \n-    private static boolean copyExpressions(Session session, Column domainColumn, Column targetColumn) {\n+    private static boolean copyExpressions(Session session, Column domainColumn,\n+                                           Column targetColumn) {\n         targetColumn.setOriginalSQL(domainColumn.getOriginalSQL());\n         targetColumn.setDomain(domainColumn.getDomain());\n         Expression e = domainColumn.getDefaultExpression();\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "91",
+                    "column": "114",
+                    "severity": "warning",
+                    "message": "Don't use trailing comments.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.TrailingCommentCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/144/DropDomain.java\nindex 82d408f6f00..3c1e1e30cdf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_random/144/DropDomain.java\n@@ -89,7 +89,7 @@ public class DropDomain extends SchemaCommand {\n             for (ConstraintDomain constraint : constraints) {\n                 Expression checkCondition = constraint.getCheckConstraint(session, null);\n                 AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(), //\n-                        false);\n+                    false);\n                 check.setDomainName(targetDomain.getName());\n                 check.setCheckExpression(checkCondition);\n                 check.update();\n",
+            "diff_size": 1
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/144/DropDomain.java\nindex 82d408f6f00..ccfeb843401 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/errored/1/144/DropDomain.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/h2database-h2database/styler_three_grams/144/DropDomain.java\n@@ -88,8 +88,9 @@ public class DropDomain extends SchemaCommand {\n         if (constraints != null && !constraints.isEmpty()) {\n             for (ConstraintDomain constraint : constraints) {\n                 Expression checkCondition = constraint.getCheckConstraint(session, null);\n-                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(), //\n-                        false);\n+                AlterDomainAddConstraint check = new AlterDomainAddConstraint(session, targetDomain.getSchema(),\n+                    //\n+                         false);\n                 check.setDomainName(targetDomain.getName());\n                 check.setCheckExpression(checkCondition);\n                 check.update();\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

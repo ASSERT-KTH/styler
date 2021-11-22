@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "1085",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "18",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "31",
+                    "column": "35",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "110",
+                    "column": "28",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "110",
+                    "column": "40",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "122",
+                    "column": "29",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "122",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "124",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "124",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1085/Source.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1085/Source.java\nindex c9d7b28fd61..46ce62775cf 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1085/Source.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/1085/Source.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.csv.reader;\n \n import java.io.Closeable;\n@@ -27,106 +28,106 @@ import java.io.IOException;\n  */\n public interface Source extends Closeable\n {\n-    Chunk nextChunk( int seekStartPos ) throws IOException;\n+  Chunk nextChunk(int seekStartPos) throws IOException;\n+\n+  /**\n+   * One chunk of data to read.\n+   */\n+  interface Chunk\n+  {\n+    /**\n+     * @return character data to read\n+     */\n+    char[] data();\n+\n+    /**\n+     * @return number of effective characters in the {@link #data()}\n+     */\n+    int length();\n+\n+    /**\n+     * @return effective capacity of the {@link #data()} array\n+     */\n+    int maxFieldSize();\n+\n+    /**\n+     * @return source description of the source this chunk was read from\n+     */\n+    String sourceDescription();\n+\n+    /**\n+     * @return position in the {@link #data()} array to start reading from\n+     */\n+    int startPosition();\n \n     /**\n-     * One chunk of data to read.\n+     * @return position in the {@link #data()} array where the current field which is being\n+     * read starts. Some characters of the current field may have started in the previous chunk\n+     * and so those characters are transfered over to this data array before {@link #startPosition()}\n      */\n-    interface Chunk\n+    int backPosition();\n+  }\n+\n+  Chunk EMPTY_CHUNK = new Chunk()\n+  {\n+    @Override\n+    public int startPosition()\n     {\n-        /**\n-         * @return character data to read\n-         */\n-        char[] data();\n-\n-        /**\n-         * @return number of effective characters in the {@link #data()}\n-         */\n-        int length();\n-\n-        /**\n-         * @return effective capacity of the {@link #data()} array\n-         */\n-        int maxFieldSize();\n-\n-        /**\n-         * @return source description of the source this chunk was read from\n-         */\n-        String sourceDescription();\n-\n-        /**\n-         * @return position in the {@link #data()} array to start reading from\n-         */\n-        int startPosition();\n-\n-        /**\n-         * @return position in the {@link #data()} array where the current field which is being\n-         * read starts. Some characters of the current field may have started in the previous chunk\n-         * and so those characters are transfered over to this data array before {@link #startPosition()}\n-         */\n-        int backPosition();\n+      return 0;\n     }\n \n-    Chunk EMPTY_CHUNK = new Chunk()\n+    @Override\n+    public String sourceDescription()\n     {\n-        @Override\n-        public int startPosition()\n-        {\n-            return 0;\n-        }\n+      return \"EMPTY\";\n+    }\n \n-        @Override\n-        public String sourceDescription()\n-        {\n-            return \"EMPTY\";\n-        }\n+    @Override\n+    public int maxFieldSize()\n+    {\n+      return 0;\n+    }\n \n-        @Override\n-        public int maxFieldSize()\n-        {\n-            return 0;\n-        }\n+    @Override\n+    public int length()\n+    {\n+      return 0;\n+    }\n \n-        @Override\n-        public int length()\n-        {\n-            return 0;\n-        }\n+    @Override\n+    public char[] data()\n+    {\n+      return null;\n+    }\n \n-        @Override\n-        public char[] data()\n-        {\n-            return null;\n-        }\n+    @Override\n+    public int backPosition()\n+    {\n+      return 0;\n+    }\n+  };\n+\n+  static Source singleChunk(Chunk chunk)\n+  {\n+    return new Source()\n+    {\n+      private boolean returned;\n \n-        @Override\n-        public int backPosition()\n+      @Override\n+      public void close()\n+      {   // Nothing to close\n+      }\n+\n+      @Override\n+      public Chunk nextChunk(int seekStartPos)\n+      {\n+        if (!returned)\n         {\n-            return 0;\n+          returned = true;\n+          return chunk;\n         }\n+        return EMPTY_CHUNK;\n+      }\n     };\n-\n-    static Source singleChunk( Chunk chunk )\n-    {\n-        return new Source()\n-        {\n-            private boolean returned;\n-\n-            @Override\n-            public void close()\n-            {   // Nothing to close\n-            }\n-\n-            @Override\n-            public Chunk nextChunk( int seekStartPos )\n-            {\n-                if ( !returned )\n-                {\n-                    returned = true;\n-                    return chunk;\n-                }\n-                return EMPTY_CHUNK;\n-            }\n-        };\n-    }\n+  }\n }\n",
+            "diff_size": 144
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1085/Source.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1085/Source.java\nindex c9d7b28fd61..5493bd11f23 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/1085/Source.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/1085/Source.java\n@@ -114,7 +114,8 @@ public interface Source extends Closeable\n \n             @Override\n             public void close()\n-            {   // Nothing to close\n+            {\n+    // Nothing to close\n             }\n \n             @Override\n@@ -125,8 +126,9 @@ public interface Source extends Closeable\n                     returned = true;\n                     return chunk;\n                 }\n-                return EMPTY_CHUNK;\n+\n+return EMPTY_CHUNK;\n             }\n         };\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 5
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

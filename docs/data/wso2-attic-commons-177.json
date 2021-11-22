@@ -1,0 +1,76 @@
+{
+    "project_name": "wso2-attic-commons",
+    "error_id": "177",
+    "information": {
+        "errors": [
+            {
+                "line": "83",
+                "severity": "error",
+                "message": "Line is longer than 120 characters (found 146).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "            }\n            Node n = _ectx.readVariable(name);\n            XMLObject xmlObj = (XMLObject) _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\n            _env.put(name, xmlObj);\n            if (!_variables.contains(name)) {\n                _variables.add(name);",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/177/VariableDelegator.java\nindex 110c65b017b..103a1d47532 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler/177/VariableDelegator.java\n@@ -80,8 +80,9 @@ public class VariableDelegator extends Delegator {\n                 __logger.debug(\"Reading BPEL variable '\" + name + \"'.\");\r\n             }\r\n             Node n = _ectx.readVariable(name);\r\n-            XMLObject xmlObj = (XMLObject) _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n-            _env.put(name, xmlObj);\r\n+            XMLObject xmlObj = (XMLObject)\r\n+            _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n+             _env.put(name, xmlObj);\r\n             if (!_variables.contains(name)) {\r\n                 _variables.add(name);\r\n             }\r\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/177/VariableDelegator.java\nindex 110c65b017b..a72cf5fa13c 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/intellij/177/VariableDelegator.java\n@@ -16,6 +16,7 @@\n  * specific language governing permissions and limitations\r\n  * under the License.\r\n  */\r\n+\r\n package org.apache.ode.extension.e4x;\r\n \r\n import org.apache.commons.logging.Log;\r\n@@ -45,95 +46,96 @@ import java.util.Set;\n  * @author Tammo van Lessen (University of Stuttgart)\r\n  */\r\n public class VariableDelegator extends Delegator {\r\n-    private static final Log __logger = LogFactory.getLog(VariableDelegator.class);\r\n+  private static final Log __logger = LogFactory.getLog(VariableDelegator.class);\r\n+\r\n+  private ExtensionContext _ectx;\r\n+  private Context _sctx;\r\n+  private Map<String, Object> _env = new HashMap<String, Object>();\r\n+  private Set<String> _variables = new HashSet<String>();\r\n+\r\n+  public VariableDelegator(Scriptable obj, ExtensionContext ectx, Context sctx) {\r\n+    super(obj);\r\n+    _ectx = ectx;\r\n+    _sctx = sctx;\r\n+  }\r\n+\r\n+  public Object get(String name, Scriptable start) {\r\n+    // do not override variables defined in JS\r\n+    if (super.has(name, start)) {\r\n+      return super.get(name, start);\r\n+    }\r\n \r\n-    private ExtensionContext _ectx;\r\n-    private Context _sctx;\r\n-    private Map<String, Object> _env = new HashMap<String, Object>();\r\n-    private Set<String> _variables = new HashSet<String>();\r\n+    if (_env.get(name) != null) {\r\n+      if (__logger.isDebugEnabled()) {\r\n+        __logger.debug(\"Reading JS variable '\" + name + \"'.\");\r\n+      }\r\n \r\n-    public VariableDelegator(Scriptable obj, ExtensionContext ectx, Context sctx) {\r\n-        super(obj);\r\n-        _ectx = ectx;\r\n-        _sctx = sctx;\r\n+      return _env.get(name);\r\n     }\r\n \r\n-    public Object get(String name, Scriptable start) {\r\n-        // do not override variables defined in JS\r\n-        if (super.has(name, start)) {\r\n-            return super.get(name, start);\r\n-        }\r\n-\r\n-        if (_env.get(name) != null) {\r\n-            if (__logger.isDebugEnabled()) {\r\n-                __logger.debug(\"Reading JS variable '\" + name + \"'.\");\r\n-            }\r\n-\r\n-            return _env.get(name);\r\n-        }\r\n-\r\n-        try {\r\n-            if (!_ectx.isVariableVisible(name)) {\r\n-                return ScriptableObject.NOT_FOUND;\r\n-            }\r\n-            if (__logger.isDebugEnabled()) {\r\n-                __logger.debug(\"Reading BPEL variable '\" + name + \"'.\");\r\n-            }\r\n-            Node n = _ectx.readVariable(name);\r\n-            XMLObject xmlObj = (XMLObject) _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n-            _env.put(name, xmlObj);\r\n-            if (!_variables.contains(name)) {\r\n-                _variables.add(name);\r\n-            }\r\n-            return xmlObj;\r\n-        } catch (Exception e) {\r\n-            throw new RuntimeException(\"Error accessing variable \" + name + \".\", e);\r\n-        }\r\n+    try {\r\n+      if (!_ectx.isVariableVisible(name)) {\r\n+        return ScriptableObject.NOT_FOUND;\r\n+      }\r\n+      if (__logger.isDebugEnabled()) {\r\n+        __logger.debug(\"Reading BPEL variable '\" + name + \"'.\");\r\n+      }\r\n+      Node n = _ectx.readVariable(name);\r\n+      XMLObject xmlObj = (XMLObject) _sctx\r\n+        .newObject(start, \"XML\", new Object[] {Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n+      _env.put(name, xmlObj);\r\n+      if (!_variables.contains(name)) {\r\n+        _variables.add(name);\r\n+      }\r\n+      return xmlObj;\r\n+    } catch (Exception e) {\r\n+      throw new RuntimeException(\"Error accessing variable \" + name + \".\", e);\r\n     }\r\n+  }\r\n \r\n-    public boolean has(String name, Scriptable start) {\r\n-        if (super.has(name, start) || _env.containsKey(name)) {\r\n-            return true;\r\n-        }\r\n-\r\n-        return (_ectx.isVariableVisible(name));\r\n+  public boolean has(String name, Scriptable start) {\r\n+    if (super.has(name, start) || _env.containsKey(name)) {\r\n+      return true;\r\n     }\r\n \r\n-    public void put(String name, Scriptable start, Object value) {\r\n-        if (__logger.isDebugEnabled()) {\r\n-            __logger.debug(\"Setting JS variable '\" + name + \"' to '\" + value + \"'.\");\r\n-        }\r\n+    return (_ectx.isVariableVisible(name));\r\n+  }\r\n \r\n-        _env.put(name, value);\r\n-        if (_ectx.isVariableVisible(name) && !_variables.contains(name)) {\r\n-            _variables.add(name);\r\n-        }\r\n+  public void put(String name, Scriptable start, Object value) {\r\n+    if (__logger.isDebugEnabled()) {\r\n+      __logger.debug(\"Setting JS variable '\" + name + \"' to '\" + value + \"'.\");\r\n     }\r\n \r\n-    /*\r\n-      * This is needed because we're actually building a nested scope and not\r\n-      * purely delegating. Not sure if there's a better solution.\r\n-      */\r\n-    public Scriptable getParentScope() {\r\n-        return obj;\r\n+    _env.put(name, value);\r\n+    if (_ectx.isVariableVisible(name) && !_variables.contains(name)) {\r\n+      _variables.add(name);\r\n     }\r\n-\r\n-    public void writeVariables() throws FaultException, ExternalVariableModuleException {\r\n-        for (String varName : _variables) {\r\n-            if (__logger.isDebugEnabled()) {\r\n-                __logger.debug(\"Writing BPEL variable '\" + varName + \"' to '\" + _env.get(varName) + \"'.\");\r\n-            }\r\n-            //TODO: only changed variables should be written. Its currently not that easy\r\n-            //      to detect whether the content has changed without recursively injecting\r\n-            //      emcaPut implementations.\r\n-            try{\r\n-            _ectx.writeVariable(varName, DOMUtils.stringToDOM(_env.get(varName).toString()));\r\n-            } catch (IOException e) {\r\n-                __logger.error(\"Error parsing xml string\", e);\r\n-            } catch (SAXException e) {\r\n-                __logger.error(\"Error parsing xml string\", e);\r\n-            }\r\n-        }\r\n+  }\r\n+\r\n+  /*\r\n+   * This is needed because we're actually building a nested scope and not\r\n+   * purely delegating. Not sure if there's a better solution.\r\n+   */\r\n+  public Scriptable getParentScope() {\r\n+    return obj;\r\n+  }\r\n+\r\n+  public void writeVariables() throws FaultException, ExternalVariableModuleException {\r\n+    for (String varName : _variables) {\r\n+      if (__logger.isDebugEnabled()) {\r\n+        __logger.debug(\"Writing BPEL variable '\" + varName + \"' to '\" + _env.get(varName) + \"'.\");\r\n+      }\r\n+      //TODO: only changed variables should be written. Its currently not that easy\r\n+      //      to detect whether the content has changed without recursively injecting\r\n+      //      emcaPut implementations.\r\n+      try {\r\n+        _ectx.writeVariable(varName, DOMUtils.stringToDOM(_env.get(varName).toString()));\r\n+      } catch (IOException e) {\r\n+        __logger.error(\"Error parsing xml string\", e);\r\n+      } catch (SAXException e) {\r\n+        __logger.error(\"Error parsing xml string\", e);\r\n+      }\r\n     }\r\n+  }\r\n \r\n }\r\n",
+            "diff_size": 105
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/177/VariableDelegator.java\nindex 110c65b017b..5a97441ed17 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/naturalize/177/VariableDelegator.java\n@@ -127,8 +127,8 @@ public class VariableDelegator extends Delegator {\n             //      to detect whether the content has changed without recursively injecting\r\n             //      emcaPut implementations.\r\n             try{\r\n-            _ectx.writeVariable(varName, DOMUtils.stringToDOM(_env.get(varName).toString()));\r\n-            } catch (IOException e) {\r\n+            _ectx.writeVariable(varName, DOMUtils.stringToDOM(_env.get(varName).toString()));\n+    } catch (IOException e) {\r\n                 __logger.error(\"Error parsing xml string\", e);\r\n             } catch (SAXException e) {\r\n                 __logger.error(\"Error parsing xml string\", e);\r\n@@ -136,4 +136,4 @@ public class VariableDelegator extends Delegator {\n         }\r\n     }\r\n \r\n-}\r\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "83",
+                    "severity": "error",
+                    "message": "Line is longer than 120 characters (found 146).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/177/VariableDelegator.java\nindex 110c65b017b..103a1d47532 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/errored/1/177/VariableDelegator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/wso2-attic-commons/styler_three_grams/177/VariableDelegator.java\n@@ -80,8 +80,9 @@ public class VariableDelegator extends Delegator {\n                 __logger.debug(\"Reading BPEL variable '\" + name + \"'.\");\r\n             }\r\n             Node n = _ectx.readVariable(name);\r\n-            XMLObject xmlObj = (XMLObject) _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n-            _env.put(name, xmlObj);\r\n+            XMLObject xmlObj = (XMLObject)\r\n+            _sctx.newObject(start, \"XML\", new Object[]{Context.javaToJS(TopLevelFunctions.domToString(n), start)});\r\n+             _env.put(name, xmlObj);\r\n             if (!_variables.contains(name)) {\r\n                 _variables.add(name);\r\n             }\r\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "intellij",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

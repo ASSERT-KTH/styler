@@ -1,0 +1,152 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "508",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "22",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "41",
+                    "column": "49",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "12",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "44",
+                    "column": "32",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "39",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "71",
+                    "column": "77",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "46",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "73",
+                    "column": "59",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/508/UniquePropertyIndexUpdater.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/508/UniquePropertyIndexUpdater.java\nindex c890c88d426..53709f74b97 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/508/UniquePropertyIndexUpdater.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/508/UniquePropertyIndexUpdater.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.impl.api.index.updater;\n \n import java.util.ArrayList;\n@@ -30,48 +31,47 @@ import org.neo4j.kernel.impl.util.diffsets.DiffSets;\n /**\n  * This IndexUpdater ensures that updated properties abide by uniqueness constraints. Updates are grouped up in\n  * {@link #process(IndexEntryUpdate)}, and verified in {@link #close()}.\n- *\n  */\n public abstract class UniquePropertyIndexUpdater implements IndexUpdater\n {\n-    private final Map<Object, DiffSets<Long>> referenceCount = new HashMap<>();\n-    private final ArrayList<IndexEntryUpdate<?>> updates = new ArrayList<>();\n+  private final Map<Object, DiffSets<Long>> referenceCount = new HashMap<>();\n+  private final ArrayList<IndexEntryUpdate<?>> updates = new ArrayList<>();\n \n-    @Override\n-    public void process( IndexEntryUpdate<?> update )\n+  @Override\n+  public void process(IndexEntryUpdate<?> update)\n+  {\n+    // build uniqueness verification state\n+    switch (update.updateMode())\n     {\n-        // build uniqueness verification state\n-        switch ( update.updateMode() )\n-        {\n-            case ADDED:\n-                propertyValueDiffSet( update.values() ).add( update.getEntityId() );\n-                break;\n-            case CHANGED:\n-                propertyValueDiffSet( update.beforeValues() ).remove( update.getEntityId() );\n-                propertyValueDiffSet( update.values() ).add( update.getEntityId() );\n-                break;\n-            case REMOVED:\n-                propertyValueDiffSet( update.values() ).remove( update.getEntityId() );\n-                break;\n-            default:\n-                throw new UnsupportedOperationException();\n-        }\n-\n-        // do not flush update before close\n-        updates.add( update );\n+      case ADDED:\n+        propertyValueDiffSet(update.values()).add(update.getEntityId());\n+        break;\n+      case CHANGED:\n+        propertyValueDiffSet(update.beforeValues()).remove(update.getEntityId());\n+        propertyValueDiffSet(update.values()).add(update.getEntityId());\n+        break;\n+      case REMOVED:\n+        propertyValueDiffSet(update.values()).remove(update.getEntityId());\n+        break;\n+      default:\n+        throw new UnsupportedOperationException();\n     }\n \n-    @Override\n-    public void close()\n-    {\n-        // flush updates\n-        flushUpdates( updates );\n-    }\n+    // do not flush update before close\n+    updates.add(update);\n+  }\n \n-    protected abstract void flushUpdates( Iterable<IndexEntryUpdate<?>> updates );\n+  @Override\n+  public void close()\n+  {\n+    // flush updates\n+    flushUpdates(updates);\n+  }\n \n-    private DiffSets<Long> propertyValueDiffSet( Object value )\n-    {\n-        return referenceCount.computeIfAbsent( value, k -> new DiffSets<>() );\n-    }\n+  protected abstract void flushUpdates(Iterable<IndexEntryUpdate<?>> updates);\n+\n+  private DiffSets<Long> propertyValueDiffSet(Object value)\n+  {\n+    return referenceCount.computeIfAbsent(value, k -> new DiffSets<>());\n+  }\n }\n",
+            "diff_size": 46
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/508/UniquePropertyIndexUpdater.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/508/UniquePropertyIndexUpdater.java\nindex c890c88d426..a8d545b8828 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/508/UniquePropertyIndexUpdater.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/508/UniquePropertyIndexUpdater.java\n@@ -43,7 +43,7 @@ public abstract class UniquePropertyIndexUpdater implements IndexUpdater\n         // build uniqueness verification state\n         switch ( update.updateMode() )\n         {\n-            case ADDED:\n+case ADDED:\n                 propertyValueDiffSet( update.values() ).add( update.getEntityId() );\n                 break;\n             case CHANGED:\n@@ -55,7 +55,7 @@ public abstract class UniquePropertyIndexUpdater implements IndexUpdater\n                 break;\n             default:\n                 throw new UnsupportedOperationException();\n-        }\n+    }\n \n         // do not flush update before close\n         updates.add( update );\n@@ -74,4 +74,4 @@ public abstract class UniquePropertyIndexUpdater implements IndexUpdater\n     {\n         return referenceCount.computeIfAbsent( value, k -> new DiffSets<>() );\n     }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

@@ -1,0 +1,167 @@
+{
+    "project_name": "graphfoundation-ongdb",
+    "error_id": "4471",
+    "information": {
+        "errors": [
+            {
+                "line": "1",
+                "severity": "error",
+                "message": "Missing, wrong or duplicated license header",
+                "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+            }
+        ]
+    },
+    "source_code": "/*\n * Copyright (c) 2002-2020 \"Neo4j,\"\n * Neo4j Sweden AB [http://neo4j.com]\n *",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "36",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "39",
+                    "column": "103",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "10",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "42",
+                    "column": "60",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "'}' at column 5 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "13",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "52",
+                    "column": "27",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "54",
+                    "column": "41",
+                    "severity": "error",
+                    "message": "'(' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                },
+                {
+                    "line": "55",
+                    "column": "33",
+                    "severity": "error",
+                    "message": "')' is not preceded with whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.ParenPadCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4471/WritableIndexSnapshotFileIterator.java\nindex 841f08e419b..0386e3bed7a 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/intellij/4471/WritableIndexSnapshotFileIterator.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU General Public License\n  * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package org.neo4j.kernel.api.impl.index.backup;\n \n import org.apache.lucene.index.IndexCommit;\n@@ -33,27 +34,26 @@ import java.io.IOException;\n  */\n public class WritableIndexSnapshotFileIterator extends ReadOnlyIndexSnapshotFileIterator\n {\n-    private final SnapshotDeletionPolicy snapshotDeletionPolicy;\n+  private final SnapshotDeletionPolicy snapshotDeletionPolicy;\n \n-    WritableIndexSnapshotFileIterator( File indexDirectory, SnapshotDeletionPolicy snapshotDeletionPolicy )\n-            throws IOException\n-    {\n-        super( indexDirectory, snapshotDeletionPolicy.snapshot() );\n-        this.snapshotDeletionPolicy = snapshotDeletionPolicy;\n-    }\n+  WritableIndexSnapshotFileIterator(File indexDirectory, SnapshotDeletionPolicy snapshotDeletionPolicy)\n+      throws IOException\n+  {\n+    super(indexDirectory, snapshotDeletionPolicy.snapshot());\n+    this.snapshotDeletionPolicy = snapshotDeletionPolicy;\n+  }\n \n-    @Override\n-    public void close()\n+  @Override\n+  public void close()\n+  {\n+    try\n+    {\n+      snapshotDeletionPolicy.release(getIndexCommit());\n+    } catch (IOException e)\n     {\n-        try\n-        {\n-            snapshotDeletionPolicy.release( getIndexCommit() );\n-        }\n-        catch ( IOException e )\n-        {\n-            throw new SnapshotReleaseException( \"Unable to release lucene index snapshot for index in: \" +\n-                                                getIndexDirectory(), e );\n-        }\n+      throw new SnapshotReleaseException(\"Unable to release lucene index snapshot for index in: \" +\n+          getIndexDirectory(), e);\n     }\n+  }\n \n }\n",
+            "diff_size": 25
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4471/WritableIndexSnapshotFileIterator.java\nindex 841f08e419b..368e293fc51 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/naturalize/4471/WritableIndexSnapshotFileIterator.java\n@@ -35,9 +35,8 @@ public class WritableIndexSnapshotFileIterator extends ReadOnlyIndexSnapshotFile\n {\n     private final SnapshotDeletionPolicy snapshotDeletionPolicy;\n \n-    WritableIndexSnapshotFileIterator( File indexDirectory, SnapshotDeletionPolicy snapshotDeletionPolicy )\n-            throws IOException\n-    {\n+    WritableIndexSnapshotFileIterator( File indexDirectory, SnapshotDeletionPolicy snapshotDeletionPolicy ) throws IOException\n+{\n         super( indexDirectory, snapshotDeletionPolicy.snapshot() );\n         this.snapshotDeletionPolicy = snapshotDeletionPolicy;\n     }\n@@ -51,9 +50,7 @@ public class WritableIndexSnapshotFileIterator extends ReadOnlyIndexSnapshotFile\n         }\n         catch ( IOException e )\n         {\n-            throw new SnapshotReleaseException( \"Unable to release lucene index snapshot for index in: \" +\n-                                                getIndexDirectory(), e );\n-        }\n+            throw new SnapshotReleaseException( \"Unable to release lucene index snapshot for index in: \" + getIndexDirectory(), e );\n     }\n-\n-}\n+    }\n+    }\n\\ No newline at end of file\n",
+            "diff_size": 8
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/4471/WritableIndexSnapshotFileIterator.java\nindex 841f08e419b..e2a6d2d395d 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/errored/1/4471/WritableIndexSnapshotFileIterator.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/graphfoundation-ongdb/codebuff/4471/WritableIndexSnapshotFileIterator.java\n@@ -21,7 +21,6 @@ package org.neo4j.kernel.api.impl.index.backup;\n \n import org.apache.lucene.index.IndexCommit;\n import org.apache.lucene.index.SnapshotDeletionPolicy;\n-\n import java.io.File;\n import java.io.IOException;\n \n@@ -31,12 +30,13 @@ import java.io.IOException;\n  * Internally uses {@link SnapshotDeletionPolicy#snapshot()} to create an {@link IndexCommit} that represents\n  * consistent state of the index for a particular point in time.\n  */\n+\n public class WritableIndexSnapshotFileIterator extends ReadOnlyIndexSnapshotFileIterator\n {\n     private final SnapshotDeletionPolicy snapshotDeletionPolicy;\n \n     WritableIndexSnapshotFileIterator( File indexDirectory, SnapshotDeletionPolicy snapshotDeletionPolicy )\n-            throws IOException\n+    throws IOException\n     {\n         super( indexDirectory, snapshotDeletionPolicy.snapshot() );\n         this.snapshotDeletionPolicy = snapshotDeletionPolicy;\n@@ -51,9 +51,7 @@ public class WritableIndexSnapshotFileIterator extends ReadOnlyIndexSnapshotFile\n         }\n         catch ( IOException e )\n         {\n-            throw new SnapshotReleaseException( \"Unable to release lucene index snapshot for index in: \" +\n-                                                getIndexDirectory(), e );\n+            throw new SnapshotReleaseException( \"Unable to release lucene index snapshot for index in: \" + getIndexDirectory(), e );\n         }\n     }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 7
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "1",
+                    "severity": "error",
+                    "message": "Missing, wrong or duplicated license header",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

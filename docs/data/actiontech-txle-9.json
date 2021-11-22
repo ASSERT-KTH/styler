@@ -1,0 +1,96 @@
+{
+    "project_name": "actiontech-txle",
+    "error_id": "9",
+    "information": {
+        "errors": [
+            {
+                "line": "44",
+                "column": "5",
+                "severity": "error",
+                "message": "File contains tab characters (this is the first instance).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+            }
+        ]
+    },
+    "source_code": "  public void doWith(Method method) throws IllegalArgumentException {\n    if (!method.isAnnotationPresent(Compensable.class)) {\n    \t// for auto-compensation By Gannalyo\n    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n    \t\tcompensationContext.addCompensationContext(method, bean);\n    \t}",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler/9/CompensableMethodCheckingCallback.java\nindex fc087744632..81f68982f38 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler/9/CompensableMethodCheckingCallback.java\n@@ -41,8 +41,8 @@ class CompensableMethodCheckingCallback implements MethodCallback {\n   @Override\n   public void doWith(Method method) throws IllegalArgumentException {\n     if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n     \t\tcompensationContext.addCompensationContext(method, bean);\n     \t}\n     \treturn;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/intellij/9/CompensableMethodCheckingCallback.java\nindex fc087744632..85cd14c31aa 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/intellij/9/CompensableMethodCheckingCallback.java\n@@ -27,43 +27,43 @@ import java.lang.invoke.MethodHandles;\n import java.lang.reflect.Method;\n \n class CompensableMethodCheckingCallback implements MethodCallback {\n-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n \n-  private final Object bean;\n+    private final Object bean;\n \n-  private final CompensationContext compensationContext;\n+    private final CompensationContext compensationContext;\n \n-  CompensableMethodCheckingCallback(Object bean, CompensationContext compensationContext) {\n-    this.bean = bean;\n-    this.compensationContext = compensationContext;\n-  }\n-\n-  @Override\n-  public void doWith(Method method) throws IllegalArgumentException {\n-    if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n-    \t\tcompensationContext.addCompensationContext(method, bean);\n-    \t}\n-    \treturn;\n+    CompensableMethodCheckingCallback(Object bean, CompensationContext compensationContext) {\n+        this.bean = bean;\n+        this.compensationContext = compensationContext;\n     }\n \n-    String compensationMethod = method.getAnnotation(Compensable.class).compensationMethod();\n+    @Override\n+    public void doWith(Method method) throws IllegalArgumentException {\n+        if (!method.isAnnotationPresent(Compensable.class)) {\n+            // for auto-compensation By Gannalyo\n+            if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n+                compensationContext.addCompensationContext(method, bean);\n+            }\n+            return;\n+        }\n+\n+        String compensationMethod = method.getAnnotation(Compensable.class).compensationMethod();\n \n-    try {\n-      compensationContext.addCompensationContext(method, bean);\n+        try {\n+            compensationContext.addCompensationContext(method, bean);\n \n-      if (compensationMethod.isEmpty()) {\n-        throw new OmegaException(\"Compensation method is empty in \" + bean.getClass().getCanonicalName());\n-      }\n+            if (compensationMethod.isEmpty()) {\n+                throw new OmegaException(\"Compensation method is empty in \" + bean.getClass().getCanonicalName());\n+            }\n \n-      Method signature = bean.getClass().getDeclaredMethod(compensationMethod, method.getParameterTypes());\n-      compensationContext.addCompensationContext(signature, bean);\n-      LOG.debug(\"Found compensation method [{}] in {}\", compensationMethod, bean.getClass().getCanonicalName());\n-    } catch (NoSuchMethodException e) {\n-      throw new OmegaException(\n-          \"No such compensation method [\" + compensationMethod + \"] found in \" + bean.getClass().getCanonicalName(),\n-          e);\n+            Method signature = bean.getClass().getDeclaredMethod(compensationMethod, method.getParameterTypes());\n+            compensationContext.addCompensationContext(signature, bean);\n+            LOG.debug(\"Found compensation method [{}] in {}\", compensationMethod, bean.getClass().getCanonicalName());\n+        } catch (NoSuchMethodException e) {\n+            throw new OmegaException(\n+                    \"No such compensation method [\" + compensationMethod + \"] found in \" + bean.getClass().getCanonicalName(),\n+                    e);\n+        }\n     }\n-  }\n }\n",
+            "diff_size": 41
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "45",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/9/CompensableMethodCheckingCallback.java\nindex fc087744632..eff6ffecc8b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/naturalize/9/CompensableMethodCheckingCallback.java\n@@ -41,10 +41,10 @@ class CompensableMethodCheckingCallback implements MethodCallback {\n   @Override\n   public void doWith(Method method) throws IllegalArgumentException {\n     if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n+    // for auto-compensation By Gannalyo\n     \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n-    \t\tcompensationContext.addCompensationContext(method, bean);\n-    \t}\n+    compensationContext.addCompensationContext(method, bean);\n+    }\n     \treturn;\n     }\n \n@@ -66,4 +66,4 @@ class CompensableMethodCheckingCallback implements MethodCallback {\n           e);\n     }\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 4
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/9/CompensableMethodCheckingCallback.java\nindex fc087744632..d1fe715bfcb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/codebuff/9/CompensableMethodCheckingCallback.java\n@@ -22,48 +22,39 @@ import org.apache.servicecomb.saga.omega.transaction.annotations.Compensable;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n import org.springframework.util.ReflectionUtils.MethodCallback;\n-\n import java.lang.invoke.MethodHandles;\n import java.lang.reflect.Method;\n \n class CompensableMethodCheckingCallback implements MethodCallback {\n-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n-\n-  private final Object bean;\n+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());\n+    private final Object bean;\n+    private final CompensationContext compensationContext;\n \n-  private final CompensationContext compensationContext;\n-\n-  CompensableMethodCheckingCallback(Object bean, CompensationContext compensationContext) {\n+    CompensableMethodCheckingCallback(Object bean, CompensationContext compensationContext) {\n     this.bean = bean;\n     this.compensationContext = compensationContext;\n-  }\n-\n-  @Override\n-  public void doWith(Method method) throws IllegalArgumentException {\n-    if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n-    \t\tcompensationContext.addCompensationContext(method, bean);\n-    \t}\n-    \treturn;\n     }\n \n-    String compensationMethod = method.getAnnotation(Compensable.class).compensationMethod();\n-\n-    try {\n-      compensationContext.addCompensationContext(method, bean);\n-\n-      if (compensationMethod.isEmpty()) {\n-        throw new OmegaException(\"Compensation method is empty in \" + bean.getClass().getCanonicalName());\n-      }\n-\n-      Method signature = bean.getClass().getDeclaredMethod(compensationMethod, method.getParameterTypes());\n-      compensationContext.addCompensationContext(signature, bean);\n-      LOG.debug(\"Found compensation method [{}] in {}\", compensationMethod, bean.getClass().getCanonicalName());\n-    } catch (NoSuchMethodException e) {\n-      throw new OmegaException(\n-          \"No such compensation method [\" + compensationMethod + \"] found in \" + bean.getClass().getCanonicalName(),\n-          e);\n+    @Override\n+    public void doWith(Method method) throws IllegalArgumentException {\n+        if (!method.isAnnotationPresent(Compensable.class)) {\n+        // for auto-compensation By Gannalyo\n+            if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n+                compensationContext.addCompensationContext(method, bean);\n+            }\n+            return;\n+        }\n+        String compensationMethod = method.getAnnotation(Compensable.class).compensationMethod();\n+        try {\n+            compensationContext.addCompensationContext(method, bean);\n+            if (compensationMethod.isEmpty()) {\n+                throw new OmegaException(\"Compensation method is empty in \" + bean.getClass().getCanonicalName());\n+            }\n+            Method signature = bean.getClass().getDeclaredMethod(compensationMethod, method.getParameterTypes());\n+            compensationContext.addCompensationContext(signature, bean);\n+            LOG.debug(\"Found compensation method [{}] in {}\", compensationMethod, bean.getClass().getCanonicalName());\n+        } catch (NoSuchMethodException e) {\n+          throw new OmegaException(\"No such compensation method [\" + compensationMethod + \"] found in \" + bean.getClass().getCanonicalName(), e);\n+        }\n     }\n-  }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 40
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_random/9/CompensableMethodCheckingCallback.java\nindex fc087744632..81f68982f38 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_random/9/CompensableMethodCheckingCallback.java\n@@ -41,8 +41,8 @@ class CompensableMethodCheckingCallback implements MethodCallback {\n   @Override\n   public void doWith(Method method) throws IllegalArgumentException {\n     if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n     \t\tcompensationContext.addCompensationContext(method, bean);\n     \t}\n     \treturn;\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "46",
+                    "column": "5",
+                    "severity": "error",
+                    "message": "File contains tab characters (this is the first instance).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_three_grams/9/CompensableMethodCheckingCallback.java\nindex fc087744632..81f68982f38 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/errored/1/9/CompensableMethodCheckingCallback.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/actiontech-txle/styler_three_grams/9/CompensableMethodCheckingCallback.java\n@@ -41,8 +41,8 @@ class CompensableMethodCheckingCallback implements MethodCallback {\n   @Override\n   public void doWith(Method method) throws IllegalArgumentException {\n     if (!method.isAnnotationPresent(Compensable.class)) {\n-    \t// for auto-compensation By Gannalyo\n-    \tif (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n+    // for auto-compensation By Gannalyo\n+     if (TxleConstants.AUTO_COMPENSABLE_METHOD.equals(method.toString())) {\n     \t\tcompensationContext.addCompensationContext(method, bean);\n     \t}\n     \treturn;\n",
+            "diff_size": 2
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

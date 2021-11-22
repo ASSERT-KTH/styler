@@ -1,0 +1,110 @@
+{
+    "project_name": "apache-servicecomb-java-chassis",
+    "error_id": "330",
+    "information": {
+        "errors": [
+            {
+                "line": "113",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 125).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      startListen(httpServer, startFuture);\n    } catch (Throwable e) {\n      // vert.x got some states that not print error and execute call back in VertexUtils.blockDeploy, we add a log our self.\n      LOGGER.error(\"\", e);\n      throw e;\n    }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "113",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "113",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "113",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/330/RestServerVerticle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/330/RestServerVerticle.java\nindex 25b94d3337c..a9fe396f8eb 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/330/RestServerVerticle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/naturalize/330/RestServerVerticle.java\n@@ -122,8 +122,7 @@ public class RestServerVerticle extends AbstractVerticle {\n       LOGGER.info(\"access log enabled, pattern = {}\", pattern);\n       mainRouter.route()\n           .handler(new AccessLogHandler(\n-              pattern\n-          ));\n+              pattern));\n     }\n   }\n \n@@ -217,4 +216,4 @@ public class RestServerVerticle extends AbstractVerticle {\n \n     return serverOptions;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "97",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 144).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "115",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/330/RestServerVerticle.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/330/RestServerVerticle.java\nindex 25b94d3337c..b1759a67076 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/errored/1/330/RestServerVerticle.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/apache-servicecomb-java-chassis/codebuff/330/RestServerVerticle.java\n@@ -20,7 +20,6 @@ package org.apache.servicecomb.transport.rest.vertx;\n import java.util.List;\n import java.util.Set;\n import java.util.concurrent.atomic.AtomicInteger;\n-\n import org.apache.servicecomb.core.Endpoint;\n import org.apache.servicecomb.core.transport.AbstractTransport;\n import org.apache.servicecomb.foundation.common.event.EventManager;\n@@ -38,9 +37,7 @@ import org.apache.servicecomb.transport.rest.vertx.accesslog.AccessLogConfigurat\n import org.apache.servicecomb.transport.rest.vertx.accesslog.impl.AccessLogHandler;\n import org.slf4j.Logger;\n import org.slf4j.LoggerFactory;\n-\n import com.netflix.config.DynamicPropertyFactory;\n-\n import io.vertx.core.AbstractVerticle;\n import io.vertx.core.Context;\n import io.vertx.core.Future;\n@@ -87,27 +84,32 @@ public class RestServerVerticle extends AbstractVerticle {\n         startFuture.complete();\n         return;\n       }\n+\n       Router mainRouter = Router.router(vertx);\n       mountAccessLogHandler(mainRouter);\n       mountCorsHandler(mainRouter);\n       initDispatcher(mainRouter);\n+\n       HttpServer httpServer = createHttpServer();\n       httpServer.requestHandler(mainRouter::accept);\n       httpServer.connectionHandler(connection -> {\n         int connectedCount = connectedCounter.incrementAndGet();\n-        int connectionLimit = DynamicPropertyFactory.getInstance()\n-            .getIntProperty(\"servicecomb.rest.server.connection-limit\", Integer.MAX_VALUE).get();\n+        int connectionLimit = DynamicPropertyFactory.getInstance().getIntProperty(\"servicecomb.rest.server.connection-limit\", Integer.MAX_VALUE)\n+                                                                  .get();\n         if (connectedCount > connectionLimit) {\n           connectedCounter.decrementAndGet();\n           connection.close();\n         } else {\n           EventManager.post(new ClientEvent(connection.remoteAddress().toString(),\n-              EventType.Connected, ServerType.Rest, connectedCount));\n+            EventType.Connected,\n+              ServerType.Rest,\n+                connectedCount));\n           connection.closeHandler(event -> EventManager.post(new ClientEvent(connection.remoteAddress().toString(),\n-              EventType.Closed, ServerType.Rest, connectedCounter.decrementAndGet())));\n+            EventType.Closed,\n+              ServerType.Rest,\n+                connectedCounter.decrementAndGet())));\n         }\n       });\n-\n       startListen(httpServer, startFuture);\n     } catch (Throwable e) {\n       // vert.x got some states that not print error and execute call back in VertexUtils.blockDeploy, we add a log our self.\n@@ -120,16 +122,14 @@ public class RestServerVerticle extends AbstractVerticle {\n     if (AccessLogConfiguration.INSTANCE.getAccessLogEnabled()) {\n       String pattern = AccessLogConfiguration.INSTANCE.getAccesslogPattern();\n       LOGGER.info(\"access log enabled, pattern = {}\", pattern);\n-      mainRouter.route()\n-          .handler(new AccessLogHandler(\n-              pattern\n-          ));\n+      mainRouter.route().handler(new AccessLogHandler(pattern));\n     }\n   }\n \n   /**\n    * Support CORS\n    */\n+\n   void mountCorsHandler(Router mainRouter) {\n     if (!TransportConfig.isCorsEnabled()) {\n       return;\n@@ -141,13 +141,16 @@ public class RestServerVerticle extends AbstractVerticle {\n     // Access-Control-Allow-Headers\n     corsHandler.allowedHeaders(TransportConfig.getCorsAllowedHeaders());\n     // Access-Control-Allow-Methods\n+\n     Set<String> allowedMethods = TransportConfig.getCorsAllowedMethods();\n     for (String method : allowedMethods) {\n       corsHandler.allowedMethod(HttpMethod.valueOf(method));\n     }\n     // Access-Control-Expose-Headers\n+\n     corsHandler.exposedHeaders(TransportConfig.getCorsExposedHeaders());\n     // Access-Control-Max-Age\n+\n     int maxAge = TransportConfig.getCorsMaxAge();\n     if (maxAge >= 0) {\n       corsHandler.maxAgeSeconds(maxAge);\n@@ -174,15 +177,15 @@ public class RestServerVerticle extends AbstractVerticle {\n     server.listen(endpointObject.getPort(), endpointObject.getHostOrIp(), ar -> {\n       if (ar.succeeded()) {\n         LOGGER.info(\"rest listen success. address={}:{}\",\n-            endpointObject.getHostOrIp(),\n-            ar.result().actualPort());\n+endpointObject.getHostOrIp(),\n+ar.result().actualPort());\n         startFuture.complete();\n         return;\n       }\n \n       String msg = String.format(\"rest listen failed, address=%s:%d\",\n-          endpointObject.getHostOrIp(),\n-          endpointObject.getPort());\n+endpointObject.getHostOrIp(),\n+endpointObject.getPort());\n       LOGGER.error(msg, ar.cause());\n       startFuture.fail(ar.cause());\n     });\n@@ -202,19 +205,19 @@ public class RestServerVerticle extends AbstractVerticle {\n     if (endpointObject.isHttp2Enabled()) {\n       serverOptions.setUseAlpn(true);\n     }\n+\n     if (endpointObject.isSslEnabled()) {\n-      SSLOptionFactory factory =\n-          SSLOptionFactory.createSSLOptionFactory(SSL_KEY, null);\n+      SSLOptionFactory factory = SSLOptionFactory.createSSLOptionFactory(SSL_KEY, null);\n       SSLOption sslOption;\n       if (factory == null) {\n         sslOption = SSLOption.buildFromYaml(SSL_KEY);\n       } else {\n         sslOption = factory.createSSLOption();\n       }\n+\n       SSLCustom sslCustom = SSLCustom.createSSLCustom(sslOption.getSslCustomClass());\n       VertxTLSBuilder.buildNetServerOptions(sslOption, sslCustom, serverOptions);\n     }\n-\n     return serverOptions;\n   }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 32
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "113",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [
+                {
+                    "line": "113",
+                    "severity": "warning",
+                    "message": "Line is longer than 120 characters (found 125).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        }
+    ],
+    "repaired_by": [],
+    "not_repaired_by": [
+        "styler",
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}

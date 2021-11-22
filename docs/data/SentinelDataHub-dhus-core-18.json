@@ -1,0 +1,116 @@
+{
+    "project_name": "SentinelDataHub-dhus-core",
+    "error_id": "18",
+    "information": {
+        "errors": [
+            {
+                "line": "49",
+                "severity": "error",
+                "message": "Line is longer than 80 characters (found 90).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "    * Logger of this class.\n    */\n   private static final Logger LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n\n   @Override\n   public void execute (Database database) throws CustomChangeException",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/18/CorrectsIngestionDate.java\nindex 031394e077d..73e9a28d67b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler/18/CorrectsIngestionDate.java\n@@ -46,9 +46,10 @@ public class CorrectsIngestionDate implements CustomTaskChange\n    /**\n     * Logger of this class.\n     */\n-   private static final Logger LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n+   private static final Logger\n+      LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n \n-   @Override\n+    @Override\n    public void execute (Database database) throws CustomChangeException\n    {\n       SimpleDateFormat metaSdf =\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "intellij",
+            "errors": [
+                {
+                    "line": "97",
+                    "column": "9",
+                    "severity": "error",
+                    "message": "'}' at column 9 should be alone on a line.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.blocks.RightCurlyCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/18/CorrectsIngestionDate.java\nindex 031394e077d..a669f54bf40 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/intellij/18/CorrectsIngestionDate.java\n@@ -17,6 +17,7 @@\n  * You should have received a copy of the GNU Affero General Public License\n  * along with this program. If not, see <http://www.gnu.org/licenses/>.\n  */\n+\n package fr.gael.dhus.database.liquibase;\n \n import liquibase.change.custom.CustomTaskChange;\n@@ -43,82 +44,84 @@ import java.util.Date;\n public class CorrectsIngestionDate implements CustomTaskChange\n {\n \n-   /**\n-    * Logger of this class.\n-    */\n-   private static final Logger LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n+    /**\n+     * Logger of this class.\n+     */\n+    private static final Logger LOGGER =\n+        LogManager.getLogger(CorrectsIngestionDate.class);\n \n-   @Override\n-   public void execute (Database database) throws CustomChangeException\n-   {\n-      SimpleDateFormat metaSdf =\n-            new SimpleDateFormat (\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\");\n-      SimpleDateFormat productSdf =\n-            new SimpleDateFormat (\"yyyy-MM-dd HH:mm:ss.SSS\");\n-      String query =\n+    @Override\n+    public void execute(Database database) throws CustomChangeException\n+    {\n+        SimpleDateFormat metaSdf =\n+            new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\");\n+        SimpleDateFormat productSdf =\n+            new SimpleDateFormat(\"yyyy-MM-dd HH:mm:ss.SSS\");\n+        String query =\n             \"SELECT p.ID, m.VALUE, p.INGESTIONDATE \" +\n-                  \"FROM PRODUCTS p LEFT OUTER JOIN \" +\n-                  \"METADATA_INDEXES m ON p.ID = m.PRODUCT_ID \" +\n-                  \"WHERE m.NAME = 'Ingestion Date'\";\n-      try\n-      {\n-         JdbcConnection connection = (JdbcConnection) database.getConnection ();\n-         PreparedStatement statement = connection.prepareStatement (query);\n-         ResultSet result = statement.executeQuery ();\n-         while (result.next ())\n-         {\n-            Date validIngestionDate = metaSdf.parse (result.getString (2));\n-            Date ingestionDate = productSdf.parse (result.getString (3));\n-            long diffMilli =\n-                  validIngestionDate.getTime () - ingestionDate.getTime ();\n-            long diffHour = diffMilli / (1000 * 60 * 60);\n-            if (diffHour >= 11.0)\n+                \"FROM PRODUCTS p LEFT OUTER JOIN \" +\n+                \"METADATA_INDEXES m ON p.ID = m.PRODUCT_ID \" +\n+                \"WHERE m.NAME = 'Ingestion Date'\";\n+        try\n+        {\n+            JdbcConnection connection =\n+                (JdbcConnection) database.getConnection();\n+            PreparedStatement statement = connection.prepareStatement(query);\n+            ResultSet result = statement.executeQuery();\n+            while (result.next())\n             {\n-               StringBuilder sb = new StringBuilder ();\n-               sb.append (\"UPDATE PRODUCTS \");\n-               sb.append (\"SET INGESTIONDATE = '\").append (\n-                     productSdf.format (validIngestionDate)).append (\"' \");\n-               sb.append (\"WHERE ID = \").append (result.getLong (1));\n-               PreparedStatement update =\n-                     connection.prepareStatement (sb.toString ());\n-               if (update.executeUpdate () != 1)\n-               {\n-                  LOGGER.warn(\"Cannot change ingestion date for product#\" +\n-                        result.getLong (1));\n-               }\n+                Date validIngestionDate = metaSdf.parse(result.getString(2));\n+                Date ingestionDate = productSdf.parse(result.getString(3));\n+                long diffMilli =\n+                    validIngestionDate.getTime() - ingestionDate.getTime();\n+                long diffHour = diffMilli / (1000 * 60 * 60);\n+                if (diffHour >= 11.0)\n+                {\n+                    StringBuilder sb = new StringBuilder();\n+                    sb.append(\"UPDATE PRODUCTS \");\n+                    sb.append(\"SET INGESTIONDATE = '\").append(\n+                        productSdf.format(validIngestionDate)).append(\"' \");\n+                    sb.append(\"WHERE ID = \").append(result.getLong(1));\n+                    PreparedStatement update =\n+                        connection.prepareStatement(sb.toString());\n+                    if (update.executeUpdate() != 1)\n+                    {\n+                        LOGGER\n+                            .warn(\"Cannot change ingestion date for product#\" +\n+                                result.getLong(1));\n+                    }\n+                }\n             }\n-         }\n-         result.close ();\n-         statement.close ();\n-      }\n-      catch (DatabaseException | SQLException | ParseException e)\n-      {\n-         throw new CustomChangeException (\n-               \"An error occurred during liquibase execution: \", e);\n-      }\n-   }\n+            result.close();\n+            statement.close();\n+        } catch (DatabaseException | SQLException | ParseException e)\n+        {\n+            throw new CustomChangeException(\n+                \"An error occurred during liquibase execution: \", e);\n+        }\n+    }\n \n-   @Override\n-   public String getConfirmationMessage ()\n-   {\n-      return null;\n-   }\n+    @Override\n+    public String getConfirmationMessage()\n+    {\n+        return null;\n+    }\n \n-   @Override\n-   public void setUp () throws SetupException\n-   {\n+    @Override\n+    public void setUp() throws SetupException\n+    {\n \n-   }\n+    }\n \n-   @Override\n-   public void setFileOpener (ResourceAccessor resource_accessor)\n-   {\n+    @Override\n+    public void setFileOpener(ResourceAccessor resource_accessor)\n+    {\n \n-   }\n+    }\n \n-   @Override\n-   public ValidationErrors validate (Database database)\n-   {\n-      return null;\n-   }\n+    @Override\n+    public ValidationErrors validate(Database database)\n+    {\n+        return null;\n+    }\n }\n",
+            "diff_size": 79
+        },
+        {
+            "tool": "naturalize",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 90).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/18/CorrectsIngestionDate.java\nindex 031394e077d..6c753e9ce92 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/naturalize/18/CorrectsIngestionDate.java\n@@ -71,7 +71,8 @@ public class CorrectsIngestionDate implements CustomTaskChange\n             Date ingestionDate = productSdf.parse (result.getString (3));\n             long diffMilli =\n                   validIngestionDate.getTime () - ingestionDate.getTime ();\n-            long diffHour = diffMilli / (1000 * 60 * 60);\n+            long diffHour = diffMilli\n+/ (1000 * 60 * 60);\n             if (diffHour >= 11.0)\n             {\n                StringBuilder sb = new StringBuilder ();\n@@ -121,4 +122,4 @@ public class CorrectsIngestionDate implements CustomTaskChange\n    {\n       return null;\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 3
+        },
+        {
+            "tool": "codebuff",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 91).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "54",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 86).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "55",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 84).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "76",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 113).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                },
+                {
+                    "line": "78",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 87).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/18/CorrectsIngestionDate.java\nindex 031394e077d..e8444fd1731 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/codebuff/18/CorrectsIngestionDate.java\n@@ -29,7 +29,6 @@ import liquibase.exception.ValidationErrors;\n import liquibase.resource.ResourceAccessor;\n import org.apache.logging.log4j.LogManager;\n import org.apache.logging.log4j.Logger;\n-\n import java.sql.PreparedStatement;\n import java.sql.ResultSet;\n import java.sql.SQLException;\n@@ -40,26 +39,24 @@ import java.util.Date;\n /**\n  * Corrects invalid ingestion dates in database.\n  */\n+\n public class CorrectsIngestionDate implements CustomTaskChange\n {\n \n    /**\n     * Logger of this class.\n     */\n-   private static final Logger LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n+   private static final Logger LOGGER = LogManager.getLogger (CorrectsIngestionDate.class);\n \n    @Override\n    public void execute (Database database) throws CustomChangeException\n    {\n-      SimpleDateFormat metaSdf =\n-            new SimpleDateFormat (\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\");\n-      SimpleDateFormat productSdf =\n-            new SimpleDateFormat (\"yyyy-MM-dd HH:mm:ss.SSS\");\n-      String query =\n-            \"SELECT p.ID, m.VALUE, p.INGESTIONDATE \" +\n-                  \"FROM PRODUCTS p LEFT OUTER JOIN \" +\n-                  \"METADATA_INDEXES m ON p.ID = m.PRODUCT_ID \" +\n-                  \"WHERE m.NAME = 'Ingestion Date'\";\n+      SimpleDateFormat metaSdf = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\");\n+      SimpleDateFormat productSdf = new SimpleDateFormat(\"yyyy-MM-dd HH:mm:ss.SSS\");\n+      String query = \"SELECT p.ID, m.VALUE, p.INGESTIONDATE \" +\n+      \"FROM PRODUCTS p LEFT OUTER JOIN \" +\n+\"METADATA_INDEXES m ON p.ID = m.PRODUCT_ID \" +\n+   \"WHERE m.NAME = 'Ingestion Date'\";\n       try\n       {\n          JdbcConnection connection = (JdbcConnection) database.getConnection ();\n@@ -69,32 +66,30 @@ public class CorrectsIngestionDate implements CustomTaskChange\n          {\n             Date validIngestionDate = metaSdf.parse (result.getString (2));\n             Date ingestionDate = productSdf.parse (result.getString (3));\n-            long diffMilli =\n-                  validIngestionDate.getTime () - ingestionDate.getTime ();\n-            long diffHour = diffMilli / (1000 * 60 * 60);\n+            long diffMilli = validIngestionDate.getTime () -\n+            ingestionDate.getTime ();\n+            long diffHour = diffMilli /(1000 * 60 * 60);\n             if (diffHour >= 11.0)\n             {\n-               StringBuilder sb = new StringBuilder ();\n-               sb.append (\"UPDATE PRODUCTS \");\n-               sb.append (\"SET INGESTIONDATE = '\").append (\n-                     productSdf.format (validIngestionDate)).append (\"' \");\n+               StringBuilder sb = new StringBuilder();\n+               sb.append(\"UPDATE PRODUCTS \");\n+               sb.append (\"SET INGESTIONDATE = '\").append (productSdf.format (validIngestionDate)).append (\"' \");\n                sb.append (\"WHERE ID = \").append (result.getLong (1));\n-               PreparedStatement update =\n-                     connection.prepareStatement (sb.toString ());\n+               PreparedStatement update = connection.prepareStatement (sb.toString ());\n                if (update.executeUpdate () != 1)\n                {\n                   LOGGER.warn(\"Cannot change ingestion date for product#\" +\n-                        result.getLong (1));\n+                  result.getLong (1));\n                }\n             }\n          }\n-         result.close ();\n-         statement.close ();\n+         result.close();\n+         statement.close();\n       }\n-      catch (DatabaseException | SQLException | ParseException e)\n+      catch (DatabaseException|SQLException| ParseException e)\n       {\n          throw new CustomChangeException (\n-               \"An error occurred during liquibase execution: \", e);\n+            \"An error occurred during liquibase execution: \", e);\n       }\n    }\n \n@@ -107,13 +102,11 @@ public class CorrectsIngestionDate implements CustomTaskChange\n    @Override\n    public void setUp () throws SetupException\n    {\n-\n    }\n \n    @Override\n    public void setFileOpener (ResourceAccessor resource_accessor)\n    {\n-\n    }\n \n    @Override\n@@ -121,4 +114,4 @@ public class CorrectsIngestionDate implements CustomTaskChange\n    {\n       return null;\n    }\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 29
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "49",
+                    "severity": "error",
+                    "message": "Line is longer than 80 characters (found 90).",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+                }
+            ],
+            "diff": "",
+            "diff_size": 0
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/18/CorrectsIngestionDate.java\nindex 031394e077d..73e9a28d67b 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/errored/1/18/CorrectsIngestionDate.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/SentinelDataHub-dhus-core/styler_three_grams/18/CorrectsIngestionDate.java\n@@ -46,9 +46,10 @@ public class CorrectsIngestionDate implements CustomTaskChange\n    /**\n     * Logger of this class.\n     */\n-   private static final Logger LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n+   private static final Logger\n+      LOGGER = LogManager.getLogger(CorrectsIngestionDate.class);\n \n-   @Override\n+    @Override\n    public void execute (Database database) throws CustomChangeException\n    {\n       SimpleDateFormat metaSdf =\n",
+            "diff_size": 3
+        }
+    ],
+    "repaired_by": [
+        "styler",
+        "styler_three_grams"
+    ],
+    "not_repaired_by": [
+        "intellij",
+        "naturalize",
+        "codebuff",
+        "styler_random"
+    ]
+}

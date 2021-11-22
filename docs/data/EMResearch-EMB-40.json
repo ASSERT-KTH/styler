@@ -1,0 +1,77 @@
+{
+    "project_name": "EMResearch-EMB",
+    "error_id": "40",
+    "information": {
+        "errors": [
+            {
+                "line": "76",
+                "severity": "warning",
+                "message": "Line is longer than 120 characters (found 141).",
+                "source": "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"
+            }
+        ]
+    },
+    "source_code": "      // then show to the user:\n      if (token.getToken().equals(\"demo\")) {\n        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(), \"The demo rule thinks this looks wrong\");\n        ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n        ruleMatches.add(ruleMatch);\n      }",
+    "results": [
+        {
+            "tool": "styler",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "80",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler/40/DemoRule.java\nindex 2696525e803..b8faa810590 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler/40/DemoRule.java\n@@ -73,7 +73,8 @@ public class DemoRule extends Rule {\n       // the word \"demo\" an error and create a rule match that LanguageTool will\n       // then show to the user:\n       if (token.getToken().equals(\"demo\")) {\n-        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(), \"The demo rule thinks this looks wrong\");\n+        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(),token .getEndPos(\n+        ), \"The demo rule thinks this looks wrong\");\n         ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n         ruleMatches.add(ruleMatch);\n       }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "intellij",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/40/DemoRule.java\nindex 2696525e803..0e657d25806 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/intellij/40/DemoRule.java\n@@ -1,6 +1,6 @@\n-/* LanguageTool, a natural language style checker \n+/* LanguageTool, a natural language style checker\n  * Copyright (C) 2015 Daniel Naber (http://www.danielnaber.de)\n- * \n+ *\n  * This library is free software; you can redistribute it and/or\n  * modify it under the terms of the GNU Lesser General Public\n  * License as published by the Free Software Foundation; either\n@@ -16,6 +16,7 @@\n  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301\n  * USA\n  */\n+\n package org.languagetool.rules;\n \n import org.languagetool.AnalyzedSentence;\n@@ -30,56 +31,57 @@ import java.util.List;\n  * A simple demo rule as an example for how to implement your own Java-based\n  * rule in LanguageTool. Simple walks over the text and prints the words\n  * and their analysis.\n- * \n+ *\n  * <p>To activate this rule, add it to {@code getRelevantRules()} in e.g. {@code English.java}.\n- * \n- * <p>This rule works on sentences, extend {@link TextLevelRule} instead to work \n+ *\n+ * <p>This rule works on sentences, extend {@link TextLevelRule} instead to work\n  * on the complete text.\n  */\n public class DemoRule extends Rule {\n-  \n-  @Override\n-  public String getId() {\n-    return \"DEMO_RULE\";  // a unique id that doesn't change over time\n-  }\n \n-  @Override\n-  public String getDescription() {\n-    return \"A demo rule that just prints the text analysis\";  // shown in the configuration dialog\n-  }\n-\n-  // This is the method with the error detection logic that you need to implement:\n-  @Override\n-  public RuleMatch[] match(AnalyzedSentence sentence) throws IOException {\n-    List<RuleMatch> ruleMatches = new ArrayList<>();\n+    @Override\n+    public String getId() {\n+        return \"DEMO_RULE\";  // a unique id that doesn't change over time\n+    }\n \n-    // Let's get all the tokens (i.e. words) of this sentence, but not the spaces:\n-    AnalyzedTokenReadings[] tokens = sentence.getTokensWithoutWhitespace();\n-    \n-    // No let's iterate over those - note that the first token will\n-    // be a special token that indicates the start of a sentence:\n-    for (AnalyzedTokenReadings token : tokens) {\n-      \n-      System.out.println(\"Token: \" + token.getToken());  // the original word from the input text\n-      \n-      // A word can have more than one reading, e.g. 'dance' can be a verb or a noun,\n-      // so we iterate over the readings:\n-      for (AnalyzedToken analyzedToken : token.getReadings()) {\n-        System.out.println(\"  Lemma: \" + analyzedToken.getLemma());\n-        System.out.println(\"  POS: \" + analyzedToken.getPOSTag());\n-      }\n-      \n-      // You can add your own logic here to find errors. Here, we just consider\n-      // the word \"demo\" an error and create a rule match that LanguageTool will\n-      // then show to the user:\n-      if (token.getToken().equals(\"demo\")) {\n-        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(), \"The demo rule thinks this looks wrong\");\n-        ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n-        ruleMatches.add(ruleMatch);\n-      }\n+    @Override\n+    public String getDescription() {\n+        return \"A demo rule that just prints the text analysis\";  // shown in the configuration dialog\n     }\n \n-    return toRuleMatchArray(ruleMatches);\n-  }\n+    // This is the method with the error detection logic that you need to implement:\n+    @Override\n+    public RuleMatch[] match(AnalyzedSentence sentence) throws IOException {\n+        List<RuleMatch> ruleMatches = new ArrayList<>();\n+\n+        // Let's get all the tokens (i.e. words) of this sentence, but not the spaces:\n+        AnalyzedTokenReadings[] tokens = sentence.getTokensWithoutWhitespace();\n+\n+        // No let's iterate over those - note that the first token will\n+        // be a special token that indicates the start of a sentence:\n+        for (AnalyzedTokenReadings token : tokens) {\n+\n+            System.out.println(\"Token: \" + token.getToken());  // the original word from the input text\n+\n+            // A word can have more than one reading, e.g. 'dance' can be a verb or a noun,\n+            // so we iterate over the readings:\n+            for (AnalyzedToken analyzedToken : token.getReadings()) {\n+                System.out.println(\"  Lemma: \" + analyzedToken.getLemma());\n+                System.out.println(\"  POS: \" + analyzedToken.getPOSTag());\n+            }\n+\n+            // You can add your own logic here to find errors. Here, we just consider\n+            // the word \"demo\" an error and create a rule match that LanguageTool will\n+            // then show to the user:\n+            if (token.getToken().equals(\"demo\")) {\n+                RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(),\n+                    \"The demo rule thinks this looks wrong\");\n+                ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n+                ruleMatches.add(ruleMatch);\n+            }\n+        }\n+\n+        return toRuleMatchArray(ruleMatches);\n+    }\n \n }\n",
+            "diff_size": 78
+        },
+        {
+            "tool": "naturalize",
+            "errors": null,
+            "diff": null
+        },
+        {
+            "tool": "codebuff",
+            "errors": [],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/40/DemoRule.java\nindex 2696525e803..2e038d8d0d0 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/codebuff/40/DemoRule.java\n@@ -21,7 +21,6 @@ package org.languagetool.rules;\n import org.languagetool.AnalyzedSentence;\n import org.languagetool.AnalyzedToken;\n import org.languagetool.AnalyzedTokenReadings;\n-\n import java.io.IOException;\n import java.util.ArrayList;\n import java.util.List;\n@@ -36,50 +35,57 @@ import java.util.List;\n  * <p>This rule works on sentences, extend {@link TextLevelRule} instead to work \n  * on the complete text.\n  */\n+\n+\n public class DemoRule extends Rule {\n-  \n-  @Override\n-  public String getId() {\n-    return \"DEMO_RULE\";  // a unique id that doesn't change over time\n-  }\n+    @Override\n+    public String getId() {\n+        return \"DEMO_RULE\";  // a unique id that doesn't change over time\n+    }\n \n-  @Override\n-  public String getDescription() {\n-    return \"A demo rule that just prints the text analysis\";  // shown in the configuration dialog\n-  }\n+    @Override\n+    public String getDescription() {\n+        return \"A demo rule that just prints the text analysis\";  // shown in the configuration dialog\n+    }\n \n   // This is the method with the error detection logic that you need to implement:\n-  @Override\n-  public RuleMatch[] match(AnalyzedSentence sentence) throws IOException {\n-    List<RuleMatch> ruleMatches = new ArrayList<>();\n+\n+    @Override\n+    public RuleMatch[] match(AnalyzedSentence sentence) throws IOException {\n+        List<RuleMatch> ruleMatches = new ArrayList<>();\n \n     // Let's get all the tokens (i.e. words) of this sentence, but not the spaces:\n-    AnalyzedTokenReadings[] tokens = sentence.getTokensWithoutWhitespace();\n+        AnalyzedTokenReadings[] tokens = sentence.getTokensWithoutWhitespace();\n     \n     // No let's iterate over those - note that the first token will\n     // be a special token that indicates the start of a sentence:\n-    for (AnalyzedTokenReadings token : tokens) {\n-      \n-      System.out.println(\"Token: \" + token.getToken());  // the original word from the input text\n+        for (AnalyzedTokenReadings token : tokens) {\n+        System.out.println(\"Token: \"\n+            + token.getToken());  // the original word from the input text\n       \n       // A word can have more than one reading, e.g. 'dance' can be a verb or a noun,\n       // so we iterate over the readings:\n-      for (AnalyzedToken analyzedToken : token.getReadings()) {\n-        System.out.println(\"  Lemma: \" + analyzedToken.getLemma());\n-        System.out.println(\"  POS: \" + analyzedToken.getPOSTag());\n-      }\n+\n+        for (AnalyzedToken analyzedToken : token.getReadings()) {\n+                                                       System.out.println(\"  Lemma: \"\n+                                                           + analyzedToken.getLemma());\n+                                                       System.out.println(\"  POS: \"\n+                                                           + analyzedToken.getPOSTag());\n+        }\n       \n       // You can add your own logic here to find errors. Here, we just consider\n       // the word \"demo\" an error and create a rule match that LanguageTool will\n       // then show to the user:\n-      if (token.getToken().equals(\"demo\")) {\n-        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(), \"The demo rule thinks this looks wrong\");\n-        ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n-        ruleMatches.add(ruleMatch);\n-      }\n+        if (token.getToken().equals(\"demo\")) {\n+            RuleMatch ruleMatch = new RuleMatch(this,\n+                sentence,\n+                    token.getStartPos(),\n+                        token.getEndPos(),\n+                                                \"The demo rule thinks this looks wrong\");\n+            ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n+            ruleMatches.add(ruleMatch);\n+        }\n+        }\n+        return toRuleMatchArray(ruleMatches);\n     }\n-\n-    return toRuleMatchArray(ruleMatches);\n-  }\n-\n-}\n+}\n\\ No newline at end of file\n",
+            "diff_size": 43
+        },
+        {
+            "tool": "styler_random",
+            "errors": [
+                {
+                    "line": "76",
+                    "column": "80",
+                    "severity": "warning",
+                    "message": "',' is not followed by whitespace.",
+                    "source": "com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck"
+                }
+            ],
+            "diff": "diff --git a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_random/40/DemoRule.java\nindex 2696525e803..b8faa810590 100644\n--- a/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/errored/1/40/DemoRule.java\n+++ b/home/fernanda/mnt/fernanda/git-styler/styler/python/experiments/results/EMResearch-EMB/styler_random/40/DemoRule.java\n@@ -73,7 +73,8 @@ public class DemoRule extends Rule {\n       // the word \"demo\" an error and create a rule match that LanguageTool will\n       // then show to the user:\n       if (token.getToken().equals(\"demo\")) {\n-        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(), token.getEndPos(), \"The demo rule thinks this looks wrong\");\n+        RuleMatch ruleMatch = new RuleMatch(this, sentence, token.getStartPos(),token .getEndPos(\n+        ), \"The demo rule thinks this looks wrong\");\n         ruleMatch.setSuggestedReplacement(\"blablah\");  // the user will see this as a suggested correction\n         ruleMatches.add(ruleMatch);\n       }\n",
+            "diff_size": 2
+        },
+        {
+            "tool": "styler_three_grams",
+            "errors": null,
+            "diff": null
+        }
+    ],
+    "repaired_by": [
+        "intellij",
+        "codebuff"
+    ],
+    "not_repaired_by": [
+        "styler",
+        "naturalize",
+        "styler_random",
+        "styler_three_grams"
+    ]
+}
