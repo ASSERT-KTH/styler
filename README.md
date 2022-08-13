@@ -5,7 +5,7 @@
 
 Styler is an automatic repair tool to fix formatting errors raised by Checkstyle, a highly configurable formatting-checker for Java. Styler learns fixes for formatting errors and predicts repairs for new errors using machine learning.
 
-Reference: [Styler: Learning Formatting Conventions to Repair Checkstyle Errors](https://arxiv.org/pdf/1904.01754) (Benjamin Loriot, Fernanda Madeiral, Martin Monperrus), arXiv 1904.01754, 2019
+Reference: [Styler: Learning Formatting Conventions to Repair Checkstyle Violations](https://arxiv.org/pdf/1904.01754) (Benjamin Loriot, Fernanda Madeiral, Martin Monperrus), Empirical Software Engineering, 2022, DOI:10.1007/s10664-021-10107-0.
 
 ## Quickstart
 
